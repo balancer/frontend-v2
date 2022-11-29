@@ -5,7 +5,7 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/providers';
-// import { captureException } from '@sentry/browser';
+import { captureException } from '@sentry/browser';
 import { verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
@@ -60,10 +60,10 @@ export class RawConcern extends TransactionConcern {
     await this.signer.getAddress();
     /* eslint-disable-next-line */
     const sender = await this.signer.getAddress();
-    // captureException(`Failed raw transaction:
-    //   Sender: ${sender}
-    //   options: ${options}
-    //   error: ${error}
-    // `);
+    captureException(`Failed raw transaction:
+      Sender: ${sender}
+      options: ${options}
+      error: ${error}
+    `);
   }
 }
