@@ -29,7 +29,7 @@
     "baseUrl": ".",
     "noImplicitAny": false,
     "resolveJsonModule": true,
-    "types": ["node", "webpack-env", "vitest/globals"],
+    "types": ["node", "vitest/globals", "vite/client"],
     "paths": {
       "@/*": ["src/*"],
       "@tests/*": ["tests/*"],
