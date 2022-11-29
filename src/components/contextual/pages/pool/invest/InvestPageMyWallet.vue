@@ -11,6 +11,7 @@ import useInvestPageTabs, {
   Tab,
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
+import useVeBal from '@/composables/useVeBAL';
 
 /**
  * COMPOSABLES
@@ -23,12 +24,15 @@ const { tokenAddresses, amounts } = useInvestState();
 const { setAmountsIn, isSingleAssetJoin, amountsIn } = useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
 const { activeTab } = useInvestPageTabs();
+const { veBalTokenInfo } = useVeBal();
 
 /**
  * COMPUTED
  */
 const excludedTokens = computed<string[]>(() => {
-  return pool.value?.address ? [pool.value.address] : [];
+  const tokens = [veBalTokenInfo.value?.address, nativeAsset.address];
+  if (pool.value?.address) tokens.push(pool.value.address);
+  return tokens;
 });
 
 /**
@@ -113,7 +117,6 @@ function handleMyWalletTokenClick(tokenAddress: string, isPoolToken: boolean) {
   />
   <MyWallet
     v-else
-    includeNativeAsset
     :excludedTokens="excludedTokens"
     :pool="pool"
     @click:asset="handleMyWalletTokenClick"
