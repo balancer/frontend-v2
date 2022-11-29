@@ -94,7 +94,7 @@ const provider = (props: Props) => {
   /**
    * SERVICES
    */
-  const joinPoolService = new JoinPoolService(pool);
+  const joinPoolService = new JoinPoolService(pool.value);
 
   /**
    * COMPOSABLES

@@ -2,7 +2,6 @@ import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
@@ -25,7 +24,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
   private lastGeneralisedJoinRes?: GeneralisedJoinResponse;
 
   constructor(
-    public readonly pool: Ref<Pool>,
+    public readonly pool: Pool,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
   ) {}
@@ -63,7 +62,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     const signerAddress = await signer.getAddress();
     const wrapLeafTokens = false;
     const slippage = slippageBsp.toString();
-    const poolId = this.pool.value.id;
+    const poolId = this.pool.id;
 
     this.lastGeneralisedJoinRes = await balancer.pools
       .generalisedJoin(
@@ -85,7 +84,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     }
     const bptOut = formatFixed(
       this.lastGeneralisedJoinRes.expectedOut,
-      this.pool.value.onchain?.decimals || 18
+      this.pool.onchain?.decimals || 18
     );
     const priceImpact: number = bnum(
       formatFixed(
