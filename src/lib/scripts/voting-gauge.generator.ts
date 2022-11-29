@@ -120,10 +120,16 @@ async function getMainnetTokenAddresss(
 
   const response = await fetch(coingeckoEndpoint);
 
-  if (response.status === 200) {
+  try {
     const data = await response.json();
     return getAddress(data.platforms.ethereum);
-  } else {
+  } catch {
+    console.error(
+      'Token not found on Mainnet:',
+      tokenAddress,
+      'chainId:',
+      network
+    );
     return '';
   }
 }
@@ -478,6 +484,7 @@ async function getGaugeInfo(
         address,
         poolId,
         network,
+        isKilled,
         addedTimestamp,
         relativeWeightCap,
       }) => {
@@ -494,6 +501,7 @@ async function getGaugeInfo(
         return {
           address,
           network,
+          isKilled,
           relativeWeightCap,
           addedTimestamp,
           pool,
