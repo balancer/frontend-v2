@@ -21,7 +21,7 @@ const { t } = useI18n();
  * COMPUTED
  */
 const nativeBalanceText = computed<string>(() =>
-  hasNativeBalance ? `${nativeBalance} ${nativeCurrency}` : ''
+  hasNativeBalance ? `${nativeBalance.value} ${nativeCurrency}` : ''
 );
 
 const sectionTitle = computed<string>(() =>
