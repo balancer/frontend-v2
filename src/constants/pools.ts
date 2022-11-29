@@ -24,7 +24,8 @@ export type FactoryType =
   | 'managedPool'
   | 'liquidityBootstrappingPool'
   | 'boostedPool'
-  | 'composableStablePool';
+  | 'composableStablePool'
+  | 'fx';
 
 type PoolMetadata = {
   name: string;
@@ -407,6 +408,7 @@ const POOLS_POLYGON: Pools = {
     '0xca96c4f198d343e251b1a01f3eba061ef3da73c1': 'stablePool', // stable pool v2,
     '0x136fd06fa01ecf624c7f2b3cb15742c1339dc2c4': 'composableStablePool', // ComposableStable
     '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
+    '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
   },
   Stakable: {
     AllowList: [
