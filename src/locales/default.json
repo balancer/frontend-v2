@@ -359,10 +359,10 @@
   "featuredProtocol": "Featured ecosystem protocol",
   "featuredProtocols": {
     "title": "Featured ecosystem protocols",
-    "Copper": "Copper offers an intuitive UI for creating, managing & tracking Balancer Liquidity Bootstrapping Pools (LBPs) on a transparent and user-friendly platform.",
+    "Copper": "Fjord Foundry (formerly Copper)  offers an intuitive UI for creating, managing & tracking Balancer Liquidity Bootstrapping Pools (LBPs) on a transparent and user-friendly platform.",
     "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
     "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
-    "Tracer": "An open-source protocol for derivative markets, Tracer DAO utilizes Balancer Protocol for aggregated liquidity and creating a market for leveraged tokens."
+    "Tracer": "Mycelium (formerly TracerDAO) is an open-source protocol for derivative markets. It utilizes Balancer for aggregated liquidity and creating a market for leveraged tokens."
   },
   "fees": "fees",
   "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every swap utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
