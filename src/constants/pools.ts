@@ -78,6 +78,7 @@ export type Pools = {
     AllowList: string[];
   };
   Metadata: Record<string, PoolMetadata>;
+  BrandedRedirect?: string[];
 };
 
 const POOLS_GOERLI: Pools = {
@@ -450,6 +451,9 @@ const POOLS_POLYGON: Pools = {
       hasIcon: true,
     },
   },
+  BrandedRedirect: [
+    '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702',
+  ],
 };
 
 const POOLS_ARBITRUM: Pools = {

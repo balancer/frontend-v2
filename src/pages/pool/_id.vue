@@ -15,6 +15,8 @@ import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingInc
 import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
+import BrandedRedirectCard from '@/components/pool/BrandedRedirectCard.vue';
+
 import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
@@ -163,6 +165,10 @@ const poolPremintedBptIndex = computed(() => {
   return preMintedBptIndex(pool.value) ?? null;
 });
 
+const showBrandedRedirectCard = computed(() => {
+  return POOLS.BrandedRedirect?.includes(poolId);
+});
+
 /**
  * WATCHERS
  */
@@ -242,7 +248,7 @@ watch(poolQuery.error, () => {
         </div>
 
         <div
-          v-if="!isLiquidityBootstrappingPool"
+          v-if="!isLiquidityBootstrappingPool && !showBrandedRedirectCard"
           class="order-1 lg:order-2 px-4 lg:px-0"
         >
           <BalStack vertical>
@@ -273,6 +279,11 @@ watch(poolQuery.error, () => {
             />
           </BalStack>
         </div>
+
+        <BrandedRedirectCard
+          v-if="showBrandedRedirectCard"
+          class="order-1 lg:order-2 px-4 lg:px-0"
+        />
       </div>
     </StakingProvider>
   </div>

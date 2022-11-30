@@ -185,7 +185,7 @@ const poolTypeLabel = computed(() => {
           />
         </BalLink>
       </div>
-      <div class="flex items-center mt-2">
+      <div v-if="poolFeeLabel" class="flex items-center mt-2">
         <div class="mr-1 text-sm text-secondary" v-html="poolFeeLabel" />
         <BalTooltip>
           <template #activator>
