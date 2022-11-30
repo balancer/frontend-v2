@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Network } from '@balancer-labs/sdk';
 import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -34,7 +33,7 @@ import {
 import { Pool } from '@/services/pool/types';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
-import { buildURL } from '@/lib/utils/urls';
+import { buildNetworkIconURL } from '@/lib/utils/urls';
 
 /**
  * TYPES
@@ -144,12 +143,6 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   );
 }
 
-function networkSrc(network: Network) {
-  return buildURL(
-    `/src/assets/images/icons/networks/${getNetworkSlug(network)}.svg`
-  );
-}
-
 function isInternalUrl(url: string): boolean {
   return url.includes('balancer.fi') || url.includes('localhost');
 }
@@ -230,7 +223,11 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <div
             class="flex justify-center items-center w-8 h-8 bg-gray-50 dark:bg-gray-800 rounded shadow-sm"
           >
-            <img :src="networkSrc(network)" :alt="network" class="w-6 h-6" />
+            <img
+              :src="buildNetworkIconURL(getNetworkSlug(network))"
+              :alt="network"
+              class="w-6 h-6"
+            />
           </div>
         </div>
       </template>

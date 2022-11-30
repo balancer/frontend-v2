@@ -22,7 +22,7 @@
           <img
             width="36"
             height="36"
-            :src="buildURL(`/src/assets/images/services/${service}.svg`)"
+            :src="buildServiceIconURL(service)"
             alt="Balancer 3rd party service"
             class="mt-1"
           />
@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildURL } from '@/lib/utils/urls';
+import { buildServiceIconURL } from '@/lib/utils/urls';
 
 type Props = {
   isVisible: boolean;
@@ -60,6 +60,7 @@ const services = [
   'sentry',
 ];
 </script>
+
 <style scoped>
 /* If this modal is placed on top of the Connect Wallet modal */
 .bal-modal + .bal-modal.third-parties :deep(.modal-bg) {

@@ -25,13 +25,14 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { buildURL } from '@/lib/utils/urls';
 import { PoolWithShares } from '@/services/pool/types';
 import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningTooltip.vue';
+import TokensWhite from '@/assets/images/icons/tokens_white.svg';
+import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 
 /**
  * TYPES
@@ -277,14 +278,8 @@ function iconAddresses(pool: PoolWithShares) {
     >
       <template #iconColumnHeader>
         <div class="flex items-center">
-          <img
-            v-if="darkMode"
-            :src="buildURL('/src/assets/images/icons/tokens_white.svg')"
-          />
-          <img
-            v-else
-            :src="buildURL('/src/assets/images/icons/tokens_black.svg')"
-          />
+          <img v-if="darkMode" :src="TokensWhite" />
+          <img v-else :src="TokensBlack" />
         </div>
       </template>
       <template #iconColumnCell="pool">
