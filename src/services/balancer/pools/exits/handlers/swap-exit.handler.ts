@@ -1,7 +1,9 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
+import { POOLS } from '@/constants/pools';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, selectByAddress } from '@/lib/utils';
+import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
@@ -93,7 +95,7 @@ export class SwapExitHandler implements ExitPoolHandler {
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenIn({
       tokenIn: tokenIn.address,
-      tokenOut: tokenOut.address,
+      tokenOut: this.formatAddressForSor(tokenOut.address),
       amount: bnumAmountIn,
       gasPrice,
       maxPools: 4,
@@ -142,7 +144,7 @@ export class SwapExitHandler implements ExitPoolHandler {
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenOut({
       tokenIn: tokenIn.address,
-      tokenOut: tokenOut.address,
+      tokenOut: this.formatAddressForSor(tokenOut.address),
       amount: bnumAmountOut,
       gasPrice,
       maxPools: 4,
@@ -209,5 +211,11 @@ export class SwapExitHandler implements ExitPoolHandler {
       deadline,
       maxSlippage,
     });
+  }
+
+  private formatAddressForSor(address: string): string {
+    return isSameAddress(address, NATIVE_ASSET_ADDRESS)
+      ? POOLS.ZeroAddress
+      : address;
   }
 }
