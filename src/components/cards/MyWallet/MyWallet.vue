@@ -47,7 +47,6 @@ const tokensWithBalance = computed(() => {
     Object.keys(balances.value).filter(
       tokenAddress =>
         Number(balances.value[tokenAddress]) > 0 &&
-        tokenAddress !== appNetworkConfig.nativeAsset.address &&
         tokenAddress !== appNetworkConfig.addresses.veBAL
     ),
     21

@@ -46,8 +46,8 @@ export default defineComponent({
       </div>
       <div class="col-span-12 xs:col-span-6 lg:col-span-3">
         <BalCard
-          title="Copper Launch"
-          imgSrc="/images/banners/copper.png"
+          title="Fjord Foundry"
+          imgSrc="/images/banners/fjord.png"
           class="hover:shadow-xl transition-shadow"
           hFull
           growContent
@@ -67,8 +67,8 @@ export default defineComponent({
       </div>
       <div class="col-span-12 xs:col-span-6 lg:col-span-3">
         <BalCard
-          title="Tracer DAO"
-          imgSrc="/images/banners/tracer.jpg"
+          title="Mycelium"
+          imgSrc="/images/banners/mycelium.jpg"
           class="hover:shadow-xl transition-shadow"
           hFull
           growContent
