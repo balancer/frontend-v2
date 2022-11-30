@@ -55,7 +55,10 @@ export class OnchainDataFormater {
       this.rawData.decimals
     );
     poolData.decimals = this.rawData.decimals;
-    poolData.swapFee = formatUnits(this.rawData.swapFee, 18);
+
+    if (this.rawData.swapFee) {
+      poolData.swapFee = formatUnits(this.rawData.swapFee, 18);
+    }
 
     return poolData;
   }

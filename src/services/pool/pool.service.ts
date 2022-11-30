@@ -178,7 +178,7 @@ export default class PoolService {
       );
       return (this.pool.onchain = onchainData.format());
     } catch (e) {
-      console.warn(e);
+      console.error(e);
     }
   }
 

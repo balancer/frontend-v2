@@ -154,7 +154,7 @@ const poolTypeLabel = computed(() => {
             {{ tokenMeta.symbol }}
           </span>
           <span
-            v-if="!isStableLikePool"
+            v-if="!isStableLikePool && tokenMeta.weight"
             class="mt-px ml-1 text-xs font-medium text-gray-400"
           >
             {{
