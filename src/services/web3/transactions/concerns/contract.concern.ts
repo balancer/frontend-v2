@@ -48,10 +48,10 @@ export class ContractConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
-      options = { ...options, ...gasSettings };
+      const txOptions = { ...options, ...gasSettings };
 
       trackGoal(Goals.ContractTransactionSubmitted);
-      return await contractWithSigner[action](...params, options);
+      return await contractWithSigner[action](...params, txOptions);
     } catch (err) {
       const error = err as WalletError;
 

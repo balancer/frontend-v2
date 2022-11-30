@@ -60,6 +60,12 @@ export function isComposableStableLike(poolType: PoolType): boolean {
   return isStablePhantom(poolType) || isComposableStable(poolType);
 }
 
+export function isPreMintedBptType(poolType: PoolType): boolean {
+  // Currently equivalent to isComposableStableLike but will be extended later
+  // with managed and composable weighted pools.
+  return isStablePhantom(poolType) || isComposableStable(poolType);
+}
+
 export function isDeep(pool: Pool): boolean {
   const treatAsDeep = [
     '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f', // bb-a-USD1 (goerli)
@@ -577,6 +583,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isComposableStableLikePool = computed(
     (): boolean => !!pool.value && isComposableStableLike(pool.value.poolType)
   );
+  const isPreMintedBptPool = computed(
+    (): boolean => !!pool.value && isPreMintedBptType(pool.value.poolType)
+  );
   const isWeightedPool = computed(
     (): boolean => !!pool.value && isWeighted(pool.value.poolType)
   );
@@ -624,6 +633,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isComposableStablePool,
     isStableLikePool,
     isComposableStableLikePool,
+    isPreMintedBptPool,
     isDeepPool,
     isShallowComposableStablePool,
     isWeightedPool,
@@ -644,6 +654,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isLiquidityBootstrapping,
     isWeightedLike,
     isTradingHaltable,
+    isPreMintedBptType,
     isWeth,
     noInitLiquidity,
     isMigratablePool,
