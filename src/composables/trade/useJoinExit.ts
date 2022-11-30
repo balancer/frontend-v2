@@ -1,83 +1,43 @@
+import {
+  buildRelayerCalls,
+  SubgraphPoolBase,
+  SwapInfo,
+  SwapTypes,
+} from '@balancer-labs/sdk';
+import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
-import { WeiPerEther as ONE } from '@ethersproject/constants';
-import { AddressZero } from '@ethersproject/constants';
-import { formatUnits } from '@ethersproject/units';
-import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
-import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
-import OldBigNumber from 'bignumber.js';
+import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import {
   computed,
   ComputedRef,
+  onMounted,
   reactive,
   Ref,
   ref,
   toRefs,
   watchEffect,
 } from 'vue';
-import { useStore } from 'vuex';
 
-import { bnum } from '@/lib/utils';
-import { tryPromiseWithTimeout } from '@/lib/utils/promise';
-import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
-import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
-import {
-  FeeInformation,
-  FeeQuoteParams,
-  OrderMetaData,
-  PriceQuoteParams,
-} from '@/services/gnosis/types';
-import { calculateValidTo, toErc20Address } from '@/services/gnosis/utils';
+import { balancer } from '@/lib/balancer.sdk';
 import useWeb3 from '@/services/web3/useWeb3';
-import { Token } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useTokens from '../useTokens';
 import { TradeQuote } from './types';
-import {
-  SubgraphPoolBase,
-  SwapInfo,
-  SwapTypes,
-  buildRelayerCalls,
-  Pool,
-} from '@balancer-labs/sdk';
-import { balancer } from '@/lib/balancer.sdk';
 
-const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
-const APP_DATA =
-  process.env.VUE_APP_GNOSIS_APP_DATA ??
-  '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB';
-
-type State = {
-  warnings: {
-    highFees: boolean;
+type JoinExitState = {
+  validationErrors: {
+    highPriceImpact: boolean;
   };
-  validationError: null | string;
-  submissionError: null | string;
+  submissionError: string | null;
 };
 
-const state = reactive<State>({
-  warnings: {
-    highFees: false,
+const state = reactive<JoinExitState>({
+  validationErrors: {
+    highPriceImpact: false,
   },
-  validationError: null,
   submissionError: null,
 });
-
-export type GnosisTransactionDetails = {
-  tokenIn: Token;
-  tokenOut: Token;
-  tokenInAddress: string;
-  tokenOutAddress: string;
-  tokenInAmount: string;
-  tokenOutAmount: string;
-  exactIn: boolean;
-  quote: TradeQuote;
-  slippageBufferRate: number;
-  order: {
-    validTo: OrderMetaData['validTo'];
-    partiallyFillable: OrderMetaData['partiallyFillable'];
-  };
-};
 
 type Props = {
   exactIn: Ref<boolean>;
@@ -93,23 +53,7 @@ type Props = {
   pools: Ref<(Pool | SubgraphPoolBase)[]>;
 };
 
-const PRICE_QUOTE_TIMEOUT = 10000;
-
-const priceQuotesResolveLast = onlyResolvesLast(getPriceQuotes);
-const feeQuoteResolveLast = onlyResolvesLast(getFeeQuote);
-
-function getPriceQuotes(params: PriceQuoteParams) {
-  return Promise.allSettled([
-    tryPromiseWithTimeout(
-      gnosisProtocolService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    ),
-  ]);
-}
-
-function getFeeQuote(params: FeeQuoteParams) {
-  return gnosisProtocolService.getFeeQuote(params);
-}
+export type useJoinExit = ReturnType<typeof useJoinExit>;
 
 export default function useJoinExit({
   exactIn,
@@ -119,62 +63,54 @@ export default function useJoinExit({
   tokenOutAmountInput,
   tokenInAmountScaled,
   tokenOutAmountScaled,
-  tokenIn,
-  tokenOut,
   slippageBufferRate,
   pools,
 }: Props) {
-  // COMPOSABLES
-  const store = useStore();
-  const { account } = useWeb3();
-  const { balanceFor } = useTokens();
-
-  // DATA
-  const feeQuote = ref<FeeInformation | null>(null);
-  const updatingQuotes = ref(false);
-  const confirming = ref(false);
   const swapInfo = ref<SwapInfo | null>(null);
+  const trading = ref(false);
+  const confirming = ref(false);
+  const priceImpact = ref(0);
+  const latestTxHash = ref('');
 
-  // COMPUTED
-  const appTransactionDeadline = computed<number>(
-    () => store.state.app.transactionDeadline
+  // COMPOSABLES
+  const { account } = useWeb3();
+  const { injectTokens, getToken } = useTokens();
+
+  const hasValidationError = computed(
+    () => state.validationErrors.highPriceImpact != null
   );
 
-  const hasValidationError = computed(() => state.validationError != null);
+  function resetState() {
+    state.validationErrors.highPriceImpact = false;
 
-  // METHODS
-  function getFeeAmount() {
-    const feeAmountInToken = feeQuote.value?.quote.feeAmount ?? '0';
-    const feeAmountOutToken = tokenOutAmountScaled.value
-      .mul(feeAmountInToken)
-      .div(tokenInAmountScaled.value)
-      .toString();
-
-    return {
-      feeAmountInToken,
-      feeAmountOutToken,
-    };
+    state.submissionError = null;
   }
 
-  function getQuote(): TradeQuote {
-    const { feeAmountInToken, feeAmountOutToken } = getFeeAmount();
+  function resetInputAmounts(amount: string): void {
+    tokenInAmountInput.value = amount;
+    tokenOutAmountInput.value = amount;
+    priceImpact.value = 0;
+  }
 
-    const maximumInAmount = tokenInAmountScaled.value
-      .add(feeAmountInToken)
-      .mul(parseFixed(String(1 + slippageBufferRate.value), 18))
-      .div(ONE);
+  async function handleAmountChange(): Promise<void> {
+    const amount = exactIn.value
+      ? tokenInAmountInput.value
+      : tokenOutAmountInput.value;
+    // Avoid using SOR if querying a zero value or (un)wrapping trade
+    const zeroValueTrade = amount === '' || amount === '0';
+    if (zeroValueTrade) {
+      resetInputAmounts(amount);
+      return;
+    }
 
-    const minimumOutAmount = tokenOutAmountScaled.value
-      .sub(feeAmountOutToken)
-      .mul(ONE)
-      .div(parseFixed(String(1 + slippageBufferRate.value), 18));
+    const tokenInAddress = tokenInAddressInput.value;
+    const tokenOutAddress = tokenOutAddressInput.value;
 
-    return {
-      feeAmountInToken,
-      feeAmountOutToken,
-      maximumInAmount,
-      minimumOutAmount,
-    };
+    if (!tokenInAddress || !tokenOutAddress) {
+      if (exactIn.value) tokenOutAmountInput.value = '';
+      else tokenInAmountInput.value = '';
+      return;
+    }
   }
 
   async function trade(successCallback?: () => void) {
@@ -185,7 +121,7 @@ export default function useJoinExit({
       if (!swapInfo.value) {
         return;
       }
-      console.log(pools.value);
+
       const relayerCallData = buildRelayerCalls(
         swapInfo.value,
         // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
@@ -196,11 +132,13 @@ export default function useJoinExit({
         '50',
         undefined
       );
+      console.log(relayerCallData);
 
-      await balancer.contracts.relayerV4
+      const q = await balancer.contracts.relayerV4
         ?.connect(account.value)
         .callStatic.multicall(relayerCallData.rawCalls);
 
+      console.log(q);
       if (successCallback != null) {
         successCallback();
       }
@@ -211,190 +149,73 @@ export default function useJoinExit({
     }
   }
 
-  function resetState(shouldResetFees = true) {
-    state.warnings.highFees = false;
-    state.validationError = null;
-    state.submissionError = null;
-
-    if (shouldResetFees) {
-      feeQuote.value = null;
-    }
+  function getMaxIn(amount: BigNumber) {
+    return amount
+      .mul(parseFixed(String(1 + slippageBufferRate.value), 18))
+      .div(ONE);
   }
 
-  async function handleAmountChange() {
-    // Prevent quering undefined input amounts
-    if (
-      (exactIn.value && !tokenInAmountInput.value) ||
-      (!exactIn.value && !tokenOutAmountInput.value)
-    ) {
-      return;
-    }
-
-    const amountToExchange = exactIn.value
-      ? tokenInAmountScaled.value
-      : tokenOutAmountScaled.value;
-
-    if (amountToExchange === undefined) {
-      return;
-    }
-
-    if (amountToExchange.isZero()) {
-      tokenInAmountInput.value = '0';
-      tokenOutAmountInput.value = '0';
-      return;
-    }
-
-    updatingQuotes.value = true;
-    state.validationError = null;
-
-    let feeQuoteResult: FeeInformation | null = null;
-    try {
-      const feeQuoteParams: FeeQuoteParams = {
-        sellToken: toErc20Address(tokenInAddressInput.value),
-        buyToken: toErc20Address(tokenOutAddressInput.value),
-        from: account.value || AddressZero,
-        receiver: account.value || AddressZero,
-        validTo: calculateValidTo(appTransactionDeadline.value),
-        appData: APP_DATA,
-        partiallyFillable: false,
-        sellTokenBalance: OrderBalance.EXTERNAL,
-        buyTokenBalance: OrderBalance.ERC20,
-        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
-      };
-
-      if (exactIn.value) {
-        feeQuoteParams.sellAmountBeforeFee = amountToExchange.toString();
-      } else {
-        feeQuoteParams.buyAmountAfterFee = amountToExchange.toString();
-      }
-
-      // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-      feeQuoteResult = await feeQuoteResolveLast(feeQuoteParams);
-    } catch (e) {
-      feeQuoteResult = null;
-      state.validationError = (e as Error).message;
-    }
-
-    if (feeQuoteResult != null) {
-      try {
-        let priceQuoteAmount: string | null = null;
-
-        const priceQuoteParams: PriceQuoteParams = {
-          sellToken: tokenInAddressInput.value,
-          buyToken: tokenOutAddressInput.value,
-          amount: amountToExchange.toString(),
-          kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
-          fromDecimals: tokenIn.value.decimals,
-          toDecimals: tokenOut.value.decimals,
-        };
-
-        const priceQuotes = await priceQuotesResolveLast(priceQuoteParams);
-
-        const priceQuoteAmounts = priceQuotes.reduce<string[]>(
-          (fulfilledPriceQuotes, priceQuote) => {
-            if (
-              priceQuote.status === 'fulfilled' &&
-              priceQuote.value &&
-              priceQuote.value.amount != null
-            ) {
-              fulfilledPriceQuotes.push(priceQuote.value.amount);
-            }
-            return fulfilledPriceQuotes;
-          },
-          []
-        );
-
-        if (priceQuoteAmounts.length > 0) {
-          // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
-          priceQuoteAmount = (
-            exactIn.value
-              ? priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).gt(b) ? a : b
-                )
-              : priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).lt(b) ? a : b
-                )
-          ).toString();
-        }
-
-        if (priceQuoteAmount != null) {
-          feeQuote.value = feeQuoteResult;
-
-          // When user clears the input while fee is fetching we won't be able to get the quote
-          // TODO: ideally cancel all pending requests on amount getting changed / cleared
-          if (
-            (exactIn.value && !tokenInAmountInput.value) ||
-            (!exactIn.value && !tokenOutAmountInput.value)
-          ) {
-            updatingQuotes.value = false;
-            return;
-          }
-
-          if (exactIn.value) {
-            tokenOutAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenOut.value.decimals)
-            ).toFixed(6, OldBigNumber.ROUND_DOWN);
-
-            const { feeAmountInToken } = getQuote();
-
-            state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
-            );
-          } else {
-            tokenInAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenIn.value.decimals)
-            ).toFixed(6, OldBigNumber.ROUND_DOWN);
-
-            const { feeAmountOutToken, maximumInAmount } = getQuote();
-
-            state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
-            );
-
-            if (account.value) {
-              const priceExceedsBalance = bnum(
-                formatUnits(maximumInAmount, tokenIn.value.decimals)
-              ).gt(balanceFor(tokenIn.value.address));
-
-              if (priceExceedsBalance) {
-                state.validationError = ApiErrorCodes.PriceExceedsBalance;
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.log('[Gnosis Quotes] Failed to update quotes', e);
-      }
-    }
-
-    updatingQuotes.value = false;
-
-    // LIFECYCLE
-    watchEffect(async () => {
-      swapInfo.value = await balancer.sor.getSwaps(
-        tokenInAddressInput.value,
-        tokenOutAddressInput.value,
-        SwapTypes.SwapExactIn,
-        parseFixed(tokenInAmountInput.value || tokenOutAmountInput.value, 18),
-        undefined,
-        true
-      );
-    });
+  function getMinOut(amount: BigNumber) {
+    return amount
+      .mul(ONE)
+      .div(parseFixed(String(1 + slippageBufferRate.value), 18));
   }
+
+  function getQuote(): TradeQuote {
+    const maximumInAmount =
+      tokenInAmountScaled != null ? getMaxIn(tokenInAmountScaled.value) : Zero;
+
+    const minimumOutAmount =
+      tokenOutAmountScaled != null
+        ? getMinOut(tokenOutAmountScaled.value)
+        : Zero;
+
+    return {
+      feeAmountInToken: '0',
+      feeAmountOutToken: '0',
+      maximumInAmount,
+      minimumOutAmount,
+    };
+  }
+
+  // LIFECYCLE
+  onMounted(async () => {
+    const unknownAssets: string[] = [];
+    if (tokenInAddressInput.value && !getToken(tokenInAddressInput.value)) {
+      unknownAssets.push(tokenInAddressInput.value);
+    }
+    if (tokenOutAddressInput.value && !getToken(tokenOutAddressInput.value)) {
+      unknownAssets.push(tokenOutAddressInput.value);
+    }
+    await injectTokens(unknownAssets);
+    await handleAmountChange();
+  });
+
+  watchEffect(async () => {
+    swapInfo.value = await balancer.sor.getSwaps(
+      tokenInAddressInput.value,
+      tokenOutAddressInput.value,
+      exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
+      parseFixed(tokenInAmountInput.value || tokenOutAmountInput.value, 18),
+      undefined,
+      true
+    );
+  });
 
   return {
-    // methods
-    trade,
-    handleAmountChange,
-    resetState,
-
-    // computed
-    swapInfo,
     ...toRefs(state),
-    feeQuote,
-    updatingQuotes,
+    pools,
     hasValidationError,
-    confirming,
+    handleAmountChange,
+    exactIn,
+    trade,
+    swapInfo,
+    trading,
+    priceImpact,
+    latestTxHash,
     getQuote,
+    resetState,
+    confirming,
+    resetInputAmounts,
   };
 }

@@ -105,13 +105,14 @@ export default function useTrading(
       return 'balancer';
     }
 
-    if (!joinExit.swapInfo.value?.returnAmount.isZero()) {
-      return 'joinExit';
+    if (tradeGasless.value && isGnosisSupportedOnNetwork.value) {
+      return 'gnosis';
+    } else {
+      return joinExit.swapInfo.value?.returnAmount &&
+        !joinExit.swapInfo.value?.returnAmount.isZero()
+        ? 'joinExit'
+        : 'balancer';
     }
-
-    return tradeGasless.value && isGnosisSupportedOnNetwork.value
-      ? 'gnosis'
-      : 'balancer';
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
@@ -196,21 +197,21 @@ export default function useTrading(
 
   // METHODS
   function trade(successCallback?: () => void) {
-    if (isJoinExitTrade.value) {
-      return joinExit.trade(() => {
-        if (successCallback) {
-          successCallback();
-        }
-
-        joinExit.resetState();
-      });
-    } else if (isGnosisTrade.value) {
+    if (isGnosisTrade.value) {
       return gnosis.trade(() => {
         if (successCallback) {
           successCallback();
         }
 
         gnosis.resetState();
+      });
+    } else if (isJoinExitTrade.value) {
+      return joinExit.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        joinExit.resetState();
       });
     } else {
       // handles both Balancer and Wrap/Unwrap trades
@@ -244,6 +245,8 @@ export default function useTrading(
   function getQuote() {
     if (isGnosisTrade.value) {
       return gnosis.getQuote();
+    } else if (isJoinExitTrade.value) {
+      return joinExit.getQuote();
     } else {
       return sor.getQuote();
     }
@@ -263,6 +266,9 @@ export default function useTrading(
     if (isGnosisTrade.value) {
       gnosis.resetState(false);
       gnosis.handleAmountChange();
+    } else if (isJoinExitTrade.value) {
+      joinExit.resetState();
+      joinExit.handleAmountChange();
     } else {
       sor.resetState();
       sor.handleAmountChange();
@@ -295,6 +301,10 @@ export default function useTrading(
       if (!gnosis.hasValidationError.value) {
         gnosis.handleAmountChange();
       }
+    } else if (isJoinExitTrade.value) {
+      if (!joinExit.hasValidationError.value) {
+        joinExit.handleAmountChange();
+      }
     } else if (isBalancerTrade.value) {
       sor.updateTradeAmounts();
     }
@@ -321,6 +331,7 @@ export default function useTrading(
     isLoading,
     gnosis,
     sor,
+    joinExit,
     isGnosisTrade,
     isBalancerTrade,
     isJoinExitTrade,

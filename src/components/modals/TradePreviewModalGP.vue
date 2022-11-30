@@ -97,8 +97,7 @@ const exceedsBalance = computed(() => {
 });
 
 const disableSubmitButton = computed(() => {
-  // return !!exceedsBalance.value || !!props.error;
-  return !!props.error;
+  return !!exceedsBalance.value || !!props.error;
 });
 
 const summary = computed(() => {
@@ -289,7 +288,10 @@ const requiresTokenApproval = computed(() => {
 });
 
 const requiresBatchRelayerApproval = computed(
-  () => props.trading.isJoinExitTrade.value
+  () =>
+    !props.trading.isGnosisTrade.value &&
+    props.trading.isJoinExitTrade.value &&
+    !batchRelayerApproval.isUnlocked.value
 );
 
 const requiresGnosisRelayerApproval = computed(
@@ -312,16 +314,20 @@ const showTokenApprovalStep = computed(
 );
 
 const showBatchRelayerApprovalStep = computed(
-  () => props.trading.isJoinExitTrade.value
+  () =>
+    !props.trading.isGnosisTrade.value &&
+    (requiresBatchRelayerApproval.value ||
+      batchRelayerApproval.init.value ||
+      batchRelayerApproval.approved.value ||
+      batchRelayerApproval.approving.value)
 );
 
 const showGnosisRelayerApprovalStep = computed(
   () =>
-    !props.trading.isJoinExitTrade.value &&
-    (requiresGnosisRelayerApproval.value ||
-      gnosisRelayerApproval.init.value ||
-      gnosisRelayerApproval.approved.value ||
-      gnosisRelayerApproval.approving.value)
+    requiresGnosisRelayerApproval.value ||
+    gnosisRelayerApproval.init.value ||
+    gnosisRelayerApproval.approved.value ||
+    gnosisRelayerApproval.approving.value
 );
 
 const showLidoRelayerApprovalStep = computed(
@@ -338,12 +344,12 @@ const totalRequiredTransactions = computed(() => {
   if (showTokenApprovalStep.value) {
     txCount++;
   }
-  if (showBatchRelayerApprovalStep.value) {
-    txCount++;
-  }
+
   if (showGnosisRelayerApprovalStep.value) {
     txCount++;
   } else if (showLidoRelayerApprovalStep.value) {
+    txCount++;
+  } else if (showBatchRelayerApprovalStep.value) {
     txCount++;
   }
 
@@ -363,11 +369,11 @@ const activeTransactionType = computed<
   if (requiresLidoRelayerApproval.value) {
     return 'lidoRelayerApproval';
   }
-  if (requiresTokenApproval.value) {
-    return 'tokenApproval';
-  }
   if (requiresBatchRelayerApproval.value) {
     return 'batchRelayerApproval';
+  }
+  if (requiresTokenApproval.value) {
+    return 'tokenApproval';
   }
   return 'trade';
 });
@@ -774,6 +780,48 @@ watch(blockNumber, () => {
           </BalTooltip>
           <div class="step-seperator" />
         </template>
+        <template v-else-if="showBatchRelayerApprovalStep">
+          <BalTooltip :disabled="!requiresBatchRelayerApproval" width="64">
+            <template #activator>
+              <div
+                :class="[
+                  'step',
+                  {
+                    'step-active':
+                      activeTransactionType === 'batchRelayerApproval',
+                    'step-approved': !requiresBatchRelayerApproval,
+                  },
+                ]"
+              >
+                <BalIcon
+                  v-if="!requiresBatchRelayerApproval"
+                  name="check"
+                  class="text-green-500"
+                />
+                <template v-else> 1 </template>
+              </div>
+            </template>
+            <div>
+              <div class="mb-2 font-semibold">
+                <div>
+                  {{
+                    $t(
+                      'tradeSummary.transactionTypesTooltips.batchRelayerApproval.title'
+                    )
+                  }}
+                </div>
+              </div>
+              <div>
+                {{
+                  $t(
+                    'tradeSummary.transactionTypesTooltips.batchRelayerApproval.content'
+                  )
+                }}
+              </div>
+            </div>
+          </BalTooltip>
+          <div class="step-seperator" />
+        </template>
         <template v-if="showTokenApprovalStep">
           <BalTooltip
             v-if="showTokenApprovalStep"
@@ -797,7 +845,9 @@ watch(blockNumber, () => {
                 />
                 <template v-else>
                   {{
-                    showGnosisRelayerApprovalStep || showLidoRelayerApprovalStep
+                    showGnosisRelayerApprovalStep ||
+                    showLidoRelayerApprovalStep ||
+                    showBatchRelayerApprovalStep
                       ? 2
                       : 1
                   }}
@@ -817,48 +867,6 @@ watch(blockNumber, () => {
                 {{
                   $t(
                     'tradeSummary.transactionTypesTooltips.tokenApproval.content'
-                  )
-                }}
-              </div>
-            </div>
-          </BalTooltip>
-          <div class="step-seperator" />
-        </template>
-        <template v-if="showBatchRelayerApprovalStep">
-          <BalTooltip :disabled="!requiresBatchRelayerApproval" width="64">
-            <template #activator>
-              <div
-                :class="[
-                  'step',
-                  {
-                    'step-active':
-                      activeTransactionType === 'batchRelayerApproval',
-                    'step-approved': !requiresBatchRelayerApproval,
-                  },
-                ]"
-              >
-                <BalIcon
-                  v-if="!requiresBatchRelayerApproval"
-                  name="check"
-                  class="text-green-500"
-                />
-                <template v-else> 2 </template>
-              </div>
-            </template>
-            <div>
-              <div class="mb-2 font-semibold">
-                <div>
-                  {{
-                    $t(
-                      'tradeSummary.transactionTypesTooltips.batchRelayerApproval.title'
-                    )
-                  }}
-                </div>
-              </div>
-              <div>
-                {{
-                  $t(
-                    'tradeSummary.transactionTypesTooltips.batchRelayerApproval.content'
                   )
                 }}
               </div>
@@ -906,7 +914,7 @@ watch(blockNumber, () => {
         {{ $t('connectWallet') }}
       </BalBtn>
       <BalBtn
-        v-else-if="requiresGnosisRelayerApproval && !trading.isJoinExitTrade"
+        v-else-if="requiresGnosisRelayerApproval"
         color="gradient"
         block
         :loading="
@@ -920,7 +928,7 @@ watch(blockNumber, () => {
         {{ $t('approveGnosisRelayer') }}
       </BalBtn>
       <BalBtn
-        v-else-if="requiresLidoRelayerApproval && !trading.isJoinExitTrade"
+        v-else-if="requiresLidoRelayerApproval"
         color="gradient"
         block
         :loading="
@@ -931,17 +939,6 @@ watch(blockNumber, () => {
         @click.prevent="lidoRelayerApproval.approve"
       >
         {{ $t('approveLidoRelayer') }}
-      </BalBtn>
-      <BalBtn
-        v-else-if="requiresTokenApproval"
-        :loading="tokenApproval.approving.value"
-        :loadingLabel="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
-        color="gradient"
-        block
-        :disabled="disableSubmitButton"
-        @click.prevent="approveToken"
-      >
-        {{ `${$t('approve')} ${trading.tokenIn.value.symbol}` }}
       </BalBtn>
       <BalBtn
         v-else-if="requiresBatchRelayerApproval"
@@ -956,6 +953,17 @@ watch(blockNumber, () => {
         @click.prevent="batchRelayerApproval.approve"
       >
         {{ $t('approveBatchRelayer') }}
+      </BalBtn>
+      <BalBtn
+        v-else-if="requiresTokenApproval"
+        :loading="tokenApproval.approving.value"
+        :loadingLabel="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
+        color="gradient"
+        block
+        :disabled="disableSubmitButton"
+        @click.prevent="approveToken"
+      >
+        {{ `${$t('approve')} ${trading.tokenIn.value.symbol}` }}
       </BalBtn>
       <BalBtn
         v-else

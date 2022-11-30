@@ -1191,6 +1191,10 @@
         "content": "Your permission is required to use the Lido relayer for stETH swaps.",
         "title": "Approve Lido relayer"
       },
+      "batchRelayerApproval": {
+        "content": "Your permission is required to use the Batch relayer.",
+        "title": "Approve Batch relayer"
+      },
       "tokenApproval": {
         "content": "Your permission is required to swap this token on Balancer. Approvals are required once per token, per wallet.",
         "title": "Approve {0}"
