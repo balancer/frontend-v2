@@ -79,7 +79,5 @@ jobs:
         run: npm install -g npm@7 && npm ci
       - name: Run typecheck
         run: npm run typecheck
-      - name: Generate token list files
-        run: npm run generate:tokenlists
       - name: Run tests
         run: npm run test:unit

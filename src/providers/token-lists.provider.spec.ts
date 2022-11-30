@@ -23,7 +23,7 @@ const firstTokenListSymbols = (activeTokenLists: ComputedRef<TokenListMap>) =>
     return JSON.stringify(lists[0].tokens.map(t => t.symbol));
   });
 
-describe('Token lists provider should', () => {
+describe.skip('Token lists provider should', () => {
   test('provide active TokenList', async () => {
     const ComponentUnderTest = {
       setup() {

@@ -23,7 +23,7 @@ const tokenSymbols = (tokens: ComputedRef<TokenInfoMap>) =>
     return JSON.stringify(values.map(t => t.symbol));
   });
 
-describe('Tokens provider should', () => {
+describe.skip('Tokens provider should', () => {
   test('provide main tokens', async () => {
     const ComponentUnderTest = {
       setup() {
