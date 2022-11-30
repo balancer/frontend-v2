@@ -92,6 +92,11 @@ export default defineConfig(({ mode }) => {
         'Access-Control-Allow-Headers':
           'X-Requested-With, content-type, Authorization',
       },
+      strictPort: true,
+    },
+    preview: {
+      port: 8080,
+      strictPort: true,
     },
     build: {
       minify: true,
