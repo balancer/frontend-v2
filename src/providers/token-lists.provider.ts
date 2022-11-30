@@ -54,14 +54,14 @@ export default {
     });
 
     const allTokenLists = ref({});
-    const tokenListPath =
+
+    const tokensListPromise =
       import.meta.env.MODE === 'test'
         ? // Only use this file in testing mode (vitest)
-          '@/tests/tokenlists/tokens-5.json'
+          import('@/tests/tokenlists/tokens-5.json')
         : // Use generated file in development/production mode
-          `@/assets/data/tokenlists/tokens-${networkId.value}.json`;
+          import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`);
 
-    const tokensListPromise = import(tokenListPath);
     onBeforeMount(async () => {
       const module = await tokensListPromise;
       allTokenLists.value = module.default;
