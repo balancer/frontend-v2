@@ -166,7 +166,7 @@ const poolPremintedBptIndex = computed(() => {
 });
 
 const showBrandedRedirectCard = computed(() => {
-  return POOLS.BrandedRedirect?.includes(poolId);
+  return POOLS.BrandedRedirect?.includes(poolId) || false;
 });
 
 /**
@@ -206,6 +206,7 @@ watch(poolQuery.error, () => {
           :missingPrices="missingPrices"
           :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
           :isComposableStableLikePool="isComposableStableLikePool"
+          :showBrandedRedirectCard="showBrandedRedirectCard"
         />
         <div class="hidden lg:block" />
         <div class="order-2 lg:order-1 col-span-2">

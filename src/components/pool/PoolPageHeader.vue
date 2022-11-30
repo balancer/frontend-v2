@@ -32,6 +32,7 @@ type Props = {
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
   isComposableStableLikePool: boolean;
+  showBrandedRedirectCard: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -225,7 +226,12 @@ const poolTypeLabel = computed(() => {
       block
     />
     <BalAlert
-      v-if="!appLoading && !loadingPool && hasCustomToken"
+      v-if="
+        !appLoading &&
+        !loadingPool &&
+        hasCustomToken &&
+        !showBrandedRedirectCard
+      "
       type="error"
       :title="$t('highRiskPool')"
       class="mt-2"
