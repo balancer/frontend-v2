@@ -11,6 +11,7 @@
     "serve": "npm run dev",
     "build": "npm run generate:tokenlists && vite build",
     "build:withouttokenlists": "vite build",
+    "build:watch": "vite build --watch",
     "preview": "vite preview",
     "vitest": "vitest",
     "test:unit": "NODE_ENV=test vitest",
