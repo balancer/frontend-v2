@@ -165,7 +165,7 @@ function isActive(network: NetworkOption): boolean {
       >
         <div class="flex items-center">
           <img
-            :src="iconSrc(network)"
+            :src="buildNetworkIconURL(network.id)"
             :alt="network.name"
             class="mr-2 w-6 h-6 rounded-full"
           />
