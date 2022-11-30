@@ -3,7 +3,6 @@ import { Pool } from '@/services/pool/types';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
@@ -17,7 +16,7 @@ interface GeneralisedJoinResponse {
   callData: string;
   minOut: string;
   expectedOut: string;
-  // priceImpact: string;
+  priceImpact: string;
 }
 export class DeepPoolJoinHandler implements JoinPoolHandler {
   private lastGeneralisedJoinRes?: GeneralisedJoinResponse;
@@ -61,7 +60,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     const slippage = slippageBsp.toString();
     const poolId = this.pool.id;
 
-    this.lastGeneralisedJoinRes = await balancer.pools
+    this.lastGeneralisedJoinRes = await this.sdk.pools
       .generalisedJoin(
         poolId,
         tokenAddresses,
@@ -84,11 +83,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
       this.pool.onchain?.decimals || 18
     );
     const priceImpact: number = bnum(
-      formatFixed(
-        // @ts-ignore-next-line -- priceImpact is part of the response, but type is missing
-        this.lastGeneralisedJoinRes.priceImpact,
-        18
-      )
+      formatFixed(this.lastGeneralisedJoinRes.priceImpact, 18)
     ).toNumber();
 
     if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity.');

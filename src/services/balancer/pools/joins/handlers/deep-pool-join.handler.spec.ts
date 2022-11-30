@@ -3,6 +3,7 @@ import useWeb3Mock from '@/services/web3/__mocks__/useWeb3';
 import { formatFixed } from '@ethersproject/bignumber';
 import pool from './__tests__/pool';
 import { bnum } from '@/lib/utils';
+import { balancer } from '@/lib/balancer.sdk';
 
 const expectedOut = '990000000000000000';
 const expectedOutScaled = formatFixed(expectedOut, pool.onchain.decimals);
@@ -31,7 +32,7 @@ describe('DeepPoolJoinHandler', () => {
     const deepPoolJoinHandler = new DeepPoolJoinHandler(
       // @ts-ignore-next-line -- Pool type fields from SDK are wrong?
       pool,
-      undefined,
+      balancer,
       undefined
     );
     const res = await deepPoolJoinHandler.queryJoin({
