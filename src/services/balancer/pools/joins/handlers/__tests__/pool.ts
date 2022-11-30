@@ -1,3 +1,5 @@
+import { Pool } from '@/services/pool/types';
+
 export default {
   id: '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b',
   address: '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085',
@@ -700,4 +702,4 @@ export default {
     min: 1165,
     max: 1165,
   },
-};
+} as unknown as Pool;
