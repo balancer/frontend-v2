@@ -43,7 +43,7 @@ describe('RPC provider service', () => {
     expect(rpcProviderService).toBeTruthy();
   });
 
-  it.only('Calls the JsonProvider constructor', () => {
+  it('Calls the JsonProvider constructor', () => {
     new RpcProviderService();
     // Expect 2 calls since logging provider is also a JSON provider
     expect(MockedStaticJsonRpcBatchProvider).toHaveBeenCalledTimes(2);

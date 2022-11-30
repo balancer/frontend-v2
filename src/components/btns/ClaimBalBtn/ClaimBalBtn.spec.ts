@@ -21,7 +21,7 @@ vi.mock('@/services/balancer/contracts/contracts/balancer-minter');
 
 const mockGaugeAddress = getAddress(gauge.id);
 
-describe.only('ClaimBalBtn', () => {
+describe('ClaimBalBtn', () => {
   describe('When using ClaimBalBtn', () => {
     it('should render props', () => {
       const { getByText } = render(ClaimBalBtn, {

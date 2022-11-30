@@ -6,7 +6,7 @@ import StatCard from './StatCard.vue';
 
 StatCard.components = { BalCard };
 
-describe.only('StatCard', () => {
+describe('StatCard', () => {
   describe('When using StatCard', () => {
     it('should render props', () => {
       const { getByText } = render(StatCard, {

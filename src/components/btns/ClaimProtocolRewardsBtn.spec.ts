@@ -23,7 +23,7 @@ vi.mock('@/services/rpc-provider/rpc-provider.service');
 const mockClaimBalance = vi.fn().mockResolvedValue(txResponseMock);
 const mockClaimBalances = vi.fn().mockResolvedValue(txResponseMock);
 
-describe.only('ClaimProtocolRewardsBtn', () => {
+describe('ClaimProtocolRewardsBtn', () => {
   beforeAll(() => {
     // @ts-ignore
     FeeDistributor.mockImplementation(() => {
