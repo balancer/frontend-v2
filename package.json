@@ -94,6 +94,7 @@
     "json-to-graphql-query": "^2.0.0",
     "lint-staged": "^13.0.3",
     "lodash": "^4.17.21",
+    "mersenne-twister": "^1.1.0",
     "msw": "^0.47.4",
     "node-stdlib-browser": "^1.2.0",
     "nprogress": "^0.2.0",
