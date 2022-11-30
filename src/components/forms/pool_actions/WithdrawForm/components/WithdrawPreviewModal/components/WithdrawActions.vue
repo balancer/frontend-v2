@@ -26,6 +26,8 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 import router from '@/plugins/router';
+import { Goals, trackGoal } from '@/composables/useFathom';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -49,7 +51,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { account, getProvider, blockNumber } = useWeb3();
+const { getSigner, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
@@ -66,6 +68,7 @@ const { networkSlug } = useNetwork();
 const {
   bptIn,
   fiatTotalLabel,
+  fiatTotal,
   amountsOut,
   exactOut,
   singleAssetMaxOut,
@@ -118,6 +121,10 @@ async function handleTransaction(tx): Promise<void> {
 
       const confirmedAt = await getTxConfirmedAt(receipt);
       txState.value.confirmedAt = dateTimeLabelFor(confirmedAt);
+      trackGoal(
+        Goals.Withdrawal,
+        bnum(fiatTotal.value).times(100).toNumber() || 0
+      );
     },
     onTxFailed: () => {
       txState.value.confirming = false;
@@ -146,8 +153,7 @@ async function submit(): Promise<TransactionResponse> {
       );
     } else {
       tx = await poolExchange.exit(
-        getProvider(),
-        account.value,
+        getSigner(),
         amountsOut.value,
         tokensOut.value,
         formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),

@@ -238,18 +238,35 @@ onBeforeMount(async () => {
           <div class="px-4 xl:px-0">
             <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 w-64 h-8" />
             <div v-else class="flex items-center mt-6 mb-2">
-              <BalAsset :address="balToken?.address" />
-              <h3 class="ml-2 text-xl">
-                Balancer (BAL) {{ $t('earnings').toLowerCase() }}
+              <h3 class="inline-block mr-1.5 text-xl">
+                BAL {{ $t('incentives') }}
               </h3>
+              <BalTooltip
+                iconSize="xs"
+                textAlign="left"
+                class="relative top-px"
+                iconClass="text-secondary"
+                width="60"
+              >
+                {{ $t('claimPage.tips.BalIncentives') }}
+              </BalTooltip>
             </div>
           </div>
           <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
         </div>
         <div class="mb-16">
-          <h3 class="px-4 xl:px-0 mt-8 mb-3 text-xl">
-            {{ $t('protocolEarnings') }}
+          <h3 class="inline-block px-4 xl:px-0 mt-8 mr-1.5 mb-3 text-xl">
+            {{ $t('protocolIncentives') }}
           </h3>
+          <BalTooltip
+            iconSize="xs"
+            textAlign="left"
+            class="relative top-px"
+            iconClass="text-secondary"
+            width="60"
+          >
+            {{ $t('claimPage.tips.ProtocolAndVebal') }}
+          </BalTooltip>
           <ProtocolRewardsTable
             :rewardsData="protocolRewardsData"
             :isLoading="loading"
@@ -262,10 +279,20 @@ onBeforeMount(async () => {
           />
         </div>
       </template>
-
-      <h3 v-if="!isL2" class="px-4 xl:px-0 mt-8 text-xl">
-        {{ $t('otherTokenEarnings') }}
-      </h3>
+      <div>
+        <h3 v-if="!isL2" class="inline-block px-4 xl:px-0 mt-8 mr-1.5 text-xl">
+          {{ $t('otherTokenIncentives') }}
+        </h3>
+        <BalTooltip
+          iconSize="xs"
+          textAlign="left"
+          class="relative top-px"
+          iconClass="text-secondary"
+          width="60"
+        >
+          {{ $t('claimPage.tips.OtherIncentives') }}
+        </BalTooltip>
+      </div>
       <BalLoadingBlock v-if="loading" class="mt-6 mb-2 h-56" />
       <template
         v-if="!isClaimsLoading && !appLoading && gaugeTables.length > 0"

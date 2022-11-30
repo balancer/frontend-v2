@@ -59,7 +59,8 @@
     "veBALHelpers": "",
     "feeDistributor": "",
     "feeDistributorDeprecated": "",
-    "faucet": ""
+    "faucet": "",
+    "gaugeRewardsHelper": "0xaEb406b0E430BF5Ea2Dc0B9Fe62E4E53f74B3a33"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

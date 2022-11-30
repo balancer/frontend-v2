@@ -266,6 +266,10 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0x173063a30e095313eee39411f07e95a8a806014e0002000000000000000003ab',
     network: Network.MAINNET,
   },
+  {
+    id: '0x8167a1117691f39e05e9131cfa88f0e3a620e96700020000000000000000038c',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -473,6 +477,10 @@ export const POLYGON_POOLS: Pool[] = [
   },
   {
     id: '0x05f21bacc4fd8590d1eaca9830a64b66a733316c00000000000000000000087e',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x4973f591784d9c94052a6c3ebd553fcd37bb0e5500020000000000000000087f',
     network: Network.POLYGON,
   },
 ];

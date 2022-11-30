@@ -200,7 +200,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
     const { fNum2 } = useNumbers();
-    const { appNetworkConfig } = useWeb3();
+    const { appNetworkConfig, isMismatchedNetwork } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
       tokenInAddress,
@@ -250,12 +250,18 @@ export default defineComponent({
         !dismissedErrors.value.highPriceImpact
     );
     const tradeDisabled = computed(() => {
+      const hasMismatchedNetwork = isMismatchedNetwork.value;
       const hasAmountsError = !tokenInAmount.value || !tokenOutAmount.value;
       const hasGnosisErrors =
         trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
-      return hasAmountsError || hasGnosisErrors || hasBalancerErrors;
+      return (
+        hasAmountsError ||
+        hasGnosisErrors ||
+        hasBalancerErrors ||
+        hasMismatchedNetwork
+      );
     });
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
@@ -273,6 +279,12 @@ export default defineComponent({
       }
     );
     const error = computed(() => {
+      if (isMismatchedNetwork.value) {
+        return {
+          header: t('switchNetwork'),
+          body: t('networkMismatch', [appNetworkConfig.name]),
+        };
+      }
       if (trading.isBalancerTrade.value && !trading.isLoading.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {

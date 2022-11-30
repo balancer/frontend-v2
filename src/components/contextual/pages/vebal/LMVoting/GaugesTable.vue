@@ -17,6 +17,7 @@ import {
   isStableLike,
   isUnknownType,
   orderedPoolTokens,
+  poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { scale } from '@/lib/utils';
@@ -148,11 +149,26 @@ function networkSrc(network: Network) {
   )}.svg`);
 }
 
-function redirectToPool(gauge: VotingGaugeWithVotes) {
-  router.push({
-    name: 'pool',
-    params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
-  });
+function isInternalUrl(url: string): boolean {
+  return url.includes('balancer.fi') || url.includes('localhost');
+}
+
+function redirectToPool(gauge: VotingGaugeWithVotes, inNewTab) {
+  const redirectUrl = poolURLFor(gauge.pool.id, gauge.network);
+  if (!isInternalUrl(redirectUrl)) {
+    window.location.href = redirectUrl;
+  } else {
+    const route = router.resolve({
+      name: 'pool',
+      params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
+    });
+    inNewTab ? window.open(route.href) : router.push(route);
+  }
+}
+
+function getPoolExternalUrl(gauge: VotingGaugeWithVotes) {
+  const poolUrl = poolURLFor(gauge.pool.id, gauge.network);
+  return isInternalUrl(poolUrl) ? null : poolUrl;
 }
 
 function getIsGaugeNew(addedTimestamp: number): boolean {
@@ -191,13 +207,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       sticky="both"
       :square="upToLargeBreakpoint"
       :isPaginated="isPaginated"
-      :link="{
-        to: 'pool',
-        getParams: gauge => ({
-          id: gauge.pool.id || '',
-          networkSlug: getNetworkSlug(gauge.network),
-        }),
-      }"
+      :href="{ getHref: gauge => getPoolExternalUrl(gauge) }"
       :onRowClick="redirectToPool"
       :getTableRowClass="getTableRowClass"
       :initialState="{
