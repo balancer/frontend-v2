@@ -258,7 +258,7 @@ function getFeesData(
       }
       const result = Object.freeze<[string, number]>([
         timestamps.value[idx],
-        value - prevValue,
+        Math.abs(value - prevValue),
       ]);
       return result;
     }
