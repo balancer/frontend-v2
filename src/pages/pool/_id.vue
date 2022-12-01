@@ -25,6 +25,7 @@ import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
+import { captureException } from '@sentry/browser';
 
 /**
  * STATE
@@ -122,6 +123,9 @@ function addIntersectionObserver(): void {
 }
 onMounted(() => {
   addIntersectionObserver();
+  captureException(
+    'DEBUG: manually triggered exception to test vite sentry integration'
+  );
 });
 onBeforeUnmount(() => {
   observer?.disconnect();
