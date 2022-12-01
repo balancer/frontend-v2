@@ -37,6 +37,52 @@ type FilterOptions = {
   pageSize?: number;
 };
 
+const tokenAttrs = {
+  address: true,
+  balance: true,
+  weight: true,
+  priceRate: true,
+  symbol: true,
+  decimals: true,
+};
+
+const poolAttrs = {
+  id: true,
+  totalShares: true,
+  address: true,
+  poolType: true,
+  mainIndex: true,
+};
+
+// Nested token tree attributes, 3 levels deep.
+const tokenTreeAttrs = {
+  ...tokenAttrs,
+  token: {
+    latestUSDPrice: true,
+    pool: {
+      ...poolAttrs,
+      tokens: {
+        ...tokenAttrs,
+        token: {
+          latestUSDPrice: true,
+          pool: {
+            ...poolAttrs,
+            tokens: {
+              ...tokenAttrs,
+              token: {
+                latestUSDPrice: true,
+                pool: {
+                  ...poolAttrs,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
 const queryAttrs = {
   pools: {
     id: true,
@@ -54,14 +100,10 @@ const queryAttrs = {
     amp: true,
     createTime: true,
     swapEnabled: true,
+    symbol: true,
+    name: true,
+    tokens: tokenTreeAttrs,
     isNew: true,
-    tokens: {
-      address: true,
-      balance: true,
-      weight: true,
-      priceRate: true,
-      symbol: true,
-    },
     apr: {
       stakingApr: {
         min: true,
@@ -176,11 +218,7 @@ export default function usePoolsQuery(
         await injectTokens(tokenAddresses);
         await forChange(dynamicDataLoading, false);
 
-        decoratedPools = await poolDecorator.reCalculateTotalLiquidities(
-          prices.value,
-          currency.value,
-          tokenMeta.value
-        );
+        decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
 
         return decoratedPools;
       },

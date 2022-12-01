@@ -46,6 +46,7 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
+  columnStates?: Record<string, string>;
   skeletonClass?: string;
 };
 
@@ -61,6 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
   isPaginated: false,
   hiddenColumns: () => [],
   showBoost: false,
+  columnStates: () => ({}),
   data: () => [],
   selectedTokens: () => [],
   skeletonClass: 'h-64',
@@ -306,7 +308,10 @@ function iconAddresses(pool: PoolWithShares) {
         </div>
       </template>
       <template #volumeCell="pool">
-        <div class="flex justify-end py-4 px-6 -mt-1 font-numeric">
+        <div
+          :key="columnStates.volume"
+          class="flex justify-end py-4 px-6 -mt-1 font-numeric"
+        >
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{

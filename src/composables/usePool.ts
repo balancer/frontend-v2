@@ -291,7 +291,7 @@ export function tokenTreeNodes(
 
   for (const token of tokenTree) {
     addresses.push(token.address);
-    if (token.token.pool?.tokens) {
+    if (token.token?.pool?.tokens) {
       if (
         !options.includeLinearUnwrapped &&
         isLinear(token.token.pool.poolType)
@@ -323,7 +323,7 @@ export function tokenTreeLeafs(
   const addresses: string[] = [];
 
   for (const token of tokenTree) {
-    if (token.token.pool?.tokens) {
+    if (token.token?.pool?.tokens) {
       if (
         !options.includeLinearUnwrapped &&
         isLinear(token.token.pool.poolType)
@@ -335,7 +335,7 @@ export function tokenTreeLeafs(
         const nestedTokens = tokenTreeLeafs(token.token.pool.tokens, options);
         addresses.push(...removeAddress(token.address, nestedTokens));
       }
-    } else if (!token.token.pool?.poolType) {
+    } else if (!token.token?.pool?.poolType) {
       addresses.push(token.address);
     }
   }
@@ -376,7 +376,7 @@ export function flatTokenTree(
       tokens.push(token);
     }
 
-    if (token.token.pool?.tokens) {
+    if (token.token?.pool?.tokens) {
       if (
         !options.includeLinearUnwrapped &&
         isLinear(token.token.pool.poolType)
@@ -417,7 +417,7 @@ export function removeBptFrom(pool: Pool): Pool {
   );
 
   newPool.tokens.forEach(token => {
-    if (token.token.pool) {
+    if (token.token?.pool) {
       removeBptFromTree(token.token.pool);
     }
   });
@@ -432,7 +432,7 @@ export function removeBptFromTree(tree: TokenTreePool) {
     removePremintedToken(tree);
 
     tree.tokens.forEach(token => {
-      if (token.token.pool) {
+      if (token.token?.pool) {
         removeBptFromTree(token.token.pool);
       }
     });
@@ -527,7 +527,7 @@ export function findTokenByAddress(pool: Pool, address: string) {
 export function getUnderlyingTokens(pool: Pool, address: string) {
   const token = findTokenByAddress(pool, address);
 
-  const underlyingTokens = token?.token.pool?.tokens || [];
+  const underlyingTokens = token?.token?.pool?.tokens || [];
   return underlyingTokens.filter(
     token => !includesAddress(pool.tokensList, token.address)
   );
@@ -540,7 +540,7 @@ export function calculateTokenBPTShareByAddress(
   const token = findTokenByAddress(pool, address);
   if (!token) return '0';
   return bnum(token?.balance || '0')
-    .div(token.token.pool?.totalShares || 1)
+    .div(token.token?.pool?.totalShares || 1)
     .toString();
 }
 
