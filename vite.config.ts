@@ -12,16 +12,7 @@ import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-//TODO: check how this is used
-process.VITE_APP_VERSION = pkgVersion;
-if (process.env.NODE_ENV === 'production') {
-  process.VITE_APP_BUILD_EPOCH = new Date().getTime().toString();
-}
-
 export default defineConfig(({ mode }) => {
-  // balancer-labs-SDK SOR expects this env
-  // process.env = PRICE_ERROR_TOLERANCE = null;
-
   const plugins = [
     vue(),
     // Type assertion to avoid TS errors in defineConfig
@@ -39,6 +30,7 @@ export default defineConfig(({ mode }) => {
     Components({
       dirs: ['src/components/_global/**'],
       extensions: ['vue'],
+
       dts: true,
     }),
   ];
@@ -96,6 +88,7 @@ export default defineConfig(({ mode }) => {
     },
     preview: {
       port: 8080,
+      host: 'localhost',
       strictPort: true,
     },
     build: {
