@@ -378,6 +378,7 @@
   "fundPool": "Fund pool",
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
   "forum": "Forum",
+  "fx": "Fx",
   "getLpTokens": "Get LP tokens",
   "gnosisErrors": {
     "lowAmount": {
