@@ -17,7 +17,7 @@ import useMyWalletTokens from '@/composables/useMyWalletTokens';
 type Props = {
   excludedTokens?: string[];
   // If pool prop is provided, Tokens are grouped into:
-  // 'Pool tokens in wallet' or 'Other tokens in wallet'
+  // 'Pool tokens in wallet' and 'Other tokens in wallet'
   pool?: AnyPool;
   includeNativeAsset?: boolean;
 };
@@ -117,7 +117,7 @@ const emit = defineEmits<{
         <div v-else-if="isWalletReady">
           <template v-if="pool">
             <MyWalletSubheader v-if="isDeepPool" class="border-b">
-              Pool tokens (lowest price impact)
+              {{ t('myWalletCard.title.poolTokens') }}
             </MyWalletSubheader>
             <div class="mt-5">
               <BalAssetSet
@@ -136,7 +136,7 @@ const emit = defineEmits<{
             </div>
             <template v-if="isDeepPool">
               <MyWalletSubheader class="my-5 border-t border-b">
-                Other tokens (higher price impact)
+                {{ t('myWalletCard.title.otherTokens') }}
               </MyWalletSubheader>
               <BalAssetSet
                 :balAssetProps="{ button: true }"
@@ -170,7 +170,7 @@ const emit = defineEmits<{
         </div>
         <div v-else class="flex mt-4 lg:mt-0 w-full font-medium">
           <BalLink @click="startConnectWithInjectedProvider">
-            Connect your wallet
+            {{ t('connectYourWallet') }}
           </BalLink>
         </div>
       </div>

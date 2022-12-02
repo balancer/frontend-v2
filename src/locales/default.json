@@ -447,6 +447,7 @@
       }
     },
     "warning": {
+      "noBalanceSomeTokens": "No wallet balance for some pool tokens",
       "managedPoolTradingHalted": {
         "description": "A swapping halt has been issued by the manager of this pool. For your safety, while the swapping halt is in effect, you may only add liquidity in proportional amounts.",
         "title": "Swapping halted - proportional liquidity provision only"
@@ -1433,5 +1434,11 @@
     "immutable": "This pool is immutable. No attributes can ever be changed.",
     "immutableFeesEditableByGovernance": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance.",
     "immutableFeesEditableByOwner": "The attributes of this pool are immutable, except for swap fees which can be edited by the Pool Owner."
+  },
+  "myWalletCard": {
+    "title": {
+      "poolTokens": "Pool tokens (lowest price impact)",
+      "otherTokens": "Other tokens (higher price impact)"
+    }
   }
 }
