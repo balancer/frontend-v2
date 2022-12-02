@@ -79,7 +79,7 @@ function navigateToPoolMigration(pool: Pool) {
         <h5>
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h5>
-        <h5>
+        <h5 class="text-2xl">
           {{ isWalletReady ? fNum2(fiatValue, FNumFormats.fiat) : '-' }}
         </h5>
       </div>
