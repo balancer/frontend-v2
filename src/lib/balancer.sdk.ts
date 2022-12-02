@@ -34,4 +34,4 @@ export async function fetchPoolsForSor() {
   console.timeEnd('fetchPoolsForSor');
 }
 
-fetchPoolsForSor();
+if (process.env.NODE_ENV !== 'test') fetchPoolsForSor();
