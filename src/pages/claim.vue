@@ -232,8 +232,6 @@ watch(gaugePools, async newPools => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  throw new Error('Error to debug sentry integration');
-  // eslint-disable-next-line
   if (!isL2.value) await getBBaUSDPrice();
 });
 </script>
