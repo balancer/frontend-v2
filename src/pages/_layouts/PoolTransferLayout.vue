@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-
-import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
+import { computed } from 'vue';
 // Components
-import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
-import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
-import Col3Layout from '@/components/layouts/Col3Layout.vue';
+import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
+import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 import useNetwork from '@/composables/useNetwork';
 // Composables
+import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useReturnRoute } from '@/composables/useReturnRoute';
 import StakingProvider from '@/providers/local/staking/staking.provider';
+import { usePool } from '@/composables/usePool';
+import useNativeBalance from '@/composables/useNativeBalance';
+import useTokens from '@/composables/useTokens';
+import {
+  // indexOfAddress,
+  isSameAddress,
+} from '@/lib/utils';
 
 /**
  * STATE
@@ -23,12 +29,46 @@ const id = (route.params.id as string).toLowerCase();
 /**
  * COMPOSABLES
  */
+const {
+  tokenAddresses,
+  // amounts
+} = useInvestState();
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 usePoolTransfersGuard();
+const { isDeepPool, isWethPool } = usePool(pool);
+const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
+
+const isInvestPage = computed(() => route.name === 'invest');
+const poolSupportsSingleAssetSwaps = computed(() => {
+  return pool.value && isDeepPool.value;
+});
+const excludedTokens = computed<string[]>(() => {
+  return pool.value?.address ? [pool.value.address] : [];
+});
+const {
+  nativeAsset,
+  //  getMaxBalanceFor
+} = useTokens();
+
+function handleMyWalletTokenClick(tokenAddress: string) {
+  if (isInvestPage.value && poolSupportsSingleAssetSwaps.value) {
+    // TODO: Only change the tokenAddress if single asset tab is selected
+    tokenAddresses.value[0] = tokenAddress;
+  } else if (isWethPool.value) {
+    useNativeAsset.value = isSameAddress(tokenAddress, nativeAsset.address);
+  }
+  //  Max the input amount (ENABLE LATER)
+
+  //  const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
+
+  //  if (indexOfAsset >= 0) {
+  //    amounts.value[indexOfAsset] = getMaxBalanceFor(tokenAddress);
+  //   }
+}
 </script>
 
 <template>
@@ -45,33 +85,40 @@ usePoolTransfersGuard();
           <BalIcon name="x" size="lg" />
         </BalBtn>
       </div>
-
-      <Col3Layout offsetGutters mobileHideGutters>
-        <template v-if="!upToLargeBreakpoint" #gutterLeft>
+      <div class="pool-transfer-layout-grid">
+        <div v-if="!upToLargeBreakpoint" class="col-span-5">
           <BalLoadingBlock
             v-if="loadingPool || !transfersAllowed || !pool"
             class="h-64"
           />
-          <MyWalletTokensCard
-            v-else
-            v-model:useNativeAsset="useNativeAsset"
-            :pool="pool"
-          />
-        </template>
+          <div v-else>
+            <MyWallet
+              includeNativeAsset
+              :excludedTokens="excludedTokens"
+              :pool="pool"
+              @click:asset="handleMyWalletTokenClick"
+            />
+          </div>
+        </div>
 
-        <router-view :key="$route.path" />
+        <div class="col-span-7">
+          <router-view :key="$route.path" />
+        </div>
 
         <BalAccordion
           v-if="upToLargeBreakpoint"
           class="mt-4"
           :sections="[
             {
-              title: $t('poolTransfer.myWalletTokensCard.title'),
+              title:
+                isInvestPage && poolSupportsSingleAssetSwaps
+                  ? `${$t('myWallet2')} ${
+                      hasNativeBalance
+                        ? `${nativeBalance} ${nativeCurrency}`
+                        : ''
+                    }`
+                  : $t('poolTransfer.myWalletTokensCard.title'),
               id: 'myWalletTokens',
-            },
-            {
-              title: $t('poolTransfer.myPoolBalancesCard.title'),
-              id: 'myPoolBalances',
             },
           ]"
         >
@@ -81,38 +128,17 @@ usePoolTransfersGuard();
               v-if="loadingPool || !pool || !transfersAllowed"
               class="h-64"
             />
-            <MyWalletTokensCard
-              v-else
-              v-model:useNativeAsset="useNativeAsset"
-              :pool="pool"
-              hideHeader
-              noBorder
-              square
-            />
-          </template>
-          <template #myPoolBalances>
-            <BalLoadingBlock
-              v-if="loadingPool || !pool || !transfersAllowed"
-              class="h-64"
-            />
-            <MyPoolBalancesCard
-              v-else
-              :pool="pool"
-              hideHeader
-              noBorder
-              square
-            />
+            <div v-else>
+              <MyWallet
+                includeNativeAsset
+                :excludedTokens="excludedTokens"
+                :pool="pool"
+                @click:asset="handleMyWalletTokenClick"
+              />
+            </div>
           </template>
         </BalAccordion>
-
-        <template v-if="!upToLargeBreakpoint" #gutterRight>
-          <BalLoadingBlock
-            v-if="loadingPool || !pool || !transfersAllowed"
-            class="h-64"
-          />
-          <MyPoolBalancesCard v-else :pool="pool" />
-        </template>
-      </Col3Layout>
+      </div>
     </div>
   </StakingProvider>
 </template>
@@ -122,5 +148,10 @@ usePoolTransfersGuard();
   @apply h-16;
   @apply px-4 lg:px-6;
   @apply flex items-center justify-between;
+}
+
+.pool-transfer-layout-grid {
+  @apply grid grid-cols-1 lg:grid-cols-12 gap-y-8;
+  @apply max-w-3xl mx-auto sm:px-4 lg:px-0 gap-x-0 lg:gap-x-8;
 }
 </style>

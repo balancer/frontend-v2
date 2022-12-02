@@ -12,7 +12,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import useWithdrawalState from '../../composables/useWithdrawalState';
 // Types
 import { WithdrawMathResponse } from '../../composables/useWithdrawMath';
-import TokenAmounts from './components/TokenAmounts.vue';
+import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
 import WithdrawActions from './components/WithdrawActions.vue';
 // Components
 import WithdrawSummary from './components/WithdrawSummary.vue';

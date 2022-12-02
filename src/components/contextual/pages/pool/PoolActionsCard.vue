@@ -3,7 +3,7 @@ import { computed, toRef } from 'vue';
 
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { lpTokensFor, usePool } from '@/composables/usePool';
+import { tokenTreeLeafs, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useNetwork from '@/composables/useNetwork';
 import { bnum, isSameAddress } from '@/lib/utils';
@@ -41,7 +41,7 @@ const { networkSlug } = useNetwork();
  * COMPUTED
  */
 const fiatTotal = computed(() => {
-  const fiatValue = lpTokensFor(props.pool)
+  const fiatValue = tokenTreeLeafs(props.pool.tokens)
     .map(address => {
       let tokenBalance = '0';
 

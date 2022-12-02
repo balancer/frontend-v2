@@ -14,5 +14,8 @@ export default function useWeb3Mock() {
       value: AddressZero,
     },
     isWalletReady: () => true,
+    explorerLinks: {
+      addressLink: (address: string) => `$test-explorer/address/${address}`,
+    },
   };
 }

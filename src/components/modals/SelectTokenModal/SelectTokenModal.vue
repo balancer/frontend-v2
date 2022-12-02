@@ -14,15 +14,21 @@ import Search from './Search.vue';
 interface Props {
   open?: boolean;
   excludedTokens?: string[];
+  subset?: string[];
   includeEther?: boolean;
   disableInjection?: boolean;
+  hideTokenLists?: boolean;
+  ignoreBalances?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   open: false,
   excludedTokens: () => [],
+  subset: () => [],
   includeEther: false,
   disableInjection: false,
+  hideTokenLists: false,
+  ignoreBalances: false,
 });
 
 const emit = defineEmits(['close', 'selectTokenlist', 'select']);
@@ -91,7 +97,8 @@ const tokens = computed(() => {
     };
   });
 
-  return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
+  if (props.ignoreBalances) return tokensWithValues;
+  else return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
 });
 
 const excludedTokens = computed(() => [
@@ -113,11 +120,11 @@ async function onSelectToken(token: string): Promise<void> {
 
 async function onToggleList(uri: string): Promise<void> {
   toggleTokenList(uri);
-  state.results = await searchTokens(
-    state.query,
-    excludedTokens.value,
-    props.disableInjection
-  );
+  state.results = await searchTokens(state.query, {
+    excluded: excludedTokens.value,
+    disableInjection: props.disableInjection,
+    subset: props.subset,
+  });
 }
 
 function onListExit(): void {
@@ -137,11 +144,11 @@ watch(
   toRef(state, 'query'),
   async newQuery => {
     state.loading = true;
-    state.results = await searchTokens(
-      newQuery,
-      excludedTokens.value,
-      props.disableInjection
-    ).finally(() => {
+    state.results = await searchTokens(newQuery, {
+      excluded: excludedTokens.value,
+      disableInjection: props.disableInjection,
+      subset: props.subset,
+    }).finally(() => {
       state.loading = false;
     });
   },
@@ -168,7 +175,7 @@ watch(
           <h5>{{ title }}</h5>
         </div>
         <div
-          v-if="!state.selectTokenList"
+          v-if="!state.selectTokenList && !hideTokenLists"
           class="group flex items-center cursor-pointer"
           @click="toggleSelectTokenList"
         >
@@ -239,6 +246,7 @@ watch(
           <a @click="onSelectToken(token.address)">
             <TokenListItem
               :token="token"
+              :hideBalance="ignoreBalances"
               :balanceLoading="dynamicDataLoading"
             />
           </a>
