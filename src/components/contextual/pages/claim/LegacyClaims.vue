@@ -94,13 +94,9 @@ const legacyClaimUI = computed(() => {
   return [];
 });
 
-const userClaims = computed(() => {
-  console.log('Forcing error to debug sentry integration');
-  // @ts-ignore
-  // eslint-disable-next-line
-  foo.bar;
-  return userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null;
-});
+const userClaims = computed(() =>
+  userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null
+);
 
 const claimableTokens = computed<ClaimableToken[]>(() => {
   if (
