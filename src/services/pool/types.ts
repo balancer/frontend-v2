@@ -15,7 +15,6 @@ export interface Pool extends SDKPool {
   priceRateProviders?: PriceRateProvider[];
 }
 
-// PoolToken data from onchain call
 export interface RawPoolTokens {
   balances: BigNumber[];
   lastChangeBlock: BigNumber;

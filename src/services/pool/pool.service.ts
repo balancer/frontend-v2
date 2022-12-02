@@ -13,20 +13,16 @@ import {
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
-import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
 import { balancer } from '@/lib/balancer.sdk';
 import { Pool as SDKPool } from '@balancer-labs/sdk';
+import { captureException } from '@sentry/browser';
 
 export default class PoolService {
-  constructor(
-    public pool: Pool,
-    public liquidity = LiquidityConcern,
-    public apr = AprConcern
-  ) {
+  constructor(public pool: Pool, public liquidity = LiquidityConcern) {
     this.format();
   }
 
@@ -48,25 +44,40 @@ export default class PoolService {
    * @summary Calculates and sets total liquidity of pool.
    */
   public async setTotalLiquidity(): Promise<string> {
-    const totalLiquidity = await balancer.pools.liquidity(
-      this.pool as unknown as SDKPool
-    );
-    // if totalLiquidity can be computed from coingecko prices, use that
-    // else, use the value retrieved from the subgraph
-    if (bnum(totalLiquidity).gt(0)) {
-      this.pool.totalLiquidity = totalLiquidity;
+    let totalLiquidity = this.pool.totalLiquidity;
+
+    try {
+      const sdkTotalLiquidity = await balancer.pools.liquidity(
+        this.pool as unknown as SDKPool
+      );
+      // if totalLiquidity can be computed from coingecko prices, use that
+      // else, use the value retrieved from the subgraph
+      if (bnum(totalLiquidity).gt(0)) {
+        totalLiquidity = sdkTotalLiquidity;
+      }
+    } catch (error) {
+      captureException(error);
+      console.error(`Failed to calc liqudity for: ${this.pool.id}`, error);
     }
-    return this.pool.totalLiquidity;
+
+    return (this.pool.totalLiquidity = totalLiquidity);
   }
 
   /**
    * @summary Calculates APRs for pool.
    */
   public async setAPR(): Promise<AprBreakdown> {
-    const aprConcern = new this.apr(this.pool);
-    const apr = await aprConcern.calc();
+    let apr = this.pool.apr;
 
-    return (this.pool.apr = apr);
+    try {
+      const sdkApr = await balancer.pools.apr(this.pool);
+      if (sdkApr) apr = sdkApr;
+    } catch (error) {
+      captureException(error);
+      console.error(`Failed to calc APR for: ${this.pool.id}`, error);
+    }
+
+    return (this.pool.apr = apr as AprBreakdown);
   }
 
   /**

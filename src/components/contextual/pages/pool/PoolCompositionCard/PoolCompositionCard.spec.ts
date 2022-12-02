@@ -22,14 +22,14 @@ function renderComponent() {
 }
 
 describe('Given a boosted pool with a deep bb-a-DAI linear token, should render correct balance and fiat', () => {
-  it('for wrapped tokens (aUSDT)', async () => {
+  it.only('for wrapped tokens (aUSDT)', async () => {
     renderComponent();
     const aUSDT = await screen.findByRole('link', {
       name: /aUSDT/i,
     });
     const aUSDTContainer = within(aUSDT.parentElement as HTMLElement);
     await aUSDTContainer.findByText('16,616');
-    await aUSDTContainer.findByText('$48,191,305');
+    await aUSDTContainer.findByText('$33,232');
   });
 
   it('for a non wrapped token (DAI)', async () => {
@@ -39,6 +39,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, should render 
 
     const aUSDTContainer = within(dai[1].parentElement as HTMLElement);
     await aUSDTContainer.findByText('24,104');
-    await aUSDTContainer.findByText('$51,621,291');
+    console.log(aUSDTContainer);
+    await aUSDTContainer.findByText('$48,209');
   });
 });

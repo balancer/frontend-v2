@@ -199,15 +199,23 @@ export default {
      * The prices, balances and allowances maps provide dynamic
      * metadata for each token in the tokens state array.
      ****************************************************************/
+    const pricesQueryEnabled = computed(() => !state.loading);
+
     const {
       data: priceData,
       isSuccess: priceQuerySuccess,
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices,
-    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
-      keepPreviousData: true,
-    });
+    } = useTokenPricesQuery(
+      tokenAddresses,
+      toRef(state, 'injectedPrices'),
+      pricesQueryEnabled,
+      {
+        keepPreviousData: true,
+        refetchOnWindowFocus: false,
+      }
+    );
 
     const {
       data: balanceData,

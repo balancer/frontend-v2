@@ -92,7 +92,6 @@ const totalLabel = computed((): string =>
         </div>
 
         <!-- VeBal APR -->
-
         <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.protocolApr || 0" />
 
         <!-- YIELD APR BREAKDOWN -->

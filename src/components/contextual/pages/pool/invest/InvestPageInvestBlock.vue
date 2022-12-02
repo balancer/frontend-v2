@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, onMounted } from 'vue';
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
@@ -18,12 +18,14 @@ import useInvestPageTabs, { tabs } from '@/composables/pools/useInvestPageTabs';
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { sor, sorReady } = useInvestState();
-const { activeTab } = useInvestPageTabs();
-const { isDeepPool } = usePool(pool);
+const { activeTab, resetTabs } = useInvestPageTabs();
+const { isDeepPool, isPreMintedBptPool } = usePool(pool);
 
 /**
  * CALLBACKS
  */
+onMounted(() => resetTabs());
+
 onBeforeMount(async () => {
   await forChange(loadingPool, false);
 
@@ -48,11 +50,11 @@ onBeforeMount(async () => {
           {{ network.chainName }}
         </div>
         <div class="flex justify-between items-center">
-          <h4>{{ $t('joinPool') }}</h4>
+          <h4>{{ $t('addLiquidity') }}</h4>
           <TradeSettingsPopover :context="TradeSettingsContext.invest" />
         </div>
         <BalTabs
-          v-if="isDeepPool"
+          v-if="isDeepPool && isPreMintedBptPool"
           v-model="activeTab"
           :tabs="tabs"
           class="p-0 m-0 -mb-px whitespace-nowrap"

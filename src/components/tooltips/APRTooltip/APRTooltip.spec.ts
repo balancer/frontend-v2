@@ -65,7 +65,6 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         id: POOLS.IdsMap?.veBAL || '',
       };
-      console.log('POOL ID: ', poolMock.id);
       const { getByTestId } = render(APRTooltip, {
         props: {
           pool: poolMock,
@@ -75,7 +74,7 @@ describe('APRTooltip', () => {
       expect(getByTestId('total-apr').textContent).toBe(
         'Total APR0.78% - 1.95%'
       );
-      expect(getByTestId('protocol-apr').textContent).toContain(
+      expect(getByTestId('vebal-apr').textContent).toContain(
         '1.17% Max locking/veBAL APR'
       );
     });
@@ -291,12 +290,9 @@ describe('APRTooltip', () => {
         min: 595,
         max: 1446,
       };
-      const poolMock: Pool = {
-        ...EmptyPoolMock,
-      };
       const { getByTestId } = render(APRTooltip, {
         props: {
-          pool: poolMock,
+          pool: EmptyPoolMock,
           poolApr: aprBreakdown,
         },
       });
@@ -318,23 +314,21 @@ describe('APRTooltip', () => {
     });
 
     it('Should show veBAL staking rewards as a line item for pools that contain the 80/20 veBAL pool', () => {
+      const veBalPoolAddress = POOLS.IdsMap?.veBAL?.slice(0, 42) || '';
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
         tokenAprs: {
           total: 17,
           breakdown: {
-            '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56': 17,
+            [veBalPoolAddress]: 17,
           },
         },
         min: 17,
         max: 17,
       };
-      const poolMock: Pool = {
-        ...EmptyPoolMock,
-      };
       const { getByTestId } = render(APRTooltip, {
         props: {
-          pool: poolMock,
+          pool: EmptyPoolMock,
           poolApr: aprBreakdown,
         },
       });

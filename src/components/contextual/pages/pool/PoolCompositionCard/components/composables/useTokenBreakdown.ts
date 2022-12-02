@@ -43,11 +43,11 @@ export function useTokenBreakdown(
   const fiatLabel = computed(() => {
     if (isParentTokenInDeepPool.value) return '';
 
-    let fiatValue = toFiat(token.value.balance, token.value.address);
+    let fiatValue = toFiat(balance.value, token.value.address);
 
     if (fiatValue === '0' && token.value.token?.latestUSDPrice) {
       // Attempt to use latest USD price from subgraph.
-      fiatValue = bnum(token.value.balance)
+      fiatValue = bnum(balance.value)
         .times(token.value.token.latestUSDPrice)
         .toString();
     }

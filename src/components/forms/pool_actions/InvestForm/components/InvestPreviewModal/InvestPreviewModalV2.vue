@@ -59,6 +59,7 @@ const {
   isLoadingQuery,
   txInProgress,
   queryJoinQuery,
+  missingPricesIn,
   resetAmounts,
 } = useJoinPool();
 
@@ -134,6 +135,7 @@ const fiatTotalOut = computed((): string =>
 function handleClose(): void {
   if (investmentConfirmed.value) {
     resetAmounts();
+    investmentConfirmed.value = false;
   }
   emit('close');
 }
@@ -197,9 +199,17 @@ useIntervalFn(() => {
       hideAmountShare
     />
 
+    <BalAlert
+      v-if="missingPricesIn"
+      type="warning"
+      :title="$t('noPriceInfo')"
+      class="mt-4"
+      block
+    />
+
     <InvestSummary
       :pool="pool"
-      :fiatTotal="fiatValueIn"
+      :fiatTotal="missingPricesIn ? '-' : fiatValueIn"
       :priceImpact="priceImpact"
       :highPriceImpact="highPriceImpact"
     />

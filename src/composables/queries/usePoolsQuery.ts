@@ -9,8 +9,6 @@ import { Pool } from '@/services/pool/types';
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
 import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
-import useGaugesQuery from './useGaugesQuery';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,
@@ -23,7 +21,6 @@ import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
 import { extractTokenAddresses } from '../usePool';
 import { forChange } from '@/lib/utils';
-import { isQueryLoading } from './useQueryHelpers';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -133,19 +130,9 @@ export default function usePoolsQuery(
   /**
    * COMPOSABLES
    */
-  const {
-    injectTokens,
-    prices,
-    tokens: tokenMeta,
-    dynamicDataLoading,
-  } = useTokens();
-  const { currency } = useUserSettings();
+  const { injectTokens, tokens: tokenMeta, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
-  const gaugesQuery = useGaugesQuery();
-  const gaugeAddresses = computed(() =>
-    (gaugesQuery.data.value || []).map(gauge => gauge.id)
-  );
 
   let balancerApiRepository = initializeDecoratedAPIRepository();
   let subgraphRepository = initializeDecoratedSubgraphRepository();
@@ -154,9 +141,7 @@ export default function usePoolsQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(
-    () => !appLoading.value && !isQueryLoading(gaugesQuery)
-  );
+  const enabled = computed(() => !appLoading.value);
 
   /**
    * METHODS
@@ -207,12 +192,7 @@ export default function usePoolsQuery(
         const pools = await subgraphRepository.fetch(options);
 
         const poolDecorator = new PoolDecorator(pools);
-        let decoratedPools = await poolDecorator.decorate(
-          gaugesQuery.data.value || [],
-          prices.value,
-          currency.value,
-          tokenMeta.value
-        );
+        let decoratedPools = await poolDecorator.decorate(tokenMeta.value);
 
         const tokenAddresses = flatten(pools.map(extractTokenAddresses));
         await injectTokens(tokenAddresses);
@@ -293,8 +273,7 @@ export default function usePoolsQuery(
     networkId,
     filterTokens,
     filterOptions?.poolIds,
-    filterOptions?.poolAddresses,
-    gaugeAddresses
+    filterOptions?.poolAddresses
   );
 
   /**

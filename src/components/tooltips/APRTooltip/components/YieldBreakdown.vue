@@ -6,7 +6,11 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
-import { isBoostedPool, isDeep, isVeBalAddress } from '@/composables/usePool';
+import {
+  isBoostedPool,
+  isDeep,
+  isVeBalPoolAddress,
+} from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { includesAddress } from '@/lib/utils';
@@ -54,7 +58,7 @@ const yieldAPRLabel = computed(() => {
   if (yieldTokensList.length === 1) {
     if (isBoostedPool(yieldTokensList[0]))
       return t('yieldAprRewards.apr.boosted');
-    if (isVeBalAddress(yieldTokensList[0]))
+    if (isVeBalPoolAddress(yieldTokensList[0]))
       return t('yieldAprRewards.apr.veBAL');
   }
 
@@ -74,9 +78,7 @@ const yieldBreakdownItems = computed((): [string, number][] =>
     >
       <div class="flex items-center">
         {{ fNum2(bpToDec(yieldAPR.total), FNumFormats.percent) }}
-        <span class="ml-1 text-xs text-secondary">
-          {{ yieldAPRLabel }}
-        </span>
+        <span class="ml-1 text-xs text-secondary"> {{ yieldAPRLabel }} </span>
       </div>
       <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
         {{ fNum2(bpToDec(amount), FNumFormats.percent) }}

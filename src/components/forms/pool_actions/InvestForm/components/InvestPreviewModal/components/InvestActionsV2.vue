@@ -3,7 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, ref, toRef } from 'vue';
+import { computed, onUnmounted, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
@@ -54,6 +54,7 @@ const {
   fiatValueOut,
   join,
   txState,
+  resetTxState,
   approvalActions: joinPoolApprovalActions,
 } = useJoinPool();
 
@@ -126,6 +127,11 @@ async function handleTransaction(tx): Promise<void> {
     },
   });
 }
+
+onUnmounted(() => {
+  // Reset tx state after Invest Modal is closed. Ready for another Invest transaction
+  resetTxState();
+});
 
 async function submit(): Promise<TransactionResponse> {
   txState.init = true;

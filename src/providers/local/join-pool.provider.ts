@@ -37,6 +37,8 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 import { useQuery } from 'vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { captureException } from '@sentry/browser';
+import debounce from 'debounce-promise';
 
 /**
  * TYPES
@@ -70,6 +72,8 @@ const provider = (props: Props) => {
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
 
+  const debounceQueryJoin = debounce(queryJoin, 1000, { leading: true });
+
   const queryEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
   );
@@ -83,7 +87,7 @@ const provider = (props: Props) => {
       hasFetchedPoolsForSor,
       isSingleAssetJoin
     ),
-    queryJoin,
+    debounceQueryJoin,
     reactive({ enabled: queryEnabled })
   );
 
@@ -95,11 +99,11 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { getTokens, prices, injectTokens } = useTokens();
+  const { getTokens, prices, injectTokens, priceFor } = useTokens();
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const { txState, txInProgress } = useTxState();
+  const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
   const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
     Relayer.BATCH_V4
@@ -153,10 +157,23 @@ const provider = (props: Props) => {
     amountsIn.value.some(amountIn => bnum(amountIn.value).gt(0))
   );
 
+  // amountsIn with value greater than 0.
+  const amountsInWithValue = computed((): AmountIn[] =>
+    amountsIn.value.filter(amountIn => bnum(amountIn.value).gt(0))
+  );
+
+  // If we don't have price for an amountIn that has a value greater than 0.
+  const missingPricesIn = computed(
+    (): boolean =>
+      !amountsInWithValue.value.every(amountIn =>
+        bnum(priceFor(amountIn.address)).gt(0)
+      )
+  );
+
   // Calculates total fiat value in for all amountsIn with Coingecko prices.
   const fiatValueIn = computed((): string => {
     const fiatValuesIn = amountsIn.value.map(amountIn =>
-      toFiat(amountIn.value, amountIn.address)
+      toFiat(amountIn.value || 0, amountIn.address)
     );
     return bnSum(fiatValuesIn).toString();
   });
@@ -227,6 +244,7 @@ const provider = (props: Props) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
+    queryJoinQuery.remove.value();
   }
 
   /**
@@ -235,21 +253,28 @@ const provider = (props: Props) => {
   async function queryJoin() {
     // If form is empty or inputs are not valid, clear the price impact and
     // return early
-    if (!hasAmountsIn.value || !hasValidInputs.value) {
+    if (!hasAmountsIn.value) {
       priceImpact.value = 0;
       return;
     }
 
-    const output = await joinPoolService.queryJoin({
-      amountsIn: amountsIn.value,
-      tokensIn: tokensIn.value,
-      prices: prices.value,
-      signer: getSigner(),
-      slippageBsp: slippageBsp.value,
-    });
+    try {
+      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
 
-    bptOut.value = output.bptOut;
-    priceImpact.value = output.priceImpact;
+      const output = await joinPoolService.queryJoin({
+        amountsIn: amountsInWithValue.value,
+        tokensIn: tokensIn.value,
+        prices: prices.value,
+        signer: getSigner(),
+        slippageBsp: slippageBsp.value,
+      });
+
+      bptOut.value = output.bptOut;
+      priceImpact.value = output.priceImpact;
+    } catch (error) {
+      captureException(error);
+      throw error;
+    }
   }
 
   /**
@@ -258,8 +283,10 @@ const provider = (props: Props) => {
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
+      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+
       return joinPoolService.join({
-        amountsIn: amountsIn.value,
+        amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
         prices: prices.value,
         signer: getSigner(),
@@ -321,12 +348,14 @@ const provider = (props: Props) => {
     txState,
     txInProgress,
     approvalActions,
+    missingPricesIn,
 
     // Methods
     setAmountsIn,
     addTokensIn,
     resetAmounts,
     join,
+    resetTxState,
 
     // queries
     queryJoinQuery,

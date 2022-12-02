@@ -44,6 +44,7 @@ import {
 } from 'vue';
 import { useQuery } from 'vue-query';
 import debounce from 'debounce-promise';
+import { captureException } from '@sentry/browser';
 
 /**
  * TYPES
@@ -309,23 +310,28 @@ const provider = (props: Props) => {
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
 
-    const output = await exitPoolService.queryExit({
-      exitType: exitType.value,
-      bptIn: _bptIn.value,
-      amountsOut: amountsOut.value,
-      signer: getSigner(),
-      slippageBsp: slippageBsp.value,
-      tokenInfo: exitTokenInfo.value,
-      prices: prices.value,
-    });
+    try {
+      const output = await exitPoolService.queryExit({
+        exitType: exitType.value,
+        bptIn: _bptIn.value,
+        amountsOut: amountsOut.value,
+        signer: getSigner(),
+        slippageBsp: slippageBsp.value,
+        tokenInfo: exitTokenInfo.value,
+        prices: prices.value,
+      });
 
-    priceImpact.value = output.priceImpact;
-    propAmountsOut.value = Object.keys(output.amountsOut).map(address => ({
-      address,
-      value: output.amountsOut[address],
-      max: '',
-      valid: true,
-    }));
+      priceImpact.value = output.priceImpact;
+      propAmountsOut.value = Object.keys(output.amountsOut).map(address => ({
+        address,
+        value: output.amountsOut[address],
+        max: '',
+        valid: true,
+      }));
+    } catch (error) {
+      captureException(error);
+      throw error;
+    }
   }
 
   /**
@@ -338,18 +344,23 @@ const provider = (props: Props) => {
     exitPoolService.setExitHandler(isSingleAssetExit.value);
     singleAmountOut.max = '';
 
-    const output = await exitPoolService.queryExit({
-      exitType: ExitType.GivenIn,
-      bptIn: bptBalance.value,
-      amountsOut: [singleAmountOut],
-      signer: getSigner(),
-      slippageBsp: slippageBsp.value,
-      tokenInfo: exitTokenInfo.value,
-      prices: prices.value,
-      relayerSignature: '',
-    });
+    try {
+      const output = await exitPoolService.queryExit({
+        exitType: ExitType.GivenIn,
+        bptIn: bptBalance.value,
+        amountsOut: [singleAmountOut],
+        signer: getSigner(),
+        slippageBsp: slippageBsp.value,
+        tokenInfo: exitTokenInfo.value,
+        prices: prices.value,
+        relayerSignature: '',
+      });
 
-    singleAmountOut.max = output.amountsOut[singleAmountOut.address];
+      singleAmountOut.max = output.amountsOut[singleAmountOut.address];
+    } catch (error) {
+      captureException(error);
+      throw error;
+    }
   }
 
   /**

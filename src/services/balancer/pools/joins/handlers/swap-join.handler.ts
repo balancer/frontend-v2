@@ -1,13 +1,21 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
+import { POOLS } from '@/constants/pools';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
+import { AmountIn } from '@/providers/local/join-pool.provider';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import {
+  TransactionRequest,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { parseUnits } from 'ethers/lib/utils';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 
@@ -36,6 +44,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
       slippageBsp,
       userAddress
     );
+    const options = this.getSwapOptions(params.amountsIn[0]);
 
     const { kind, swaps, assets, funds, limits } = swap.attributes as BatchSwap;
     return vaultService.batchSwap(
@@ -43,11 +52,16 @@ export class SwapJoinHandler implements JoinPoolHandler {
       swaps,
       assets,
       funds,
-      limits as string[]
+      limits as string[],
+      options
     );
   }
 
-  async queryJoin({ amountsIn, tokensIn }: JoinParams): Promise<QueryOutput> {
+  async queryJoin({
+    amountsIn,
+    tokensIn,
+    signer,
+  }: JoinParams): Promise<QueryOutput> {
     if (amountsIn.length === 0)
       throw new Error('Missing amounts to join with.');
 
@@ -61,10 +75,10 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
     const safeAmount = overflowProtected(amountIn.value, tokenIn.decimals);
     const bnumAmount = parseFixed(safeAmount, tokenIn.decimals);
-    const gasPrice = await this.getGasPrice();
+    const gasPrice = await this.getGasPrice(signer);
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenIn({
-      tokenIn: amountIn.address,
+      tokenIn: this.formatAddressForSor(amountIn.address),
       tokenOut: this.pool.value.address,
       amount: bnumAmount,
       gasPrice,
@@ -101,11 +115,19 @@ export class SwapJoinHandler implements JoinPoolHandler {
     return Math.max(0, priceImpact.toNumber());
   }
 
-  private async getGasPrice(): Promise<BigNumber> {
-    const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (!gasPriceParams) throw new Error('Failed to fetch gas price.');
+  private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {
+    let price: number;
 
-    return BigNumber.from(gasPriceParams.price);
+    const gasPriceParams = await this.gasPriceService.getGasPrice();
+    if (gasPriceParams) {
+      price = gasPriceParams.price;
+    } else {
+      price = (await signer.getGasPrice()).toNumber();
+    }
+
+    if (!price) throw new Error('Failed to fetch gas price.');
+
+    return BigNumber.from(price);
   }
 
   private getSwapAttributes(
@@ -121,5 +143,20 @@ export class SwapJoinHandler implements JoinPoolHandler {
       deadline,
       maxSlippage,
     });
+  }
+
+  private getSwapOptions(amountIn: AmountIn): TransactionRequest {
+    const options: TransactionRequest = {};
+
+    if (isSameAddress(amountIn.address, NATIVE_ASSET_ADDRESS))
+      options.value = parseUnits(amountIn.value).toString();
+
+    return options;
+  }
+
+  private formatAddressForSor(address: string): string {
+    return isSameAddress(address, NATIVE_ASSET_ADDRESS)
+      ? POOLS.ZeroAddress
+      : address;
   }
 }

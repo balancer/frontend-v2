@@ -12,8 +12,7 @@ import {
 import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, isSameAddress } from '@/lib/utils';
-import { fiatValueOf, flatTokenTree } from '@/composables/usePool';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { flatTokenTree } from '@/composables/usePool';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
@@ -23,6 +22,7 @@ interface GeneralisedExitResponse {
   tokensOut: string[];
   expectedAmountsOut: string[];
   minAmountsOut: string[];
+  // priceImpact: string;
 }
 
 /**
@@ -53,7 +53,6 @@ export class DeepExitHandler implements ExitPoolHandler {
     bptIn,
     signer,
     slippageBsp,
-    prices,
     relayerSignature,
   }: ExitParams): Promise<QueryOutput> {
     const bnumAmount = parseFixed(
@@ -80,7 +79,6 @@ export class DeepExitHandler implements ExitPoolHandler {
         console.error(err);
         throw new Error(err);
       });
-
     if (!this.lastGeneralisedExitRes) throw new Error('Not enough liquidity.');
 
     const tokenAddressesOut = this.lastGeneralisedExitRes.tokensOut;
@@ -101,46 +99,17 @@ export class DeepExitHandler implements ExitPoolHandler {
       }
     });
 
-    const fiatValueOut = this.getFiatValueOut(amountsOut, prices);
-    const fiatValueIn = fiatValueOf(this.pool.value, bptIn);
-    const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
+    const priceImpact: number = bnum(
+      formatFixed(
+        // @ts-ignore-next-line -- priceImpact is part of the response, but type is missing
+        this.lastGeneralisedExitRes.priceImpact,
+        18
+      )
+    ).toNumber();
 
     return {
       priceImpact,
       amountsOut,
     };
-  }
-
-  /**
-   * PRIVATE
-   */
-  private getFiatValueOut(amountsOut: AmountsOut, prices: TokenPrices): string {
-    let fiatValueOut = '0';
-
-    for (const token in amountsOut) {
-      const price = prices[token]?.usd;
-      fiatValueOut = bnum(fiatValueOut)
-        .plus(bnum(price).times(amountsOut[token]))
-        .toString();
-    }
-    return fiatValueOut;
-  }
-
-  private calcPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
-    const _fiatValueIn = bnum(fiatValueIn);
-    const _fiatValueOut = bnum(fiatValueOut);
-
-    if (_fiatValueIn.eq(_fiatValueOut)) {
-      return 0;
-    }
-
-    // Don't return negative price impact
-    return Math.max(
-      0,
-      _fiatValueIn
-        .minus(_fiatValueOut)
-        .div(_fiatValueIn.plus(_fiatValueOut).div(bnum(2)))
-        .toNumber() ?? 1 // If fails to calculate return error value of 100%
-    );
   }
 }

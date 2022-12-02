@@ -44,7 +44,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
     expect(result.balanceLabel.value).toEqual('24,104');
     //useTokens global mock is mocking priceFor to return 2
     // so fiat should be double the balance
-    expect(result.fiatLabel.value).toEqual('$51,621,291');
+    expect(result.fiatLabel.value).toEqual('$48,209');
 
     expect(result.tokenWeightLabel.value).toEqual('');
   });
@@ -58,14 +58,14 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
     expect(result.balanceLabel.value).toEqual('17,695');
     //useTokens global mock is mocking priceFor to return 2
     // so fiat should be double the balance
-    expect(result.fiatLabel.value).toEqual('$37,894,501');
+    expect(result.fiatLabel.value).toEqual('$35,389');
 
     expect(result.tokenWeightLabel.value).toEqual('');
   });
 });
 
 describe('Given a weighted pool (GRO-WETH)', () => {
-  const shareOfParentInPool = ref(0);
+  const shareOfParentInPool = ref(1);
   const isDeepPool = ref(false);
 
   it('for GRO token', () => {

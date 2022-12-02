@@ -14,6 +14,7 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
+
 import {
   isTestnet,
   isMainnet,
@@ -35,9 +36,7 @@ export function addressFor(poolId: string): string {
 
 export function isLinear(poolType: PoolType): boolean {
   return (
-    poolType === PoolType.AaveLinear ||
-    poolType === PoolType.Linear ||
-    poolType === PoolType.ERC4626Linear
+    poolType === PoolType.AaveLinear || poolType === PoolType.ERC4626Linear
   );
 }
 
@@ -61,6 +60,12 @@ export function isComposableStableLike(poolType: PoolType): boolean {
   return isStablePhantom(poolType) || isComposableStable(poolType);
 }
 
+export function isPreMintedBptType(poolType: PoolType): boolean {
+  // Currently equivalent to isComposableStableLike but will be extended later
+  // with managed and composable weighted pools.
+  return isStablePhantom(poolType) || isComposableStable(poolType);
+}
+
 export function isDeep(pool: Pool): boolean {
   const treatAsDeep = [
     '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f', // bb-a-USD1 (goerli)
@@ -69,8 +74,9 @@ export function isDeep(pool: Pool): boolean {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD2 (mainnet)
     '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
-    '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387', // wstETH/bb-a-USD
-    '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // dola/bb-a-USD
+    '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387', // wstETH/bb-a-USD (mainnet)
+    '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // dola/bb-a-USD (mainnet)
+    '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
   ];
 
   return treatAsDeep.includes(pool.id);
@@ -264,7 +270,7 @@ export function isVeBalPool(poolId: string): boolean {
 /**
  * @summary Checks if given token address is BAL 80/20 pool (veBAL)
  */
-export function isVeBalAddress(address: string): boolean {
+export function isVeBalPoolAddress(address: string): boolean {
   const veBALPoolAddress = POOLS.IdsMap?.veBAL?.slice(0, 42);
   if (!veBALPoolAddress) return false;
 
@@ -600,6 +606,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isComposableStableLikePool = computed(
     (): boolean => !!pool.value && isComposableStableLike(pool.value.poolType)
   );
+  const isPreMintedBptPool = computed(
+    (): boolean => !!pool.value && isPreMintedBptType(pool.value.poolType)
+  );
   const isWeightedPool = computed(
     (): boolean => !!pool.value && isWeighted(pool.value.poolType)
   );
@@ -639,12 +648,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       )
   );
 
-  const lpTokens = computed(() => {
-    if (!pool.value) return [];
-
-    return lpTokensFor(pool.value);
-  });
-
   return {
     // computed
     isStablePool,
@@ -653,6 +656,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isComposableStablePool,
     isStableLikePool,
     isComposableStableLikePool,
+    isPreMintedBptPool,
     isDeepPool,
     isShallowComposableStablePool,
     isWeightedPool,
@@ -664,7 +668,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
-    lpTokens,
     // methods
     isStable,
     isMetaStable,
@@ -674,9 +677,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isLiquidityBootstrapping,
     isWeightedLike,
     isTradingHaltable,
+    isPreMintedBptType,
     isWeth,
     noInitLiquidity,
-    lpTokensFor,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,
