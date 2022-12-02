@@ -12,11 +12,11 @@
   "loggingRpc": "https://eth-goerli.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://goerli.etherscan.io",
   "explorerName": "Etherscan",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-goerli-v2-beta",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-goerli-v2",
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [
-      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-goerli-v2-beta"
+      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-goerli-v2"
     ],
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-goerli",
