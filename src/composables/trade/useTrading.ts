@@ -1,4 +1,5 @@
 import { parseFixed } from '@ethersproject/bignumber';
+import { AddressZero } from '@ethersproject/constants';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
@@ -108,10 +109,18 @@ export default function useTrading(
     if (tradeGasless.value && isGnosisSupportedOnNetwork.value) {
       return 'gnosis';
     } else {
-      return joinExit.swapInfo.value?.returnAmount &&
-        !joinExit.swapInfo.value?.returnAmount.isZero()
-        ? 'joinExit'
-        : 'balancer';
+      return (
+        // Currently Relayer only suitable for ExactIn and non-eth swaps
+        exactIn.value &&
+          tokenInAddressInput.value.toLowerCase() !==
+            AddressZero.toLowerCase() &&
+          tokenOutAddressInput.value.toLowerCase() !==
+            AddressZero.toLowerCase() &&
+          joinExit.swapInfo.value?.returnAmount &&
+          !joinExit.swapInfo.value?.returnAmount.isZero()
+          ? 'joinExit'
+          : 'balancer'
+      );
     }
   });
 

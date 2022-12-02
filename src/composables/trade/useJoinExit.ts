@@ -124,7 +124,6 @@ export default function useJoinExit({
 
       const relayerCallData = buildRelayerCalls(
         swapInfo.value,
-        // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
         pools.value as SubgraphPoolBase[],
         account.value,
         balancer.contracts.relayerV4?.address ?? '',
@@ -134,11 +133,10 @@ export default function useJoinExit({
       );
       console.log(relayerCallData);
 
-      const q = await balancer.contracts.relayerV4
+      await balancer.contracts.relayerV4
         ?.connect(account.value)
         .callStatic.multicall(relayerCallData.rawCalls);
 
-      console.log(q);
       if (successCallback != null) {
         successCallback();
       }
