@@ -296,8 +296,7 @@ footer :deep(.logotype) {
   @apply text-gray-300 dark:text-gray-600 group-hover:text-purple-600 dark:group-hover:text-yellow-500;
 }
 
-.router-link-active,
-.dark .router-link-active {
+.router-link-active {
   @apply text-blue-600 dark:text-blue-400;
 }
 </style>

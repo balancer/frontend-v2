@@ -117,7 +117,7 @@ export default defineComponent({
   transition: all ease 0.25s;
   appearance: none;
   -webkit-print-color-adjust: exact;
-  color-adjust: exact;
+  print-color-adjust: exact;
   display: inline-block;
   vertical-align: middle;
   background-origin: border-box;

@@ -124,7 +124,7 @@ onBeforeMount(() => {
       <div class="proportional-input-container">
         <div class="flex">
           <WithdrawalTokenSelect :pool="pool" />
-          <div class="flex-grow text-xl text-right font-numeric">
+          <div class="text-xl text-right grow font-numeric">
             <BalLoadingBlock v-if="loadingData" class="float-right w-20 h-8" />
             <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
           </div>
@@ -133,7 +133,7 @@ onBeforeMount(() => {
           <span>
             {{ $t('proportionalWithdrawal') }}
           </span>
-          <span class="flex-grow text-right">{{ percentageLabel }}%</span>
+          <span class="text-right grow">{{ percentageLabel }}%</span>
         </div>
         <BalRangeInput
           v-model="slider.val"
@@ -171,7 +171,7 @@ onBeforeMount(() => {
             </div>
           </div>
           <div
-            class="flex flex-col flex-grow items-end pl-2 text-right font-numeric"
+            class="flex flex-col items-end pl-2 text-right grow font-numeric"
           >
             <BalLoadingBlock v-if="loadingData" class="w-20 h-12" />
             <template v-else>

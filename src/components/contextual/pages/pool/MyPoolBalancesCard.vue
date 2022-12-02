@@ -178,7 +178,7 @@ function navigateToPoolMigration(pool: Pool) {
           </div>
         </div>
 
-        <span class="flex flex-col flex-grow text-right">
+        <span class="flex flex-col text-right grow">
           {{
             isWalletReady
               ? fNum2(propTokenAmounts[index], FNumFormats.token)
