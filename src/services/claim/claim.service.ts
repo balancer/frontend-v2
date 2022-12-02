@@ -150,7 +150,6 @@ export class ClaimService {
       }
     } catch (e) {
       console.log('[Claim] Current Rewards Estimate Error', e);
-      throw e;
     }
     return {
       data: [],
