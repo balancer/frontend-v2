@@ -1,5 +1,5 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-export default {
+const defaultTheme = require('tailwindcss/defaultTheme');
+module.exports = {
   mode: 'jit',
   purge: {
     content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],

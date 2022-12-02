@@ -6,7 +6,6 @@ import { Plugin, loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
 import nodePolyfills from 'vite-plugin-node-stdlib-browser';
-import postcss from './postcss.config.js';
 import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
@@ -74,7 +73,13 @@ export default defineConfig(({ mode }) => {
         '@': resolve(__dirname, './src'),
         '@types': resolve(__dirname, './types'),
         '@tests': resolve(__dirname, './tests'),
+        // Allows to import tailwind.config.js from useTailwind.ts
+        // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
+        'tailwind.config.js': resolve(__dirname, 'tailwind.config.js'),
       },
+    },
+    optimizeDeps: {
+      include: ['tailwind.config.js'],
     },
     server: {
       port: 8080,
@@ -99,9 +104,9 @@ export default defineConfig(({ mode }) => {
           envConfig.VITE_BUILD_VISUALIZE ? visualizer({ open: true }) : null,
         ],
       },
-    },
-    css: {
-      postcss,
+      commonjsOptions: {
+        include: ['tailwind.config.js', 'node_modules/**'],
+      },
     },
     test: {
       globals: true,

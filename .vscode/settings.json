@@ -35,5 +35,7 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.formatOnSave": true
   },
-  "cSpell.words": ["Aprs", "Multicaller"]
+  "cSpell.words": ["Aprs", "Multicaller"],
+  // Avoid @apply warnings in style blocks
+  "css.validate": false
 }
