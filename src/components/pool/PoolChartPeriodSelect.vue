@@ -41,7 +41,7 @@ defineProps<Props>();
         <div
           v-for="option in options"
           :key="option.days"
-          class="flex justify-between items-center p-3 hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-850"
+          class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
           @click="emit('change-option', option)"
         >
           <div class="flex items-center ml-1 font-medium">

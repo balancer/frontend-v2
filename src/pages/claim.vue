@@ -240,7 +240,7 @@ onBeforeMount(async () => {
   <HeroClaim />
   <div>
     <div class="xl:container py-12 xl:px-4 xl:mx-auto">
-      <h2 class="px-4 xl:px-0 text-2xl font-semibold font-body">
+      <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
@@ -333,7 +333,7 @@ onBeforeMount(async () => {
         {{ $t('noClaimableIncentives') }}
       </BalBlankSlate>
       <div class="px-4 xl:px-0 mb-16">
-        <h2 class="mt-8 text-2xl font-semibold font-body">
+        <h2 class="mt-8 font-body text-2xl font-semibold">
           {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
         </h2>
         <BalFlexGrid class="mt-4" flexWrap>

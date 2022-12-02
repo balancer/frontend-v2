@@ -1,12 +1,12 @@
 <template>
   <div
-    class="absolute top-0 left-0 z-10 w-full h-full text-center bg-white rounded-lg dark:bg-gray-850"
+    class="absolute top-0 left-0 z-10 w-full h-full text-center bg-white dark:bg-gray-850 rounded-lg"
   >
     <div class="flex flex-col justify-between items-center p-4 h-full">
       <h3 v-text="title" />
       <div class="flex flex-col items-center">
         <div
-          class="flex justify-center items-center mb-8 w-20 h-20 text-green-500 bg-green-100 dark:bg-green-500 rounded-full dark:text-gray-850"
+          class="flex justify-center items-center mb-8 w-20 h-20 text-green-500 dark:text-gray-850 bg-green-100 dark:bg-green-500 rounded-full"
         >
           <BalIcon name="check-circle" size="xl" />
         </div>

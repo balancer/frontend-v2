@@ -147,7 +147,7 @@ const poolTypeLabel = computed(() => {
         <div
           v-for="([address, tokenMeta], i) in titleTokens"
           :key="i"
-          class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 rounded-lg dark:bg-gray-850"
+          class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
         >
           <BalAsset :address="address" />
           <span class="ml-2">

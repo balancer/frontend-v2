@@ -161,7 +161,7 @@ function isActive(network: NetworkOption): boolean {
         v-for="network in allNetworks"
         :key="network.id"
         :href="getNetworkChangeUrl(network)"
-        class="flex justify-between items-center p-3 hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-850"
+        class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
       >
         <div class="flex items-center">
           <img

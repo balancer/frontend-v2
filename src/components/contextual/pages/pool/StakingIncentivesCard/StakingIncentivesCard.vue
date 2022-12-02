@@ -144,7 +144,7 @@ async function handleActionSuccess() {
             </button>
           </template>
           <template #staking-incentives>
-            <div class="relative bg-white rounded-b-lg dark:bg-gray-850">
+            <div class="relative bg-white dark:bg-gray-850 rounded-b-lg">
               <BalStack
                 vertical
                 spacing="sm"

@@ -61,7 +61,7 @@ const disablePending = computed(() => connector.value?.id === 'gnosis');
         <div>
           <SpinnerIcon
             v-if="isPendingTransactionStatus(transaction.status)"
-            class="animate-spin text-orange-500"
+            class="text-orange-500 animate-spin"
           />
           <template v-else>
             <CheckIcon

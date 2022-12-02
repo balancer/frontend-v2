@@ -28,7 +28,7 @@ const label = computed((): string => {
     :href="bridgeUrl"
     external
     noStyle
-    class="flex items-center p-4 text-sm rounded-lg border dark:border-0 dark:bg-gray-850"
+    class="flex items-center p-4 text-sm dark:bg-gray-850 rounded-lg border dark:border-0"
   >
     <img
       :src="buildNetworkIconURL(networkId)"

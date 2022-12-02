@@ -91,7 +91,7 @@ const fiatTotalExpiredLpTokens = computed(() =>
           </template>
           <template #locking-module>
             <div
-              class="overflow-visible relative bg-white rounded-b-lg dark:bg-gray-850"
+              class="overflow-visible relative bg-white dark:bg-gray-850 rounded-b-lg"
             >
               <BalStack
                 vertical
