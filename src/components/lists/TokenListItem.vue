@@ -15,7 +15,10 @@
         {{ token.name }}
       </div>
     </div>
-    <span class="flex flex-col items-end font-medium text-right">
+    <span
+      v-if="!hideBalance"
+      class="flex flex-col items-end font-medium text-right"
+    >
       <BalLoadingNumber v-if="balanceLoading" type="token" />
       <template v-else>
         <template v-if="balance > 0">
@@ -59,6 +62,7 @@ export default {
   props: {
     token: { type: Object as PropType<TokenInfo>, required: true },
     balanceLoading: { type: Boolean, default: true },
+    hideBalance: { type: Boolean, default: false },
   },
 
   setup(props) {

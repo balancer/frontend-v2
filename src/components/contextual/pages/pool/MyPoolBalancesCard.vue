@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
+import { fiatValueOf, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -31,12 +30,10 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { tokens, balances, balanceFor, getTokens } = useTokens();
-const { fNum2, toFiat } = useNumbers();
+const { balanceFor } = useTokens();
+const { fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { isStableLikePool, isMigratablePool, isDeepPool } = usePool(
-  toRef(props, 'pool')
-);
+const { isMigratablePool } = usePool(toRef(props, 'pool'));
 const {
   userData: { stakedSharesForProvidedPool },
 } = useStaking();
@@ -44,61 +41,11 @@ const { networkSlug } = useNetwork();
 const router = useRouter();
 
 /**
- * SERVICES
- */
-const poolCalculator = new PoolCalculator(
-  toRef(props, 'pool'),
-  tokens,
-  balances,
-  'exit',
-  ref(false)
-);
-
-/**
  * COMPUTED
  */
 const bptBalance = computed((): string => balanceFor(props.pool.address));
 
-const poolTokens = computed(() =>
-  Object.values(getTokens(props.pool.tokensList))
-);
-
-const propTokenAmounts = computed((): string[] => {
-  const { receive } = poolCalculator.propAmountsGiven(
-    bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
-    0,
-    'send'
-  );
-
-  if (isDeepPool.value) {
-    // Return linear pool's main token balance using the price rate.
-    // mainTokenBalance = linearPoolBPT * priceRate
-    return props.pool.tokensList.map((address, i) => {
-      if (!props.pool?.onchain?.linearPools) return '0';
-
-      const priceRate = props.pool.onchain.linearPools[address].priceRate;
-
-      return bnum(receive[i]).times(priceRate).toString();
-    });
-  }
-
-  return receive;
-});
-
-const tokenAddresses = computed((): string[] => {
-  if (isDeepPool.value) {
-    // We're using mainToken balances for StablePhantom pools
-    // so return mainTokens here so that fiat values are correct.
-    return props.pool.mainTokens || [];
-  }
-  return props.pool.tokensList;
-});
-
-const fiatValue = computed(() =>
-  tokenAddresses.value
-    .map((address, i) => toFiat(propTokenAmounts.value[i], address))
-    .reduce((total, value) => bnum(total).plus(value).toString())
-);
+const fiatValue = computed(() => fiatValueOf(props.pool, bptBalance.value));
 
 const showMigrateButton = computed(
   () =>
@@ -110,22 +57,6 @@ const showMigrateButton = computed(
 /**
  * METHODS
  */
-function weightLabelFor(address: string): string {
-  if (!props.pool || !props.pool) return '-';
-  const weight = props.pool?.onchain?.tokens?.[address]?.weight;
-  return weight
-    ? fNum2(weight, {
-        style: 'percent',
-        maximumFractionDigits: 0,
-      })
-    : '-';
-}
-
-function fiatLabelFor(index: number, address: string): string {
-  const fiatValue = toFiat(propTokenAmounts.value[index], address);
-  return fNum2(fiatValue, FNumFormats.fiat);
-}
-
 function navigateToPoolMigration(pool: Pool) {
   router.push({
     name: 'migrate-pool',
@@ -153,46 +84,9 @@ function navigateToPoolMigration(pool: Pool) {
         </h5>
       </div>
     </template>
-    <div class="py-2 px-4">
-      <div
-        v-for="(address, index) in tokenAddresses"
-        :key="address"
-        class="asset-row"
-      >
-        <div class="flex items-center">
-          <BalAsset
-            :address="poolTokens[index].address"
-            :size="36"
-            class="mr-4"
-          />
-          <div class="flex flex-col">
-            <span>
-              <span v-if="!isStableLikePool">
-                {{ weightLabelFor(address) }}
-              </span>
-              {{ poolTokens[index].symbol }}
-            </span>
-            <span class="text-sm text-secondary">
-              {{ poolTokens[index].name }}
-            </span>
-          </div>
-        </div>
-
-        <span class="flex flex-col flex-grow text-right">
-          {{
-            isWalletReady
-              ? fNum2(propTokenAmounts[index], FNumFormats.token)
-              : '-'
-          }}
-          <span class="text-sm text-secondary">
-            {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
-          </span>
-        </span>
-      </div>
+    <div v-if="showMigrateButton" class="py-2 px-4">
       <BalBtn
-        v-if="showMigrateButton"
         color="blue"
-        class="mt-4"
         block
         @click.prevent="navigateToPoolMigration(props.pool)"
       >

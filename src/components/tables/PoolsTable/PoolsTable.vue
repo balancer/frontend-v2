@@ -165,7 +165,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.apr?.total.unstaked || '0',
+    accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
@@ -328,13 +328,10 @@ function iconAddresses(pool: PoolWithShares) {
           :key="columnStates.aprs"
           class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
         >
-          <BalLoadingBlock
-            v-if="!pool?.apr?.total?.unstaked"
-            class="w-12 h-4"
-          />
+          <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.apr?.total?.unstaked" :pool="pool" />
+            <APRTooltip v-if="pool?.apr" :pool="pool" />
           </template>
         </div>
       </template>
