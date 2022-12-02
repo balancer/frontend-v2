@@ -83,7 +83,10 @@ const columns = ref<ColumnDefinition<Reward>[]>([
  */
 const rewardsData = computed((): Reward[] => {
   return props.gauge.rewardTokens.map(tokenAddress => {
-    const token = getToken(tokenAddress);
+    let token = getToken(tokenAddress);
+    // @ts-ignore
+    token = undefined;
+    console.log('DEBUG: computing rewards data', token.decimals);
     const amount = formatUnits(
       props.gauge.claimableRewards[tokenAddress],
       token.decimals
