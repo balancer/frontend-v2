@@ -357,6 +357,10 @@ export function fiatValueOf(pool: Pool, shares: string): string {
   return bnum(shares).times(bptPriceFor(pool)).toString();
 }
 
+export function isJoinsDisabled(id: string): boolean {
+  return POOLS.DisabledJoins.includes(id);
+}
+
 /**
  * COMPOSABLE
  */

@@ -3,7 +3,7 @@ import { computed, toRef } from 'vue';
 
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { lpTokensFor, usePool } from '@/composables/usePool';
+import { isJoinsDisabled, lpTokensFor, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useNetwork from '@/composables/useNetwork';
 import { bnum, isSameAddress } from '@/lib/utils';
@@ -88,11 +88,16 @@ const fiatTotal = computed(() => {
     />
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
-        :tag="isMigratablePool(pool) ? 'div' : 'router-link'"
+        :tag="
+          isMigratablePool(pool) || isJoinsDisabled(pool.id)
+            ? 'div'
+            : 'router-link'
+        "
         :to="{ name: 'invest', params: { networkSlug } }"
         :label="$t('addLiquidity')"
         color="gradient"
         :disabled="
+          isJoinsDisabled(pool.id) ||
           hasNonApprovedRateProviders ||
           (isMigratablePool(pool) && !isSoftMigratablePool(pool.id))
         "
