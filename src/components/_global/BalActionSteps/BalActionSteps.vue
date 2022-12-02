@@ -25,6 +25,7 @@ import {
   TransactionActionInfo,
   TransactionActionState,
 } from '@/types/transactions';
+import signature from '@/assets/images/icons/signature.svg';
 
 /**
  * TYPES
@@ -262,10 +263,7 @@ async function handleTransaction(
                 currentAction.isSignAction,
             }"
           >
-            <img
-              v-if="currentAction.isSignAction"
-              :src="require('@/assets/images/icons/signature.svg')"
-            />
+            <img v-if="currentAction.isSignAction" :src="signature" />
             {{ currentAction?.label }}
             <div v-if="currentAction.isSignAction" class="w-8"></div>
           </div>
