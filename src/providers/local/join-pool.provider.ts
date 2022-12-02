@@ -253,7 +253,7 @@ const provider = (props: Props) => {
   async function queryJoin() {
     // If form is empty or inputs are not valid, clear the price impact and
     // return early
-    if (!hasAmountsIn.value || !hasValidInputs.value) {
+    if (!hasAmountsIn.value) {
       priceImpact.value = 0;
       return;
     }
