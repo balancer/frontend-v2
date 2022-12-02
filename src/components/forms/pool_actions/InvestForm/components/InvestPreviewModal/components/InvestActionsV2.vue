@@ -140,8 +140,6 @@ async function submit(): Promise<TransactionResponse> {
 
     txState.confirming = true;
 
-    console.log('Receipt', tx);
-
     handleTransaction(tx);
     return tx;
   } catch (error) {

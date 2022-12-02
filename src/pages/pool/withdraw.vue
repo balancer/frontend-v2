@@ -63,7 +63,7 @@ onMounted(() => resetTabs());
         :isSingleAssetExit="activeTab === Tab.SingleToken"
         :pool="pool"
       >
-        <WithdrawFormV2 :pool="pool" />
+        <WithdrawFormV2 />
       </ExitPoolProvider>
       <WithdrawForm v-else :pool="pool" />
     </BalCard>
