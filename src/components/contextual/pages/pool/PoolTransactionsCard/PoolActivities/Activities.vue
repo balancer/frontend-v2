@@ -65,6 +65,7 @@ function loadMorePoolActivities() {
 
 <template>
   <Table
+    :pool="pool"
     :tokens="pool ? pool.tokensList : []"
     :poolActivities="poolActivities"
     :isLoading="loading || isLoadingPoolActivities"

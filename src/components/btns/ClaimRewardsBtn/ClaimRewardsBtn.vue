@@ -6,9 +6,13 @@ import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQ
 import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import { LiquidityGaugeRewardsHelper } from '@/services/balancer/contracts/contracts/gauge-reward-helper';
 import { Gauge } from '@/services/balancer/gauges/types';
 
 import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
+import { configService } from '@/services/config/config.service';
+import { isL2 } from '@/composables/useNetwork';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -29,6 +33,7 @@ const props = defineProps<Props>();
 const { t } = useI18n();
 const { fNum2 } = useNumbers();
 const { data: subgraphGauges } = useGaugesQuery();
+const { account } = useWeb3();
 const gaugesQuery = useGaugesDecorationQuery(subgraphGauges);
 
 /**
@@ -41,6 +46,15 @@ const liquidityGaugeContract = new LiquidityGauge(gaugeAddress);
  * METHODS
  */
 function claimTx() {
+  if (isL2.value) {
+    const liquidityGaugeRewardsHelperContract = new LiquidityGaugeRewardsHelper(
+      configService.network.addresses.gaugeRewardsHelper || ''
+    );
+    return liquidityGaugeRewardsHelperContract.claimRewardsForGauge(
+      gaugeAddress,
+      account.value
+    );
+  }
   return liquidityGaugeContract.claimRewards();
 }
 </script>

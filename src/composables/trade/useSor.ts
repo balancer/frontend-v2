@@ -186,6 +186,11 @@ export default function useSor({
     }
   }
 
+  function trackSwapEvent() {
+    trackGoal(Goals.BalancerSwap);
+    if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
+  }
+
   async function updateTradeAmounts(): Promise<void> {
     if (!sorManager) {
       return;
@@ -541,6 +546,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -564,6 +570,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -591,6 +598,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -615,6 +623,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
         captureException(e);

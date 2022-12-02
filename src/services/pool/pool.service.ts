@@ -130,20 +130,22 @@ export default class PoolService {
   }
 
   public setFeesSnapshot(poolSnapshot: Pool | undefined): string {
-    if (!poolSnapshot) return '0';
+    let snapshotFees = '0';
+    if (poolSnapshot) snapshotFees = poolSnapshot.totalSwapFee || '0';
 
     const feesSnapshot = bnum(this.pool.totalSwapFee || 0)
-      .minus(poolSnapshot.totalSwapFee || 0)
+      .minus(snapshotFees)
       .toString();
 
     return (this.pool.feesSnapshot = feesSnapshot);
   }
 
   public setVolumeSnapshot(poolSnapshot: Pool | undefined): string {
-    if (!poolSnapshot) return '0';
+    let snapshotVolume = '0';
+    if (poolSnapshot) snapshotVolume = poolSnapshot.totalSwapVolume || '0';
 
     const volumeSnapshot = bnum(this.pool.totalSwapVolume || 0)
-      .minus(poolSnapshot.totalSwapVolume || 0)
+      .minus(snapshotVolume)
       .toString();
 
     return (this.pool.volumeSnapshot = volumeSnapshot);

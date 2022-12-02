@@ -34,12 +34,12 @@ export const EXTERNAL_LINKS = {
     },
   },
   Copper: {
-    Home: 'https://copperlaunch.com/',
+    Home: 'https://fjordfoundry.com/',
     Auctions: (poolAddress: string, networkPrefix = '') =>
       `https://${networkPrefix}copperlaunch.com/auctions/${poolAddress}`,
   },
   Tracer: {
-    Home: 'https://tracer.finance/',
+    Home: 'https://mycelium.xyz/',
   },
   Sense: {
     Home: 'https://sense.finance/',
