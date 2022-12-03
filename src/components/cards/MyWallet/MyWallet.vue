@@ -116,7 +116,10 @@ const emit = defineEmits<{
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <template v-if="pool">
-            <MyWalletSubheader v-if="isDeepPool" class="border-b">
+            <MyWalletSubheader
+              v-if="isDeepPool"
+              class="text-sm border-b text-secondary"
+            >
               Pool tokens (lowest price impact)
             </MyWalletSubheader>
             <div class="mt-5">
@@ -135,7 +138,9 @@ const emit = defineEmits<{
               />
             </div>
             <template v-if="isDeepPool">
-              <MyWalletSubheader class="my-5 border-t border-b">
+              <MyWalletSubheader
+                class="my-5 text-sm border-t border-b text-secondary"
+              >
                 Other tokens (higher price impact)
               </MyWalletSubheader>
               <BalAssetSet

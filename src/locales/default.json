@@ -1267,7 +1267,7 @@
     "createPool": "Create pool",
     "fundPool": "Fund pool",
     "migratePool": "Migrate pool",
-    "invest": "Pool",
+    "invest": "Add liquidity",
     "trade": "Swap",
     "unwrap": "Unwrap",
     "voteForGauge": "Vote",

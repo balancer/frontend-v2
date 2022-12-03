@@ -147,7 +147,7 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
 
     <div
       v-if="highPriceImpact"
-      class="p-2 pb-2 mt-5 rounded-lg border dark:border-gray-700"
+      class="p-2 pb-2 mt-5 rounded-lg border dark:border-gray-700 high-price-impact"
     >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
@@ -211,3 +211,8 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
     </StakingProvider>
   </div>
 </template>
+<style scoped>
+.high-price-impact:has(.bal-checkbox-error) {
+  @apply border-red-500 bg-red-50 dark:bg-red-500 bg-opacity-50 dark:bg-opacity-5 transition-colors;
+}
+</style>
