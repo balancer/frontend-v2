@@ -4,7 +4,7 @@ import { computed, Ref, ref, watch } from 'vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useTokens from '../useTokens';
 import { Pool } from '@/services/pool/types';
-import { extractTokenAddresses } from '../usePool';
+import { tokenTreeLeafs } from '../usePool';
 
 export default function usePools(filterTokens: Ref<string[]> = ref([])) {
   /**
@@ -43,8 +43,14 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
    * WATCHERS
    */
   watch(pools, async newPools => {
-    const tokenAddresses = flatten(newPools.map(extractTokenAddresses));
-    await injectTokens(tokenAddresses);
+    const tokens = flatten(
+      newPools.map(pool => [
+        ...pool.tokensList,
+        ...tokenTreeLeafs(pool.tokens),
+        pool.address,
+      ])
+    );
+    await injectTokens(tokens);
   });
 
   return {
