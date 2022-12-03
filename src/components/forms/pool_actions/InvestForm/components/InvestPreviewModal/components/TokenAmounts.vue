@@ -14,6 +14,9 @@ type Props = {
   fiatAmountMap: AmountMap;
   tokenMap: TokenInfoMap;
   fiatTotal: string;
+  title?: string;
+  hideAmountShare?: boolean;
+  showZeroAmounts?: boolean;
 };
 
 type AmountMap = {
@@ -23,8 +26,11 @@ type AmountMap = {
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
-
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  hideAmountShare: false,
+  showZeroAmounts: false,
+});
 /**
  * COMPOSABLES
  */
@@ -47,18 +53,14 @@ const sortedAmounts = computed(() =>
 
 const groupedAmounts = computed(() =>
   groupBy(sortedAmounts.value, amounts =>
-    bnum(amounts.amount).isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
+    bnum(amounts.amount || '0').isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
   )
 );
 
-const shouldShowCompactViewForZeroAmounts = computed(
-  () => (groupedAmounts.value.zeroAmounts?.length || 0) > 3
-);
-
 const amountsToShow = computed(() =>
-  shouldShowCompactViewForZeroAmounts.value
-    ? groupedAmounts.value.nonZeroAmounts
-    : sortedAmounts.value
+  props.showZeroAmounts
+    ? sortedAmounts.value
+    : groupedAmounts.value.nonZeroAmounts
 );
 /**
  * METHODS
@@ -69,60 +71,48 @@ function amountShare(address: string): string {
   return bnum(props.fiatAmountMap[address]).div(props.fiatTotal).toString();
 }
 </script>
-
+  
 <template>
   <div class="token-amount-table">
+    <div v-if="props.title" class="title">
+      {{ props.title }}
+    </div>
     <div v-for="token in amountsToShow" :key="token.address" class="relative">
-      <div class="items-center token-amount-table-content">
-        <div class="flex items-center">
-          <BalAsset :address="token.address" :size="36" />
-          <div class="flex flex-col ml-3">
-            <div class="text-lg font-medium">
-              <span class="font-numeric">
-                {{ fNum2(token.amount, FNumFormats.token) }}
-              </span>
-              {{ tokenMap[token.address].symbol }}
-            </div>
+      <div class="token-amount-table-content">
+        <div class="flex flex-col self-center mr-3">
+          <div class="font-medium">
+            <span class="font-numeric">
+              {{ fNum2(token.amount, FNumFormats.token) }}
+            </span>
+            {{ tokenMap[token.address]?.symbol }}
+          </div>
+          <div
+            v-if="Number(token.fiatAmount) > 0"
+            class="text-sm text-secondary font-numeric"
+          >
+            {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
+            <span v-if="!hideAmountShare">
+              ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
+            </span>
           </div>
         </div>
-        <div class="text-sm text-secondary font-numeric">
-          {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
-          ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="shouldShowCompactViewForZeroAmounts"
-      class="items-start -mb-2 token-amount-table-content"
-    >
-      <div class="flex flex-wrap mr-6">
-        <div
-          v-for="token in groupedAmounts.zeroAmounts"
-          :key="token.address"
-          class="token"
-        >
-          <BalAsset :address="token.address" class="mr-2" />
-          <span>{{ tokenMap[token.address].symbol }}</span>
-        </div>
-      </div>
-      <div class="text-sm whitespace-nowrap text-secondary font-numeric">
-        {{ fNum2(0, FNumFormats.fiat) }}
-        ({{ fNum2(0, FNumFormats.percent) }})
+        <BalAsset :address="token.address" :size="36" />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
+  
+  <style scoped>
 .token-amount-table {
-  @apply shadow-lg border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg;
+  @apply shadow-lg border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg overflow-hidden;
+}
+
+.title {
+  @apply dark:bg-gray-800 bg-gray-50 px-3 py-2;
+  @apply font-medium text-sm text-gray-600 dark:text-gray-400;
 }
 
 .token-amount-table-content {
   @apply p-3 flex justify-between;
-}
-
-.token {
-  @apply flex items-center px-2 py-1 mr-2 mb-2 rounded-lg bg-gray-100 dark:bg-gray-700;
 }
 </style>

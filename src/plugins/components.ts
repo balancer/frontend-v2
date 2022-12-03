@@ -5,7 +5,7 @@ import Jazzicon from 'vue3-jazzicon/src/components';
 export function registerGlobalComponents(app: App): void {
   // Load global components from @/components/_global
   const req = require.context(
-    '@/components/_global',
+    '../components/_global',
     true,
     /^((?!(stories|spec)).)*\.(js|ts|vue)$/i
   );

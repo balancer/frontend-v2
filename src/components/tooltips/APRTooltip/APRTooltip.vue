@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { Pool, PoolAPRs } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { hasStakingRewards } from '@/services/staking/utils';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
 import VeBalBreakdown from './components/VeBalBreakdown.vue';
 import YieldBreakdown from './components/YieldBreakdown.vue';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  poolApr?: PoolAPRs;
+  poolApr?: AprBreakdown;
 };
 
 /**
@@ -33,12 +34,14 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const apr = computed(() => props.pool?.apr || props.poolApr);
-const validAPR = computed(
-  () => Number(apr.value?.total?.unstaked || '0') * 100 <= APR_THRESHOLD
+const apr = computed<AprBreakdown | undefined>(
+  () => props.pool?.apr || props.poolApr
 );
+const validAPR = computed(() => Number(apr.value?.min || 0) <= APR_THRESHOLD);
 
-const hasYieldAPR = computed(() => bnum(apr.value?.yield.total || '0').gt(0));
+const hasYieldAPR = computed(() => {
+  return bnum(apr.value?.tokenAprs.total || '0').gt(0);
+});
 
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
 
@@ -67,7 +70,10 @@ const totalLabel = computed((): string =>
       </div>
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
-      <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
+      <div
+        class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t"
+        data-testid="total-apr"
+      >
         <div class="text-secondary">
           {{ $t('totalAPR') }}
         </div>
@@ -75,20 +81,23 @@ const totalLabel = computed((): string =>
       </div>
       <div class="p-3 text-left">
         <!-- SWAP FEE APR -->
-        <div class="flex items-center mb-1 whitespace-nowrap">
-          {{ fNum2(apr?.swap || '0', FNumFormats.percent) }}
+        <div
+          class="flex items-center mb-1 whitespace-nowrap"
+          data-testid="swap-fee-apr"
+        >
+          {{ fNum2(bpToDec(apr?.swapFees || '0'), FNumFormats.percent) }}
           <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}
           </span>
         </div>
 
         <!-- VeBal APR -->
-        <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.veBal || '0'" />
+        <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.protocolApr || 0" />
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
-          v-if="hasYieldAPR && apr"
-          :yieldAPR="apr.yield"
+          v-if="apr?.tokenAprs && hasYieldAPR"
+          :yieldAPR="apr?.tokenAprs"
           :pool="pool"
         />
 

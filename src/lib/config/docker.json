@@ -46,6 +46,7 @@
     "lidoRelayer": "",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "",
+    "batchRelayerV4": "",
     "merkleOrchard": "",
     "batchRelayer": "",
     "veBAL": "",
