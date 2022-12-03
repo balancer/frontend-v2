@@ -15,6 +15,10 @@ export const tabs = [
 
 const activeTab = ref(tabs[0].value);
 
+function resetTabs() {
+  activeTab.value = tabs[0].value;
+}
+
 export default function useWithdrawPageTabs() {
-  return { activeTab };
+  return { activeTab, resetTabs };
 }

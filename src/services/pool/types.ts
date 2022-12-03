@@ -6,10 +6,6 @@ export { PoolType, PoolToken, TokenTreePool } from '@balancer-labs/sdk';
 
 export interface Pool extends SDKPool {
   tokens: PoolToken[];
-  // totalSwapFee: string;
-  // totalSwapVolume: string;
-  // createTime: number;
-  // symbol: string;
   onchain?: OnchainPoolData;
   linearPoolTokensMap?: Record<string, PoolToken>;
   priceRateProviders?: PriceRateProvider[];

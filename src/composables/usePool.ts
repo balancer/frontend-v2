@@ -159,29 +159,6 @@ export function preMintedBptIndex(pool: Pool): number | void {
 }
 
 /**
- * @returns tokens that can be used to add or remove tokens from a pool
- */
-export function lpTokensFor(pool: AnyPool): string[] {
-  if (isDeep(pool)) {
-    const mainTokens = pool.mainTokens || [];
-    const wrappedTokens = pool.wrappedTokens || [];
-    return [...mainTokens, ...wrappedTokens];
-  } else {
-    return pool.tokensList || [];
-  }
-}
-
-/**
- * Extract relevant token addresses for a pool including the pool's own address.
- *
- * @param {AnyPool} pool - Pool to extract token addresses from.
- * @returns Array of all relevant token addresses.
- */
-export function extractTokenAddresses(pool: AnyPool): string[] {
-  return [...pool.tokensList, ...lpTokensFor(pool), pool.address];
-}
-
-/**
  * @summary Orders pool token addresses by weight if weighted pool
  * @returns Array of checksum addresses
  */

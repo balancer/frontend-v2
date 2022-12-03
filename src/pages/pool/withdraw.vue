@@ -14,20 +14,23 @@ import useWithdrawPageTabs, {
 } from '@/composables/pools/useWithdrawPageTabs';
 import { oneMinInMs } from '@/composables/useTime';
 import { useIntervalFn } from '@vueuse/core';
+import { onMounted } from 'vue';
 
 /**
  * COMPOSABLES
  */
 const { network } = configService;
 const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
-const { isDeepPool } = usePool(pool);
-const { activeTab } = useWithdrawPageTabs();
+const { isDeepPool, isPreMintedBptPool } = usePool(pool);
+const { activeTab, resetTabs } = useWithdrawPageTabs();
 
 // Instead of refetching pool data on every block, we refetch every minute to prevent
 // overfetching a heavy request on short blocktime networks like Polygon.
 // TODO: Don't refetch whole pool, only update balances and weights with
 // onchain calls. i.e. only refetch what's required to be up to date for joins/exits.
 useIntervalFn(poolQuery.refetch.value, oneMinInMs);
+
+onMounted(() => resetTabs());
 </script>
 
 <template>
@@ -47,7 +50,7 @@ useIntervalFn(poolQuery.refetch.value, oneMinInMs);
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
           <BalTabs
-            v-if="isDeepPool"
+            v-if="isDeepPool && isPreMintedBptPool"
             v-model="activeTab"
             :tabs="tabs"
             class="p-0 m-0 -mb-px whitespace-nowrap"

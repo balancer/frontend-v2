@@ -19,8 +19,8 @@ import {
 } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
-import { extractTokenAddresses } from '../usePool';
 import { forChange } from '@/lib/utils';
+import { tokenTreeLeafs } from '../usePool';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -194,8 +194,14 @@ export default function usePoolsQuery(
         const poolDecorator = new PoolDecorator(pools);
         let decoratedPools = await poolDecorator.decorate(tokenMeta.value);
 
-        const tokenAddresses = flatten(pools.map(extractTokenAddresses));
-        await injectTokens(tokenAddresses);
+        const tokens = flatten(
+          pools.map(pool => [
+            ...pool.tokensList,
+            ...tokenTreeLeafs(pool.tokens),
+            pool.address,
+          ])
+        );
+        await injectTokens(tokens);
         await forChange(dynamicDataLoading, false);
 
         decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
