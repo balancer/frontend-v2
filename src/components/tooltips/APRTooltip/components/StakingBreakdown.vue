@@ -36,6 +36,9 @@ const hasBoost = computed((): boolean => !!boost.value);
 const stakingAPR = computed(
   (): AprBreakdown['stakingApr'] | undefined => apr.value?.stakingApr
 );
+const isMinMaxSame = computed(
+  (): boolean => stakingAPR.value?.min === stakingAPR.value?.max
+);
 const minBalAPR = computed((): number => stakingAPR.value?.min || 0);
 const maxBalAPR = computed((): number => stakingAPR.value?.max || 0);
 const rewardTokensAPR = computed(
@@ -74,9 +77,16 @@ const unboostedTotalAPR = computed((): string =>
 const breakdownItems = computed((): Array<any> => {
   const items: Array<any> = [];
 
-  items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
+  if (!isMinMaxSame.value) {
+    items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
+  }
 
-  if (hasRewardTokens.value) items.push(['Rewards', rewardTokensAPR.value]);
+  if (hasRewardTokens.value) {
+    if (isMinMaxSame.value) {
+      items.push(['BAL', minBalAPR.value]);
+    }
+    items.push(['Rewards', rewardTokensAPR.value]);
+  }
 
   return items;
 });
@@ -97,7 +107,11 @@ const breakdownItems = computed((): Array<any> => {
         <div class="flex items-center">
           {{ unboostedTotalAPR }}
           <span class="ml-1 text-xs text-secondary">
-            {{ $t('staking.minimumStakingApr') }}
+            {{
+              isMinMaxSame
+                ? $t('staking.stakingApr')
+                : $t('staking.minimumStakingApr')
+            }}
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
