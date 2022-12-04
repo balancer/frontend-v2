@@ -14,10 +14,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 interface Tab {
-  value: string;
+  value: string | number;
   label: string;
 }
 
@@ -26,21 +26,18 @@ export default defineComponent({
 
   props: {
     tabs: { type: Array as PropType<Tab[]>, required: true },
-    modelValue: { type: String, default: '' },
+    modelValue: { type: [String, Number], default: '' },
     noPad: { type: Boolean, default: false },
   },
 
   emits: ['selected', 'update:modelValue'],
 
   setup(props, { emit }) {
-    const activeTab = ref(props.modelValue);
-
     function isActiveTab(tab: Tab): boolean {
-      return activeTab.value === tab.value;
+      return props.modelValue === tab.value;
     }
 
     function onClick(tab: Tab) {
-      activeTab.value = tab.value;
       emit('selected', tab.value);
       emit('update:modelValue', tab.value);
     }
@@ -61,7 +58,6 @@ export default defineComponent({
     }
 
     return {
-      activeTab,
       onClick,
       containerClasses,
       stateClasses,

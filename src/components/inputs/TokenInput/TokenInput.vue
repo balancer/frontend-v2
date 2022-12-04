@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { computed, nextTick, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-
+import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { Rules } from '@/types';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -10,6 +10,8 @@ import { bnum } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
+import { TokenSelectProps } from '../TokenSelectInput/TokenSelectInput.vue';
+import { BalRangeInputProps } from '@/components/_global/BalRangeInput/BalRangeInput.vue';
 
 /**
  * TYPES
@@ -38,9 +40,13 @@ type Props = {
   rules?: Rules;
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
+  hideFiatValue?: boolean;
   ignoreWalletBalance?: boolean;
   tokenValue?: string;
   placeholder?: string;
+  tokenSelectProps?: Partial<TokenSelectProps>;
+  slider?: boolean;
+  sliderProps?: Partial<BalRangeInputProps>;
 };
 
 /**
@@ -59,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
   hintAmount: '',
   disableNativeAssetBuffer: false,
   hideFooter: false,
+  hideFiatValue: false,
   ignoreWalletBalance: false,
   options: () => [],
   rules: () => [],
@@ -68,7 +75,11 @@ const props = withDefaults(defineProps<Props>(), {
   balanceLabel: '',
   hint: '',
   excludedTokens: () => [],
+  subsetTokens: () => [],
   placeholder: '',
+  tokenSelectProps: () => ({}),
+  slider: false,
+  sliderProps: () => ({}),
 });
 
 const emit = defineEmits<{
@@ -76,20 +87,15 @@ const emit = defineEmits<{
   (e: 'input', value: string): void;
   (e: 'update:amount', value: string): void;
   (e: 'update:address', value: string): void;
+  (e: 'update:slider', value: number): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: KeyboardEvent);
 }>();
 
 /**
- * STATE
+ * COMPOSABLES
  */
-const _amount = ref<InputValue>('');
-const _address = ref<string>('');
-
-/**
- * COMPOSABLEs
- */
-const { getToken, balanceFor, nativeAsset } = useTokens();
+const { getToken, balanceFor, nativeAsset, getMaxBalanceFor } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
@@ -97,14 +103,13 @@ const { isWalletReady } = useWeb3();
 /**
  * COMPUTED
  */
-const hasToken = computed(() => !!_address.value);
-const amountBN = computed(() => bnum(_amount.value));
+const hasToken = computed(() => !!props.address);
+const amountBN = computed(() => bnum(props.amount));
 const tokenBalanceBN = computed(() => bnum(tokenBalance.value));
 const hasAmount = computed(() => amountBN.value.gt(0));
 const hasBalance = computed(() => tokenBalanceBN.value.gt(0));
 const shouldUseTxBuffer = computed(
-  () =>
-    _address.value === nativeAsset.address && !props.disableNativeAssetBuffer
+  () => props.address === nativeAsset.address && !props.disableNativeAssetBuffer
 );
 const amountExceedsTokenBalance = computed(() =>
   amountBN.value.gt(tokenBalance.value)
@@ -127,26 +132,26 @@ const shouldShowTxBufferMessage = computed(() => {
 const isMaxed = computed(() => {
   if (shouldUseTxBuffer.value) {
     return (
-      _amount.value ===
+      props.amount ===
       tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer).toString()
     );
   } else {
-    return _amount.value === tokenBalance.value;
+    return props.amount === tokenBalance.value;
   }
 });
 
 const tokenBalance = computed(() => {
   if (props.customBalance) return props.customBalance;
-  return balanceFor(_address.value);
+  return balanceFor(props.address);
 });
 
 const token = computed((): TokenInfo | undefined => {
   if (!hasToken.value) return undefined;
-  return getToken(_address.value);
+  return getToken(props.address);
 });
 
 const tokenValue = computed(() => {
-  return props.tokenValue ?? toFiat(_amount.value, _address.value);
+  return props.tokenValue ?? toFiat(props.amount, props.address);
 });
 
 const inputRules = computed(() => {
@@ -186,44 +191,51 @@ const priceImpactClass = computed(() =>
   props.priceImpact >= 0.01 ? 'text-red-500' : ''
 );
 
+const decimalLimit = computed<number>(() => token.value?.decimals || 18);
+
+watch(
+  () => props.address,
+  async (newVal, oldVal) => {
+    // If token address changes, we have to calculate new safe value based on new token's decimals
+    if (newVal !== oldVal) {
+      // wait for the token's decimals to be updated
+      await nextTick();
+      handleAmountChange(props.amount);
+    }
+  }
+);
+
 /**
  * METHODS
  */
+function getSafeAmount(amount: InputValue, decimalLimit: number) {
+  return overflowProtected(amount, decimalLimit);
+}
+
+function handleAmountChange(amount: InputValue) {
+  const safeAmount = getSafeAmount(amount, decimalLimit.value);
+  emit('update:amount', safeAmount);
+}
+
 const setMax = () => {
   if (props.disableMax) return;
 
-  if (
-    _address.value === nativeAsset.address &&
-    !props.disableNativeAssetBuffer
-  ) {
-    // Subtract buffer for gas
-    _amount.value = tokenBalanceBN.value.gt(nativeAsset.minTransactionBuffer)
-      ? tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer).toString()
-      : '0';
-  } else {
-    _amount.value = tokenBalance.value;
-  }
+  const maxAmount = props.customBalance
+    ? props.customBalance
+    : getMaxBalanceFor(props.address, props.disableNativeAssetBuffer);
 
-  emit('update:amount', _amount.value);
+  handleAmountChange(maxAmount);
 };
-
-/**
- * CALLBACKS
- */
-watchEffect(() => {
-  _amount.value = props.amount;
-  _address.value = props.address;
-});
 </script>
-
+  
 <template>
   <BalTextInput
-    v-model="_amount"
+    :modelValue="amount"
     :name="name"
     :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"
-    :decimalLimit="token?.decimals || 18"
+    :decimalLimit="decimalLimit"
     :rules="inputRules"
     validateOn="input"
     autocomplete="off"
@@ -234,14 +246,15 @@ watchEffect(() => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:model-value="emit('update:amount', $event)"
+    @update:model-value="handleAmountChange($event)"
     @update:is-valid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
     <template #prepend>
       <slot name="tokenSelect">
         <TokenSelectInput
-          v-model="_address"
+          :modelValue="props.address"
+          v-bind="tokenSelectProps"
           :weight="weight"
           :fixed="fixedToken"
           :options="options"
@@ -260,7 +273,7 @@ watchEffect(() => {
           class="flex justify-between items-center text-sm leading-none text-gray-600 dark:text-gray-400"
         >
           <div v-if="!isWalletReady || disableBalance" />
-          <div v-else class="flex items-center cursor-pointer" @click="setMax">
+          <button v-else class="flex items-center" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
 
             <BalLoadingBlock v-if="balanceLoading" class="mx-2 w-12 h-4" />
@@ -282,10 +295,12 @@ watchEffect(() => {
                 {{ $t('maxed') }}
               </span>
             </template>
-          </div>
+          </button>
           <div>
             <template v-if="hasAmount && hasToken">
-              {{ fNum2(tokenValue, FNumFormats.fiat) }}
+              <span v-if="!hideFiatValue">
+                {{ fNum2(tokenValue, FNumFormats.fiat) }}
+              </span>
               <span v-if="priceImpact" :class="priceImpactClass">
                 ({{
                   priceImpactSign + fNum2(priceImpact, FNumFormats.percent)
@@ -302,8 +317,14 @@ watchEffect(() => {
             </template>
           </div>
         </div>
+        <BalRangeInput
+          v-if="props.slider"
+          v-bind="props.sliderProps"
+          class="mt-2"
+          @update:model-value="emit('update:slider', $event)"
+        />
         <BalProgressBar
-          v-if="hasBalance && !noMax"
+          v-else-if="hasBalance && !noMax"
           :width="maxPercentage"
           :bufferWidth="bufferPercentage"
           :color="barColor"
