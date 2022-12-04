@@ -52,6 +52,8 @@ const yieldAPRLabel = computed(() => {
   if (includesWstEth(poolTokensList)) return t('yieldAprRewards.apr.steth');
   if (includesAddress(poolTokensList, configService.network.addresses.rETH))
     return t('yieldAprRewards.apr.reth');
+  if (includesAddress(poolTokensList, configService.network.addresses.stMATIC))
+    return t('yieldAprRewards.apr.stmatic');
   if (isDeep(props.pool)) return t('yieldAprRewards.apr.boosted');
 
   const yieldTokensList = Object.keys(props.yieldAPR.breakdown);

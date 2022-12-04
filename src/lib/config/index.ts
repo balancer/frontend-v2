@@ -54,6 +54,7 @@ export interface Config {
     stablePoolFactory: string;
     weth: string;
     rETH: string;
+    stMATIC: string;
     stETH: string;
     wstETH: string;
     lidoRelayer: string;

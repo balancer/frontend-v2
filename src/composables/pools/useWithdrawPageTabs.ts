@@ -6,10 +6,10 @@ export enum Tab {
 }
 
 export const tabs = [
-  { value: Tab.PoolTokens, label: 'Pool Tokens (proportional)' },
+  { value: Tab.PoolTokens, label: 'Pool tokens (proportional)' },
   {
     value: Tab.SingleToken,
-    label: 'Single Token',
+    label: 'Single token',
   },
 ];
 
