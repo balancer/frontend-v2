@@ -115,7 +115,11 @@ export default defineConfig(({ mode }) => {
     test: {
       globals: true,
       environment: 'happy-dom',
-      setupFiles: 'tests/unit/vitest/setup-vitest.ts',
+      setupFiles: [
+        'tests/unit/vitest/setup-vitest.ts',
+        // https://github.com/jest-community/jest-extended/tree/main/examples/typescript/all
+        'jest-extended/all',
+      ],
       coverage: { reporter: ['text', 'lcov'] }, // lcov reporter is used by IDE coverage extensions
       include: [
         'tests/unit/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',

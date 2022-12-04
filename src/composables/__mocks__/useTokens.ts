@@ -29,7 +29,7 @@ const mockTokens = {
 export default function useTokens() {
   return {
     injectTokens: vi.fn(),
-    priceFor: vi.fn(),
+    priceFor: () => 2,
     hasBalance: vi.fn().mockReturnValue(false),
     balanceFor: vi.fn().mockReturnValue('0'),
     getToken: vi.fn().mockImplementation(address => {

@@ -5,11 +5,11 @@ import { ref } from 'vue';
 import { mount } from 'vue-composable-tester';
 import { useTokenBreakdown } from './useTokenBreakdown';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import useTokens from '@/composables/useTokens';
+import * as useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 
 // TODO: refactor providers to avoid mocking useTokens
-jest.mock('@/composables/useTokens');
+vi.mock('@/composables/useTokens');
 
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
 const isDeepPool = ref(true);
@@ -108,9 +108,10 @@ describe('Given a weighted pool (GRO-WETH)', () => {
   });
 
   it('Uses latestUSDPrice when the token price is not defined (fiat value is zero because priceFor returns zero when token price not found)', () => {
-    //@ts-ignore
-    useTokens = () => ({
-      priceFor: () => 0,
+    Object.defineProperty(useTokens, 'default', {
+      value: () => ({
+        priceFor: () => 0,
+      }),
     });
 
     const groToken = removeBptFrom(PoolMock).tokens[0];
