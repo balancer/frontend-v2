@@ -22,7 +22,7 @@ interface GeneralisedExitResponse {
   tokensOut: string[];
   expectedAmountsOut: string[];
   minAmountsOut: string[];
-  // priceImpact: string;
+  priceImpact: string;
 }
 
 /**
@@ -100,11 +100,7 @@ export class DeepExitHandler implements ExitPoolHandler {
     });
 
     const priceImpact: number = bnum(
-      formatFixed(
-        // @ts-ignore-next-line -- priceImpact is part of the response, but type is missing
-        this.lastGeneralisedExitRes.priceImpact,
-        18
-      )
+      formatFixed(this.lastGeneralisedExitRes.priceImpact, 18)
     ).toNumber();
 
     return {

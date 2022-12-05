@@ -19,7 +19,7 @@ interface GeneralisedJoinResponse {
   callData: string;
   minOut: string;
   expectedOut: string;
-  // priceImpact: string;
+  priceImpact: string;
 }
 export class DeepPoolJoinHandler implements JoinPoolHandler {
   private lastGeneralisedJoinRes?: GeneralisedJoinResponse;
@@ -88,11 +88,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
       this.pool.value.onchain?.decimals || 18
     );
     const priceImpact: number = bnum(
-      formatFixed(
-        // @ts-ignore-next-line -- priceImpact is part of the response, but type is missing
-        this.lastGeneralisedJoinRes.priceImpact,
-        18
-      )
+      formatFixed(this.lastGeneralisedJoinRes.priceImpact, 18)
     ).toNumber();
 
     if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity.');
