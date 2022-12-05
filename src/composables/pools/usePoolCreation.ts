@@ -19,10 +19,10 @@ import {
 } from '@/lib/utils';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
-import { PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useTokens from '../useTokens';
+import { PoolType } from '@balancer-labs/sdk';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
 export const POOL_CREATION_STATE_KEY = 'poolCreationState';

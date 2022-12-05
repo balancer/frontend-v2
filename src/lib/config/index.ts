@@ -52,11 +52,14 @@ export interface Config {
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    rETH: string;
+    stMATIC: string;
     stETH: string;
     wstETH: string;
     lidoRelayer: string;
     balancerHelpers: string;
     batchRelayer: string;
+    batchRelayerV4: string;
     veBAL: string;
     gaugeController: string;
     gaugeFactory: string;

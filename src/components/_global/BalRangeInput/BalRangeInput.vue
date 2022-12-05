@@ -1,28 +1,24 @@
-
-
 <script setup lang="ts">
 import 'vue-slider-component/theme/antd.css';
 
-import { computed, ref, watch } from 'vue';
-import VueSlider from 'vue-slider-component';
+import { computed } from 'vue';
+import VueSlider, { DefineComponent as TVueSlider } from 'vue-slider-component';
 
 import { theme } from '@/../tailwind.config';
 import useDarkMode from '@/composables/useDarkMode';
 
-interface Props {
-  modelValue: string | number;
+export interface BalRangeInputProps extends TVueSlider {
+  modelValue: number;
   leftLabel?: string;
   rightLabel?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: '0',
+const props = withDefaults(defineProps<BalRangeInputProps>(), {
   leftLabel: '',
   rightLabel: '',
 });
 const emit = defineEmits(['change', 'update:modelValue', 'dragEnd']);
 
-const range = ref(0);
 const { darkMode } = useDarkMode();
 
 const colors = theme.extend.colors;
@@ -56,14 +52,6 @@ const proccessStyle = computed(() => {
     backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`,
   };
 });
-
-watch(
-  () => props.modelValue,
-  newVal => {
-    range.value = Number(newVal) || 0;
-  },
-  { immediate: true }
-);
 </script>
 
 <template>
@@ -81,7 +69,7 @@ watch(
       </div>
     </div>
     <VueSlider
-      v-model="range"
+      :modelValue="modelValue"
       v-bind="$attrs"
       :dotStyle="dotStyle"
       :railStyle="railSyle"

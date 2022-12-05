@@ -47,5 +47,6 @@
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
 }
