@@ -85,6 +85,7 @@ const defaultAttrs = {
   protocolYieldFeeCache: true,
   priceRateProviders: priceRateProviderAttrs,
   tokens: tokenTreeAttrs,
+  poolTypeVersion: true,
 };
 
 export default (args = {}, attrs = {}) => ({
