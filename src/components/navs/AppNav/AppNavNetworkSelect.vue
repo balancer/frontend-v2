@@ -3,6 +3,7 @@ import { computed, ref, onMounted, watchEffect, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import i18n from '@/plugins/i18n';
+import { setWindowLocation } from '@/lib/utils/browser';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
@@ -105,8 +106,7 @@ watchEffect(() => {
     if (newNetwork) {
       document.body.style.display = 'none';
       localStorage.setItem('networkId', chainId.value.toString());
-      window.location.href = getNetworkChangeUrl(newNetwork);
-      location.reload();
+      setWindowLocation(getNetworkChangeUrl(newNetwork));
     }
   }
   previousNetwork.value = chainId.value;
