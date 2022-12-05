@@ -14,7 +14,7 @@ vi.mock('@ethersproject/providers', () => {
         },
         sendTransaction: vi.fn(),
         getAddress: vi.fn(),
-        getChainId: jest.fn().mockReturnValue('5'),
+        getChainId: vi.fn().mockReturnValue('5'),
       };
     }),
   };
