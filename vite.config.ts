@@ -68,7 +68,6 @@ export default defineConfig(({ mode }) => {
       'process.env': {},
     },
     plugins: plugins,
-    // sourcemap: true,
     resolve: {
       alias: {
         '@': resolve(__dirname, './src'),
@@ -98,6 +97,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     build: {
+      sourcemap: false,
       minify: true,
       rollupOptions: {
         plugins: [
