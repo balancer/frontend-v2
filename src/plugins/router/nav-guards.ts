@@ -5,6 +5,7 @@ import {
   networkSlug,
 } from '@/composables/useNetwork';
 import config from '@/lib/config';
+import { setWindowLocation } from '@/lib/utils/browser';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
 
@@ -26,8 +27,7 @@ export function applyNavGuards(router: Router): Router {
  */
 function hardRedirectTo(url: string) {
   document.body.style.display = 'none';
-  window.location.href = url;
-  location.reload();
+  setWindowLocation(url);
 }
 
 /**
