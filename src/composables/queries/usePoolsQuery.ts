@@ -80,6 +80,13 @@ const tokenTreeAttrs = {
   },
 };
 
+const priceRateProviderAttrs = {
+  address: true,
+  token: {
+    address: true,
+  },
+};
+
 const queryAttrs = {
   pools: {
     id: true,
@@ -99,6 +106,8 @@ const queryAttrs = {
     swapEnabled: true,
     symbol: true,
     name: true,
+    protocolYieldFeeCache: true,
+    priceRateProviders: priceRateProviderAttrs,
     tokens: tokenTreeAttrs,
     isNew: true,
     apr: {
