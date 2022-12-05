@@ -4,6 +4,7 @@ import {
   networkFromSlug,
   networkSlug,
 } from '@/composables/useNetwork';
+import { isJoinsDisabled } from '@/composables/usePool';
 import config from '@/lib/config';
 import { setWindowLocation } from '@/lib/utils/browser';
 import { Network } from '@balancer-labs/sdk';
@@ -15,6 +16,7 @@ import { Router } from 'vue-router';
 export function applyNavGuards(router: Router): Router {
   router = applyNetworkSubdomainRedirect(router);
   router = applyNetworkPathRedirects(router);
+  router = applyPoolJoinRedirects(router);
 
   return router;
 }
@@ -100,5 +102,21 @@ function applyNetworkPathRedirects(router: Router): Router {
     }
   });
 
+  return router;
+}
+
+/**
+ * If the route is a pool invest page check if this should be accessible against
+ * our isJoinsDisabled conditional. If so, redirect to the pool page.
+ */
+function applyPoolJoinRedirects(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    if (to.name === 'invest' && isJoinsDisabled(to.params?.id as string)) {
+      next({
+        name: 'pool',
+        params: to.params,
+      });
+    } else next();
+  });
   return router;
 }
