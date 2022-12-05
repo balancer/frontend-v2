@@ -23,6 +23,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
 import useTokens from '../useTokens';
+
 import { TradeQuote } from './types';
 
 type JoinExitState = {
@@ -128,7 +129,7 @@ export default function useJoinExit({
         account.value,
         balancer.contracts.relayerV4?.address ?? '',
         balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
-        '50',
+        String(slippageBufferRate.value * 1e4),
         undefined
       );
       console.log(relayerCallData);
@@ -190,6 +191,19 @@ export default function useJoinExit({
   });
 
   watchEffect(async () => {
+    console.log({
+      tokenInAddressInput: tokenInAddressInput.value,
+      tokenOutAddressInput: tokenOutAddressInput.value,
+      exactIn: (exactIn.value
+        ? SwapTypes.SwapExactIn
+        : SwapTypes.SwapExactOut) as SwapTypes,
+      amount: parseFixed(
+        tokenInAmountInput.value || tokenOutAmountInput.value,
+        18
+      ),
+      swapOptions: undefined,
+      useBpts: true,
+    });
     swapInfo.value = await balancer.sor.getSwaps(
       tokenInAddressInput.value,
       tokenOutAddressInput.value,
