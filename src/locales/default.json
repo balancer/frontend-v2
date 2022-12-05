@@ -424,6 +424,10 @@
   "invalidFee": "Invalid fee",
   "invalidFeeExplain": "Please enter a valid fee between 0.0001% and 10%",
   "investment": {
+    "tabs": {
+      "poolTokens": "Pool Tokens",
+      "singleToken": "Single Token"
+    },
     "preview": {
       "loadingLabel": {
         "approval": "Confirm approval in wallet",
@@ -1371,6 +1375,10 @@
   "weightedPool": "Weighted pool",
   "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
+    "tabs": {
+      "poolTokens": "Pool Tokens (proportional)",
+      "singleToken": "Single Token"
+    },
     "label": "Withdraw",
     "tooltips": {
       "priceImpact": "Withdrawing custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
