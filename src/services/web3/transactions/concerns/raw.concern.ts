@@ -6,7 +6,7 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/browser';
-import { verifyTransactionSender } from '../../web3.plugin';
+import { verifyNetwork, verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
 export class RawConcern extends TransactionConcern {
@@ -21,6 +21,7 @@ export class RawConcern extends TransactionConcern {
     console.log('sendTransaction', options);
     // will throw an error if signer is a sanctioned address
     await verifyTransactionSender(this.signer);
+    await verifyNetwork(this.signer);
 
     try {
       const gasSettings = await this.gasPrice.settings(
