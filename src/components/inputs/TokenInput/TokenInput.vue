@@ -227,7 +227,7 @@ const setMax = () => {
   handleAmountChange(maxAmount);
 };
 </script>
-  
+
 <template>
   <BalTextInput
     :modelValue="amount"
