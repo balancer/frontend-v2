@@ -33,11 +33,10 @@ const { currency } = useUserSettings();
 
 <template>
   <div class="summary-table">
-    <h6 class="p-2">{{ summaryTitle || $t('summary') }}</h6>
     <div class="flex flex-col py-2">
       <div class="summary-table-row">
         <div class="summary-table-label">
-          {{ $t('total') }}
+          {{ $t('investment.preview.summary.total') }}
         </div>
         <div class="summary-table-number">
           {{ fNum2(fiatTotal, FNumFormats.fiat) }}
@@ -85,7 +84,8 @@ const { currency } = useUserSettings();
 
 <style scoped>
 .summary-table {
-  @apply border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg mt-4;
+  @apply border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg mt-4 bg-gray-50 dark:bg-gray-800;
+  @apply text-sm;
 }
 
 .summary-table-row {

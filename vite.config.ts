@@ -6,6 +6,7 @@ import { Plugin, loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
 import nodePolyfills from 'vite-plugin-node-stdlib-browser';
+import rollupPolyfillNode from 'rollup-plugin-polyfill-node';
 import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
@@ -102,16 +103,23 @@ export default defineConfig(({ mode }) => {
         plugins: [
           envConfig.VITE_BUILD_ANALIZE ? analyze({ summaryOnly: false }) : null,
           envConfig.VITE_BUILD_VISUALIZE ? visualizer({ open: true }) : null,
+          // https://stackoverflow.com/a/72440811/10752354
+          rollupPolyfillNode(),
         ],
       },
       commonjsOptions: {
         include: ['tailwind.config.js', 'node_modules/**'],
+        transformMixedEsModules: true, // Enable @walletconnect/web3-provider which has some code in CommonJS
       },
     },
     test: {
       globals: true,
       environment: 'happy-dom',
-      setupFiles: 'tests/unit/vitest/setup-vitest.ts',
+      setupFiles: [
+        'tests/unit/vitest/setup-vitest.ts',
+        // https://github.com/jest-community/jest-extended/tree/main/examples/typescript/all
+        'jest-extended/all',
+      ],
       coverage: { reporter: ['text', 'lcov'] }, // lcov reporter is used by IDE coverage extensions
       include: [
         'tests/unit/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',

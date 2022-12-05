@@ -1,4 +1,4 @@
-import { toNormalizedWeights } from '@balancer-labs/sdk';
+import { PoolType, toNormalizedWeights } from '@balancer-labs/sdk';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -17,7 +17,7 @@ import {
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { isSameAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import { Pool, PoolType } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import {
   LinearPoolDataMap,
   OnchainPoolData,

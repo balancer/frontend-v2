@@ -9,6 +9,8 @@ const POOL_ISSUES = {
   [Network.MAINNET]: {
     poolOwnerVulnWarningGovernanceMigrate: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+    ],
+    poolOwnerVulnWarningGovernanceWithdraw: [
       '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
     ],
     poolOwnerVulnWarningGovernance: [

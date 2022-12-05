@@ -1,4 +1,11 @@
 import { ref } from 'vue';
+import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
+/**
+ * HELPERS
+ */
+function blockInvalidChar(event: KeyboardEvent): void {
+  ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
+}
 
 export default function useInputEvents(props, emit, validate) {
   /**
@@ -23,8 +30,11 @@ export default function useInputEvents(props, emit, validate) {
     if (event.target) {
       let value = (event.target as HTMLInputElement).value;
       if (props.type === 'number') {
-        const overflowProtectedVal = overflowProtected(value);
-        if (overflowProtectedVal) value = overflowProtectedVal;
+        const overflowProtectedVal = overflowProtected(
+          value,
+          props.decimalLimit
+        );
+        if (overflowProtectedVal !== value) value = overflowProtectedVal;
       }
       isActive.value = true;
       emit('input', value);
@@ -55,22 +65,6 @@ export default function useInputEvents(props, emit, validate) {
       blockInvalidChar(event);
     }
     emit('keydown', event);
-  }
-
-  /**
-   * HELPERS
-   */
-  function blockInvalidChar(event: KeyboardEvent): void {
-    ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
-  }
-
-  function overflowProtected(value: string): string | undefined {
-    const [numberStr, decimalStr] = value.toString().split('.');
-
-    if (decimalStr && decimalStr.length > props.decimalLimit) {
-      const maxLength = numberStr.length + props.decimalLimit + 1;
-      return value.toString().slice(0, maxLength);
-    } else return;
   }
 
   return {

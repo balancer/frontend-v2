@@ -12,6 +12,7 @@ type Props = {
   iconURI?: string;
   size?: number;
   button?: boolean;
+  disabled?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,6 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   iconURI: '',
   size: 24,
   button: false,
+  disabled: false,
 });
 
 /**
@@ -49,6 +51,7 @@ const rootElement = computed(() => (props.button ? 'button' : 'div'));
 
 const rootElementAttrs = computed(() => ({
   'aria-label': token.value?.symbol,
+  disabled: props.disabled,
 }));
 
 /**
@@ -62,6 +65,7 @@ watch(iconSRC, newURL => {
 <template>
   <component
     :is="rootElement"
+    :title="token?.symbol"
     class="inline-block leading-none rounded-full shadow-sm bal-asset"
     :style="{
       width: `${size}px`,
@@ -92,8 +96,12 @@ button.bal-asset {
   @apply transition-transform shadow;
 }
 
-button.bal-asset:hover,
-button.bal-asset:focus {
+button:disabled.bal-asset {
+  @apply opacity-20 cursor-not-allowed;
+}
+
+button:not([disabled]).bal-asset:hover,
+button:not([disabled]).bal-asset:focus {
   @apply scale-110 transform-gpu;
 
   box-shadow: 0 4px 8px rgb(0 0 0 / 15%);
