@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import i18n from '@/plugins/i18n';
 
 export enum Tab {
   PoolTokens,
@@ -6,10 +7,10 @@ export enum Tab {
 }
 
 export const tabs = [
-  { value: Tab.PoolTokens, label: 'Pool tokens (proportional)' },
+  { value: Tab.PoolTokens, label: i18n.global.t('withdraw.tabs.poolTokens') },
   {
     value: Tab.SingleToken,
-    label: 'Single token',
+    label: i18n.global.t('withdraw.tabs.singleToken'),
   },
 ];
 
