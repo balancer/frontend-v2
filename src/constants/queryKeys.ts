@@ -8,6 +8,8 @@ import { NativeAsset, TokenInfo } from '@/types/TokenList';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
+export const QUERY_EXIT_ROOT_KEY = [POOLS_ROOT_KEY, 'query', 'exit'];
+export const QUERY_JOIN_ROOT_KEY = [POOLS_ROOT_KEY, 'query', 'join'];
 
 const QUERY_KEYS = {
   Pools: {
@@ -70,9 +72,7 @@ const QUERY_KEYS = {
         hasFetchedPoolsForSor: Ref<unknown>,
         isSingleAssetJoin: Ref<unknown>
       ) => [
-        POOLS_ROOT_KEY,
-        'query',
-        'join',
+        ...QUERY_JOIN_ROOT_KEY,
         {
           amountsIn,
           hasFetchedPoolsForSor,
@@ -87,9 +87,7 @@ const QUERY_KEYS = {
         isSingleAssetExit: Ref<unknown>,
         singleAmountOut: unknown
       ) => [
-        POOLS_ROOT_KEY,
-        'query',
-        'exit',
+        ...QUERY_EXIT_ROOT_KEY,
         {
           bptIn,
           hasFetchedPoolsForSor,
