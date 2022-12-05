@@ -19,9 +19,10 @@ export class RawConcern extends TransactionConcern {
     forceLegacyTxType = false
   ): Promise<TransactionResponse> {
     console.log('sendTransaction', options);
-    // will throw an error if signer is a sanctioned address
-    await verifyTransactionSender(this.signer);
-    await verifyNetwork(this.signer);
+    await Promise.all([
+      verifyTransactionSender(this.signer),
+      verifyNetwork(this.signer),
+    ]);
 
     try {
       const gasSettings = await this.gasPrice.settings(
