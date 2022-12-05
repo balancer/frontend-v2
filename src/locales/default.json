@@ -1129,12 +1129,14 @@
     "apr": {
       "steth": "stETH staking rewards APR",
       "reth": "rETH staking rewards APR",
+      "stmatic": "stMATIC staking rewards APR",
       "boosted": "Boosted APR",
       "veBAL": "veBAL APR"
     },
     "fiat": {
       "steth": "stETH staking rewards",
       "reth": "rETH staking rewards",
+      "stmatic": "stMATIC staking rewards",
       "boosted": "Boosted rewards"
     }
   },
@@ -1265,7 +1267,7 @@
     "createPool": "Create pool",
     "fundPool": "Fund pool",
     "migratePool": "Migrate pool",
-    "invest": "Pool",
+    "invest": "Add liquidity",
     "trade": "Swap",
     "unwrap": "Unwrap",
     "voteForGauge": "Vote",

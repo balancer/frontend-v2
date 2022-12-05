@@ -1,16 +1,19 @@
 <template>
   <div :class="['bal-checkbox', wrapperClasses]">
     <div class="flex">
-      <div class="flex items-center">
+      <div class="flex items-start">
         <input
           type="checkbox"
           :name="name"
           :checked="modelValue"
-          :class="['bal-checkbox-input', inputClasses]"
+          :class="[
+            'bal-checkbox-input relative top-2 hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
+            inputClasses,
+          ]"
           @change="onChange"
         />
       </div>
-      <div class="relative flex-col ml-2">
+      <div class="relative flex-col ml-3">
         <label
           v-if="$slots.label || label"
           :for="name"
@@ -20,7 +23,7 @@
             {{ label }}
           </slot>
         </label>
-        <div v-if="hasError" class="bal-checkbox-error">
+        <div v-if="hasError" class="font-medium bal-checkbox-error">
           <div class="relative">
             {{ errors[0] }}
           </div>
@@ -107,7 +110,7 @@ export default defineComponent({
 
     const wrapperClasses = computed(() => {
       return {
-        'mb-5': !props.noMargin,
+        'mb-1': !props.noMargin,
       };
     });
 
@@ -164,6 +167,6 @@ export default defineComponent({
 }
 
 .bal-checkbox-error {
-  @apply absolute text-red-500 text-sm;
+  @apply text-red-500 text-sm pt-1;
 }
 </style>
