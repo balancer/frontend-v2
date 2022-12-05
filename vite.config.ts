@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => {
       'process.env': {},
     },
     plugins: plugins,
-    sourcemap: true,
+    // sourcemap: true,
     resolve: {
       alias: {
         '@': resolve(__dirname, './src'),
