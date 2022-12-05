@@ -28,10 +28,10 @@ export class RawConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
-      options = { ...options, ...gasSettings };
+      const txOptions = { ...options, ...gasSettings };
 
       trackGoal(Goals.RawTransactionSubmitted);
-      return await this.signer.sendTransaction(options);
+      return await this.signer.sendTransaction(txOptions);
     } catch (err) {
       const error = err as WalletError;
 

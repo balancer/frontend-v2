@@ -11,10 +11,8 @@ import { Pool } from '@/services/pool/types';
 
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
-import { lpTokensFor } from '../usePool';
+import { tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
-import useGaugesQuery from './useGaugesQuery';
 import { forChange } from '@/lib/utils';
 
 type PoolsQueryResponse = {
@@ -39,19 +37,9 @@ export default function usePoolsQuery(
   /**
    * COMPOSABLES
    */
-  const {
-    injectTokens,
-    prices,
-    tokens: tokenMeta,
-    dynamicDataLoading,
-  } = useTokens();
-  const { currency } = useUserSettings();
+  const { injectTokens, tokens: tokenMeta, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
-  const { data: subgraphGauges } = useGaugesQuery();
-  const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id)
-  );
 
   /**
    * COMPUTED
@@ -90,8 +78,7 @@ export default function usePoolsQuery(
     networkId,
     tokenList,
     filterOptions?.poolIds,
-    filterOptions?.poolAddresses,
-    gaugeAddresses
+    filterOptions?.poolAddresses
   );
 
   /**
@@ -102,28 +89,19 @@ export default function usePoolsQuery(
     const pools = await balancerSubgraphService.pools.get(queryArgs);
 
     const poolDecorator = new PoolDecorator(pools);
-    let decoratedPools = await poolDecorator.decorate(
-      subgraphGauges.value || [],
-      prices.value,
-      currency.value,
-      tokenMeta.value
-    );
+    let decoratedPools = await poolDecorator.decorate(tokenMeta.value);
 
     const tokens = flatten(
       pools.map(pool => [
         ...pool.tokensList,
-        ...lpTokensFor(pool),
+        ...tokenTreeLeafs(pool.tokens),
         pool.address,
       ])
     );
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
 
-    decoratedPools = poolDecorator.reCalculateTotalLiquidities(
-      prices.value,
-      currency.value,
-      tokenMeta.value
-    );
+    decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
 
     return {
       pools: decoratedPools,

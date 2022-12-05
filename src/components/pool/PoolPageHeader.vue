@@ -14,9 +14,10 @@ import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
-import { OnchainTokenData, Pool, PoolAPRs } from '@/services/pool/types';
+import { OnchainTokenData, Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useStaking from '@/composables/staking/useStaking';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -27,7 +28,7 @@ type Props = {
   noInitLiquidity: boolean;
   isStableLikePool: boolean;
   pool?: Pool;
-  poolApr?: PoolAPRs;
+  poolApr?: AprBreakdown;
   titleTokens: [string, OnchainTokenData][];
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
@@ -121,7 +122,7 @@ const hasCustomToken = computed(() => {
 });
 
 const poolTypeLabel = computed(() => {
-  if (!props.pool) return '';
+  if (!props.pool?.factory) return '';
   const key = POOLS.Factories[props.pool.factory];
 
   return key ? t(key) : t('unknownPoolType');

@@ -15,13 +15,8 @@ const QUERY_KEYS = {
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
       poolIds: Ref<string[]> | undefined,
-      poolAddresses: Ref<string[]> | undefined,
-      gaugeAddresses: Ref<string[]>
-    ) => [
-      POOLS_ROOT_KEY,
-      'all',
-      { networkId, tokens, poolIds, poolAddresses, gaugeAddresses },
-    ],
+      poolAddresses: Ref<string[]> | undefined
+    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
     User: (
       networkId: Ref<Network>,
       account: Ref<string>,
@@ -69,6 +64,53 @@ const QUERY_KEYS = {
       'historicalPrices',
       { networkId, id },
     ],
+    Joins: {
+      QueryJoin: (
+        amountsIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetJoin: Ref<unknown>
+      ) => [
+        POOLS_ROOT_KEY,
+        'query',
+        'join',
+        {
+          amountsIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetJoin,
+        },
+      ],
+    },
+    Exits: {
+      QueryExit: (
+        bptIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        POOLS_ROOT_KEY,
+        'query',
+        'exit',
+        {
+          bptIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
+      SingleAssetMax: (
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        POOLS_ROOT_KEY,
+        'singleAssetMax',
+        {
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
+    },
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],

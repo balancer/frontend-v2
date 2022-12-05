@@ -62,6 +62,10 @@ export function getPreviousThursday(date: Date = new Date()): Date {
   });
 }
 
+export function getTimestampSecondsFromNow(secs: number): number {
+  return Math.ceil(Date.now() / 1000) + secs;
+}
+
 export default function useTime() {
   return {
     oneSecondInMs,
