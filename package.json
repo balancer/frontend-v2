@@ -10,7 +10,6 @@
     "dev": "npm run generate:tokenlists && vite",
     "serve": "npm run dev",
     "build": "npm run generate:tokenlists && vite build",
-    "build2": "NODE_OPTIONS=--max_old_space_size=10240 npm run generate:tokenlists && vite build",
     "build:withouttokenlists": "vite build",
     "build:watch": "vite build --watch",
     "preview": "vite preview",
