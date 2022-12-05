@@ -77,6 +77,7 @@ export type Pools = {
     AllowList: string[];
   };
   Metadata: Record<string, PoolMetadata>;
+  DisabledJoins: string[];
 };
 
 const POOLS_GOERLI: Pools = {
@@ -153,6 +154,7 @@ const POOLS_GOERLI: Pools = {
       hasIcon: false,
     },
   },
+  DisabledJoins: [],
 };
 
 const POOLS_MAINNET: Pools = {
@@ -321,6 +323,10 @@ const POOLS_MAINNET: Pools = {
       hasIcon: false,
     },
   },
+  DisabledJoins: [
+    '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
+    '0xad6a8c18b62eb914604ec1eec7fbcf132799fe090001000000000000000003f6',
+  ],
 };
 
 const POOLS_POLYGON: Pools = {
@@ -452,6 +458,9 @@ const POOLS_POLYGON: Pools = {
       hasIcon: true,
     },
   },
+  DisabledJoins: [
+    '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
+  ],
 };
 
 const POOLS_ARBITRUM: Pools = {
@@ -532,6 +541,7 @@ const POOLS_ARBITRUM: Pools = {
     ],
   },
   Metadata: {},
+  DisabledJoins: [],
 };
 
 const POOLS_GENERIC: Pools = {
@@ -622,6 +632,7 @@ const POOLS_GENERIC: Pools = {
       hasIcon: true,
     },
   },
+  DisabledJoins: [],
 };
 
 const POOLS_MAP = {

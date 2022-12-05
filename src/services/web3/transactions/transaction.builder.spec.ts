@@ -12,8 +12,9 @@ vi.mock('@ethersproject/providers', () => {
         provider: {
           getBlockNumber: vi.fn(),
         },
-        getAddress: vi.fn(),
         sendTransaction: vi.fn(),
+        getAddress: vi.fn(),
+        getChainId: jest.fn().mockReturnValue('5'),
       };
     }),
   };

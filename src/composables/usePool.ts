@@ -503,28 +503,15 @@ export function fiatValueOf(pool: Pool, shares: string): string {
   return bnum(shares).times(bptPriceFor(pool)).toString();
 }
 
-export function findTokenByAddress(pool: Pool, address: string) {
-  return pool.tokens.find(token => isSameAddress(token.address, address));
-}
-
-export function getUnderlyingTokens(pool: Pool, address: string) {
-  const token = findTokenByAddress(pool, address);
-
-  const underlyingTokens = token?.token.pool?.tokens || [];
-  return underlyingTokens.filter(
-    token => !includesAddress(pool.tokensList, token.address)
-  );
-}
-
-export function calculateTokenBPTShareByAddress(
-  pool: Pool,
-  address: string
-): string {
-  const token = findTokenByAddress(pool, address);
-  if (!token) return '0';
-  return bnum(token?.balance || '0')
-    .div(token.token.pool?.totalShares || 1)
-    .toString();
+/**
+ * Checks if pool ID is included in the list of pools that joins should be
+ * disabled for, e.g. you can't access the invest page.
+ *
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list.
+ */
+export function isJoinsDisabled(id: string): boolean {
+  return POOLS.DisabledJoins.includes(id);
 }
 
 /**

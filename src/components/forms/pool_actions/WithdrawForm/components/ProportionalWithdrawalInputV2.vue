@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import BigNumber from 'bignumber.js';
-import { computed, onBeforeMount, reactive, toRef, watch } from 'vue';
-import { usePool } from '@/composables/usePool';
+import { computed, onBeforeMount, reactive, watch } from 'vue';
 import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -50,7 +49,6 @@ const {
   fiatTotalOut,
 } = useExitPool();
 const { t } = useI18n();
-const { isStableLikePool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -135,10 +133,10 @@ onBeforeMount(() => {
         :address="address"
         :fiatAmountOut="selectByAddress(fiatAmountsOut, address)"
         :loading="isLoadingQuery"
-        :isStableLikePool="isStableLikePool"
+        :pool="pool"
         :value="value"
         class="last:mb-0"
-      ></ProportionalWithdrawalTokenInfoV2>
+      />
     </div>
   </div>
 </template>
