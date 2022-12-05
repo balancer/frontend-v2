@@ -1,5 +1,6 @@
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
+import { ref } from 'vue';
 
 const network = ((): Network => {
   switch (configService.network.key) {
@@ -21,3 +22,14 @@ export const balancer = new BalancerSDK({
   rpcUrl: configService.rpc,
   customSubgraphUrl: configService.network.subgraph,
 });
+
+export const hasFetchedPoolsForSor = ref(false);
+
+export async function fetchPoolsForSor() {
+  if (hasFetchedPoolsForSor.value) return;
+
+  console.time('fetchPoolsForSor');
+  await balancer.swaps.fetchPools();
+  hasFetchedPoolsForSor.value = true;
+  console.timeEnd('fetchPoolsForSor');
+}

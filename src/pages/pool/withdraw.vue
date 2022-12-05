@@ -1,28 +1,40 @@
 <script setup lang="ts">
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
+import WithdrawFormV2 from '@/components/forms/pool_actions/WithdrawForm/WithdrawFormV2.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { oneMinInMs } from '@/composables/useTime';
+import { ExitPoolProvider } from '@/providers/local/exit-pool.provider';
 import { configService } from '@/services/config/config.service';
+import { usePool } from '@/composables/usePool';
+import useWithdrawPageTabs, {
+  tabs,
+  Tab,
+} from '@/composables/pools/useWithdrawPageTabs';
+import { oneMinInMs } from '@/composables/useTime';
 import { useIntervalFn } from '@vueuse/core';
+import { onMounted } from 'vue';
 
 /**
- * STATE
+ * COMPOSABLES
  */
 const { network } = configService;
 const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
+const { isDeepPool, isPreMintedBptPool } = usePool(pool);
+const { activeTab, resetTabs } = useWithdrawPageTabs();
 
 // Instead of refetching pool data on every block, we refetch every minute to prevent
 // overfetching a heavy request on short blocktime networks like Polygon.
 // TODO: Don't refetch whole pool, only update balances and weights with
 // onchain calls. i.e. only refetch what's required to be up to date for joins/exits.
 useIntervalFn(poolQuery.refetch.value, oneMinInMs);
+
+onMounted(() => resetTabs());
 </script>
 
 <template>
-  <div>
+  <div class="px-4 sm:px-0 mx-auto max-w-md">
     <BalLoadingBlock
       v-if="loadingPool || !pool || !transfersAllowed"
       class="h-96"
@@ -37,9 +49,23 @@ useIntervalFn(poolQuery.refetch.value, oneMinInMs);
             <h4>{{ $t('withdrawFromPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
+          <BalTabs
+            v-if="isDeepPool && isPreMintedBptPool"
+            v-model="activeTab"
+            :tabs="tabs"
+            class="p-0 m-0 -mb-px whitespace-nowrap"
+            noPad
+          />
         </div>
       </template>
-      <WithdrawForm :pool="pool" />
+      <ExitPoolProvider
+        v-if="isDeepPool"
+        :isSingleAssetExit="activeTab === Tab.SingleToken"
+        :pool="pool"
+      >
+        <WithdrawFormV2 :pool="pool" />
+      </ExitPoolProvider>
+      <WithdrawForm v-else :pool="pool" />
     </BalCard>
   </div>
 </template>

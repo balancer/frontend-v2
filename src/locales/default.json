@@ -116,6 +116,13 @@
       "claim": "Token earnings from liquidity mining accumulate every block and can be claimed at any time. Some pools offer multiple token incentives (not just BAL). Additionally, veBAL holders also get a share of protocol revenue, in both bb-a-USD and BAL."
     }
   },
+  "claimPage": {
+    "tips": {
+      "BalIncentives": "Incentives for LPs who stake in eligible pools (based on the previous week's voting). This doesn't include swap fees or intrinsic yield from certain yield bearing tokens which accumulate into LP positions automatically.",
+      "ProtocolAndVebal": "Additional incentives for veBAL holders: For locking in the B-80BAL-20WETH pool (based on the previous week's voting), and their share of protocol revenue.",
+      "OtherIncentives": "Incentives from third parties who want to further incentivize liquidity on top of any BAL liquidity incentives."
+    }
+  },
   "claimAll": "Claim all",
   "claimBAL": "Claim $BAL for",
   "claiming": "Claiming...",
@@ -352,10 +359,10 @@
   "featuredProtocol": "Featured ecosystem protocol",
   "featuredProtocols": {
     "title": "Featured ecosystem protocols",
-    "Copper": "Copper offers an intuitive UI for creating, managing & tracking Balancer Liquidity Bootstrapping Pools (LBPs) on a transparent and user-friendly platform.",
+    "Copper": "Fjord Foundry (formerly Copper)  offers an intuitive UI for creating, managing & tracking Balancer Liquidity Bootstrapping Pools (LBPs) on a transparent and user-friendly platform.",
     "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
     "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
-    "Tracer": "An open-source protocol for derivative markets, Tracer DAO utilizes Balancer Protocol for aggregated liquidity and creating a market for leveraged tokens."
+    "Tracer": "Mycelium (formerly TracerDAO) is an open-source protocol for derivative markets. It utilizes Balancer for aggregated liquidity and creating a market for leveraged tokens."
   },
   "fees": "fees",
   "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every swap utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
@@ -404,6 +411,7 @@
   "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Foundation is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
   "home": "Home",
   "hourAbbrev": "h",
+  "incentives": "incentives",
   "incentiveToken": "Incentive token",
   "inclXInVeBal": "{0} in veBAL",
   "initialBPT": "Initial BPT",
@@ -424,6 +432,13 @@
         "investment": "Confirm add liquidity in wallet"
       },
       "titles": {
+        "tokenIn": "You’re providing",
+        "tokenOut": "You’re expected to receive",
+        "confirmed": "Add liquidity confirmed",
+        "default": "Add liquidity preview"
+      },
+      "summary": {
+        "total": "Total",
         "confirmed": "Add liquidity confirmed",
         "default": "Add liquidity preview"
       },
@@ -439,6 +454,10 @@
       "lowLiquidity": {
         "description": "Add assets proportionally to the pool weights or the price impact will be high and you will likely get REKT and lose money.",
         "title": "Be careful: This pool has low liquidity"
+      },
+      "noPoolTokensToJoinWith": {
+        "title": "You have no pool tokens to join with",
+        "description": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact. \n\nHowever, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens. "
       }
     },
     "error": {
@@ -477,7 +496,7 @@
     },
     "networksExplainer": "Switch networks in the header to see your current cumulative $BAL incentives on {0} and {1}.",
     "noRewards": {
-      "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to investors weekly in proportion to their contribution.",
+      "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to liquidity providers weekly in proportion to their contribution.",
       "title": "You have no token incentives to claim"
     },
     "tabs": {
@@ -583,7 +602,7 @@
   "optimizedPrefilled": "Optimized amounts have been pre-filled",
   "oops": "Oops",
   "oracleWeightedPool": "Oracle Weighted Pool",
-  "otherTokenEarnings": "Other token earnings",
+  "otherTokenIncentives": "Other token incentives",
   "overview": "Overview",
   "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every swap that utilizes the liquidity in this pool. Dynamic swap fees are controlled by the Pool Owner.",
   "payload": "Payload",
@@ -647,7 +666,9 @@
   },
   "poolTransfer": {
     "myPoolBalancesCard": {
-      "title": "My pool balance"
+      "title": "My pool balance",
+      "altTitle": "My pool liquidity balance",
+      "underlyingTokens": "Underlying pool tokens"
     },
     "myWalletTokensCard": {
       "title": "Pool tokens in my wallet",
@@ -688,6 +709,10 @@
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. You're advised to migrate your liquidity.",
       "description": ""
     },
+    "poolOwnerVulnWarningGovernanceWithdraw": {
+      "title": "This pool was deprecated due to a <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">vulnerability</a>. You're advised to withdraw your liquidity asap. Add it to the <a href=\"https://app.balancer.fi/#/ethereum/pool/0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">upgraded pool</a> to participate in liquidity incentives.",
+      "description": ""
+    },
     "poolOwnerVulnWarningEcosystem": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Reach out on Discord if you need help creating a new pool with the same composition."
     },
@@ -720,7 +745,7 @@
   "proportionalSuggestion": "Proportional suggestion",
   "proportionalWithdrawal": "Proportional withdrawal",
   "protocolFees": "Protocol fees",
-  "protocolEarnings": "Protocol & veBAL earnings",
+  "protocolIncentives": "Protocol & veBAL incentives",
   "rank": "Rank (1{0})",
   "receipt": "Receipt",
   "receive": "Receive",
@@ -1103,13 +1128,19 @@
   "yieldAprRewards": {
     "apr": {
       "steth": "stETH staking rewards APR",
-      "boosted": "Boosted APR"
+      "reth": "rETH staking rewards APR",
+      "stmatic": "stMATIC staking rewards APR",
+      "boosted": "Boosted APR",
+      "veBAL": "veBAL APR"
     },
     "fiat": {
       "steth": "stETH staking rewards",
+      "reth": "rETH staking rewards",
+      "stmatic": "stMATIC staking rewards",
       "boosted": "Boosted rewards"
     }
   },
+  "thereWasAnError": "There was an error",
   "threeMonths": "3M",
   "time": "Time",
   "timeAgo": "{0} ago",
@@ -1236,7 +1267,7 @@
     "createPool": "Create pool",
     "fundPool": "Fund pool",
     "migratePool": "Migrate pool",
-    "invest": "Pool",
+    "invest": "Add liquidity",
     "trade": "Swap",
     "unwrap": "Unwrap",
     "voteForGauge": "Vote",
@@ -1359,6 +1390,8 @@
       "SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT": "You can only withdraw 30% of the pool's value in single asset withdrawals"
     }
   },
+  "youProvide": "You provide",
+  "youReceive": "You receive",
   "withdrawal": "Withdrawal",
   "withdrawFromPool": "Withdraw from pool",
   "withdrawalSettled": "Your withdrawal has settled",

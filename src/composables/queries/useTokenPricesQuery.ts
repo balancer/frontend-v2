@@ -3,11 +3,10 @@ import { reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import { sleep } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { coingeckoService } from '@/services/coingecko/coingecko.service';
 
 import useNetwork from '../useNetwork';
+import { balancer } from '@/lib/balancer.sdk';
 
 /**
  * TYPES
@@ -15,16 +14,12 @@ import useNetwork from '../useNetwork';
 type QueryResponse = TokenPrices;
 
 /**
- * CONSTANTS
- */
-const PER_PAGE = 1000;
-
-/**
  * Fetches token prices for all provided addresses.
  */
 export default function useTokenPricesQuery(
   addresses: Ref<string[]> = ref([]),
   pricesToInject: Ref<TokenPrices> = ref({}),
+  enabled: Ref<boolean> = ref(false),
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   const { networkId } = useNetwork();
@@ -43,30 +38,24 @@ export default function useTokenPricesQuery(
   }
 
   const queryFn = async () => {
-    // Sequential pagination required to avoid coingecko rate limits.
-    let prices: TokenPrices = {};
-    const pageCount = Math.ceil(addresses.value.length / PER_PAGE);
-    const pages = Array.from(Array(pageCount).keys());
+    const priceData = await Promise.all(
+      addresses.value.map(a => balancer.data.tokenPrices.find(a))
+    );
 
-    for (const page of pages) {
-      if (page !== 0) await sleep(1000);
-      const pageAddresses = addresses.value.slice(
-        PER_PAGE * page,
-        PER_PAGE * (page + 1)
-      );
-      console.log('Fetching', pageAddresses.length, 'prices');
-      prices = {
-        ...prices,
-        ...(await coingeckoService.prices.getTokens(pageAddresses)),
-      };
-    }
+    let prices = addresses.value.reduce(
+      (obj, key, index) => ({
+        ...obj,
+        [key]: priceData[index],
+      }),
+      {}
+    );
 
     prices = injectCustomTokens(prices, pricesToInject.value);
     return prices;
   };
 
   const queryOptions = reactive({
-    enabled: true,
+    enabled,
     ...options,
   });
 

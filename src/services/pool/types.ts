@@ -1,52 +1,27 @@
 import { BigNumber } from 'ethers';
 import { Address } from '@/types';
+import { PoolType, Pool as SDKPool } from '@balancer-labs/sdk';
 
-export interface Pool {
-  id: string;
-  address: string;
-  poolType: PoolType;
-  swapFee: string;
+export { PoolType } from '@balancer-labs/sdk';
+
+export interface Pool extends SDKPool {
   owner: string;
   factory: string;
   tokens: PoolToken[];
-  tokensList: string[];
-  totalLiquidity: string;
-  totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
   createTime: number;
-  name: string;
   symbol: string;
   onchain?: OnchainPoolData;
-  mainTokens?: string[];
-  wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
-  unwrappedTokens?: string[];
-  isNew?: boolean;
-  volumeSnapshot?: string;
-  feesSnapshot?: string;
-  apr?: PoolAPRs;
-  boost?: string;
   priceRateProviders?: PriceRateProvider[];
-}
-
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  ComposableStable = 'ComposableStable',
-  LiquidityBootstrapping = 'LiquidityBootstrapping',
-  Managed = 'Managed',
-  AaveLinear = 'AaveLinear',
-  Linear = 'Linear',
-  ERC4626Linear = 'ERC4626Linear',
 }
 
 export interface TokenTreePool {
   id: string;
+  address: string;
   poolType: PoolType;
+  totalShares: string;
   mainIndex: number;
   tokens?: PoolToken[];
 }
@@ -55,10 +30,13 @@ export interface PoolToken {
   address: string;
   balance: string;
   weight: string;
-  priceRate: string | null;
+  priceRate: string | undefined;
   symbol?: string;
   decimals: number;
-  token: { pool: TokenTreePool | null };
+  token: {
+    pool: TokenTreePool | null;
+    latestUSDPrice?: string;
+  };
 }
 
 // PoolToken data from onchain call
@@ -71,31 +49,6 @@ export interface RawPoolTokens {
 export interface LinearPool extends Pool {
   mainIndex: number;
   wrappedIndex: number;
-}
-
-export type AprRange = { min: string; max: string };
-export interface PoolAPRs {
-  total: {
-    unstaked: string;
-    staked: {
-      calc: (boost?: string) => string;
-      max: string;
-      min: string;
-    };
-  };
-  swap: string;
-  yield: {
-    total: string;
-    breakdown: { [address: string]: string };
-  };
-  staking?: {
-    bal: {
-      min: string;
-      max: string;
-    };
-    rewards: string;
-  };
-  veBal?: string;
 }
 
 export interface OnchainTokenData {
