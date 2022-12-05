@@ -311,6 +311,7 @@ const provider = (props: Props) => {
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
 
+    // Invalidate previous query in order to prevent stale data
     queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
 
     try {
