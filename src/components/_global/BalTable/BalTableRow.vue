@@ -51,6 +51,7 @@ function getHorizontalStickyClass(index: number) {
     ]"
     @click.exact="handleRowClick(data)"
     @click.meta="handleRowClick(data, true)"
+    @click.ctrl="handleRowClick(data, true)"
   >
     <td
       v-for="(column, columnIndex) in columns"

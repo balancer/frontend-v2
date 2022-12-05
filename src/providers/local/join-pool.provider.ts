@@ -8,7 +8,7 @@ import {
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
-import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, removeAddress } from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
@@ -318,8 +318,6 @@ const provider = (props: Props) => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
     injectTokens(joinTokens.value);
-    // Trigger SOR pool fetching in case swap joins are used.
-    fetchPoolsForSor();
   });
 
   onMounted(() => (isMounted.value = true));

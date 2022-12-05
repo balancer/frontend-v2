@@ -27,7 +27,6 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
  */
 type Props = {
   pool: Pool;
-  // math: WithdrawMathResponse;
 };
 
 /**
@@ -113,8 +112,6 @@ async function submit(): Promise<TransactionResponse> {
 
     txState.confirming = true;
 
-    console.log('Receipt', tx);
-
     handleTransaction(tx);
     return tx;
   } catch (error) {
@@ -123,65 +120,12 @@ async function submit(): Promise<TransactionResponse> {
   } finally {
     txState.init = false;
   }
-  // try {
-  //   let tx;
-  //   txState.value.init = true;
-
-  //   if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
-  //     tx = await balancerContractsService.batchRelayer.execute(
-  //       batchRelayerSwap.value,
-  //       getProvider()
-  //     );
-  //   } else if (batchSwap.value) {
-  //     tx = await boostedExitBatchSwap(
-  //       batchSwap.value.swaps,
-  //       batchSwap.value.assets,
-  //       props.pool.address,
-  //       bptIn.value,
-  //       batchSwapAmountsOutMap.value,
-  //       batchSwapKind.value
-  //     );
-  //   } else {
-  //     tx = await poolExchange.exit(
-  //       getProvider(),
-  //       account.value,
-  //       amountsOut.value,
-  //       tokensOut.value,
-  //       formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
-  //       singleAssetMaxOut.value ? tokenOutIndex.value : null,
-  //       exactOut.value
-  //     );
-  //   }
-
-  //   txState.value.init = false;
-  //   txState.value.confirming = true;
-
-  //   console.log('Receipt', tx);
-
-  //   handleTransaction(tx);
-  //   return tx;
-  // } catch (error) {
-  //   txState.value.init = false;
-  //   txState.value.confirming = false;
-  //   console.error(error);
-  //   return Promise.reject(error);
-  // }
 }
 
 function redirectToPool() {
   // resetTxState();
   router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
 }
-
-/**
- * CALLBACKS
- */
-// onBeforeMount(() => {
-//   if (shouldUseBatchRelayer.value && !batchRelayerApproval.isUnlocked.value) {
-//     // Prepend relayer approval action if batch relayer not approved
-//     actions.value.unshift(batchRelayerApproval.action.value);
-//   }
-// });
 
 /**
  * WATCHERS

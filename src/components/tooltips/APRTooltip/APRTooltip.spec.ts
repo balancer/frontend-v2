@@ -151,6 +151,26 @@ describe('APRTooltip', () => {
           .textContent
       ).toBe('5.55% Max BAL APR');
     });
+
+    it('Should show staking rewards as a single line item if min and max are the same', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        stakingApr: {
+          min: 763,
+          max: 763,
+        },
+        protocolApr: 0,
+        min: 763,
+        max: 763,
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: EmptyPoolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(getByTestId('staking-apr').textContent).toBe('7.63% Staking APR');
+    });
   });
 
   describe('Token Aprs', () => {
@@ -160,7 +180,7 @@ describe('APRTooltip', () => {
         tokenAprs: {
           total: 166,
           breakdown: {
-            '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': 166,
+            [configService.network.addresses.wstETH]: 166,
           },
         },
         min: 166,
@@ -182,6 +202,34 @@ describe('APRTooltip', () => {
       );
     });
 
+    it('Should show stMATIC staking reward APRs', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        tokenAprs: {
+          total: 153,
+          breakdown: {
+            [configService.network.addresses.stMATIC]: 153,
+          },
+        },
+        min: 153,
+        max: 153,
+      };
+      const poolMock: Pool = {
+        ...EmptyPoolMock,
+        tokensList: [configService.network.addresses.stMATIC],
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: poolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(getByTestId('total-apr').textContent).toBe('Total APR1.53%');
+      expect(getByTestId('yield-apr').textContent).toBe(
+        '1.53% stMATIC staking rewards APR'
+      );
+    });
+
     it('Should show rETH staking reward APRs', () => {
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
@@ -189,7 +237,7 @@ describe('APRTooltip', () => {
         tokenAprs: {
           total: 73,
           breakdown: {
-            '0xae78736cd615f374d3085123a210448e74fc6393': 73,
+            [configService.network.addresses.rETH]: 73,
           },
         },
         min: 102,
@@ -334,6 +382,88 @@ describe('APRTooltip', () => {
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR0.17%');
       expect(getByTestId('yield-apr').textContent).toBe('0.17% veBAL APR');
+    });
+  });
+
+  describe('Staking Reward APRs', () => {
+    it('Should show BAL Breakdown + additional staking rewards together', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        stakingApr: {
+          min: 44,
+          max: 522,
+        },
+        rewardAprs: {
+          total: 123,
+          breakdown: {
+            '0xc3c7d422809852031b44ab29eec9f1eff2a58756': 123,
+          },
+        },
+        min: 167,
+        max: 645,
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: EmptyPoolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(getByTestId('total-apr').textContent).toBe(
+        'Total APR1.67% - 6.45%'
+      );
+      expect(getByTestId('swap-fee-apr').textContent).toBe(
+        '0.00% Swap fees APR'
+      );
+      expect(
+        getByTestId('staking-apr').children[0].children[0].textContent
+      ).toBe('1.67% Min staking APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[1].children[0]
+          .textContent
+      ).toBe('0.44% Min BAL APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[1].children[1]
+          .textContent
+      ).toBe('5.22% Max BAL APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[1].children[2]
+          .textContent
+      ).toBe('1.23% Rewards APR');
+    });
+
+    it('Should show BAL + staking rewards as line items if staking APR is the same but there are rewards', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        stakingApr: {
+          min: 763,
+          max: 763,
+        },
+        rewardAprs: {
+          total: 288,
+          breakdown: {
+            '0xc3c7d422809852031b44ab29eec9f1eff2a58756': 288,
+          },
+        },
+        min: 1051,
+        max: 1051,
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: EmptyPoolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(
+        getByTestId('staking-apr').children[0].children[0].textContent
+      ).toBe('10.51% Staking APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[1].children[0]
+          .textContent
+      ).toBe('7.63% BAL APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[1].children[1]
+          .textContent
+      ).toBe('2.88% Rewards APR');
     });
   });
 });

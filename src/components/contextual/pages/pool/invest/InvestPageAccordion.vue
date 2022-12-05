@@ -40,7 +40,6 @@ const sectionTitle = computed<string>(() =>
       },
     ]"
   >
-    <!-- TODO: Show some 404 message if Pool not found -->
     <template #myWalletTokens>
       <InvestPageMyWallet />
     </template>
