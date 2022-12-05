@@ -11,12 +11,15 @@ import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { chunkSplitPlugin } from 'vite-plugin-chunk-split';
 
 export default defineConfig(({ mode }) => {
   const plugins = [
     vue(),
     // Type assertion to avoid TS errors in defineConfig
     nodePolyfills() as unknown as Plugin,
+    // Avoid memory leak when building
+    chunkSplitPlugin() as unknown as Plugin,
     // AutoImport({
     //   imports: [
     //     'vue',
@@ -97,17 +100,19 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     build: {
-      sourcemap: false,
+      sourcemap: true,
       minify: true,
       rollupOptions: {
         plugins: [
           envConfig.VITE_BUILD_ANALIZE ? analyze({ summaryOnly: false }) : null,
           envConfig.VITE_BUILD_VISUALIZE ? visualizer({ open: true }) : null,
           // https://stackoverflow.com/a/72440811/10752354
-          rollupPolyfillNode(),
+          rollupPolyfillNode({ sourceMap: true }),
         ],
       },
       commonjsOptions: {
+        // Allows to import tailwind.config.js from useTailwind.ts
+        // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
         include: ['tailwind.config.js', 'node_modules/**'],
         transformMixedEsModules: true, // Enable @walletconnect/web3-provider which has some code in CommonJS
       },
