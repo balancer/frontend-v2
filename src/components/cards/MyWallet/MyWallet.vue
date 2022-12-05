@@ -33,7 +33,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 
 const networkName = configService.network.name;
 const { t } = useI18n();
-const { isDeepPool } = usePool(toRef(props, 'pool'));
+const { isDeepPool, isPreMintedBptPool } = usePool(toRef(props, 'pool'));
 
 const {
   tokensWithBalance,
@@ -134,7 +134,13 @@ const emit = defineEmits<{
                 @click="handleAssetClick"
               />
             </div>
-            <template v-if="isDeepPool">
+            <template
+              v-if="
+                isDeepPool &&
+                isPreMintedBptPool &&
+                notPoolTokensWithBalance.length
+              "
+            >
               <MyWalletSubheader class="my-5 border-t border-b">
                 {{ t('myWalletCard.title.otherTokens') }}
               </MyWalletSubheader>
