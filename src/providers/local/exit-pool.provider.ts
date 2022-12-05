@@ -19,7 +19,7 @@ import {
 } from '@/constants/poolLiquidity';
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
-import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
@@ -412,9 +412,9 @@ const provider = (props: Props) => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
-    // Trigger SOR pool fetching in case swap exits are used.
-    fetchPoolsForSor();
+
     exitPoolService.setExitHandler(isSingleAssetExit.value);
+
     if (!props.isSingleAssetExit) {
       setInitialPropAmountsOut();
     }
