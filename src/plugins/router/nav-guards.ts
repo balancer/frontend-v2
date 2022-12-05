@@ -106,18 +106,17 @@ function applyNetworkPathRedirects(router: Router): Router {
 }
 
 /**
- * If the route is a pool invest page check if this should be accssible against
+ * If the route is a pool invest page check if this should be accessible against
  * our isJoinsDisabled conditional. If so, redirect to the pool page.
  */
 function applyPoolJoinRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
     if (to.name === 'invest' && isJoinsDisabled(to.params?.id as string)) {
-      router.push({
+      next({
         name: 'pool',
         params: to.params,
       });
-    }
-    next();
+    } else next();
   });
   return router;
 }
