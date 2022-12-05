@@ -267,7 +267,7 @@ function getFeesData(
 
   // add 0 values in order to show chart properly
   if (periodSnapshots.length < 30) {
-    feesValues.push(...addLackingTimestamps());
+    feesValues.push(...addLaggingTimestamps());
   }
 
   const defaultHeaderStateValue =
@@ -317,7 +317,7 @@ function getVolumeData(
 
   // add 0 values in order to show chart properly
   if (periodSnapshots.length < 30) {
-    volumeData.push(...addLackingTimestamps());
+    volumeData.push(...addLaggingTimestamps());
   }
 
   const defaultHeaderStateValue =
@@ -403,7 +403,7 @@ function setCurrentChartValue(payload: {
   );
 }
 
-function addLackingTimestamps() {
+function addLaggingTimestamps() {
   const lastDate =
     snapshotValues.value[snapshotValues.value.length - 1].timestamp / 1000;
   const days = 30 - snapshotValues.value.length;
