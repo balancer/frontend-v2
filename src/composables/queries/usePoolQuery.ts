@@ -100,6 +100,7 @@ export default function usePoolQuery(
   function getQueryArgs(): GraphQLArgs {
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
+      first: 1,
       where: {
         id: { eq: id.toLowerCase() },
         totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
