@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import {
-  isBoostedPool,
+  hasBoostedAPR,
   isDeep,
   isVeBalPoolAddress,
 } from '@/composables/usePool';
@@ -58,7 +58,7 @@ const yieldAPRLabel = computed(() => {
 
   const yieldTokensList = Object.keys(props.yieldAPR.breakdown);
   if (yieldTokensList.length === 1) {
-    if (isBoostedPool(yieldTokensList[0]))
+    if (hasBoostedAPR(yieldTokensList[0]))
       return t('yieldAprRewards.apr.boosted');
     if (isVeBalPoolAddress(yieldTokensList[0]))
       return t('yieldAprRewards.apr.veBAL');
