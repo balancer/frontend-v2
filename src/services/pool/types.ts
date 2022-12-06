@@ -8,7 +8,6 @@ export interface Pool extends SDKPool {
   tokens: PoolToken[];
   onchain?: OnchainPoolData;
   linearPoolTokensMap?: Record<string, PoolToken>;
-  priceRateProviders?: PriceRateProvider[];
 }
 
 export interface RawPoolTokens {
@@ -152,11 +151,6 @@ export interface PoolSnapshot {
   swapVolume: string;
   swapFees: string;
   liquidity: string;
-}
-
-export interface PriceRateProvider {
-  address: string;
-  token: PoolToken;
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
