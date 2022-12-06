@@ -180,7 +180,8 @@ export class SorManager {
     try {
       return BigNumber.from(amountScaled.toString());
     } catch (e) {
-      // there is a bug/feature in BigNumber.from() that throws an error when the number is too big
+      // BigNumber.from() throws an error when there is more than 15 digits
+      // not sure that we should process this specifically
       console.log(e);
     }
   }
