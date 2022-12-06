@@ -28,7 +28,7 @@ export default class Pools {
     const query = this.queryBuilder(args, attrs);
 
     if (!this.repository || !_.isEqual(query, this.lastQuery)) {
-      this.lastQuery = Object.assign({}, query);
+      this.lastQuery = _.cloneDeep(query);
       this.repository = new PoolsSubgraphRepository({
         url: configService.network.subgraph,
         chainId: configService.network.chainId,

@@ -33,7 +33,7 @@ export default class Pools {
     delete query.args.first;
 
     if (!this.repository || !_.isEqual(query, this.lastQuery)) {
-      this.lastQuery = Object.assign({}, query);
+      this.lastQuery = _.cloneDeep(query);
       this.repository = new PoolsBalancerAPIRepository({
         url: configService.network.balancerApi || '',
         apiKey: configService.network.keys.balancerApi || '',
