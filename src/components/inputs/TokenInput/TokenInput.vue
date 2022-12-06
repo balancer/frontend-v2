@@ -203,9 +203,8 @@ const decimalLimit = computed<number>(() => token.value?.decimals || 18);
 /**
  * METHODS
  */
-function changeAmount(amount: InputValue) {
+function handleAmountChange(amount: InputValue) {
   const safeAmount = overflowProtected(amount, decimalLimit.value);
-  _amount.value = safeAmount;
   emit('update:amount', safeAmount);
 }
 
@@ -216,7 +215,7 @@ const setMax = () => {
     ? props.customBalance
     : getMaxBalanceFor(_address.value, props.disableNativeAssetBuffer);
 
-  changeAmount(maxAmount);
+  handleAmountChange(maxAmount);
 };
 
 /**
@@ -232,7 +231,7 @@ watch(_address, async (newAddress, oldAddress) => {
   if (!isSameAddress(newAddress, oldAddress)) {
     // wait for the token's decimals to be updated
     await nextTick();
-    changeAmount(_amount.value);
+    handleAmountChange(_amount.value);
   }
 });
 </script>
