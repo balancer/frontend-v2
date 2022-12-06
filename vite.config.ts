@@ -11,15 +11,12 @@ import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
-// import { chunkSplitPlugin } from 'vite-plugin-chunk-split';
 
 export default defineConfig(({ mode }) => {
   const plugins = [
     vue(),
     // Type assertion to avoid TS errors in defineConfig
     nodePolyfills() as unknown as Plugin,
-    // Avoid memory leak when building
-    // chunkSplitPlugin() as unknown as Plugin,
     // AutoImport({
     //   imports: [
     //     'vue',
@@ -114,15 +111,6 @@ export default defineConfig(({ mode }) => {
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
         include: ['tailwind.config.js', 'node_modules/**'],
-        // exclude: ['node_modules/lodash/**'],
-        // include: [
-        //   'tailwind.config.js',
-        //   'node_modules/js-sha3/src/sha3.js',
-        //   'node_modules/bn.js/lib/bn.js',
-        //   'node_modules/lodash/lodash.js',
-        //   'node_modules/web3-utils/lib/index.js',
-        //   'node_modules/ethereumjs-util/dist.browser/index.js',
-        // ],
         transformMixedEsModules: true, // Enable @walletconnect/web3-provider which has some code in CommonJS
       },
     },
