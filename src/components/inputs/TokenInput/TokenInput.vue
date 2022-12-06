@@ -254,7 +254,7 @@ watch(_address, async (newAddress, oldAddress) => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:model-value="emit('update:amount', $event)"
+    @update:model-value="handleAmountChange($event)"
     @update:is-valid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
