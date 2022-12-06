@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import { Address } from '@/types';
 import { Pool as SDKPool, PoolToken } from '@balancer-labs/sdk';
 
-export { PoolType, PoolToken, TokenTreePool } from '@balancer-labs/sdk';
+export { PoolType, PoolToken, SubPool } from '@balancer-labs/sdk';
 
 export interface Pool extends SDKPool {
   tokens: PoolToken[];

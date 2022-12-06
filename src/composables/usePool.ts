@@ -23,7 +23,7 @@ import {
   isL2,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF, bpToDec } from './useNumbers';
-import { AnyPool, Pool, PoolToken, TokenTreePool } from '@/services/pool/types';
+import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
 
@@ -326,10 +326,8 @@ export function tokenTreeLeafs(
   return uniq(addresses);
 }
 
-function isTokenTreePool(
-  poolOrToken: Pool | TokenTreePool
-): poolOrToken is TokenTreePool {
-  return (poolOrToken as TokenTreePool).mainIndex !== undefined;
+function isSubPool(poolOrToken: Pool | SubPool): poolOrToken is SubPool {
+  return (poolOrToken as SubPool).mainIndex !== undefined;
 }
 
 /**
@@ -340,7 +338,7 @@ function isTokenTreePool(
  * @returns {PoolToken[]} Flat array of tokens in tree.
  */
 export function flatTokenTree(
-  pool: Pool | TokenTreePool,
+  pool: Pool | SubPool,
   options: TokenTreeOpts = {
     includeLinearUnwrapped: false,
     includePreMintedBpt: false,
@@ -348,7 +346,7 @@ export function flatTokenTree(
 ): PoolToken[] {
   const tokens: PoolToken[] = [];
 
-  if (!options.includePreMintedBpt && !isTokenTreePool(pool)) {
+  if (!options.includePreMintedBpt && !isSubPool(pool)) {
     pool = removeBptFrom(pool);
   }
 
@@ -408,9 +406,9 @@ export function removeBptFrom(pool: Pool): Pool {
 }
 
 /**
- * Updates the passed tokenTreePool by removing its pre-minted tokens.
+ * Updates the passed subPool by removing its pre-minted tokens.
  */
-export function removeBptFromTree(tree: TokenTreePool) {
+export function removeBptFromTree(tree: SubPool) {
   if (tree.tokens) {
     removePremintedToken(tree);
 
@@ -424,9 +422,9 @@ export function removeBptFromTree(tree: TokenTreePool) {
 }
 
 /**
- * Updates the passed tokenTreePool by removing the preminted token from tokens and updating mainIndex accordingly.
+ * Updates the passed subPool by removing the preminted token from tokens and updating mainIndex accordingly.
  */
-function removePremintedToken(tree: TokenTreePool) {
+function removePremintedToken(tree: SubPool) {
   if (!tree.tokens) {
     return;
   }
@@ -446,7 +444,7 @@ function removePremintedToken(tree: TokenTreePool) {
   }
 }
 
-export function findMainTokenAddress(pool: TokenTreePool | null) {
+export function findMainTokenAddress(pool: SubPool | null) {
   if (!pool || !pool.tokens) return '';
   return pool.tokens[pool.mainIndex].address;
 }
