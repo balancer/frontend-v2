@@ -177,6 +177,7 @@ export default function useInvestMath(
     ) {
       _bptOut = queryBptOut.value;
     } else {
+      if (!hasAmounts.value) return '0';
       _bptOut = poolCalculator
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
