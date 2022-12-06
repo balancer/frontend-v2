@@ -12,15 +12,15 @@ import useTokens from '../useTokens';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,
-  PoolsBalancerAPIRepository,
   PoolsFallbackRepository,
   PoolsRepositoryFetchOptions,
-  PoolsSubgraphRepository,
 } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
 import { forChange } from '@/lib/utils';
 import { tokenTreeLeafs } from '../usePool';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -32,103 +32,6 @@ type FilterOptions = {
   poolAddresses?: Ref<string[]>;
   isExactTokensList?: boolean;
   pageSize?: number;
-};
-
-const tokenAttrs = {
-  address: true,
-  balance: true,
-  weight: true,
-  priceRate: true,
-  symbol: true,
-  decimals: true,
-};
-
-const poolAttrs = {
-  id: true,
-  totalShares: true,
-  address: true,
-  poolType: true,
-  mainIndex: true,
-};
-
-// Nested token tree attributes, 3 levels deep.
-const tokenTreeAttrs = {
-  ...tokenAttrs,
-  token: {
-    latestUSDPrice: true,
-    pool: {
-      ...poolAttrs,
-      tokens: {
-        ...tokenAttrs,
-        token: {
-          latestUSDPrice: true,
-          pool: {
-            ...poolAttrs,
-            tokens: {
-              ...tokenAttrs,
-              token: {
-                latestUSDPrice: true,
-                pool: {
-                  ...poolAttrs,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-};
-
-const priceRateProviderAttrs = {
-  address: true,
-  token: {
-    address: true,
-  },
-};
-
-const queryAttrs = {
-  pools: {
-    id: true,
-    address: true,
-    poolType: true,
-    swapFee: true,
-    tokensList: true,
-    totalLiquidity: true,
-    totalSwapVolume: true,
-    totalSwapFee: true,
-    totalShares: true,
-    volumeSnapshot: true,
-    owner: true,
-    factory: true,
-    amp: true,
-    createTime: true,
-    swapEnabled: true,
-    symbol: true,
-    name: true,
-    protocolYieldFeeCache: true,
-    priceRateProviders: priceRateProviderAttrs,
-    tokens: tokenTreeAttrs,
-    isNew: true,
-    apr: {
-      stakingApr: {
-        min: true,
-        max: true,
-      },
-      swapFees: true,
-      tokenAprs: {
-        total: true,
-        breakdown: true,
-      },
-      rewardAprs: {
-        total: true,
-        breakdown: true,
-      },
-      protocolApr: true,
-      min: true,
-      max: true,
-    },
-  },
 };
 
 export default function usePoolsQuery(
@@ -167,38 +70,22 @@ export default function usePoolsQuery(
   }
 
   function initializeDecoratedAPIRepository() {
-    const balancerApiRepository = new PoolsBalancerAPIRepository({
-      url: configService.network.balancerApi || '',
-      apiKey: configService.network.keys.balancerApi || '',
-      query: {
-        args: getQueryArgs(),
-        attrs: queryAttrs,
-      },
-    });
-
     return {
       fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
-        return balancerApiRepository.fetch(options);
+        return balancerAPIService.pools.get(getQueryArgs(options));
       },
       get skip(): number {
-        return balancerApiRepository.skip;
+        return balancerAPIService.pools.skip;
       },
     };
   }
 
   function initializeDecoratedSubgraphRepository() {
-    const subgraphRepository = new PoolsSubgraphRepository({
-      url: configService.network.subgraph,
-      chainId: configService.network.chainId,
-      query: {
-        args: getQueryArgs(),
-        attrs: queryAttrs,
-      },
-    });
-
     return {
       fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
-        const pools = await subgraphRepository.fetch(options);
+        const pools = await balancerSubgraphService.pools.get(
+          getQueryArgs(options)
+        );
 
         const poolDecorator = new PoolDecorator(pools);
         let decoratedPools = await poolDecorator.decorate(tokenMeta.value);
@@ -218,12 +105,12 @@ export default function usePoolsQuery(
         return decoratedPools;
       },
       get skip(): number {
-        return subgraphRepository.skip;
+        return balancerSubgraphService.pools.skip;
       },
     };
   }
 
-  function getQueryArgs(): GraphQLArgs {
+  function getQueryArgs(options: PoolsRepositoryFetchOptions): GraphQLArgs {
     const tokensListFilterOperation = filterOptions?.isExactTokensList
       ? 'eq'
       : 'contains';
@@ -248,6 +135,12 @@ export default function usePoolsQuery(
     }
     if (filterOptions?.poolAddresses?.value.length) {
       queryArgs.where.address = { in: filterOptions.poolAddresses.value };
+    }
+    if (options.first) {
+      queryArgs.first = options.first;
+    }
+    if (options.skip) {
+      queryArgs.skip = options.skip;
     }
     return queryArgs;
   }

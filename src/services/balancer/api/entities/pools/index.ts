@@ -1,15 +1,15 @@
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import { PoolsQueryBuilder } from '@/types/subgraph';
-import { GraphQLArgs, PoolsSubgraphRepository } from '@balancer-labs/sdk';
+import { GraphQLArgs, PoolsBalancerAPIRepository } from '@balancer-labs/sdk';
 
-import Service from '../../balancer-subgraph.service';
+import Service from '../../balancer-api.service';
 import queryBuilder from './query';
 
 export default class Pools {
   service: Service;
   query: PoolsQueryBuilder;
-  repository?: PoolsSubgraphRepository;
+  repository?: PoolsBalancerAPIRepository;
 
   constructor(service: Service, query: PoolsQueryBuilder = queryBuilder) {
     this.service = service;
@@ -18,9 +18,9 @@ export default class Pools {
 
   public async get(args: GraphQLArgs = {}, attrs: any = {}): Promise<Pool[]> {
     const query = this.query(args, attrs);
-    this.repository = new PoolsSubgraphRepository({
-      url: configService.network.subgraph,
-      chainId: configService.network.chainId,
+    this.repository = new PoolsBalancerAPIRepository({
+      url: configService.network.balancerApi || '',
+      apiKey: configService.network.keys.balancerApi || '',
       query: query,
     });
     const pools = await this.repository.fetch({
