@@ -304,7 +304,7 @@ watch(_address, async (newAddress, oldAddress) => {
               </span>
             </template>
           </button>
-          <div>
+          <div class="pl-2 truncate">
             <template v-if="hasAmount && hasToken">
               <span v-if="!hideFiatValue">
                 {{ fNum2(tokenValue, FNumFormats.fiat) }}
