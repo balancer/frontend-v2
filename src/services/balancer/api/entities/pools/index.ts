@@ -18,6 +18,9 @@ export default class Pools {
 
   public async get(args: GraphQLArgs = {}, attrs: any = {}): Promise<Pool[]> {
     const query = this.query(args, attrs);
+    const skip = query.args.skip ?? undefined;
+    delete query.args.skip; // not allowed for Balancer API
+
     this.repository = new PoolsBalancerAPIRepository({
       url: configService.network.balancerApi || '',
       apiKey: configService.network.keys.balancerApi || '',
@@ -25,7 +28,7 @@ export default class Pools {
     });
     const pools = await this.repository.fetch({
       first: query.args.first,
-      skip: query.args.skip,
+      skip,
     });
     return pools as Pool[];
   }
