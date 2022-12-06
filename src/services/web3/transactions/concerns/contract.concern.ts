@@ -33,10 +33,6 @@ export class ContractConcern extends TransactionConcern {
     forceLegacyTxType = false,
   }: SendTransactionOpts): Promise<TransactionResponse> {
     const contractWithSigner = new Contract(contractAddress, abi, this.signer);
-    await Promise.all([
-      verifyTransactionSender(this.signer),
-      verifyNetwork(this.signer),
-    ]);
 
     const block = await this.signer.provider.getBlockNumber();
     console.log(`Contract: ${contractAddress} Action: ${action}`);
@@ -51,6 +47,11 @@ export class ContractConcern extends TransactionConcern {
         forceLegacyTxType
       );
       const txOptions = { ...options, ...gasSettings };
+
+      await Promise.all([
+        verifyTransactionSender(this.signer),
+        verifyNetwork(this.signer),
+      ]);
 
       trackGoal(Goals.ContractTransactionSubmitted);
       return await contractWithSigner[action](...params, txOptions);
