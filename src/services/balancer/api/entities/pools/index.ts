@@ -1,35 +1,51 @@
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import { PoolsQueryBuilder } from '@/types/subgraph';
-import { GraphQLArgs, PoolsBalancerAPIRepository } from '@balancer-labs/sdk';
+import {
+  GraphQLArgs,
+  GraphQLQuery,
+  PoolsBalancerAPIRepository,
+} from '@balancer-labs/sdk';
+import _ from 'lodash';
 
 import Service from '../../balancer-api.service';
 import queryBuilder from './query';
 
 export default class Pools {
   service: Service;
-  query: PoolsQueryBuilder;
+  queryBuilder: PoolsQueryBuilder;
+  lastQuery?: GraphQLQuery;
   repository?: PoolsBalancerAPIRepository;
 
-  constructor(service: Service, query: PoolsQueryBuilder = queryBuilder) {
+  constructor(
+    service: Service,
+    _queryBuilder: PoolsQueryBuilder = queryBuilder
+  ) {
     this.service = service;
-    this.query = query;
+    this.queryBuilder = _queryBuilder;
   }
 
   public async get(args: GraphQLArgs = {}, attrs: any = {}): Promise<Pool[]> {
-    const query = this.query(args, attrs);
-    const skip = query.args.skip ?? undefined;
+    const query = this.queryBuilder(args, attrs);
+    const skip = query.args.skip;
+    const first = query.args.first;
     delete query.args.skip; // not allowed for Balancer API
+    delete query.args.first;
 
-    this.repository = new PoolsBalancerAPIRepository({
-      url: configService.network.balancerApi || '',
-      apiKey: configService.network.keys.balancerApi || '',
-      query: query,
-    });
+    if (!this.repository || !_.isEqual(query, this.lastQuery)) {
+      this.lastQuery = query;
+      this.repository = new PoolsBalancerAPIRepository({
+        url: configService.network.balancerApi || '',
+        apiKey: configService.network.keys.balancerApi || '',
+        query: query,
+      });
+    }
+
     const pools = await this.repository.fetch({
-      first: query.args.first,
+      first,
       skip,
     });
+
     return pools as Pool[];
   }
 
