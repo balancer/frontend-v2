@@ -19,10 +19,6 @@ export class RawConcern extends TransactionConcern {
     forceLegacyTxType = false
   ): Promise<TransactionResponse> {
     console.log('sendTransaction', options);
-    await Promise.all([
-      verifyTransactionSender(this.signer),
-      verifyNetwork(this.signer),
-    ]);
 
     try {
       const gasSettings = await this.gasPrice.settings(
@@ -31,6 +27,11 @@ export class RawConcern extends TransactionConcern {
         forceLegacyTxType
       );
       const txOptions = { ...options, ...gasSettings };
+
+      await Promise.all([
+        verifyTransactionSender(this.signer),
+        verifyNetwork(this.signer),
+      ]);
 
       trackGoal(Goals.RawTransactionSubmitted);
       return await this.signer.sendTransaction(txOptions);
