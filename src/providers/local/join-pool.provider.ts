@@ -8,7 +8,7 @@ import {
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
-import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, removeAddress } from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
@@ -35,8 +35,8 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { TransactionActionInfo } from '@/types/transactions';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
-import { useQuery } from 'vue-query';
-import QUERY_KEYS from '@/constants/queryKeys';
+import { useQuery, useQueryClient } from 'vue-query';
+import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
 
@@ -108,6 +108,7 @@ const provider = (props: Props) => {
   const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
     Relayer.BATCH_V4
   );
+  const queryClient = useQueryClient();
 
   /**
    * COMPUTED
@@ -258,6 +259,9 @@ const provider = (props: Props) => {
       return;
     }
 
+    // Invalidate previous query in order to prevent stale data
+    queryClient.invalidateQueries(QUERY_JOIN_ROOT_KEY);
+
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
 
@@ -318,8 +322,6 @@ const provider = (props: Props) => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
     injectTokens(joinTokens.value);
-    // Trigger SOR pool fetching in case swap joins are used.
-    fetchPoolsForSor();
   });
 
   onMounted(() => (isMounted.value = true));

@@ -17,9 +17,9 @@ import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
-import QUERY_KEYS from '@/constants/queryKeys';
+import QUERY_KEYS, { QUERY_EXIT_ROOT_KEY } from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
-import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
@@ -42,7 +42,7 @@ import {
   watch,
   onMounted,
 } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, useQueryClient } from 'vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 
@@ -103,6 +103,7 @@ const provider = (props: Props) => {
   const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
     Relayer.BATCH_V4
   );
+  const queryClient = useQueryClient();
 
   const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
@@ -310,6 +311,9 @@ const provider = (props: Props) => {
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
 
+    // Invalidate previous query in order to prevent stale data
+    queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
+
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
@@ -412,9 +416,9 @@ const provider = (props: Props) => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
-    // Trigger SOR pool fetching in case swap exits are used.
-    fetchPoolsForSor();
+
     exitPoolService.setExitHandler(isSingleAssetExit.value);
+
     if (!props.isSingleAssetExit) {
       setInitialPropAmountsOut();
     }

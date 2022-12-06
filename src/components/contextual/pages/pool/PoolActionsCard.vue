@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
-import { usePool } from '@/composables/usePool';
+import { isJoinsDisabled, usePool } from '@/composables/usePool';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -45,11 +45,16 @@ const { networkSlug } = useNetwork();
     />
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
-        :tag="isMigratablePool(pool) ? 'div' : 'router-link'"
+        :tag="
+          isMigratablePool(pool) || isJoinsDisabled(pool.id)
+            ? 'div'
+            : 'router-link'
+        "
         :to="{ name: 'invest', params: { networkSlug } }"
         :label="$t('addLiquidity')"
         color="gradient"
         :disabled="
+          isJoinsDisabled(pool.id) ||
           hasNonApprovedRateProviders ||
           (isMigratablePool(pool) && !isSoftMigratablePool(pool.id))
         "
