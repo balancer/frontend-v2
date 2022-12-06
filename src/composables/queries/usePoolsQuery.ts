@@ -21,6 +21,7 @@ import { forChange } from '@/lib/utils';
 import { tokenTreeLeafs } from '../usePool';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -195,6 +196,8 @@ export default function usePoolsQuery(
     const skip = poolsRepository.currentProvider?.skip
       ? poolsRepository.currentProvider.skip
       : 0;
+
+    poolsStoreService.setPools(pools);
 
     return {
       pools,
