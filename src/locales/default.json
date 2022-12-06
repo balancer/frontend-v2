@@ -595,6 +595,10 @@
   "hasNonApprovedRateProviders": "One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.",
   "noRecentActivity": "Your recent activity will appear here…",
   "noResults": "No results",
+  "noResultsTable": {
+    "noBalIncentives": "No BAL incentives to claim from staking",
+    "noProtocolRevenue": "Nothing to claim from holding veBAL"
+  },
   "noSwapsPool": "No swaps in this pool.",
   "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
   "numberOfPools": "Number of pools",
