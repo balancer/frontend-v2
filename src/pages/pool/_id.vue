@@ -132,7 +132,7 @@ const noInitLiquidity = computed(
   () =>
     !loadingPool.value &&
     pool.value &&
-    Number(pool.value?.onchain?.totalSupply || '0') === 0
+    Number(pool.value?.totalShares || '0') === 0
 );
 
 const missingPrices = computed(() => {

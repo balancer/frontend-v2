@@ -151,7 +151,7 @@ export function isMigratablePool(pool: AnyPool) {
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
-  return bnum(pool?.onchain?.totalSupply || '0').eq(0);
+  return bnum(pool?.totalShares || '0').eq(0);
 }
 
 export function preMintedBptIndex(pool: Pool): number | void {

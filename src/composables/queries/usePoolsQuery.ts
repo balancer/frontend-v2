@@ -120,7 +120,7 @@ export default function usePoolsQuery(
       address.toLowerCase()
     );
 
-    const queryArgs: any = {
+    const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
       orderBy: 'totalLiquidity',
       orderDirection: 'desc',
@@ -131,10 +131,10 @@ export default function usePoolsQuery(
         id: { not_in: POOLS.BlockList },
       },
     };
-    if (filterOptions?.poolIds?.value.length) {
+    if (queryArgs.where && filterOptions?.poolIds?.value.length) {
       queryArgs.where.id = { in: filterOptions.poolIds.value };
     }
-    if (filterOptions?.poolAddresses?.value.length) {
+    if (queryArgs.where && filterOptions?.poolAddresses?.value.length) {
       queryArgs.where.address = { in: filterOptions.poolAddresses.value };
     }
     if (options.first) {
