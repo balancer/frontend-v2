@@ -126,7 +126,7 @@ export class SorManager {
     tokenOutDecimals: number,
     swapType: SwapTypes,
     amountScaled: OldBigNumber
-  ): Promise<SorReturn> {
+  ): Promise<SorReturn | void> {
     const v2TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? AddressZero : tokenIn;
     const v2TokenOut =
       tokenOut === NATIVE_ASSET_ADDRESS ? AddressZero : tokenOut;
@@ -143,11 +143,16 @@ export class SorManager {
       forceRefresh: true,
     };
 
+    const swapAmount = this.getSwapAmount(amountScaled);
+    if (!swapAmount) {
+      return;
+    }
+
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
       v2TokenIn.toLowerCase(),
       v2TokenOut.toLowerCase(),
       swapType,
-      BigNumber.from(amountScaled.toString()),
+      swapAmount,
       swapOptions
     );
 
@@ -169,6 +174,15 @@ export class SorManager {
       result: swapInfoV2,
       marketSpNormalised: swapInfoV2.marketSp,
     };
+  }
+
+  getSwapAmount(amountScaled: OldBigNumber): BigNumber | void {
+    try {
+      return BigNumber.from(amountScaled.toString());
+    } catch (e) {
+      // there is a bug/feature in BigNumber.from() that throws an error when the number is too big
+      console.log(e);
+    }
   }
 
   // Check if pool info fetch

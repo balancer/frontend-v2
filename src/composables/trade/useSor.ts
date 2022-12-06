@@ -352,7 +352,7 @@ export default function useSor({
 
       console.log('[SOR Manager] swapExactIn');
 
-      const swapReturn: SorReturn = await sorManager.getBestSwap(
+      const swapReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
         tokenInDecimals,
@@ -360,6 +360,9 @@ export default function useSor({
         SwapTypes.SwapExactIn,
         tokenInAmountScaled
       );
+      if (!swapReturn) {
+        return;
+      }
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
       const tokenOutAmountNormalised = bnum(
@@ -404,7 +407,7 @@ export default function useSor({
 
       console.log('[SOR Manager] swapExactOut');
 
-      const swapReturn: SorReturn = await sorManager.getBestSwap(
+      const swapReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
         tokenInDecimals,
@@ -412,6 +415,10 @@ export default function useSor({
         SwapTypes.SwapExactOut,
         tokenOutAmount
       );
+
+      if (!swapReturn) {
+        return;
+      }
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
 
