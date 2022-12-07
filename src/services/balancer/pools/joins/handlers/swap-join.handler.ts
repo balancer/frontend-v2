@@ -15,7 +15,7 @@ import {
 } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 

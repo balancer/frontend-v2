@@ -1,4 +1,4 @@
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
 import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
