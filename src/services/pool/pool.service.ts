@@ -1,10 +1,9 @@
 import { differenceInWeeks } from 'date-fns';
 
-import { isStable, isDeep } from '@/composables/usePool';
+import { isStable } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
 import { bnum, isSameAddress } from '@/lib/utils';
 import {
-  LinearPool,
   OnchainPoolData,
   Pool,
   PoolToken,
@@ -12,7 +11,6 @@ import {
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
@@ -78,52 +76,6 @@ export default class PoolService {
     }
 
     return (this.pool.apr = apr as AprBreakdown);
-  }
-
-  /**
-   * fetches StablePhantom linear pools and extracts
-   * required attributes.
-   */
-  public async setLinearPools(): Promise<Record<string, PoolToken> | null> {
-    if (!isDeep(this.pool)) return null;
-
-    // Fetch linear pools from subgraph
-    const linearPools = (await balancerSubgraphService.pools.get(
-      {
-        where: {
-          address: { in: this.pool.tokensList },
-          totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
-        },
-      },
-      { mainIndex: true, wrappedIndex: true }
-    )) as LinearPool[];
-
-    const linearPoolTokensMap: Pool['linearPoolTokensMap'] = {};
-
-    // Inject main/wrapped tokens into pool schema
-    linearPools.forEach(linearPool => {
-      if (!this.pool.mainTokens) this.pool.mainTokens = [];
-      if (!this.pool.wrappedTokens) this.pool.wrappedTokens = [];
-
-      const index = this.pool.tokensList.indexOf(
-        linearPool.address.toLowerCase()
-      );
-
-      this.pool.mainTokens[index] = linearPool.tokensList[linearPool.mainIndex];
-      this.pool.wrappedTokens[index] =
-        linearPool.tokensList[linearPool.wrappedIndex];
-
-      linearPool.tokens
-        .filter(token => !isSameAddress(token.address, linearPool.address))
-        .forEach(token => {
-          linearPoolTokensMap[token.address] = {
-            ...token,
-            ...{ weight: token.weight || '', priceRate: token.priceRate || '' },
-          };
-        });
-    });
-
-    return (this.pool.linearPoolTokensMap = linearPoolTokensMap);
   }
 
   removeBptFromTokens(): string[] {
