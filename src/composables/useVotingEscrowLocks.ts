@@ -10,6 +10,7 @@ import { networkId } from '@/composables/useNetwork';
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useVeBal, { isVotingTimeLocked } from '@/composables/useVeBAL';
+import QUERY_KEYS from '@/constants/queryKeys';
 
 /**
  * TYPES
@@ -38,7 +39,9 @@ export default function useVotingEscrowLocks() {
   const votingEscrowLocksQueryEnabled = computed(() => !!account.value);
   const votingEscrowLocksQuery = useGraphQuery<VotingEscrowLockQueryResponse>(
     subgraphs.gauge,
-    ['votingEscrowLocks', veBalLockInfoQuery.data.value?.lockedAmount],
+    QUERY_KEYS.Gauges.VotingEscrowLocks(
+      veBalLockInfoQuery.data.value?.lockedAmount
+    ),
     () => ({
       votingEscrowLocks: {
         __args: {

@@ -102,6 +102,7 @@ async function submitVote() {
   // Gauge Controller requires a fixed 8 Gauge Addresses
   // We take the first 8 Voting Gauges
   // If there's less than 8, fill the remaining with Zero Addresses
+  console.log({ otes: votes.value });
   const gaugeAddresses: string[] = Object.keys(votes.value);
   const weights: BigNumber[] = Object.values(votes.value).map(weight =>
     BigNumber.from(scale(weight || '0', 2).toString())
@@ -113,7 +114,10 @@ async function submitVote() {
   const zeroWeights: BigNumber[] = new Array(8 - gaugeAddresses.length).fill(
     BigNumber.from(0)
   );
-
+  console.log({
+    zeroAddresses,
+    zeroWeights,
+  });
   try {
     voteState.setInit();
     const tx = await gaugeControllerService.voteForManyGaugeWeights(
@@ -123,8 +127,7 @@ async function submitVote() {
 
     voteState.setConfirming();
     handleTransaction(tx);
-  } catch (e) {
-    console.error(e);
+  } catch (e: any) {
     const error = e as WalletError;
     console.error({ error });
     voteState.setError({
