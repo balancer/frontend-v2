@@ -8,6 +8,8 @@ import { NativeAsset, TokenInfo } from '@/types/TokenList';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
+export const QUERY_EXIT_ROOT_KEY = [POOLS_ROOT_KEY, 'query', 'exit'];
+export const QUERY_JOIN_ROOT_KEY = [POOLS_ROOT_KEY, 'query', 'join'];
 
 const QUERY_KEYS = {
   Pools: {
@@ -15,13 +17,8 @@ const QUERY_KEYS = {
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
       poolIds: Ref<string[]> | undefined,
-      poolAddresses: Ref<string[]> | undefined,
-      gaugeAddresses: Ref<string[]>
-    ) => [
-      POOLS_ROOT_KEY,
-      'all',
-      { networkId, tokens, poolIds, poolAddresses, gaugeAddresses },
-    ],
+      poolAddresses: Ref<string[]> | undefined
+    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
     User: (
       networkId: Ref<Network>,
       account: Ref<string>,
@@ -69,6 +66,49 @@ const QUERY_KEYS = {
       'historicalPrices',
       { networkId, id },
     ],
+    Joins: {
+      QueryJoin: (
+        amountsIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetJoin: Ref<unknown>
+      ) => [
+        ...QUERY_JOIN_ROOT_KEY,
+        {
+          amountsIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetJoin,
+        },
+      ],
+    },
+    Exits: {
+      QueryExit: (
+        bptIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        ...QUERY_EXIT_ROOT_KEY,
+        {
+          bptIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
+      SingleAssetMax: (
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        POOLS_ROOT_KEY,
+        'singleAssetMax',
+        {
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
+    },
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],

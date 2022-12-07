@@ -10,7 +10,6 @@ import {
   isTradingHaltable,
   isWeightedLike,
   removeBptFrom,
-  isDeep,
   isComposableStableLike,
   isComposableStable,
 } from '@/composables/usePool';
@@ -22,7 +21,7 @@ import StaticATokenLMABI from '@/lib/abi/StaticATokenLM.json';
 import { configService } from '@/services/config/config.service';
 import { Multicaller } from '@/services/multicalls/multicaller';
 
-import { Pool, RawLinearPoolData, RawOnchainPoolDataMap } from '../types';
+import { Pool, RawOnchainPoolDataMap } from '../types';
 
 const PoolTypeABIs = Object.values(
   Object.fromEntries(
@@ -114,108 +113,12 @@ export class PoolMulticaller {
             });
           }
         }
-
-        if (isDeep(pool)) {
-          pool.tokensList.forEach((poolToken, i) => {
-            multicaller
-              .call({
-                key: `${pool.id}.linearPools.${poolToken}.id`,
-                address: poolToken,
-                function: 'getPoolId',
-                abi: PoolTypeABIs,
-              })
-              .call({
-                key: `${pool.id}.linearPools.${poolToken}.priceRate`,
-                address: poolToken,
-                function: 'getRate',
-                abi: PoolTypeABIs,
-              })
-              .call({
-                key: `${pool.id}.tokenRates[${i}]`,
-                address: pool.address,
-                function: 'getTokenRate',
-                abi: PoolTypeABIs,
-                params: [poolToken],
-              })
-              .call({
-                key: `${pool.id}.linearPools.${poolToken}.mainToken.address`,
-                address: poolToken,
-                function: 'getMainToken',
-                abi: PoolTypeABIs,
-              })
-              .call({
-                key: `${pool.id}.linearPools.${poolToken}.mainToken.index`,
-                address: poolToken,
-                function: 'getMainIndex',
-                abi: PoolTypeABIs,
-              })
-              .call({
-                key: `${pool.id}.linearPools.${poolToken}.wrappedToken.address`,
-                address: poolToken,
-                function: 'getWrappedToken',
-                abi: PoolTypeABIs,
-              })
-              .call({
-                key: `${pool.id}.linearPools.${poolToken}.wrappedToken.index`,
-                address: poolToken,
-                function: 'getWrappedIndex',
-                abi: PoolTypeABIs,
-              })
-              .call({
-                key: `${pool.id}.linearPools.${poolToken}.wrappedToken.rate`,
-                address: poolToken,
-                function: 'getWrappedTokenRate',
-                abi: PoolTypeABIs,
-              });
-          });
-        }
       }
     });
 
     result = await multicaller.execute();
 
     this.pools.forEach(pool => {
-      if (isDeep(pool) && result[pool.id].linearPools) {
-        const wrappedTokensMap: Record<string, string> = {};
-        const linearPools = result[pool.id].linearPools || {};
-
-        for (const address in linearPools) {
-          const linearPool: RawLinearPoolData = linearPools[address];
-
-          multicaller.call({
-            key: `${pool.id}.linearPools.${address}.tokenData`,
-            address: this.vaultAddress,
-            function: 'getPoolTokens',
-            abi: Vault__factory.abi,
-            params: [linearPool.id],
-          });
-
-          wrappedTokensMap[address] = linearPool.wrappedToken.address;
-        }
-
-        Object.entries(wrappedTokensMap).forEach(([address, wrappedToken]) => {
-          multicaller
-            .call({
-              key: `${pool.id}.linearPools.${address}.unwrappedTokenAddress`,
-              address: wrappedToken,
-              function: 'ATOKEN',
-              abi: PoolTypeABIs,
-            })
-            .call({
-              key: `${pool.id}.linearPools.${address}.unwrappedERC4626Address`,
-              address: wrappedToken,
-              function: 'asset',
-              abi: PoolTypeABIs,
-            })
-            .call({
-              key: `${pool.id}.linearPools.${address}.totalSupply`,
-              address: address,
-              function: 'getVirtualSupply',
-              abi: PoolTypeABIs,
-            });
-        });
-      }
-
       multicaller.call({
         key: `${pool.id}.poolTokens`,
         address: this.vaultAddress,

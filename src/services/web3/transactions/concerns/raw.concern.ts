@@ -6,7 +6,7 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/browser';
-import { verifyTransactionSender } from '../../web3.plugin';
+import { verifyNetwork, verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
 export class RawConcern extends TransactionConcern {
@@ -19,8 +19,6 @@ export class RawConcern extends TransactionConcern {
     forceLegacyTxType = false
   ): Promise<TransactionResponse> {
     console.log('sendTransaction', options);
-    // will throw an error if signer is a sanctioned address
-    await verifyTransactionSender(this.signer);
 
     try {
       const gasSettings = await this.gasPrice.settings(
@@ -28,10 +26,15 @@ export class RawConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
-      options = { ...options, ...gasSettings };
+      const txOptions = { ...options, ...gasSettings };
+
+      await Promise.all([
+        verifyTransactionSender(this.signer),
+        verifyNetwork(this.signer),
+      ]);
 
       trackGoal(Goals.RawTransactionSubmitted);
-      return await this.signer.sendTransaction(options);
+      return await this.signer.sendTransaction(txOptions);
     } catch (err) {
       const error = err as WalletError;
 

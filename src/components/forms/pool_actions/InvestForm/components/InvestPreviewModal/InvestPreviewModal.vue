@@ -12,7 +12,7 @@ import { InvestMathResponse } from '../../composables/useInvestMath';
 import useInvestState from '../../composables/useInvestState';
 import InvestActions from './components/InvestActions.vue';
 import InvestSummary from './components/InvestSummary.vue';
-import TokenAmounts from './components/TokenAmounts.vue';
+import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
