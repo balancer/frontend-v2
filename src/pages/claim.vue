@@ -341,7 +341,7 @@ onBeforeMount(async () => {
             v-for="network in networkBtns"
             :key="network.id"
             tag="a"
-            :href="`https://${network.subdomain}.balancer.fi/#/claim`"
+            :href="`https://app.balancer.fi/#/${network.subdomain}/claim`"
             color="white"
           >
             <img
