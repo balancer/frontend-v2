@@ -23,8 +23,10 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
 import useTokens from '../useTokens';
+import useTransactions from '../useTransactions';
 
 import { TradeQuote } from './types';
+import useNumbers, { FNumFormats } from '../useNumbers';
 
 type JoinExitState = {
   validationErrors: {
@@ -64,6 +66,8 @@ export default function useJoinExit({
   tokenOutAmountInput,
   tokenInAmountScaled,
   tokenOutAmountScaled,
+  tokenIn,
+  tokenOut,
   slippageBufferRate,
   pools,
 }: Props) {
@@ -74,8 +78,10 @@ export default function useJoinExit({
   const latestTxHash = ref('');
 
   // COMPOSABLES
-  const { account } = useWeb3();
+  const { account, getSigner } = useWeb3();
   const { injectTokens, getToken } = useTokens();
+  const { addTransaction } = useTransactions();
+  const { fNum2 } = useNumbers();
 
   const hasValidationError = computed(
     () => state.validationErrors.highPriceImpact != null
@@ -132,11 +138,40 @@ export default function useJoinExit({
         String(slippageBufferRate.value * 1e4),
         undefined
       );
-      console.log(relayerCallData);
 
-      await balancer.contracts.relayerV4
-        ?.connect(account.value)
-        .callStatic.multicall(relayerCallData.rawCalls);
+      const signer = getSigner();
+      const relayerContract = await balancer.contracts.relayerV4?.connect(
+        signer
+      );
+      const tx = await relayerContract?.multicall(relayerCallData.rawCalls);
+
+      const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
+        ...FNumFormats.token,
+        maximumSignificantDigits: 6,
+      });
+      const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
+        ...FNumFormats.token,
+        maximumSignificantDigits: 6,
+      });
+
+      addTransaction({
+        id: tx.hash,
+        type: 'tx',
+        action: 'trade',
+        summary: `${tokenInAmountFormatted} ${tokenIn.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut.value.symbol}`,
+        details: {
+          tokenIn: tokenIn.value,
+          tokenOut: tokenOut.value,
+          tokenInAddress: tokenInAddressInput.value,
+          tokenOutAddress: tokenOutAddressInput.value,
+          tokenInAmount: tokenInAmountInput.value,
+          tokenOutAmount: tokenOutAmountInput.value,
+          exactIn: exactIn.value,
+          quote: getQuote(),
+          priceImpact: priceImpact.value,
+          slippageBufferRate: slippageBufferRate.value,
+        },
+      });
 
       if (successCallback != null) {
         successCallback();
@@ -191,19 +226,6 @@ export default function useJoinExit({
   });
 
   watchEffect(async () => {
-    console.log({
-      tokenInAddressInput: tokenInAddressInput.value,
-      tokenOutAddressInput: tokenOutAddressInput.value,
-      exactIn: (exactIn.value
-        ? SwapTypes.SwapExactIn
-        : SwapTypes.SwapExactOut) as SwapTypes,
-      amount: parseFixed(
-        tokenInAmountInput.value || tokenOutAmountInput.value,
-        18
-      ),
-      swapOptions: undefined,
-      useBpts: true,
-    });
     swapInfo.value = await balancer.sor.getSwaps(
       tokenInAddressInput.value,
       tokenOutAddressInput.value,
