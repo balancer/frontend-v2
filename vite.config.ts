@@ -30,7 +30,6 @@ export default defineConfig(({ mode }) => {
     Components({
       dirs: ['src/components/_global/**'],
       extensions: ['vue'],
-
       dts: true,
     }),
   ];

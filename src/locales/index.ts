@@ -1,4 +1,3 @@
-// TODO: check if this is 100% equivalent to the previous expression
 const modules = import.meta.glob('./**/*.json', {
   eager: true,
 });
