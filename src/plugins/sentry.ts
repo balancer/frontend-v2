@@ -11,8 +11,18 @@ import { isProductionMode } from './modes';
 
 const release = `frontend-v2@${version}`;
 
+function shouldInitSentry() {
+  if (!import.meta.env.VITE_SENTRY_AUTH_TOKEN) {
+    console.warn(
+      'Sentry disabled because VITE_SENTRY_AUTH_TOKEN env was not provided'
+    );
+    return false;
+  }
+  return isProductionMode();
+}
+
 export default function initSentry(app: App) {
-  if (isProductionMode()) {
+  if (shouldInitSentry()) {
     app.config.errorHandler = (error, _, info) => {
       try {
         setTag('info', info);
