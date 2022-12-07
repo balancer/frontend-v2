@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, nextTick, watch } from 'vue';
+import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { Rules } from '@/types';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
@@ -93,6 +93,12 @@ const emit = defineEmits<{
 }>();
 
 /**
+ * STATE
+ */
+const _amount = ref<InputValue>('');
+const _address = ref<string>('');
+
+/**
  * COMPOSABLES
  */
 const { getToken, balanceFor, nativeAsset, getMaxBalanceFor } = useTokens();
@@ -103,13 +109,14 @@ const { isWalletReady } = useWeb3();
 /**
  * COMPUTED
  */
-const hasToken = computed(() => !!props.address);
-const amountBN = computed(() => bnum(props.amount));
+const hasToken = computed(() => !!_address.value);
+const amountBN = computed(() => bnum(_amount.value));
 const tokenBalanceBN = computed(() => bnum(tokenBalance.value));
 const hasAmount = computed(() => amountBN.value.gt(0));
 const hasBalance = computed(() => tokenBalanceBN.value.gt(0));
 const shouldUseTxBuffer = computed(
-  () => props.address === nativeAsset.address && !props.disableNativeAssetBuffer
+  () =>
+    _address.value === nativeAsset.address && !props.disableNativeAssetBuffer
 );
 const amountExceedsTokenBalance = computed(() =>
   amountBN.value.gt(tokenBalance.value)
@@ -132,26 +139,26 @@ const shouldShowTxBufferMessage = computed(() => {
 const isMaxed = computed(() => {
   if (shouldUseTxBuffer.value) {
     return (
-      props.amount ===
+      _amount.value ===
       tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer).toString()
     );
   } else {
-    return props.amount === tokenBalance.value;
+    return _amount.value === tokenBalance.value;
   }
 });
 
 const tokenBalance = computed(() => {
   if (props.customBalance) return props.customBalance;
-  return balanceFor(props.address);
+  return balanceFor(_address.value);
 });
 
 const token = computed((): TokenInfo | undefined => {
   if (!hasToken.value) return undefined;
-  return getToken(props.address);
+  return getToken(_address.value);
 });
 
 const tokenValue = computed(() => {
-  return props.tokenValue ?? toFiat(props.amount, props.address);
+  return props.tokenValue ?? toFiat(props.amount, _address.value);
 });
 
 const inputRules = computed(() => {
@@ -193,27 +200,11 @@ const priceImpactClass = computed(() =>
 
 const decimalLimit = computed<number>(() => token.value?.decimals || 18);
 
-watch(
-  () => props.address,
-  async (newVal, oldVal) => {
-    // If token address changes, we have to calculate new safe value based on new token's decimals
-    if (newVal !== oldVal) {
-      // wait for the token's decimals to be updated
-      await nextTick();
-      handleAmountChange(props.amount);
-    }
-  }
-);
-
 /**
  * METHODS
  */
-function getSafeAmount(amount: InputValue, decimalLimit: number) {
-  return overflowProtected(amount, decimalLimit);
-}
-
 function handleAmountChange(amount: InputValue) {
-  const safeAmount = getSafeAmount(amount, decimalLimit.value);
+  const safeAmount = overflowProtected(amount, decimalLimit.value);
   emit('update:amount', safeAmount);
 }
 
@@ -222,15 +213,32 @@ const setMax = () => {
 
   const maxAmount = props.customBalance
     ? props.customBalance
-    : getMaxBalanceFor(props.address, props.disableNativeAssetBuffer);
+    : getMaxBalanceFor(_address.value, props.disableNativeAssetBuffer);
 
   handleAmountChange(maxAmount);
 };
+
+/**
+ * WATCHERS
+ */
+watchEffect(() => {
+  _amount.value = props.amount;
+  _address.value = props.address;
+});
+
+watch(_address, async (newAddress, oldAddress) => {
+  // If token address changes, we have to calculate new safe value based on new token's decimals
+  if (!isSameAddress(newAddress, oldAddress)) {
+    // wait for the token's decimals to be updated
+    await nextTick();
+    handleAmountChange(_amount.value);
+  }
+});
 </script>
 
 <template>
   <BalTextInput
-    :modelValue="amount"
+    :modelValue="_amount"
     :name="name"
     :placeholder="placeholder || '0.0'"
     type="number"
@@ -253,7 +261,7 @@ const setMax = () => {
     <template #prepend>
       <slot name="tokenSelect">
         <TokenSelectInput
-          :modelValue="props.address"
+          :modelValue="_address"
           v-bind="tokenSelectProps"
           :weight="weight"
           :fixed="fixedToken"
@@ -296,7 +304,7 @@ const setMax = () => {
               </span>
             </template>
           </button>
-          <div>
+          <div class="pl-2 truncate">
             <template v-if="hasAmount && hasToken">
               <span v-if="!hideFiatValue">
                 {{ fNum2(tokenValue, FNumFormats.fiat) }}
