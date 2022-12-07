@@ -89,10 +89,11 @@ export default defineConfig(({ mode }) => {
           'X-Requested-With, content-type, Authorization',
       },
       strictPort: true,
+      host: true,
     },
     preview: {
       port: 8080,
-      host: 'localhost',
+      host: true,
       strictPort: true,
     },
     build: {
