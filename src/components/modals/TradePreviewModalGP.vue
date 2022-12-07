@@ -12,6 +12,7 @@ import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
@@ -41,6 +42,9 @@ const emit = defineEmits(['trade', 'close']);
 const { t } = useI18n();
 const { fNum2, toFiat } = useNumbers();
 const { tokens, balanceFor, approvalRequired } = useTokens();
+const { relayerSignature, signRelayerApproval } = useSignRelayerApproval(
+  Relayer.BATCH_V4
+);
 const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
 const { slippage } = useUserSettings();
 
@@ -245,7 +249,7 @@ const tokenApproval = useTokenApproval(
   tokens
 );
 
-const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
+const batchRelayerApproval = useRelayerApproval(Relayer.BATCH_V4);
 
 const gnosisRelayerApproval = useRelayerApproval(
   Relayer.GNOSIS,
@@ -291,7 +295,8 @@ const requiresBatchRelayerApproval = computed(
   () =>
     !props.trading.isGnosisTrade.value &&
     props.trading.isJoinExitTrade.value &&
-    !batchRelayerApproval.isUnlocked.value
+    !batchRelayerApproval.isUnlocked.value &&
+    !relayerSignature.value
 );
 
 const requiresGnosisRelayerApproval = computed(
@@ -317,9 +322,7 @@ const showBatchRelayerApprovalStep = computed(
   () =>
     !props.trading.isGnosisTrade.value &&
     (requiresBatchRelayerApproval.value ||
-      batchRelayerApproval.init.value ||
-      batchRelayerApproval.approved.value ||
-      batchRelayerApproval.approving.value)
+      !batchRelayerApproval.isUnlocked.value)
 );
 
 const showGnosisRelayerApprovalStep = computed(
@@ -479,6 +482,7 @@ watch(blockNumber, () => {
 
 <template>
   <BalModal show @close="onClose">
+    {{ trading.tradeRoute }}
     <div>
       <BalStack horizontal align="center" spacing="xs" class="mb-4">
         <button class="flex text-blue-500 hover:text-blue-700" @click="onClose">
@@ -903,6 +907,7 @@ watch(blockNumber, () => {
           </div>
         </BalTooltip>
       </div>
+      {{ relayerSignature }}
       <BalBtn
         v-if="!account"
         color="gradient"
@@ -942,13 +947,9 @@ watch(blockNumber, () => {
         v-else-if="requiresBatchRelayerApproval"
         color="gradient"
         block
-        :loading="
-          batchRelayerApproval.init.value ||
-          batchRelayerApproval.approving.value
-        "
         :disabled="disableSubmitButton"
         :loadingLabel="`${$t('approvingBatchRelayer')}...`"
-        @click.prevent="batchRelayerApproval.approve"
+        @click.prevent="signRelayerApproval"
       >
         {{ $t('approveBatchRelayer') }}
       </BalBtn>

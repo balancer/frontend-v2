@@ -24,6 +24,8 @@ import { TokenInfo } from '@/types/TokenList';
 
 import useTokens from '../useTokens';
 import useTransactions from '../useTransactions';
+import useSignRelayerApproval from '../useSignRelayerApproval';
+import { Relayer } from './useRelayerApproval';
 
 import { TradeQuote } from './types';
 import useNumbers, { FNumFormats } from '../useNumbers';
@@ -80,6 +82,7 @@ export default function useJoinExit({
   // COMPOSABLES
   const { account, getSigner } = useWeb3();
   const { injectTokens, getToken } = useTokens();
+  const { relayerSignature } = useSignRelayerApproval(Relayer.BATCH_V4);
   const { addTransaction } = useTransactions();
   const { fNum2 } = useNumbers();
 
@@ -143,7 +146,11 @@ export default function useJoinExit({
       const relayerContract = await balancer.contracts.relayerV4?.connect(
         signer
       );
-      const tx = await relayerContract?.multicall(relayerCallData.rawCalls);
+      console.log([relayerSignature.value, ...relayerCallData.rawCalls]);
+      const tx = await relayerContract?.multicall([
+        relayerSignature.value,
+        ...relayerCallData.rawCalls,
+      ]);
 
       const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
         ...FNumFormats.token,
