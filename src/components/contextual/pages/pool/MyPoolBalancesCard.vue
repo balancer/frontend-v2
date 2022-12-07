@@ -43,7 +43,11 @@ const router = useRouter();
 /**
  * COMPUTED
  */
-const bptBalance = computed((): string => balanceFor(props.pool.address));
+const bptBalance = computed((): string =>
+  bnum(balanceFor(props.pool.address))
+    .plus(stakedSharesForProvidedPool.value)
+    .toString()
+);
 
 const fiatValue = computed(() => fiatValueOf(props.pool, bptBalance.value));
 

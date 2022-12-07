@@ -35,8 +35,8 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { TransactionActionInfo } from '@/types/transactions';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
-import { useQuery } from 'vue-query';
-import QUERY_KEYS from '@/constants/queryKeys';
+import { useQuery, useQueryClient } from 'vue-query';
+import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
 
@@ -108,6 +108,7 @@ const provider = (props: Props) => {
   const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
     Relayer.BATCH_V4
   );
+  const queryClient = useQueryClient();
 
   /**
    * COMPUTED
@@ -257,6 +258,9 @@ const provider = (props: Props) => {
       priceImpact.value = 0;
       return;
     }
+
+    // Invalidate previous query in order to prevent stale data
+    queryClient.invalidateQueries(QUERY_JOIN_ROOT_KEY);
 
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);

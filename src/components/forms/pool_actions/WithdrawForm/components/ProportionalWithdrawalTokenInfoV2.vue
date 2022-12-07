@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { isDeep, isStableLike } from '@/composables/usePool';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -11,7 +13,7 @@ type Props = {
   address: string;
   fiatAmountOut: string | undefined;
   loading: boolean;
-  isStableLikePool: boolean;
+  pool: Pool;
   value: string;
 };
 
@@ -33,7 +35,7 @@ const { fNum2 } = useNumbers();
       <div class="flex flex-col leading-none">
         <div class="text-lg font-medium">
           {{ props.token?.symbol }}
-          <span v-if="!isStableLikePool">
+          <span v-if="!isStableLike(pool.poolType) && !isDeep(pool)">
             {{
               fNum2(weight, {
                 style: 'percent',
