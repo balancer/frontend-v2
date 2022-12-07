@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { orderedTokenURIs } from '../utils';
+import { orderedTokenURIs } from '@/composables/useVotingGauges';
 
 /**
  * TYPES

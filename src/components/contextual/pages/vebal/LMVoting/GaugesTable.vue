@@ -25,7 +25,7 @@ import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
-import { orderedTokenURIs } from './utils';
+import { orderedTokenURIs } from '@/composables/useVotingGauges';
 import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';

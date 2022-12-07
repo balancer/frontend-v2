@@ -13,7 +13,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
-import { orderedTokenURIs } from './utils';
+import { orderedTokenURIs } from '@/composables/useVotingGauges';
 
 /**
  * DATA
