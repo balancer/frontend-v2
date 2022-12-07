@@ -10,7 +10,6 @@ import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
-import OldBigNumber from 'bignumber.js';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
@@ -125,7 +124,7 @@ export class SorManager {
     tokenInDecimals: number,
     tokenOutDecimals: number,
     swapType: SwapTypes,
-    amountScaled: OldBigNumber
+    amountScaled: BigNumber
   ): Promise<SorReturn> {
     const v2TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? AddressZero : tokenIn;
     const v2TokenOut =
@@ -147,7 +146,7 @@ export class SorManager {
       v2TokenIn.toLowerCase(),
       v2TokenOut.toLowerCase(),
       swapType,
-      BigNumber.from(amountScaled.toString()),
+      amountScaled,
       swapOptions
     );
 
