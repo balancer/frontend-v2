@@ -21,7 +21,7 @@ import { useI18n } from 'vue-i18n';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
-import { isSameAddress } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import {
   SorManager,
   SorReturn,
@@ -363,16 +363,12 @@ export default function useSor({
           );
         }
 
-        const divScale = BigNumber.from(10).pow(tokenOutDecimals);
-        const wadScale = BigNumber.from(10).pow(18);
-
-        const effectivePrice = tokenInAmountScaled
-          .mul(divScale)
-          .div(tokenOutAmount);
-        const priceImpactCalc = effectivePrice
-          .mul(wadScale)
-          .div(parseUnits(Number(swapReturn.marketSpNormalised).toFixed(18)))
-          .sub(ONE);
+        const priceImpactCalc = calcPriceImpact(
+          tokenOutDecimals,
+          tokenOutAmount,
+          tokenInAmountScaled,
+          swapReturn
+        );
 
         priceImpact.value = Math.max(
           Number(formatUnits(priceImpactCalc)),
@@ -408,15 +404,12 @@ export default function useSor({
       } else {
         tokenInAmount = await adjustedPiAmount(tokenInAmount, tokenOutAddress);
 
-        const divScale = BigNumber.from(10).pow(tokenInDecimals);
-        const wadScale = BigNumber.from(10).pow(18);
-        const effectivePrice = tokenOutAmountScaled
-          .mul(divScale)
-          .div(tokenInAmount);
-        const priceImpactCalc = effectivePrice
-          .mul(wadScale)
-          .div(parseUnits(Number(swapReturn.marketSpNormalised).toFixed(18)))
-          .sub(ONE);
+        const priceImpactCalc = calcPriceImpact(
+          tokenInDecimals,
+          tokenInAmount,
+          tokenOutAmountScaled,
+          swapReturn
+        );
 
         priceImpact.value = Math.max(
           Number(formatUnits(priceImpactCalc)),
@@ -429,6 +422,21 @@ export default function useSor({
 
     state.validationErrors.highPriceImpact =
       priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
+  }
+
+  function calcPriceImpact(
+    tokenDecimals: number,
+    tokenAmount: BigNumber,
+    tokenAmountScaled: BigNumber,
+    swapReturn: SorReturn
+  ): BigNumber {
+    const divScale = BigNumber.from(10).pow(tokenDecimals);
+    const wadScale = BigNumber.from(10).pow(18);
+    const effectivePrice = tokenAmountScaled.mul(divScale).div(tokenAmount);
+    return effectivePrice
+      .mul(wadScale)
+      .div(parseUnits(Number(swapReturn.marketSpNormalised).toFixed(18)))
+      .sub(ONE);
   }
 
   function txHandler(tx: TransactionResponse, action: TransactionAction): void {
@@ -481,7 +489,10 @@ export default function useSor({
 
     txListener(tx, {
       onTxConfirmed: () => {
-        trackGoal(Goals.Swapped, Number(tradeUSDValue));
+        trackGoal(
+          Goals.Swapped,
+          bnum(tradeUSDValue).times(100).toNumber() || 0
+        );
         trading.value = false;
         latestTxHash.value = tx.hash;
       },
