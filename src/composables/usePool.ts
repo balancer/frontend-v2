@@ -1,6 +1,5 @@
 import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
-import { isAddress } from '@ethersproject/address';
-import { getAddress } from 'ethers/lib/utils';
+import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';

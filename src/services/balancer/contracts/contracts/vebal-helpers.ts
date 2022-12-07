@@ -1,4 +1,5 @@
-import { formatUnits, getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';

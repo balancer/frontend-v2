@@ -1,5 +1,5 @@
 import { Vault__factory } from '@balancer-labs/typechain';
-import { Contract } from 'ethers/lib/ethers';
+import { Contract } from '@ethersproject/contracts';
 import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
