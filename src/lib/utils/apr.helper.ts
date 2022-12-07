@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 
 import { FiatCurrency } from '@/constants/currency';
 import { TokenPrices } from '@/services/coingecko/api/price.service';

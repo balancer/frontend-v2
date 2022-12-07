@@ -1,5 +1,6 @@
 import { getUnixTime } from 'date-fns';
-import { formatUnits, getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';

@@ -7,7 +7,7 @@ import {
   Zero,
 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import {
   computed,
   ComputedRef,
