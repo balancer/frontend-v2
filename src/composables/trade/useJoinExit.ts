@@ -139,18 +139,14 @@ export default function useJoinExit({
         balancer.contracts.relayerV4?.address ?? '',
         balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
         String(slippageBufferRate.value * 1e4),
-        undefined
+        relayerSignature.value || undefined
       );
 
       const signer = getSigner();
       const relayerContract = await balancer.contracts.relayerV4?.connect(
         signer
       );
-      console.log([relayerSignature.value, ...relayerCallData.rawCalls]);
-      const tx = await relayerContract?.multicall([
-        relayerSignature.value,
-        ...relayerCallData.rawCalls,
-      ]);
+      const tx = await relayerContract?.multicall(relayerCallData.rawCalls);
 
       const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
         ...FNumFormats.token,

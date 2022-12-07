@@ -482,7 +482,6 @@ watch(blockNumber, () => {
 
 <template>
   <BalModal show @close="onClose">
-    {{ trading.tradeRoute }}
     <div>
       <BalStack horizontal align="center" spacing="xs" class="mb-4">
         <button class="flex text-blue-500 hover:text-blue-700" @click="onClose">
