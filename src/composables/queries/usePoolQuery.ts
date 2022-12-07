@@ -70,10 +70,10 @@ export default function usePoolQuery(
   function initializeDecoratedAPIRepository() {
     return {
       fetch: async (): Promise<Pool[]> => {
-        return balancerAPIService.pools.get(getQueryArgs());
+        return balancerAPIService.pool.get(getQueryArgs());
       },
       get skip(): number {
-        return balancerAPIService.pools.skip;
+        return 0;
       },
     };
   }
@@ -92,7 +92,7 @@ export default function usePoolQuery(
         return decoratedPools;
       },
       get skip(): number {
-        return balancerSubgraphService.pools.skip;
+        return 0;
       },
     };
   }
