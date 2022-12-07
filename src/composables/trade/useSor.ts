@@ -22,7 +22,7 @@ import { useI18n } from 'vue-i18n';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
-import { bnum, isSameAddress, scale } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import {
   SorManager,
   SorReturn,
@@ -345,8 +345,8 @@ export default function useSor({
       );
 
       const tokenInAmountNormalised = new OldBigNumber(amount); // Normalized value
-      const tokenInAmountScaled = scale(
-        tokenInAmountNormalised,
+      const tokenInAmountScaled = parseUnits(
+        tokenInAmountNormalised.toString(),
         tokenInDecimals
       );
 
@@ -400,7 +400,10 @@ export default function useSor({
       await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
 
       let tokenOutAmountNormalised = new OldBigNumber(amount);
-      const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
+      const tokenOutAmount = parseUnits(
+        tokenOutAmountNormalised.toString(),
+        tokenOutDecimals
+      );
 
       console.log('[SOR Manager] swapExactOut');
 
