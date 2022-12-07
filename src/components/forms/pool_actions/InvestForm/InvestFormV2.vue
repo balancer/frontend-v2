@@ -56,6 +56,7 @@ const {
   hasValidInputs,
   hasAmountsIn,
   queryError,
+  priceImpact,
   setAmountsIn,
   addTokensIn,
 } = useJoinPool();
@@ -85,12 +86,14 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
     await forChange(isLoadingBalances, false);
     addTokensIn(poolTokensWithBalance.value);
   }
+  // console.log({ amountsIn: amountsIn.value });
 }
 
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
+  // console.log({ useJoinPool: useJoinPool() });
   initializeTokensForm(isSingleAssetJoin.value);
 });
 
@@ -143,7 +146,11 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
 
-    <InvestFormTotalsV2 />
+    <InvestFormTotalsV2
+      :highPriceImpact="highPriceImpact"
+      :loading="isLoadingQuery"
+      :priceImpact="priceImpact"
+    />
 
     <div
       v-if="highPriceImpact"

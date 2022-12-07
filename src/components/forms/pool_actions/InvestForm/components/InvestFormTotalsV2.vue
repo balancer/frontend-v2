@@ -2,20 +2,32 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useJoinPool from '@/composables/pools/useJoinPool';
+
+/**
+ * TYPES
+ */
+type Props = {
+  highPriceImpact: boolean;
+  loading: boolean;
+  priceImpact: number;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
  */
-const { highPriceImpact, isLoadingQuery, priceImpact } = useJoinPool();
 const { fNum2 } = useNumbers();
 
 /**
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'dark:bg-gray-800': !highPriceImpact.value,
-  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value,
+  'dark:bg-gray-800': !props.highPriceImpact,
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400': props.highPriceImpact,
 }));
 </script>
 
@@ -27,7 +39,7 @@ const priceImpactClasses = computed(() => ({
       </div>
       <div class="data-table-number-col">
         <div class="flex">
-          <span v-if="!isLoadingQuery">
+          <span v-if="!loading">
             {{ fNum2(priceImpact, FNumFormats.percent) }}
           </span>
           <BalLoadingBlock v-else class="w-10" />
@@ -36,6 +48,7 @@ const priceImpactClasses = computed(() => ({
             <template #activator>
               <BalIcon
                 v-if="highPriceImpact"
+                data-testid="price-impact-warning-icon"
                 name="alert-triangle"
                 size="xs"
                 class="-mb-px ml-1"

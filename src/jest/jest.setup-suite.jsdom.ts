@@ -13,9 +13,12 @@ import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import BalTable from '@/components/_global/BalTable/BalTable.vue';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
+import BalModal from '@/components/_global/BalModal/BalModal.vue';
+import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 import CompositionIcon from '@/components/_global/icons/CompositionIcon.vue';
 import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 import StarsIcon from '@/components/_global/icons/StarsIcon.vue';
+import BalCircle from '@/components/_global/shapes/BalCircle/BalCircle.vue';
 import translations from '@/locales/default.json';
 
 const i18n = createI18n({
@@ -43,6 +46,9 @@ config.global.stubs = {
 };
 
 config.global.components = {
+  BalAlert,
+  BalModal,
+  BalCircle,
   BalBreakdown,
   BalBtn,
   BalCard,
