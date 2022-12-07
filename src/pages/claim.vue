@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { getAddress } from '@ethersproject/address';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 import { computed, onBeforeMount, watch } from 'vue';
 
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';

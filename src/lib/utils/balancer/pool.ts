@@ -1,4 +1,4 @@
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
 
 import { AnyPool, Pool } from '@/services/pool/types';
 
