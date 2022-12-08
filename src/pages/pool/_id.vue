@@ -229,7 +229,7 @@ watch(poolQuery.error, () => {
               <ApyVisionPoolLink
                 v-if="!loadingPool && pool"
                 :poolId="pool.id"
-                :titleTokens="titleTokens"
+                :tokens="titleTokens"
               />
             </div>
             <div class="mb-4">
