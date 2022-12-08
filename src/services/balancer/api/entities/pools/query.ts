@@ -69,7 +69,7 @@ const priceRateProviderAttrs = {
   },
 };
 
-const defaultAttrs = {
+export const defaultAttrs = {
   pools: {
     id: true,
     address: true,
