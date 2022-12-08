@@ -90,6 +90,8 @@ const emit = defineEmits<{
   (e: 'update:slider', value: number): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: KeyboardEvent);
+  (e: 'focus', value: Event);
+  (e: 'setMax', value: string);
 }>();
 
 /**
@@ -203,8 +205,12 @@ const decimalLimit = computed<number>(() => token.value?.decimals || 18);
 /**
  * METHODS
  */
-function handleAmountChange(amount: InputValue) {
+function handleAmountChange(amount: InputValue, isSetMax = false) {
   const safeAmount = overflowProtected(amount, decimalLimit.value);
+  if (isSetMax) {
+    emit('setMax', safeAmount);
+    return;
+  }
   emit('update:amount', safeAmount);
 }
 
@@ -215,7 +221,7 @@ const setMax = () => {
     ? props.customBalance
     : getMaxBalanceFor(_address.value, props.disableNativeAssetBuffer);
 
-  handleAmountChange(maxAmount);
+  handleAmountChange(maxAmount, true);
 };
 
 /**
@@ -253,6 +259,7 @@ watch(_address, async (newAddress, oldAddress) => {
     v-bind="$attrs"
     inputAlignRight
     @blur="emit('blur', $event)"
+    @focus="emit('focus', $event)"
     @input="emit('input', $event)"
     @update:model-value="handleAmountChange($event)"
     @update:is-valid="emit('update:isValid', $event)"

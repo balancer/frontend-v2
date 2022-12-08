@@ -54,6 +54,7 @@ const _tokenOutAmount = ref<string>('');
 const _tokenOutAddress = ref<string>('');
 
 const isInRate = ref<boolean>(true);
+const isFocused = ref(false);
 
 /**
  * COMPUTED
@@ -95,14 +96,19 @@ const rateLabel = computed(() => {
 /**
  * METHODS
  */
-function handleInAmountChange(value: string): void {
-  emit('update:exactIn', true);
+function handleInAmountChange(value: string, setExactIn = false): void {
+  if (isFocused.value || setExactIn) {
+    emit('update:exactIn', true);
+  }
+
   emit('update:tokenInAmount', value);
   emit('amountChange');
 }
 
 function handleOutAmountChange(value: string): void {
-  emit('update:exactIn', false);
+  if (isFocused.value) {
+    emit('update:exactIn', false);
+  }
   emit('update:tokenOutAmount', value);
   emit('amountChange');
 }
@@ -132,6 +138,10 @@ async function handleOutputTokenChange(newTokenOut: string) {
   emit('update:tokenOutAddress', newTokenOut);
 }
 
+function setMax(value: string) {
+  handleInAmountChange(value, true);
+}
+
 /**
  * CALLBACKS
  */
@@ -157,8 +167,11 @@ onMounted(() => {
       name="tokenIn"
       :excludedTokens="[veBalTokenInfo?.address]"
       :ignoreWalletBalance="tradeLoading"
+      @set-max="setMax"
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
     />
 
     <div class="flex items-center my-2">
@@ -183,6 +196,8 @@ onMounted(() => {
       :excludedTokens="[veBalTokenInfo?.address]"
       @update:amount="handleOutAmountChange"
       @update:address="handleOutputTokenChange"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
     />
   </div>
 </template>
