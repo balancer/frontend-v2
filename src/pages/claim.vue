@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { getAddress } from '@ethersproject/address';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 import { computed, onBeforeMount, watch } from 'vue';
 
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
@@ -330,7 +330,7 @@ onBeforeMount(async () => {
             v-for="network in networkBtns"
             :key="network.id"
             tag="a"
-            :href="`https://${network.subdomain}.balancer.fi/#/claim`"
+            :href="`https://app.balancer.fi/#/${network.subdomain}/claim`"
             color="white"
           >
             <img
