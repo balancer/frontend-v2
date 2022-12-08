@@ -62,7 +62,7 @@ const data = computed(() => {
     },
     {
       title: t('poolSymbol'),
-      value: symbol,
+      value: symbol || '',
     },
     {
       title: t('poolType'),
@@ -76,7 +76,7 @@ const data = computed(() => {
       : null,
     {
       title: t('swapFees'),
-      value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner)})`,
+      value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner || '')})`,
     },
     {
       title: t('poolManager'),
@@ -94,7 +94,7 @@ const data = computed(() => {
     },
     {
       title: t('createDate'),
-      value: format(createTime * 1000, 'dd MMMM yyyy'),
+      value: format((createTime || 0) * 1000, 'dd MMMM yyyy'),
     },
   ];
 });
