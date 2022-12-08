@@ -103,10 +103,6 @@ export default class LiquidityConcern {
       token => !isSameAddress(token.address, this.pool.address)
     );
 
-    if (isDeep(this.pool) && this.pool.linearPoolTokensMap != null) {
-      tokens = Object.values(this.pool.linearPoolTokensMap);
-    }
-
     let sumBalance = bnum(0);
     let sumValue = bnum(0);
 

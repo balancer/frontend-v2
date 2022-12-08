@@ -7,7 +7,6 @@ export { PoolType, PoolToken, SubPool } from '@balancer-labs/sdk';
 export interface Pool extends SDKPool {
   tokens: PoolToken[];
   onchain?: OnchainPoolData;
-  linearPoolTokensMap?: Record<string, PoolToken>;
 }
 
 export interface RawPoolTokens {
