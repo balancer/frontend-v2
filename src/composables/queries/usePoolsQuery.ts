@@ -1,25 +1,31 @@
-import { flatten } from 'lodash';
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { computed, reactive, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { Pool } from '@/services/pool/types';
 
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
-import { tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
+import { configService } from '@/services/config/config.service';
+import {
+  GraphQLArgs,
+  PoolsFallbackRepository,
+  PoolsRepositoryFetchOptions,
+} from '@balancer-labs/sdk';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+import { flatten } from 'lodash';
 import { forChange } from '@/lib/utils';
+import { tokenTreeLeafs } from '../usePool';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
 
 type PoolsQueryResponse = {
   pools: Pool[];
-  tokens: string[];
   skip?: number;
-  enabled?: boolean;
 };
 
 type FilterOptions = {
@@ -30,7 +36,7 @@ type FilterOptions = {
 };
 
 export default function usePoolsQuery(
-  tokenList: Ref<string[]> = ref([]),
+  filterTokens: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
   filterOptions?: FilterOptions
 ) {
@@ -41,42 +47,140 @@ export default function usePoolsQuery(
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
 
+  let balancerApiRepository = initializeDecoratedAPIRepository();
+  let subgraphRepository = initializeDecoratedSubgraphRepository();
+  let poolsRepository = initializePoolsRepository();
+
   /**
    * COMPUTED
    */
-  const enabled = computed(() => !appLoading.value && options.enabled);
+  const enabled = computed(() => !appLoading.value);
 
   /**
    * METHODS
    */
-  function getQueryArgs(pageParam = 0) {
-    const tokensListFilterKey = filterOptions?.isExactTokensList
-      ? 'tokensList'
-      : 'tokensList_contains';
 
-    const queryArgs: any = {
-      first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
-      skip: pageParam,
-      where: {
-        [tokensListFilterKey]: tokenList.value,
-        poolType_not_in: POOLS.ExcludedPoolTypes,
+  function initializePoolsRepository(): PoolsFallbackRepository {
+    const fallbackRepository = new PoolsFallbackRepository(
+      [balancerApiRepository, subgraphRepository],
+      {
+        timeout: 30 * 1000,
+      }
+    );
+    return fallbackRepository;
+  }
+
+  function initializeDecoratedAPIRepository() {
+    return {
+      fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
+        return balancerAPIService.pools.get(getQueryArgs(options));
+      },
+      get skip(): number {
+        return balancerAPIService.pools.skip;
       },
     };
-    if (filterOptions?.poolIds?.value.length) {
-      queryArgs.where.id_in = filterOptions.poolIds.value;
+  }
+
+  function initializeDecoratedSubgraphRepository() {
+    return {
+      fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
+        const pools = await balancerSubgraphService.pools.get(
+          getQueryArgs(options)
+        );
+
+        const poolDecorator = new PoolDecorator(pools);
+        let decoratedPools = await poolDecorator.decorate(tokenMeta.value);
+
+        const tokens = flatten(
+          pools.map(pool => [
+            ...pool.tokensList,
+            ...tokenTreeLeafs(pool.tokens),
+            pool.address,
+          ])
+        );
+        await injectTokens(tokens);
+        await forChange(dynamicDataLoading, false);
+
+        decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
+
+        return decoratedPools;
+      },
+      get skip(): number {
+        return balancerSubgraphService.pools.skip;
+      },
+    };
+  }
+
+  function getQueryArgs(options: PoolsRepositoryFetchOptions): GraphQLArgs {
+    const tokensListFilterOperation = filterOptions?.isExactTokensList
+      ? 'eq'
+      : 'contains';
+
+    const tokenListFormatted = filterTokens.value.map(address =>
+      address.toLowerCase()
+    );
+
+    const queryArgs: GraphQLArgs = {
+      chainId: configService.network.chainId,
+      orderBy: 'totalLiquidity',
+      orderDirection: 'desc',
+      where: {
+        tokensList: { [tokensListFilterOperation]: tokenListFormatted },
+        poolType: { not_in: POOLS.ExcludedPoolTypes },
+        totalShares: { gt: 0.01 },
+        id: { not_in: POOLS.BlockList },
+      },
+    };
+    if (queryArgs.where && filterOptions?.poolIds?.value.length) {
+      queryArgs.where.id = { in: filterOptions.poolIds.value };
     }
-    if (filterOptions?.poolAddresses?.value.length) {
-      queryArgs.where.address_in = filterOptions.poolAddresses.value;
+    if (queryArgs.where && filterOptions?.poolAddresses?.value.length) {
+      queryArgs.where.address = { in: filterOptions.poolAddresses.value };
+    }
+    if (options.first) {
+      queryArgs.first = options.first;
+    }
+    if (options.skip) {
+      queryArgs.skip = options.skip;
     }
     return queryArgs;
   }
+
+  function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
+    const fetchArgs: PoolsRepositoryFetchOptions = {};
+
+    // Don't use a limit if there is a token list because the limit is applied pre-filter
+    if (!filterTokens.value.length) {
+      fetchArgs.first = filterOptions?.pageSize || POOLS.Pagination.PerPage;
+    }
+
+    if (pageParam && pageParam > 0) {
+      fetchArgs.skip = pageParam;
+    }
+
+    return fetchArgs;
+  }
+
+  /**
+   *  When filterTokens changes, re-initialize the repositories as their queries
+   *  need to change to filter for those tokens
+   */
+  watch(
+    filterTokens,
+    () => {
+      balancerApiRepository = initializeDecoratedAPIRepository();
+      subgraphRepository = initializeDecoratedSubgraphRepository();
+      poolsRepository = initializePoolsRepository();
+    },
+    { deep: true }
+  );
 
   /**
    * QUERY KEY
    */
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
-    tokenList,
+    filterTokens,
     filterOptions?.poolIds,
     filterOptions?.poolAddresses
   );
@@ -85,31 +189,19 @@ export default function usePoolsQuery(
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
-    const queryArgs = getQueryArgs(pageParam);
-    const pools = await balancerSubgraphService.pools.get(queryArgs);
+    const fetchOptions = getFetchOptions(pageParam);
 
-    const poolDecorator = new PoolDecorator(pools);
-    let decoratedPools = await poolDecorator.decorate(tokenMeta.value);
+    const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
-    const tokens = flatten(
-      pools.map(pool => [
-        ...pool.tokensList,
-        ...tokenTreeLeafs(pool.tokens),
-        pool.address,
-      ])
-    );
-    await injectTokens(tokens);
-    await forChange(dynamicDataLoading, false);
+    const skip = poolsRepository.currentProvider?.skip
+      ? poolsRepository.currentProvider.skip
+      : 0;
 
-    decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
+    poolsStoreService.setPools(pools);
 
     return {
-      pools: decoratedPools,
-      tokens,
-      skip:
-        pools.length >= POOLS.Pagination.PerPage
-          ? pageParam + POOLS.Pagination.PerPage
-          : undefined,
+      pools,
+      skip,
     };
   };
 

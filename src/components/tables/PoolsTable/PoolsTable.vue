@@ -25,7 +25,7 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { PoolWithShares } from '@/services/pool/types';
+import { Pool, PoolWithShares } from '@/services/pool/types';
 import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
@@ -36,7 +36,7 @@ import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningT
  * TYPES
  */
 type Props = {
-  data?: PoolWithShares[];
+  data?: Pool[] | PoolWithShares[];
   poolsType?: 'unstaked' | 'staked';
   isLoading?: boolean;
   isLoadingMore?: boolean;
@@ -123,7 +123,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: t('poolValue'),
     accessor: pool =>
-      fNum2(pool.totalLiquidity, {
+      fNum2(pool.totalLiquidity || 0, {
         style: 'currency',
         maximumFractionDigits: 0,
       }),

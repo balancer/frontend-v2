@@ -14,6 +14,7 @@
   "explorer": "https://etherscan.io",
   "explorerName": "Etherscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
+  "balancerApi": "https://berfqtb52bc4hetoouojoshqem.appsync-api.eu-west-2.amazonaws.com/graphql",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "subgraphs": {
     "main": [
@@ -72,7 +73,8 @@
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
     "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
-    "graph": "7c7b4c36244b0b86171a3931eaf9bb23"
+    "graph": "7c7b4c36244b0b86171a3931eaf9bb23",
+    "balancerApi": "da2-7a3ukmnw7bexndpx5x522uafui"
   },
   "strategies": {
     "0": {

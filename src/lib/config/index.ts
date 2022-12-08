@@ -25,6 +25,7 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
+  balancerApi?: string;
   poolsUrlV2: string;
   subgraphs: {
     main: string[];
@@ -76,6 +77,7 @@ export interface Config {
     infura: string;
     alchemy: string;
     graph?: string;
+    balancerApi?: string;
   };
   strategies: Record<
     string,

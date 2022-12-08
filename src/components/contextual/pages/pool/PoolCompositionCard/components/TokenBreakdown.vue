@@ -58,7 +58,7 @@ const nestedPaddingClass = computed(() => {
   }
 });
 
-const isLeaf = computed((): boolean => !token.value.token.pool);
+const isLeaf = computed((): boolean => !token.value.token?.pool);
 
 // If this token is a pool, this is the share of that pool in it's parent.
 // e.g. The share of bb-a-DAI in bb-a-USD, since bb-a-DAI can be used in
@@ -67,7 +67,7 @@ const shareOfTokenInPool = computed((): number => {
   if (isLeaf.value) return 1;
 
   return bnum(token.value?.balance || '0')
-    .div(token.value.token.pool?.totalShares || 1)
+    .div(token.value.token?.pool?.totalShares || 1)
     .times(props.shareOfParentInPool)
     .toNumber();
 });
