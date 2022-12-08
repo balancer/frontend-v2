@@ -5,8 +5,9 @@ import { isStableLike, isWeightedLike, isDeep } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { AnyPool, OnchainTokenData, PoolToken } from '@/services/pool/types';
+import { AnyPool, OnchainTokenData } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
+import { PoolToken } from '@balancer-labs/sdk';
 
 interface OnchainTokenInfo extends OnchainTokenData {
   address: string;
@@ -101,10 +102,6 @@ export default class LiquidityConcern {
     tokens = tokens.filter(
       token => !isSameAddress(token.address, this.pool.address)
     );
-
-    if (isDeep(this.pool) && this.pool.linearPoolTokensMap != null) {
-      tokens = Object.values(this.pool.linearPoolTokensMap);
-    }
 
     let sumBalance = bnum(0);
     let sumValue = bnum(0);

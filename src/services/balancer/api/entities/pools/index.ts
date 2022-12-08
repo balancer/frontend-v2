@@ -4,17 +4,18 @@ import { PoolsQueryBuilder } from '@/types/subgraph';
 import {
   GraphQLArgs,
   GraphQLQuery,
-  PoolsSubgraphRepository,
+  PoolsBalancerAPIRepository,
 } from '@balancer-labs/sdk';
 import _ from 'lodash';
-import Service from '../../balancer-subgraph.service';
+
+import Service from '../../balancer-api.service';
 import queryBuilder from './query';
 
 export default class Pools {
   service: Service;
   queryBuilder: PoolsQueryBuilder;
   lastQuery?: GraphQLQuery;
-  repository?: PoolsSubgraphRepository;
+  repository?: PoolsBalancerAPIRepository;
 
   constructor(
     service: Service,
@@ -26,19 +27,23 @@ export default class Pools {
 
   public async get(args: GraphQLArgs = {}, attrs: any = {}): Promise<Pool[]> {
     const query = this.queryBuilder(args, attrs);
+    const skip = query.args.skip;
+    const first = query.args.first;
+    delete query.args.skip; // not allowed for Balancer API
+    delete query.args.first;
 
     if (!this.repository || !_.isEqual(query, this.lastQuery)) {
       this.lastQuery = _.cloneDeep(query);
-      this.repository = new PoolsSubgraphRepository({
-        url: configService.network.subgraph,
-        chainId: configService.network.chainId,
+      this.repository = new PoolsBalancerAPIRepository({
+        url: configService.network.balancerApi || '',
+        apiKey: configService.network.keys.balancerApi || '',
         query: query,
       });
     }
 
     const pools = await this.repository.fetch({
-      first: query.args.first,
-      skip: query.args.skip,
+      first,
+      skip,
     });
 
     return pools as Pool[];

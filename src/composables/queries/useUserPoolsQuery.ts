@@ -5,15 +5,14 @@ import { useQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import PoolService from '@/services/pool/pool.service';
 import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
-import { isComposableStableLike, tokenTreeLeafs } from '../usePool';
+import { tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
 import useGaugesQuery from './useGaugesQuery';
 
@@ -29,7 +28,7 @@ export default function useUserPoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, dynamicDataLoading, tokens: tokenMeta } = useTokens();
+  const { injectTokens, tokens: tokenMeta } = useTokens();
   const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
   const { data: subgraphGauges } = useGaugesQuery();
@@ -61,19 +60,13 @@ export default function useUserPoolsQuery(
 
     const pools = await balancerSubgraphService.pools.get({
       where: {
-        id_in: poolSharesIds,
-        poolType_not_in: POOLS.ExcludedPoolTypes,
+        id: { in: poolSharesIds },
+        poolType: { not_in: POOLS.ExcludedPoolTypes },
       },
     });
 
-    for (let i = 0; i < pools.length; i++) {
-      if (isComposableStableLike(pools[i].poolType)) {
-        const poolService = new PoolService(pools[i]);
-        poolService.removeBptFromTokens();
-        await poolService.setLinearPools();
-        pools[i] = poolService.pool;
-      }
-    }
+    const poolDecorator = new PoolDecorator(pools);
+    const decoratedPools = await poolDecorator.decorate(tokenMeta.value);
 
     const tokens = flatten(
       pools.map(pool => {
@@ -85,10 +78,6 @@ export default function useUserPoolsQuery(
       })
     );
     await injectTokens(tokens);
-    await forChange(dynamicDataLoading, false);
-
-    const poolDecorator = new PoolDecorator(pools);
-    const decoratedPools = await poolDecorator.decorate(tokenMeta.value);
 
     const poolsWithShares = decoratedPools.map(pool => ({
       ...pool,

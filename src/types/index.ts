@@ -69,3 +69,13 @@ export type BaseContent = {
   title: string;
   description: string;
 };
+
+export interface BlockNumberResponse {
+  data: {
+    blocks: [
+      {
+        number: string;
+      }
+    ];
+  };
+}

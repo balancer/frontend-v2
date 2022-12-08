@@ -170,7 +170,7 @@ function gaugeTitle(pool: GaugePool): string {
   return Object.values(_tokens)
     .map(
       token =>
-        `${fNum2(token.weight, {
+        `${fNum2(token.weight || '0', {
           style: 'percent',
           maximumFractionDigits: 0,
         })} ${token.symbol}`
