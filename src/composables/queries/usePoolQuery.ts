@@ -1,28 +1,26 @@
 import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
+import { GraphQLArgs } from '@balancer-labs/sdk';
 
 import useTokens from '@/composables/useTokens';
-import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
+import PoolRepository from '@/services/pool/pool.repository';
+import { configService } from '@/services/config/config.service';
 import useApp from '../useApp';
 import { isBlocked, tokenTreeLeafs } from '../usePool';
 import useGaugesQuery from './useGaugesQuery';
-import { GraphQLArgs, PoolsFallbackRepository } from '@balancer-labs/sdk';
-import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
-import { configService } from '@/services/config/config.service';
+import { POOLS } from '@/constants/pools';
 
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {},
-  includeAprs = true
+  options: QueryObserverOptions<Pool> = {}
 ) {
   /**
    * @description
@@ -36,15 +34,13 @@ export default function usePoolQuery(
   const { injectTokens, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { account } = useWeb3();
-  const { data: subgraphGauges } = useGaugesQuery();
   const { tokens } = useTokens();
+  const { data: subgraphGauges } = useGaugesQuery();
   const gaugeAddresses = computed(() =>
     (subgraphGauges.value || []).map(gauge => gauge.id)
   );
 
-  const balancerApiRepository = initializeDecoratedAPIRepository();
-  const subgraphRepository = initializeDecoratedSubgraphRepository();
-  const poolsRepository = initializePoolsRepository();
+  const poolRepository = new PoolRepository(tokens);
 
   /**
    * COMPUTED
@@ -57,51 +53,11 @@ export default function usePoolQuery(
    * METHODS
    */
 
-  function initializePoolsRepository(): PoolsFallbackRepository {
-    const fallbackRepository = new PoolsFallbackRepository(
-      [balancerApiRepository, subgraphRepository],
-      {
-        timeout: 30 * 1000,
-      }
-    );
-    return fallbackRepository;
-  }
-
-  function initializeDecoratedAPIRepository() {
-    return {
-      fetch: async (): Promise<Pool[]> => {
-        return balancerAPIService.pool.get(getQueryArgs());
-      },
-      get skip(): number {
-        return 0;
-      },
-    };
-  }
-
-  function initializeDecoratedSubgraphRepository() {
-    return {
-      fetch: async (): Promise<Pool[]> => {
-        const pools = await balancerSubgraphService.pools.get(getQueryArgs());
-
-        const poolDecorator = new PoolDecorator(pools);
-        const decoratedPools = await poolDecorator.decorate(
-          tokens.value,
-          includeAprs
-        );
-
-        return decoratedPools;
-      },
-      get skip(): number {
-        return 0;
-      },
-    };
-  }
-
   function getQueryArgs(): GraphQLArgs {
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
       where: {
-        id: { eq: id.toLowerCase() },
+        id: { eq: id?.toLowerCase() },
         totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
         poolType: { not_in: POOLS.ExcludedPoolTypes },
       },
@@ -119,7 +75,7 @@ export default function usePoolQuery(
     if (poolInfo) {
       pool = poolInfo;
     } else {
-      [pool] = await poolsRepository.fetch();
+      pool = await poolRepository.fetch(getQueryArgs());
     }
 
     if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');

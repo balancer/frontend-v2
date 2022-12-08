@@ -2,6 +2,7 @@ import { flatten } from 'lodash';
 import { computed, Ref, ref, watch } from 'vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import useTokens from '../useTokens';
 import { Pool } from '@/services/pool/types';
 import { tokenTreeLeafs } from '../usePool';
@@ -23,9 +24,7 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
       : [];
   });
 
-  const isLoading = computed(
-    () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
-  );
+  const isLoading = computed(() => isQueryLoading(poolsQuery));
 
   const poolsHasNextPage = computed(() => poolsQuery.hasNextPage?.value);
   const poolsIsFetchingNextPage = computed(
