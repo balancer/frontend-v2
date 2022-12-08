@@ -55,13 +55,10 @@ export class RawConcern extends TransactionConcern {
   }
 
   private async logFailedTx(
-    /* eslint-disable-next-line */
     options: TransactionRequest,
-    /* eslint-disable-next-line */
     error: WalletError
   ): Promise<void> {
     await this.signer.getAddress();
-    /* eslint-disable-next-line */
     const sender = await this.signer.getAddress();
     captureException(`Failed raw transaction:
       Sender: ${sender}
