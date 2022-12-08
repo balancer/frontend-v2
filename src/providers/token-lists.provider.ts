@@ -146,8 +146,6 @@ export default {
       tokensListPromise,
     });
 
-    return () => {
-      return slots.default();
-    };
+    return () => slots.default();
   },
 };
