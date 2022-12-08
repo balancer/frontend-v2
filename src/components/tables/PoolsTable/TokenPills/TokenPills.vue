@@ -4,11 +4,11 @@ import { computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { includesAddress } from '@/lib/utils';
+import { PoolToken } from '@/services/pool/types';
 
 import HiddenTokensPills from './HiddenTokensPills.vue';
 import StableTokenPill from './StableTokenPill.vue';
 import WeightedTokenPill from './WeightedTokenPill.vue';
-import { PoolToken } from '@balancer-labs/sdk';
 
 type Props = {
   tokens: PoolToken[];

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { POOLS } from '@/constants/pools';
 import { shortenLabel } from '@/lib/utils';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
 import { computed } from 'vue';
@@ -80,9 +80,7 @@ const data = computed(() => {
     },
     {
       title: t('poolManager'),
-      // TODO - Fix when Managed pool type supported in SDK
-      // value: poolType === PoolType.Managed ? t('yes') : t('none'),
-      value: t('none'),
+      value: poolType === PoolType.Managed ? t('yes') : t('none'),
     },
     {
       title: t('poolOwner'),
@@ -102,10 +100,9 @@ const data = computed(() => {
 });
 
 const poolManagementText = computed(() => {
-  // TODO - Add when Managed pool type supported in SDK
-  // if (props.pool.poolType === PoolType.Managed) {
-  //   return t('');
-  // }
+  if (props.pool.poolType === PoolType.Managed) {
+    return t('');
+  }
 
   if (props.pool.owner === POOLS.ZeroAddress) {
     return t('poolAttrs.immutable');

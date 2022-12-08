@@ -21,7 +21,7 @@ import {
   getNetworkSlug,
   isL2,
 } from './useNetwork';
-import useNumbers, { FNumFormats, numF, bpToDec } from './useNumbers';
+import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
@@ -241,12 +241,12 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
     return numF(absMaxApr(aprs, boost), FNumFormats.percent);
   } else if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
-    const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
-    const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
+    const minAPR = numF(aprs.min, FNumFormats.bp);
+    const maxAPR = numF(aprs.max, FNumFormats.bp);
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(bpToDec(aprs.min), FNumFormats.percent);
+  return numF(aprs.min, FNumFormats.bp);
 }
 
 /**

@@ -23,6 +23,12 @@ export const FNumFormats: Record<string, FNumOptions> = {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   },
+  // Basis Points
+  bp: {
+    style: 'bp',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  },
   token: {
     maximumFractionDigits: 4,
   },
@@ -95,6 +101,11 @@ export function numF(
     number = Number(number || 0);
   }
 
+  if (options.style === 'bp') {
+    number = bnum(number).div(10000).toNumber();
+    options = { ...options, style: 'percent' };
+  }
+
   const formatterOptions: Intl.NumberFormatOptions = { ...options };
   let postfixSymbol = '';
 
@@ -126,18 +137,19 @@ export function numF(
     formatterOptions.maximumFractionDigits = 0;
   }
 
-  if (options.style === 'percent') {
-    if (
-      number < 0 &&
-      formatterOptions.maximumFractionDigits &&
-      formatterOptions.maximumFractionDigits >= 2 &&
-      (formatterOptions.minimumFractionDigits || 0) <
-        formatterOptions.maximumFractionDigits - 2
-    ) {
-      // For consistency with numeral which rounds based on digits before percentages are multiplied by 100
-      formatterOptions.maximumFractionDigits =
-        formatterOptions.maximumFractionDigits - 2;
-    }
+  if (options.style === 'percent' || options.style === 'bp') {
+    if (options.style === 'bp')
+      if (
+        number < 0 &&
+        formatterOptions.maximumFractionDigits &&
+        formatterOptions.maximumFractionDigits >= 2 &&
+        (formatterOptions.minimumFractionDigits || 0) <
+          formatterOptions.maximumFractionDigits - 2
+      ) {
+        // For consistency with numeral which rounds based on digits before percentages are multiplied by 100
+        formatterOptions.maximumFractionDigits =
+          formatterOptions.maximumFractionDigits - 2;
+      }
     formatterOptions.useGrouping = false;
 
     if (number > 0 && number < 0.0001) {
@@ -166,14 +178,6 @@ export function numF(
   }
 
   return formattedNumber + postfixSymbol;
-}
-
-/**
- * @summary APR's are in basis points (100 = 1%), while percent formatting takes a decimal (0.01 = 1%)
- *          this helper should be run on each APR value before formatting as a percent
- */
-export function bpToDec(value: number | string): string {
-  return bnum(value).div(10000).toString();
 }
 
 export default function useNumbers() {
