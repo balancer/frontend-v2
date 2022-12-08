@@ -402,8 +402,12 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        tokenInAmount = await adjustedPiAmount(tokenInAmount, tokenOutAddress);
-
+        if (isMainnet.value) {
+          tokenInAmount = await adjustedPiAmount(
+            tokenInAmount,
+            tokenOutAddress
+          );
+        }
         const priceImpactCalc = calcPriceImpact(
           tokenInDecimals,
           tokenInAmount,
