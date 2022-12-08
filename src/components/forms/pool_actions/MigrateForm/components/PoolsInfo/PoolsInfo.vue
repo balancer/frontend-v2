@@ -188,7 +188,7 @@ const isUnstakedMigrationEnabled = computed(() => {
     </div>
     <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
     <div class="flex justify-center my-4 dark:text-gray-50">
-      <ArrowDownIcon class="w-5 h-5 dark:text-gray-400" />
+      <ArrowDownIcon class="w-5 h-5 text-secondary" />
     </div>
     <PoolInfoBreakdown :pool="toPool" :poolTokenInfo="toPoolTokenInfo" />
     <BalBtn
