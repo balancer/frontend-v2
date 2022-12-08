@@ -137,19 +137,18 @@ export function numF(
     formatterOptions.maximumFractionDigits = 0;
   }
 
-  if (options.style === 'percent' || options.style === 'bp') {
-    if (options.style === 'bp')
-      if (
-        number < 0 &&
-        formatterOptions.maximumFractionDigits &&
-        formatterOptions.maximumFractionDigits >= 2 &&
-        (formatterOptions.minimumFractionDigits || 0) <
-          formatterOptions.maximumFractionDigits - 2
-      ) {
-        // For consistency with numeral which rounds based on digits before percentages are multiplied by 100
-        formatterOptions.maximumFractionDigits =
-          formatterOptions.maximumFractionDigits - 2;
-      }
+  if (options.style === 'percent') {
+    if (
+      number < 0 &&
+      formatterOptions.maximumFractionDigits &&
+      formatterOptions.maximumFractionDigits >= 2 &&
+      (formatterOptions.minimumFractionDigits || 0) <
+        formatterOptions.maximumFractionDigits - 2
+    ) {
+      // For consistency with numeral which rounds based on digits before percentages are multiplied by 100
+      formatterOptions.maximumFractionDigits =
+        formatterOptions.maximumFractionDigits - 2;
+    }
     formatterOptions.useGrouping = false;
 
     if (number > 0 && number < 0.0001) {
