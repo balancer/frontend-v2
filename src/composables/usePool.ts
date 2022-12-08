@@ -1,6 +1,5 @@
 import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
-import { isAddress } from '@ethersproject/address';
-import { getAddress } from 'ethers/lib/utils';
+import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
@@ -82,6 +81,8 @@ export function isDeep(pool: Pool): boolean {
     '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387', // wstETH/bb-a-USD (mainnet)
     '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // dola/bb-a-USD (mainnet)
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
+    '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b', // STG/bba-usd (mainnet)
+    '0x334c96d792e4b26b841d28f53235281cec1be1f200020000000000000000038a', // rETH/bba-usd (mainnet)
   ];
 
   return treatAsDeep.includes(pool.id);

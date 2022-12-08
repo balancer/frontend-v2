@@ -15,7 +15,7 @@ import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
 import config from '../config';
 import { isSameAddress } from '../utils';
 import { Multicaller } from '../utils/balancer/contract';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import template from '../utils/template';
 import { mapValues } from 'lodash';
