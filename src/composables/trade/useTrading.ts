@@ -15,6 +15,7 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
+import { debounce } from 'lodash';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
@@ -235,7 +236,7 @@ export default function useTrading(
       gnosis.handleAmountChange();
     } else {
       sor.resetState();
-      sor.handleAmountChange();
+      debounce(() => sor.handleAmountChange(), 500)();
     }
   }
 
