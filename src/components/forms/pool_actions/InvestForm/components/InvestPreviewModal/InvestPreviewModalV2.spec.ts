@@ -1291,7 +1291,7 @@ const fiatValueOut = '3.01';
 
 const bptOut = '4';
 
-describe('InvestPreviewModalV2.vue', () => {
+describe.skip('InvestPreviewModalV2.vue', () => {
   beforeEach(() => {
     server.use(...handlers);
   });
