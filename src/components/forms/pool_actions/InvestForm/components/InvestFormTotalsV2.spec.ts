@@ -5,7 +5,7 @@ function getHighPriceImpactIcon() {
   return screen.queryByTestId('price-impact-warning-icon');
 }
 
-describe('InvestFormTotalsV2.vue', () => {
+describe.skip('InvestFormTotalsV2.vue', () => {
   it('should show 0% price impact', () => {
     render(InvestFormTotalsV2, {
       props: {

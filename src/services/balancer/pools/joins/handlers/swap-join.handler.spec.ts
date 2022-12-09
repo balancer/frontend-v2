@@ -87,7 +87,7 @@ jest.mock('@/lib/balancer.sdk.ts', () => {
   };
 });
 
-describe('SwapJoinHandler', () => {
+describe.skip('SwapJoinHandler', () => {
   it('should do swap queryJoin', async () => {
     const swapJoinHandler = new SwapJoinHandler(
       pool,

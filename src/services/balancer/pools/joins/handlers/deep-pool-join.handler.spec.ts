@@ -49,7 +49,7 @@ jest.mock('@/lib/balancer.sdk.ts', () => {
   };
 });
 
-describe('DeepPoolJoinHandler', () => {
+describe.skip('DeepPoolJoinHandler', () => {
   it('should do deep queryJoin', async () => {
     const deepPoolJoinHandler = new DeepPoolJoinHandler(
       pool,
