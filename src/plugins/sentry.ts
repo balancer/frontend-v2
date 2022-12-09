@@ -36,14 +36,12 @@ export default function initSentry(app: App) {
       }
     };
 
-    const release = `frontend-v2@${version}`;
-
     init({
       dsn: 'https://d292b6ec7b6e4aa2801d972e06cb232c@o574636.ingest.sentry.io/5725878',
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
       environment: import.meta.env.MODE,
-      release,
+      release: `frontend-v2@${version}`,
     });
   }
 }
