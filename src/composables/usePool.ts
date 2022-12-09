@@ -230,7 +230,7 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
-    return numF(absMaxApr(aprs, boost), FNumFormats.percent);
+    return numF(bpToDec(absMaxApr(aprs, boost)), FNumFormats.percent);
   } else if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
     const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
     const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
