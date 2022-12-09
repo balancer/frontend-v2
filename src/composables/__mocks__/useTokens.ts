@@ -28,6 +28,7 @@ const mockTokens = {
 
 export default function useTokens() {
   return {
+    approvalsRequired: jest.fn().mockReturnValue([]),
     injectTokens: jest.fn().mockImplementation(),
     priceFor: () => 2,
     hasBalance: jest.fn().mockReturnValue(false),

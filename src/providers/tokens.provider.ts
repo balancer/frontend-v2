@@ -3,7 +3,7 @@ import { compact, pick } from 'lodash';
 import {
   computed,
   ComputedRef,
-  InjectionKey,
+  // InjectionKey,
   onBeforeMount,
   provide,
   reactive,
@@ -104,8 +104,7 @@ export interface TokensProviderResponse {
 /**
  * SETUP
  */
-export const TokensProviderSymbol: InjectionKey<TokensProviderResponse> =
-  Symbol(symbolKeys.Providers.Tokens);
+export const TokensProviderSymbol = Symbol(symbolKeys.Providers.Tokens);
 
 /**
  * TokensProvider
@@ -303,7 +302,7 @@ export default {
         address => !includesAddress(existingAddresses, address)
       );
       if (injectable.length === 0) return;
-
+      console.log({ injectable });
       const newTokens = await tokenService.metadata.get(
         injectable,
         allTokenLists

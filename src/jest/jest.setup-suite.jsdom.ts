@@ -20,6 +20,9 @@ import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 import StarsIcon from '@/components/_global/icons/StarsIcon.vue';
 import BalCircle from '@/components/_global/shapes/BalCircle/BalCircle.vue';
 import translations from '@/locales/default.json';
+import BalHorizSteps from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+import BalStack from '@/components/_global/BalStack/BalStack.vue';
+import SpinnerIcon from '@/components/_global/icons/SpinnerIcon.vue';
 
 const i18n = createI18n({
   locale: 'en-US',
@@ -60,4 +63,7 @@ config.global.components = {
   CompositionIcon,
   NetworkIcon,
   StarsIcon,
+  BalHorizSteps,
+  BalStack,
+  SpinnerIcon,
 };

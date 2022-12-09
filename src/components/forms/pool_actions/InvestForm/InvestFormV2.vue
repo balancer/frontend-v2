@@ -20,6 +20,8 @@ import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import useTokens from '@/composables/useTokens';
+import { useIntervalFn } from '@vueuse/shared';
+import { oneSecondInMs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -57,6 +59,14 @@ const {
   hasAmountsIn,
   queryError,
   priceImpact,
+  txInProgress,
+  queryJoinQuery,
+  bptOut,
+  fiatValueIn,
+  fiatValueOut,
+  rektPriceImpact,
+  missingPricesIn,
+  resetAmounts,
   setAmountsIn,
   addTokensIn,
 } = useJoinPool();
@@ -107,6 +117,18 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
     initializeTokensForm(isSingleAsset);
   }
 });
+
+// Every 10s we should re-trigger queryJoin in case the expected output
+// has changed as a result of pool state changing. This should only happen in
+// the preview modal, not at the JoinPoolProvider level.
+//
+// Originally we did it every block but this is overfetching on short blocktime
+// networks like Polygon.
+useIntervalFn(() => {
+  if (showInvestPreview.value && !isLoadingQuery.value && !txInProgress.value) {
+    queryJoinQuery.refetch.value();
+  }
+}, oneSecondInMs * 10);
 </script>
 
 <template>
@@ -205,6 +227,16 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
         <InvestPreviewModalV2
           v-if="showInvestPreview"
           :pool="pool"
+          :isSingleAssetJoin="isSingleAssetJoin"
+          :amountsIn="amountsIn"
+          :bptOut="bptOut"
+          :fiatValueIn="fiatValueIn"
+          :fiatValueOut="fiatValueOut"
+          :priceImpact="priceImpact"
+          :highPriceImpact="highPriceImpact"
+          :rektPriceImpact="rektPriceImpact"
+          :missingPricesIn="missingPricesIn"
+          :resetAmounts="resetAmounts"
           @close="showInvestPreview = false"
           @show-stake-modal="showStakeModal = true"
         />

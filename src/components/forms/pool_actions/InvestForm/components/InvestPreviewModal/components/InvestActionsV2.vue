@@ -74,17 +74,20 @@ const { tokenApprovalActions } = useTokenApprovalActions(
 /**
  * COMPUTED
  */
-const actions = computed((): TransactionActionInfo[] => [
-  ...approvalActions.value,
-  ...tokenApprovalActions,
-  {
-    label: t('addLiquidity'),
-    loadingLabel: t('investment.preview.loadingLabel.investment'),
-    confirmingLabel: t('confirming'),
-    action: submit,
-    stepTooltip: t('investmentTooltip'),
-  },
-]);
+const actions = computed((): TransactionActionInfo[] => {
+  // console.log({ approvalActions: approvalActions.value });
+  return [
+    ...approvalActions.value,
+    ...tokenApprovalActions,
+    {
+      label: t('addLiquidity'),
+      loadingLabel: t('investment.preview.loadingLabel.investment'),
+      confirmingLabel: t('confirming'),
+      action: submit,
+      stepTooltip: t('investmentTooltip'),
+    },
+  ];
+});
 
 const isStakablePool = computed((): boolean => {
   return (
