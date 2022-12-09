@@ -47,7 +47,7 @@ const tokenSymbolsWithoutBalanceMsg = computed(() => {
     v-else-if="tokenSymbolsWithoutBalance.length"
     class="mb-4 text-sm italic text-gray-600 dark:text-gray-400"
   >
-    No wallet balance for some pool tokens:
+    {{ t('investment.warning.noBalanceSomeTokens') }}:
     {{ tokenSymbolsWithoutBalanceMsg }}
   </div>
 </template>

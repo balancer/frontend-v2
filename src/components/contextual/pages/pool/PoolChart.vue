@@ -13,6 +13,7 @@ import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
+import { twentyFourHoursInSecs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -264,6 +265,11 @@ function getFeesData(
     }
   );
 
+  // add 0 values in order to show chart properly
+  if (periodSnapshots.length < 30) {
+    feesValues.push(...addLaggingTimestamps());
+  }
+
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapFees) -
     (isAllTimeSelected
@@ -308,6 +314,11 @@ function getVolumeData(
       value - prevValue,
     ]);
   });
+
+  // add 0 values in order to show chart properly
+  if (periodSnapshots.length < 30) {
+    volumeData.push(...addLaggingTimestamps());
+  }
 
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapVolume) -
@@ -389,6 +400,28 @@ function setCurrentChartValue(payload: {
   currentChartDate.value = format(
     new Date(payload.chartDate),
     PRETTY_DATE_FORMAT
+  );
+}
+
+function addLaggingTimestamps() {
+  const lastDate =
+    snapshotValues.value[snapshotValues.value.length - 1].timestamp / 1000;
+  const days = 30 - snapshotValues.value.length;
+
+  const timestampsArr: number[] = [];
+  for (let i = 1; i <= days; i++) {
+    const timestamp = lastDate - i * twentyFourHoursInSecs;
+    timestampsArr.push(timestamp * 1000);
+  }
+
+  return timestampsArr.map(timestamp =>
+    Object.freeze<[string, number]>([
+      format(
+        addMinutes(timestamp, new Date(timestamp).getTimezoneOffset()),
+        'yyyy/MM/dd'
+      ),
+      0,
+    ])
   );
 }
 </script>

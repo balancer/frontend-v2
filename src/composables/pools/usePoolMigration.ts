@@ -17,7 +17,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits } from '@ethersproject/units';
 import useTime, { dateTimeLabelFor } from '../useTime';
 import { TokenInfo } from '@/types/TokenList';
 import { fiatValueOf } from '../usePool';

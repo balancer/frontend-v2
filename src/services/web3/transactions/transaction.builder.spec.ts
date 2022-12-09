@@ -14,6 +14,7 @@ jest.mock('@ethersproject/providers', () => {
         },
         getAddress: jest.fn().mockImplementation(),
         sendTransaction: jest.fn().mockImplementation(),
+        getChainId: jest.fn().mockReturnValue('5'),
       };
     }),
   };

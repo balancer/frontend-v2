@@ -39,7 +39,6 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, should render 
 
     const aUSDTContainer = within(dai[1].parentElement as HTMLElement);
     await aUSDTContainer.findByText('24,104');
-    console.log(aUSDTContainer);
     await aUSDTContainer.findByText('$48,209');
   });
 });

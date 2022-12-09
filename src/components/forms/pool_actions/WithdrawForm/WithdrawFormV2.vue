@@ -1,31 +1,17 @@
 <script setup lang="ts">
-import { onBeforeMount, toRef, watch, ref, computed } from 'vue';
+import { onBeforeMount, ref, computed } from 'vue';
 // import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
-import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
 import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
-import useWithdrawalState from './composables/useWithdrawalState';
 import useExitPool from '@/composables/pools/useExitPool';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useI18n } from 'vue-i18n';
-
-/**
- * TYPES
- */
-type Props = {
-  pool: Pool;
-};
-
-/**
- * PROPS & EMITS
- */
-const props = defineProps<Props>();
 
 /**
  * STATE
@@ -38,8 +24,6 @@ const showPreview = ref(false);
 const { t } = useI18n();
 const { veBalTokenInfo } = useVeBal();
 const { wrappedNativeAsset } = useTokens();
-
-const { maxSlider } = useWithdrawalState(toRef(props, 'pool'));
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -71,22 +55,10 @@ const hasValidInputs = computed(
 );
 
 /**
- * WATCHERS
- */
-watch(isSingleAssetExit, _isSingleAssetExit => {
-  // If user selects to withdraw all tokens proportionally
-  // reset the slider to max.
-  if (!_isSingleAssetExit) {
-    maxSlider();
-  }
-});
-
-/**
  * CALLBACKS
  */
 onBeforeMount(() => {
   singleAmountOut.address = wrappedNativeAsset.value.address;
-  maxSlider();
 });
 </script>
 

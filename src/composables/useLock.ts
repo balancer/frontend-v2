@@ -54,7 +54,7 @@ export function useLock() {
 
   const poolShares = computed(
     (): BigNumber =>
-      lockPool.value
+      lockPool.value != null
         ? bnum(lockPool.value.totalLiquidity).div(lockPool.value.totalShares)
         : bnum(0)
   );

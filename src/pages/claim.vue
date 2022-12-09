@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { getAddress } from '@ethersproject/address';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 import { computed, onBeforeMount, watch } from 'vue';
 
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
@@ -170,7 +170,7 @@ function gaugeTitle(pool: GaugePool): string {
   return Object.values(_tokens)
     .map(
       token =>
-        `${fNum2(token.weight, {
+        `${fNum2(token.weight || '0', {
           style: 'percent',
           maximumFractionDigits: 0,
         })} ${token.symbol}`
@@ -330,7 +330,7 @@ onBeforeMount(async () => {
             v-for="network in networkBtns"
             :key="network.id"
             tag="a"
-            :href="`https://${network.subdomain}.balancer.fi/#/claim`"
+            :href="`https://app.balancer.fi/#/${network.subdomain}/claim`"
             color="white"
           >
             <img

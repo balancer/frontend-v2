@@ -424,6 +424,10 @@
   "invalidFee": "Invalid fee",
   "invalidFeeExplain": "Please enter a valid fee between 0.0001% and 10%",
   "investment": {
+    "tabs": {
+      "poolTokens": "Pool Tokens",
+      "singleToken": "Single Token"
+    },
     "preview": {
       "loadingLabel": {
         "approval": "Confirm approval in wallet",
@@ -447,6 +451,7 @@
       }
     },
     "warning": {
+      "noBalanceSomeTokens": "No wallet balance for some pool tokens",
       "managedPoolTradingHalted": {
         "description": "A swapping halt has been issued by the manager of this pool. For your safety, while the swapping halt is in effect, you may only add liquidity in proportional amounts.",
         "title": "Swapping halted - proportional liquidity provision only"
@@ -718,6 +723,9 @@
     },
     "poolOwnerVulnWarningEcosystemMigrate": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. You're advised to migrate your liquidity."
+    },
+    "renBTCWarning": {
+      "title": "You are strongly advised to withdraw any liquidity from this pool ASAP to avoid losses! Ideally you should withdraw in a proportional fashion to reduce price impact. The Ren 1.0 network is expected to be <a href=\"https://medium.com/renproject/moving-on-from-alameda-da62a823ce93\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">sunset</a> in December 2022. This will render this version of the renBTC token as valueless, which will trend the overall pool value towards zero. Ren Protocol also strongly advises to <a href=\"https://twitter.com/renprotocol/status/1595807696296751104\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">bridge all ren assets</a> back to their native chain ASAP to avoid being left holding a valueless token which can no longer be redeemed for the native asset."
     }
   },
   "popularBases": "Popular",
@@ -959,6 +967,25 @@
         "errors": {
           "notEnoughVotes": "Not enough unallocated votes"
         }
+      },
+      "resubmit": {
+        "modal": {
+          "title": "Preview vote resubmission",
+          "warning": {
+            "title": "You can only resubmit up to 8 votes",
+            "description": "It’s only possible to update 8 pool gauge votes at a time. You’ll need to update your votes for the remaining ones manually."
+          },
+          "otherPools": "0 other pools | 1 other pool | {n} other pools",
+          "total": "Total vote allocation",
+          "exceeding": "Your votes can’t exceed 100%",
+          "confirm": "Confirm votes"
+        },
+        "hint": {
+          "title": "Resubmit your votes to utilize your full voting power",
+          "description": "Votes on pools are set at the time of your last vote. Since you’ve added new veBAL after your original vote, the additional voting power is not being used."
+        },
+        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes.",
+        "btn": "Resubmit votes"
       }
     },
     "notSupported": {
@@ -1076,7 +1103,11 @@
           "loadingLabel": "Confirm lock in wallet"
         }
       },
-      "returnToVeBalPage": "Return to veBAL page"
+      "returnToVeBalPage": "Return to veBAL page",
+      "firstVeBALReceived": {
+        "title": "Vote on pools to direct liquidity incentives",
+        "description": "Your voting weight is set at the time of the vote. If you acquire additional veBAL, resubmit your votes to utilize your newly acquired voting power. Voting per pool can only be done once every 10 days."
+      }
     },
     "notSupported": {
       "title": "Locking is unavailable on this network",
@@ -1374,6 +1405,10 @@
   "weightedPool": "Weighted pool",
   "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
+    "tabs": {
+      "poolTokens": "Pool Tokens (proportional)",
+      "singleToken": "Single Token"
+    },
     "label": "Withdraw",
     "tooltips": {
       "priceImpact": "Withdrawing custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
@@ -1439,5 +1474,11 @@
     "immutable": "This pool is immutable. No attributes can ever be changed.",
     "immutableFeesEditableByGovernance": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance.",
     "immutableFeesEditableByOwner": "The attributes of this pool are immutable, except for swap fees which can be edited by the Pool Owner."
+  },
+  "myWalletCard": {
+    "title": {
+      "poolTokens": "Pool tokens (lowest price impact)",
+      "otherTokens": "Other tokens (higher price impact)"
+    }
   }
 }
