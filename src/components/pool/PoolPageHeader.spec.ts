@@ -50,23 +50,7 @@ vi.mock('@/composables/staking/useStaking', () => {
     }),
   };
 });
-vi.mock('@/services/web3/useWeb3', () => {
-  return {
-    default: vi.fn().mockImplementation(() => {
-      return {
-        isWalletReady: new Proxy(
-          {},
-          {
-            get() {
-              return true;
-            },
-          }
-        ),
-        account: '0x0000000000000000000000000000000000000000',
-      };
-    }),
-  };
-});
+vi.mock('@/services/web3/useWeb3');
 
 describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {

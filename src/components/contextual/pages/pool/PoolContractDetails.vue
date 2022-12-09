@@ -84,7 +84,7 @@ const data = computed(() => {
     },
     {
       title: t('poolOwner'),
-      value: shortenLabel(owner),
+      value: shortenLabel(owner || ''),
       link: explorer.addressLink(owner || ''),
     },
     {

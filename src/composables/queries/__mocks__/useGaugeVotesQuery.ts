@@ -3,5 +3,7 @@ export default function useGaugeVotesQuery() {
     data: [],
     isLoading: false,
     refetch: vi.fn(),
+    isIdle: false,
+    error: false,
   };
 }

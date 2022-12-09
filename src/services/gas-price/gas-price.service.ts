@@ -69,7 +69,9 @@ export class GasPriceService {
     const gasLimit = await contractWithSigner.estimateGas[action](
       ...params,
       options
-    );
+    ).catch(err => {
+      return Promise.reject(err.error);
+    });
     gasSettings.gasLimit = this.formatGasLimit(gasLimit.toNumber());
 
     if (this.shouldSetGasPriceSettings(options)) {
