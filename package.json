@@ -8,7 +8,7 @@
   "scripts": {
     "serve": "NODE_ENV=development npm run generate:tokenlists && vue-cli-service serve",
     "build": "npm run generate:tokenlists && vue-cli-service build",
-    "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache",
+    "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache --detectOpenHandles",
     "lint": "eslint . --ext .js,.ts,.vue --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
@@ -118,7 +118,6 @@
     "ts-jest": "^27.1.3",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "^3.14.1",
-    "tslib": "^2.4.1",
     "typescript": "^4.8.4",
     "vue": "3.2.24",
     "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0",
