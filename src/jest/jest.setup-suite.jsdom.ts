@@ -15,7 +15,6 @@ import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBloc
 import BalTable from '@/components/_global/BalTable/BalTable.vue';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
-import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 import CompositionIcon from '@/components/_global/icons/CompositionIcon.vue';
 import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 import StarsIcon from '@/components/_global/icons/StarsIcon.vue';
