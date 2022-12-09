@@ -31,12 +31,12 @@ it('Works for a parent token in a deep nested pool', async () => {
 describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakdown works', () => {
   const shareOfParentInPool = ref(
     bnum(bbaDaiToken.balance)
-      .div(bbaDaiToken.token.pool?.totalShares as string)
+      .div(bbaDaiToken.token?.pool?.totalShares as string)
       .toNumber()
   );
 
   it('for wrapped tokens (aDAi)', async () => {
-    const aDaiToken = ref(bbaDaiToken.token.pool?.tokens?.[0] as PoolToken);
+    const aDaiToken = ref(bbaDaiToken.token?.pool?.tokens?.[0] as PoolToken);
     const { result } = mount(() =>
       useTokenBreakdown(aDaiToken, shareOfParentInPool, isDeepPool)
     );
@@ -50,7 +50,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
   });
 
   it('for a non wrapped token (DAI)', async () => {
-    const daiToken = ref(bbaDaiToken.token.pool?.tokens?.[1] as PoolToken);
+    const daiToken = ref(bbaDaiToken.token?.pool?.tokens?.[1] as PoolToken);
     const { result } = mount(() =>
       useTokenBreakdown(daiToken, shareOfParentInPool, isDeepPool)
     );

@@ -1,45 +1,14 @@
 import { BigNumber } from 'ethers';
 import { Address } from '@/types';
-import { PoolType, Pool as SDKPool } from '@balancer-labs/sdk';
+import { Pool as SDKPool, PoolToken } from '@balancer-labs/sdk';
 
-export { PoolType } from '@balancer-labs/sdk';
+export { PoolType, PoolToken, SubPool } from '@balancer-labs/sdk';
 
 export interface Pool extends SDKPool {
-  owner: string;
-  factory: string;
   tokens: PoolToken[];
-  totalSwapFee: string;
-  totalSwapVolume: string;
-  createTime: number;
-  symbol: string;
   onchain?: OnchainPoolData;
-  linearPoolTokensMap?: Record<string, PoolToken>;
-  priceRateProviders?: PriceRateProvider[];
 }
 
-export interface TokenTreePool {
-  id: string;
-  address: string;
-  poolType: PoolType;
-  totalShares: string;
-  mainIndex: number;
-  tokens?: PoolToken[];
-}
-
-export interface PoolToken {
-  address: string;
-  balance: string;
-  weight: string;
-  priceRate: string | undefined;
-  symbol?: string;
-  decimals: number;
-  token: {
-    pool: TokenTreePool | null;
-    latestUSDPrice?: string;
-  };
-}
-
-// PoolToken data from onchain call
 export interface RawPoolTokens {
   balances: BigNumber[];
   lastChangeBlock: BigNumber;
@@ -181,11 +150,6 @@ export interface PoolSnapshot {
   swapVolume: string;
   swapFees: string;
   liquidity: string;
-}
-
-export interface PriceRateProvider {
-  address: string;
-  token: PoolToken;
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;

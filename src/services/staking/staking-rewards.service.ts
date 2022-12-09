@@ -1,6 +1,7 @@
 import { Network } from '@balancer-labs/sdk';
 import { getUnixTime } from 'date-fns';
-import { formatUnits, getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 import { isNil, mapValues } from 'lodash';
 
 import { isL2 } from '@/composables/useNetwork';

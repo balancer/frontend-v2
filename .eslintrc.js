@@ -55,6 +55,19 @@ module.exports = {
     ],
     // Typescript forces to check optional props for "undefined" values anyway, so this rule is not needed
     'vue/require-default-prop': 'off',
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          {
+            // Avoid imports using 'ethers/lib/*' because they lead to compilation issues in vite rollup builds
+            group: ['ethers/lib/*'],
+            message:
+              "Please import from '@ethersproject/*' instead to avoid vite rollup build issues",
+          },
+        ],
+      },
+    ],
   },
 
   overrides: [
