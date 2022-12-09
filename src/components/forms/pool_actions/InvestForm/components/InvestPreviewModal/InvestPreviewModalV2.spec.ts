@@ -1323,7 +1323,9 @@ describe('InvestPreviewModalV2.vue', () => {
     const fiatValueOutText = await within(tokensOutWrapper).findByText(
       `$${fiatValueOut}`
     );
-    const tokenOutText = await within(tokensOutWrapper).findByText(pool.symbol);
+    const tokenOutText = await within(tokensOutWrapper).findByText(
+      pool.symbol as string
+    );
     const bptOutText = await within(tokensOutWrapper).findByText(bptOut);
 
     console.log(html());
