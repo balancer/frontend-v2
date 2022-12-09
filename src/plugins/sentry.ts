@@ -1,8 +1,7 @@
 import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { App } from 'vue';
-// https://www.npmjs.com/package/vite-plugin-sentry
-import 'virtual:vite-plugin-sentry/sentry-config';
+import { version } from '../../package.json';
 import { isProductionMode } from './modes';
 
 // Using Sentry's vanila JS package (@sentry/browser) here instead of
@@ -37,8 +36,7 @@ export default function initSentry(app: App) {
       }
     };
 
-    const dist = import.meta.env.VITE_PLUGIN_SENTRY_CONFIG.dist;
-    const release = import.meta.env.VITE_PLUGIN_SENTRY_CONFIG.release;
+    const release = `frontend-v2@${version}`;
 
     init({
       dsn: 'https://d292b6ec7b6e4aa2801d972e06cb232c@o574636.ingest.sentry.io/5725878',
@@ -46,7 +44,6 @@ export default function initSentry(app: App) {
       tracesSampleRate: 1.0,
       environment: import.meta.env.MODE,
       release,
-      dist,
     });
   }
 }
