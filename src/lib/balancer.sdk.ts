@@ -17,18 +17,11 @@ const network = ((): Network => {
       return Network.MAINNET;
   }
 })();
-const { VITE_TENDERLY_USER, VITE_TENDERLY_PROJECT, VITE_TENDERLY_ACCESS_KEY } =
-  import.meta.env;
 
 export const balancer = new BalancerSDK({
   network,
   rpcUrl: configService.rpc,
   customSubgraphUrl: configService.network.subgraph,
-  tenderly: {
-    user: VITE_TENDERLY_USER as string,
-    project: VITE_TENDERLY_PROJECT as string,
-    accessKey: VITE_TENDERLY_ACCESS_KEY as string,
-  },
 });
 
 export const hasFetchedPoolsForSor = ref(false);
