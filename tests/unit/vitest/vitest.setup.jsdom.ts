@@ -3,6 +3,7 @@
 // setupFilesAfterEnv and before the test code itself.
 
 // Mock window.matchMedia
+// @ts-ignore
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation(query => ({

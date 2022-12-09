@@ -25,6 +25,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
     "sourceMap": true,
     "baseUrl": ".",
     "noImplicitAny": false,
