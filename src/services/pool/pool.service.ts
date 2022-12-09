@@ -1,10 +1,9 @@
 import { differenceInWeeks } from 'date-fns';
 
-import { isStable, isDeep } from '@/composables/usePool';
+import { isStable } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
 import { bnum, isSameAddress } from '@/lib/utils';
 import {
-  LinearPool,
   OnchainPoolData,
   Pool,
   PoolToken,
@@ -12,7 +11,6 @@ import {
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
@@ -80,49 +78,6 @@ export default class PoolService {
     return (this.pool.apr = apr as AprBreakdown);
   }
 
-  /**
-   * fetches StablePhantom linear pools and extracts
-   * required attributes.
-   */
-  public async setLinearPools(): Promise<Record<string, PoolToken> | null> {
-    if (!isDeep(this.pool)) return null;
-
-    // Fetch linear pools from subgraph
-    const linearPools = (await balancerSubgraphService.pools.get(
-      {
-        where: {
-          address_in: this.pool.tokensList,
-          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
-        },
-      },
-      { mainIndex: true, wrappedIndex: true }
-    )) as LinearPool[];
-
-    const linearPoolTokensMap: Pool['linearPoolTokensMap'] = {};
-
-    // Inject main/wrapped tokens into pool schema
-    linearPools.forEach(linearPool => {
-      if (!this.pool.mainTokens) this.pool.mainTokens = [];
-      if (!this.pool.wrappedTokens) this.pool.wrappedTokens = [];
-
-      const index = this.pool.tokensList.indexOf(
-        linearPool.address.toLowerCase()
-      );
-
-      this.pool.mainTokens[index] = linearPool.tokensList[linearPool.mainIndex];
-      this.pool.wrappedTokens[index] =
-        linearPool.tokensList[linearPool.wrappedIndex];
-
-      linearPool.tokens
-        .filter(token => !isSameAddress(token.address, linearPool.address))
-        .forEach(token => {
-          linearPoolTokensMap[token.address] = token;
-        });
-    });
-
-    return (this.pool.linearPoolTokensMap = linearPoolTokensMap);
-  }
-
   removeBptFromTokens(): string[] {
     return (this.pool.tokensList = this.pool.tokensList.filter(
       address => !isSameAddress(address, this.pool.address)
@@ -133,15 +88,15 @@ export default class PoolService {
     if (isStable(this.pool.poolType)) return this.pool.tokens;
 
     return (this.pool.tokens = this.pool.tokens.sort(
-      (a, b) => parseFloat(b.weight) - parseFloat(a.weight)
+      (a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0')
     ));
   }
 
   public setFeesSnapshot(poolSnapshot: Pool | undefined): string {
     let snapshotFees = '0';
-    if (poolSnapshot) snapshotFees = poolSnapshot.totalSwapFee;
+    if (poolSnapshot) snapshotFees = poolSnapshot.totalSwapFee || '0';
 
-    const feesSnapshot = bnum(this.pool.totalSwapFee)
+    const feesSnapshot = bnum(this.pool.totalSwapFee || 0)
       .minus(snapshotFees)
       .toString();
 
@@ -150,9 +105,9 @@ export default class PoolService {
 
   public setVolumeSnapshot(poolSnapshot: Pool | undefined): string {
     let snapshotVolume = '0';
-    if (poolSnapshot) snapshotVolume = poolSnapshot.totalSwapVolume;
+    if (poolSnapshot) snapshotVolume = poolSnapshot.totalSwapVolume || '0';
 
-    const volumeSnapshot = bnum(this.pool.totalSwapVolume)
+    const volumeSnapshot = bnum(this.pool.totalSwapVolume || 0)
       .minus(snapshotVolume)
       .toString();
 
@@ -183,6 +138,8 @@ export default class PoolService {
   }
 
   public get isNew(): boolean {
+    if (!this.pool.createTime) return false;
+
     return (
       differenceInWeeks(Date.now(), this.pool.createTime * oneSecondInMs) < 1
     );

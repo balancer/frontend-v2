@@ -7,6 +7,47 @@ GaugesTable.components = {
   BalAssetSet,
 };
 
+jest.mock('@/composables/queries/useExpiredGaugesQuery', () =>
+  jest.fn().mockImplementation(() => ({
+    data: {
+      value: [],
+    },
+  }))
+);
+
+jest.mock('@/composables/queries/useGraphQuery', () => {
+  return {
+    __esModule: true,
+    default: jest.fn(() => ({
+      data: {
+        value: {
+          votingEscrowLocks: [
+            {
+              votingEscrowID: {
+                id: 'asdf',
+              },
+              updatedAt: 123,
+            },
+          ],
+        },
+      },
+    })),
+    subgraphs: {
+      gauge: 'mockgauge',
+    },
+  };
+});
+
+jest.mock('@/composables/queries/useVeBalLockInfoQuery', () =>
+  jest.fn().mockImplementation(() => ({
+    data: {
+      value: {
+        lockedAmount: '123',
+      },
+    },
+  }))
+);
+jest.mock('@/composables/queries/useGaugeVotesQuery');
 // Global settings for component render.
 const global = {
   stubs: {
@@ -27,7 +68,7 @@ jest.mock('@/services/web3/useWeb3', () => {
           },
         }
       ),
-      account: '0x0000000000000000000000000000000000000000',
+      account: { value: '0x0000000000000000000000000000000000000000' },
     };
   });
 });

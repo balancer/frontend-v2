@@ -21,8 +21,8 @@ import {
   getNetworkSlug,
   isL2,
 } from './useNetwork';
-import useNumbers, { FNumFormats, numF, bpToDec } from './useNumbers';
-import { AnyPool, Pool, PoolToken, TokenTreePool } from '@/services/pool/types';
+import useNumbers, { FNumFormats, numF } from './useNumbers';
+import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
 
@@ -162,7 +162,7 @@ export function isMigratablePool(pool: AnyPool) {
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
-  return bnum(pool?.onchain?.totalSupply || '0').eq(0);
+  return bnum(pool?.totalShares || '0').eq(0);
 }
 
 export function preMintedBptIndex(pool: Pool): number | void {
@@ -192,7 +192,7 @@ export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
   if (isStableLike(pool.poolType)) return tokens;
   return tokens
     .slice()
-    .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+    .sort((a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0'));
 }
 
 /**
@@ -241,12 +241,12 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
     return numF(absMaxApr(aprs, boost), FNumFormats.percent);
   } else if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
-    const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
-    const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
+    const minAPR = numF(aprs.min, FNumFormats.bp);
+    const maxAPR = numF(aprs.max, FNumFormats.bp);
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(bpToDec(aprs.min), FNumFormats.percent);
+  return numF(aprs.min, FNumFormats.bp);
 }
 
 /**
@@ -285,7 +285,7 @@ export function tokenTreeNodes(
 
   for (const token of tokenTree) {
     addresses.push(token.address);
-    if (token.token.pool?.tokens) {
+    if (token.token?.pool?.tokens) {
       if (
         !options.includeLinearUnwrapped &&
         isLinear(token.token.pool.poolType)
@@ -317,7 +317,7 @@ export function tokenTreeLeafs(
   const addresses: string[] = [];
 
   for (const token of tokenTree) {
-    if (token.token.pool?.tokens) {
+    if (token.token?.pool?.tokens) {
       if (
         !options.includeLinearUnwrapped &&
         isLinear(token.token.pool.poolType)
@@ -329,7 +329,7 @@ export function tokenTreeLeafs(
         const nestedTokens = tokenTreeLeafs(token.token.pool.tokens, options);
         addresses.push(...removeAddress(token.address, nestedTokens));
       }
-    } else if (!token.token.pool?.poolType) {
+    } else if (!token.token?.pool?.poolType) {
       addresses.push(token.address);
     }
   }
@@ -337,10 +337,8 @@ export function tokenTreeLeafs(
   return uniq(addresses);
 }
 
-function isTokenTreePool(
-  poolOrToken: Pool | TokenTreePool
-): poolOrToken is TokenTreePool {
-  return (poolOrToken as TokenTreePool).mainIndex !== undefined;
+function isSubPool(poolOrToken: Pool | SubPool): poolOrToken is SubPool {
+  return (poolOrToken as SubPool).mainIndex !== undefined;
 }
 
 /**
@@ -351,7 +349,7 @@ function isTokenTreePool(
  * @returns {PoolToken[]} Flat array of tokens in tree.
  */
 export function flatTokenTree(
-  pool: Pool | TokenTreePool,
+  pool: Pool | SubPool,
   options: TokenTreeOpts = {
     includeLinearUnwrapped: false,
     includePreMintedBpt: false,
@@ -359,7 +357,7 @@ export function flatTokenTree(
 ): PoolToken[] {
   const tokens: PoolToken[] = [];
 
-  if (!options.includePreMintedBpt && !isTokenTreePool(pool)) {
+  if (!options.includePreMintedBpt && !isSubPool(pool)) {
     pool = removeBptFrom(pool);
   }
 
@@ -370,7 +368,7 @@ export function flatTokenTree(
       tokens.push(token);
     }
 
-    if (token.token.pool?.tokens) {
+    if (token.token?.pool?.tokens) {
       if (
         !options.includeLinearUnwrapped &&
         isLinear(token.token.pool.poolType)
@@ -411,7 +409,7 @@ export function removeBptFrom(pool: Pool): Pool {
   );
 
   newPool.tokens.forEach(token => {
-    if (token.token.pool) {
+    if (token.token?.pool) {
       removeBptFromTree(token.token.pool);
     }
   });
@@ -419,14 +417,14 @@ export function removeBptFrom(pool: Pool): Pool {
 }
 
 /**
- * Updates the passed tokenTreePool by removing its pre-minted tokens.
+ * Updates the passed subPool by removing its pre-minted tokens.
  */
-export function removeBptFromTree(tree: TokenTreePool) {
+export function removeBptFromTree(tree: SubPool) {
   if (tree.tokens) {
     removePremintedToken(tree);
 
     tree.tokens.forEach(token => {
-      if (token.token.pool) {
+      if (token.token?.pool) {
         removeBptFromTree(token.token.pool);
       }
     });
@@ -435,9 +433,9 @@ export function removeBptFromTree(tree: TokenTreePool) {
 }
 
 /**
- * Updates the passed tokenTreePool by removing the preminted token from tokens and updating mainIndex accordingly.
+ * Updates the passed subPool by removing the preminted token from tokens and updating mainIndex accordingly.
  */
-function removePremintedToken(tree: TokenTreePool) {
+function removePremintedToken(tree: SubPool) {
   if (!tree.tokens) {
     return;
   }
@@ -457,7 +455,7 @@ function removePremintedToken(tree: TokenTreePool) {
   }
 }
 
-export function findMainTokenAddress(pool: TokenTreePool | null) {
+export function findMainTokenAddress(pool: SubPool | null) {
   if (!pool || !pool.tokens) return '';
   return pool.tokens[pool.mainIndex].address;
 }
@@ -485,7 +483,7 @@ export function isBlocked(pool: Pool, account: string): boolean {
   const requiresAllowlisting =
     isStableLike(pool.poolType) || isManaged(pool.poolType);
   const isOwnedByUser =
-    isAddress(account) && isSameAddress(pool.owner, account);
+    pool.owner && isAddress(account) && isSameAddress(pool.owner, account);
   const isAllowlisted =
     POOLS.Stable.AllowList.includes(pool.id) ||
     POOLS.Investment.AllowList.includes(pool.id);

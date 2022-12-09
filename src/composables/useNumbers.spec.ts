@@ -1,4 +1,5 @@
 import { mount } from 'vue-composable-tester';
+import BigNumber from 'bignumber.js';
 
 import { FiatCurrency } from '@/constants/currency';
 
@@ -279,6 +280,17 @@ describe('useNumbers', () => {
           style: 'decimal',
           maximumFractionDigits: 0,
         });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result for basis points / 10000 as percent', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum2(testNumber, FNumFormats.bp);
+        const format2 = fNum2(
+          new BigNumber(testNumber).div(10000).toString(),
+          FNumFormats.percent
+        );
         expect(format2).toEqual(format1);
       });
     });

@@ -15,6 +15,7 @@
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
+  "balancerApi": "https://berfqtb52bc4hetoouojoshqem.appsync-api.eu-west-2.amazonaws.com/graphql",
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [
@@ -67,7 +68,8 @@
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
-    "alchemy": "ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2"
+    "alchemy": "ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+    "balancerApi": "da2-7a3ukmnw7bexndpx5x522uafui"
   },
   "strategies": {
     "0": {
