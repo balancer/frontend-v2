@@ -1,6 +1,7 @@
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import { ref } from 'vue';
+import { isTestMode } from '@/plugins/modes';
 
 const network = ((): Network => {
   switch (configService.network.key) {
@@ -16,20 +17,17 @@ const network = ((): Network => {
       return Network.MAINNET;
   }
 })();
-const {
-  VUE_APP_TENDERLY_USER,
-  VUE_APP_TENDERLY_PROJECT,
-  VUE_APP_TENDERLY_ACCESS_KEY,
-} = process.env;
+const { VITE_TENDERLY_USER, VITE_TENDERLY_PROJECT, VITE_TENDERLY_ACCESS_KEY } =
+  import.meta.env;
 
 export const balancer = new BalancerSDK({
   network,
   rpcUrl: configService.rpc,
   customSubgraphUrl: configService.network.subgraph,
   tenderly: {
-    user: VUE_APP_TENDERLY_USER as string,
-    project: VUE_APP_TENDERLY_PROJECT as string,
-    accessKey: VUE_APP_TENDERLY_ACCESS_KEY as string,
+    user: VITE_TENDERLY_USER as string,
+    project: VITE_TENDERLY_PROJECT as string,
+    accessKey: VITE_TENDERLY_ACCESS_KEY as string,
   },
 });
 
@@ -44,4 +42,4 @@ export async function fetchPoolsForSor() {
   console.timeEnd('fetchPoolsForSor');
 }
 
-if (process.env.NODE_ENV !== 'test') fetchPoolsForSor();
+if (!isTestMode()) fetchPoolsForSor();
