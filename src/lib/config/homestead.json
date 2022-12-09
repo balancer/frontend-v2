@@ -6,7 +6,6 @@
   "shortName": "Mainnet",
   "slug": "ethereum",
   "network": "homestead",
-  "portisNetwork": "mainnet",
   "unknown": false,
   "rpc": "https://mainnet.infura.io/v3/{{INFURA_KEY}}",
   "ws": "wss://mainnet.infura.io/ws/v3/{{INFURA_KEY}}",
