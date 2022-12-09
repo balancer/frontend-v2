@@ -21,7 +21,7 @@ import {
   getNetworkSlug,
   isL2,
 } from './useNetwork';
-import useNumbers, { FNumFormats, numF } from './useNumbers';
+import useNumbers, { bpToDec, FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
