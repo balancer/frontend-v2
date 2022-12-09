@@ -5,7 +5,7 @@ import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   hasBoostedAPR,
   isDeep,
@@ -79,11 +79,11 @@ const yieldBreakdownItems = computed((): [string, number][] =>
       :hideItems="!hasMultiRewardTokens"
     >
       <div class="flex items-center">
-        {{ fNum2(bpToDec(yieldAPR.total), FNumFormats.percent) }}
+        {{ fNum2(yieldAPR.total, FNumFormats.bp) }}
         <span class="ml-1 text-xs text-secondary"> {{ yieldAPRLabel }} </span>
       </div>
       <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
-        {{ fNum2(bpToDec(amount), FNumFormats.percent) }}
+        {{ fNum2(amount, FNumFormats.bp) }}
         <span class="ml-1 text-xs text-secondary">
           {{ yieldAPRTokens[getAddress(address)].symbol }} {{ $t('apr') }}
         </span>

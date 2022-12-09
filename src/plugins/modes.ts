@@ -6,3 +6,7 @@
 export function isProductionMode() {
   return import.meta.env.MODE === 'production';
 }
+
+export function isTestMode() {
+  return import.meta.env.MODE === 'test';
+}

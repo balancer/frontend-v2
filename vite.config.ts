@@ -53,10 +53,9 @@ export default defineConfig(({ mode }) => {
         auto: true,
       },
       sourceMaps: {
-        include: ['./dist'],
-        // include: ['./dist/assets'],
+        include: ['./dist/assets'],
         ignore: ['node_modules', 'vite.config.ts'],
-        // urlPrefix: '~/assets',
+        urlPrefix: '~/assets',
       },
     };
     plugins.push(viteSentry(sentryConfig));
@@ -104,7 +103,7 @@ export default defineConfig(({ mode }) => {
           envConfig.VITE_BUILD_ANALIZE ? analyze({ summaryOnly: false }) : null,
           envConfig.VITE_BUILD_VISUALIZE ? visualizer({ open: true }) : null,
           // https://stackoverflow.com/a/72440811/10752354
-          rollupPolyfillNode({ sourceMap: true }),
+          rollupPolyfillNode(),
         ],
       },
       commonjsOptions: {

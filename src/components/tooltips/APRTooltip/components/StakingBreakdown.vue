@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
@@ -58,10 +58,10 @@ const boostedTotalAPR = computed((): string => {
       .plus(rewardTokensAPR.value)
       .toString();
 
-    return fNum2(boostedStakingAPR, FNumFormats.percent);
+    return fNum2(boostedStakingAPR, FNumFormats.bp);
   }
 
-  return fNum2(rewardTokensAPR.value, FNumFormats.percent);
+  return fNum2(rewardTokensAPR.value, FNumFormats.bp);
 });
 
 /**
@@ -69,8 +69,8 @@ const boostedTotalAPR = computed((): string => {
  */
 const unboostedTotalAPR = computed((): string =>
   fNum2(
-    bpToDec(bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString()),
-    FNumFormats.percent
+    bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
+    FNumFormats.bp
   )
 );
 
@@ -115,14 +115,14 @@ const breakdownItems = computed((): Array<any> => {
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
-          {{ fNum2(bpToDec(amount), FNumFormats.percent) }}
+          {{ fNum2(amount, FNumFormats.bp) }}
           <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>
         </template>
       </BalBreakdown>
       <div v-else-if="hasRewardTokens" class="flex items-center">
-        {{ fNum2(rewardTokensAPR, FNumFormats.percent) }}
+        {{ fNum2(rewardTokensAPR, FNumFormats.bp) }}
         <span class="ml-1 text-xs text-secondary">
           {{ $t('staking.stakingApr') }}
         </span>

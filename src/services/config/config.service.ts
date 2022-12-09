@@ -15,7 +15,6 @@ interface Env {
   ALCHEMY_KEY: string;
   GRAPH_KEY: string;
   INFURA_PROJECT_ID: string;
-  PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
   WALLET_SCREENING: boolean;
 }
@@ -44,7 +43,6 @@ export default class ConfigService {
         this.getNetworkConfig(networkId.value).keys.infura ||
         'MISSING_KEY',
       ENABLE_STABLE_POOLS: import.meta.env.VITE_ENABLE_STABLE_POOLS === 'true',
-      PORTIS_DAPP_ID: import.meta.env.VITE_PORTIS_DAPP_ID || 'MISSING_KEY',
       WALLET_SCREENING: import.meta.env.VITE_WALLET_SCREENING === 'true',
     };
   }

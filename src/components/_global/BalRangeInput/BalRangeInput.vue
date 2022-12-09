@@ -4,7 +4,7 @@ import 'vue-slider-component/theme/antd.css';
 import { computed } from 'vue';
 import VueSlider, { DefineComponent as TVueSlider } from 'vue-slider-component';
 
-import tailwindConfig from '@/../tailwind.config';
+import { theme } from '@/../tailwind.config';
 import useDarkMode from '@/composables/useDarkMode';
 
 export interface BalRangeInputProps extends TVueSlider {
@@ -21,7 +21,7 @@ const emit = defineEmits(['change', 'update:modelValue', 'dragEnd']);
 
 const { darkMode } = useDarkMode();
 
-const colors = tailwindConfig.theme.extend.colors;
+const colors = theme.extend.colors;
 
 function onChange(value) {
   emit('change', value);

@@ -1,7 +1,6 @@
 import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { App } from 'vue';
-
 import { version } from '../../package.json';
 import { isProductionMode } from './modes';
 
@@ -9,10 +8,21 @@ import { isProductionMode } from './modes';
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.
 // https://github.com/getsentry/sentry-javascript/issues/2925
 
-const release = `frontend-v2@${version}`;
+function shouldInitSentry() {
+  if (isProductionMode()) {
+    if (!import.meta.env.VITE_SENTRY_AUTH_TOKEN) {
+      console.warn(
+        'Sentry disabled because VITE_SENTRY_AUTH_TOKEN env was not provided'
+      );
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
 
 export default function initSentry(app: App) {
-  if (isProductionMode()) {
+  if (shouldInitSentry()) {
     app.config.errorHandler = (error, _, info) => {
       try {
         setTag('info', info);
@@ -31,7 +41,7 @@ export default function initSentry(app: App) {
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
       environment: import.meta.env.MODE,
-      release,
+      release: `frontend-v2@${version}`,
     });
   }
 }

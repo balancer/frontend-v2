@@ -14,10 +14,10 @@ import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
-import { OnchainTokenData, Pool } from '@/services/pool/types';
+import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import useStaking from '@/composables/staking/useStaking';
 import { AprBreakdown } from '@balancer-labs/sdk';
+import useStaking from '@/composables/staking/useStaking';
 
 /**
  * TYPES
@@ -29,7 +29,7 @@ type Props = {
   isStableLikePool: boolean;
   pool?: Pool;
   poolApr?: AprBreakdown;
-  titleTokens: [string, OnchainTokenData][];
+  titleTokens: PoolToken[];
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
   isComposableStableLikePool: boolean;
@@ -90,9 +90,9 @@ const swapFeeToolTip = computed(() => {
 });
 
 const poolFeeLabel = computed(() => {
-  if (!props.pool || !props.pool?.onchain?.swapFee) return '';
+  if (!props.pool || !props.pool?.swapFee) return '';
 
-  const feeLabel = `${fNum2(props.pool.onchain.swapFee, {
+  const feeLabel = `${fNum2(props.pool.swapFee, {
     style: 'percent',
     maximumFractionDigits: 4,
   })}`;
@@ -146,20 +146,20 @@ const poolTypeLabel = computed(() => {
           {{ poolTypeLabel }}
         </h3>
         <div
-          v-for="([address, tokenMeta], i) in titleTokens"
+          v-for="({ address, symbol, weight }, i) in titleTokens"
           :key="i"
           class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
         >
           <BalAsset :address="address" />
           <span class="ml-2">
-            {{ tokenMeta.symbol }}
+            {{ symbol }}
           </span>
           <span
             v-if="!isStableLikePool"
             class="mt-px ml-1 text-xs font-medium text-gray-400"
           >
             {{
-              fNum2(tokenMeta.weight, {
+              fNum2(weight || '0', {
                 style: 'percent',
                 maximumFractionDigits: 0,
               })

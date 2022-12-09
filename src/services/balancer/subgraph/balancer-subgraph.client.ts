@@ -2,6 +2,10 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 import { subgraphFallbackService } from './subgraph-fallback.service';
 
+export interface SubgraphQueryOptions {
+  url?: string;
+}
+
 export default class BalancerSubgraphClient {
   public async get(query) {
     try {

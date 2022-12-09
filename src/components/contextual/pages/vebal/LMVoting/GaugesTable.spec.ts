@@ -7,6 +7,53 @@ GaugesTable.components = {
   BalAssetSet,
 };
 
+vi.mock('@/composables/queries/useExpiredGaugesQuery', () => {
+  return {
+    default: () => ({
+      data: {
+        value: [],
+      },
+    }),
+  };
+});
+
+vi.mock('@/composables/queries/useGraphQuery', () => {
+  return {
+    default: () => ({
+      data: {
+        value: {
+          votingEscrowLocks: [
+            {
+              votingEscrowID: {
+                id: 'asdf',
+              },
+              updatedAt: 123,
+            },
+          ],
+        },
+      },
+    }),
+    subgraphs: {
+      gauge: 'mockgauge',
+    },
+  };
+});
+
+vi.mock('@/composables/queries/useVeBalLockInfoQuery', () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          value: {
+            lockedAmount: '123',
+          },
+        },
+      };
+    }),
+  };
+});
+
+vi.mock('@/composables/queries/useGaugeVotesQuery');
 // Global settings for component render.
 const global = {
   stubs: {
@@ -16,23 +63,7 @@ const global = {
 
 vi.mock('vue-router');
 vi.mock('@/composables/useTokens');
-vi.mock('@/services/web3/useWeb3', () => {
-  return {
-    default: vi.fn().mockImplementation(() => {
-      return {
-        isWalletReady: new Proxy(
-          {},
-          {
-            get() {
-              return true;
-            },
-          }
-        ),
-        account: '0x0000000000000000000000000000000000000000',
-      };
-    }),
-  };
-});
+vi.mock('@/services/web3/useWeb3');
 
 const gaugeId = '0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac';
 
