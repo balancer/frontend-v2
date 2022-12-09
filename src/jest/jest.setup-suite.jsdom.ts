@@ -55,7 +55,6 @@ config.global.components = {
   BalBreakdown,
   BalBtn,
   BalCard,
-  BalAlert,
   BalChip,
   BalIcon,
   BalLoadingBlock,
