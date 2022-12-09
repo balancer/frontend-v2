@@ -54,6 +54,8 @@ export default function useInputStyles(
         return 'h-8';
       case 'lg':
         return 'h-12';
+      case 'auto':
+        return 'h-auto';
       default:
         return 'h-10';
     }

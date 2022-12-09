@@ -2,12 +2,11 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { format } from 'date-fns';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
-import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { dateTimeLabelFor, toUtcTime } from '@/composables/useTime';
@@ -24,7 +23,8 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
-import { TransactionActionState } from '@/types/transactions';
+import SubmitVoteBtn from './SubmitVoteBtn.vue';
+import useActionState, { State } from '@/composables/useActionState';
 
 /**
  * TYPES
@@ -59,17 +59,12 @@ const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { veBalBalance } = useVeBal();
+const voteState = useActionState();
 
 /**
  * STATE
  */
 const voteWeight = ref<string>('');
-const voteState = reactive<TransactionActionState>({
-  init: false,
-  confirming: false,
-  confirmed: false,
-  confirmedAt: '',
-});
 
 /**
  * COMPUTED
@@ -200,6 +195,7 @@ const voteWarning = computed(
     description: string;
   } | null => {
     if (lpVoteOverLimitWarning.value) return lpVoteOverLimitWarning.value;
+    if (voteState.error.value) return voteState.error.value;
     return null;
   }
 );
@@ -212,13 +208,14 @@ const voteError = computed(
     if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
     if (noVeBalWarning.value) return noVeBalWarning.value;
     if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
-    if (voteState.error) return voteState.error;
     return null;
   }
 );
 
 const transactionInProgress = computed(
-  (): boolean => voteState.init || voteState.confirming
+  (): boolean =>
+    voteState.state.value === State.TRANSACTION_INITIALIZED ||
+    voteState.state.value === State.CONFIRMING
 );
 
 const hasEnoughVotes = computed((): boolean => {
@@ -281,24 +278,21 @@ function isVoteWeightValid(voteWeight) {
 async function submitVote() {
   const totalVoteShares = scale(voteWeight.value, 2).toString();
   try {
-    voteState.init = true;
-    voteState.error = null;
+    voteState.setInit();
     const tx = await gaugeControllerService.voteForGaugeWeights(
       props.gauge.address,
       BigNumber.from(totalVoteShares)
     );
-    voteState.init = false;
-    voteState.confirming = true;
+    voteState.setConfirming();
     handleTransaction(tx);
   } catch (e) {
     console.error(e);
     const error = e as WalletError;
-    voteState.init = false;
-    voteState.confirming = false;
-    voteState.error = {
+
+    voteState.setError({
       title: 'Vote failed',
       description: error.message,
-    };
+    });
   }
 }
 
@@ -318,21 +312,17 @@ async function handleTransaction(tx) {
 
   txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
-      voteState.receipt = receipt;
+      const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
 
-      const confirmedAt = await getTxConfirmedAt(receipt);
-      voteState.confirmedAt = dateTimeLabelFor(confirmedAt);
-      voteState.confirmed = true;
-      voteState.confirming = false;
+      voteState.setSuccess({ receipt, confirmedAt });
       emit('success');
     },
     onTxFailed: () => {
       console.error('Vote failed');
-      voteState.error = {
+      voteState.setError({
         title: 'Vote Failed',
         description: 'Vote failed for an unknown reason',
-      };
-      voteState.confirming = false;
+      });
     },
   });
 }
@@ -346,11 +336,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <BalModal show :fireworks="voteState.confirmed" @close="emit('close')">
+  <BalModal
+    show
+    :fireworks="voteState.state.value === State.CONFIRMED"
+    @close="emit('close')"
+  >
     <template #header>
       <div class="flex items-center">
         <BalCircle
-          v-if="voteState.confirmed"
+          v-if="voteState.state.value === State.CONFIRMED"
           size="8"
           color="green"
           class="mr-2 text-white"
@@ -432,7 +426,9 @@ onMounted(() => {
           validateOn="input"
           :rules="inputRules"
           :disabled="
-            voteInputDisabled || transactionInProgress || !!voteState.receipt
+            voteInputDisabled ||
+            transactionInProgress ||
+            voteState.state.value === State.CONFIRMED
           "
           size="md"
           autoFocus
@@ -454,38 +450,20 @@ onMounted(() => {
           {{ remainingVotes }}
         </div>
 
-        <div class="mt-4">
-          <template v-if="voteState.receipt">
-            <ConfirmationIndicator
-              :txReceipt="voteState.receipt"
-              class="mb-2"
-            />
-            <BalBtn
-              v-if="voteState.receipt"
-              color="gray"
-              outline
-              block
-              @click="emit('close')"
-            >
-              {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
-            </BalBtn>
-          </template>
-          <BalBtn
-            v-else
-            color="gradient"
-            block
-            :disabled="voteButtonDisabled"
-            :loading="transactionInProgress"
-            :loadingLabel="
-              voteState.init
-                ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
-                : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
-            "
-            @click.prevent="submitVote"
-          >
-            {{ voteButtonText }}
-          </BalBtn>
-        </div>
+        <SubmitVoteBtn
+          :disabled="voteButtonDisabled"
+          :loading="transactionInProgress"
+          class="mt-4"
+          :loadingLabel="
+            voteState.state.value === State.TRANSACTION_INITIALIZED
+              ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
+              : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
+          "
+          @click:close="emit('close')"
+          @click:submit="submitVote"
+        >
+          {{ voteButtonText }}
+        </SubmitVoteBtn>
       </BalForm>
     </div>
   </BalModal>

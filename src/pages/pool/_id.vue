@@ -25,6 +25,7 @@ import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
+import { PoolToken } from '@/services/pool/types';
 
 /**
  * STATE
@@ -132,7 +133,7 @@ const noInitLiquidity = computed(
   () =>
     !loadingPool.value &&
     pool.value &&
-    Number(pool.value?.onchain?.totalSupply || '0') === 0
+    Number(pool.value?.totalShares || '0') === 0
 );
 
 const missingPrices = computed(() => {
@@ -149,11 +150,11 @@ const missingPrices = computed(() => {
   return false;
 });
 
-const titleTokens = computed(() => {
-  if (!pool.value || !pool.value.onchain?.tokens) return [];
+const titleTokens = computed<PoolToken[]>(() => {
+  if (!pool.value || !pool.value.tokens) return [];
 
-  return Object.entries(pool.value.onchain.tokens).sort(
-    ([, a]: any[], [, b]: any[]) => b.weight - a.weight
+  return [...pool.value.tokens].sort(
+    (a, b) => Number(b.weight) - Number(a.weight)
   );
 });
 
@@ -228,7 +229,7 @@ watch(poolQuery.error, () => {
               <ApyVisionPoolLink
                 v-if="!loadingPool && pool"
                 :poolId="pool.id"
-                :titleTokens="titleTokens"
+                :tokens="titleTokens"
               />
             </div>
             <div class="mb-4">
