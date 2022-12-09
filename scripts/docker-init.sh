@@ -30,7 +30,4 @@ find /usr/share/nginx/html -type f -exec sed -i 's/VAINFURAPID/'${INFURA_PROJECT
 find /usr/share/nginx/html -type f -exec sed -i 's/VAALCHEMYKEY/'${ALCHEMY_KEY}'/g' {} +;
 find /usr/share/nginx/html -type f -exec sed -i 's/VABNDAPPID/'${BLOCKNATIVE_DAPP_ID}'/g' {} +;
 
-# Portis is optional, will replace with empty string if not specified and then use default from config
-find /usr/share/nginx/html -type f -exec sed -i 's/VAPORTISDID/'${PORTIS_DAPP_ID}'/g' {} +;
-
 nginx -g "daemon off;"
