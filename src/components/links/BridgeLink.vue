@@ -9,7 +9,7 @@ const { networkId } = useNetwork();
 const bridgeUrl = computed((): string => {
   switch (networkId.value) {
     case Network.POLYGON:
-      return 'https://wallet.polygon.technology/bridge';
+      return 'https://wallet.polygon.technology/polygon/bridge';
     case Network.ARBITRUM:
       return 'https://bridge.arbitrum.io/';
     default:

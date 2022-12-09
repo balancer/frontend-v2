@@ -69,8 +69,8 @@ const boostedTotalAPR = computed((): string => {
  */
 const unboostedTotalAPR = computed((): string =>
   fNum2(
-    bpToDec(bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString()),
-    FNumFormats.percent
+    bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
+    FNumFormats.bp
   )
 );
 
@@ -115,7 +115,7 @@ const breakdownItems = computed((): Array<any> => {
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
-          {{ fNum2(bpToDec(amount), FNumFormats.percent) }}
+          {{ fNum2(amount, FNumFormats.bp) }}
           <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>

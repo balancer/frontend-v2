@@ -1,4 +1,4 @@
-import { Pool, PoolToken, TokenTreePool } from '@/services/pool/types';
+import { Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import { cloneDeep } from 'lodash';
 import {
@@ -126,7 +126,7 @@ describe('removeBptFrom should', () => {
     const poolWithoutPremintedBPT = removeBptFrom(BoostedPoolMock) as Pool;
 
     const daiNestedPool = poolWithoutPremintedBPT.tokens[2].token
-      .pool as TokenTreePool;
+      ?.pool as SubPool;
 
     expect(daiNestedPool.tokens).toBeDefined();
     expect(daiNestedPool.mainIndex).toBe(1);
@@ -135,7 +135,7 @@ describe('removeBptFrom should', () => {
       poolWithoutPremintedBPT.tokens?.map(t => t.symbol)
     ).toIncludeSameMembers(['bb-a-USDT', 'bb-a-USDC', 'bb-a-DAI']);
 
-    const usdtNestedTokens = poolWithoutPremintedBPT.tokens[0].token.pool
+    const usdtNestedTokens = poolWithoutPremintedBPT.tokens[0].token?.pool
       ?.tokens as PoolToken[];
 
     expect(usdtNestedTokens.map(t => t.symbol)).toIncludeSameMembers([
@@ -143,7 +143,7 @@ describe('removeBptFrom should', () => {
       'USDT',
     ]);
 
-    const usdcNestedTokens = poolWithoutPremintedBPT.tokens[1].token.pool
+    const usdcNestedTokens = poolWithoutPremintedBPT.tokens[1].token?.pool
       ?.tokens as PoolToken[];
 
     expect(usdcNestedTokens.map(t => t.symbol)).toIncludeSameMembers([
@@ -151,7 +151,7 @@ describe('removeBptFrom should', () => {
       'USDC',
     ]);
 
-    const daiNestedTokens = poolWithoutPremintedBPT.tokens[2].token.pool
+    const daiNestedTokens = poolWithoutPremintedBPT.tokens[2].token?.pool
       ?.tokens as PoolToken[];
 
     expect(daiNestedTokens.map(t => t.symbol)).toIncludeSameMembers([
@@ -186,10 +186,10 @@ describe('removeBptFrom should', () => {
   });
 });
 
-describe('remove preminted tokens given a TokenTreePool', () => {
+describe('remove preminted tokens given a SubPool', () => {
   test('of USDT', () => {
     const originalUsdtTree = cloneDeep(
-      BoostedPoolMock.tokens[0].token.pool as TokenTreePool
+      BoostedPoolMock.tokens[0].token?.pool as SubPool
     );
 
     expect(originalUsdtTree.mainIndex).toBe(1);
@@ -212,8 +212,8 @@ describe('remove preminted tokens given a TokenTreePool', () => {
 
   test('of DAI', () => {
     const originalDaiTree = cloneDeep(
-      BoostedPoolMock.tokens[3].token.pool
-    ) as TokenTreePool;
+      BoostedPoolMock.tokens[3].token?.pool
+    ) as SubPool;
 
     expect(originalDaiTree.mainIndex).toBe(1);
 
@@ -239,7 +239,7 @@ describe('findTokenInTree should', () => {
   test('find tokens including preminted by default', () => {
     const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
     const bbaDaiToken = findTokenInTree(BoostedPoolMock, bbaDaiAddress);
-    const bbaDaiNestedTokens = bbaDaiToken?.token.pool?.tokens;
+    const bbaDaiNestedTokens = bbaDaiToken?.token?.pool?.tokens;
     expect(bbaDaiNestedTokens?.map(t => t.symbol)).toIncludeSameMembers([
       'aDAI',
       'DAI',
@@ -251,7 +251,7 @@ describe('findTokenInTree should', () => {
     const bbaUsdtToken = findTokenInTree(BoostedPoolMock, bbAUsdtAddress, {
       includePreMintedBpt: true,
     });
-    const bbaUsdtNestedTokens = bbaUsdtToken?.token.pool?.tokens;
+    const bbaUsdtNestedTokens = bbaUsdtToken?.token?.pool?.tokens;
     expect(bbaUsdtNestedTokens?.map(t => t.symbol)).toIncludeSameMembers([
       'bb-a-USDT',
       'USDT',
@@ -263,17 +263,17 @@ describe('findTokenInTree should', () => {
 test('findMainTokenAddress works after removing BPT', () => {
   const poolWithoutPremintedBPT = removeBptFrom(BoostedPoolMock);
   const bbaUSDTMainAddress = findMainTokenAddress(
-    poolWithoutPremintedBPT.tokens[0].token.pool as TokenTreePool
+    poolWithoutPremintedBPT.tokens[0].token?.pool as SubPool
   );
   expect(bbaUSDTMainAddress).toBe('0xdac17f958d2ee523a2206206994597c13d831ec7'); //USDT
 
   const bbaUsdcMainAddress = findMainTokenAddress(
-    poolWithoutPremintedBPT.tokens[1].token.pool as TokenTreePool
+    poolWithoutPremintedBPT.tokens[1].token?.pool as SubPool
   );
   expect(bbaUsdcMainAddress).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'); //USDC
 
   const bbaDaiMainAddress = findMainTokenAddress(
-    poolWithoutPremintedBPT.tokens[2].token.pool as TokenTreePool
+    poolWithoutPremintedBPT.tokens[2].token?.pool as SubPool
   );
   expect(bbaDaiMainAddress).toBe('0x6b175474e89094c44da98b954eedeac495271d0f'); //DAI
 });

@@ -7,9 +7,10 @@ import { createI18n } from 'vue-i18n';
 
 import BalBreakdown from '@/components/_global/BalBreakdown/BalBreakdown.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
+import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
+import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import BalChip from '@/components/_global/BalChip/BalChip.vue';
-import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import BalTable from '@/components/_global/BalTable/BalTable.vue';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
@@ -46,6 +47,7 @@ config.global.components = {
   BalBreakdown,
   BalBtn,
   BalCard,
+  BalAlert,
   BalChip,
   BalIcon,
   BalLoadingBlock,
