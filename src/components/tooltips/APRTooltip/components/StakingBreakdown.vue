@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
@@ -58,10 +58,10 @@ const boostedTotalAPR = computed((): string => {
       .plus(rewardTokensAPR.value)
       .toString();
 
-    return fNum2(boostedStakingAPR, FNumFormats.bp);
+    return fNum2(bpToDec(boostedStakingAPR), FNumFormats.percent);
   }
 
-  return fNum2(rewardTokensAPR.value, FNumFormats.bp);
+  return fNum2(bpToDec(rewardTokensAPR.value), FNumFormats.percent);
 });
 
 /**
@@ -122,7 +122,7 @@ const breakdownItems = computed((): Array<any> => {
         </template>
       </BalBreakdown>
       <div v-else-if="hasRewardTokens" class="flex items-center">
-        {{ fNum2(rewardTokensAPR, FNumFormats.bp) }}
+        {{ fNum2(bpToDec(rewardTokensAPR), FNumFormats.percent) }}
         <span class="ml-1 text-xs text-secondary">
           {{ $t('staking.stakingApr') }}
         </span>
