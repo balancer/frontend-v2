@@ -146,7 +146,7 @@
     "worker-loader": "^3.0.8"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 0",
+    "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 1",
     "*.{md,json,yaml,html}": "prettier --write",
     "*.{css,vue}": "stylelint --fix"
   },
