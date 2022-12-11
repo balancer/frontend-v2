@@ -4,6 +4,8 @@ import { computed } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
+
 /**
  * TYPES
  */

@@ -10,7 +10,7 @@ import {
   tryPromiseWithTimeout,
 } from '@/lib/utils/promise';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-
+// console.log({ rpcProviderService });
 import useBlocknative from './useBlocknative';
 import { toJsTimestamp } from './useTime';
 import useTokens from './useTokens';

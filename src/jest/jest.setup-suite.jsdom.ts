@@ -8,16 +8,21 @@ import { createI18n } from 'vue-i18n';
 import BalBreakdown from '@/components/_global/BalBreakdown/BalBreakdown.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
-import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
+// import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import BalChip from '@/components/_global/BalChip/BalChip.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import BalTable from '@/components/_global/BalTable/BalTable.vue';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
+// import BalModal from '@/components/_global/BalModal/BalModal.vue';
 import CompositionIcon from '@/components/_global/icons/CompositionIcon.vue';
 import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 import StarsIcon from '@/components/_global/icons/StarsIcon.vue';
+// import BalCircle from '@/components/_global/shapes/BalCircle/BalCircle.vue';
 import translations from '@/locales/default.json';
+// import BalHorizSteps from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+// import BalStack from '@/components/_global/BalStack/BalStack.vue';
+// import SpinnerIcon from '@/components/_global/icons/SpinnerIcon.vue';
 
 const i18n = createI18n({
   locale: 'en-US',
@@ -44,10 +49,12 @@ config.global.stubs = {
 };
 
 config.global.components = {
+  // BalAlert,
+  // BalModal,
+  // BalCircle,
   BalBreakdown,
   BalBtn,
   BalCard,
-  BalAlert,
   BalChip,
   BalIcon,
   BalLoadingBlock,
@@ -56,4 +63,7 @@ config.global.components = {
   CompositionIcon,
   NetworkIcon,
   StarsIcon,
+  // BalHorizSteps,
+  // BalStack,
+  // SpinnerIcon,
 };

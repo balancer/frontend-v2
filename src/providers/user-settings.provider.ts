@@ -2,7 +2,7 @@ import { parseUnits } from '@ethersproject/units';
 import {
   computed,
   ComputedRef,
-  InjectionKey,
+  // InjectionKey,
   provide,
   reactive,
   Ref,
@@ -34,8 +34,9 @@ export interface UserSettingsProviderResponse {
 /**
  * SETUP
  */
-export const UserSettingsProviderSymbol: InjectionKey<UserSettingsProviderResponse> =
-  Symbol(symbolKeys.Providers.App);
+export const UserSettingsProviderSymbol = Symbol(
+  symbolKeys.Providers.UserSettings
+);
 
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
 const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
