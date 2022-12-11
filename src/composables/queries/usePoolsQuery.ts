@@ -73,15 +73,7 @@ export default function usePoolsQuery(
   function initializeDecoratedAPIRepository() {
     return {
       fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
-        const pools = await balancerAPIService.pools.get(getQueryArgs(options));
-
-        const poolDecorator = new PoolDecorator(pools);
-        const decoratedPools = await poolDecorator.decorate(
-          tokenMeta.value,
-          false
-        );
-
-        return decoratedPools;
+        return balancerAPIService.pools.get(getQueryArgs(options));
       },
       get skip(): number {
         return balancerAPIService.pools.skip;
