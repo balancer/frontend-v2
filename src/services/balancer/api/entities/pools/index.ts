@@ -36,7 +36,7 @@ export default class Pools {
      *   and if not_in is also set then delete it (because it's set by default) */
     if (query.args.where?.id?.in) {
       if (query.args.where?.id?.in.length === 0) {
-        query.args.where.id.in = [''];
+        return [];
       }
       if (query.args.where?.id?.not_in) {
         delete query.args.where?.id.not_in;
