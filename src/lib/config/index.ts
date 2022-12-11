@@ -16,7 +16,6 @@ export interface Config {
   shortName: string;
   slug: string;
   network: string;
-  portisNetwork?: string;
   unknown: boolean;
   rpc: string;
   publicRpc?: string;
@@ -25,6 +24,7 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
+  balancerApi?: string;
   poolsUrlV2: string;
   subgraphs: {
     main: string[];
@@ -76,6 +76,7 @@ export interface Config {
     infura: string;
     alchemy: string;
     graph?: string;
+    balancerApi?: string;
   };
   strategies: Record<
     string,

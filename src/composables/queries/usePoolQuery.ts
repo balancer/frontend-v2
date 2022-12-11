@@ -1,25 +1,26 @@
 import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
+import { GraphQLArgs } from '@balancer-labs/sdk';
 
 import useTokens from '@/composables/useTokens';
-import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
+import PoolRepository from '@/services/pool/pool.repository';
+import { configService } from '@/services/config/config.service';
 import useApp from '../useApp';
 import { isBlocked, tokenTreeLeafs } from '../usePool';
 import useGaugesQuery from './useGaugesQuery';
+import { POOLS } from '@/constants/pools';
 
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {},
-  includeAprs = true
+  options: QueryObserverOptions<Pool> = {}
 ) {
   /**
    * @description
@@ -33,11 +34,13 @@ export default function usePoolQuery(
   const { injectTokens, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { account } = useWeb3();
-  const { data: subgraphGauges } = useGaugesQuery();
   const { tokens } = useTokens();
+  const { data: subgraphGauges } = useGaugesQuery();
   const gaugeAddresses = computed(() =>
     (subgraphGauges.value || []).map(gauge => gauge.id)
   );
+
+  const poolRepository = new PoolRepository(tokens);
 
   /**
    * COMPUTED
@@ -45,6 +48,22 @@ export default function usePoolQuery(
   const enabled = computed(
     () => !appLoading.value && !dynamicDataLoading.value && isEnabled.value
   );
+
+  /**
+   * METHODS
+   */
+
+  function getQueryArgs(): GraphQLArgs {
+    const queryArgs: GraphQLArgs = {
+      chainId: configService.network.chainId,
+      where: {
+        id: { eq: id?.toLowerCase() },
+        totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
+        poolType: { not_in: POOLS.ExcludedPoolTypes },
+      },
+    };
+    return queryArgs;
+  }
 
   /**
    * QUERY INPUTS
@@ -56,32 +75,19 @@ export default function usePoolQuery(
     if (poolInfo) {
       pool = poolInfo;
     } else {
-      // Fetch basic data from subgraph
-      [pool] = await balancerSubgraphService.pools.get({
-        where: {
-          id: id.toLowerCase(),
-          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
-          poolType_not_in: POOLS.ExcludedPoolTypes,
-        },
-      });
+      pool = await poolRepository.fetch(getQueryArgs());
     }
 
     if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');
 
-    // Decorate subgraph data with additional data
-    const poolDecorator = new PoolDecorator([pool]);
-    const [decoratedPool] = await poolDecorator.decorate(
-      tokens.value,
-      includeAprs
-    );
-
     // Inject pool tokens into token registry
     await injectTokens([
-      ...decoratedPool.tokensList,
-      ...tokenTreeLeafs(decoratedPool.tokens),
-      decoratedPool.address,
+      ...pool.tokensList,
+      ...tokenTreeLeafs(pool.tokens),
+      pool.address,
     ]);
-    return decoratedPool;
+
+    return pool;
   };
 
   const queryOptions = reactive({

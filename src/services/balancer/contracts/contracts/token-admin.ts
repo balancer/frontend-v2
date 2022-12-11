@@ -1,6 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { formatUnits } from 'ethers/lib/utils';
-
+import { formatUnits } from '@ethersproject/units';
 import TokenAdminAbi from '@/lib/abi/TokenAdmin.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';

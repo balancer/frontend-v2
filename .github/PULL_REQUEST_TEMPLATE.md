@@ -26,7 +26,7 @@ Please provide any relevant visual context for UI changes or additions. This cou
 ## Checklist:
 
 - [ ] I have performed a self-review of my own code
-- [ ] I have requested at least 2 reviews (If the PR is significant enough, use best judgement here)
+- [ ] I have requested at least 1 review (If the PR is significant enough, use best judgement here)
 - [ ] I have commented my code where relevant, particularly in hard-to-understand areas
 - [ ] If package-lock.json has changes, it was intentional.
 - [ ] The base of this PR is `master` if hotfix, `develop` if not

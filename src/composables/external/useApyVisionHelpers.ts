@@ -1,14 +1,11 @@
 import { computed } from 'vue';
 
-import { TokenInfo } from '@/types/TokenList';
+import { PoolToken } from '@balancer-labs/sdk';
 
 import { isArbitrum, isMainnet, isPolygon } from '../useNetwork';
 
-export type TitleToken = [string, Partial<TokenInfo>];
-export type TitleTokens = Array<TitleToken>;
-
-export function poolPathSymbolSegment(titleTokens: TitleTokens) {
-  return titleTokens.map(titleToken => titleToken[1]?.symbol).join('-');
+export function poolPathSymbolSegment(tokens: PoolToken[]) {
+  return tokens.map(token => token.symbol).join('-');
 }
 
 export function useApyVisionHelpers() {
