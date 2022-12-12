@@ -25,6 +25,7 @@ import {
   TransactionActionInfo,
   TransactionActionState,
 } from '@/types/transactions';
+import BalHorizSteps from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
 
 /**
  * TYPES

@@ -1,12 +1,18 @@
 import { render, screen, within } from '@testing-library/vue';
 import InvestPreviewModalV2 from './InvestPreviewModalV2.vue';
 import pool from '@/services/balancer/pools/joins/handlers/__tests__/pool';
+import { BoostedPoolMock } from '@/__mocks__/pool';
 import {
   JoinPoolProviderSymbol,
   JoinPoolProvider,
 } from '@/providers/local/join-pool.provider';
 import { server } from '@/tests/msw/server';
 import { rest } from 'msw';
+// import BalModal from '@/components/_global/BalModal/BalModal.vue';
+// import BalHorizSteps from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+// import BalStack from '@/components/_global/BalStack/BalStack.vue';
+// import SpinnerIcon from '@/components/_global/icons/SpinnerIcon.vue';
+// import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 
 import Web3Plugin from '@/services/web3/web3.plugin';
 
@@ -22,8 +28,13 @@ import {
 } from '@/providers';
 // import BlocknativeSdk from 'bnc-sdk';
 // import { WebSocketProvider } from '@ethersproject/providers';
-
 import { Multicaller } from '@/lib/utils/balancer/contract';
+
+// import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
+
+// BalActionSteps.components = { BalHorizSteps };
+// InvestPreviewModalV2.components = { BalModal, BalAlert };
+
 jest.mock('@ethersproject/providers');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 // jest.mock('@/lib/balancer.sdk.ts', () => {
@@ -48,6 +59,48 @@ jest.unmock('@/composables/useUserSettings');
 //       currency: 'usd',
 //     };
 //   });
+// });
+
+// Mocking injecting veBAL token metadata
+jest.mock('@/lib/utils/balancer/contract');
+// @ts-ignore
+Multicaller.mockImplementation(() => {
+  return {
+    call: jest.fn(),
+    execute: jest.fn().mockResolvedValue({
+      '0xc128a9954e6c874ea3d62ce62b468ba073093f25': {
+        address: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
+        chainId: 1,
+        decimals: 18,
+        logoURI:
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC128a9954e6c874eA3d62ce62B468bA073093F25/logo.png',
+        name: 'Vote Escrowed Balancer BPT',
+        symbol: 'veBAL',
+      },
+    }),
+  };
+});
+
+// jest.mock('@/lib/utils/balancer/contract.ts', () => {
+//   return {
+//     Multicaller: {
+//       execute: jest.fn().mockResolvedValue({}),
+//     },
+//   };
+// });
+jest.mock('@/composables/staking/useStaking', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      isPoolEligibleForStaking: true,
+    };
+  });
+});
+// jest.mock('bnc-sdk');
+
+// BlocknativeSdk.mockImplementation(() => {
+//   return {
+//     configuration: jest.fn().mockResolvedValue({}),
+//   };
 // });
 
 // Mock token price data
@@ -570,48 +623,6 @@ jest.mock('@/lib/balancer.sdk', () => {
     },
   };
 });
-
-// Mocking injecting veBAL token metadata
-jest.mock('@/lib/utils/balancer/contract');
-// @ts-ignore
-Multicaller.mockImplementation(() => {
-  return {
-    call: jest.fn(),
-    execute: jest.fn().mockResolvedValue({
-      '0xc128a9954e6c874ea3d62ce62b468ba073093f25': {
-        address: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
-        chainId: 1,
-        decimals: 18,
-        logoURI:
-          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC128a9954e6c874eA3d62ce62B468bA073093F25/logo.png',
-        name: 'Vote Escrowed Balancer BPT',
-        symbol: 'veBAL',
-      },
-    }),
-  };
-});
-
-// jest.mock('@/lib/utils/balancer/contract.ts', () => {
-//   return {
-//     Multicaller: {
-//       execute: jest.fn().mockResolvedValue({}),
-//     },
-//   };
-// });
-jest.mock('@/composables/staking/useStaking', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      isPoolEligibleForStaking: true,
-    };
-  });
-});
-// jest.mock('bnc-sdk');
-
-// BlocknativeSdk.mockImplementation(() => {
-//   return {
-//     configuration: jest.fn().mockResolvedValue({}),
-//   };
-// });
 
 const handlers = [
   rest.post('*/balancer-labs/balancer-v2', (req, res, ctx) => {
@@ -1291,13 +1302,12 @@ const fiatValueOut = '3.01';
 
 const bptOut = '4';
 
-describe.skip('InvestPreviewModalV2.vue', () => {
+describe('InvestPreviewModalV2.vue', () => {
   beforeEach(() => {
     server.use(...handlers);
   });
 
   it('should show correct token amounts in and out', async () => {
-    const queryClient = new QueryClient();
     // new BlocknativeSdk({
     //   dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
     //   networkId: 1,
@@ -1305,7 +1315,8 @@ describe.skip('InvestPreviewModalV2.vue', () => {
     //     console.log(`[Blocknative] encountered an error`, error);
     //   },
     // });
-
+    console.log({ env: process.env.VUE_APP_NETWORK });
+    const queryClient = new QueryClient();
     queryClient.mount();
 
     // Make plugin available in options API
@@ -1330,11 +1341,14 @@ describe.skip('InvestPreviewModalV2.vue', () => {
                           default() {
                             return h(
                               JoinPoolProvider,
-                              { pool, isSingleAssetJoin: false },
+                              {
+                                pool: BoostedPoolMock,
+                                isSingleAssetJoin: false,
+                              },
                               {
                                 default() {
                                   return h(InvestPreviewModalV2, {
-                                    pool,
+                                    pool: BoostedPoolMock,
                                     isSingleAssetJoin: false,
                                     amountsIn: [
                                       {
