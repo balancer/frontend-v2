@@ -302,7 +302,7 @@ export default {
         address => !includesAddress(existingAddresses, address)
       );
       if (injectable.length === 0) return;
-      console.log({ injectable });
+
       const newTokens = await tokenService.metadata.get(
         injectable,
         allTokenLists
@@ -449,6 +449,7 @@ export default {
     function getToken(address: string): TokenInfo {
       address = getAddressFromPoolId(address); // In case pool ID has been passed
       if (address) address = getAddress(address);
+
       return tokens.value[address];
     }
 

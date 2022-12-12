@@ -23,7 +23,5 @@ module.exports = {
   moduleNameMapper: {
     '/public/data/tokenlists/tokens-5.json':
       '<rootDir>/src/tests/tokenlists/tokens-5.json',
-    '/public/data/tokenlists/tokens-1.json':
-      '<rootDir>/src/tests/tokenlists/tokens-1.json',
   },
 };

@@ -104,7 +104,6 @@ const fiatAmountInMap = computed((): AmountMap => {
   Object.keys(amountInMap.value).forEach(address => {
     fiatAmountMap[address] = toFiat(amountInMap.value[address], address);
   });
-  console.log({ fiatAmountMap });
   return fiatAmountMap;
 });
 
