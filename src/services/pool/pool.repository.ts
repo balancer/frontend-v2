@@ -31,15 +31,7 @@ export default class PoolRepository {
   private initializeDecoratedAPIRepository() {
     return {
       fetch: async (): Promise<Pool[]> => {
-        const pools = await balancerAPIService.pool.get(this.queryArgs);
-
-        const poolDecorator = new PoolDecorator(pools);
-        const decoratedPools = await poolDecorator.decorate(
-          this.tokens.value,
-          false
-        );
-
-        return decoratedPools;
+        return balancerAPIService.pool.get(this.queryArgs);
       },
       get skip(): number {
         return 0;
