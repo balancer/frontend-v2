@@ -17,7 +17,7 @@ export class PoolDecorator {
 
   public async decorate(
     tokens: TokenInfoMap,
-    includeAprs = true
+    decorateAll = true
   ): Promise<Pool[]> {
     const processedPools = this.pools.map(pool => {
       const poolService = new this.poolServiceClass(pool);
@@ -29,20 +29,24 @@ export class PoolDecorator {
     const poolMulticaller = new PoolMulticaller(processedPools);
 
     const [poolSnapshots, rawOnchainDataMap] = await Promise.all([
-      this.getSnapshots(),
+      decorateAll ? this.getSnapshots() : [],
       poolMulticaller.fetch(),
     ]);
 
     const promises = processedPools.map(async pool => {
-      const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
       const poolService = new this.poolServiceClass(pool);
 
       poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
-      poolService.setFeesSnapshot(poolSnapshot);
-      poolService.setVolumeSnapshot(poolSnapshot);
-      await poolService.setTotalLiquidity();
 
-      if (includeAprs) await poolService.setAPR();
+      // All of the following are pre-cached by the Balancer API so we can skip
+      // decoration of them if the pool came from the API.
+      if (decorateAll) {
+        const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
+        poolService.setFeesSnapshot(poolSnapshot);
+        poolService.setVolumeSnapshot(poolSnapshot);
+        await poolService.setTotalLiquidity();
+        await poolService.setAPR();
+      }
 
       return poolService.pool;
     });
