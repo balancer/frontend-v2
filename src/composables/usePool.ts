@@ -421,7 +421,7 @@ export function removeBptFrom(pool: Pool): Pool {
  */
 export function removeBptFromPool(pool: Pool | SubPool) {
   if (pool.tokens) {
-    removePremintedToken(pool);
+    removeBptFromTokens(pool);
 
     pool.tokens.forEach(token => {
       if (token.token?.pool) {
@@ -435,7 +435,7 @@ export function removeBptFromPool(pool: Pool | SubPool) {
 /**
  * Updates the passed subPool by removing the preminted token from tokens and updating mainIndex accordingly.
  */
-export function removePremintedToken(pool: Pool | SubPool) {
+export function removeBptFromTokens(pool: Pool | SubPool) {
   if (!pool.tokens) {
     return;
   }
