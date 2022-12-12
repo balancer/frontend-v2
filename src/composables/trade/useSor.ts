@@ -42,7 +42,7 @@ import { TokenInfo } from '@/types/TokenList';
 import useEthers from '../useEthers';
 import useFathom from '../useFathom';
 import useNumbers, { FNumFormats } from '../useNumbers';
-import useNetwork, { isMainnet, isArbitrum } from '../useNetwork';
+import useNetwork, { isMainnet } from '../useNetwork';
 import useTokens from '../useTokens';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
@@ -359,12 +359,10 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        if (isMainnet.value || isArbitrum.value) {
-          tokenOutAmount = await adjustedPiAmount(
-            tokenOutAmount,
-            tokenOutAddress
-          );
-        }
+        tokenOutAmount = await adjustedPiAmount(
+          tokenOutAmount,
+          tokenOutAddress
+        );
 
         const priceImpactCalc = calcPriceImpact(
           tokenOutDecimals,
@@ -405,12 +403,7 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        if (isMainnet.value || isArbitrum.value) {
-          tokenInAmount = await adjustedPiAmount(
-            tokenInAmount,
-            tokenOutAddress
-          );
-        }
+        tokenInAmount = await adjustedPiAmount(tokenInAmount, tokenOutAddress);
 
         const priceImpactCalc = calcPriceImpact(
           tokenInDecimals,

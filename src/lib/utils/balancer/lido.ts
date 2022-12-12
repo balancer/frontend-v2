@@ -13,6 +13,7 @@ const { stETH: stEthAddress, wstETH: wstEthAddress } =
 const wstEthRateProvidersMap = {
   [Network.MAINNET]: '0x72d07d7dca67b8a406ad1ec34ce969c90bfee768',
   [Network.ARBITRUM]: '0xf7c5c26b574063e7b098ed74fad6779e65e3f836',
+  [Network.GOERLI]: '0x80a94f458491ca88f09767e58a92fd23cbf1196f',
 };
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {

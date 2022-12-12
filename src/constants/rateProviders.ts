@@ -41,6 +41,9 @@ const ALLOWED_RATE_PROVIDERS_MAP = {
     '0xd03d4d8b4669d135569215dd6c4e790307c8e14b': {
       '0xd03d4d8b4669d135569215dd6c4e790307c8e14b': true,
     },
+    '0x6320cd32aa674d2898a68ec82e869385fc5f7e2f': {
+      '0x80a94f458491ca88f09767e58a92fd23cbf1196f': true,
+    },
   },
   [Network.POLYGON]: {
     '*': {
