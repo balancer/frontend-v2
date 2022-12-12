@@ -63,7 +63,8 @@ jest.unmock('@/composables/useUserSettings');
 
 // Mocking injecting veBAL token metadata
 jest.mock('@/lib/utils/balancer/contract');
-// @ts-ignore
+
+// @ts-expect-error
 Multicaller.mockImplementation(() => {
   return {
     call: jest.fn(),
@@ -81,13 +82,6 @@ Multicaller.mockImplementation(() => {
   };
 });
 
-// jest.mock('@/lib/utils/balancer/contract.ts', () => {
-//   return {
-//     Multicaller: {
-//       execute: jest.fn().mockResolvedValue({}),
-//     },
-//   };
-// });
 jest.mock('@/composables/staking/useStaking', () => {
   return jest.fn().mockImplementation(() => {
     return {
@@ -188,6 +182,15 @@ describe('InvestPreviewModalV2.vue', () => {
     queryClient.mount();
 
     render(UserSettingsProvider, {
+      props: {},
+      global: {
+        components: {},
+        plugins: [Web3Plugin, blocknative],
+        provide: {
+          [VUE_QUERY_CLIENT]: queryClient,
+          [JoinPoolProviderSymbol]: useJoinPool,
+        },
+      },
       slots: {
         default() {
           return h(
@@ -206,6 +209,7 @@ describe('InvestPreviewModalV2.vue', () => {
                         {
                           default() {
                             return h(
+                              // @ts-expect-error
                               JoinPoolProvider,
                               {
                                 pool,
@@ -213,6 +217,7 @@ describe('InvestPreviewModalV2.vue', () => {
                               },
                               {
                                 default() {
+                                  // @ts-expect-error
                                   return h(InvestPreviewModalV2, {
                                     pool,
                                     isSingleAssetJoin: false,
@@ -249,17 +254,6 @@ describe('InvestPreviewModalV2.vue', () => {
               },
             }
           );
-        },
-      },
-      props: {},
-      global: {
-        components: {},
-        plugins: [Web3Plugin, blocknative],
-        provide: {
-          [VUE_QUERY_CLIENT]: queryClient,
-          [JoinPoolProviderSymbol]: useJoinPool,
-          // [bnSdkSymbol]: blocknative,
-          // [UserSettingsProviderSymbol]: useUserSettings,
         },
       },
     });

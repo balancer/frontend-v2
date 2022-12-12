@@ -22,7 +22,8 @@ jest.mock('@/lib/balancer.sdk.ts', () => {
 });
 // Mocking injecting veBAL token metadata
 jest.mock('@/lib/utils/balancer/contract');
-// @ts-ignore
+
+// @ts-expect-error
 Multicaller.mockImplementation(() => {
   return {
     call: jest.fn(),
@@ -39,6 +40,51 @@ Multicaller.mockImplementation(() => {
     }),
   };
 });
+
+function renderComponent(props) {
+  const queryClient = new QueryClient();
+  queryClient.mount();
+
+  render(UserSettingsProvider, {
+    props: {},
+    global: {
+      components: {},
+      plugins: [Web3Plugin, blocknative],
+      provide: {
+        [VUE_QUERY_CLIENT]: queryClient,
+      },
+    },
+    slots: {
+      default() {
+        return h(
+          TokenListProvider,
+          {},
+          {
+            default() {
+              return h(
+                TokensProvider,
+                {},
+                {
+                  default() {
+                    return h(
+                      AppProvider,
+                      {},
+                      {
+                        default() {
+                          return h(InvestFormTotalsV2, props);
+                        },
+                      }
+                    );
+                  },
+                }
+              );
+            },
+          }
+        );
+      },
+    },
+  });
+}
 
 function getHighPriceImpactIcon() {
   return screen.queryByTestId('price-impact-warning-icon');
@@ -60,101 +106,20 @@ describe('InvestFormTotalsV2.vue', () => {
     expect(getHighPriceImpactIcon()).not.toBeInTheDocument();
   });
   it('should show 0.10% price impact', () => {
-    const queryClient = new QueryClient();
-    queryClient.mount();
-
-    render(UserSettingsProvider, {
-      slots: {
-        default() {
-          return h(
-            TokenListProvider,
-            {},
-            {
-              default() {
-                return h(
-                  TokensProvider,
-                  {},
-                  {
-                    default() {
-                      return h(
-                        AppProvider,
-                        {},
-                        {
-                          default() {
-                            return h(InvestFormTotalsV2, {
-                              highPriceImpact: false,
-                              loading: false,
-                              priceImpact: 0.001,
-                            });
-                          },
-                        }
-                      );
-                    },
-                  }
-                );
-              },
-            }
-          );
-        },
-      },
-      props: {},
-      global: {
-        components: {},
-        plugins: [Web3Plugin, blocknative],
-        provide: {
-          [VUE_QUERY_CLIENT]: queryClient,
-        },
-      },
+    renderComponent({
+      highPriceImpact: false,
+      loading: false,
+      priceImpact: 0.001,
     });
+
     expect(screen.getByText('0.10%')).toBeInTheDocument();
     expect(getHighPriceImpactIcon()).not.toBeInTheDocument();
   });
   it('should show high price impact warning icon', () => {
-    const queryClient = new QueryClient();
-    queryClient.mount();
-
-    render(UserSettingsProvider, {
-      slots: {
-        default() {
-          return h(
-            TokenListProvider,
-            {},
-            {
-              default() {
-                return h(
-                  TokensProvider,
-                  {},
-                  {
-                    default() {
-                      return h(
-                        AppProvider,
-                        {},
-                        {
-                          default() {
-                            return h(InvestFormTotalsV2, {
-                              highPriceImpact: true,
-                              loading: false,
-                              priceImpact: 0.001,
-                            });
-                          },
-                        }
-                      );
-                    },
-                  }
-                );
-              },
-            }
-          );
-        },
-      },
-      props: {},
-      global: {
-        components: {},
-        plugins: [Web3Plugin, blocknative],
-        provide: {
-          [VUE_QUERY_CLIENT]: queryClient,
-        },
-      },
+    renderComponent({
+      highPriceImpact: true,
+      loading: false,
+      priceImpact: 0.001,
     });
     expect(screen.getByText('0.10%')).toBeInTheDocument();
     expect(getHighPriceImpactIcon()).toBeInTheDocument();
