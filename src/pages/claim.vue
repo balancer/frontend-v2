@@ -58,19 +58,16 @@ const networks = [
   {
     id: 'ethereum',
     name: 'Ethereum',
-    subdomain: 'app',
     key: '1',
   },
   {
     id: 'polygon',
     name: 'Polygon',
-    subdomain: 'polygon',
     key: '137',
   },
   {
     id: 'arbitrum',
     name: 'Arbitrum',
-    subdomain: 'arbitrum',
     key: '42161',
   },
 ];
@@ -330,7 +327,7 @@ onBeforeMount(async () => {
             v-for="network in networkBtns"
             :key="network.id"
             tag="a"
-            :href="`https://app.balancer.fi/#/${network.subdomain}/claim`"
+            :href="`https://app.balancer.fi/#/${network.id}/claim`"
             color="white"
           >
             <img
