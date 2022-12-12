@@ -131,10 +131,10 @@ export default function usePoolsQuery(
         id: { not_in: POOLS.BlockList },
       },
     };
-    if (queryArgs.where && filterOptions?.poolIds?.value.length) {
+    if (queryArgs.where && filterOptions?.poolIds?.value) {
       queryArgs.where.id = { in: filterOptions.poolIds.value };
     }
-    if (queryArgs.where && filterOptions?.poolAddresses?.value.length) {
+    if (queryArgs.where && filterOptions?.poolAddresses?.value) {
       queryArgs.where.address = { in: filterOptions.poolAddresses.value };
     }
     if (options.first) {
