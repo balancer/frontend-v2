@@ -146,6 +146,7 @@ const shareOfTokenInPool = computed((): number => {
   content: '';
   height: calc(100% + 14px);
   left: -15px;
-  @apply absolute border border-gray-200 dark:border-gray-700 -top-7;
+  top: -28px;
+  @apply absolute border border-gray-200 dark:border-gray-700;
 }
 </style>
