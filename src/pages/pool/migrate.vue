@@ -22,14 +22,17 @@ const poolMigrationInfo = POOL_MIGRATIONS.find(
 </script>
 
 <template>
-  <MigrateForm
-    v-if="poolMigrationInfo"
-    :poolMigrationInfo="poolMigrationInfo"
-  />
-  <div v-else class="text-center">
-    <div class="text-lg font-semibold">
-      {{ $t('migratePool.errorLoadingMigration.title') }}
+  <Transition appear name="appear">
+    <MigrateForm
+      v-if="poolMigrationInfo"
+      :poolMigrationInfo="poolMigrationInfo"
+    />
+
+    <div v-else class="text-center">
+      <div class="text-lg font-semibold">
+        {{ $t('migratePool.errorLoadingMigration.title') }}
+      </div>
+      <div>{{ $t('migratePool.errorLoadingMigration.description') }}</div>
     </div>
-    <div>{{ $t('migratePool.errorLoadingMigration.description') }}</div>
-  </div>
+  </Transition>
 </template>

@@ -94,3 +94,13 @@
   opacity: 0;
   transition: opacity 0.2s ease-in;
 }
+
+.appear-enter-active,
+.appear-leave-active {
+  @apply opacity-100 transition-opacity duration-500 ease-in-out;
+}
+
+.appear-enter-from,
+.appear-leave-to {
+  @apply opacity-0;
+}

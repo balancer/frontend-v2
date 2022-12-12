@@ -48,35 +48,37 @@ onMounted(() => resetTabs());
 </script>
 
 <template>
-  <div class="px-4 sm:px-0 mx-auto max-w-md">
-    <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
-    <BalCard v-else shadow="xl" exposeOverflow noBorder>
-      <template #header>
-        <div class="w-full">
-          <div class="text-xs leading-none text-secondary">
-            {{ network.chainName }}
+  <Transition appear name="appear">
+    <div class="px-4 sm:px-0 mx-auto max-w-md">
+      <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
+      <BalCard v-else shadow="xl" exposeOverflow noBorder>
+        <template #header>
+          <div class="w-full">
+            <div class="text-xs leading-none text-secondary">
+              {{ network.chainName }}
+            </div>
+            <div class="flex justify-between items-center">
+              <h4>{{ $t('withdrawFromPool') }}</h4>
+              <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+            </div>
+            <BalTabs
+              v-if="isDeepPool && isPreMintedBptPool"
+              v-model="activeTab"
+              :tabs="tabs"
+              class="p-0 m-0 -mb-px whitespace-nowrap"
+              noPad
+            />
           </div>
-          <div class="flex justify-between items-center">
-            <h4>{{ $t('withdrawFromPool') }}</h4>
-            <TradeSettingsPopover :context="TradeSettingsContext.invest" />
-          </div>
-          <BalTabs
-            v-if="isDeepPool && isPreMintedBptPool"
-            v-model="activeTab"
-            :tabs="tabs"
-            class="p-0 m-0 -mb-px whitespace-nowrap"
-            noPad
-          />
-        </div>
-      </template>
-      <ExitPoolProvider
-        v-if="isDeepPool"
-        :isSingleAssetExit="activeTab === Tab.SingleToken"
-        :pool="pool"
-      >
-        <WithdrawFormV2 />
-      </ExitPoolProvider>
-      <WithdrawForm v-else :pool="pool" />
-    </BalCard>
-  </div>
+        </template>
+        <ExitPoolProvider
+          v-if="isDeepPool"
+          :isSingleAssetExit="activeTab === Tab.SingleToken"
+          :pool="pool"
+        >
+          <WithdrawFormV2 />
+        </ExitPoolProvider>
+        <WithdrawForm v-else :pool="pool" />
+      </BalCard>
+    </div>
+  </Transition>
 </template>

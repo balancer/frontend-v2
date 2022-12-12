@@ -4,15 +4,18 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 </script>
 
 <template>
-  <div>
-    <div class="app-body">
-      <AppNav />
-      <div class="pb-16">
-        <router-view :key="$route.path" />
+  <Transition appear name="appear">
+    <div>
+      <div class="app-body">
+        <AppNav />
+
+        <div class="pb-16">
+          <router-view :key="$route.path" />
+        </div>
       </div>
+      <Footer />
     </div>
-    <Footer />
-  </div>
+  </Transition>
 </template>
 
 <style>

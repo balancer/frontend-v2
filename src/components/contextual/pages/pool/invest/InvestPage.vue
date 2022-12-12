@@ -15,21 +15,23 @@ const { upToLargeBreakpoint } = useBreakpoints();
 </script>
 
 <template>
-  <div class="invest-page-layout-grid">
-    <div v-if="!upToLargeBreakpoint" class="col-span-5">
-      <InvestPageMyWallet />
-    </div>
+  <Transition appear name="appear">
+    <div class="invest-page-layout-grid">
+      <div v-if="!upToLargeBreakpoint" class="col-span-5">
+        <InvestPageMyWallet />
+      </div>
 
-    <div class="col-span-7">
-      <InvestPageInvestBlock />
-    </div>
+      <div class="col-span-7">
+        <InvestPageInvestBlock />
+      </div>
 
-    <InvestPageAccordion
-      v-if="upToLargeBreakpoint"
-      class="mt-4"
-      :isDeepPool="isDeepPool"
-    ></InvestPageAccordion>
-  </div>
+      <InvestPageAccordion
+        v-if="upToLargeBreakpoint"
+        class="mt-4"
+        :isDeepPool="isDeepPool"
+      ></InvestPageAccordion>
+    </div>
+  </Transition>
 </template>
 
 <style scoped>
