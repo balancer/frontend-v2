@@ -88,13 +88,17 @@ const breakdownItems = computed((): Array<any> => {
       items.push(['BAL', minBalAPR.value]);
     }
 
-    let rewardAprTokenSymbol = '';
     const rewardAprTokens = apr.value?.rewardAprs.breakdown;
     if (rewardAprTokens) {
-      rewardAprTokenSymbol = getToken(Object.keys(rewardAprTokens)[0])?.symbol;
+      Object.keys(rewardAprTokens).forEach(address => {
+        items.push([
+          getToken(address)?.symbol || 'Rewards',
+          rewardAprTokens[address],
+        ]);
+      });
+    } else {
+      items.push(['Rewards', rewardTokensAPR.value]);
     }
-
-    items.push([rewardAprTokenSymbol || 'Rewards', rewardTokensAPR.value]);
   }
 
   return items;
