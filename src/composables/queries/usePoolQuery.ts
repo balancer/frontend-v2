@@ -16,6 +16,7 @@ import useApp from '../useApp';
 import { isBlocked, tokenTreeLeafs } from '../usePool';
 import useGaugesQuery from './useGaugesQuery';
 import { POOLS } from '@/constants/pools';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 export default function usePoolQuery(
   id: string,
@@ -79,6 +80,12 @@ export default function usePoolQuery(
     }
 
     if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');
+
+    // If the pool is cached from homepage it may not have onchain set, so update it
+    if (!pool.onchain) {
+      const poolDecorator = new PoolDecorator([pool]);
+      [pool] = await poolDecorator.decorate(tokens.value, false);
+    }
 
     // Inject pool tokens into token registry
     await injectTokens([
