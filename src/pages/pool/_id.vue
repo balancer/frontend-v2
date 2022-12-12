@@ -19,7 +19,12 @@ import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { isVeBalPool, preMintedBptIndex, usePool } from '@/composables/usePool';
+import {
+  isVeBalPool,
+  preMintedBptIndex,
+  removeBptFrom,
+  usePool,
+} from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
@@ -152,10 +157,10 @@ const missingPrices = computed(() => {
 
 const titleTokens = computed<PoolToken[]>(() => {
   if (!pool.value || !pool.value.tokens) return [];
+  const { tokens } = removeBptFrom(pool.value);
+  if (!tokens) return [];
 
-  return [...pool.value.tokens].sort(
-    (a, b) => Number(b.weight) - Number(a.weight)
-  );
+  return [...tokens].sort((a, b) => Number(b.weight) - Number(a.weight));
 });
 
 const isStakablePool = computed((): boolean =>
