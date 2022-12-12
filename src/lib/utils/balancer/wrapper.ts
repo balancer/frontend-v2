@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 import configs from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 
-import { getStETHByWstETH, getWstETHByStETH } from './lido';
+import { getStETHOrWstETH } from './lido';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { Network } from '@balancer-labs/sdk';
 
@@ -36,20 +36,20 @@ export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
   return WrapType.NonWrap;
 };
 
-export const getWrapOutput = (
+export const getWrapOutput = async (
   wrapper: string,
   wrapType: WrapType,
   wrapAmount: BigNumber,
   network: Network
-): BigNumber => {
+): Promise<BigNumber> => {
   if (wrapType === WrapType.NonWrap) throw new Error('Invalid wrap type');
   const { weth, wstETH } = configService.network.addresses;
 
   if (wrapper === weth) return BigNumber.from(wrapAmount);
   if (wrapper === wstETH) {
     return wrapType === WrapType.Wrap
-      ? getWstETHByStETH(wrapAmount)
-      : getStETHByWstETH(wrapAmount, network);
+      ? getStETHOrWstETH(wrapAmount, network, false)
+      : getStETHOrWstETH(wrapAmount, network);
   }
   throw new Error('Unknown wrapper');
 };

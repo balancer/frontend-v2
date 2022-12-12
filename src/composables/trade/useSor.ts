@@ -26,7 +26,7 @@ import {
   SorManager,
   SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { getStETHByWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
+import { getStETHOrWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
@@ -299,7 +299,7 @@ export default function useSor({
       if (exactIn.value) {
         tokenInAmountInput.value = amount;
 
-        const outputAmount = getWrapOutput(
+        const outputAmount = await getWrapOutput(
           wrapper,
           wrapType.value,
           parseFixed(amount, tokenInDecimals),
@@ -309,7 +309,7 @@ export default function useSor({
       } else {
         tokenOutAmountInput.value = amount;
 
-        const inputAmount = getWrapOutput(
+        const inputAmount = await getWrapOutput(
           wrapper,
           wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
           parseFixed(amount, tokenOutDecimals),
@@ -694,7 +694,7 @@ export default function useSor({
     address: string
   ): Promise<BigNumber> {
     if (isSameAddress(address, appNetworkConfig.addresses.wstETH)) {
-      return getStETHByWstETH(amount, networkId.value);
+      return getStETHOrWstETH(amount, networkId.value);
     }
     return amount;
   }

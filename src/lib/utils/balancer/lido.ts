@@ -55,17 +55,23 @@ export function getWstETHByStETH(stETHAmount: BigNumberish) {
 }
 
 /**
- * @notice Get amount of stETH for a given amount of wstETH
+ * @notice Get amount of stETH for a given amount of wstETH or vice versa
  */
-export async function getStETHByWstETH(
-  wstETHAmount: BigNumber,
-  network: Network
+export async function getStETHOrWstETH(
+  amount: BigNumber,
+  network: Network,
+  isStEthByWstEth = true
 ) {
   const wstEthRateProvider = new Contract(
     wstEthRateProvidersMap[network],
     ['function getRate() external view returns (uint256)'],
     rpcProviderService.jsonProvider
   );
+
   const rate = await wstEthRateProvider.getRate();
-  return wstETHAmount.mul(rate).div(ONE);
+  amount = isStEthByWstEth
+    ? amount.mul(rate).div(ONE)
+    : amount.mul(ONE).div(rate);
+
+  return amount;
 }
