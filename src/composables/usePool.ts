@@ -410,7 +410,7 @@ export function removeBptFrom(pool: Pool): Pool {
 
   newPool.tokens.forEach(token => {
     if (token.token?.pool) {
-      removeBptFromPool(token.token.pool);
+      removeBptFromPoolTokenTree(token.token.pool);
     }
   });
   return newPool;
@@ -419,13 +419,13 @@ export function removeBptFrom(pool: Pool): Pool {
 /**
  * Updates the passed subPool by removing its pre-minted tokens.
  */
-export function removeBptFromPool(pool: Pool | SubPool) {
+export function removeBptFromPoolTokenTree(pool: Pool | SubPool) {
   if (pool.tokens) {
     removeBptFromTokens(pool);
 
     pool.tokens.forEach(token => {
       if (token.token?.pool) {
-        removeBptFromPool(token.token.pool);
+        removeBptFromPoolTokenTree(token.token.pool);
       }
     });
   }
