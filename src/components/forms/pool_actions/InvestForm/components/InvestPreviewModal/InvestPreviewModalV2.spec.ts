@@ -116,7 +116,7 @@ jest.mock('@/lib/balancer.sdk', () => {
           find: async address => {
             const priceData = {
               '0x3d5981BDD8D3E49EB7BBDC1d2B156a3eE019c18e': {
-                usd: '2.01',
+                usd: '1.01',
                 eth: 0.0007877,
               },
               '0xd03D4d8B4669d135569215dD6C4e790307c8E14B': {
