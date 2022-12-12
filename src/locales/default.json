@@ -1158,16 +1158,12 @@
   "theme": "Theme",
   "yieldAprRewards": {
     "apr": {
-      "steth": "stETH staking rewards APR",
-      "reth": "rETH staking rewards APR",
-      "stmatic": "stMATIC staking rewards APR",
+      "token": "Token APR",
       "boosted": "Boosted APR",
       "veBAL": "veBAL APR"
     },
     "fiat": {
-      "steth": "stETH staking rewards",
-      "reth": "rETH staking rewards",
-      "stmatic": "stMATIC staking rewards",
+      "token": "Token rewards",
       "boosted": "Boosted rewards"
     }
   },
