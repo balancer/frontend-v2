@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watchEffect, Ref } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import i18n from '@/plugins/i18n';
@@ -55,7 +55,6 @@ const networksDev = ref([
     key: '5',
   },
 ]);
-const previousNetwork: Ref<number | null> = ref(null);
 
 // COMPUTED
 const allNetworks = computed(() => {
@@ -94,23 +93,19 @@ onMounted(async () => {
 });
 
 // WATCHERS
-watchEffect(() => {
-  if (
-    chainId.value &&
-    previousNetwork.value &&
-    previousNetwork.value !== chainId.value
-  ) {
-    const newNetwork = allNetworks.value.find(
-      n => Number(n.key) === chainId.value
-    );
-    if (newNetwork) {
-      document.body.style.display = 'none';
-      localStorage.setItem('networkId', chainId.value.toString());
-      setWindowLocation(getNetworkChangeUrl(newNetwork));
+watch(
+  () => chainId.value,
+  (newVal, oldVal) => {
+    if (newVal && oldVal && oldVal !== newVal && networkId.value !== newVal) {
+      const newNetwork = allNetworks.value.find(n => Number(n.key) === newVal);
+      if (newNetwork) {
+        document.body.style.display = 'none';
+        localStorage.setItem('networkId', newVal.toString());
+        setWindowLocation(getNetworkChangeUrl(newNetwork));
+      }
     }
   }
-  previousNetwork.value = chainId.value;
-});
+);
 
 // METHODS
 function iconSrc(network: NetworkOption): string {
