@@ -393,7 +393,7 @@ export function flatTokenTree(
  * @param {Pool} pool - Pool to get tokensList from.
  * @returns tokensList excluding pre-minted BPT address.
  */
-export function tokensExcludingBpt(pool: Pool): string[] {
+export function tokensListExclBpt(pool: Pool): string[] {
   return removeAddress(pool.address, pool.tokensList);
 }
 
@@ -402,7 +402,7 @@ export function tokensExcludingBpt(pool: Pool): string[] {
  */
 export function removeBptFrom(pool: Pool): Pool {
   const newPool = cloneDeep(pool);
-  newPool.tokensList = tokensExcludingBpt(pool);
+  newPool.tokensList = tokensListExclBpt(pool);
 
   newPool.tokens = newPool.tokens.filter(
     token => !isSameAddress(newPool.address, token.address)
@@ -410,7 +410,7 @@ export function removeBptFrom(pool: Pool): Pool {
 
   newPool.tokens.forEach(token => {
     if (token.token?.pool) {
-      removeBptFromTree(token.token.pool);
+      removeBptFromPool(token.token.pool);
     }
   });
   return newPool;
@@ -419,39 +419,39 @@ export function removeBptFrom(pool: Pool): Pool {
 /**
  * Updates the passed subPool by removing its pre-minted tokens.
  */
-export function removeBptFromTree(tree: SubPool) {
-  if (tree.tokens) {
-    removePremintedToken(tree);
+export function removeBptFromPool(pool: Pool | SubPool) {
+  if (pool.tokens) {
+    removePremintedToken(pool);
 
-    tree.tokens.forEach(token => {
+    pool.tokens.forEach(token => {
       if (token.token?.pool) {
-        removeBptFromTree(token.token.pool);
+        removeBptFromPool(token.token.pool);
       }
     });
   }
-  return tree;
+  return pool;
 }
 
 /**
  * Updates the passed subPool by removing the preminted token from tokens and updating mainIndex accordingly.
  */
-function removePremintedToken(tree: SubPool) {
-  if (!tree.tokens) {
+export function removePremintedToken(pool: Pool | SubPool) {
+  if (!pool.tokens) {
     return;
   }
 
-  const premintedIndex = tree.tokens.findIndex(token =>
-    isSameAddress(tree.address, token.address)
+  const premintedIndex = pool.tokens.findIndex(token =>
+    isSameAddress(pool.address, token.address)
   );
 
   if (premintedIndex === -1) return;
 
   // Remove preminted token by index
-  tree.tokens.splice(premintedIndex, 1);
+  pool.tokens.splice(premintedIndex, 1);
 
   // Fix mainIndex after removing premintedBPT
-  if (premintedIndex < tree.mainIndex) {
-    tree.mainIndex -= 1;
+  if (pool.mainIndex && premintedIndex < pool.mainIndex) {
+    pool.mainIndex -= 1;
   }
 }
 

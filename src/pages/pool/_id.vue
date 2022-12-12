@@ -19,13 +19,19 @@ import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { isVeBalPool, preMintedBptIndex, usePool } from '@/composables/usePool';
+import {
+  isVeBalPool,
+  preMintedBptIndex,
+  usePool,
+  removeBptFromPool,
+} from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 import { PoolToken } from '@/services/pool/types';
+import { cloneDeep } from 'lodash';
 
 /**
  * STATE
@@ -152,10 +158,11 @@ const missingPrices = computed(() => {
 
 const titleTokens = computed<PoolToken[]>(() => {
   if (!pool.value || !pool.value.tokens) return [];
+  const _pool = cloneDeep(pool.value);
+  const { tokens } = removeBptFromPool(_pool);
+  if (!tokens) return [];
 
-  return [...pool.value.tokens].sort(
-    (a, b) => Number(b.weight) - Number(a.weight)
-  );
+  return [...tokens].sort((a, b) => Number(b.weight) - Number(a.weight));
 });
 
 const isStakablePool = computed((): boolean =>
