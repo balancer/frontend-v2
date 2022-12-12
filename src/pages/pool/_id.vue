@@ -22,8 +22,8 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
+  removeBptFrom,
   usePool,
-  removeBptFromPool,
 } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
@@ -31,7 +31,6 @@ import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 import { PoolToken } from '@/services/pool/types';
-import { cloneDeep } from 'lodash';
 
 /**
  * STATE
@@ -158,8 +157,7 @@ const missingPrices = computed(() => {
 
 const titleTokens = computed<PoolToken[]>(() => {
   if (!pool.value || !pool.value.tokens) return [];
-  const _pool = cloneDeep(pool.value);
-  const { tokens } = removeBptFromPool(_pool);
+  const { tokens } = removeBptFrom(pool.value);
   if (!tokens) return [];
 
   return [...tokens].sort((a, b) => Number(b.weight) - Number(a.weight));
