@@ -419,7 +419,7 @@ export function removeBptFrom(pool: Pool): Pool {
 /**
  * Updates the passed subPool by removing its pre-minted tokens.
  */
-export function removeBptFromPoolTokenTree(pool: Pool | SubPool) {
+export function removeBptFromPoolTokenTree(pool: SubPool) {
   if (pool.tokens) {
     removeBptFromTokens(pool);
 
@@ -435,7 +435,7 @@ export function removeBptFromPoolTokenTree(pool: Pool | SubPool) {
 /**
  * Updates the passed subPool by removing the preminted token from tokens and updating mainIndex accordingly.
  */
-export function removeBptFromTokens(pool: Pool | SubPool) {
+export function removeBptFromTokens(pool: SubPool) {
   if (!pool.tokens) {
     return;
   }
