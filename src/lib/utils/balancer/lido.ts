@@ -1,12 +1,19 @@
 import { BigNumberish, Contract } from 'ethers';
-
+import { BigNumber } from '@ethersproject/bignumber';
+import { WeiPerEther as ONE } from '@ethersproject/constants';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 import { includesAddress } from '..';
+import { Network } from '@balancer-labs/sdk';
 
 const { stETH: stEthAddress, wstETH: wstEthAddress } =
   configService.network.addresses;
+
+const wstEthRateProvidersMap = {
+  [Network.MAINNET]: '0x72d07d7dca67b8a406ad1ec34ce969c90bfee768',
+  [Network.ARBITRUM]: '0xf7c5c26b574063e7b098ed74fad6779e65e3f836',
+};
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   if (!tokenInAddress || !tokenOutAddress || !stEthAddress) return false;
@@ -49,13 +56,15 @@ export function getWstETHByStETH(stETHAmount: BigNumberish) {
 /**
  * @notice Get amount of stETH for a given amount of wstETH
  */
-export function getStETHByWstETH(wstETHAmount: BigNumberish) {
-  const wstETH = new Contract(
-    wstEthAddress,
-    [
-      'function getStETHByWstETH(uint256 wstETHAmount) external view returns (uint256)',
-    ],
+export async function getStETHByWstETH(
+  wstETHAmount: BigNumber,
+  network: Network
+) {
+  const wstEthRateProvider = new Contract(
+    wstEthRateProvidersMap[network],
+    ['function getRate() external view returns (uint256)'],
     rpcProviderService.jsonProvider
   );
-  return wstETH.getStETHByWstETH(wstETHAmount);
+  const rate = await wstEthRateProvider.getRate();
+  return wstETHAmount.mul(rate).div(ONE);
 }

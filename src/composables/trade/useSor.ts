@@ -42,7 +42,7 @@ import { TokenInfo } from '@/types/TokenList';
 import useEthers from '../useEthers';
 import useFathom from '../useFathom';
 import useNumbers, { FNumFormats } from '../useNumbers';
-import { isMainnet } from '../useNetwork';
+import useNetwork, { isMainnet, isArbitrum } from '../useNetwork';
 import useTokens from '../useTokens';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
@@ -138,6 +138,7 @@ export default function useSor({
   const { fNum2, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
+  const { networkId } = useNetwork();
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -298,19 +299,21 @@ export default function useSor({
       if (exactIn.value) {
         tokenInAmountInput.value = amount;
 
-        const outputAmount = await getWrapOutput(
+        const outputAmount = getWrapOutput(
           wrapper,
           wrapType.value,
-          parseFixed(amount, tokenInDecimals)
+          parseFixed(amount, tokenInDecimals),
+          networkId.value
         );
         tokenOutAmountInput.value = formatFixed(outputAmount, tokenInDecimals);
       } else {
         tokenOutAmountInput.value = amount;
 
-        const inputAmount = await getWrapOutput(
+        const inputAmount = getWrapOutput(
           wrapper,
           wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
-          parseFixed(amount, tokenOutDecimals)
+          parseFixed(amount, tokenOutDecimals),
+          networkId.value
         );
         tokenInAmountInput.value = formatFixed(inputAmount, tokenOutDecimals);
       }
@@ -356,7 +359,7 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        if (isMainnet.value) {
+        if (isMainnet.value || isArbitrum.value) {
           tokenOutAmount = await adjustedPiAmount(
             tokenOutAmount,
             tokenOutAddress
@@ -402,12 +405,13 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        if (isMainnet.value) {
+        if (isMainnet.value || isArbitrum.value) {
           tokenInAmount = await adjustedPiAmount(
             tokenInAmount,
             tokenOutAddress
           );
         }
+
         const priceImpactCalc = calcPriceImpact(
           tokenInDecimals,
           tokenInAmount,
@@ -697,8 +701,7 @@ export default function useSor({
     address: string
   ): Promise<BigNumber> {
     if (isSameAddress(address, appNetworkConfig.addresses.wstETH)) {
-      const StEthAmount = await getStETHByWstETH(amount);
-      return StEthAmount;
+      return getStETHByWstETH(amount, networkId.value);
     }
     return amount;
   }

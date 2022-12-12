@@ -1,11 +1,12 @@
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber } from 'ethers';
 
 import configs from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 
 import { getStETHByWstETH, getWstETHByStETH } from './lido';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { Network } from '@balancer-labs/sdk';
 
 export enum WrapType {
   NonWrap = 0,
@@ -38,7 +39,8 @@ export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
 export const getWrapOutput = (
   wrapper: string,
   wrapType: WrapType,
-  wrapAmount: BigNumberish
+  wrapAmount: BigNumber,
+  network: Network
 ): BigNumber => {
   if (wrapType === WrapType.NonWrap) throw new Error('Invalid wrap type');
   const { weth, wstETH } = configService.network.addresses;
@@ -47,7 +49,7 @@ export const getWrapOutput = (
   if (wrapper === wstETH) {
     return wrapType === WrapType.Wrap
       ? getWstETHByStETH(wrapAmount)
-      : getStETHByWstETH(wrapAmount);
+      : getStETHByWstETH(wrapAmount, network);
   }
   throw new Error('Unknown wrapper');
 };
