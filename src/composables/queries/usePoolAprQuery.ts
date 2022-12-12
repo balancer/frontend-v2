@@ -54,13 +54,13 @@ export default function usePoolAprQuery(
       throw new Error('No pool');
     }
 
-    if (storedPool?.apr) {
-      return storedPool.apr;
+    if (_pool?.apr) {
+      return _pool.apr;
     }
 
     _pool.chainId = networkId.value;
 
-    const apr = await await balancer.pools.apr(_pool);
+    const apr = await balancer.pools.apr(_pool);
 
     return apr;
   };

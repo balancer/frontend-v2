@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
@@ -85,7 +85,7 @@ const totalLabel = computed((): string =>
           class="flex items-center mb-1 whitespace-nowrap"
           data-testid="swap-fee-apr"
         >
-          {{ fNum2(bpToDec(apr?.swapFees || '0'), FNumFormats.percent) }}
+          {{ fNum2(apr?.swapFees || '0', FNumFormats.bp) }}
           <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}
           </span>

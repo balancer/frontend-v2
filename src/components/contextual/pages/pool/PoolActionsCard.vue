@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { isJoinsDisabled, usePool } from '@/composables/usePool';
 import useNetwork from '@/composables/useNetwork';
@@ -30,6 +30,16 @@ const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
+
+/**
+ * COMPUTED
+ */
+const joinDisabled = computed(
+  (): boolean =>
+    isJoinsDisabled(props.pool.id) ||
+    hasNonApprovedRateProviders.value ||
+    (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id))
+);
 </script>
 
 <template>
@@ -45,19 +55,11 @@ const { networkSlug } = useNetwork();
     />
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
-        :tag="
-          isMigratablePool(pool) || isJoinsDisabled(pool.id)
-            ? 'div'
-            : 'router-link'
-        "
+        :tag="joinDisabled ? 'div' : 'router-link'"
         :to="{ name: 'invest', params: { networkSlug } }"
         :label="$t('addLiquidity')"
         color="gradient"
-        :disabled="
-          isJoinsDisabled(pool.id) ||
-          hasNonApprovedRateProviders ||
-          (isMigratablePool(pool) && !isSoftMigratablePool(pool.id))
-        "
+        :disabled="joinDisabled"
         block
         @click="trackGoal(Goals.ClickAddLiquidity)"
       />

@@ -3,7 +3,8 @@
     <div :class="['bal-alert-container', containerClasses]">
       <div>
         <div :class="['bal-alert-icon', iconClasses]">
-          <BalIcon name="alert-circle" :size="iconSize" />
+          <LightBulbIcon v-if="type === 'tip'"></LightBulbIcon>
+          <BalIcon v-else name="alert-circle" :size="iconSize" />
         </div>
       </div>
       <div :class="['bal-alert-content', contentClasses]">
@@ -38,7 +39,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import BalBtn from '../BalBtn/BalBtn.vue';
 import BalIcon from '../BalIcon/BalIcon.vue';
 
-type AlertType = 'warning' | 'error' | 'info';
+type AlertType = 'warning' | 'error' | 'info' | 'tip';
 
 export default defineComponent({
   name: 'BalAlert',
@@ -60,6 +61,7 @@ export default defineComponent({
     actionLabel: { type: String, default: '' },
     raised: { type: Boolean, default: false },
     block: { type: Boolean, default: false },
+    contentClass: { type: String, default: '' },
     square: { type: Boolean, default: false },
     noBorder: { type: Boolean, default: false },
   },
@@ -69,6 +71,8 @@ export default defineComponent({
   setup(props, { slots }) {
     const bgColorClass = computed(() => {
       switch (props.type) {
+        case 'tip':
+          return 'bg-blue-50 dark:bg-blue-500 dark:bg-opacity-10 border-blue-200 dark:border-blue-500 text-black dark:text-white';
         case 'warning':
           return 'bg-orange-50 dark:bg-orange-600 dark:bg-opacity-10 border-orange-200 dark:border-orange-700 text-black dark:text-white';
         case 'error':
@@ -113,10 +117,13 @@ export default defineComponent({
       'items-center': !props.description && !slots.default,
     }));
 
-    const contentClasses = computed(() => ({
-      'items-center': !props.description && !slots.default,
-      'flex-col': !!props.description || slots.default,
-    }));
+    const contentClasses = computed(() => [
+      props.contentClass,
+      {
+        'items-center': !props.description && !slots.default,
+        'flex-col': !!props.description || slots.default,
+      },
+    ]);
 
     const iconSizeClasses = computed(() => {
       switch (props.size) {
@@ -131,6 +138,8 @@ export default defineComponent({
 
     const iconColorClasses = computed(() => {
       switch (props.type) {
+        case 'tip':
+          return 'text-blue-700 dark:text-blue-400';
         case 'warning':
           return 'text-orange-500 dark:text-white bg-orange-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         case 'error':
@@ -152,8 +161,7 @@ export default defineComponent({
     }));
 
     const descriptionColor = computed(() => {
-      if (props.type === 'info')
-        return 'text-black dark:text-white text-opacity-70';
+      if (props.type === 'tip') return 'text-black dark:text-white';
       return 'text-black dark:text-white text-opacity-70';
     });
 

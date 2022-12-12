@@ -18,7 +18,10 @@ function getPoolLabel(pool: Pool) {
   const tokensString = pool.tokens
     .map(
       t =>
-        `${getToken(t.address)?.symbol} ${fNum2(t.weight, FNumFormats.percent)}`
+        `${getToken(t.address)?.symbol} ${fNum2(
+          t.weight || '0',
+          FNumFormats.percent
+        )}`
     )
     .join(', ');
   return `${tokensString} (${fNum2(pool.swapFee, FNumFormats.percent)} fee)`;

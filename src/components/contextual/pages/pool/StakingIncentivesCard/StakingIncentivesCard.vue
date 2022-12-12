@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
 import { computed, ref } from 'vue';
 
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';

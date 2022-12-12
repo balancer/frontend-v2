@@ -89,7 +89,7 @@ export function scale(
   return unscaled.times(scaleMul);
 }
 
-export function shortenLabel(str, segLength = 4) {
+export function shortenLabel(str: string, segLength = 4) {
   const firstSegment = str.substring(0, segLength + 2);
   const lastSegment = str.substring(str.length, str.length - segLength);
   return `${firstSegment}...${lastSegment}`;

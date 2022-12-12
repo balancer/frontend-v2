@@ -45,7 +45,7 @@ export function useTokenBreakdown(
 
     let fiatValue = toFiat(balance.value, token.value.address);
 
-    if (fiatValue === '0' && token.value.token.latestUSDPrice) {
+    if (fiatValue === '0' && token.value.token?.latestUSDPrice) {
       // Attempt to use latest USD price from subgraph.
       fiatValue = bnum(balance.value)
         .times(token.value.token.latestUSDPrice)

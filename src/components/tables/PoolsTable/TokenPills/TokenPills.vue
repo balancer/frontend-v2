@@ -49,7 +49,7 @@ function symbolFor(token: PoolToken): string {
 }
 
 function weightFor(token: PoolToken): string {
-  return fNum2(token.weight, {
+  return fNum2(token.weight || '0', {
     style: 'percent',
     maximumFractionDigits: 0,
   });

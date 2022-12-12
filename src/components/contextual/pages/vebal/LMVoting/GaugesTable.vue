@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Network } from '@balancer-labs/sdk';
-import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -12,7 +11,6 @@ import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { getNetworkSlug } from '@/composables/useNetwork';
-import useNumbers from '@/composables/useNumbers';
 import {
   isStableLike,
   isUnknownType,
@@ -20,18 +18,15 @@ import {
   poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
-import { scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
+import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
+import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
+import { orderedTokenURIs } from '@/composables/useVotingGauges';
 import IconLimit from '@/components/icons/IconLimit.vue';
-import {
-  isVotingTimeLocked,
-  remainingVoteLockTime,
-} from '@/composables/useVeBAL';
-import { Pool } from '@/services/pool/types';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 
@@ -64,7 +59,6 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -136,13 +130,6 @@ const dataKey = computed(() => JSON.stringify(props.data));
 /**
  * METHODS
  */
-function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(gauge.pool as Pool, gauge.pool.tokens);
-  return sortedTokens.map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || ''
-  );
-}
-
 function networkSrc(network: Network) {
   return require(`@/assets/images/icons/networks/${getNetworkSlug(
     network
@@ -284,37 +271,8 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
         </div>
       </template>
       <template #myVotesCell="gauge">
-        <div class="flex justify-end px-4">
-          {{
-            fNum2(scale(new BigNumber(gauge.userVotes), -4).toString(), {
-              style: 'percent',
-              maximumFractionDigits: 2,
-            })
-          }}
-          <div class="flex justify-end w-6">
-            <BalTooltip v-if="isVotingTimeLocked(gauge.lastUserVoteTime)">
-              <template #activator>
-                <TimelockIcon />
-              </template>
-              <div>
-                <span class="font-semibold">
-                  {{
-                    $t(
-                      'veBAL.liquidityMining.popover.warnings.votedTooRecently.title'
-                    )
-                  }}
-                </span>
-                <p class="text-gray-500">
-                  {{
-                    $t(
-                      'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
-                      [remainingVoteLockTime(gauge.lastUserVoteTime)]
-                    )
-                  }}
-                </p>
-              </div>
-            </BalTooltip>
-          </div>
+        <div v-if="!isLoading" class="py-4 px-6 text-right">
+          <GaugesTableMyVotes :gauge="gauge"></GaugesTableMyVotes>
         </div>
       </template>
       <template #voteColumnCell="gauge">
