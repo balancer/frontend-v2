@@ -68,12 +68,12 @@ Multicaller.mockImplementation(() => {
   return {
     call: jest.fn(),
     execute: jest.fn().mockResolvedValue({
-      '0xc128a9954e6c874ea3d62ce62b468ba073093f25': {
-        address: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
-        chainId: 1,
+      '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': {
+        address: '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
+        chainId: 5,
         decimals: 18,
         logoURI:
-          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC128a9954e6c874eA3d62ce62B468bA073093F25/logo.png',
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x33A99Dcc4C85C014cf12626959111D5898bbCAbF/logo.png',
         name: 'Vote Escrowed Balancer BPT',
         symbol: 'veBAL',
       },

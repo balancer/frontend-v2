@@ -11,6 +11,7 @@ import Web3Plugin from '@/services/web3/web3.plugin';
 
 import blocknative from '@/plugins/blocknative';
 import { QueryClient, VUE_QUERY_CLIENT } from 'vue-query';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 
 jest.mock('@ethersproject/providers');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
@@ -19,12 +20,31 @@ jest.mock('@/lib/balancer.sdk.ts', () => {
     network: 5,
   };
 });
+// Mocking injecting veBAL token metadata
+jest.mock('@/lib/utils/balancer/contract');
+// @ts-ignore
+Multicaller.mockImplementation(() => {
+  return {
+    call: jest.fn(),
+    execute: jest.fn().mockResolvedValue({
+      '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': {
+        address: '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
+        chainId: 5,
+        decimals: 18,
+        logoURI:
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x33A99Dcc4C85C014cf12626959111D5898bbCAbF/logo.png',
+        name: 'Vote Escrowed Balancer BPT',
+        symbol: 'veBAL',
+      },
+    }),
+  };
+});
 
 function getHighPriceImpactIcon() {
   return screen.queryByTestId('price-impact-warning-icon');
 }
 
-describe.skip('InvestFormTotalsV2.vue', () => {
+describe('InvestFormTotalsV2.vue', () => {
   it('should show 0% price impact', () => {
     const queryClient = new QueryClient();
     queryClient.mount();
@@ -83,8 +103,6 @@ describe.skip('InvestFormTotalsV2.vue', () => {
         plugins: [Web3Plugin, blocknative],
         provide: {
           [VUE_QUERY_CLIENT]: queryClient,
-          // [bnSdkSymbol]: blocknative,
-          // [UserSettingsProviderSymbol]: useUserSettings,
         },
       },
     });
@@ -135,8 +153,6 @@ describe.skip('InvestFormTotalsV2.vue', () => {
         plugins: [Web3Plugin, blocknative],
         provide: {
           [VUE_QUERY_CLIENT]: queryClient,
-          // [bnSdkSymbol]: blocknative,
-          // [UserSettingsProviderSymbol]: useUserSettings,
         },
       },
     });

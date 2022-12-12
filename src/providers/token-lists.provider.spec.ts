@@ -29,7 +29,7 @@ describe('Token lists provider should', () => {
 
     renderWithTokenListProvider(ComponentUnderTest);
     await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
+      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC","bb-a-usd2","bb-a-USDT","bb-a-USDC","bb-a-DAI","USDC","DAI","USDT"]'
     );
   });
 
@@ -43,7 +43,7 @@ describe('Token lists provider should', () => {
     };
     renderWithTokenListProvider(ComponentUnderTest);
     await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
+      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC","bb-a-usd2","bb-a-USDT","bb-a-USDC","bb-a-DAI","USDC","DAI","USDT"]'
     );
   });
 
@@ -57,7 +57,7 @@ describe('Token lists provider should', () => {
     };
     renderWithTokenListProvider(ComponentUnderTest);
     await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
+      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC","bb-a-usd2","bb-a-USDT","bb-a-USDC","bb-a-DAI","USDC","DAI","USDT"]'
     );
   });
 
@@ -71,7 +71,7 @@ describe('Token lists provider should', () => {
     };
     renderWithTokenListProvider(ComponentUnderTest);
     await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
+      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC","bb-a-usd2","bb-a-USDT","bb-a-USDC","bb-a-DAI","USDC","DAI","USDT"]'
     );
   });
 
