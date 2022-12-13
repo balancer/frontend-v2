@@ -94,7 +94,7 @@ onMounted(async () => {
 
 // WATCHERS
 watch(
-  () => chainId.value,
+  chainId,
   (newVal, oldVal) => {
     if (newVal && oldVal && oldVal !== newVal && networkId.value !== newVal) {
       const newNetwork = allNetworks.value.find(n => Number(n.key) === newVal);
