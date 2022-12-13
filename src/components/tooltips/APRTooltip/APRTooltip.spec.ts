@@ -197,7 +197,7 @@ describe('APRTooltip', () => {
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR1.66%');
-      expect(getByTestId('yield-apr').textContent).toBe('1.66% wstETH APR');
+      expect(getByTestId('yield-apr').textContent).toBe('1.66% Token APR');
     });
 
     it('Should show stMATIC token APRs', () => {
@@ -250,7 +250,7 @@ describe('APRTooltip', () => {
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR1.02%');
-      expect(getByTestId('yield-apr').textContent).toBe('0.73% rETH APR');
+      expect(getByTestId('yield-apr').textContent).toBe('0.73% Token APR');
     });
 
     it('Should show multiple token APRs with a generic header', () => {
