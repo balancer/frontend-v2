@@ -12,9 +12,6 @@ import {
   isVeBalPoolAddress,
 } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { includesWstEth } from '@/lib/utils/balancer/lido';
-import { includesAddress } from '@/lib/utils';
-import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -32,7 +29,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { getTokens } = useTokens();
+const { getToken, getTokens } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 
@@ -48,20 +45,28 @@ const hasMultiRewardTokens = computed(
 );
 
 const yieldAPRLabel = computed(() => {
-  const poolTokensList = props.pool.tokensList;
-  if (includesWstEth(poolTokensList)) return t('yieldAprRewards.apr.steth');
-  if (includesAddress(poolTokensList, configService.network.addresses.rETH))
-    return t('yieldAprRewards.apr.reth');
-  if (includesAddress(poolTokensList, configService.network.addresses.stMATIC))
-    return t('yieldAprRewards.apr.stmatic');
+  const yieldTokensList = Object.keys(props.yieldAPR.breakdown);
+
   if (isDeep(props.pool)) return t('yieldAprRewards.apr.boosted');
 
-  const yieldTokensList = Object.keys(props.yieldAPR.breakdown);
+  if (yieldTokensList.length > 1) {
+    return t('yieldAprRewards.apr.token');
+  }
+
   if (yieldTokensList.length === 1) {
     if (hasBoostedAPR(yieldTokensList[0]))
       return t('yieldAprRewards.apr.boosted');
     if (isVeBalPoolAddress(yieldTokensList[0]))
       return t('yieldAprRewards.apr.veBAL');
+
+    const tokenAddress = getAddress(yieldTokensList[0]);
+    const token = getToken(tokenAddress);
+
+    if (!token) {
+      return t('yieldAprRewards.apr.token');
+    }
+
+    return `${token.symbol} ${t('apr')}`;
   }
 
   return '';
