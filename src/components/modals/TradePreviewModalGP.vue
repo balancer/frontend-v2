@@ -906,7 +906,6 @@ watch(blockNumber, () => {
           </div>
         </BalTooltip>
       </div>
-      {{ relayerSignature }}
       <BalBtn
         v-if="!account"
         color="gradient"
