@@ -56,11 +56,11 @@ export default function useTrading(
   );
 
   const tokenInAmountScaled = computed(() =>
-    parseFixed(tokenInAmountInput.value, tokenIn.value.decimals)
+    parseFixed(tokenInAmountInput.value || '0', tokenIn.value.decimals)
   );
 
   const tokenOutAmountScaled = computed(() =>
-    parseFixed(tokenOutAmountInput.value, tokenOut.value.decimals)
+    parseFixed(tokenOutAmountInput.value || '0', tokenOut.value.decimals)
   );
 
   const requiresTokenApproval = computed(() => {

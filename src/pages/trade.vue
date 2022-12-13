@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-// Composables
 import { useStore } from 'vuex';
-
-// Components
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';

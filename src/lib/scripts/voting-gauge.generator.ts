@@ -15,7 +15,7 @@ import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
 import config from '../config';
 import { isSameAddress } from '../utils';
 import { Multicaller } from '../utils/balancer/contract';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import template from '../utils/template';
 import { mapValues } from 'lodash';
@@ -120,10 +120,16 @@ async function getMainnetTokenAddresss(
 
   const response = await fetch(coingeckoEndpoint);
 
-  if (response.status === 200) {
+  try {
     const data = await response.json();
     return getAddress(data.platforms.ethereum);
-  } else {
+  } catch {
+    console.error(
+      'Token not found on Mainnet:',
+      tokenAddress,
+      'chainId:',
+      network
+    );
     return '';
   }
 }
@@ -478,6 +484,7 @@ async function getGaugeInfo(
         address,
         poolId,
         network,
+        isKilled,
         addedTimestamp,
         relativeWeightCap,
       }) => {
@@ -494,6 +501,7 @@ async function getGaugeInfo(
         return {
           address,
           network,
+          isKilled,
           relativeWeightCap,
           addedTimestamp,
           pool,

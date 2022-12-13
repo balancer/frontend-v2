@@ -63,7 +63,19 @@ export type Step = {
 
 export type Address = string;
 
+export type TokenAmountMap = Record<Address, string>;
+
 export type BaseContent = {
   title: string;
   description: string;
 };
+
+export interface BlockNumberResponse {
+  data: {
+    blocks: [
+      {
+        number: string;
+      }
+    ];
+  };
+}

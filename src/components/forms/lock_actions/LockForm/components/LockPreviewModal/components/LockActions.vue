@@ -22,6 +22,8 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
+import useVotingGauges from '@/composables/useVotingGauges';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 /**
  * TYPES
@@ -31,6 +33,8 @@ type Props = {
   lockAmount: string;
   lockEndDate: string;
   lockType: LockType[];
+  lockConfirmed: boolean;
+  veBalLockInfo: VeBalLockInfo;
 };
 
 type LockActionState = {
@@ -75,6 +79,7 @@ const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   ref([props.lockAmount])
 );
 const { fNum2 } = useNumbers();
+const { totalVotes, unallocatedVotes } = useVotingGauges();
 const { networkSlug } = useNetwork();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
@@ -94,6 +99,10 @@ const actions = ref<TransactionActionInfo[]>([...lockActions]);
  */
 const lockActionStatesConfirmed = computed(() =>
   lockActionStates.every(lockActionState => lockActionState.confirmed)
+);
+
+const shouldResubmitVotes = computed<boolean>(
+  () => totalVotes !== unallocatedVotes.value
 );
 
 /**
@@ -232,13 +241,29 @@ onBeforeMount(async () => {
           />
         </BalLink>
       </div>
+      <BalAlert
+        v-if="lockConfirmed && !veBalLockInfo.hasExistingLock"
+        class="mt-4"
+        type="tip"
+        :title="t('getVeBAL.previewModal.firstVeBALReceived.title')"
+        :description="t('getVeBAL.previewModal.firstVeBALReceived.description')"
+      >
+      </BalAlert>
+      <BalAlert
+        v-else-if="shouldResubmitVotes"
+        class="mt-4"
+        type="warning"
+        :title="t('veBAL.liquidityMining.resubmit.hint.title')"
+        :description="t('veBAL.liquidityMining.resubmit.hint.description')"
+      >
+      </BalAlert>
       <BalBtn
         tag="router-link"
         :to="{ name: 'vebal', params: { networkSlug } }"
         color="gray"
         outline
         block
-        class="mt-2"
+        class="mt-4"
       >
         {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
       </BalBtn>

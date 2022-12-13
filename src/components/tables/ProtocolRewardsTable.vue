@@ -108,9 +108,12 @@ const hasClaimableBalance = computed((): boolean => {
 
 <template>
   <div>
-    <div v-if="deprecated && hasClaimableBalance" class="mb-2">
-      <h6>{{ $t('pastEarnings.title') }}</h6>
-      <p>{{ $t('pastEarnings.description') }}</p>
+    <div
+      v-if="deprecated && hasClaimableBalance"
+      class="px-4 xl:px-0 mt-4 mb-2"
+    >
+      <h6 class="text-lg">{{ $t('pastEarnings.title') }}</h6>
+      <p class="mb-3">{{ $t('pastEarnings.description') }}</p>
     </div>
     <BalCard
       v-if="hasClaimableBalance || !deprecated"
@@ -128,7 +131,7 @@ const hasClaimableBalance = computed((): boolean => {
         :square="upToLargeBreakpoint"
       >
         <template #tokenColumnCell="{ token }">
-          <div class="flex py-4 px-6">
+          <div class="flex justify-center ml-4 xl:ml-0">
             <BalAsset :address="token.address" />
           </div>
         </template>

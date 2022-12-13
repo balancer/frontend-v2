@@ -1,3 +1,4 @@
+import { Goals, trackGoal } from '@/composables/useFathom';
 import { WalletError } from '@/types';
 import {
   JsonRpcSigner,
@@ -6,7 +7,7 @@ import {
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/browser';
 import { Contract, ContractInterface } from 'ethers';
-import { verifyTransactionSender } from '../../web3.plugin';
+import { verifyNetwork, verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
 type SendTransactionOpts = {
@@ -32,8 +33,6 @@ export class ContractConcern extends TransactionConcern {
     forceLegacyTxType = false,
   }: SendTransactionOpts): Promise<TransactionResponse> {
     const contractWithSigner = new Contract(contractAddress, abi, this.signer);
-    // will throw an error if signer is a sanctioned address
-    await verifyTransactionSender(this.signer);
 
     const block = await this.signer.provider.getBlockNumber();
     console.log(`Contract: ${contractAddress} Action: ${action}`);
@@ -47,9 +46,15 @@ export class ContractConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
-      options = { ...options, ...gasSettings };
+      const txOptions = { ...options, ...gasSettings };
 
-      return await contractWithSigner[action](...params, options);
+      await Promise.all([
+        verifyTransactionSender(this.signer),
+        verifyNetwork(this.signer),
+      ]);
+
+      trackGoal(Goals.ContractTransactionSubmitted);
+      return await contractWithSigner[action](...params, txOptions);
     } catch (err) {
       const error = err as WalletError;
 

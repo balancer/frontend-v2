@@ -8,7 +8,7 @@ import {
   PoolStatCards,
   PoolTransactionsCard,
   MyPoolBalancesCard,
-  PoolBalancesCard,
+  PoolCompositionCard,
   PoolContractDetails,
 } from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
@@ -19,12 +19,18 @@ import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { isVeBalPool, preMintedBptIndex, usePool } from '@/composables/usePool';
+import {
+  isVeBalPool,
+  preMintedBptIndex,
+  removeBptFrom,
+  usePool,
+} from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
+import { PoolToken } from '@/services/pool/types';
 
 /**
  * STATE
@@ -42,7 +48,7 @@ const { addAlert, removeAlert } = useAlerts();
 const _isVeBalPool = isVeBalPool(poolId);
 
 //#region pool query
-const poolQuery = usePoolQuery(poolId, undefined, undefined, false);
+const poolQuery = usePoolQuery(poolId, undefined, undefined);
 const pool = computed(() => poolQuery.data.value);
 const poolQueryLoading = computed(
   () =>
@@ -132,7 +138,7 @@ const noInitLiquidity = computed(
   () =>
     !loadingPool.value &&
     pool.value &&
-    Number(pool.value?.onchain?.totalSupply || '0') === 0
+    Number(pool.value?.totalShares || '0') === 0
 );
 
 const missingPrices = computed(() => {
@@ -149,12 +155,12 @@ const missingPrices = computed(() => {
   return false;
 });
 
-const titleTokens = computed(() => {
-  if (!pool.value || !pool.value.onchain?.tokens) return [];
+const titleTokens = computed<PoolToken[]>(() => {
+  if (!pool.value || !pool.value.tokens) return [];
+  const { tokens } = removeBptFrom(pool.value);
+  if (!tokens) return [];
 
-  return Object.entries(pool.value.onchain.tokens).sort(
-    ([, a]: any[], [, b]: any[]) => b.weight - a.weight
-  );
+  return [...tokens].sort((a, b) => Number(b.weight) - Number(a.weight));
 });
 
 const isStakablePool = computed((): boolean =>
@@ -228,12 +234,13 @@ watch(poolQuery.error, () => {
               <ApyVisionPoolLink
                 v-if="!loadingPool && pool"
                 :poolId="pool.id"
-                :titleTokens="titleTokens"
+                :tokens="titleTokens"
               />
             </div>
             <div class="mb-4">
               <h4 class="px-4 lg:px-0 mb-4" v-text="$t('poolComposition')" />
-              <PoolBalancesCard :pool="pool" :loading="loadingPool" />
+              <BalLoadingBlock v-if="loadingPool" class="h-64" />
+              <PoolCompositionCard v-else-if="pool" :pool="pool" />
             </div>
 
             <div ref="intersectionSentinel" />

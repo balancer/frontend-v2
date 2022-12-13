@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useIntervalFn } from '@vueuse/core';
 import { differenceInSeconds } from 'date-fns';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

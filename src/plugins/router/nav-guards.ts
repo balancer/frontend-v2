@@ -4,7 +4,9 @@ import {
   networkFromSlug,
   networkSlug,
 } from '@/composables/useNetwork';
+import { isJoinsDisabled } from '@/composables/usePool';
 import config from '@/lib/config';
+import { setWindowLocation } from '@/lib/utils/browser';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
 
@@ -14,7 +16,7 @@ import { Router } from 'vue-router';
 export function applyNavGuards(router: Router): Router {
   router = applyNetworkSubdomainRedirect(router);
   router = applyNetworkPathRedirects(router);
-  router = manualUrlUpdateCheck(router);
+  router = applyPoolJoinRedirects(router);
 
   return router;
 }
@@ -27,8 +29,7 @@ export function applyNavGuards(router: Router): Router {
  */
 function hardRedirectTo(url: string) {
   document.body.style.display = 'none';
-  window.location.href = url;
-  location.reload();
+  setWindowLocation(url);
 }
 
 /**
@@ -105,14 +106,17 @@ function applyNetworkPathRedirects(router: Router): Router {
 }
 
 /**
- * A hack to fix a problem with vue-router not always updating the browser url
+ * If the route is a pool invest page check if this should be accessible against
+ * our isJoinsDisabled conditional. If so, redirect to the pool page.
  */
-function manualUrlUpdateCheck(router: Router): Router {
-  router.afterEach(to => {
-    if (window.location.hash !== `#${to.fullPath}`) {
-      window.location.href = `/#${to.fullPath}`;
-    }
+function applyPoolJoinRedirects(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    if (to.name === 'invest' && isJoinsDisabled(to.params?.id as string)) {
+      next({
+        name: 'pool',
+        params: to.params,
+      });
+    } else next();
   });
-
   return router;
 }
