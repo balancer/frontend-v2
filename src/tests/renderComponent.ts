@@ -7,7 +7,7 @@ import blocknative from '@/plugins/blocknative';
 
 interface ProviderComponent {
   component: any;
-  props?: object;
+  props: RenderOptions['props'];
 }
 
 // The order registration of the providers is important but Object.values behaves differently in the vite bundle.
