@@ -133,9 +133,10 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
     <BalTable
       :columns="columns"
       :data="rewardsData"
+      :noResultsLabel="$t('noResultsTable.noBalIncentives')"
       :isLoading="isLoading"
       :onRowClick="redirectToPool"
-      skeletonClass="h-64"
+      skeletonClass="h-24"
       :square="upToLargeBreakpoint"
     >
       <template #iconsColumnCell="{ pool }">

@@ -1,14 +1,19 @@
 import { merge } from 'lodash';
 
 import { POOLS } from '@/constants/pools';
+import { GraphQLArgs } from '@balancer-labs/sdk';
 
-const defaultArgs = {
+const defaultArgs: GraphQLArgs = {
   first: 1000,
   orderBy: 'totalLiquidity',
   orderDirection: 'desc',
   where: {
-    totalShares_gt: 0.01,
-    id_not_in: POOLS.BlockList,
+    totalShares: {
+      gt: 0.01,
+    },
+    id: {
+      not_in: POOLS.BlockList,
+    },
   },
 };
 
@@ -89,8 +94,6 @@ const defaultAttrs = {
 };
 
 export default (args = {}, attrs = {}) => ({
-  pools: {
-    __args: merge({}, defaultArgs, args),
-    ...merge({}, defaultAttrs, attrs),
-  },
+  args: merge({}, defaultArgs, args),
+  attrs: merge({}, defaultAttrs, attrs),
 });

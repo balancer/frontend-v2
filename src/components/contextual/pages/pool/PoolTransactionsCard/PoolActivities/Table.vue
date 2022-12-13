@@ -12,7 +12,7 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { Pool, PoolActivity, PoolActivityType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { preMintedBptIndex, tokensExcludingBpt } from '@/composables/usePool';
+import { preMintedBptIndex, tokensListExclBpt } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -143,7 +143,7 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
 
   for (let i = 0; i < amounts.length; i++) {
     const amount = amounts[i];
-    const address = getAddress(tokensExcludingBpt(props.pool)[i]);
+    const address = getAddress(tokensListExclBpt(props.pool)[i]);
     const token = getToken(address);
     const price = priceFor(token?.address);
     const amountNumber = Math.abs(parseFloat(amount));
@@ -158,7 +158,7 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
 
 function getJoinExitDetails(amounts: PoolActivity['amounts']) {
   return amounts.map((amount, i) => {
-    const address = getAddress(tokensExcludingBpt(props.pool)[i]);
+    const address = getAddress(tokensListExclBpt(props.pool)[i]);
     const token = getToken(address);
     const symbol = token ? token.symbol : address;
     const amountNumber = parseFloat(amount);

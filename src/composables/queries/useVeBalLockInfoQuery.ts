@@ -22,7 +22,6 @@ export default function useVeBalQuery(
    */
   const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
-
   /**
    * COMPUTED
    */

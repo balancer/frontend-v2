@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-import {
-  TitleTokens,
-  useApyVisionHelpers,
-} from '@/composables/external/useApyVisionHelpers';
+import { useApyVisionHelpers } from '@/composables/external/useApyVisionHelpers';
 import { getAddressFromPoolId } from '@/lib/utils';
+import { PoolToken } from '@balancer-labs/sdk';
 
 /**
  * TYPES
  */
 type Props = {
   poolId: string;
-  titleTokens: TitleTokens;
+  tokens: PoolToken[];
 };
 
 /**
@@ -31,7 +29,7 @@ const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
         'https://app.apy.vision/pools/balancerv2_' +
         apyVisionNetworkName +
         '-' +
-        poolPathSymbolSegment(titleTokens) +
+        poolPathSymbolSegment(tokens) +
         '-' +
         getAddressFromPoolId(poolId)
       "

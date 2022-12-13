@@ -48,7 +48,7 @@ const nestedPaddingClass = computed(() => {
     case 1:
       return 'pl-4';
     case 2:
-      return 'pl-10';
+      return 'pl-12';
     case 3:
       return 'pl-16';
     case 4:
@@ -58,7 +58,7 @@ const nestedPaddingClass = computed(() => {
   }
 });
 
-const isLeaf = computed((): boolean => !token.value.token.pool);
+const isLeaf = computed((): boolean => !token.value.token?.pool);
 
 // If this token is a pool, this is the share of that pool in it's parent.
 // e.g. The share of bb-a-DAI in bb-a-USD, since bb-a-DAI can be used in
@@ -67,7 +67,7 @@ const shareOfTokenInPool = computed((): number => {
   if (isLeaf.value) return 1;
 
   return bnum(token.value?.balance || '0')
-    .div(token.value.token.pool?.totalShares || 1)
+    .div(token.value.token?.pool?.totalShares || 1)
     .times(props.shareOfParentInPool)
     .toNumber();
 });
@@ -85,18 +85,26 @@ const shareOfTokenInPool = computed((): number => {
       :href="explorerLinks.addressLink(token.address)"
       external
       noStyle
-      class="flex items-center"
+      class="group flex items-center"
     >
+      <!-- #Todo: Remove flex-shrink-0 once Tailwind 3 is live -->
       <BalAsset
         :address="token.address"
-        class="mr-2"
+        :class="
+          isDeepPool && currentLevel > 1
+            ? 'nested-token'
+            : 'flex-shrink-0 mr-2 shrink-0 z-10'
+        "
         :size="isDeepPool && currentLevel > 1 ? 28 : 36"
       />
-      {{ token?.symbol || '---' }}
+      <span
+        class="group-hover:text-purple-500 dark:group-hover:text-yellow-500 transition-colors"
+        >{{ token?.symbol || '---' }}</span
+      >
       <BalIcon
         name="arrow-up-right"
         size="sm"
-        class="ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+        class="ml-1 text-gray-500 group-hover:text-purple-500 dark:group-hover:text-yellow-500 transition-colors"
       />
     </BalLink>
     <div v-if="isWeighted" class="justify-self-end">
@@ -122,3 +130,23 @@ const shareOfTokenInPool = computed((): number => {
     />
   </template>
 </template>
+<style scoped>
+.nested-token {
+  @apply flex-shrink-0 mr-2 relative ml-1 sm:ml-0;
+}
+
+.nested-token::after {
+  content: '';
+  top: 14px;
+  left: -15px;
+  @apply absolute border border-solid border-gray-200 dark:border-gray-700 w-3;
+}
+
+.nested-token::before {
+  content: '';
+  height: calc(100% + 14px);
+  left: -15px;
+  top: -28px;
+  @apply absolute border border-gray-200 dark:border-gray-700;
+}
+</style>

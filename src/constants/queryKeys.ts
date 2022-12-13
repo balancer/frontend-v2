@@ -200,6 +200,10 @@ const QUERY_KEYS = {
       'expired',
       { gauges, networkId },
     ],
+    VotingEscrowLocks: (lockedAmount?: string) => [
+      'votingEscrowLocks',
+      lockedAmount,
+    ],
     Voting: (account: Ref<string>) => ['gauges', 'voting', { account }],
   },
   Transaction: {

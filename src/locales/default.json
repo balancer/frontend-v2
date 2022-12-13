@@ -425,8 +425,8 @@
   "invalidFeeExplain": "Please enter a valid fee between 0.0001% and 10%",
   "investment": {
     "tabs": {
-      "poolTokens": "Pool Tokens",
-      "singleToken": "Single Token"
+      "poolTokens": "Pool tokens",
+      "singleToken": "Single token"
     },
     "preview": {
       "loadingLabel": {
@@ -595,6 +595,10 @@
   "hasNonApprovedRateProviders": "One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.",
   "noRecentActivity": "Your recent activity will appear here…",
   "noResults": "No results",
+  "noResultsTable": {
+    "noBalIncentives": "No BAL incentives to claim from staking",
+    "noProtocolRevenue": "Nothing to claim from holding veBAL"
+  },
   "noSwapsPool": "No swaps in this pool.",
   "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
   "numberOfPools": "Number of pools",
@@ -753,7 +757,7 @@
   "proportionalSuggestion": "Proportional suggestion",
   "proportionalWithdrawal": "Proportional withdrawal",
   "protocolFees": "Protocol fees",
-  "protocolIncentives": "Protocol & veBAL incentives",
+  "protocolIncentives": "Protocol revenue & veBAL incentives",
   "rank": "Rank (1{0})",
   "receipt": "Receipt",
   "receive": "Receive",
@@ -967,6 +971,25 @@
         "errors": {
           "notEnoughVotes": "Not enough unallocated votes"
         }
+      },
+      "resubmit": {
+        "modal": {
+          "title": "Preview vote resubmission",
+          "warning": {
+            "title": "You can only resubmit up to 8 votes",
+            "description": "It’s only possible to update 8 pool gauge votes at a time. You’ll need to update your votes for the remaining ones manually."
+          },
+          "otherPools": "0 other pools | 1 other pool | {n} other pools",
+          "total": "Total vote allocation",
+          "exceeding": "Your votes can’t exceed 100%",
+          "confirm": "Confirm votes"
+        },
+        "hint": {
+          "title": "Resubmit your votes to utilize your full voting power",
+          "description": "Votes on pools are set at the time of your last vote. Since you’ve added new veBAL after your original vote, the additional voting power is not being used."
+        },
+        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes.",
+        "btn": "Resubmit votes"
       }
     },
     "notSupported": {
@@ -1084,7 +1107,11 @@
           "loadingLabel": "Confirm lock in wallet"
         }
       },
-      "returnToVeBalPage": "Return to veBAL page"
+      "returnToVeBalPage": "Return to veBAL page",
+      "firstVeBALReceived": {
+        "title": "Vote on pools to direct liquidity incentives",
+        "description": "Your voting weight is set at the time of the vote. If you acquire additional veBAL, resubmit your votes to utilize your newly acquired voting power. Voting per pool can only be done once every 10 days."
+      }
     },
     "notSupported": {
       "title": "Locking is unavailable on this network",
@@ -1379,8 +1406,8 @@
   "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
     "tabs": {
-      "poolTokens": "Pool Tokens (proportional)",
-      "singleToken": "Single Token"
+      "poolTokens": "Pool tokens (proportional)",
+      "singleToken": "Single token"
     },
     "label": "Withdraw",
     "tooltips": {

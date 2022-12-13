@@ -118,9 +118,9 @@ function handleSuccess() {
       :lockType="lockType"
       :veBalLockInfo="veBalLockInfo"
     />
-
     <LockActions
-      :lockablePool="lockablePool"
+      :veBalLockInfo="veBalLockInfo"
+      :lockConfirmed="lockConfirmed"
       :lockAmount="lockAmount"
       :lockEndDate="lockEndDate"
       :lockType="lockType"
