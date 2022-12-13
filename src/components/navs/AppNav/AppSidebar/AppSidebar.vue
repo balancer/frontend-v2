@@ -94,7 +94,7 @@ watch(showSidebar, () => {
 
   content: '';
   z-index: -1;
-  background: rgb(150 150 150 / 20%);
+  background: rgb(150 150 150 20%);
   backdrop-filter: blur(4px);
 }
 </style>
