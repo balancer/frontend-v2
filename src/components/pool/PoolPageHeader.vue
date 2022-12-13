@@ -131,7 +131,7 @@ const poolTypeLabel = computed(() => {
 
 <template>
   <div class="col-span-2 px-4 lg:px-0">
-    <BalLoadingBlock v-if="loadingPool || !pool" class="h-16" />
+    <BalLoadingBlock v-if="loadingPool || !pool" class="header-loading-block" />
     <div v-else class="flex flex-col">
       <div class="flex flex-wrap items-center -mt-2">
         <div v-if="POOLS.Metadata[pool?.id]">
@@ -291,5 +291,9 @@ const poolTypeLabel = computed(() => {
   @apply mr-4 capitalize mt-2;
 
   font-variation-settings: 'wght' 700;
+}
+
+.header-loading-block {
+  height: 4.249rem;
 }
 </style>
