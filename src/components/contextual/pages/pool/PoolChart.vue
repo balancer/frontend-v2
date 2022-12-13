@@ -500,7 +500,7 @@ function addLaggingTimestamps() {
 
 <style scoped>
 .chart-loading-block {
-  height: 31rem;
+  height: 30.9rem;
 }
 
 .chart {
