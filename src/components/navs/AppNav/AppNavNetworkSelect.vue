@@ -95,12 +95,12 @@ onMounted(async () => {
 // WATCHERS
 watch(
   chainId,
-  (newVal, oldVal) => {
-    if (newVal && oldVal && oldVal !== newVal && networkId.value !== newVal) {
-      const newNetwork = allNetworks.value.find(n => Number(n.key) === newVal);
+  (newChainId, oldChainId) => {
+    if (newChainId && oldChainId && oldChainId !== newChainId && networkId.value !== newChainId) {
+      const newNetwork = allNetworks.value.find(n => Number(n.key) === newChainId);
       if (newNetwork) {
         document.body.style.display = 'none';
-        localStorage.setItem('networkId', newVal.toString());
+        localStorage.setItem('networkId', newChainId.toString());
         setWindowLocation(getNetworkChangeUrl(newNetwork));
       }
     }
