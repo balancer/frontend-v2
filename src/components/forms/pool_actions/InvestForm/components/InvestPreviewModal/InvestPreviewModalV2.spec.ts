@@ -1,11 +1,8 @@
-import { render, screen, within } from '@testing-library/vue';
+import { screen, within } from '@testing-library/vue';
 import InvestPreviewModalV2 from './InvestPreviewModalV2.vue';
 // import pool from '@/services/balancer/pools/joins/handlers/__tests__/pool';
 import pool from '@/__mocks__/goerli-boosted-pool';
-import {
-  JoinPoolProviderSymbol,
-  JoinPoolProvider,
-} from '@/providers/local/join-pool.provider';
+import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
 import { server } from '@/tests/msw/server';
 import { rest } from 'msw';
 // import BalModal from '@/components/_global/BalModal/BalModal.vue';
@@ -14,21 +11,12 @@ import { rest } from 'msw';
 // import SpinnerIcon from '@/components/_global/icons/SpinnerIcon.vue';
 // import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 
-import Web3Plugin from '@/services/web3/web3.plugin';
+import { QueryClient } from 'vue-query';
 
-import { QueryClient, VUE_QUERY_CLIENT } from 'vue-query';
-import useJoinPool from '@/composables/pools/useJoinPool';
-import blocknative from '@/plugins/blocknative'; // ,{ bnSdkSymbol }
-import { h } from 'vue';
-import {
-  AppProvider,
-  TokenListProvider,
-  TokensProvider,
-  UserSettingsProvider,
-} from '@/providers';
 // import BlocknativeSdk from 'bnc-sdk';
 // import { WebSocketProvider } from '@ethersproject/providers';
 import { Multicaller } from '@/lib/utils/balancer/contract';
+import renderComponent from '@/tests/renderComponent';
 
 // import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 
@@ -63,7 +51,6 @@ jest.unmock('@/composables/useUserSettings');
 
 // Mocking injecting veBAL token metadata
 jest.mock('@/lib/utils/balancer/contract');
-
 // @ts-expect-error
 Multicaller.mockImplementation(() => {
   return {
@@ -181,82 +168,41 @@ describe('InvestPreviewModalV2.vue', () => {
     const queryClient = new QueryClient();
     queryClient.mount();
 
-    render(UserSettingsProvider, {
-      props: {},
-      global: {
-        components: {},
-        plugins: [Web3Plugin, blocknative],
-        provide: {
-          [VUE_QUERY_CLIENT]: queryClient,
-          [JoinPoolProviderSymbol]: useJoinPool,
-        },
-      },
-      slots: {
-        default() {
-          return h(
-            TokenListProvider,
-            {},
+    renderComponent(
+      InvestPreviewModalV2,
+      {
+        props: {
+          pool,
+          isSingleAssetJoin: false,
+          amountsIn: [
             {
-              default() {
-                return h(
-                  TokensProvider,
-                  {},
-                  {
-                    default() {
-                      return h(
-                        AppProvider,
-                        {},
-                        {
-                          default() {
-                            return h(
-                              // @ts-expect-error
-                              JoinPoolProvider,
-                              {
-                                pool,
-                                isSingleAssetJoin: false,
-                              },
-                              {
-                                default() {
-                                  // @ts-expect-error
-                                  return h(InvestPreviewModalV2, {
-                                    pool,
-                                    isSingleAssetJoin: false,
-                                    amountsIn: [
-                                      {
-                                        address: USDT,
-                                        value: amountInUSDT,
-                                        valid: true,
-                                      },
-                                      {
-                                        address: DAI,
-                                        value: amountInDAI,
-                                        valid: true,
-                                      },
-                                    ],
-                                    bptOut,
-                                    fiatValueIn,
-                                    fiatValueOut,
-                                    priceImpact: 0.001,
-                                    highPriceImpact: false,
-                                    rektPriceImpact: false,
-                                    missingPricesIn: false,
-                                    resetAmounts: jest.fn(),
-                                  });
-                                },
-                              }
-                            );
-                          },
-                        }
-                      );
-                    },
-                  }
-                );
-              },
-            }
-          );
+              address: USDT,
+              value: amountInUSDT,
+              valid: true,
+            },
+            {
+              address: DAI,
+              value: amountInDAI,
+              valid: true,
+            },
+          ],
+          bptOut,
+          fiatValueIn,
+          fiatValueOut,
+          priceImpact: 0.001,
+          highPriceImpact: false,
+          rektPriceImpact: false,
+          missingPricesIn: false,
+          resetAmounts: jest.fn(),
         },
       },
-    });
+      [
+        {
+          component: JoinPoolProvider,
+          props: { pool, isSingleAssetJoin: false },
+        },
+      ]
+    );
 
     const tokensInWrapper = await screen.findByTestId('tokens-in');
     const tokensOutWrapper = await screen.findByTestId('tokens-out');
