@@ -9,7 +9,7 @@
     "vite": "vite",
     "dev": "npm run generate:tokenlists && vite",
     "serve": "npm run dev",
-    "build": "npm run generate:tokenlists && vite build && rimraf dist/**/*.js.map",
+    "build": "npm run generate:tokenlists && vite build",
     "build:withouttokenlists": "vite build",
     "build:watch": "vite build --watch",
     "preview": "vite preview",

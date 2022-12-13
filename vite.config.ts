@@ -96,8 +96,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     build: {
-      // Avoid sourcemaps comments in .js files because sourcemaps files are deleted after build (once they were uploaded to sentry)
-      sourcemap: 'hidden',
+      sourcemap: true,
       minify: true,
       rollupOptions: {
         plugins: [
