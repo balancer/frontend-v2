@@ -2,15 +2,26 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+
   safelist: [
     // https://tailwindcss.com/docs/content-configuration#safelisting-classes
-    // TODO: find a way to safelist all dynamic classes
-    'dark:border-blue-700',
+    // https://github.com/tailwindlabs/tailwindcss/discussions/7908
     { pattern: /^shadow/ },
-    { pattern: /^dark:/ },
-    { pattern: /^bg/ },
+    // 'dark:hover:border-blue-600',
+    // The following pattern is not working.
+    {
+      pattern: /border-blue-600/,
+      variants: ['dark', 'hover', 'focus'],
+    },
+    {
+      pattern: /^bg-[^/]+$/,
+      variants: ['dark', 'hover', 'focus'],
+    },
+    {
+      pattern: /border-[^/]+$/,
+      variants: ['dark', 'hover', 'focus'],
+    },
     { pattern: /^text/ },
-    { pattern: /^border/ },
     { pattern: /^from/ },
     { pattern: /^to/ },
     { pattern: /^mr/ },
