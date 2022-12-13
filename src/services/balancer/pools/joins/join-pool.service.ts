@@ -1,4 +1,4 @@
-import { isDeep } from '@/composables/usePool';
+// import { isDeep } from '@/composables/usePool';
 import { balancer } from '@/lib/balancer.sdk';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
@@ -47,15 +47,16 @@ export class JoinPoolService {
 
     if (swapJoin) {
       return (this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ));
-    } else if (isDeep(pool.value)) {
+    } else {
       return (this.joinHandler = new DeepPoolJoinHandler(
         pool,
         sdk,
         gasPriceServ
       ));
-    } else {
-      throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
+    // else {
+    // throw new Error(`Pool type not handled: ${pool.value.poolType}`);
+    // }
   }
 
   /**

@@ -3,7 +3,7 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
 import InvestPage from '@/components/contextual/pages/pool/invest/InvestPage.vue';
 import useInvestPageTabs, { Tab } from '@/composables/pools/useInvestPageTabs';
-import { usePool } from '@/composables/usePool';
+// import { usePool } from '@/composables/usePool';
 import { useIntervalFn } from '@vueuse/core';
 import { oneMinInMs } from '@/composables/useTime';
 
@@ -11,7 +11,7 @@ import { oneMinInMs } from '@/composables/useTime';
  * STATE
  */
 const { pool, poolQuery } = usePoolTransfers();
-const { isDeepPool } = usePool(pool);
+// const { isDeepPool } = usePool(pool);
 
 const { activeTab } = useInvestPageTabs();
 
@@ -24,7 +24,7 @@ useIntervalFn(poolQuery.refetch.value, oneMinInMs);
 
 <template>
   <JoinPoolProvider
-    v-if="pool && isDeepPool"
+    v-if="pool"
     :pool="pool"
     :isSingleAssetJoin="activeTab === Tab.SingleToken"
   >

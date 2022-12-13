@@ -59,7 +59,7 @@ onMounted(() => resetTabs());
         />
       </div>
     </template>
-    <template v-if="isDeepPool">
+    <template v-if="true">
       <InvestFormV2 :pool="pool" />
     </template>
     <template v-else>
