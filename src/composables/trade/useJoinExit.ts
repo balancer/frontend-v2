@@ -233,7 +233,10 @@ export default function useJoinExit({
       tokenInAddressInput.value,
       tokenOutAddressInput.value,
       exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
-      parseFixed(tokenInAmountInput.value || tokenOutAmountInput.value, 18),
+      parseFixed(
+        tokenInAmountInput.value || tokenOutAmountInput.value || '0',
+        18
+      ),
       undefined,
       true
     );
