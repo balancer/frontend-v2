@@ -32,6 +32,17 @@ export default class Pools {
     delete query.args.skip; // not allowed for Balancer API
     delete query.args.first;
 
+    /* Some temporary hacks to make the API work with an empty in array (it should return no data)
+     *   and if not_in is also set then delete it (because it's set by default) */
+    if (query.args.where?.id?.in) {
+      if (query.args.where?.id?.in.length === 0) {
+        return [];
+      }
+      if (query.args.where?.id?.not_in) {
+        delete query.args.where?.id.not_in;
+      }
+    }
+
     if (!this.repository || !_.isEqual(query, this.lastQuery)) {
       this.lastQuery = _.cloneDeep(query);
       this.repository = new PoolsBalancerAPIRepository({
