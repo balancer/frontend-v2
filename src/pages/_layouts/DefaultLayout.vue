@@ -8,7 +8,11 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
     <div class="app-body">
       <AppNav />
       <div class="pb-16">
-        <router-view :key="$route.path" />
+        <router-view v-slot="{ Component, route }">
+          <transition :key="route.path" appear name="appear">
+            <component :is="Component" />
+          </transition>
+        </router-view>
       </div>
     </div>
     <Footer />
