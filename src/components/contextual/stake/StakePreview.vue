@@ -105,6 +105,11 @@ watch(
 /* COMPUTED */
 const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
 
+const isStakeAndZero = computed(
+  () =>
+    props.action === 'stake' && (currentShares === '0' || currentShares === '')
+);
+
 const fiatValueOfModifiedShares = ref(
   bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
@@ -249,6 +254,7 @@ function handleClose() {
       v-if="!isActionConfirmed"
       :actions="stakeActions"
       :isLoading="isLoadingApprovalsForGauge"
+      :disabled="isStakeAndZero"
       @success="handleSuccess"
     />
     <BalStack v-if="isActionConfirmed && confirmationReceipt" vertical>
