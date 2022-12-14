@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted, ref } from 'vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
@@ -19,14 +18,8 @@ const showPriceGraphModal = ref(false);
 /**
  * COMPOSABLES
  */
-const store = useStore();
 const { setSelectedTokens } = usePoolFilters();
 const { upToLargeBreakpoint } = useBreakpoints();
-
-/**
- * COMPUTED
- */
-const appLoading = computed(() => store.state.app.loading);
 
 /**
  * METHODS
@@ -55,10 +48,7 @@ onMounted(() => {
       <TrendingPairs class="mt-4" />
     </template>
 
-    <BalLoadingBlock v-if="appLoading" class="h-96" />
-    <template v-else>
-      <TradeCard />
-    </template>
+    <TradeCard />
     <div class="p-4 sm:p-0 lg:p-0 mt-8">
       <BalAccordion
         v-if="upToLargeBreakpoint"

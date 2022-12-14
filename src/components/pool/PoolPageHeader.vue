@@ -6,7 +6,6 @@ import BalChipNew from '@/components/chips/BalChipNew.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
-import useApp from '@/composables/useApp';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import { usePool } from '@/composables/usePool';
@@ -48,7 +47,6 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
 /**
  * COMPOSABLES
  */
-const { appLoading } = useApp();
 const { isAffected, warnings } = usePoolWarning(poolId);
 const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
@@ -219,14 +217,14 @@ const poolTypeLabel = computed(() => {
       block
     />
     <BalAlert
-      v-if="!appLoading && !loadingPool && missingPrices"
+      v-if="!loadingPool && missingPrices"
       type="warning"
       :title="$t('noPriceInfo')"
       class="mt-2"
       block
     />
     <BalAlert
-      v-if="!appLoading && !loadingPool && hasCustomToken"
+      v-if="!loadingPool && hasCustomToken"
       type="error"
       :title="$t('highRiskPool')"
       class="mt-2"
@@ -252,7 +250,7 @@ const poolTypeLabel = computed(() => {
         </div>
       </BalStack>
     </BalAlert>
-    <template v-if="!appLoading && !loadingPool && isAffected">
+    <template v-if="!loadingPool && isAffected">
       <BalAlert
         v-for="(warning, i) in warnings"
         :key="`warning-${i}`"
@@ -269,7 +267,7 @@ const poolTypeLabel = computed(() => {
       </BalAlert>
     </template>
     <BalAlert
-      v-if="!appLoading && noInitLiquidity"
+      v-if="noInitLiquidity"
       type="warning"
       :title="$t('noInitLiquidity')"
       :description="$t('noInitLiquidityDetail')"

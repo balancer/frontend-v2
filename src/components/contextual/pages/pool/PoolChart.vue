@@ -3,7 +3,6 @@ import { format, addMinutes } from 'date-fns';
 import * as echarts from 'echarts/core';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useStore } from 'vuex';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import PoolChartPeriodSelect from '@/components/pool/PoolChartPeriodSelect.vue';
@@ -67,7 +66,6 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const store = useStore();
 const { t } = useI18n();
 const tailwind = useTailwind();
 const { fNum2 } = useNumbers();
@@ -102,8 +100,6 @@ const isFocusedOnChart = ref(false);
 /**
  * COMPUTED
  */
-const appLoading = computed(() => store.state.app.loading);
-
 const snapshotValues = computed(() => Object.values(props.snapshots || []));
 
 const periodOptions = computed(() => [
@@ -427,7 +423,7 @@ function addLaggingTimestamps() {
 </script>
 
 <template>
-  <BalLoadingBlock v-if="loading || appLoading" class="chart-loading-block" />
+  <BalLoadingBlock v-if="loading" class="chart-loading-block" />
 
   <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div

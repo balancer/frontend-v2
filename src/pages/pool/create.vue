@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import anime from 'animejs';
-import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
@@ -21,7 +21,6 @@ import usePoolCreation, {
   POOL_CREATION_STATE_VERSION,
 } from '@/composables/pools/usePoolCreation';
 import useAlerts from '@/composables/useAlerts';
-import useApp from '@/composables/useApp';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import { lsGet } from '@/lib/utils';
@@ -40,7 +39,6 @@ const isRestoring = ref(false);
 /**
  * COMPOSABLES
  */
-const { appLoading } = useApp();
 const {
   activeStep,
   similarPools,
@@ -59,14 +57,8 @@ const {
 const { removeAlert } = useAlerts();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  dynamicDataLoading,
-  priceFor,
-  getToken,
-  injectTokens,
-  injectedPrices,
-  loading: isLoadingTokens,
-} = useTokens();
+const { dynamicDataLoading, priceFor, getToken, injectTokens, injectedPrices } =
+  useTokens();
 const route = useRoute();
 const { isWalletReady } = useWeb3();
 
@@ -178,9 +170,7 @@ const exitAnimateProps = computed(() => ({
   right: 0,
 }));
 
-const isLoading = computed(
-  () => appLoading.value || dynamicDataLoading.value || isRestoring.value
-);
+const isLoading = computed(() => dynamicDataLoading.value || isRestoring.value);
 
 /**
  * FUNCTIONS
@@ -242,13 +232,11 @@ function showUnknownTokenModal() {
 }
 
 function injectUnknownPoolTokens() {
-  if (!isLoadingTokens.value) {
-    const uninjectedTokens = seedTokens.value
-      .filter(seedToken => getToken(seedToken.tokenAddress) === undefined)
-      .map(seedToken => seedToken.tokenAddress)
-      .filter(token => token !== '');
-    injectTokens(uninjectedTokens);
-  }
+  const uninjectedTokens = seedTokens.value
+    .filter(seedToken => getToken(seedToken.tokenAddress) === undefined)
+    .map(seedToken => seedToken.tokenAddress)
+    .filter(token => token !== '');
+  injectTokens(uninjectedTokens);
 }
 
 /**
@@ -267,13 +255,6 @@ watch(activeStep, () => {
   }
 });
 
-// make sure to inject any custom tokens we cannot inject
-// after tokens have finished loading as it will attempt to
-// inject 'known' tokens too, as during mount, tokens are still loading
-watch(isLoadingTokens, () => {
-  injectUnknownPoolTokens();
-});
-
 // we need to wait for a ready wallet before executing this
 // as we need that getProvider() call to suceed
 watch(
@@ -287,13 +268,17 @@ watch(
     immediate: true,
   }
 );
+
+onMounted(() => {
+  injectUnknownPoolTokens();
+});
 </script>
 
 <template>
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
       <div v-if="!upToLargeBreakpoint" class="col-span-3">
-        <BalStack v-if="!appLoading" vertical>
+        <BalStack vertical>
           <BalVerticalSteps
             title="Create a weighted pool steps"
             :steps="steps"
@@ -311,7 +296,7 @@ watch(
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :isVisible="!!hasRestoredFromSavedState && !appLoading"
+        :isVisible="!!hasRestoredFromSavedState"
         unmountInstantly
       >
         <BalAlert
@@ -331,9 +316,7 @@ watch(
         <BalLoadingBlock class="h-64" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="
-          !appLoading && activeStep === 0 && !hasRestoredFromSavedState
-        "
+        :isVisible="activeStep === 0 && !hasRestoredFromSavedState"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -341,7 +324,7 @@ watch(
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 1"
+        :isVisible="activeStep === 1"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -350,7 +333,7 @@ watch(
         <PoolFees @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
+        :isVisible="activeStep === 2 && similarPools.length > 0"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -368,7 +351,7 @@ watch(
         <InitialLiquidity @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
+        :isVisible="activeStep === 4 && !dynamicDataLoading"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -395,7 +378,7 @@ watch(
     </div>
     <template #gutterRight>
       <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
-        <BalStack v-if="!appLoading" vertical spacing="base">
+        <BalStack vertical spacing="base">
           <PoolSummary />
           <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
         </BalStack>

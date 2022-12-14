@@ -83,6 +83,8 @@ export function isDeep(pool: Pool): boolean {
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
     '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b', // STG/bba-usd (mainnet)
     '0x334c96d792e4b26b841d28f53235281cec1be1f200020000000000000000038a', // rETH/bba-usd (mainnet)
+    '0x53bc3cba3832ebecbfa002c12023f8ab1aa3a3a0000000000000000000000411', // TUSD/bb-a-usd (mainnet)
+    '0x4c8d2e60863e8d7e1033eda2b3d84e92a641802000000000000000000000040f', // FRAX/aave-usdc (mainnet)
   ];
 
   return treatAsDeep.includes(pool.id);
