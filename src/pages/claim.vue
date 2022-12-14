@@ -12,7 +12,6 @@ import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable.vue';
 import ProtocolRewardsTable, {
   ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
-import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 import { isL2, isMainnet } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
@@ -43,7 +42,6 @@ const { injectTokens, injectPrices, getToken } = useTokens();
 const { balToken } = useTokenHelpers();
 const { toFiat, fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { appLoading } = useApp();
 const {
   gauges,
   gaugePools,
@@ -76,8 +74,7 @@ const networks = [
  * COMPUTED
  */
 const loading = computed(
-  (): boolean =>
-    (isClaimsLoading.value || appLoading.value) && isWalletReady.value
+  (): boolean => isClaimsLoading.value && isWalletReady.value
 );
 
 const networkBtns = computed(() => {
@@ -85,7 +82,7 @@ const networkBtns = computed(() => {
 });
 
 const balRewardsData = computed((): RewardRow[] => {
-  if (!isWalletReady.value || appLoading.value) return [];
+  if (!isWalletReady.value) return [];
   // Using reduce to filter out gauges we don't have corresponding pools for
   return gauges.value.reduce<RewardRow[]>((arr, gauge) => {
     const amount = formatUnits(gauge.claimableTokens, balToken.value.decimals);
@@ -176,7 +173,7 @@ function gaugeTitle(pool: GaugePool): string {
 }
 
 function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
-  if (!isWalletReady.value || appLoading.value || !data) return [];
+  if (!isWalletReady.value || !data) return [];
 
   return Object.keys(data).map(tokenAddress => {
     const token = getToken(tokenAddress);
@@ -233,8 +230,7 @@ onBeforeMount(async () => {
       <template v-if="!isL2">
         <div class="mb-16">
           <div class="px-4 xl:px-0">
-            <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 w-64 h-8" />
-            <div v-else class="flex items-center mt-6 mb-2">
+            <div class="flex items-center mt-6 mb-2">
               <h3 class="inline-block mr-1.5 text-xl">
                 BAL {{ $t('incentives') }}
               </h3>
@@ -291,9 +287,7 @@ onBeforeMount(async () => {
         </BalTooltip>
       </div>
       <BalLoadingBlock v-if="loading" class="mt-6 mb-2 h-56" />
-      <template
-        v-if="!isClaimsLoading && !appLoading && gaugeTables.length > 0"
-      >
+      <template v-if="!isClaimsLoading && gaugeTables.length > 0">
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="mb-16">
             <div class="flex px-4 xl:px-0 mt-4">
@@ -301,18 +295,14 @@ onBeforeMount(async () => {
                 {{ gaugeTitle(pool) }}
               </h4>
             </div>
-            <GaugeRewardsTable
-              :gauge="gauge"
-              :isLoading="isClaimsLoading || appLoading"
-            />
+            <GaugeRewardsTable :gauge="gauge" :isLoading="isClaimsLoading" />
           </div>
         </div>
       </template>
 
       <BalBlankSlate
         v-else-if="
-          (!isClaimsLoading && !appLoading && gaugeTables.length === 0) ||
-          !isWalletReady
+          (!isClaimsLoading && gaugeTables.length === 0) || !isWalletReady
         "
         class="px-4 xl:px-0 mt-4 mb-16"
       >
