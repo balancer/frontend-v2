@@ -269,7 +269,7 @@ watch(
       />
       <div
         v-else-if="!isLoading && !tableData.length"
-        class="flex justify-center items-center max-w-full h-40 bg-white dark:bg-gray-850 row-bg text-secondary"
+        class="flex justify-start items-center p-6 max-w-full h-24 bg-white dark:bg-gray-850 row-bg text-secondary"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
@@ -396,7 +396,7 @@ watch(
 }
 
 .row-bg {
-  @apply bg-white dark:bg-gray-850 hover:bg-gray-50 dark:hover:bg-gray-800;
+  @apply bg-white dark:bg-gray-850 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ease-in duration-300;
 }
 
 .bal-table-pagination-btn {

@@ -427,7 +427,7 @@ function addLaggingTimestamps() {
 </script>
 
 <template>
-  <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
+  <BalLoadingBlock v-if="loading || appLoading" class="chart-loading-block" />
 
   <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div
@@ -499,6 +499,10 @@ function addLaggingTimestamps() {
 </template>
 
 <style scoped>
+.chart-loading-block {
+  height: 30.9rem;
+}
+
 .chart {
   @apply sm:border rounded-xl sm:px-5 sm:pt-5 sm:shadow sm:dark:bg-gray-850 dark:border-transparent;
 }
