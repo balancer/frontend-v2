@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watchEffect, Ref } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import i18n from '@/plugins/i18n';
@@ -55,7 +55,6 @@ const networksDev = ref([
     key: '5',
   },
 ]);
-const previousNetwork: Ref<number | null> = ref(null);
 
 // COMPUTED
 const allNetworks = computed(() => {
@@ -94,22 +93,22 @@ onMounted(async () => {
 });
 
 // WATCHERS
-watchEffect(() => {
+watch(chainId, (newChainId, oldChainId) => {
   if (
-    chainId.value &&
-    previousNetwork.value &&
-    previousNetwork.value !== chainId.value
+    newChainId &&
+    oldChainId &&
+    oldChainId !== newChainId &&
+    networkId.value !== newChainId
   ) {
     const newNetwork = allNetworks.value.find(
-      n => Number(n.key) === chainId.value
+      n => Number(n.key) === newChainId
     );
     if (newNetwork) {
       document.body.style.display = 'none';
-      localStorage.setItem('networkId', chainId.value.toString());
+      localStorage.setItem('networkId', newChainId.toString());
       setWindowLocation(getNetworkChangeUrl(newNetwork));
     }
   }
-  previousNetwork.value = chainId.value;
 });
 
 // METHODS
