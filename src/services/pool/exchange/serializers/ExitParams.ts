@@ -89,13 +89,18 @@ export default class ExitParams {
   }
 
   private parseAmounts(amounts: string[]): BigNumber[] {
-    return amounts.map((amount, i) => {
-      const token = this.pool.value.tokensList[i];
-      return parseUnits(
-        amount,
-        this.pool.value?.onchain?.tokens?.[token]?.decimals || 18
-      );
-    });
+    try {
+      return amounts.map((amount, i) => {
+        const token = this.pool.value.tokensList[i];
+        return parseUnits(
+          amount,
+          this.pool.value?.onchain?.tokens?.[token]?.decimals
+        );
+      });
+    } catch (error) {
+      console.error('Failed to parse amountsOut', error);
+      throw new Error('Failed to parse amounts out.');
+    }
   }
 
   private parseTokensOut(tokensOut: string[]): string[] {

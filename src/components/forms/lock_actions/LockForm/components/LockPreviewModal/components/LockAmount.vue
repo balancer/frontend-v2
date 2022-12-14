@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/services/pool/types';
+import { PoolToken } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -41,8 +42,8 @@ const poolWeightsLabel = computed(() =>
 /**
  * METHODS
  */
-function formatWeightLabel(weight: string) {
-  return fNum2(weight, {
+function formatWeightLabel(weight: PoolToken['weight']) {
+  return fNum2(weight || '0', {
     style: 'percent',
     maximumFractionDigits: 0,
   });

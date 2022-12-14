@@ -16,6 +16,7 @@ export default function useWeb3Mock() {
     isWalletReady: () => true,
     explorerLinks: {
       txLink: jest.fn(),
+      addressLink: (address: string) => `$test-explorer/address/${address}`,
     },
   };
 }

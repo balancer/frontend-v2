@@ -1,12 +1,10 @@
 import { toNormalizedWeights } from '@balancer-labs/sdk';
-import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 
 import { isStableLike, isWeightedLike } from '@/composables/usePool';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import {
-  LinearPoolDataMap,
   OnchainPoolData,
   OnchainTokenDataMap,
   Pool,
@@ -38,10 +36,6 @@ export class OnchainDataFormater {
     poolData.swapEnabled = true;
     if (this.rawData.swapEnabled !== undefined) {
       poolData.swapEnabled = this.rawData.swapEnabled;
-    }
-
-    if (this.rawData?.linearPools) {
-      poolData.linearPools = this.formatLinearPools();
     }
 
     if (this.rawData.tokenRates) {
@@ -81,45 +75,6 @@ export class OnchainDataFormater {
     delete tokens[this.pool.address.toLowerCase()];
 
     return tokens;
-  }
-
-  private formatLinearPools(): LinearPoolDataMap {
-    const _linearPools = <LinearPoolDataMap>{};
-
-    for (const address in this.rawData.linearPools) {
-      const {
-        id,
-        mainToken,
-        wrappedToken,
-        priceRate,
-        unwrappedTokenAddress,
-        unwrappedERC4626Address,
-        tokenData,
-        totalSupply,
-      } = this.rawData.linearPools[address];
-
-      const unwrappedAddress = unwrappedTokenAddress || unwrappedERC4626Address;
-
-      _linearPools[address.toLowerCase()] = {
-        id,
-        priceRate: formatUnits(priceRate.toString(), 18),
-        mainToken: {
-          address: getAddress(mainToken.address),
-          index: mainToken.index.toNumber(),
-          balance: tokenData.balances[mainToken.index.toNumber()].toString(),
-        },
-        wrappedToken: {
-          address: getAddress(wrappedToken.address),
-          index: wrappedToken.index.toNumber(),
-          balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
-          priceRate: formatUnits(wrappedToken.rate, 18),
-        },
-        unwrappedTokenAddress: unwrappedAddress,
-        totalSupply: formatUnits(totalSupply, 18),
-      };
-    }
-
-    return _linearPools;
   }
 
   private normalizeWeights(): number[] {

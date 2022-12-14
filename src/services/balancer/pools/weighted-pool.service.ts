@@ -13,7 +13,7 @@ import {
   Web3Provider,
 } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { isSameAddress, scale } from '@/lib/utils';

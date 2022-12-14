@@ -89,7 +89,7 @@ export function scale(
   return unscaled.times(scaleMul);
 }
 
-export function shortenLabel(str, segLength = 4) {
+export function shortenLabel(str: string, segLength = 4) {
   const firstSegment = str.substring(0, segLength + 2);
   const lastSegment = str.substring(str.length, str.length - segLength);
   return `${firstSegment}...${lastSegment}`;
@@ -98,9 +98,9 @@ export function shortenLabel(str, segLength = 4) {
 /**
  * Wait for a reactive variable to change to an expected value.
  */
-export async function forChange(
-  reactiveVar: Ref<any>,
-  expected: any,
+export async function forChange<T>(
+  reactiveVar: Ref<T>,
+  expected: T,
   checkCount = 0,
   checkDelay = 500,
   checkLimit = 20
@@ -179,4 +179,20 @@ export function findByAddress<T>(
 
 export function removeAddress(address: string, addresses: string[]): string[] {
   return addresses.filter(a => !isSameAddress(a, address));
+}
+
+/**
+ * Wraps an async function with loading=true and then loading=false for a given
+ * reactive ref.
+ *
+ * @param {Function} fn - The async function to track if loading or finished.
+ * @param {Ref<boolean>} toggle - The reactive property tracking loading state.
+ */
+export async function trackLoading(
+  fn: () => Promise<any>,
+  toggle: Ref<boolean>
+) {
+  toggle.value = true;
+  await fn();
+  toggle.value = false;
 }

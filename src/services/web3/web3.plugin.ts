@@ -27,6 +27,7 @@ import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector, ConnectorId } from './connectors/connector';
 import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
+import { networkId } from '@/composables/useNetwork';
 
 export type Wallet =
   | 'metamask'
@@ -78,7 +79,7 @@ export async function isBlockedAddress(
     trackGoal(Goals.WalletScreenRequest);
 
     const response = await axios.get<WalletScreenResponse>(
-      `${WALLET_SCREEN_ENDPOINT}/${address.toLowerCase()}`
+      `${WALLET_SCREEN_ENDPOINT}?address=${address.toLowerCase()}`
     );
 
     trackGoal(Goals.WalletScreened);
@@ -96,6 +97,13 @@ export async function verifyTransactionSender(signer: JsonRpcSigner) {
     throw new Error(
       `Rejecting transaction. [${_isBlockedAddress}] is a sanctioned wallet.`
     );
+  }
+}
+
+export async function verifyNetwork(signer: JsonRpcSigner) {
+  const userNetwork = await signer.getChainId();
+  if (userNetwork.toString() !== networkId.value.toString()) {
+    throw new Error('Wallet network does not match app network.');
   }
 }
 

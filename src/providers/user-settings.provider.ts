@@ -16,6 +16,7 @@ export interface UserSettingsState {
 /**
  * SETUP
  */
+
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
 const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
 
@@ -33,6 +34,7 @@ const state: UserSettingsState = reactive({
 const slippageScaled = computed((): string =>
   parseUnits(state.slippage, 18).toString()
 );
+const slippageBsp = computed<number>(() => parseFloat(state.slippage) * 10000);
 
 /**
  * METHODS
@@ -58,5 +60,6 @@ export function getUserSettingsProvision() {
     setCurrency,
     setSlippage,
     slippageScaled,
+    slippageBsp,
   };
 }

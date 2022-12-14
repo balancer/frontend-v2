@@ -13,6 +13,7 @@ import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
+import { twentyFourHoursInSecs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -264,6 +265,11 @@ function getFeesData(
     }
   );
 
+  // add 0 values in order to show chart properly
+  if (periodSnapshots.length < 30) {
+    feesValues.push(...addLaggingTimestamps());
+  }
+
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapFees) -
     (isAllTimeSelected
@@ -308,6 +314,11 @@ function getVolumeData(
       value - prevValue,
     ]);
   });
+
+  // add 0 values in order to show chart properly
+  if (periodSnapshots.length < 30) {
+    volumeData.push(...addLaggingTimestamps());
+  }
 
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapVolume) -
@@ -391,10 +402,32 @@ function setCurrentChartValue(payload: {
     PRETTY_DATE_FORMAT
   );
 }
+
+function addLaggingTimestamps() {
+  const lastDate =
+    snapshotValues.value[snapshotValues.value.length - 1].timestamp / 1000;
+  const days = 30 - snapshotValues.value.length;
+
+  const timestampsArr: number[] = [];
+  for (let i = 1; i <= days; i++) {
+    const timestamp = lastDate - i * twentyFourHoursInSecs;
+    timestampsArr.push(timestamp * 1000);
+  }
+
+  return timestampsArr.map(timestamp =>
+    Object.freeze<[string, number]>([
+      format(
+        addMinutes(timestamp, new Date(timestamp).getTimezoneOffset()),
+        'yyyy/MM/dd'
+      ),
+      0,
+    ])
+  );
+}
 </script>
 
 <template>
-  <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
+  <BalLoadingBlock v-if="loading || appLoading" class="chart-loading-block" />
 
   <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div
@@ -466,6 +499,10 @@ function setCurrentChartValue(payload: {
 </template>
 
 <style scoped>
+.chart-loading-block {
+  height: 30.9rem;
+}
+
 .chart {
   @apply sm:border rounded-xl sm:px-5 sm:pt-5 sm:shadow sm:dark:bg-gray-850 dark:border-transparent;
 }

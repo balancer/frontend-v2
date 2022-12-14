@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { getAddress } from '@ethersproject/address';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 import { computed, onBeforeMount, watch } from 'vue';
 
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
@@ -58,19 +58,16 @@ const networks = [
   {
     id: 'ethereum',
     name: 'Ethereum',
-    subdomain: 'app',
     key: '1',
   },
   {
     id: 'polygon',
     name: 'Polygon',
-    subdomain: 'polygon',
     key: '137',
   },
   {
     id: 'arbitrum',
     name: 'Arbitrum',
-    subdomain: 'arbitrum',
     key: '42161',
   },
 ];
@@ -170,7 +167,7 @@ function gaugeTitle(pool: GaugePool): string {
   return Object.values(_tokens)
     .map(
       token =>
-        `${fNum2(token.weight, {
+        `${fNum2(token.weight || '0', {
           style: 'percent',
           maximumFractionDigits: 0,
         })} ${token.symbol}`
@@ -238,18 +235,35 @@ onBeforeMount(async () => {
           <div class="px-4 xl:px-0">
             <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 w-64 h-8" />
             <div v-else class="flex items-center mt-6 mb-2">
-              <BalAsset :address="balToken?.address" />
-              <h3 class="ml-2 text-xl">
-                Balancer (BAL) {{ $t('earnings').toLowerCase() }}
+              <h3 class="inline-block mr-1.5 text-xl">
+                BAL {{ $t('incentives') }}
               </h3>
+              <BalTooltip
+                iconSize="xs"
+                textAlign="left"
+                class="relative top-px"
+                iconClass="text-secondary"
+                width="60"
+              >
+                {{ $t('claimPage.tips.BalIncentives') }}
+              </BalTooltip>
             </div>
           </div>
           <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
         </div>
         <div class="mb-16">
-          <h3 class="px-4 xl:px-0 mt-8 mb-3 text-xl">
-            {{ $t('protocolEarnings') }}
+          <h3 class="inline-block xl:px-0 pl-4 mt-8 mr-1.5 mb-3 text-xl">
+            {{ $t('protocolIncentives') }}
           </h3>
+          <BalTooltip
+            iconSize="xs"
+            textAlign="left"
+            class="relative top-px"
+            iconClass="text-secondary"
+            width="60"
+          >
+            {{ $t('claimPage.tips.ProtocolAndVebal') }}
+          </BalTooltip>
           <ProtocolRewardsTable
             :rewardsData="protocolRewardsData"
             :isLoading="loading"
@@ -262,10 +276,20 @@ onBeforeMount(async () => {
           />
         </div>
       </template>
-
-      <h3 v-if="!isL2" class="px-4 xl:px-0 mt-8 text-xl">
-        {{ $t('otherTokenEarnings') }}
-      </h3>
+      <div v-if="!isL2">
+        <h3 class="inline-block px-4 xl:px-0 mt-8 mr-1.5 text-xl">
+          {{ $t('otherTokenIncentives') }}
+        </h3>
+        <BalTooltip
+          iconSize="xs"
+          textAlign="left"
+          class="relative top-px"
+          iconClass="text-secondary"
+          width="60"
+        >
+          {{ $t('claimPage.tips.OtherIncentives') }}
+        </BalTooltip>
+      </div>
       <BalLoadingBlock v-if="loading" class="mt-6 mb-2 h-56" />
       <template
         v-if="!isClaimsLoading && !appLoading && gaugeTables.length > 0"
@@ -303,7 +327,7 @@ onBeforeMount(async () => {
             v-for="network in networkBtns"
             :key="network.id"
             tag="a"
-            :href="`https://${network.subdomain}.balancer.fi/#/claim`"
+            :href="`https://app.balancer.fi/#/${network.id}/claim`"
             color="white"
           >
             <img

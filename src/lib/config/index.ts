@@ -16,7 +16,6 @@ export interface Config {
   shortName: string;
   slug: string;
   network: string;
-  portisNetwork?: string;
   unknown: boolean;
   rpc: string;
   publicRpc?: string;
@@ -25,6 +24,7 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
+  balancerApi?: string;
   poolsUrlV2: string;
   subgraphs: {
     main: string[];
@@ -52,11 +52,14 @@ export interface Config {
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    rETH: string;
+    stMATIC: string;
     stETH: string;
     wstETH: string;
     lidoRelayer: string;
     balancerHelpers: string;
     batchRelayer: string;
+    batchRelayerV4: string;
     veBAL: string;
     gaugeController: string;
     gaugeFactory: string;
@@ -67,11 +70,13 @@ export interface Config {
     feeDistributor: string;
     feeDistributorDeprecated: string;
     faucet: string;
+    gaugeRewardsHelper?: string;
   };
   keys: {
     infura: string;
     alchemy: string;
     graph?: string;
+    balancerApi?: string;
   };
   strategies: Record<
     string,
