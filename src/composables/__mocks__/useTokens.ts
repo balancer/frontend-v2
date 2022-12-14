@@ -12,7 +12,7 @@ const mockTokens = {
     symbol: 'USDC',
     decimals: 6,
   },
-  '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': {
+  '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0': {
     symbol: 'wstETH',
   },
   '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb': {
@@ -23,6 +23,15 @@ const mockTokens = {
   },
   '0xae37D54Ae477268B9997d4161B96b8200755935c': {
     symbol: 'bb-a-DAI',
+  },
+  '0xae78736Cd615f374D3085123A210448E74Fc6393': {
+    symbol: 'rETH',
+  },
+  '0xac3E018457B222d93114458476f3E3416Abbe38F': {
+    symbol: 'sfrxETH',
+  },
+  '0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4': {
+    symbol: 'stMATIC',
   },
 };
 
