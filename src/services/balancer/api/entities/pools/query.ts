@@ -81,6 +81,7 @@ export const defaultAttrs = {
     totalSwapFee: true,
     totalShares: true,
     volumeSnapshot: true,
+    feesSnapshot: true,
     owner: true,
     factory: true,
     amp: true,
