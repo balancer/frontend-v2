@@ -32,10 +32,9 @@ export default function usePoolQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, dynamicDataLoading } = useTokens();
+  const { injectTokens, dynamicDataLoading, tokens } = useTokens();
   const { appLoading } = useApp();
   const { account } = useWeb3();
-  const { tokens } = useTokens();
   const { data: subgraphGauges } = useGaugesQuery();
   const gaugeAddresses = computed(() =>
     (subgraphGauges.value || []).map(gauge => gauge.id)
