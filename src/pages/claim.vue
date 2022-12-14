@@ -60,26 +60,22 @@ interface NetworkMetadata {
   id: string;
   name: string;
   key: Network;
-  subdomain: string;
 }
 
 const networks: NetworkMetadata[] = [
   {
     id: 'ethereum',
     name: 'Ethereum',
-    subdomain: 'app',
     key: Network.MAINNET,
   },
   {
     id: 'polygon',
     name: 'Polygon',
-    subdomain: 'polygon',
     key: Network.POLYGON,
   },
   {
     id: 'arbitrum',
     name: 'Arbitrum',
-    subdomain: 'arbitrum',
     key: Network.ARBITRUM,
   },
 ];
@@ -341,7 +337,7 @@ onBeforeMount(async () => {
             v-for="network in networkBtns"
             :key="network.id"
             tag="a"
-            :href="`https://app.balancer.fi/#/${network.subdomain}/claim`"
+            :href="`https://app.balancer.fi/#/${network.id}/claim`"
             color="white"
           >
             <img

@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.81.10",
+  "version": "1.82.2",
   "engines": {
     "node": ">=14",
     "npm": ">=7"
@@ -110,6 +110,7 @@
     "prettier": "^2.7.1",
     "promise-worker": "^2.0.1",
     "require-context": "^1.1.0",
+    "rimraf": "^3.0.2",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-polyfill-node": "^0.11.0",
     "rollup-plugin-visualizer": "^5.8.3",

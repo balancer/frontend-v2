@@ -6,6 +6,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { AprBreakdown } from '@balancer-labs/sdk';
+import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -24,6 +25,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
+const { getToken } = useTokens();
 
 /**
  * COMPUTED
@@ -85,7 +87,18 @@ const breakdownItems = computed((): Array<any> => {
     if (isMinMaxSame.value) {
       items.push(['BAL', minBalAPR.value]);
     }
-    items.push(['Rewards', rewardTokensAPR.value]);
+
+    const rewardAprTokens = apr.value?.rewardAprs.breakdown;
+    if (rewardAprTokens) {
+      Object.keys(rewardAprTokens).forEach(address => {
+        items.push([
+          getToken(address)?.symbol || 'Rewards',
+          rewardAprTokens[address],
+        ]);
+      });
+    } else {
+      items.push(['Rewards', rewardTokensAPR.value]);
+    }
   }
 
   return items;

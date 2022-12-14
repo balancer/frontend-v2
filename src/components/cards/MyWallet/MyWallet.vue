@@ -116,7 +116,10 @@ const emit = defineEmits<{
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <template v-if="pool">
-            <MyWalletSubheader v-if="isDeepPool" class="border-b">
+            <MyWalletSubheader
+              v-if="isDeepPool"
+              class="text-sm border-b text-secondary"
+            >
               {{ t('myWalletCard.title.poolTokens') }}
             </MyWalletSubheader>
             <div class="mt-5">
@@ -141,7 +144,9 @@ const emit = defineEmits<{
                 notPoolTokensWithBalance.length
               "
             >
-              <MyWalletSubheader class="my-5 border-t border-b">
+              <MyWalletSubheader
+                class="my-5 text-sm border-t border-b text-secondary"
+              >
                 {{ t('myWalletCard.title.otherTokens') }}
               </MyWalletSubheader>
               <BalAssetSet
