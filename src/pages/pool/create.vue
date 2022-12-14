@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import anime from 'animejs';
-import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
@@ -59,14 +59,8 @@ const {
 const { removeAlert } = useAlerts();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  dynamicDataLoading,
-  priceFor,
-  getToken,
-  injectTokens,
-  injectedPrices,
-  loading: isLoadingTokens,
-} = useTokens();
+const { dynamicDataLoading, priceFor, getToken, injectTokens, injectedPrices } =
+  useTokens();
 const route = useRoute();
 const { isWalletReady } = useWeb3();
 
@@ -242,13 +236,11 @@ function showUnknownTokenModal() {
 }
 
 function injectUnknownPoolTokens() {
-  if (!isLoadingTokens.value) {
-    const uninjectedTokens = seedTokens.value
-      .filter(seedToken => getToken(seedToken.tokenAddress) === undefined)
-      .map(seedToken => seedToken.tokenAddress)
-      .filter(token => token !== '');
-    injectTokens(uninjectedTokens);
-  }
+  const uninjectedTokens = seedTokens.value
+    .filter(seedToken => getToken(seedToken.tokenAddress) === undefined)
+    .map(seedToken => seedToken.tokenAddress)
+    .filter(token => token !== '');
+  injectTokens(uninjectedTokens);
 }
 
 /**
@@ -267,13 +259,6 @@ watch(activeStep, () => {
   }
 });
 
-// make sure to inject any custom tokens we cannot inject
-// after tokens have finished loading as it will attempt to
-// inject 'known' tokens too, as during mount, tokens are still loading
-watch(isLoadingTokens, () => {
-  injectUnknownPoolTokens();
-});
-
 // we need to wait for a ready wallet before executing this
 // as we need that getProvider() call to suceed
 watch(
@@ -287,6 +272,10 @@ watch(
     immediate: true,
   }
 );
+
+onMounted(() => {
+  injectUnknownPoolTokens();
+});
 </script>
 
 <template>
