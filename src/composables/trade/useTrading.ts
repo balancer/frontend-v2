@@ -5,7 +5,7 @@ import { useStore } from 'vuex';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { bnum, lsGet, lsSet } from '@/lib/utils';
+import { bnum, isSameAddress, lsGet, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -109,18 +109,16 @@ export default function useTrading(
     if (tradeGasless.value && isGnosisSupportedOnNetwork.value) {
       return 'gnosis';
     } else {
-      return (
-        // Currently Relayer only suitable for ExactIn and non-eth swaps
-        exactIn.value &&
-          tokenInAddressInput.value.toLowerCase() !==
-            AddressZero.toLowerCase() &&
-          tokenOutAddressInput.value.toLowerCase() !==
-            AddressZero.toLowerCase() &&
-          joinExit.swapInfo.value?.returnAmount &&
-          !joinExit.swapInfo.value?.returnAmount.isZero()
-          ? 'joinExit'
-          : 'balancer'
-      );
+      const isNonEthSwap =
+        !isSameAddress(tokenInAddressInput.value, AddressZero) &&
+        !isSameAddress(tokenOutAddressInput.value, AddressZero);
+      const joinExitSwapAvailable =
+        joinExit.swapInfo.value?.returnAmount &&
+        !joinExit.swapInfo.value?.returnAmount.isZero();
+      // Currently joinExit trade is only suitable for ExactIn and non-eth swaps
+      return exactIn.value && isNonEthSwap && joinExitSwapAvailable
+        ? 'joinExit'
+        : 'balancer';
     }
   });
 
