@@ -21,7 +21,6 @@ import usePoolCreation, {
   POOL_CREATION_STATE_VERSION,
 } from '@/composables/pools/usePoolCreation';
 import useAlerts from '@/composables/useAlerts';
-import useApp from '@/composables/useApp';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import { lsGet } from '@/lib/utils';
@@ -40,7 +39,6 @@ const isRestoring = ref(false);
 /**
  * COMPOSABLES
  */
-const { appLoading } = useApp();
 const {
   activeStep,
   similarPools,
@@ -172,9 +170,7 @@ const exitAnimateProps = computed(() => ({
   right: 0,
 }));
 
-const isLoading = computed(
-  () => appLoading.value || dynamicDataLoading.value || isRestoring.value
-);
+const isLoading = computed(() => dynamicDataLoading.value || isRestoring.value);
 
 /**
  * FUNCTIONS
@@ -282,7 +278,7 @@ onMounted(() => {
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
       <div v-if="!upToLargeBreakpoint" class="col-span-3">
-        <BalStack v-if="!appLoading" vertical>
+        <BalStack vertical>
           <BalVerticalSteps
             title="Create a weighted pool steps"
             :steps="steps"
@@ -300,7 +296,7 @@ onMounted(() => {
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :isVisible="!!hasRestoredFromSavedState && !appLoading"
+        :isVisible="!!hasRestoredFromSavedState"
         unmountInstantly
       >
         <BalAlert
@@ -320,9 +316,7 @@ onMounted(() => {
         <BalLoadingBlock class="h-64" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="
-          !appLoading && activeStep === 0 && !hasRestoredFromSavedState
-        "
+        :isVisible="activeStep === 0 && !hasRestoredFromSavedState"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -330,7 +324,7 @@ onMounted(() => {
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 1"
+        :isVisible="activeStep === 1"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -339,7 +333,7 @@ onMounted(() => {
         <PoolFees @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
+        :isVisible="activeStep === 2 && similarPools.length > 0"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -357,7 +351,7 @@ onMounted(() => {
         <InitialLiquidity @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
+        :isVisible="activeStep === 4 && !dynamicDataLoading"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -384,7 +378,7 @@ onMounted(() => {
     </div>
     <template #gutterRight>
       <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
-        <BalStack v-if="!appLoading" vertical spacing="base">
+        <BalStack vertical spacing="base">
           <PoolSummary />
           <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
         </BalStack>

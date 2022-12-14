@@ -12,7 +12,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import PoolRepository from '@/services/pool/pool.repository';
 import { configService } from '@/services/config/config.service';
-import useApp from '../useApp';
 import { isBlocked, tokenTreeLeafs } from '../usePool';
 import useGaugesQuery from './useGaugesQuery';
 import { POOLS } from '@/constants/pools';
@@ -33,7 +32,6 @@ export default function usePoolQuery(
    * COMPOSABLES
    */
   const { injectTokens, dynamicDataLoading, tokens } = useTokens();
-  const { appLoading } = useApp();
   const { account } = useWeb3();
   const { data: subgraphGauges } = useGaugesQuery();
   const gaugeAddresses = computed(() =>
@@ -45,9 +43,7 @@ export default function usePoolQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(
-    () => !appLoading.value && !dynamicDataLoading.value && isEnabled.value
-  );
+  const enabled = computed(() => !dynamicDataLoading.value && isEnabled.value);
 
   /**
    * METHODS
