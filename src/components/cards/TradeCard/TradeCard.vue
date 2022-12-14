@@ -146,7 +146,7 @@
     </div>
   </BalCard>
   <teleport to="#modal">
-    <TradePreviewModalGP
+    <TradePreviewModal
       v-if="modalTradePreviewIsOpen"
       :trading="trading"
       :error="error"
@@ -166,7 +166,7 @@ import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
+import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -189,7 +189,7 @@ import TradeRoute from './TradeRoute.vue';
 export default defineComponent({
   components: {
     TradePair,
-    TradePreviewModalGP,
+    TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover,
   },
