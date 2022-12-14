@@ -43,13 +43,16 @@ const tokenSymbolsWithoutBalanceMsg = computed(() => {
     :title="t('investment.warning.noPoolTokensToJoinWith.title')"
     :description="t('investment.warning.noPoolTokensToJoinWith.description')"
   ></BalAlert>
-  <div
-    v-else-if="tokenSymbolsWithoutBalance.length"
-    class="mb-4 text-sm italic text-gray-600 dark:text-gray-400"
-  >
+  <div v-else-if="tokenSymbolsWithoutBalance.length" class="italic-warning">
     {{ t('investment.warning.noBalanceSomeTokens') }}:
     {{ tokenSymbolsWithoutBalanceMsg }}
   </div>
 </template>
+<style scoped>
+.italic-warning {
+  @apply mb-4 text-sm text-gray-600 dark:text-gray-400;
 
+  font-variation-settings: 'slnt' -10;
+}
+</style>
 
