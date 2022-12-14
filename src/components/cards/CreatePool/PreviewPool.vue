@@ -178,7 +178,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
         }}</span>
       </BalStack>
       <BalStack vertical>
-        <div class="flex items-center">
+        <div class="flex items-center mt-2">
           <BalCircle
             v-if="poolCreated"
             size="8"
@@ -345,18 +345,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             {{ $t('createAPool.nativeAssetWarning') }}
           </BalAlert>
         </AnimatePresence>
-        <!-- <BalAlert
-          type="error"
-          class="mb-4"
-          :title="
-            t('createAPool.arbTitle', [
-              fNum2(arbitrageDelta.value, FNumFormats.fiat),
-              fNum2(arbitrageDelta.delta, FNumFormats.percent)
-            ])
-          "
-        >
-          {{ t('createAPool.arbReason') }}
-        </BalAlert> -->
+
         <CreateActions
           :createDisabled="hasMissingPoolNameOrSymbol"
           :tokenAddresses="tokenAddresses"

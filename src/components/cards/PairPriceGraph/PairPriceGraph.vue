@@ -12,7 +12,6 @@ import {
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
-import { useStore } from 'vuex';
 
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -123,7 +122,6 @@ type Props = {
 const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { t } = useI18n();
-const store = useStore();
 const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
 const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
 const tailwind = useTailwind();
@@ -133,7 +131,6 @@ const chartHeight = ref(
   upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100
 );
 const activeTimespan = ref(chartTimespans[0]);
-const appLoading = computed(() => store.state.app.loading);
 
 const inputSym = computed(() => {
   if (tokenInAddress.value === '') return 'Unknown';
@@ -274,17 +271,14 @@ const chartGrid = computed(() => {
     >
       <div class="relative p-4 h-full bg-transparent">
         <button
-          v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
+          v-if="!failedToLoadPriceData && !isLoadingPriceData"
           class="flex justify-center items-center p-2 m-4 rounded-full shadow-lg maximise"
           @click="toggle"
         >
           <BalIcon v-if="!isModal" name="maximize-2" class="text-secondary" />
           <BalIcon v-if="isModal" name="x" class="text-secondary" />
         </button>
-        <div
-          v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
-          class="flex"
-        >
+        <div v-if="!failedToLoadPriceData && !isLoadingPriceData" class="flex">
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
           <BalTooltip class="ml-2" :text="$t('coingeckoPricingTooltip')">
             <template #activator>
