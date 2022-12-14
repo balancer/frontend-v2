@@ -26,7 +26,7 @@ import {
   SorManager,
   SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { getStETHOrWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
+import { convertStEthWrap, isStEthAddress } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
@@ -42,7 +42,7 @@ import { TokenInfo } from '@/types/TokenList';
 import useEthers from '../useEthers';
 import useFathom from '../useFathom';
 import useNumbers, { FNumFormats } from '../useNumbers';
-import useNetwork, { isMainnet } from '../useNetwork';
+import { isMainnet } from '../useNetwork';
 import useTokens from '../useTokens';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
@@ -138,7 +138,6 @@ export default function useSor({
   const { fNum2, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
-  const { networkId } = useNetwork();
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -302,8 +301,7 @@ export default function useSor({
         const outputAmount = await getWrapOutput(
           wrapper,
           wrapType.value,
-          parseFixed(amount, tokenInDecimals),
-          networkId.value
+          parseFixed(amount, tokenInDecimals)
         );
         tokenOutAmountInput.value = formatFixed(outputAmount, tokenInDecimals);
       } else {
@@ -312,8 +310,7 @@ export default function useSor({
         const inputAmount = await getWrapOutput(
           wrapper,
           wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
-          parseFixed(amount, tokenOutDecimals),
-          networkId.value
+          parseFixed(amount, tokenOutDecimals)
         );
         tokenInAmountInput.value = formatFixed(inputAmount, tokenOutDecimals);
       }
@@ -691,10 +688,14 @@ export default function useSor({
    */
   async function adjustedPiAmount(
     amount: BigNumber,
-    address: string
+    address: string,
+    isWrap = true
   ): Promise<BigNumber> {
-    if (isSameAddress(address, appNetworkConfig.addresses.wstETH)) {
-      return getStETHOrWstETH(amount, networkId.value);
+    if (
+      isSameAddress(address, appNetworkConfig.addresses.wstETH) &&
+      isMainnet.value
+    ) {
+      return convertStEthWrap({ amount, isWrap });
     }
     return amount;
   }

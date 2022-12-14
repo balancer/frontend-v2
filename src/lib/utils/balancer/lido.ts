@@ -5,15 +5,16 @@ import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 import { includesAddress } from '..';
-import { Network } from '@balancer-labs/sdk';
 
 const { stETH: stEthAddress, wstETH: wstEthAddress } =
   configService.network.addresses;
 
-const wstEthRateProvidersMap = {
-  [Network.MAINNET]: '0x72d07d7dca67b8a406ad1ec34ce969c90bfee768',
-  [Network.ARBITRUM]: '0xf7c5c26b574063e7b098ed74fad6779e65e3f836',
-  [Network.GOERLI]: '0x80a94f458491ca88f09767e58a92fd23cbf1196f',
+const MAINNET_RATE_PROVIDER_ADDRESS =
+  '0x72d07d7dca67b8a406ad1ec34ce969c90bfee768';
+
+type ConversionParams = {
+  amount: BigNumber;
+  isWrap: boolean; // e.g. is stETH to wstETH
 };
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
@@ -55,23 +56,24 @@ export function getWstETHByStETH(stETHAmount: BigNumberish) {
 }
 
 /**
- * @notice Get amount of stETH for a given amount of wstETH or vice versa
+ * Convert stETH amount to wstETH or vice versa. Only relevant on mainnet when wrapping or unwrapping.
+ *
+ * @param {BigNumber} amount - The amount to convert, could be stETH or wstETH value.
+ * @param {boolean} isWrap - True if wrapping stETH to wstETH, false if unwrapping wstETH to stETH.
+ * @returns Converted value for wrap or unwrap, if input is stETH, returns wstETH value and vice versa.
  */
-export async function getStETHOrWstETH(
-  amount: BigNumber,
-  network: Network,
-  isStEthByWstEth = true
-) {
-  const wstEthRateProvider = new Contract(
-    wstEthRateProvidersMap[network],
-    ['function getRate() external view returns (uint256)'],
-    rpcProviderService.jsonProvider
-  );
+export async function convertStEthWrap({ amount, isWrap }: ConversionParams) {
+  try {
+    const rateProvider = new Contract(
+      MAINNET_RATE_PROVIDER_ADDRESS,
+      ['function getRate() external view returns (uint256)'],
+      rpcProviderService.jsonProvider
+    );
 
-  const rate = await wstEthRateProvider.getRate();
-  amount = isStEthByWstEth
-    ? amount.mul(rate).div(ONE)
-    : amount.mul(ONE).div(rate);
+    const rate = await rateProvider.getRate();
 
-  return amount;
+    return isWrap ? amount.mul(rate).div(ONE) : amount.mul(ONE).div(rate);
+  } catch (error) {
+    throw new Error(`Failed to convert stETH: ${error}`);
+  }
 }
