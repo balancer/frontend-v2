@@ -13,7 +13,6 @@ import MigrateExplainer from './components/MigrateExplainer.vue';
 import PoolsInfo from './components/PoolsInfo/PoolsInfo.vue';
 import PoolStats from './components/PoolStats.vue';
 import { PoolMigrationInfo } from './types';
-import useApp from '@/composables/useApp';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 
 type Props = {
@@ -29,7 +28,6 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken } = useTokens();
-const { appLoading } = useApp();
 
 /**
  * QUERIES
@@ -83,8 +81,7 @@ const toPoolTokenInfo = computed(() =>
         !toPool ||
         fromPoolTokenInfo == null ||
         toPoolTokenInfo == null ||
-        batchRelayerApprovalLoading ||
-        appLoading
+        batchRelayerApprovalLoading
       "
       class="h-96"
     />

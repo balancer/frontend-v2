@@ -39,6 +39,7 @@ vi.mock('@/composables/useApp', () => {
     }),
   };
 });
+
 vi.mock('@/composables/staking/useStaking', () => {
   return {
     default: vi.fn().mockImplementation(() => {
@@ -50,6 +51,7 @@ vi.mock('@/composables/staking/useStaking', () => {
     }),
   };
 });
+
 vi.mock('@/services/web3/useWeb3');
 
 describe('PoolPageHeader', () => {
