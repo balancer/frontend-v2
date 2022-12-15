@@ -1,12 +1,8 @@
 import { inject } from 'vue';
+import { Response, AppProviderSymbol } from '@/providers/app.provider';
 
-import {
-  AppProviderResponse,
-  AppProviderSymbol,
-} from '@/providers/app.provider';
+const providerResponse = {} as Response;
 
-const defaultProviderResponse = {} as AppProviderResponse;
-
-export default function useApp(): AppProviderResponse {
-  return inject(AppProviderSymbol, defaultProviderResponse);
+export default function useApp(): Response {
+  return inject(AppProviderSymbol, providerResponse);
 }

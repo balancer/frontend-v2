@@ -1,35 +1,38 @@
-import { InjectionKey, provide } from 'vue';
-
+import { defineComponent, h, InjectionKey, provide } from 'vue';
 import symbolKeys from '@/constants/symbol.keys';
-
 import { version } from '../../package.json';
 
 /**
- * TYPES
+ * AppProvider
+ *
+ * Highest level provider for global app scope functionality.
  */
-export interface AppProviderResponse {
-  version: string;
-}
+const provider = () => {
+  return {
+    version,
+  };
+};
 
 /**
- * SETUP
+ * Provide setup: response type + symbol.
  */
-export const AppProviderSymbol: InjectionKey<AppProviderResponse> = Symbol(
+export type Response = ReturnType<typeof provider>;
+export const AppProviderSymbol: InjectionKey<Response> = Symbol(
   symbolKeys.Providers.App
 );
 
 /**
- * AppProvider
+ * <AppProvider />
  * Provides global app level properties
  */
-export default {
+export const AppProvider = defineComponent({
   name: 'AppProvider',
 
-  setup(props, { slots }) {
-    provide(AppProviderSymbol, {
-      version,
-    });
-
-    return () => slots.default();
+  setup() {
+    provide(AppProviderSymbol, provider());
   },
-};
+
+  render() {
+    return h('div', this.$slots?.default ? this.$slots.default() : []);
+  },
+});
