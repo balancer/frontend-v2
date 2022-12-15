@@ -1,6 +1,6 @@
 import { getAddress, isAddress } from '@ethersproject/address';
 import { compact, pick } from 'lodash';
-import { computed, onBeforeMount, reactive, toRef, toRefs } from 'vue';
+import { computed, reactive, ref, toRef, toRefs } from 'vue';
 
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
@@ -31,7 +31,6 @@ import {
  * TYPES
  */
 export interface TokensProviderState {
-  loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
   injectedPrices: TokenPrices;
@@ -121,8 +120,6 @@ export function getTokensProvision() {
    * The prices, balances and allowances maps provide dynamic
    * metadata for each token in the tokens state array.
    ****************************************************************/
-  const pricesQueryEnabled = computed(() => !state.loading);
-
   const {
     data: priceData,
     isSuccess: priceQuerySuccess,
@@ -132,7 +129,7 @@ export function getTokensProvision() {
   } = useTokenPricesQuery(
     tokenAddresses,
     toRef(state, 'injectedPrices'),
-    pricesQueryEnabled,
+    ref(true),
     {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
@@ -410,22 +407,6 @@ export function getTokensProvision() {
     }
     return maxAmount;
   }
-
-  /**
-   * LIFECYCLE
-   */
-  onBeforeMount(async () => {
-    const tokensToInject = compact([
-      configService.network.addresses.stETH,
-      configService.network.addresses.wstETH,
-      configService.network.addresses.veBAL,
-      TOKENS.Addresses.BAL,
-      TOKENS.Addresses.wNativeAsset,
-    ]);
-
-    await injectTokens(tokensToInject);
-    state.loading = false;
-  });
 
   return {
     // state

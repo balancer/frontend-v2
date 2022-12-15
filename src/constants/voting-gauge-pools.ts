@@ -290,6 +290,10 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0x76fcf0e8c7ff37a47a799fa2cd4c13cde0d981c90002000000000000000003d2',
     network: Network.MAINNET,
   },
+  {
+    id: '0xc9c5ff67bb2fae526ae2467c359609d6bcb4c5320000000000000000000003cc',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
