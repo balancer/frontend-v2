@@ -205,12 +205,8 @@ const decimalLimit = computed<number>(() => token.value?.decimals || 18);
 /**
  * METHODS
  */
-function handleAmountChange(amount: InputValue, isSetMax = false) {
+function handleAmountChange(amount: InputValue) {
   const safeAmount = overflowProtected(amount, decimalLimit.value);
-  if (isSetMax) {
-    emit('setMax', safeAmount);
-    return;
-  }
   emit('update:amount', safeAmount);
 }
 
@@ -221,7 +217,8 @@ const setMax = () => {
     ? props.customBalance
     : getMaxBalanceFor(_address.value, props.disableNativeAssetBuffer);
 
-  handleAmountChange(maxAmount, true);
+  emit('setMax', maxAmount);
+  handleAmountChange(maxAmount);
 };
 
 /**
