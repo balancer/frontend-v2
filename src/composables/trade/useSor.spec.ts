@@ -12,7 +12,7 @@ jest.mock('vue-i18n');
 jest.mock('vuex');
 jest.mock('@/composables/useEthereumTxType');
 jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useUserSettings');
+jest.mock('@/providers/user-settings.provider');
 jest.mock('@/composables/useTransactions');
 jest.mock('@/lib/utils/balancer/helpers/sor/sorManager');
 jest.mock('@/locales');

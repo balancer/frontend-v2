@@ -17,7 +17,7 @@ const mockTokens = {
 
 const mockDefaultCurrency = FiatCurrency.usd;
 
-jest.mock('@/composables/useUserSettings');
+jest.mock('@/providers/user-settings.provider');
 jest.mock('@/composables/useTokens', () => {
   return jest.fn().mockImplementation(() => {
     return {

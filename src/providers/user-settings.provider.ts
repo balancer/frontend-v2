@@ -2,8 +2,8 @@ import { parseUnits } from '@ethersproject/units';
 import {
   computed,
   ComputedRef,
+  inject,
   InjectionKey,
-  provide,
   reactive,
   Ref,
   toRefs,
@@ -22,21 +22,18 @@ export interface UserSettingsState {
   slippage: string;
 }
 
-export interface UserSettingsProviderResponse {
+export type UserSettingsResponse = {
   currency: Ref<FiatCurrency>;
   slippage: Ref<string>;
   slippageScaled: ComputedRef<string>;
   slippageBsp: ComputedRef<number>;
   setCurrency: (newCurrency: FiatCurrency) => void;
   setSlippage: (newSlippage: string) => void;
-}
+};
 
 /**
  * SETUP
  */
-export const UserSettingsProviderSymbol: InjectionKey<UserSettingsProviderResponse> =
-  Symbol(symbolKeys.Providers.App);
-
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
 const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
 
@@ -69,23 +66,44 @@ function setSlippage(newSlippage: string): void {
   state.slippage = newSlippage;
 }
 
-/**
- * UserSettingsProvider
- * Provides global user settings interface
- */
-export default {
-  name: 'UserSettingsProvider',
-
-  setup(props, { slots }) {
-    provide(UserSettingsProviderSymbol, {
-      ...toRefs(state),
-      // methods
-      setCurrency,
-      setSlippage,
-      slippageScaled,
-      slippageBsp,
-    });
-
-    return () => slots.default();
-  },
+export const userSettingsProvider = () => {
+  return {
+    ...toRefs(state),
+    // methods
+    setCurrency,
+    setSlippage,
+    slippageScaled,
+    slippageBsp,
+  };
 };
+
+export type Response = ReturnType<typeof userSettingsProvider>;
+export const providerResponse = {} as Response;
+export const UserSettingsProviderSymbol: InjectionKey<Response> = Symbol(
+  symbolKeys.Providers.App
+);
+
+export const useUserSettings = (): Response => {
+  return inject(UserSettingsProviderSymbol, providerResponse);
+};
+
+// /**
+//  * UserSettingsProvider
+//  * Provides global user settings interface
+//  */
+// export default {
+//   name: 'UserSettingsProvider',
+
+//   setup(props, { slots }) {
+//     provide(UserSettingsProviderSymbol, {
+//       ...toRefs(state),
+//       // methods
+//       setCurrency,
+//       setSlippage,
+//       slippageScaled,
+//       slippageBsp,
+//     });
+
+//     return () => slots.default();
+//   },
+// };
