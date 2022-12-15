@@ -1,13 +1,5 @@
 import { parseUnits } from '@ethersproject/units';
-import {
-  computed,
-  ComputedRef,
-  inject,
-  InjectionKey,
-  reactive,
-  Ref,
-  toRefs,
-} from 'vue';
+import { computed, inject, InjectionKey, reactive, toRefs } from 'vue';
 
 import { FiatCurrency } from '@/constants/currency';
 import LS_KEYS from '@/constants/local-storage.keys';
@@ -21,15 +13,6 @@ export interface UserSettingsState {
   currency: FiatCurrency;
   slippage: string;
 }
-
-export type UserSettingsResponse = {
-  currency: Ref<FiatCurrency>;
-  slippage: Ref<string>;
-  slippageScaled: ComputedRef<string>;
-  slippageBsp: ComputedRef<number>;
-  setCurrency: (newCurrency: FiatCurrency) => void;
-  setSlippage: (newSlippage: string) => void;
-};
 
 /**
  * SETUP
@@ -86,24 +69,3 @@ export const UserSettingsProviderSymbol: InjectionKey<Response> = Symbol(
 export const useUserSettings = (): Response => {
   return inject(UserSettingsProviderSymbol, providerResponse);
 };
-
-// /**
-//  * UserSettingsProvider
-//  * Provides global user settings interface
-//  */
-// export default {
-//   name: 'UserSettingsProvider',
-
-//   setup(props, { slots }) {
-//     provide(UserSettingsProviderSymbol, {
-//       ...toRefs(state),
-//       // methods
-//       setCurrency,
-//       setSlippage,
-//       slippageScaled,
-//       slippageBsp,
-//     });
-
-//     return () => slots.default();
-//   },
-// };
