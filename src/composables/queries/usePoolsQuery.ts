@@ -1,12 +1,11 @@
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { computed, reactive, Ref, ref, watch } from 'vue';
+import { reactive, Ref, ref, watch } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { Pool } from '@/services/pool/types';
 
-import useApp from '../useApp';
 import useNetwork from '../useNetwork';
 import useTokens from '../useTokens';
 import { configService } from '@/services/config/config.service';
@@ -44,17 +43,11 @@ export default function usePoolsQuery(
    * COMPOSABLES
    */
   const { injectTokens, tokens: tokenMeta, dynamicDataLoading } = useTokens();
-  const { appLoading } = useApp();
   const { networkId } = useNetwork();
 
   let balancerApiRepository = initializeDecoratedAPIRepository();
   let subgraphRepository = initializeDecoratedSubgraphRepository();
   let poolsRepository = initializePoolsRepository();
-
-  /**
-   * COMPUTED
-   */
-  const enabled = computed(() => !appLoading.value);
 
   /**
    * METHODS
@@ -208,7 +201,6 @@ export default function usePoolsQuery(
   const queryOptions = reactive({
     ...options,
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
-    enabled,
   });
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
