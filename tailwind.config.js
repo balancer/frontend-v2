@@ -8,11 +8,7 @@ module.exports = {
     // https://tailwindcss.com/docs/content-configuration#safelisting-classes
     // https://github.com/tailwindlabs/tailwindcss/discussions/10079
     {
-      pattern: /bg-[^/]+$/,
-      variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
-    },
-    {
-      pattern: /border-[^/]+$/,
+      pattern: /(bg|border)-[^/]+$/,
       variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
     },
     { pattern: /^text/ },
