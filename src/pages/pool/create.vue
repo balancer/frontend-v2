@@ -275,121 +275,123 @@ onMounted(() => {
 </script>
 
 <template>
-  <Col3Layout offsetGutters mobileHideGutters class="mt-8">
-    <template #gutterLeft>
-      <div v-if="!upToLargeBreakpoint" class="col-span-3">
-        <BalStack vertical>
-          <BalVerticalSteps
-            title="Create a weighted pool steps"
-            :steps="steps"
-            @navigate="handleNavigate"
-          />
-          <AnimatePresence
-            :isVisible="
-              doSimilarPoolsExist && activeStep === 0 && !!validTokens.length
-            "
+  <div>
+    <Col3Layout offsetGutters mobileHideGutters class="mt-8">
+      <template #gutterLeft>
+        <div v-if="!upToLargeBreakpoint" class="col-span-3">
+          <BalStack vertical>
+            <BalVerticalSteps
+              title="Create a weighted pool steps"
+              :steps="steps"
+              @navigate="handleNavigate"
+            />
+            <AnimatePresence
+              :isVisible="
+                doSimilarPoolsExist && activeStep === 0 && !!validTokens.length
+              "
+            >
+              <SimilarPoolsCompact />
+            </AnimatePresence>
+          </BalStack>
+        </div>
+      </template>
+      <div class="relative center-col-mh">
+        <AnimatePresence
+          :isVisible="!!hasRestoredFromSavedState"
+          unmountInstantly
+        >
+          <BalAlert
+            type="warning"
+            class="mb-4"
+            :title="$t('createAPool.recoveredState')"
           >
-            <SimilarPoolsCompact />
-          </AnimatePresence>
-        </BalStack>
-      </div>
-    </template>
-    <div class="relative center-col-mh">
-      <AnimatePresence
-        :isVisible="!!hasRestoredFromSavedState"
-        unmountInstantly
-      >
-        <BalAlert
-          type="warning"
-          class="mb-4"
-          :title="$t('createAPool.recoveredState')"
-        >
-          {{ $t('createAPool.recoveredStateInfo') }}
+            {{ $t('createAPool.recoveredStateInfo') }}
 
-          {{ $t('wantToStartOverInstead') }}
-          <button class="font-semibold text-blue-500" @click="handleReset">
-            {{ $t('clearForms') }}
-          </button>
-        </BalAlert>
-      </AnimatePresence>
-      <AnimatePresence :isVisible="isLoading" unmountInstantly>
-        <BalLoadingBlock class="h-64" />
-      </AnimatePresence>
-      <AnimatePresence
-        :isVisible="activeStep === 0 && !hasRestoredFromSavedState"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-      >
-        <ChooseWeights @update:height="setWrapperHeight" />
-      </AnimatePresence>
-      <AnimatePresence
-        :isVisible="activeStep === 1"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
-      >
-        <PoolFees @update:height="setWrapperHeight" />
-      </AnimatePresence>
-      <AnimatePresence
-        :isVisible="activeStep === 2 && similarPools.length > 0"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
-      >
-        <SimilarPools />
-      </AnimatePresence>
-      <AnimatePresence
-        :isVisible="!isLoading && activeStep === 3"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
-      >
-        <InitialLiquidity @update:height="setWrapperHeight" />
-      </AnimatePresence>
-      <AnimatePresence
-        :isVisible="activeStep === 4 && !dynamicDataLoading"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
-      >
-        <PreviewPool />
-      </AnimatePresence>
-      <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
-        <BalAccordion
-          :dependencies="validTokens"
-          :sections="[
-            { title: t('createAPool.poolSummary'), id: 'pool-summary' },
-            { title: t('tokenPrices'), id: 'token-prices' },
-          ]"
+            {{ $t('wantToStartOverInstead') }}
+            <button class="font-semibold text-blue-500" @click="handleReset">
+              {{ $t('clearForms') }}
+            </button>
+          </BalAlert>
+        </AnimatePresence>
+        <AnimatePresence :isVisible="isLoading" unmountInstantly>
+          <BalLoadingBlock class="h-64" />
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="activeStep === 0 && !hasRestoredFromSavedState"
+          :initial="initialAnimateProps"
+          :animate="entryAnimateProps"
+          :exit="exitAnimateProps"
         >
-          <template #pool-summary>
+          <ChooseWeights @update:height="setWrapperHeight" />
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="activeStep === 1"
+          :initial="initialAnimateProps"
+          :animate="entryAnimateProps"
+          :exit="exitAnimateProps"
+          @update-dimensions="setWrapperHeight"
+        >
+          <PoolFees @update:height="setWrapperHeight" />
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="activeStep === 2 && similarPools.length > 0"
+          :initial="initialAnimateProps"
+          :animate="entryAnimateProps"
+          :exit="exitAnimateProps"
+          @update-dimensions="setWrapperHeight"
+        >
+          <SimilarPools />
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="!isLoading && activeStep === 3"
+          :initial="initialAnimateProps"
+          :animate="entryAnimateProps"
+          :exit="exitAnimateProps"
+          @update-dimensions="setWrapperHeight"
+        >
+          <InitialLiquidity @update:height="setWrapperHeight" />
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="activeStep === 4 && !dynamicDataLoading"
+          :initial="initialAnimateProps"
+          :animate="entryAnimateProps"
+          :exit="exitAnimateProps"
+          @update-dimensions="setWrapperHeight"
+        >
+          <PreviewPool />
+        </AnimatePresence>
+        <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
+          <BalAccordion
+            :dependencies="validTokens"
+            :sections="[
+              { title: t('createAPool.poolSummary'), id: 'pool-summary' },
+              { title: t('tokenPrices'), id: 'token-prices' },
+            ]"
+          >
+            <template #pool-summary>
+              <PoolSummary />
+            </template>
+            <template #token-prices>
+              <TokenPrices />
+            </template>
+          </BalAccordion>
+        </div>
+      </div>
+      <template #gutterRight>
+        <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
+          <BalStack vertical spacing="base">
             <PoolSummary />
-          </template>
-          <template #token-prices>
-            <TokenPrices />
-          </template>
-        </BalAccordion>
-      </div>
-    </div>
-    <template #gutterRight>
-      <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
-        <BalStack vertical spacing="base">
-          <PoolSummary />
-          <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
-        </BalStack>
-      </div>
-    </template>
-  </Col3Layout>
-  <UnknownTokenPriceModal
-    :isVisible="isUnknownTokenModalVisible"
-    :unknownTokens="unknownTokens"
-    @close="handleUnknownModalClose"
-  />
+            <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
+          </BalStack>
+        </div>
+      </template>
+    </Col3Layout>
+    <UnknownTokenPriceModal
+      :isVisible="isUnknownTokenModalVisible"
+      :unknownTokens="unknownTokens"
+      @close="handleUnknownModalClose"
+    />
+  </div>
 </template>
 
 <style scoped>

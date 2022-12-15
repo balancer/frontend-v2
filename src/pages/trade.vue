@@ -41,51 +41,53 @@ onMounted(() => {
 </script>
 
 <template>
-  <Col3Layout offsetGutters mobileHideGutters class="mt-8">
-    <template #gutterLeft>
-      <MyWallet />
-    </template>
+  <div>
+    <Col3Layout offsetGutters mobileHideGutters class="mt-8">
+      <template #gutterLeft>
+        <MyWallet />
+      </template>
 
-    <TradeCard />
-    <div class="p-4 sm:p-0 lg:p-0 mt-8">
-      <BalAccordion
-        v-if="upToLargeBreakpoint"
-        class="w-full"
-        :sections="[
-          { title: 'My wallet', id: 'my-wallet' },
-          { title: 'Price chart', id: 'price-chart' },
-          { title: 'Bridge assets', id: 'bridge' },
-        ]"
-      >
-        <template #my-wallet>
-          <MyWallet />
-        </template>
-        <template #price-chart>
-          <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
-        </template>
-        <template #bridge>
-          <BridgeLink v-if="isL2" />
-        </template>
-      </BalAccordion>
-    </div>
-
-    <template #gutterRight>
-      <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
-      <BridgeLink v-if="isL2" class="mt-4" />
-    </template>
-  </Col3Layout>
-
-  <teleport to="#modal">
-    <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
-      <div class="graph-modal">
-        <PairPriceGraph
-          :toggleModal="togglePairPriceGraphModal"
-          isModal
-          :onCloseModal="onPriceGraphModalClose"
-        />
+      <TradeCard />
+      <div class="p-4 sm:p-0 lg:p-0 mt-8">
+        <BalAccordion
+          v-if="upToLargeBreakpoint"
+          class="w-full"
+          :sections="[
+            { title: 'My wallet', id: 'my-wallet' },
+            { title: 'Price chart', id: 'price-chart' },
+            { title: 'Bridge assets', id: 'bridge' },
+          ]"
+        >
+          <template #my-wallet>
+            <MyWallet />
+          </template>
+          <template #price-chart>
+            <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+          </template>
+          <template #bridge>
+            <BridgeLink v-if="isL2" />
+          </template>
+        </BalAccordion>
       </div>
-    </BalModal>
-  </teleport>
+
+      <template #gutterRight>
+        <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+        <BridgeLink v-if="isL2" class="mt-4" />
+      </template>
+    </Col3Layout>
+
+    <teleport to="#modal">
+      <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
+        <div class="graph-modal">
+          <PairPriceGraph
+            :toggleModal="togglePairPriceGraphModal"
+            isModal
+            :onCloseModal="onPriceGraphModalClose"
+          />
+        </div>
+      </BalModal>
+    </teleport>
+  </div>
 </template>
 
 <style scoped>
