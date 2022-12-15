@@ -108,7 +108,7 @@ const poolsToRender = computed(() => {
   return uniqBy([...nonMigratableUserPools, ...stakablePools], pool => pool.id);
 });
 
-const hiddenColumns = ['poolVolume', 'poolValue', 'migrate', 'lockEndDate'];
+const hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
 
 /** METHODS */
 function handleStake(pool: Pool) {
@@ -143,6 +143,7 @@ function handleModalClose() {
         :isLoading="isLoadingUserStakingData || isLoadingUserPools"
         :data="poolsToRender"
         :noPoolsLabel="noPoolsLabel"
+        sortColumn="myBalance"
         :hiddenColumns="hiddenColumns"
         showPoolShares
         @trigger-stake="handleStake"
