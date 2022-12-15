@@ -96,7 +96,6 @@ const rateLabel = computed(() => {
  * METHODS
  */
 function handleInAmountChange(value: string): void {
-  console.log('In amount change', value);
   emit('update:tokenInAmount', value);
   emit('amountChange');
 }
