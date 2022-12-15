@@ -179,7 +179,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
 
       return isFinite(apr) ? apr : 0;
     },
-    width: 250,
+    width: 220,
   },
   {
     name: t('expiryDate'),
