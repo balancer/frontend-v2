@@ -1,6 +1,6 @@
 # Balancer Frontend App (v2)
 
-Frontend Vue app for Balancer exchange and pool management.
+Official frontend app for the Balancer protocol (v2).
 
 ## Development
 
