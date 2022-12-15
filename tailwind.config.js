@@ -4,22 +4,16 @@ module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
 
   safelist: [
-    // https://tailwindcss.com/docs/content-configuration#safelisting-classes
-    // https://github.com/tailwindlabs/tailwindcss/discussions/7908
     { pattern: /^shadow/ },
-    // 'dark:hover:border-blue-600',
-    // The following pattern is not working.
+    // https://tailwindcss.com/docs/content-configuration#safelisting-classes
+    // https://github.com/tailwindlabs/tailwindcss/discussions/10079
     {
-      pattern: /border-blue-600/,
-      variants: ['dark', 'hover', 'focus'],
-    },
-    {
-      pattern: /^bg-[^/]+$/,
-      variants: ['dark', 'hover', 'focus'],
+      pattern: /bg-[^/]+$/,
+      variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
     },
     {
       pattern: /border-[^/]+$/,
-      variants: ['dark', 'hover', 'focus'],
+      variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
     },
     { pattern: /^text/ },
     { pattern: /^from/ },
