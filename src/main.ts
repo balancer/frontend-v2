@@ -2,7 +2,7 @@ import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
-import { BarChart, LineChart } from 'echarts/charts';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
 import {
   GridComponent,
   LegendComponent,
@@ -32,6 +32,7 @@ echarts.use([
   GridComponent,
   LegendComponent,
   BarChart,
+  PieChart,
 ]);
 
 const app = createApp(Root)

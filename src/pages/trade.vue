@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted, ref } from 'vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
-import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -19,14 +17,8 @@ const showPriceGraphModal = ref(false);
 /**
  * COMPOSABLES
  */
-const store = useStore();
 const { setSelectedTokens } = usePoolFilters();
 const { upToLargeBreakpoint } = useBreakpoints();
-
-/**
- * COMPUTED
- */
-const appLoading = computed(() => store.state.app.loading);
 
 /**
  * METHODS
@@ -53,29 +45,21 @@ onMounted(() => {
     <Col3Layout offsetGutters mobileHideGutters class="mt-8">
       <template #gutterLeft>
         <MyWallet />
-        <TrendingPairs class="mt-4" />
       </template>
 
-      <BalLoadingBlock v-if="appLoading" class="h-96" />
-      <template v-else>
-        <TradeCard />
-      </template>
+      <TradeCard />
       <div class="p-4 sm:p-0 lg:p-0 mt-8">
         <BalAccordion
           v-if="upToLargeBreakpoint"
           class="w-full"
           :sections="[
             { title: 'My wallet', id: 'my-wallet' },
-            { title: 'Trending pairs', id: 'trending-pairs' },
             { title: 'Price chart', id: 'price-chart' },
             { title: 'Bridge assets', id: 'bridge' },
           ]"
         >
           <template #my-wallet>
             <MyWallet />
-          </template>
-          <template #trending-pairs>
-            <TrendingPairs />
           </template>
           <template #price-chart>
             <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />

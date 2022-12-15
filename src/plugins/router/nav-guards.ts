@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import {
   getRedirectUrlFor,
   handleNetworkSlug,
@@ -6,9 +7,13 @@ import {
 } from '@/composables/useNetwork';
 import { isJoinsDisabled } from '@/composables/usePool';
 import config from '@/lib/config';
-import { setWindowLocation } from '@/lib/utils/browser';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
+
+/**
+ * State
+ */
+const redirecting = ref(false);
 
 /**
  * Navigation guards
@@ -27,9 +32,11 @@ export function applyNavGuards(router: Router): Router {
  * @param {string} url - URL to redirect to.
  * @param {Router} router - vue-router.
  */
-function hardRedirectTo(url: string) {
+export function hardRedirectTo(url: string) {
+  redirecting.value = true;
   document.body.style.display = 'none';
-  setWindowLocation(url);
+  window.location.href = url;
+  location.reload();
 }
 
 /**
@@ -69,35 +76,39 @@ function applyNetworkSubdomainRedirect(router: Router): Router {
  */
 function applyNetworkPathRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
-    const networkSlugFromUrl = to.params.networkSlug?.toString() ?? '';
-    const networkFromPath = networkFromSlug(networkSlugFromUrl);
-
-    if (networkFromPath) {
-      const noNetworkChangeCallback = () => next();
-      const networkChangeCallback = () => {
-        hardRedirectTo(`/#${to.fullPath}`);
-      };
-
-      handleNetworkSlug(
-        networkSlugFromUrl,
-        noNetworkChangeCallback,
-        networkChangeCallback
-      );
+    if (redirecting.value) {
+      next();
     } else {
-      const nonNetworkedRoutes = [
-        '/',
-        '/terms-of-use',
-        '/privacy-policy',
-        '/cookies-policy',
-      ];
-      if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
-        const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
-        const newNetwork = newPath.includes('/pool')
-          ? config[Network.MAINNET].slug
-          : networkSlug;
-        router.push({ path: `/${newNetwork}${newPath}` });
+      const networkSlugFromUrl = to.params.networkSlug?.toString() ?? '';
+      const networkFromPath = networkFromSlug(networkSlugFromUrl);
+
+      if (networkFromPath) {
+        const noNetworkChangeCallback = () => next();
+        const networkChangeCallback = () => {
+          hardRedirectTo(`/#${to.fullPath}`);
+        };
+
+        handleNetworkSlug(
+          networkSlugFromUrl,
+          noNetworkChangeCallback,
+          networkChangeCallback
+        );
       } else {
-        next();
+        const nonNetworkedRoutes = [
+          '/',
+          '/terms-of-use',
+          '/privacy-policy',
+          '/cookies-policy',
+        ];
+        if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
+          const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
+          const newNetwork = newPath.includes('/pool')
+            ? config[Network.MAINNET].slug
+            : networkSlug;
+          router.push({ path: `/${newNetwork}${newPath}` });
+        } else {
+          next();
+        }
       }
     }
   });
