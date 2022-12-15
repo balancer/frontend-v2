@@ -22,8 +22,7 @@ import initSentry from '@/plugins/sentry';
 import vueQuery from '@/plugins/vueQuery';
 import Web3Plugin from '@/services/web3/web3.plugin';
 import store from '@/store';
-
-import Root from './Root';
+import App from './App.vue';
 
 echarts.use([
   TooltipComponent,
@@ -35,7 +34,7 @@ echarts.use([
   PieChart,
 ]);
 
-const app = createApp(Root)
+const app = createApp(App)
   .use(i18n)
   .use(router)
   .use(store)

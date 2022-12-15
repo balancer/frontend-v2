@@ -1,12 +1,5 @@
-import { inject } from 'vue';
+import { getUserSettingsProvision } from '@/providers/user-settings.provider';
 
-import {
-  UserSettingsProviderResponse,
-  UserSettingsProviderSymbol,
-} from '@/providers/user-settings.provider';
-
-const defaultProviderResponse = {} as UserSettingsProviderResponse;
-
-export default function useUserSettings(): UserSettingsProviderResponse {
-  return inject(UserSettingsProviderSymbol, defaultProviderResponse);
+export default function useUserSettings() {
+  return getUserSettingsProvision();
 }

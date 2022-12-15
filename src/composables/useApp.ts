@@ -1,12 +1,26 @@
-import { inject } from 'vue';
+import { computed, ComputedRef } from 'vue';
+import { useStore } from 'vuex';
+import { version } from '../../package.json';
+import useTokens from './useTokens';
 
-import {
-  AppProviderResponse,
-  AppProviderSymbol,
-} from '@/providers/app.provider';
+export interface AppProviderResponse {
+  version: string;
+  appLoading: ComputedRef<boolean>;
+}
 
-const defaultProviderResponse = {} as AppProviderResponse;
+export default function useApp() {
+  return getAppProvision();
+}
 
-export default function useApp(): AppProviderResponse {
-  return inject(AppProviderSymbol, defaultProviderResponse);
+function getAppProvision() {
+  const store = useStore();
+  const { loading: loadingTokens } = useTokens();
+  const appLoading = computed(
+    () => store.state.app.loading || loadingTokens.value
+  );
+  return {
+    version,
+    // computed
+    appLoading,
+  };
 }

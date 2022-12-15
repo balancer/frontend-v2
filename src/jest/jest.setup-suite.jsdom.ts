@@ -18,6 +18,7 @@ import CompositionIcon from '@/components/_global/icons/CompositionIcon.vue';
 import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 import StarsIcon from '@/components/_global/icons/StarsIcon.vue';
 import translations from '@/locales/default.json';
+import { QueryClient } from 'vue-query';
 
 const i18n = createI18n({
   locale: 'en-US',
@@ -56,4 +57,8 @@ config.global.components = {
   CompositionIcon,
   NetworkIcon,
   StarsIcon,
+};
+
+config.global.provide = {
+  VUE_QUERY_CLIENT: new QueryClient(),
 };

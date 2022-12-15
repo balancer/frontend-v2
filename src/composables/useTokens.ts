@@ -1,16 +1,9 @@
-import { inject } from 'vue';
-
-import {
-  TokensProviderResponse,
-  TokensProviderSymbol,
-} from '@/providers/tokens.provider';
-
-const defaultProviderResponse = {} as TokensProviderResponse;
+import { getTokensProvision } from '@/providers/tokens.provider';
 
 /**
  * useTokens Composable
- * Interface to all token static and dynamic metatdata.
+ * Interface to all token static and dynamic metadata.
  */
-export default function useTokens(): TokensProviderResponse {
-  return inject(TokensProviderSymbol, defaultProviderResponse);
+export default function useTokens() {
+  return getTokensProvision();
 }

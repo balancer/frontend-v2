@@ -27,7 +27,8 @@ function setBlockNumber(n: number): void {
 }
 
 /** INIT STATE */
-rpcProviderService.initBlockListener(setBlockNumber);
+if (process.env.NODE_ENV !== 'test')
+  rpcProviderService.initBlockListener(setBlockNumber);
 
 const toggleWalletSelectModal = (value?: boolean) => {
   isWalletSelectVisible.value = value ?? !isWalletSelectVisible.value;
