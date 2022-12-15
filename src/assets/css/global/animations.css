@@ -96,21 +96,19 @@
 }
 
 .appear-enter-active {
-  transition: all 0.5s ease-out;
+  @apply transition-all duration-300 ease-out;
 }
 
 .appear-enter-to,
 .appear-leave-from {
-  opacity: 1;
-  transform: translateY(0);
+  @apply opacity-100;
 }
 
 .appear-enter-from,
 .appear-leave-to {
-  opacity: 0;
-  transform: translateY(200px);
+  @apply opacity-0;
 }
 
 .appear-leave-active {
-  transition: all 0.2s ease-in;
+  @apply transition-all duration-200 ease-in;
 }
