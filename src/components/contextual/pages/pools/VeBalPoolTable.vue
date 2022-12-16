@@ -38,13 +38,7 @@ const lockPools = computed<PoolWithShares[]>(() => {
 
 const poolsToRenderKey = computed(() => JSON.stringify(lockPools.value));
 
-const hiddenColumns = [
-  'poolVolume',
-  'poolValue',
-  'migrate',
-  'actions',
-  'myBoost',
-];
+const hiddenColumns = ['poolVolume', 'migrate', 'actions', 'myBoost'];
 </script>
 
 <template>
@@ -57,6 +51,7 @@ const hiddenColumns = [
         :key="poolsToRenderKey"
         :data="lockPools"
         :hiddenColumns="hiddenColumns"
+        sortColumn="myBalance"
         showPoolShares
       />
     </BalStack>
