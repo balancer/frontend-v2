@@ -40,8 +40,16 @@ function formSwapFeesHint(owner: string): string {
  * COMPUTED
  */
 const data = computed(() => {
-  const { poolType, address, symbol, owner, createTime, swapFee, name } =
-    props.pool;
+  const {
+    poolType,
+    address,
+    symbol,
+    owner,
+    createTime,
+    swapFee,
+    name,
+    onchain,
+  } = props.pool;
 
   return [
     {
@@ -54,15 +62,21 @@ const data = computed(() => {
     },
     {
       title: t('poolSymbol'),
-      value: symbol,
+      value: symbol || '',
     },
     {
       title: t('poolType'),
       value: poolType,
     },
+    onchain?.amp && Number(onchain?.amp)
+      ? {
+          title: t('ampFactor.title'),
+          value: onchain.amp,
+        }
+      : null,
     {
       title: t('swapFees'),
-      value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner)})`,
+      value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner || '')})`,
     },
     {
       title: t('poolManager'),
@@ -70,7 +84,7 @@ const data = computed(() => {
     },
     {
       title: t('poolOwner'),
-      value: shortenLabel(owner),
+      value: shortenLabel(owner || ''),
       link: explorer.addressLink(owner || ''),
     },
     {
@@ -80,7 +94,7 @@ const data = computed(() => {
     },
     {
       title: t('createDate'),
-      value: format(createTime * 1000, 'dd MMMM yyyy'),
+      value: format((createTime || 0) * 1000, 'dd MMMM yyyy'),
     },
   ];
 });

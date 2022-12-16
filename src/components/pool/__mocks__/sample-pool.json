@@ -1,0 +1,88 @@
+{
+  "id": "0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367",
+  "address": "0x0fd5663d4893ae0d579d580584806aadd2dd0b8b",
+  "poolType": "Weighted",
+  "swapFee": "0.0025",
+  "tokensList": [
+    "0xae78736cd615f374d3085123a210448e74fc6393",
+    "0xd33526068d116ce69f19a9ee46f0bd304f21a51f"
+  ],
+  "totalLiquidity": "7635375.168098480903630585",
+  "totalSwapVolume": "5378186.370543246416296654195543031",
+  "totalSwapFee": "13445.4659263581160407416354888576",
+  "totalShares": "40816.716255823755449262",
+  "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+  "factory": "0xcc508a455f5b0073973107db6a878ddbdab957bc",
+  "amp": null,
+  "createTime": 1662739812,
+  "swapEnabled": true,
+  "symbol": "50rETH-50RPL",
+  "name": "Balancer 50rETH-50RPL",
+  "priceRateProviders": [
+    {
+      "address": "0x1a8f81c256aee9c640e14bb0453ce247ea0dfe6f",
+      "token": {
+        "address": "0xae78736cd615f374d3085123a210448e74fc6393"
+      }
+    },
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "token": {
+        "address": "0xd33526068d116ce69f19a9ee46f0bd304f21a51f"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "address": "0xae78736cd615f374d3085123a210448e74fc6393",
+      "balance": "2301.022202133829511296",
+      "weight": "0.5",
+      "priceRate": "1",
+      "symbol": "rETH",
+      "decimals": 18,
+      "token": {
+        "pool": null
+      }
+    },
+    {
+      "address": "0xd33526068d116ce69f19a9ee46f0bd304f21a51f",
+      "balance": "180834.421772376003963305",
+      "weight": "0.5",
+      "priceRate": "1",
+      "symbol": "RPL",
+      "decimals": 18,
+      "token": {
+        "pool": null
+      }
+    }
+  ],
+  "isNew": false,
+  "unwrappedTokens": [],
+  "onchain": {
+    "tokens": {
+      "0xae78736cd615f374d3085123a210448e74fc6393": {
+        "decimals": 18,
+        "balance": "2301.022202133829511296",
+        "weight": 0.5,
+        "symbol": "rETH",
+        "name": "Rocket Pool ETH",
+        "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xae78736cd615f374d3085123a210448e74fc6393.png"
+      },
+      "0xd33526068d116ce69f19a9ee46f0bd304f21a51f": {
+        "decimals": 18,
+        "balance": "180834.421772376003963305",
+        "weight": 0.5,
+        "symbol": "RPL",
+        "name": "Rocket Pool Protocol",
+        "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xd33526068d116ce69f19a9ee46f0bd304f21a51f.png"
+      }
+    },
+    "amp": "0",
+    "swapEnabled": true,
+    "totalSupply": "40816.716255823755449262",
+    "decimals": 18,
+    "swapFee": "0.0025"
+  },
+  "feesSnapshot": "106.24769601533122011925673780963",
+  "volumeSnapshot": "42499.078406132488047702695123848"
+}

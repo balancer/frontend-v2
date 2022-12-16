@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watchEffect, Ref } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import i18n from '@/plugins/i18n';
@@ -9,6 +9,7 @@ import useNetwork from '@/composables/useNetwork';
 import useNotifications from '@/composables/useNotifications';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+import { hardRedirectTo } from '@/plugins/router/nav-guards';
 
 export interface NetworkOption {
   id: string;
@@ -54,7 +55,6 @@ const networksDev = ref([
     key: '5',
   },
 ]);
-const previousNetwork: Ref<number | null> = ref(null);
 
 // COMPUTED
 const allNetworks = computed(() => {
@@ -93,23 +93,21 @@ onMounted(async () => {
 });
 
 // WATCHERS
-watchEffect(() => {
+watch(chainId, (newChainId, oldChainId) => {
   if (
-    chainId.value &&
-    previousNetwork.value &&
-    previousNetwork.value !== chainId.value
+    newChainId &&
+    oldChainId &&
+    oldChainId !== newChainId &&
+    networkId.value !== newChainId
   ) {
     const newNetwork = allNetworks.value.find(
-      n => Number(n.key) === chainId.value
+      n => Number(n.key) === newChainId
     );
     if (newNetwork) {
-      document.write('');
-      localStorage.setItem('networkId', chainId.value.toString());
-      window.location.href = getNetworkChangeUrl(newNetwork);
-      router.go(0);
+      localStorage.setItem('networkId', newChainId.toString());
+      hardRedirectTo(getNetworkChangeUrl(newNetwork));
     }
   }
-  previousNetwork.value = chainId.value;
 });
 
 // METHODS

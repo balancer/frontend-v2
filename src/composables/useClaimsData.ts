@@ -2,7 +2,6 @@ import { computed, reactive } from 'vue';
 
 import { Gauge } from '@/services/balancer/gauges/types';
 import { PoolToken } from '@/services/pool/types';
-import { PoolType } from '@/services/pool/types';
 
 import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
@@ -11,8 +10,9 @@ import useProtocolRewardsQuery, {
   ProtocolRewardsQueryResponse,
 } from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
-import { isKovan, isL2 } from './useNetwork';
+import { isGoerli, isL2 } from './useNetwork';
 import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
+import { PoolType } from '@balancer-labs/sdk';
 
 export type GaugePool = {
   id: string;
@@ -80,7 +80,7 @@ export function useClaimsData() {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(gaugePoolQuery) ||
-      (!isL2.value && !isKovan.value && isQueryLoading(protocolRewardsQuery))
+      (!isL2.value && !isGoerli.value && isQueryLoading(protocolRewardsQuery))
   );
 
   return {

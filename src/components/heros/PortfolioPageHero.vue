@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import AppHero from '@/components/heros/AppHero.vue';
-import usePools from '@/composables/pools/usePools';
+import useUserPools from '@/composables/pools/useUserPools';
 import useStaking from '@/composables/staking/useStaking';
 import { useLock } from '@/composables/useLock';
 import useNetwork, { isL2 } from '@/composables/useNetwork';
@@ -19,7 +19,7 @@ import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
 const router = useRouter();
 const { fNum2 } = useNumbers();
 const { isWalletReady, isWalletConnecting } = useWeb3();
-const { totalInvestedAmount, isLoadingUserPools } = usePools();
+const { totalInvestedAmount, isLoadingUserPools } = useUserPools();
 const { lockFiatValue, isLoadingLock } = useLock();
 const { networkSlug } = useNetwork();
 const {
@@ -72,7 +72,7 @@ const isLoadingTotalValue = computed(
   <AppHero :class="classes">
     <h1
       class="mb-2 font-body text-base font-medium text-white opacity-90"
-      v-text="$t('myBalancerInvestments')"
+      v-text="$t('myBalancerBalance')"
     />
 
     <template v-if="isWalletReady || isWalletConnecting">

@@ -4,9 +4,9 @@ import {
   computed,
   ComputedRef,
   InjectionKey,
-  onBeforeMount,
   provide,
   reactive,
+  ref,
   Ref,
   toRef,
   toRefs,
@@ -42,14 +42,12 @@ import {
  * TYPES
  */
 export interface TokensProviderState {
-  loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
   injectedPrices: TokenPrices;
 }
 
 export interface TokensProviderResponse {
-  loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
   injectedPrices: Ref<TokenPrices>;
@@ -73,8 +71,11 @@ export interface TokensProviderResponse {
   injectTokens: (addresses: string[]) => Promise<void>;
   searchTokens: (
     query: string,
-    excluded: string[],
-    disableInjection?: boolean
+    opts: {
+      excluded?: string[];
+      disableInjection?: boolean;
+      subset?: string[];
+    }
   ) => Promise<TokenInfoMap>;
   hasBalance: (address: string) => boolean;
   approvalRequired: (
@@ -92,6 +93,10 @@ export interface TokensProviderResponse {
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
   injectPrices: (pricesToInject: TokenPrices) => void;
+  getMaxBalanceFor: (
+    tokenAddress,
+    disableNativeAssetBuffer?: boolean
+  ) => string;
 }
 
 /**
@@ -125,7 +130,6 @@ export default {
     };
 
     const state: TokensProviderState = reactive({
-      loading: true,
       injectedTokens: {
         [networkConfig.nativeAsset.address]: nativeAsset,
       },
@@ -198,9 +202,15 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices,
-    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
-      keepPreviousData: true,
-    });
+    } = useTokenPricesQuery(
+      tokenAddresses,
+      toRef(state, 'injectedPrices'),
+      ref(true),
+      {
+        keepPreviousData: true,
+        refetchOnWindowFocus: false,
+      }
+    );
 
     const {
       data: balanceData,
@@ -273,7 +283,10 @@ export default {
      * tokens into state tokens map.
      */
     async function injectTokens(addresses: string[]): Promise<void> {
-      addresses = addresses.map(getAddressFromPoolId).map(getAddress);
+      addresses = addresses
+        .filter(a => a)
+        .map(getAddressFromPoolId)
+        .map(getAddress);
 
       // Remove any duplicates
       addresses = [...new Set(addresses)];
@@ -300,16 +313,23 @@ export default {
      */
     async function searchTokens(
       query: string,
-      excluded: string[] = [],
-      disableInjection = false
+      {
+        excluded = [],
+        disableInjection = false,
+        subset = [],
+      }: { excluded?: string[]; disableInjection?: boolean; subset?: string[] }
     ): Promise<TokenInfoMap> {
-      if (!query) return removeExcluded(tokens.value, excluded);
+      let tokensToSearch = subset.length > 0 ? getTokens(subset) : tokens.value;
+      if (!query) return removeExcluded(tokensToSearch, excluded);
+
+      tokensToSearch =
+        subset.length > 0 ? tokensToSearch : allTokenListTokens.value;
 
       const potentialAddress = getAddressFromPoolId(query);
 
       if (isAddress(potentialAddress)) {
         const address = getAddress(potentialAddress);
-        const token = allTokenListTokens.value[address];
+        const token = tokensToSearch[address];
         if (token) {
           return { [address]: token };
         } else {
@@ -321,7 +341,7 @@ export default {
           }
         }
       } else {
-        const tokensArray = Object.entries(allTokenListTokens.value);
+        const tokensArray = Object.entries(tokensToSearch);
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -441,20 +461,28 @@ export default {
     }
 
     /**
-     * LIFECYCLE
+     * Get max balance of token
+     * @param tokenAddress
+     * @param disableNativeAssetBuffer Optionally disable native asset buffer
      */
-    onBeforeMount(async () => {
-      const tokensToInject = compact([
-        configService.network.addresses.stETH,
-        configService.network.addresses.wstETH,
-        configService.network.addresses.veBAL,
-        TOKENS.Addresses.BAL,
-        TOKENS.Addresses.wNativeAsset,
-      ]);
+    function getMaxBalanceFor(
+      tokenAddress,
+      disableNativeAssetBuffer = false
+    ): string {
+      let maxAmount;
+      const tokenBalance = balanceFor(tokenAddress) || '0';
+      const tokenBalanceBN = bnum(tokenBalance);
 
-      await injectTokens(tokensToInject);
-      state.loading = false;
-    });
+      if (tokenAddress === nativeAsset.address && !disableNativeAssetBuffer) {
+        // Subtract buffer for gas
+        maxAmount = tokenBalanceBN.gt(nativeAsset.minTransactionBuffer)
+          ? tokenBalanceBN.minus(nativeAsset.minTransactionBuffer).toString()
+          : '0';
+      } else {
+        maxAmount = tokenBalance;
+      }
+      return maxAmount;
+    }
 
     provide(TokensProviderSymbol, {
       // state
@@ -488,6 +516,7 @@ export default {
       getTokens,
       getToken,
       injectPrices,
+      getMaxBalanceFor,
     });
 
     return () => slots.default();

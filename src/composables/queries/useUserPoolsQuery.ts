@@ -5,21 +5,16 @@ import { useQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import PoolService from '@/services/pool/pool.service';
 import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
-import {
-  isComposableStableLike,
-  lpTokensFor,
-  tokensListExclBpt,
-} from '../usePool';
+import { tokensListExclBpt } from '../usePool';
+import { tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 
 type UserPoolsQueryResponse = {
@@ -34,14 +29,8 @@ export default function useUserPoolsQuery(
   /**
    * COMPOSABLES
    */
-  const {
-    injectTokens,
-    prices,
-    dynamicDataLoading,
-    tokens: tokenMeta,
-  } = useTokens();
+  const { injectTokens, tokens: tokenMeta } = useTokens();
   const { account, isWalletReady } = useWeb3();
-  const { currency } = useUserSettings();
   const { networkId } = useNetwork();
   const { data: subgraphGauges } = useGaugesQuery();
 
@@ -72,34 +61,24 @@ export default function useUserPoolsQuery(
 
     const pools = await balancerSubgraphService.pools.get({
       where: {
-        id_in: poolSharesIds,
-        poolType_not_in: POOLS.ExcludedPoolTypes,
+        id: { in: poolSharesIds },
+        poolType: { not_in: POOLS.ExcludedPoolTypes },
       },
     });
 
-    for (let i = 0; i < pools.length; i++) {
-      if (isComposableStableLike(pools[i].poolType)) {
-        const poolService = new PoolService(pools[i]);
-        await poolService.setLinearPools();
-        pools[i] = poolService.pool;
-      }
-    }
+    const poolDecorator = new PoolDecorator(pools);
+    const decoratedPools = await poolDecorator.decorate(tokenMeta.value);
 
     const tokens = flatten(
       pools.map(pool => {
-        return [...tokensListExclBpt(pool), ...lpTokensFor(pool), pool.address];
+        return [
+          ...tokensListExclBpt(pool),
+          ...tokenTreeLeafs(pool.tokens),
+          pool.address,
+        ];
       })
     );
     await injectTokens(tokens);
-    await forChange(dynamicDataLoading, false);
-
-    const poolDecorator = new PoolDecorator(pools);
-    const decoratedPools = await poolDecorator.decorate(
-      subgraphGauges.value || [],
-      prices.value,
-      currency.value,
-      tokenMeta.value
-    );
 
     const poolsWithShares = decoratedPools.map(pool => ({
       ...pool,

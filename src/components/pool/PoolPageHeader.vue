@@ -6,15 +6,16 @@ import BalChipNew from '@/components/chips/BalChipNew.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
-import useApp from '@/composables/useApp';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
-import { OnchainTokenData, Pool, PoolAPRs } from '@/services/pool/types';
+import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { AprBreakdown } from '@balancer-labs/sdk';
 import useStaking from '@/composables/staking/useStaking';
 
 /**
@@ -26,8 +27,8 @@ type Props = {
   noInitLiquidity: boolean;
   isStableLikePool: boolean;
   pool?: Pool;
-  poolApr?: PoolAPRs;
-  titleTokens: [string, OnchainTokenData][];
+  poolApr?: AprBreakdown;
+  titleTokens: PoolToken[];
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
   isComposableStableLikePool: boolean;
@@ -46,8 +47,8 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
 /**
  * COMPOSABLES
  */
-const { appLoading } = useApp();
 const { isAffected, warnings } = usePoolWarning(poolId);
+const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
@@ -87,9 +88,9 @@ const swapFeeToolTip = computed(() => {
 });
 
 const poolFeeLabel = computed(() => {
-  if (!props.pool || !props.pool?.onchain?.swapFee) return '';
+  if (!props.pool || !props.pool?.swapFee) return '';
 
-  const feeLabel = `${fNum2(props.pool.onchain.swapFee, {
+  const feeLabel = `${fNum2(props.pool.swapFee, {
     style: 'percent',
     maximumFractionDigits: 4,
   })}`;
@@ -119,7 +120,7 @@ const hasCustomToken = computed(() => {
 });
 
 const poolTypeLabel = computed(() => {
-  if (!props.pool) return '';
+  if (!props.pool?.factory) return '';
   const key = POOLS.Factories[props.pool.factory];
 
   return key ? t(key) : t('unknownPoolType');
@@ -128,7 +129,7 @@ const poolTypeLabel = computed(() => {
 
 <template>
   <div class="col-span-2 px-4 lg:px-0">
-    <BalLoadingBlock v-if="loadingPool || !pool" class="h-16" />
+    <BalLoadingBlock v-if="loadingPool || !pool" class="header-loading-block" />
     <div v-else class="flex flex-col">
       <div class="flex flex-wrap items-center -mt-2">
         <div v-if="POOLS.Metadata[pool?.id]">
@@ -143,20 +144,20 @@ const poolTypeLabel = computed(() => {
           {{ poolTypeLabel }}
         </h3>
         <div
-          v-for="([address, tokenMeta], i) in titleTokens"
+          v-for="({ address, symbol, weight }, i) in titleTokens"
           :key="i"
           class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
         >
           <BalAsset :address="address" />
           <span class="ml-2">
-            {{ tokenMeta.symbol }}
+            {{ symbol }}
           </span>
           <span
             v-if="!isStableLikePool"
             class="mt-px ml-1 text-xs font-medium text-gray-400"
           >
             {{
-              fNum2(tokenMeta.weight, {
+              fNum2(weight || '0', {
                 style: 'percent',
                 maximumFractionDigits: 0,
               })
@@ -209,21 +210,28 @@ const poolTypeLabel = computed(() => {
     </div>
 
     <BalAlert
-      v-if="!appLoading && !loadingPool && missingPrices"
+      v-if="hasNonApprovedRateProviders"
+      type="warning"
+      :title="$t('hasNonApprovedRateProviders')"
+      class="mt-2"
+      block
+    />
+    <BalAlert
+      v-if="!loadingPool && missingPrices"
       type="warning"
       :title="$t('noPriceInfo')"
       class="mt-2"
       block
     />
     <BalAlert
-      v-if="!appLoading && !loadingPool && hasCustomToken"
+      v-if="!loadingPool && hasCustomToken"
       type="error"
       :title="$t('highRiskPool')"
       class="mt-2"
       block
     />
     <BalAlert
-      v-if="hasNonPrefGaugeBalances"
+      v-if="hasNonPrefGaugeBalances && !isAffected"
       :title="$t('staking.restakeGauge')"
       :type="'warning'"
       class="mt-2"
@@ -242,7 +250,7 @@ const poolTypeLabel = computed(() => {
         </div>
       </BalStack>
     </BalAlert>
-    <template v-if="!appLoading && !loadingPool && isAffected">
+    <template v-if="!loadingPool && isAffected">
       <BalAlert
         v-for="(warning, i) in warnings"
         :key="`warning-${i}`"
@@ -259,7 +267,7 @@ const poolTypeLabel = computed(() => {
       </BalAlert>
     </template>
     <BalAlert
-      v-if="!appLoading && noInitLiquidity"
+      v-if="noInitLiquidity"
       type="warning"
       :title="$t('noInitLiquidity')"
       :description="$t('noInitLiquidityDetail')"
@@ -281,5 +289,9 @@ const poolTypeLabel = computed(() => {
   @apply mr-4 capitalize mt-2;
 
   font-variation-settings: 'wght' 700;
+}
+
+.header-loading-block {
+  height: 4.249rem;
 }
 </style>

@@ -4,10 +4,8 @@ import arbitrum from './arbitrum.json';
 import docker from './docker.json';
 import goerli from './goerli.json';
 import homestead from './homestead.json';
-import kovan from './kovan.json';
 import optimism from './optimism.json';
 import polygon from './polygon.json';
-import rinkeby from './rinkeby.json';
 import test from './test.json';
 
 export interface Config {
@@ -18,7 +16,6 @@ export interface Config {
   shortName: string;
   slug: string;
   network: string;
-  portisNetwork?: string;
   unknown: boolean;
   rpc: string;
   publicRpc?: string;
@@ -27,6 +24,7 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
+  balancerApi?: string;
   poolsUrlV2: string;
   subgraphs: {
     main: string[];
@@ -54,11 +52,14 @@ export interface Config {
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    rETH: string;
+    stMATIC: string;
     stETH: string;
     wstETH: string;
     lidoRelayer: string;
     balancerHelpers: string;
     batchRelayer: string;
+    batchRelayerV4: string;
     veBAL: string;
     gaugeController: string;
     gaugeFactory: string;
@@ -69,11 +70,13 @@ export interface Config {
     feeDistributor: string;
     feeDistributorDeprecated: string;
     faucet: string;
+    gaugeRewardsHelper?: string;
   };
   keys: {
     infura: string;
     alchemy: string;
     graph?: string;
+    balancerApi?: string;
   };
   strategies: Record<
     string,
@@ -90,9 +93,7 @@ export interface Config {
 
 const config: Record<Network | number, Config> = {
   [Network.MAINNET]: homestead,
-  [Network.KOVAN]: kovan,
   [Network.GOERLI]: goerli,
-  [Network.RINKEBY]: rinkeby,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,

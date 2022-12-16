@@ -3,7 +3,6 @@ import { format, addMinutes } from 'date-fns';
 import * as echarts from 'echarts/core';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useStore } from 'vuex';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import PoolChartPeriodSelect from '@/components/pool/PoolChartPeriodSelect.vue';
@@ -13,6 +12,7 @@ import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
+import { twentyFourHoursInSecs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -26,13 +26,10 @@ type Props = {
   historicalPrices?: HistoricalPrices | null;
   snapshots?: PoolSnapshots | null;
   loading: boolean;
-
+  poolPremintedBptIndex: number | null;
   // these props are added to prevent line chart rerender on each pool update
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   totalLiquidity?: string;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokensList?: string[];
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   poolType?: PoolType;
 };
 
@@ -69,7 +66,6 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const store = useStore();
 const { t } = useI18n();
 const tailwind = useTailwind();
 const { fNum2 } = useNumbers();
@@ -104,8 +100,6 @@ const isFocusedOnChart = ref(false);
 /**
  * COMPUTED
  */
-const appLoading = computed(() => store.state.app.loading);
-
 const snapshotValues = computed(() => Object.values(props.snapshots || []));
 
 const periodOptions = computed(() => [
@@ -168,6 +162,9 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
 
       // if there are no prices from coingecko use snapshot.liquidity
       if (!prices || prices.length < (props.tokensList?.length || 0)) {
+        if (!snapshot.liquidity) {
+          return;
+        }
         tvlValues.push(
           Object.freeze<[string, number]>([
             timestamp,
@@ -186,12 +183,8 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
        * It is removed here to calculate properly snapshot pool value.
        */
       if (snapshot.amounts.length > prices.length) {
-        const maxValue = Math.max(
-          ...snapshot.amounts.map(amount => Number(amount))
-        );
-
         amounts = amounts.filter(
-          amount => Number(amount).toFixed() !== maxValue?.toString()
+          (_, index) => index !== props.poolPremintedBptIndex
         );
       }
 
@@ -268,6 +261,11 @@ function getFeesData(
     }
   );
 
+  // add 0 values in order to show chart properly
+  if (periodSnapshots.length < 30) {
+    feesValues.push(...addLaggingTimestamps());
+  }
+
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapFees) -
     (isAllTimeSelected
@@ -312,6 +310,11 @@ function getVolumeData(
       value - prevValue,
     ]);
   });
+
+  // add 0 values in order to show chart properly
+  if (periodSnapshots.length < 30) {
+    volumeData.push(...addLaggingTimestamps());
+  }
 
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapVolume) -
@@ -395,10 +398,32 @@ function setCurrentChartValue(payload: {
     PRETTY_DATE_FORMAT
   );
 }
+
+function addLaggingTimestamps() {
+  const lastDate =
+    snapshotValues.value[snapshotValues.value.length - 1].timestamp / 1000;
+  const days = 30 - snapshotValues.value.length;
+
+  const timestampsArr: number[] = [];
+  for (let i = 1; i <= days; i++) {
+    const timestamp = lastDate - i * twentyFourHoursInSecs;
+    timestampsArr.push(timestamp * 1000);
+  }
+
+  return timestampsArr.map(timestamp =>
+    Object.freeze<[string, number]>([
+      format(
+        addMinutes(timestamp, new Date(timestamp).getTimezoneOffset()),
+        'yyyy/MM/dd'
+      ),
+      0,
+    ])
+  );
+}
 </script>
 
 <template>
-  <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
+  <BalLoadingBlock v-if="loading" class="chart-loading-block" />
 
   <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div
@@ -470,6 +495,10 @@ function setCurrentChartValue(payload: {
 </template>
 
 <style scoped>
+.chart-loading-block {
+  height: 30.9rem;
+}
+
 .chart {
   @apply sm:border rounded-xl sm:px-5 sm:pt-5 sm:shadow sm:dark:bg-gray-850 dark:border-transparent;
 }

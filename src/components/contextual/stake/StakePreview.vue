@@ -3,7 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQueryClient } from 'vue-query';
@@ -107,6 +107,11 @@ const assetRowWidth = computed(
   () => (tokensListExclBpt(props.pool).length * 32) / 1.5
 );
 
+const isStakeAndZero = computed(
+  () =>
+    props.action === 'stake' && (currentShares === '0' || currentShares === '')
+);
+
 const fiatValueOfModifiedShares = ref(
   bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
@@ -128,7 +133,7 @@ const totalUserPoolSharePct = ref(
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  await loadApprovalsForGauge();
+  if (props.action !== 'unstake') await loadApprovalsForGauge();
 });
 
 /** METHODS */
@@ -251,6 +256,7 @@ function handleClose() {
       v-if="!isActionConfirmed"
       :actions="stakeActions"
       :isLoading="isLoadingApprovalsForGauge"
+      :disabled="isStakeAndZero"
       @success="handleSuccess"
     />
     <BalStack v-if="isActionConfirmed && confirmationReceipt" vertical>

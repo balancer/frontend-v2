@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { PoolToken } from '@/services/pool/types';
-
 import BalanceTooltip from './BalanceTooltip.vue';
 
 type Props = {
@@ -55,7 +54,7 @@ withDefaults(defineProps<Props>(), {
 
 <style scoped>
 .pill {
-  @apply flex items-center px-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative h-full;
+  @apply flex items-center px-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative h-10 items-center;
 }
 
 .pill-selected {

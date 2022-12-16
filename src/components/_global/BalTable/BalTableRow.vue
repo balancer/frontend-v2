@@ -10,12 +10,13 @@ import {
 
 type Props = {
   columns: ColumnDefinition<any>[];
-  onRowClick?: (data: any) => void;
+  onRowClick?: (data: any, inNewTab?: boolean) => void;
   data: Ref<any>;
   link?: {
     to: string;
     getParams: (data: any) => Record<string, string>;
   } | null;
+  href?: { getHref: (data: any) => string | null } | null;
   sticky?: Sticky;
   isColumnStuck?: boolean;
   pinned?: boolean;
@@ -23,9 +24,9 @@ type Props = {
 
 const props = defineProps<Props>();
 
-function handleRowClick(data: Data) {
+function handleRowClick(data: Data, inNewTab = false) {
   if (props.link?.to) return;
-  props.onRowClick && props.onRowClick(data);
+  props.onRowClick && props.onRowClick(data, inNewTab);
 }
 
 // Need a method for horizontal stickiness as we need to
@@ -48,7 +49,9 @@ function getHorizontalStickyClass(index: number) {
         'border-b dark:border-gray-700': pinned,
       },
     ]"
-    @click="handleRowClick(data)"
+    @click.exact="handleRowClick(data)"
+    @click.meta="handleRowClick(data, true)"
+    @click.ctrl="handleRowClick(data, true)"
   >
     <td
       v-for="(column, columnIndex) in columns"
@@ -59,12 +62,17 @@ function getHorizontalStickyClass(index: number) {
         isColumnStuck ? 'isSticky' : '',
       ]"
     >
-      <router-link
-        v-if="link"
-        :to="{
-          name: link.to,
-          params: link.getParams(data),
-        }"
+      <component
+        :is="href?.getHref(data) ? 'a' : link ? 'router-link' : 'div'"
+        :to="
+          link
+            ? {
+                name: link.to,
+                params: link.getParams(data),
+              }
+            : null
+        "
+        :href="href?.getHref(data)"
       >
         <slot v-if="column.Cell" v-bind="data" :name="column.Cell" />
         <div
@@ -83,26 +91,7 @@ function getHorizontalStickyClass(index: number) {
               : column.accessor(data)
           }}
         </div>
-      </router-link>
-      <template v-else>
-        <slot v-if="column.Cell" v-bind="data" :name="column.Cell" />
-        <div
-          v-else
-          :class="
-            compact([
-              'px-6 py-4',
-              column.align === 'right' ? 'text-right' : 'text-left',
-              column.cellClassName,
-            ])
-          "
-        >
-          {{
-            typeof column.accessor === 'string'
-              ? data[column.accessor]
-              : column.accessor(data)
-          }}
-        </div>
-      </template>
+      </component>
     </td>
   </tr>
 </template>

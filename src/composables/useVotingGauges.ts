@@ -3,20 +3,29 @@ import { computed, onUnmounted, ref } from 'vue';
 
 import {
   GOERLI_VOTING_GAUGES,
-  KOVAN_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
   VotingGauge,
 } from '@/constants/voting-gauges';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
-import { isGoerli, isKovan } from './useNetwork';
+import { isGoerli } from './useNetwork';
+import { orderedPoolTokens } from '@/composables/usePool';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { Pool } from '@/services/pool/types';
+
+export function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
+  const sortedTokens = orderedPoolTokens(gauge.pool as Pool, gauge.pool.tokens);
+  return sortedTokens.map(
+    token => gauge.tokenLogoURIs[token?.address || ''] || ''
+  );
+}
 
 export default function useVotingGauges() {
+  const totalVotes = 1e4;
+
   // Hard coded list of voting gauges
   const _votingGauges = computed((): VotingGauge[] => {
-    if (isKovan.value) {
-      return KOVAN_VOTING_GAUGES as VotingGauge[];
-    } else if (isGoerli.value) {
+    if (isGoerli.value) {
       return GOERLI_VOTING_GAUGES as VotingGauge[];
     } else {
       return MAINNET_VOTING_GAUGES as VotingGauge[];
@@ -36,7 +45,6 @@ export default function useVotingGauges() {
   const votingGauges = computed(() => gaugeVotesQuery.data.value || []);
 
   const unallocatedVotes = computed(() => {
-    const totalVotes = 1e4;
     if (isLoading.value || !votingGauges.value) return totalVotes;
     const votesRemaining = votingGauges.value.reduce(
       (remainingVotes, gauge) => {
@@ -91,6 +99,7 @@ export default function useVotingGauges() {
   }
 
   return {
+    totalVotes,
     isLoading,
     votingGauges,
     unallocatedVotes,

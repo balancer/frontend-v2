@@ -94,3 +94,21 @@
   opacity: 0;
   transition: opacity 0.2s ease-in;
 }
+
+.appear-enter-active {
+  @apply transition-all duration-300 ease-out;
+}
+
+.appear-enter-to,
+.appear-leave-from {
+  @apply opacity-100;
+}
+
+.appear-enter-from,
+.appear-leave-to {
+  @apply opacity-0;
+}
+
+.appear-leave-active {
+  @apply transition-all duration-200 ease-in;
+}

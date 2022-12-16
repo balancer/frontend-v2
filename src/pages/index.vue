@@ -7,11 +7,10 @@ import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
 import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
+import usePools from '@/composables/pools/usePools';
 
 // COMPOSABLES
 const router = useRouter();
@@ -20,21 +19,12 @@ const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-const {
-  dataStates,
-  result: investmentPools,
-  loadMore,
-  isLoadingMore,
-} = useStreamedPoolsQuery(selectedTokens);
+const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } =
+  usePools(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
-const { priceQueryLoading } = useTokens();
 const { networkSlug, networkConfig } = useNetwork();
 
-const isInvestmentPoolsTableLoading = computed(
-  () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
-);
-
-const isPaginated = computed(() => investmentPools.value.length >= 10);
+const isPaginated = computed(() => pools.value.length >= 10);
 
 /**
  * METHODS
@@ -45,63 +35,67 @@ function navigateToCreatePool() {
 </script>
 
 <template>
-  <HomePageHero />
-  <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
-    <BalStack vertical>
-      <div class="px-4 xl:px-0">
-        <div class="flex justify-between items-end mb-8">
-          <h3>{{ networkConfig.chainName }} {{ $t('pools') }}</h3>
-          <BalBtn
-            v-if="upToMediumBreakpoint"
-            color="blue"
-            size="sm"
-            outline
-            :class="{ 'mt-4': upToMediumBreakpoint }"
-            @click="navigateToCreatePool"
-          >
-            {{ $t('createAPool.title') }}
-          </BalBtn>
-        </div>
+  <div>
+    <HomePageHero />
+    <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
+      <BalStack vertical>
+        <div class="px-4 xl:px-0">
+          <div class="flex justify-between items-end mb-8">
+            <h3>
+              {{ networkConfig.chainName }}
+              <span class="lowercase">{{ $t('pools') }}</span>
+            </h3>
+            <BalBtn
+              v-if="upToMediumBreakpoint"
+              color="blue"
+              size="sm"
+              outline
+              :class="{ 'mt-4': upToMediumBreakpoint }"
+              @click="navigateToCreatePool"
+            >
+              {{ $t('createAPool.title') }}
+            </BalBtn>
+          </div>
 
-        <div
-          class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
-        >
-          <TokenSearchInput
-            v-model="selectedTokens"
-            class="w-full md:w-2/3"
-            @add="addSelectedToken"
-            @remove="removeSelectedToken"
-          />
-          <BalBtn
-            v-if="!upToMediumBreakpoint"
-            color="blue"
-            size="sm"
-            outline
-            :class="{ 'mt-4': upToMediumBreakpoint }"
-            :block="upToMediumBreakpoint"
-            @click="navigateToCreatePool"
+          <div
+            class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
           >
-            {{ $t('createAPool.title') }}
-          </BalBtn>
+            <TokenSearchInput
+              v-model="selectedTokens"
+              class="w-full md:w-2/3"
+              @add="addSelectedToken"
+              @remove="removeSelectedToken"
+            />
+            <BalBtn
+              v-if="!upToMediumBreakpoint"
+              color="blue"
+              size="sm"
+              outline
+              :class="{ 'mt-4': upToMediumBreakpoint }"
+              :block="upToMediumBreakpoint"
+              @click="navigateToCreatePool"
+            >
+              {{ $t('createAPool.title') }}
+            </BalBtn>
+          </div>
         </div>
-      </div>
-      <PoolsTable
-        :data="investmentPools"
-        :noPoolsLabel="$t('noPoolsFound')"
-        :isLoadingMore="isLoadingMore"
-        :selectedTokens="selectedTokens"
-        class="mb-8"
-        :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
-        :columnStates="dataStates"
-        :isPaginated="isPaginated"
-        :isLoading="isInvestmentPoolsTableLoading"
-        skeletonClass="pools-table-loading-height"
-        @load-more="loadMore"
-      />
-      <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
-        <FeaturedProtocols />
-      </div>
-    </BalStack>
+        <PoolsTable
+          :data="pools"
+          :noPoolsLabel="$t('noPoolsFound')"
+          :isLoading="isLoading"
+          :selectedTokens="selectedTokens"
+          class="mb-8"
+          :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
+          :isLoadingMore="poolsIsFetchingNextPage"
+          :isPaginated="isPaginated"
+          skeletonClass="pools-table-loading-height"
+          @load-more="loadMorePools"
+        />
+        <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
+          <FeaturedProtocols />
+        </div>
+      </BalStack>
+    </div>
   </div>
 </template>
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
+import { BalDetailsTableData } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  tableData: { title: string; value: string; link?: string }[];
+  tableData: (BalDetailsTableData | null)[];
 };
 
 /**
@@ -21,25 +22,23 @@ const { upToLargeBreakpoint } = useBreakpoints();
 
 <template>
   <BalCard class="overflow-x-auto" :square="upToLargeBreakpoint" noPad>
-    <div
-      v-for="{ title, value, link } in tableData"
-      :key="title"
-      class="table-row"
-    >
-      <div class="table-row-title">
-        {{ title }}
+    <template v-for="(row, i) in tableData" :key="i">
+      <div v-if="row" class="table-row">
+        <div class="table-row-title">
+          {{ row.title }}
+        </div>
+        <div class="table-row-value">
+          {{ row.value }}
+          <BalLink v-if="row.link" :href="row.link" external noStyle>
+            <BalIcon
+              name="arrow-up-right"
+              size="sm"
+              class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+            />
+          </BalLink>
+        </div>
       </div>
-      <div class="table-row-value">
-        {{ value }}
-        <BalLink v-if="link" :href="link" external noStyle>
-          <BalIcon
-            name="arrow-up-right"
-            size="sm"
-            class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
-          />
-        </BalLink>
-      </div>
-    </div>
+    </template>
   </BalCard>
 </template>
 

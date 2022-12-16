@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
@@ -12,7 +12,8 @@ import { InvestMathResponse } from '../../composables/useInvestMath';
 import useInvestState from '../../composables/useInvestState';
 import InvestActions from './components/InvestActions.vue';
 import InvestSummary from './components/InvestSummary.vue';
-import TokenAmounts from './components/TokenAmounts.vue';
+import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -52,6 +53,7 @@ const { fullAmounts, priceImpact, highPriceImpact, rektPriceImpact } = toRefs(
   props.math
 );
 const { resetAmounts } = useInvestState();
+const { account } = useWeb3();
 
 /**
  * COMPUTED
@@ -107,6 +109,11 @@ function handleShowStakeModal() {
   handleClose();
   emit('showStakeModal');
 }
+
+/**
+ * WATCHERS
+ */
+watch(account, () => emit('close'));
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, ref, toRef, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 // Composables
 import { useI18n } from 'vue-i18n';
 
@@ -71,8 +71,10 @@ const {
   sor,
 } = useInvestState();
 
+const pool = computed(() => props.pool);
+
 const investMath = useInvestMath(
-  toRef(props, 'pool'),
+  pool,
   tokenAddresses,
   amounts,
   useNativeAsset,
@@ -91,9 +93,8 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
-  toRef(props, 'pool')
-);
+const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } =
+  usePool(pool);
 
 /**
  * COMPUTED
@@ -227,8 +228,8 @@ watch(useNativeAsset, shouldUseNativeAsset => {
   }
 });
 </script>
-
-<template>
+  
+  <template>
   <div>
     <BalAlert
       v-if="forceProportionalInputs"
@@ -326,3 +327,4 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     </StakingProvider>
   </div>
 </template>
+  

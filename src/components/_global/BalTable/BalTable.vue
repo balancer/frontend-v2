@@ -28,9 +28,7 @@ type Props = {
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
-  onRowClick?: (data: Data) => void;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
+  onRowClick?: (data: Data, inNewTab?: boolean) => void;
   sticky?: Sticky;
   square?: boolean;
   isPaginated?: boolean;
@@ -39,8 +37,8 @@ type Props = {
     to: string;
     getParams: (data: any) => Record<string, string>;
   } | null;
+  href?: { getHref: (data: any) => string | null } | null;
   initialState?: InitialState;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: Data, rowIndex: number) => string;
 };
@@ -50,6 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
   isPaginated: false,
   noResultsLabel: '',
   link: null,
+  href: null,
   initialState: () => ({
     sortColumn: null,
     sortDirection: null,
@@ -219,9 +218,12 @@ watch(
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
               column.sortKey ? 'cursor-pointer' : '',
+              column.sortKey && currentSortColumn !== column.id
+                ? 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors'
+                : '',
               currentSortColumn === column.id && currentSortDirection
                 ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
-                : 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors',
+                : '',
             ]"
             @click="handleSort(column.id)"
           >
@@ -268,7 +270,7 @@ watch(
       />
       <div
         v-else-if="!isLoading && !tableData.length"
-        class="flex justify-center items-center max-w-full h-40 bg-white dark:bg-gray-850 row-bg text-secondary"
+        class="flex justify-start items-center p-6 max-w-full h-24 bg-white dark:bg-gray-850 row-bg text-secondary"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
@@ -305,6 +307,7 @@ watch(
           :columns="filteredColumns"
           :onRowClick="onRowClick"
           :link="link"
+          :href="href"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
           pinned
@@ -328,6 +331,7 @@ watch(
           :columns="filteredColumns"
           :onRowClick="onRowClick"
           :link="link"
+          :href="href"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
         >
@@ -393,7 +397,7 @@ watch(
 }
 
 .row-bg {
-  @apply bg-white dark:bg-gray-850 hover:bg-gray-50 dark:hover:bg-gray-800;
+  @apply bg-white dark:bg-gray-850 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ease-in duration-300;
 }
 
 .bal-table-pagination-btn {

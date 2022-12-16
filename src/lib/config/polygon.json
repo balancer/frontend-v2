@@ -6,7 +6,6 @@
   "shortName": "Polygon",
   "slug": "polygon",
   "network": "polygon",
-  "portisNetwork": "matic",
   "unknown": false,
   "rpc": "https://polygon-mainnet.infura.io/v3/{{INFURA_KEY}}",
   "ws": "wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
@@ -15,6 +14,7 @@
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
+  "balancerApi": "https://berfqtb52bc4hetoouojoshqem.appsync-api.eu-west-2.amazonaws.com/graphql",
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [
@@ -33,7 +33,7 @@
     "symbol": "MATIC",
     "decimals": 18,
     "deeplinkId": "matic",
-    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png",
+    "logoURI": "tokens/matic.svg",
     "minTransactionBuffer": "0.1"
   },
   "addresses": {
@@ -45,11 +45,14 @@
     "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
     "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
     "weth": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+    "rETH": "0x0266F4F08D82372CF0FcbCCc0Ff74309089c74d1",
+    "stMATIC": "0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4",
     "stETH": "",
     "wstETH": "",
     "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d",
     "batchRelayer": "0xcf6a66E32dCa0e26AcC3426b851FD8aCbF12Dac7",
+    "batchRelayerV4": "0x28A224d9d398a1eBB7BA69BCA515898966Bb1B6b",
     "gaugeFactory": "0x3b8ca519122cdd8efb272b0d3085453404b25bd0",
     "balancerMinter": "",
     "gaugeController": "",
@@ -59,11 +62,13 @@
     "veBALHelpers": "",
     "feeDistributor": "",
     "feeDistributorDeprecated": "",
-    "faucet": ""
+    "faucet": "",
+    "gaugeRewardsHelper": "0xaEb406b0E430BF5Ea2Dc0B9Fe62E4E53f74B3a33"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
-    "alchemy": "ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2"
+    "alchemy": "ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+    "balancerApi": "da2-7a3ukmnw7bexndpx5x522uafui"
   },
   "strategies": {
     "0": {

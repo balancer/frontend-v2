@@ -8,7 +8,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
  * TYPES
  */
 type Props = {
-  apr: string;
+  apr: number;
 };
 
 /**
@@ -25,7 +25,7 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const aprLabel = computed((): string => fNum2(props.apr, FNumFormats.percent));
+const aprLabel = computed((): string => fNum2(props.apr, FNumFormats.bp));
 
 const items = computed((): string[] => [
   t('tooltips.veBalApr.breakdown1'),
@@ -34,15 +34,17 @@ const items = computed((): string[] => [
 </script>
 
 <template>
-  <BalBreakdown :items="items">
-    {{ aprLabel }}
-    <span class="ml-1 text-xs text-secondary">
-      {{ $t('tooltips.veBalApr.title') }}
-    </span>
-    <template #item="{ item }">
-      <div class="text-xs text-secondary">
-        {{ item }}
-      </div>
-    </template>
-  </BalBreakdown>
+  <div data-testid="vebal-apr">
+    <BalBreakdown :items="items">
+      {{ aprLabel }}
+      <span class="ml-1 text-xs text-secondary">
+        {{ $t('tooltips.veBalApr.title') }}
+      </span>
+      <template #item="{ item }">
+        <div class="text-xs text-secondary">
+          {{ item }}
+        </div>
+      </template>
+    </BalBreakdown>
+  </div>
 </template>

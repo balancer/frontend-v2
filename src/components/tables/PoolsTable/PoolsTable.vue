@@ -25,7 +25,7 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { PoolWithShares } from '@/services/pool/types';
+import { Pool, PoolWithShares } from '@/services/pool/types';
 import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
@@ -36,13 +36,14 @@ import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningT
  * TYPES
  */
 type Props = {
-  data?: PoolWithShares[];
+  data?: Pool[] | PoolWithShares[];
   poolsType?: 'unstaked' | 'staked';
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
+  sortColumn?: string;
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
@@ -60,6 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
+  sortColumn: 'poolValue',
   hiddenColumns: () => [],
   showBoost: false,
   columnStates: () => ({}),
@@ -123,7 +125,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: t('poolValue'),
     accessor: pool =>
-      fNum2(pool.totalLiquidity, {
+      fNum2(pool.totalLiquidity || 0, {
         style: 'currency',
         maximumFractionDigits: 0,
       }),
@@ -165,7 +167,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.apr?.total.unstaked || '0',
+    accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
@@ -177,7 +179,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
 
       return isFinite(apr) ? apr : 0;
     },
-    width: 250,
+    width: 220,
   },
   {
     name: t('expiryDate'),
@@ -212,9 +214,13 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares) {
+function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
   trackGoal(Goals.ClickPoolsTableRow);
-  router.push({ name: 'pool', params: { id: pool.id, networkSlug } });
+  const route = router.resolve({
+    name: 'pool',
+    params: { id: pool.id, networkSlug },
+  });
+  inNewTab ? window.open(route.href) : router.push(route);
 }
 
 function navigateToPoolMigration(pool: PoolWithShares) {
@@ -262,14 +268,10 @@ function iconAddresses(pool: PoolWithShares) {
       :skeletonClass="skeletonClass"
       sticky="both"
       :square="upToLargeBreakpoint"
-      :link="{
-        to: 'pool',
-        getParams: pool => ({ id: pool.id || '', networkSlug }),
-      }"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
       :initialState="{
-        sortColumn: 'poolValue',
+        sortColumn: sortColumn,
         sortDirection: 'desc',
       }"
       @load-more="emit('loadMore')"
@@ -328,13 +330,10 @@ function iconAddresses(pool: PoolWithShares) {
           :key="columnStates.aprs"
           class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
         >
-          <BalLoadingBlock
-            v-if="!pool?.apr?.total?.unstaked"
-            class="w-12 h-4"
-          />
+          <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.apr?.total?.unstaked" :pool="pool" />
+            <APRTooltip v-if="pool?.apr" :pool="pool" />
           </template>
         </div>
       </template>

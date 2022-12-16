@@ -3,7 +3,7 @@ import numeral from 'numeral';
 
 import useUserSettings from '@/composables/useUserSettings';
 import { FiatCurrency } from '@/constants/currency';
-
+import { bnum } from '@/lib/utils';
 import useTokens from './useTokens';
 
 interface Options {
@@ -20,6 +20,12 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
 export const FNumFormats: Record<string, FNumOptions> = {
   percent: {
     style: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  },
+  // Basis Points
+  bp: {
+    style: 'bp',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   },
@@ -89,8 +95,15 @@ export function numF(
   currency: FiatCurrency = FiatCurrency.usd
 ): string {
   if (typeof number === 'string') {
-    if (number === 'NaN') number = 0;
+    if (number === 'NaN') return '-';
+    if (number === '') return '-';
+    if (number === '-') return '-';
     number = Number(number || 0);
+  }
+
+  if (options.style === 'bp') {
+    number = bnum(number).div(10000).toNumber();
+    options = { ...options, style: 'percent' };
   }
 
   const formatterOptions: Intl.NumberFormatOptions = { ...options };
@@ -172,8 +185,7 @@ export default function useNumbers() {
 
   function toFiat(amount: number | string, tokenAddress: string): string {
     const price = priceFor(tokenAddress);
-    const tokenAmount = new BigNumber(amount);
-    return tokenAmount.times(price).toString();
+    return bnum(amount).times(price).toString();
   }
 
   function fNum2(

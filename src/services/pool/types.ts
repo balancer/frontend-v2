@@ -1,66 +1,14 @@
 import { BigNumber } from 'ethers';
 import { Address } from '@/types';
+import { Pool as SDKPool, PoolToken } from '@balancer-labs/sdk';
 
-export interface Pool {
-  id: string;
-  address: string;
-  poolType: PoolType;
-  swapFee: string;
-  owner: string;
-  factory: string;
+export { PoolType, PoolToken, SubPool } from '@balancer-labs/sdk';
+
+export interface Pool extends SDKPool {
   tokens: PoolToken[];
-  tokensList: string[];
-  totalLiquidity: string;
-  totalShares: string;
-  totalSwapFee: string;
-  totalSwapVolume: string;
-  createTime: number;
-  name: string;
-  symbol: string;
   onchain?: OnchainPoolData;
-  mainTokens?: string[];
-  wrappedTokens?: string[];
-  linearPoolTokensMap?: Record<string, PoolToken>;
-  unwrappedTokens?: string[];
-  isNew?: boolean;
-  volumeSnapshot?: string;
-  feesSnapshot?: string;
-  apr?: PoolAPRs;
-  boost?: string;
 }
 
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  ComposableStable = 'ComposableStable',
-  LiquidityBootstrapping = 'LiquidityBootstrapping',
-  Managed = 'Managed',
-  AaveLinear = 'AaveLinear',
-  Linear = 'Linear',
-  ERC4626Linear = 'ERC4626Linear',
-}
-
-export interface TokenTreePool {
-  id: string;
-  poolType: PoolType;
-  mainIndex: number;
-  tokens?: PoolToken[];
-}
-
-export interface PoolToken {
-  address: string;
-  balance: string;
-  weight: string;
-  priceRate: string | null;
-  symbol?: string;
-  decimals: number;
-  token: { pool: TokenTreePool | null };
-}
-
-// PoolToken data from onchain call
 export interface RawPoolTokens {
   balances: BigNumber[];
   lastChangeBlock: BigNumber;
@@ -70,31 +18,6 @@ export interface RawPoolTokens {
 export interface LinearPool extends Pool {
   mainIndex: number;
   wrappedIndex: number;
-}
-
-export type AprRange = { min: string; max: string };
-export interface PoolAPRs {
-  total: {
-    unstaked: string;
-    staked: {
-      calc: (boost?: string) => string;
-      max: string;
-      min: string;
-    };
-  };
-  swap: string;
-  yield: {
-    total: string;
-    breakdown: { [address: string]: string };
-  };
-  staking?: {
-    bal: {
-      min: string;
-      max: string;
-    };
-    rewards: string;
-  };
-  veBal?: string;
 }
 
 export interface OnchainTokenData {
@@ -230,3 +153,9 @@ export interface PoolSnapshot {
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
+
+export type BalDetailsTableData = {
+  title: string;
+  value: string;
+  link?: string;
+};

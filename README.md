@@ -1,6 +1,6 @@
 # Balancer Frontend App (v2)
 
-Frontend Vue app for Balancer exchange and pool management.
+Official frontend app for the Balancer protocol (v2).
 
 ## Development
 
@@ -57,10 +57,11 @@ As we believe in decentralization at all layers, we've made it easy to host your
 
 ### Docker Production Image
 
-We've created a production ready [docker image](./Dockerfile) that connects to Mainnet and runs
-a pre-built version of Balancer Frontend-v2 using nginx. You'll need your own [Infura](https://infura.io), [Alchemy](https://www.alchemy.com/), and [Blocknative](https://blocknative.com) API keys in order to fetch data and make trades.
-
-You can also specify your Portis Dapp ID if you wish to use that service, otherwise it will use a default key.
+We've created a production ready [docker image](./Dockerfile) runs
+a pre-built version of Balancer Frontend-v2 using nginx. You'll need your own
+[Infura](https://infura.io), [Alchemy](https://www.alchemy.com/), and
+[Blocknative](https://blocknative.com) API keys in order to fetch data and
+execute transactions.
 
 Here's an example of how to run the container. This can also be found in [scripts/run-docker.sh](./scripts/run-docker.sh).
 
@@ -69,12 +70,15 @@ docker run \
   -e INFURA_PROJECT_ID=   \ # Required
   -e ALCHEMY_KEY=         \ # Required
   -e BLOCKNATIVE_DAPP_ID= \ # Required
-  -e PORTIS_DAPP_ID=      \ # Optional
   balancerfi/frontend-v2
 ```
 
-### Digital Ocean Deploy
+### One Click Deploys
 
-Click the button below to deploy the frontend Docker image to a new instance in your Digital Ocean account. You will be prompted to provide your Infura Project ID, Alchemy Key, and Blocknative Dapp ID as these are required for the frontend to work correctly.
+The frontend can easily be deployed to any static host. Use the buttons below to spin up an instance. You will be prompted to provide your Infura Project ID, Alchemy Key, and Blocknative Dapp ID as these are required for the frontend to work correctly.
 
-[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer-labs/frontend-v2/tree/UI-769-one-click-deploy-to-digital-ocean)
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer-labs/frontend-v2/tree/master)
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/balancer-labs/frontend-v2)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer-labs/frontend-v2)

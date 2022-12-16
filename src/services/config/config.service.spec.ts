@@ -18,8 +18,8 @@ describe('Config service', () => {
 
   describe('Get app network slug and id', () => {
     it('Returns the correct slug and id for app network key', () => {
-      expect(networkSlug).toBe('kovan');
-      expect(networkId.value).toBe(42);
+      expect(networkSlug).toBe('goerli');
+      expect(networkId.value).toBe(5);
     });
   });
 });

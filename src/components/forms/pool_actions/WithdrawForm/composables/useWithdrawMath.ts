@@ -79,7 +79,7 @@ export default function useWithdrawMath(
   /**
    * COMPOSABLES
    */
-  const { isWalletReady, account, getProvider } = useWeb3();
+  const { isWalletReady, getSigner, account } = useWeb3();
   const { toFiat, fNum2 } = useNumbers();
   const {
     tokens: allTokens,
@@ -606,8 +606,7 @@ export default function useWithdrawMath(
   async function getSingleAssetMaxOut(): Promise<void> {
     if (isShallowComposableStablePool.value) {
       const result = await poolExchange.queryExit(
-        getProvider(),
-        account.value,
+        getSigner(),
         amountsOut.value.map(() => '0'),
         tokensOut.value,
         bptBalance.value,
@@ -720,8 +719,7 @@ export default function useWithdrawMath(
     try {
       loadingData.value = true;
       const result = await poolExchange.queryExit(
-        getProvider(),
-        account.value,
+        getSigner(),
         amountsOut.value,
         tokensOut.value,
         normalizedBptIn,
@@ -753,8 +751,7 @@ export default function useWithdrawMath(
     try {
       loadingData.value = true;
       const result = await poolExchange.queryExit(
-        getProvider(),
-        account.value,
+        getSigner(),
         amountsOut,
         tokensOut.value,
         bptIn,
@@ -814,6 +811,7 @@ export default function useWithdrawMath(
     bptBalance,
     hasBpt,
     fiatTotalLabel,
+    fiatTotal,
     priceImpact,
     highPriceImpact,
     proportionalAmounts,

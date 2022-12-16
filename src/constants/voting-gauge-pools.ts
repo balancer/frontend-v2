@@ -254,6 +254,46 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0xae7bfd6fa54259fc477879712eebe34164d3a84f000200000000000000000376',
     network: Network.MAINNET,
   },
+  {
+    id: '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x173063a30e095313eee39411f07e95a8a806014e0002000000000000000003ab',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x8167a1117691f39e05e9131cfa88f0e3a620e96700020000000000000000038c',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x798b112420ad6391a4129ac25ef59663a44c88bb0002000000000000000003f4',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x5512a4bbe7b3051f92324bacf25c02b9000c4a500001000000000000000003d7',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x4edcb2b46377530bc18bb4d2c7fe46a992c73e100000000000000000000003ec',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xd1ec5e215e8148d76f4460e4097fd3d5ae0a35580002000000000000000003d3',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x76fcf0e8c7ff37a47a799fa2cd4c13cde0d981c90002000000000000000003d2',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xc9c5ff67bb2fae526ae2467c359609d6bcb4c5320000000000000000000003cc',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -460,7 +500,15 @@ export const POLYGON_POOLS: Pool[] = [
     network: Network.POLYGON,
   },
   {
-    id: '0x4b3fd0347b7fb1b7bafa61da841e40d5bf6fe0f5000200000000000000000868',
+    id: '0x05f21bacc4fd8590d1eaca9830a64b66a733316c00000000000000000000087e',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x4973f591784d9c94052a6c3ebd553fcd37bb0e5500020000000000000000087f',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xe2f706ef1f7240b803aae877c9c762644bb808d80002000000000000000008c2',
     network: Network.POLYGON,
   },
 ];
@@ -500,6 +548,10 @@ export const OPTIMISM_POOLS: Pool[] = [
   },
   {
     id: '0x785f08fb77ec934c01736e30546f87b4daccbe50000200000000000000000041',
+    network: Network.OPTIMISM,
+  },
+  {
+    id: '0x05e7732bf9ae5592e6aa05afe8cd80f7ab0a7bea00020000000000000000005a',
     network: Network.OPTIMISM,
   },
 ];

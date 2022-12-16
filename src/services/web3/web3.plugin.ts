@@ -4,6 +4,8 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
+import { Network } from '@balancer-labs/sdk';
+import { setTag } from '@sentry/browser';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,7 +19,7 @@ import tallyLogo from '@/assets/images/connectors/tally.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
-import useFathom from '@/composables/useFathom';
+import useFathom, { Goals, trackGoal } from '@/composables/useFathom';
 import { WALLET_SCREEN_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
 
@@ -25,6 +27,7 @@ import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector, ConnectorId } from './connectors/connector';
 import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
+import { networkId } from '@/composables/useNetwork';
 
 export type Wallet =
   | 'metamask'
@@ -73,12 +76,13 @@ export async function isBlockedAddress(
 ): Promise<boolean | null> {
   try {
     if (!configService.env.WALLET_SCREENING) return false;
-    const response = await axios.post<WalletScreenResponse>(
-      WALLET_SCREEN_ENDPOINT,
-      {
-        address: address.toLowerCase(),
-      }
+    trackGoal(Goals.WalletScreenRequest);
+
+    const response = await axios.get<WalletScreenResponse>(
+      `${WALLET_SCREEN_ENDPOINT}?address=${address.toLowerCase()}`
     );
+
+    trackGoal(Goals.WalletScreened);
     return response.data.is_blocked;
   } catch {
     return false;
@@ -93,6 +97,13 @@ export async function verifyTransactionSender(signer: JsonRpcSigner) {
     throw new Error(
       `Rejecting transaction. [${_isBlockedAddress}] is a sanctioned wallet.`
     );
+  }
+}
+
+export async function verifyNetwork(signer: JsonRpcSigner) {
+  const userNetwork = await signer.getChainId();
+  if (userNetwork.toString() !== networkId.value.toString()) {
+    throw new Error('Wallet network does not match app network.');
   }
 }
 
@@ -197,6 +208,15 @@ export default {
           );
         }
         const { account } = await connector.connect();
+
+        setTag('wallet', wallet);
+        const networkMap = {
+          [Network.MAINNET]: 'mainnet',
+          [Network.GOERLI]: 'goerli',
+          [Network.POLYGON]: 'polygon',
+          [Network.ARBITRUM]: 'arbitrum-one',
+        };
+        setTag('network', networkMap[chainId.value]);
 
         // listens to wallet/chain changed and disconnect events
         connector.registerListeners();

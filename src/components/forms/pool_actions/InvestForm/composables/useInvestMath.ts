@@ -44,7 +44,7 @@ export default function useInvestMath(
   const { toFiat, fNum2 } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
-  const { getProvider, account } = useWeb3();
+  const { getSigner } = useWeb3();
   const {
     managedPoolWithTradingHalted,
     isComposableStableLikePool,
@@ -177,6 +177,7 @@ export default function useInvestMath(
     ) {
       _bptOut = queryBptOut.value;
     } else {
+      if (!hasAmounts.value) return '0';
       _bptOut = poolCalculator
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
@@ -270,8 +271,7 @@ export default function useInvestMath(
     try {
       loadingData.value = true;
       const result = await poolExchange.queryJoin(
-        getProvider(),
-        account.value,
+        getSigner(),
         fullAmounts.value,
         tokenAddresses.value,
         '0'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useIntervalFn } from '@vueuse/core';
 import { differenceInSeconds } from 'date-fns';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -54,7 +54,7 @@ const {
   getProvider,
   isArbitrum,
   isMainnet,
-  isKovan,
+  isGoerli,
   isPolygon,
   isMismatchedNetwork,
 } = useWeb3();
@@ -77,7 +77,7 @@ const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
 const isAirdrop = false;
 
 const legacyClaimUI = computed(() => {
-  if (isMainnet.value || isKovan.value) {
+  if (isMainnet.value) {
     return [
       { token: '$BAL', subdomain: 'claim' },
       { token: '$VITA', subdomain: 'claim-vita' },
@@ -353,7 +353,7 @@ async function claimAvailableRewards() {
                 Arbitrum </BalLink
               >.
             </template>
-            <template v-else-if="isMainnet || isKovan">
+            <template v-else-if="isMainnet || isGoerli">
               <BalLink href="https://polygon.balancer.fi" external>
                 Polygon
               </BalLink>

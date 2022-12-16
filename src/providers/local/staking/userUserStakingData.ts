@@ -1,4 +1,4 @@
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from '@ethersproject/units';
 import { intersection } from 'lodash';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
 import { computed, ComputedRef, reactive, Ref, ref } from 'vue';
@@ -347,8 +347,6 @@ export default function useUserStakingData(
         `Attempted to get staked shares, however useStaking was initialised without a pool address.`
       );
     }
-
-    if (!poolGaugeAddresses.value?.preferentialGauge?.id) return '0';
 
     // sum balances from all gauges in the pool
     const totalBalance = await poolGaugeAddresses.value.gauges.reduce(

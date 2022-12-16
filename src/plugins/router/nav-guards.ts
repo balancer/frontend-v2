@@ -1,12 +1,19 @@
+import { ref } from 'vue';
 import {
   getRedirectUrlFor,
   handleNetworkSlug,
   networkFromSlug,
   networkSlug,
 } from '@/composables/useNetwork';
+import { isJoinsDisabled } from '@/composables/usePool';
 import config from '@/lib/config';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
+
+/**
+ * State
+ */
+const redirecting = ref(false);
 
 /**
  * Navigation guards
@@ -14,6 +21,7 @@ import { Router } from 'vue-router';
 export function applyNavGuards(router: Router): Router {
   router = applyNetworkSubdomainRedirect(router);
   router = applyNetworkPathRedirects(router);
+  router = applyPoolJoinRedirects(router);
 
   return router;
 }
@@ -24,10 +32,11 @@ export function applyNavGuards(router: Router): Router {
  * @param {string} url - URL to redirect to.
  * @param {Router} router - vue-router.
  */
-function hardRedirectTo(url: string, router: Router) {
-  document.write('');
+export function hardRedirectTo(url: string) {
+  redirecting.value = true;
+  document.body.style.display = 'none';
   window.location.href = url;
-  router.go(0);
+  location.reload();
 }
 
 /**
@@ -67,38 +76,58 @@ function applyNetworkSubdomainRedirect(router: Router): Router {
  */
 function applyNetworkPathRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
-    const networkSlugFromUrl = to.params.networkSlug?.toString() ?? '';
-    const networkFromPath = networkFromSlug(networkSlugFromUrl);
-
-    if (networkFromPath) {
-      const noNetworkChangeCallback = () => next();
-      const networkChangeCallback = () => {
-        hardRedirectTo(`/#${to.fullPath}`, router);
-      };
-
-      handleNetworkSlug(
-        networkSlugFromUrl,
-        noNetworkChangeCallback,
-        networkChangeCallback
-      );
+    if (redirecting.value) {
+      next();
     } else {
-      const nonNetworkedRoutes = [
-        '/',
-        '/terms-of-use',
-        '/privacy-policy',
-        '/cookies-policy',
-      ];
-      if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
-        const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
-        const newNetwork = newPath.includes('/pool')
-          ? config[Network.MAINNET].slug
-          : networkSlug;
-        router.push({ path: `/${newNetwork}${newPath}` });
+      const networkSlugFromUrl = to.params.networkSlug?.toString() ?? '';
+      const networkFromPath = networkFromSlug(networkSlugFromUrl);
+
+      if (networkFromPath) {
+        const noNetworkChangeCallback = () => next();
+        const networkChangeCallback = () => {
+          hardRedirectTo(`/#${to.fullPath}`);
+        };
+
+        handleNetworkSlug(
+          networkSlugFromUrl,
+          noNetworkChangeCallback,
+          networkChangeCallback
+        );
       } else {
-        next();
+        const nonNetworkedRoutes = [
+          '/',
+          '/terms-of-use',
+          '/privacy-policy',
+          '/cookies-policy',
+        ];
+        if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
+          const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
+          const newNetwork = newPath.includes('/pool')
+            ? config[Network.MAINNET].slug
+            : networkSlug;
+          router.push({ path: `/${newNetwork}${newPath}` });
+        } else {
+          next();
+        }
       }
     }
   });
 
+  return router;
+}
+
+/**
+ * If the route is a pool invest page check if this should be accessible against
+ * our isJoinsDisabled conditional. If so, redirect to the pool page.
+ */
+function applyPoolJoinRedirects(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    if (to.name === 'invest' && isJoinsDisabled(to.params?.id as string)) {
+      next({
+        name: 'pool',
+        params: to.params,
+      });
+    } else next();
+  });
   return router;
 }
