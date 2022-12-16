@@ -220,7 +220,7 @@ watch(poolQuery.error, () => {
                 :snapshots="snapshots"
                 :loading="isLoadingSnapshots"
                 :totalLiquidity="pool?.totalLiquidity"
-                :tokensList="tokensListExclBpt(pool)"
+                :tokensList="pool ? tokensListExclBpt(pool) : []"
                 :poolType="pool?.poolType"
                 :poolPremintedBptIndex="poolPremintedBptIndex"
               />
