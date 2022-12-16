@@ -2,6 +2,8 @@ import PoolRepository from '@/services/pool/pool.repository';
 import { TokenInfoMap } from '@/types/TokenList';
 import { computed } from 'vue';
 
+jest.mock('@/services/web3/useWeb3');
+
 describe('Building a pool repository', () => {
   it('Logs when balancer api provider is skipped', () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
