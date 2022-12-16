@@ -80,7 +80,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     const amountIn = bptIn;
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
 
-    const tokenOut = tokenInfo[amountsOut[0].address];
+    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
 
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
@@ -134,6 +134,10 @@ export class SwapExitHandler implements ExitPoolHandler {
       return { amountsOut: {}, priceImpact: 0 };
 
     if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
+    console.log({
+      tokenIn: tokenIn.address,
+      tokenOut: tokenOut.address,
+    });
 
     const safeAmountOut = overflowProtected(
       amountsOut[0].value,
@@ -149,7 +153,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       gasPrice,
       maxPools: 4,
     });
-
+    console.log({ lastSwapRoute: this.lastSwapRoute });
     const amountIn = formatFixed(
       this.lastSwapRoute.returnAmount,
       tokenIn.decimals

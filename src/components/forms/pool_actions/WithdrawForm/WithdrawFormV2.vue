@@ -9,7 +9,7 @@ import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
 import useExitPool from '@/composables/pools/useExitPool';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
-import { isDeep } from '@/composables/usePool';
+import { isDeep, isPreMintedBptType } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useI18n } from 'vue-i18n';
 
@@ -46,6 +46,15 @@ const {
 /**
  * COMPUTED
  */
+//  Special case for pools that are considered deep, but don't have pre-minted BPT
+// Single asset swaps are only allowed for underlying tokens
+const subsetTokens = computed((): string[] => {
+  if (!isPreMintedBptType(pool.value.poolType)) {
+    return pool.value.tokens.map(token => token.address);
+  }
+  return [];
+});
+
 const singleAssetRules = computed(() => [
   isLessThanOrEqualTo(singleAmountOut.max, t('exceedsPoolBalance')),
 ]);
@@ -58,7 +67,9 @@ const hasValidInputs = computed(
  * CALLBACKS
  */
 onBeforeMount(() => {
-  singleAmountOut.address = wrappedNativeAsset.value.address;
+  singleAmountOut.address = !isPreMintedBptType(pool.value.poolType)
+    ? pool.value.tokens[0].address
+    : wrappedNativeAsset.value.address;
 });
 </script>
 
@@ -78,7 +89,10 @@ onBeforeMount(() => {
           :balanceLabel="$t('max')"
           :balanceLoading="isLoadingMax"
           :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-          :tokenSelectProps="{ ignoreBalances: true }"
+          :tokenSelectProps="{
+            ignoreBalances: true,
+            subsetTokens,
+          }"
           ignoreWalletBalance
         />
       </template>
