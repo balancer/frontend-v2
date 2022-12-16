@@ -1,24 +1,23 @@
+import { configService } from '@/services/config/config.service';
 import { ComputedRef } from 'vue';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import { GraphQLArgs, PoolsFallbackRepository } from '@balancer-labs/sdk';
+import {
+  GraphQLArgs,
+  PoolRepository as SDKPoolRepository,
+  PoolsFallbackRepository,
+} from '@balancer-labs/sdk';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
-
 export default class PoolRepository {
   repository: PoolsFallbackRepository;
   queryArgs: GraphQLArgs;
 
   constructor(private tokens: ComputedRef<TokenInfoMap>) {
-    const balancerApiRepository = this.initializeDecoratedAPIRepository();
-    const subgraphRepository = this.initializeDecoratedSubgraphRepository();
-    this.repository = new PoolsFallbackRepository(
-      [balancerApiRepository, subgraphRepository],
-      {
-        timeout: 30 * 1000,
-      }
-    );
+    this.repository = new PoolsFallbackRepository(this.buildProviders(), {
+      timeout: 30 * 1000,
+    });
     this.queryArgs = {};
   }
 
@@ -57,4 +56,25 @@ export default class PoolRepository {
       },
     };
   }
+
+  private buildProviders() {
+    const providers: SDKPoolRepository[] = [];
+    if (checkBalancerApiIsDefined()) {
+      const balancerApiRepository = this.initializeDecoratedAPIRepository();
+      providers.push(balancerApiRepository);
+    }
+    const subgraphRepository = this.initializeDecoratedSubgraphRepository();
+    providers.push(subgraphRepository);
+
+    return providers;
+  }
+}
+
+function checkBalancerApiIsDefined() {
+  const defined = configService.network.balancerApi;
+  if (!defined)
+    console.log(
+      `Skipping balancer api provider in your current network (${configService.network.chainName})`
+    );
+  return defined;
 }
