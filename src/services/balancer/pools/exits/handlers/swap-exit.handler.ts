@@ -112,7 +112,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       amountOut,
       this.lastSwapRoute.marketSp
     );
-
+    console.log({ amountsOut: { [tokenOut.address]: amountOut }, priceImpact });
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 
@@ -165,7 +165,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       amountOut,
       this.lastSwapRoute.marketSp
     );
-
+    console.log({ amountsOut: { [tokenOut.address]: amountOut }, priceImpact });
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 

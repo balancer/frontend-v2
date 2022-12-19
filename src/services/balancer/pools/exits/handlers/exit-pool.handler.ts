@@ -7,6 +7,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 
 export type AmountsOut = Record<Address, string>;
 
@@ -24,6 +25,7 @@ export type ExitParams = {
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
+  poolCalculator: PoolCalculator;
 };
 
 export type QueryOutput = {

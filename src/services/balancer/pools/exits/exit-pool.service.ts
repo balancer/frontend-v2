@@ -11,6 +11,7 @@ import {
   ExitPoolHandler,
   QueryOutput,
 } from './handlers/exit-pool.handler';
+import { LegacySwapExitHandler } from './handlers/legacy-swap-exit.handler';
 
 /**
  * ExitPoolService acts as an adapter to underlying handlers based on the pool
@@ -42,10 +43,19 @@ export class ExitPoolService {
    * @param {boolean} [swapExit=false] - Flag to ensure SwapExitHandler is used for exiting.
    * @returns {ExitPoolHandler} The ExitPoolHandler class to be used.
    */
-  setExitHandler(swapJoin = false): ExitPoolHandler {
+  setExitHandler(swapExit = false, hasPremintedBPT = true): ExitPoolHandler {
     const { pool, sdk, gasPriceServ } = this;
-
-    if (swapJoin) {
+    console.log({
+      swapExit,
+      hasPremintedBPT,
+    });
+    if (swapExit && !hasPremintedBPT) {
+      return (this.exitHandler = new LegacySwapExitHandler(
+        pool,
+        sdk,
+        gasPriceServ
+      ));
+    } else if (swapExit) {
       return (this.exitHandler = new SwapExitHandler(pool, sdk, gasPriceServ));
     } else if (isDeep(pool.value)) {
       return (this.exitHandler = new GeneralisedExitHandler(

@@ -6,6 +6,7 @@ import {
   fiatValueOf,
   flatTokenTree,
   isDeep,
+  isPreMintedBptType,
   tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePool';
@@ -20,7 +21,13 @@ import {
 import QUERY_KEYS, { QUERY_EXIT_ROOT_KEY } from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
+import {
+  bnSum,
+  bnum,
+  isSameAddress,
+  removeAddress,
+  selectByAddress,
+} from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { Pool, PoolToken } from '@/services/pool/types';
@@ -45,6 +52,7 @@ import {
 import { useQuery, useQueryClient } from 'vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 
 /**
  * TYPES
@@ -87,15 +95,17 @@ const provider = (props: Props) => {
   const propAmountsOut = ref<AmountOut[]>([]);
 
   /**
-   * SERVICES
-   */
-  const exitPoolService = new ExitPoolService(pool);
-
-  /**
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { injectTokens, getTokens, prices, balanceFor } = useTokens();
+  const {
+    injectTokens,
+    getTokens,
+    prices,
+    balanceFor,
+    tokens: allTokens,
+    balances,
+  } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -136,6 +146,12 @@ const provider = (props: Props) => {
   );
 
   /**
+   * SERVICES
+   */
+  const exitPoolService = new ExitPoolService(pool);
+  const poolCalculator = new PoolCalculator(pool, allTokens, balances, 'exit');
+
+  /**
    * COMPUTED
    */
   const isLoadingQuery = computed(
@@ -159,6 +175,9 @@ const provider = (props: Props) => {
   );
 
   const isDeepPool = computed((): boolean => isDeep(pool.value));
+  const hasPremintedBPT = computed((): boolean =>
+    isPreMintedBptType(pool.value.poolType)
+  );
 
   const shouldSignRelayer = computed(
     (): boolean =>
@@ -309,7 +328,10 @@ const provider = (props: Props) => {
     // Proportional exit, and BPT in is 0 or less
     if (!isSingleAssetExit.value && !hasBptIn.value) return;
 
-    exitPoolService.setExitHandler(isSingleAssetExit.value);
+    exitPoolService.setExitHandler(
+      isSingleAssetExit.value,
+      hasPremintedBPT.value
+    );
 
     // Invalidate previous query in order to prevent stale data
     queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
@@ -323,6 +345,7 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        poolCalculator,
       });
 
       priceImpact.value = output.priceImpact;
@@ -345,7 +368,10 @@ const provider = (props: Props) => {
     if (!hasFetchedPoolsForSor.value) return;
     if (!isSingleAssetExit.value) return;
 
-    exitPoolService.setExitHandler(isSingleAssetExit.value);
+    exitPoolService.setExitHandler(
+      isSingleAssetExit.value,
+      hasPremintedBPT.value
+    );
     singleAmountOut.max = '';
 
     try {
@@ -358,9 +384,11 @@ const provider = (props: Props) => {
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
         relayerSignature: '',
+        poolCalculator,
       });
 
-      singleAmountOut.max = output.amountsOut[singleAmountOut.address];
+      singleAmountOut.max =
+        selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
     } catch (error) {
       captureException(error);
       throw error;
@@ -381,6 +409,7 @@ const provider = (props: Props) => {
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
         relayerSignature: relayerSignature.value,
+        poolCalculator,
       });
     } catch (error) {
       txError.value = (error as Error).message;
@@ -403,7 +432,7 @@ const provider = (props: Props) => {
    */
   watch(isSingleAssetExit, _isSingleAssetExit => {
     bptIn.value = '';
-    exitPoolService.setExitHandler(_isSingleAssetExit);
+    exitPoolService.setExitHandler(_isSingleAssetExit, hasPremintedBPT.value);
     if (!_isSingleAssetExit) {
       setInitialPropAmountsOut();
     }
@@ -417,7 +446,10 @@ const provider = (props: Props) => {
     // refactoted probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
 
-    exitPoolService.setExitHandler(isSingleAssetExit.value);
+    exitPoolService.setExitHandler(
+      isSingleAssetExit.value,
+      hasPremintedBPT.value
+    );
 
     if (!props.isSingleAssetExit) {
       setInitialPropAmountsOut();

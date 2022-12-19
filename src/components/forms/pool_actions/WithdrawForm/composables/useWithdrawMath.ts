@@ -267,6 +267,7 @@ export default function useWithdrawMath(
   /**
    * The BPT value to be used for the withdrawal transaction without accounting for slippage.
    */
+  // Called when input amount is changed
   const fullBPTIn = computed((): string => {
     if (isProportional.value) {
       const _bpt = bnum(propBptIn.value)
@@ -286,6 +287,17 @@ export default function useWithdrawMath(
       return batchSwap.value?.returnAmounts?.[0]?.toString() || '0';
     } else if (isShallowComposableStablePool.value) return queryBptIn.value;
 
+    // This returns
+    console.log(
+      {
+        tokenOutAmount: tokenOutAmount.value,
+        tokenOutIndex: tokenOutIndex.value,
+      },
+      'fullBPTIn',
+      poolCalculator
+        .bptInForExactTokenOut(tokenOutAmount.value, tokenOutIndex.value)
+        .toString()
+    );
     return poolCalculator
       .bptInForExactTokenOut(tokenOutAmount.value, tokenOutIndex.value)
       .toString();
@@ -314,6 +326,7 @@ export default function useWithdrawMath(
     fullAmounts.value.some(amount => bnum(amount).gt(0))
   );
 
+  // Runs when changing token
   const singleAssetMaxes = computed((): string[] => {
     if (isDeepPool.value || isShallowComposableStablePool.value)
       return fetchedSingleAssetMaxes.value;
@@ -663,7 +676,9 @@ export default function useWithdrawMath(
    * High level function that uses withdrawal state to
    * decide what swap should be fetched and sets it.
    */
+  // Runs when shitching tokens
   async function fetchExitData(): Promise<void> {
+    // Returns here when selecting single asset
     if (!isDeepPool.value && !isShallowComposableStablePool.value) return;
 
     if (isShallowComposableStablePool.value) {
