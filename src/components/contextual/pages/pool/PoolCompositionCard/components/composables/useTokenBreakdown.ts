@@ -2,11 +2,13 @@ import { computed, Ref } from 'vue';
 import { bnum } from '@/lib/utils';
 import { PoolToken } from '@/services/pool/types';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { isNumber } from '@/lib/utils/numbers';
 
 export function useTokenBreakdown(
   token: Ref<PoolToken>,
   shareOfParentInPool: Ref<number>,
-  isDeepPool: Ref<boolean>
+  isDeepPool: Ref<boolean>,
+  myPoolPercentage: Ref<number>
 ) {
   const { fNum2, toFiat } = useNumbers();
 
@@ -26,7 +28,10 @@ export function useTokenBreakdown(
     return hasNestedTokens && isDeepPool.value;
   });
 
-  const balanceLabel = computed(() => {
+  const applyMyPoolPercentageTo = (value: string): number =>
+    (Number(value) * Number(myPoolPercentage.value)) / 100;
+
+  const balanceValue = computed(() => {
     if (isParentTokenInDeepPool.value) return '';
 
     if (token.value.priceRate && isDeepPool.value) {
@@ -34,33 +39,60 @@ export function useTokenBreakdown(
         .times(token.value.priceRate)
         .toString();
 
-      return fNum2(equivMainTokenBalance, FNumFormats.token);
+      return equivMainTokenBalance;
     }
 
-    return fNum2(token.value.balance, FNumFormats.token);
+    return token.value.balance;
   });
 
-  const fiatLabel = computed(() => {
+  const balanceLabel = computed(() => formatBalanceValue(balanceValue.value));
+  const myBalanceLabel = computed(() =>
+    formatBalanceValue(applyMyPoolPercentageTo(balanceValue.value))
+  );
+
+  function formatBalanceValue(value: string | number) {
+    if (!isNumber(value)) return value;
+    return fNum2(value, FNumFormats.token);
+  }
+
+  const fiatValue = computed(() => {
     if (isParentTokenInDeepPool.value) return '';
 
-    let fiatValue = toFiat(balance.value, token.value.address);
+    let value = toFiat(balance.value, token.value.address);
 
-    if (fiatValue === '0' && token.value.token?.latestUSDPrice) {
+    if (value === '0' && token.value.token?.latestUSDPrice) {
       // Attempt to use latest USD price from subgraph.
-      fiatValue = bnum(balance.value)
+      value = bnum(balance.value)
         .times(token.value.token.latestUSDPrice)
         .toString();
     }
-
-    if (fiatValue === '0') return '-';
-
-    return fNum2(fiatValue, FNumFormats.fiat);
+    if (fiatValue.value === '0') return '-';
+    return value;
   });
+
+  function formatFiatValue(value: string | number): string {
+    value = value.toString();
+    if (!isNumber(value)) return value;
+
+    return fNum2(value, FNumFormats.fiat);
+  }
+
+  const fiatLabel = computed(() => formatFiatValue(fiatValue.value));
+
+  const myFiatLabel = computed(() =>
+    formatFiatValue(applyMyPoolPercentageTo(fiatValue.value))
+  );
 
   const tokenWeightLabel = computed(() => {
     if (!token.value || !token.value.weight) return '';
     return fNum2(token.value.weight, FNumFormats.percent);
   });
 
-  return { balanceLabel, fiatLabel, tokenWeightLabel };
+  return {
+    balanceLabel,
+    myBalanceLabel,
+    fiatLabel,
+    myFiatLabel,
+    tokenWeightLabel,
+  };
 }

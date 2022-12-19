@@ -3,10 +3,22 @@ import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import PoolCompositionCard from './PoolCompositionCard.vue';
 import { render, screen, within } from '@testing-library/vue';
+import { ref } from 'vue';
 
 // TODO: refactor providers to avoid mocking useTokens
 vi.mock('@/composables/useTokens');
 vi.mock('@/services/web3/useWeb3');
+vi.mock('@/composables/staking/useStaking', () => {
+  return {
+    default: () => {
+      return {
+        userData: {
+          stakedSharesForProvidedPool: ref(1000),
+        },
+      };
+    },
+  };
+});
 
 function renderComponent() {
   render(PoolCompositionCard, {

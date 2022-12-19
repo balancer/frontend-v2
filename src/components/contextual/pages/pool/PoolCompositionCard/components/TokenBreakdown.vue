@@ -14,6 +14,7 @@ type Props = {
   parentLevel?: number;
   isWeighted: boolean;
   isDeepPool: boolean;
+  myPoolPercentage: number;
 };
 
 /**
@@ -24,7 +25,8 @@ const props = withDefaults(defineProps<Props>(), {
   shareOfParentInPool: 1,
 });
 
-const { token, shareOfParentInPool, isWeighted, isDeepPool } = toRefs(props);
+const { token, shareOfParentInPool, isWeighted, isDeepPool, myPoolPercentage } =
+  toRefs(props);
 
 /**
  * COMPOSABLES
@@ -34,7 +36,8 @@ const { explorerLinks } = useWeb3();
 const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
   token,
   shareOfParentInPool,
-  isDeepPool
+  isDeepPool,
+  myPoolPercentage
 );
 
 /**
@@ -127,6 +130,7 @@ const shareOfTokenInPool = computed((): number => {
       :parentLevel="currentLevel"
       :isWeighted="isWeighted"
       :isDeepPool="isDeepPool"
+      :myPoolPercentage="myPoolPercentage"
     />
   </template>
 </template>

@@ -14,11 +14,19 @@ vi.mock('@/composables/useTokens');
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
 const isDeepPool = ref(true);
 
+// Assuming that user owns 15% of the pool
+const applyMyPoolPercentageTo = number => number * 0.15;
+
 it('Works for a parent token in a deep nested pool', async () => {
   const token = ref(bbaDaiToken);
   const shareOfParentInPool = ref(1);
   const { result } = mount(() =>
-    useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
+    useTokenBreakdown(
+      token,
+      shareOfParentInPool,
+      isDeepPool,
+      applyMyPoolPercentageTo
+    )
   );
 
   // Hides parent token balance and fiat
@@ -38,7 +46,12 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
   it('for wrapped tokens (aDAi)', async () => {
     const aDaiToken = ref(bbaDaiToken.token?.pool?.tokens?.[0] as PoolToken);
     const { result } = mount(() =>
-      useTokenBreakdown(aDaiToken, shareOfParentInPool, isDeepPool)
+      useTokenBreakdown(
+        aDaiToken,
+        shareOfParentInPool,
+        isDeepPool,
+        applyMyPoolPercentageTo
+      )
     );
 
     expect(result.balanceLabel.value).toEqual('24,104');
@@ -52,7 +65,12 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
   it('for a non wrapped token (DAI)', async () => {
     const daiToken = ref(bbaDaiToken.token?.pool?.tokens?.[1] as PoolToken);
     const { result } = mount(() =>
-      useTokenBreakdown(daiToken, shareOfParentInPool, isDeepPool)
+      useTokenBreakdown(
+        daiToken,
+        shareOfParentInPool,
+        isDeepPool,
+        applyMyPoolPercentageTo
+      )
     );
 
     expect(result.balanceLabel.value).toEqual('17,695');
@@ -68,11 +86,16 @@ describe('Given a weighted pool (GRO-WETH)', () => {
   const shareOfParentInPool = ref(1);
   const isDeepPool = ref(false);
 
-  it('for GRO token', () => {
+  it('works for GRO token', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
+      useTokenBreakdown(
+        token,
+        shareOfParentInPool,
+        isDeepPool,
+        applyMyPoolPercentageTo
+      )
     );
 
     expect(result.balanceLabel.value).toEqual('408,785');
@@ -85,7 +108,12 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
+      useTokenBreakdown(
+        token,
+        shareOfParentInPool,
+        isDeepPool,
+        applyMyPoolPercentageTo
+      )
     );
 
     expect(result.balanceLabel.value).toEqual('95.0941');
@@ -98,7 +126,12 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
+      useTokenBreakdown(
+        token,
+        shareOfParentInPool,
+        isDeepPool,
+        applyMyPoolPercentageTo
+      )
     );
 
     expect(result.balanceLabel.value).toEqual('95.0941');
@@ -117,7 +150,12 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
+      useTokenBreakdown(
+        token,
+        shareOfParentInPool,
+        isDeepPool,
+        applyMyPoolPercentageTo
+      )
     );
 
     expect(result.balanceLabel.value).toEqual('408,785');
