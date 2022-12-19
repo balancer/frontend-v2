@@ -7,6 +7,8 @@ import {
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
+import { captureException } from '@sentry/browser';
+
 import {
   computed,
   ComputedRef,
@@ -181,7 +183,10 @@ export default function useJoinExit({
       }
       confirming.value = false;
     } catch (e) {
+      console.log(e);
+      captureException(e);
       state.submissionError = (e as Error).message;
+      trading.value = false;
       confirming.value = false;
     }
   }

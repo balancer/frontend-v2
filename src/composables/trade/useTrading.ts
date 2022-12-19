@@ -195,11 +195,17 @@ export default function useTrading(
   });
 
   const isConfirming = computed(
-    () => sor.confirming.value || gnosis.confirming.value
+    () =>
+      sor.confirming.value ||
+      gnosis.confirming.value ||
+      joinExit.confirming.value
   );
 
   const submissionError = computed(
-    () => sor.submissionError.value || gnosis.submissionError.value
+    () =>
+      sor.submissionError.value ||
+      gnosis.submissionError.value ||
+      joinExit.submissionError.value
   );
 
   // METHODS
