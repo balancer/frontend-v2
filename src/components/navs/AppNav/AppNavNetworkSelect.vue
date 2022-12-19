@@ -3,13 +3,13 @@ import { computed, ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import i18n from '@/plugins/i18n';
-import { setWindowLocation } from '@/lib/utils/browser';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import useNotifications from '@/composables/useNotifications';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+import { hardRedirectTo } from '@/plugins/router/nav-guards';
 
 export interface NetworkOption {
   id: string;
@@ -104,9 +104,8 @@ watch(chainId, (newChainId, oldChainId) => {
       n => Number(n.key) === newChainId
     );
     if (newNetwork) {
-      document.body.style.display = 'none';
       localStorage.setItem('networkId', newChainId.toString());
-      setWindowLocation(getNetworkChangeUrl(newNetwork));
+      hardRedirectTo(getNetworkChangeUrl(newNetwork));
     }
   }
 });
