@@ -241,6 +241,7 @@ export default function useTrading(
   function resetSubmissionError() {
     sor.submissionError.value = null;
     gnosis.submissionError.value = null;
+    joinExit.submissionError.value = null;
   }
 
   function setTradeGasless(flag: boolean) {
