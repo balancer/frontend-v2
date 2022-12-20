@@ -66,22 +66,24 @@ export class GasPriceService {
   ): Promise<GasSettings> {
     let gasSettings: GasSettings = {};
 
-    const gasLimit = await contractWithSigner.estimateGas[action](
-      ...params,
-      options
-    ).catch(err => {
-      return Promise.reject(err.error);
-    });
-    gasSettings.gasLimit = this.formatGasLimit(gasLimit.toNumber());
-
-    if (this.shouldSetGasPriceSettings(options)) {
-      gasSettings = await this.setGasPriceSettings(
-        gasSettings,
-        forceLegacyTxType
+    try {
+      const gasLimit = await contractWithSigner.estimateGas[action](
+        ...params,
+        options
       );
-    }
+      gasSettings.gasLimit = this.formatGasLimit(gasLimit.toNumber());
 
-    return gasSettings;
+      if (this.shouldSetGasPriceSettings(options)) {
+        gasSettings = await this.setGasPriceSettings(
+          gasSettings,
+          forceLegacyTxType
+        );
+      }
+
+      return gasSettings;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   private formatGasLimit(limit: number): number {
