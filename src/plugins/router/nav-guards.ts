@@ -7,7 +7,6 @@ import {
 } from '@/composables/useNetwork';
 import { isJoinsDisabled } from '@/composables/usePool';
 import config from '@/lib/config';
-import { setWindowLocation } from '@/lib/utils/browser';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
 
@@ -33,10 +32,11 @@ export function applyNavGuards(router: Router): Router {
  * @param {string} url - URL to redirect to.
  * @param {Router} router - vue-router.
  */
-function hardRedirectTo(url: string) {
+export function hardRedirectTo(url: string) {
   redirecting.value = true;
   document.body.style.display = 'none';
-  setWindowLocation(url);
+  window.location.href = url;
+  location.reload();
 }
 
 /**

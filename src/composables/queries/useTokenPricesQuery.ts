@@ -51,6 +51,7 @@ export default function useTokenPricesQuery(
     );
 
     prices = injectCustomTokens(prices, pricesToInject.value);
+    console.log('Fetching', Object.values(prices).length, 'prices');
     return prices;
   };
 

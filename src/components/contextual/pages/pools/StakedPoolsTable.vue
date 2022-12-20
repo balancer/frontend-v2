@@ -45,7 +45,7 @@ const poolsWithBoost = computed(() => {
 });
 
 const hiddenColumns = computed(() => {
-  const _hiddenColumns = ['poolVolume', 'poolValue', 'migrate', 'lockEndDate'];
+  const _hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
   if (isL2.value) _hiddenColumns.push('myBoost');
   return _hiddenColumns;
 });
@@ -65,6 +65,7 @@ const poolsToRenderKey = computed(() => JSON.stringify(poolsWithBoost.value));
         poolsType="staked"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
+        sortColumn="myBalance"
         :isLoading="isLoading"
         showPoolShares
         showBoost

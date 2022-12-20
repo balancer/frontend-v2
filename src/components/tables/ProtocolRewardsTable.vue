@@ -126,8 +126,9 @@ const hasClaimableBalance = computed((): boolean => {
       <BalTable
         :columns="columns"
         :data="rewardsData"
+        :noResultsLabel="$t('noResultsTable.noProtocolRevenue')"
         :isLoading="isLoading"
-        skeletonClass="h-64"
+        skeletonClass="h-24"
         :square="upToLargeBreakpoint"
       >
         <template #tokenColumnCell="{ token }">
