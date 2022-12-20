@@ -7,7 +7,11 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
   <AppNav />
   <section class="lg:py-8 dark:bg-gray-900">
     <div class="content-container">
-      <router-view />
+      <router-view v-slot="{ Component }" :key="$route.path">
+        <transition appear name="appear">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </div>
   </section>
   <Footer />

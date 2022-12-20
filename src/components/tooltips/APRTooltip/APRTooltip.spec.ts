@@ -174,7 +174,7 @@ describe('APRTooltip', () => {
   });
 
   describe('Token Aprs', () => {
-    it('Should show stETH staking reward APRs', () => {
+    it('Should show stETH token APRs', () => {
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
         tokenAprs: {
@@ -197,18 +197,16 @@ describe('APRTooltip', () => {
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR1.66%');
-      expect(getByTestId('yield-apr').textContent).toBe(
-        '1.66% stETH staking rewards APR'
-      );
+      expect(getByTestId('yield-apr').textContent).toBe('1.66% Token APR');
     });
 
-    it('Should show stMATIC staking reward APRs', () => {
+    it('Should show stMATIC token APRs', () => {
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
         tokenAprs: {
           total: 153,
           breakdown: {
-            [configService.network.addresses.stMATIC]: 153,
+            '0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4': 153,
           },
         },
         min: 153,
@@ -225,12 +223,10 @@ describe('APRTooltip', () => {
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR1.53%');
-      expect(getByTestId('yield-apr').textContent).toBe(
-        '1.53% stMATIC staking rewards APR'
-      );
+      expect(getByTestId('yield-apr').textContent).toBe('1.53% stMATIC APR');
     });
 
-    it('Should show rETH staking reward APRs', () => {
+    it('Should show rETH token APRs', () => {
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
         swapFees: 29,
@@ -254,8 +250,45 @@ describe('APRTooltip', () => {
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR1.02%');
-      expect(getByTestId('yield-apr').textContent).toBe(
-        '0.73% rETH staking rewards APR'
+      expect(getByTestId('yield-apr').textContent).toBe('0.73% Token APR');
+    });
+
+    it('Should show multiple token APRs with a generic header', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        swapFees: 48,
+        tokenAprs: {
+          total: 254,
+          breakdown: {
+            '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0': 118,
+            '0xac3E018457B222d93114458476f3E3416Abbe38F': 104,
+            '0xae78736Cd615f374D3085123A210448E74Fc6393': 32,
+          },
+        },
+        min: 102,
+        max: 102,
+      };
+      const poolMock: Pool = {
+        ...EmptyPoolMock,
+        tokensList: [configService.network.addresses.rETH],
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: poolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(getByTestId('total-apr').textContent).toBe('Total APR1.02%');
+      const yieldAprBreakdown = getByTestId('yield-apr').children[0];
+      expect(yieldAprBreakdown.children[0].textContent).toBe('2.54% Token APR');
+      expect(yieldAprBreakdown.children[1].children[0].textContent).toBe(
+        '1.18% wstETH APR'
+      );
+      expect(yieldAprBreakdown.children[1].children[1].textContent).toBe(
+        '1.04% sfrxETH APR'
+      );
+      expect(yieldAprBreakdown.children[1].children[2].textContent).toBe(
+        '0.32% rETH APR'
       );
     });
 

@@ -43,6 +43,7 @@ type Props = {
   showPoolShares?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
+  sortColumn?: string;
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
@@ -60,6 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
+  sortColumn: 'poolValue',
   hiddenColumns: () => [],
   showBoost: false,
   columnStates: () => ({}),
@@ -177,7 +179,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
 
       return isFinite(apr) ? apr : 0;
     },
-    width: 250,
+    width: 220,
   },
   {
     name: t('expiryDate'),
@@ -269,7 +271,7 @@ function iconAddresses(pool: PoolWithShares) {
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
       :initialState="{
-        sortColumn: 'poolValue',
+        sortColumn: sortColumn,
         sortDirection: 'desc',
       }"
       @load-more="emit('loadMore')"
