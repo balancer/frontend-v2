@@ -3,7 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, onUnmounted, ref, toRef } from 'vue';
+import { computed, onBeforeMount, onUnmounted, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
@@ -17,9 +17,12 @@ import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
-import { TransactionActionInfo } from '@/types/transactions';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useRelayerApproval, {
+  Relayer,
+} from '@/composables/trade/useRelayerApproval';
+import { lsGet } from '@/lib/utils';
 
 /**
  * TYPES
@@ -57,7 +60,7 @@ const {
   resetTxState,
   approvalActions: joinPoolApprovalActions,
 } = useJoinPool();
-
+const { action: gnosisApprovalAction } = useRelayerApproval(Relayer.GNOSIS);
 const approvalActions = ref(joinPoolApprovalActions.value);
 
 const tokensToApprove = computed(() =>
@@ -74,8 +77,7 @@ const { tokenApprovalActions } = useTokenApprovalActions(
 /**
  * COMPUTED
  */
-const actions = computed((): TransactionActionInfo[] => [
-  ...approvalActions.value,
+const actions = ref([
   ...tokenApprovalActions,
   {
     label: t('addLiquidity'),
@@ -127,6 +129,15 @@ async function handleTransaction(tx): Promise<void> {
     },
   });
 }
+
+onBeforeMount(() => {
+  const provider = lsGet('connectedProvider');
+  if (provider === 'gnosis') {
+    actions.value.unshift(gnosisApprovalAction.value);
+    return;
+  }
+  actions.value.unshift(...approvalActions.value);
+});
 
 onUnmounted(() => {
   // Reset tx state after Invest Modal is closed. Ready for another Invest transaction
