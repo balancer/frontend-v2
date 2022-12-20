@@ -74,6 +74,8 @@ export default function usePoolQuery(
       pool = await poolRepository.fetch(getQueryArgs());
     }
 
+    if (!pool) throw new Error('Pool does not exist');
+
     if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');
 
     // If the pool is cached from homepage it may not have onchain set, so update it
