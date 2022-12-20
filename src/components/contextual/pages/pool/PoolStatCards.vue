@@ -45,25 +45,23 @@ const aprLabel = computed((): string => {
 });
 
 const stats = computed(() => {
-  if (!props.pool) return [];
-
   return [
     {
       id: 'poolValue',
       label: t('poolValue'),
-      value: fNum2(props.pool.totalLiquidity || '0', FNumFormats.fiat),
+      value: fNum2(props.pool?.totalLiquidity || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {
       id: 'volumeTime',
       label: t('volumeTime', ['24h']),
-      value: fNum2(props.pool.volumeSnapshot || '0', FNumFormats.fiat),
+      value: fNum2(props.pool?.volumeSnapshot || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {
       id: 'feesTime',
       label: t('feesTime', ['24h']),
-      value: fNum2(props.pool.feesSnapshot || '0', FNumFormats.fiat),
+      value: fNum2(props.pool?.feesSnapshot || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {

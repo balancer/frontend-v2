@@ -28,13 +28,6 @@ jest.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
 jest.mock('@/locales');
 jest.mock('@/composables/useNumbers');
 jest.mock('@/composables/useTokens');
-jest.mock('@/composables/useApp', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      appLoading: false,
-    };
-  });
-});
 jest.mock('@/composables/staking/useStaking', () => {
   return jest.fn().mockImplementation(() => {
     return {
