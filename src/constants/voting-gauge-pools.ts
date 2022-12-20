@@ -511,6 +511,14 @@ export const POLYGON_POOLS: Pool[] = [
     id: '0xe2f706ef1f7240b803aae877c9c762644bb808d80002000000000000000008c2',
     network: Network.POLYGON,
   },
+  {
+    id: '0x4a0b73f0d13ff6d43e304a174697e3d5cfd310a400020000000000000000091c',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xe22483774bd8611be2ad2f4194078dac9159f4ba0000000000000000000008f0',
+    network: Network.POLYGON,
+  },
 ];
 
 export const OPTIMISM_POOLS: Pool[] = [
