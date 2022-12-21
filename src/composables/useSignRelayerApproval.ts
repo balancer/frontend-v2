@@ -6,10 +6,11 @@ import { configService } from '@/services/config/config.service';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { useI18n } from 'vue-i18n';
 import { TransactionActionInfo } from '@/types/transactions';
-import {
+import useRelayerApproval, {
   relayerAddressMap,
   Relayer as RelayerType,
 } from '@/composables/trade/useRelayerApproval';
+import { lsGet } from '@/lib/utils';
 
 /**
  * STATE
@@ -23,6 +24,9 @@ export default function useSignRelayerApproval(relayerType: RelayerType) {
   const { account, getSigner } = useWeb3();
   const { networkId } = useNetwork();
   const { t } = useI18n();
+  const { action: gnosisApprovalAction } = useRelayerApproval(
+    RelayerType.GNOSIS
+  );
 
   /**
    * METHODS
@@ -49,6 +53,15 @@ export default function useSignRelayerApproval(relayerType: RelayerType) {
     isSignAction: true,
   };
 
+  function getAction() {
+    const provider = lsGet('connectedProvider');
+    if (provider === 'gnosis') {
+      return gnosisApprovalAction.value;
+    }
+
+    return signRelayerAction;
+  }
+
   /**
    * WATCHERS
    */
@@ -59,6 +72,6 @@ export default function useSignRelayerApproval(relayerType: RelayerType) {
   return {
     relayerSignature,
     signRelayerApproval,
-    signRelayerAction,
+    signRelayerAction: getAction(),
   };
 }
