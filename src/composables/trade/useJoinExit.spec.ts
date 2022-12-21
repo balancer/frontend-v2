@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { mount } from 'vue-composable-tester';
 
 import useJoinExit from '@/composables/trade/useJoinExit';
-import { configService } from '@/services/config/config.service';
+import BigNumber from 'bignumber.js';
 
 jest.mock('vue-i18n');
 jest.mock('vuex');
@@ -15,49 +15,65 @@ jest.mock('@/locales');
 jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 
-const mockNativeAssetAddress = configService.network.nativeAsset.address;
-const mockEthPrice = 3000;
-const mockTokenPrice = 0.2;
-
 jest.mock('@/composables/useTokens', () => {
   return jest.fn().mockImplementation(() => {
     return {
       injectTokens: jest.fn().mockImplementation(),
-      priceFor: jest.fn().mockImplementation(address => {
-        if (address === mockNativeAssetAddress) {
-          return mockEthPrice;
-        }
-        return mockTokenPrice;
-      }),
+      priceFor: jest.fn().mockImplementation(),
       useTokens: jest.fn().mockImplementation(),
       getToken: jest.fn().mockImplementation(),
     };
   });
 });
 
-const mockTokenInfo = {
-  chainId: 1,
-  address: '0x0',
-  name: 'mockTokenIn',
+jest.mock('@/composables/useSignRelayerApproval', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      relayerSignature: '-',
+    };
+  });
+});
+
+const mockAmount = new BigNumber(10);
+jest.mock('@/lib/balancer.sdk', () => {
+  return {
+    balancer: {
+      sor: {
+        getSwaps: () => {
+          return {
+            returnAmount: mockAmount,
+          };
+        },
+      },
+    },
+  };
+});
+
+const mockTokenInfoIn = {
+  chainId: 5,
+  address: '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
+  name: 'Balancer',
   decimals: 18,
-  symbol: 'MTI',
+  symbol: 'BAL',
+};
+const mockTokenInfoOut = {
+  chainId: 5,
+  address: '0xe0C9275E44Ea80eF17579d33c55136b7DA269aEb',
+  name: 'USDC',
+  decimals: 18,
+  symbol: 'USDC',
 };
 
-const computedMockTokenInfo = computed(() => mockTokenInfo);
-const conputedTokenInAmountScaled = computed(() => parseFixed('1'));
-const conputedTokenOutAmountScaled = computed(() => parseFixed('1'));
-
 const mockProps = {
-  exactIn: ref(false),
-  tokenInAddressInput: ref('0x0'),
-  tokenInAmountInput: ref('1'),
-  tokenOutAddressInput: ref('0x0'),
-  tokenOutAmountInput: ref('1'),
-  tokenInAmountScaled: conputedTokenInAmountScaled,
-  tokenOutAmountScaled: conputedTokenOutAmountScaled,
-  wrapType: ref(0),
-  tokenIn: computedMockTokenInfo,
-  tokenOut: computedMockTokenInfo,
+  exactIn: ref(true),
+  tokenInAddressInput: ref(mockTokenInfoIn.address),
+  tokenInAmountInput: ref('10'),
+  tokenOutAddressInput: ref(mockTokenInfoOut.address),
+  tokenOutAmountInput: ref('0'),
+  tokenInAmountScaled: computed(() => parseFixed('1000')),
+  tokenOutAmountScaled: computed(() => parseFixed('0')),
+  tokenIn: computed(() => mockTokenInfoIn),
+  tokenOut: computed(() => mockTokenInfoOut),
   slippageBufferRate: computed(() => 1),
   pools: ref([]),
 };
@@ -77,13 +93,8 @@ describe('useJoinExit', () => {
 
   it('Should pass return an available joinExit trade', async () => {
     const { result: joinExit } = mount(() => useJoinExit(mockProps));
-    console.log(joinExit);
-    expect(1).toBeTruthy();
-    // joinExit.swapInfo.value?.returnAmount
-  });
-
-  it('Should pass return a zero swapInfo when joinExit trade not available', async () => {
-    // joinExit.swapInfo.value?.returnAmount.isZero()
-    expect(1).toBeTruthy();
+    expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(
+      Number(mockAmount)
+    );
   });
 });

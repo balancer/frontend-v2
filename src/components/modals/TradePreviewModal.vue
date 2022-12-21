@@ -43,7 +43,7 @@ const emit = defineEmits(['trade', 'close']);
 const { t } = useI18n();
 const { fNum2, toFiat } = useNumbers();
 const { tokens, balanceFor, approvalRequired } = useTokens();
-const { relayerSignature, signRelayerApproval } = useSignRelayerApproval(
+const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
   Relayer.BATCH_V4
 );
 const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
@@ -403,20 +403,7 @@ const actions = computed((): TransactionActionInfo[] => [
         },
       ]
     : []),
-  ...(showBatchRelayerApprovalStep.value
-    ? [
-        {
-          label: t('approveBatchRelayer'),
-          loadingLabel: t('approvingBatchRelayer'),
-          confirmingLabel: t('approveBatchRelayer'),
-          action: signRelayerApproval as () => Promise<any>,
-          isSignAction: true,
-          stepTooltip: t(
-            'tradeSummary.transactionTypesTooltips.batchRelayerApproval.content'
-          ),
-        },
-      ]
-    : []),
+  ...(showBatchRelayerApprovalStep.value ? [signRelayerAction] : []),
   ...(showTokenApprovalStep.value
     ? [
         {
