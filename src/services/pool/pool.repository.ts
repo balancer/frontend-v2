@@ -1,4 +1,3 @@
-import { configService } from '@/services/config/config.service';
 import { ComputedRef } from 'vue';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
@@ -10,6 +9,8 @@ import {
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
+import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
+
 export default class PoolRepository {
   repository: PoolsFallbackRepository;
   queryArgs: GraphQLArgs;
@@ -59,7 +60,7 @@ export default class PoolRepository {
 
   private buildProviders() {
     const providers: SDKPoolRepository[] = [];
-    if (checkBalancerApiIsDefined()) {
+    if (isBalancerApiDefined()) {
       const balancerApiRepository = this.initializeDecoratedAPIRepository();
       providers.push(balancerApiRepository);
     }
@@ -68,13 +69,4 @@ export default class PoolRepository {
 
     return providers;
   }
-}
-
-function checkBalancerApiIsDefined() {
-  const defined = configService.network.balancerApi;
-  if (!defined)
-    console.log(
-      `Skipping balancer api provider in your current network (${configService.network.chainName})`
-    );
-  return defined;
 }

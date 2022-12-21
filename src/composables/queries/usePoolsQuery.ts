@@ -13,6 +13,7 @@ import {
   GraphQLArgs,
   PoolsFallbackRepository,
   PoolsRepositoryFetchOptions,
+  PoolRepository as SDKPoolRepository,
 } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
@@ -21,6 +22,7 @@ import { tokenTreeLeafs } from '../usePool';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
+import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -45,8 +47,6 @@ export default function usePoolsQuery(
   const { injectTokens, tokens: tokenMeta, dynamicDataLoading } = useTokens();
   const { networkId } = useNetwork();
 
-  let balancerApiRepository = initializeDecoratedAPIRepository();
-  let subgraphRepository = initializeDecoratedSubgraphRepository();
   let poolsRepository = initializePoolsRepository();
 
   /**
@@ -54,12 +54,9 @@ export default function usePoolsQuery(
    */
 
   function initializePoolsRepository(): PoolsFallbackRepository {
-    const fallbackRepository = new PoolsFallbackRepository(
-      [balancerApiRepository, subgraphRepository],
-      {
-        timeout: 30 * 1000,
-      }
-    );
+    const fallbackRepository = new PoolsFallbackRepository(buildProviders(), {
+      timeout: 30 * 1000,
+    });
     return fallbackRepository;
   }
 
@@ -102,6 +99,18 @@ export default function usePoolsQuery(
         return balancerSubgraphService.pools.skip;
       },
     };
+  }
+
+  function buildProviders() {
+    const providers: SDKPoolRepository[] = [];
+    if (isBalancerApiDefined()) {
+      const balancerApiRepository = initializeDecoratedAPIRepository();
+      providers.push(balancerApiRepository);
+    }
+    const subgraphRepository = initializeDecoratedSubgraphRepository();
+    providers.push(subgraphRepository);
+
+    return providers;
   }
 
   function getQueryArgs(options: PoolsRepositoryFetchOptions): GraphQLArgs {
@@ -161,8 +170,6 @@ export default function usePoolsQuery(
   watch(
     filterTokens,
     () => {
-      balancerApiRepository = initializeDecoratedAPIRepository();
-      subgraphRepository = initializeDecoratedSubgraphRepository();
       poolsRepository = initializePoolsRepository();
     },
     { deep: true }
