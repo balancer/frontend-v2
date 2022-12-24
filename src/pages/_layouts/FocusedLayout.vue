@@ -11,8 +11,11 @@ const { getReturnRoute } = useReturnRoute();
         <BalIcon name="x" size="lg" />
       </BalBtn>
     </div>
-
-    <router-view :key="$route.path" />
+    <router-view v-slot="{ Component }" :key="$route.path">
+      <transition appear name="appear">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
