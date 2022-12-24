@@ -7,7 +7,7 @@ import useNumbers, { FNumFormats } from './useNumbers';
 import { fiatValueOf } from './usePool';
 import useWeb3 from '@/services/web3/useWeb3';
 
-export function useMyBalance(pool: Pool) {
+export function useUserPoolPercentage(pool: Pool) {
   const { isWalletReady } = useWeb3();
   const { fNum2 } = useNumbers();
   const { balanceFor } = useTokens();

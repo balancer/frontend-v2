@@ -1,13 +1,12 @@
 import { ref } from 'vue';
 import { mount } from 'vue-composable-tester';
-import { useMyBalance } from './useMyBalance';
+import { useUserPoolPercentage } from './useUserPoolPercentage';
+import { aPool } from '@tests/unit/builders/pool.builders';
 
-import { Pool } from '@/services/pool/types';
-import { mock } from 'vitest-mock-extended';
-
-const BoostedPoolMock = mock<Pool>();
+const BoostedPoolMock = aPool();
 BoostedPoolMock.totalLiquidity = '100';
 BoostedPoolMock.totalShares = '100';
+
 const stakedShares = '5';
 const bptBalance = '10';
 
@@ -35,7 +34,7 @@ vi.mock('@/composables/useTokens', () => {
   };
 });
 
-const { result } = mount(() => useMyBalance(BoostedPoolMock));
+const { result } = mount(() => useUserPoolPercentage(BoostedPoolMock));
 
 describe('useMyBalance', () => {
   it('adds my bpt and my stacked shares to calculate bptBalance', () => {
@@ -74,11 +73,8 @@ describe('useMyBalance', () => {
 });
 
 test('Generator', () => {
-  const poolMock = mock<Pool>();
+  const poolMock = aPool();
   poolMock.totalLiquidity = '100';
-
-  // const data = generator.generate('Pool');
-  console.log('CUCU', poolMock);
+  console.log('poolMock', poolMock);
   console.log('totalLiquidity', poolMock.totalLiquidity);
-  // console.log(data);
 });

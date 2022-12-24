@@ -6,7 +6,7 @@ import { toRefs } from 'vue';
 
 import { isWeightedLike } from '@/composables/usePool';
 import TokenBreakdown from './components/TokenBreakdown.vue';
-import { useMyBalance } from '@/composables/useMyBalance';
+import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 
 /**
  * TYPES
@@ -27,7 +27,7 @@ const isWeighted = isWeightedLike(pool.value.poolType);
  */
 const { isDeepPool } = usePool(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
-const { myPoolPercentage } = useMyBalance(pool.value);
+const { myPoolPercentage } = useUserPoolPercentage(pool.value);
 
 /**
  * METHODS
