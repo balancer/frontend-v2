@@ -4,9 +4,9 @@ import {
   computed,
   ComputedRef,
   InjectionKey,
+  onBeforeMount,
   provide,
   reactive,
-  ref,
   Ref,
   toRef,
   toRefs,
@@ -42,12 +42,14 @@ import {
  * TYPES
  */
 export interface TokensProviderState {
+  loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
   injectedPrices: TokenPrices;
 }
 
 export interface TokensProviderResponse {
+  loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
   injectedPrices: Ref<TokenPrices>;
@@ -135,6 +137,7 @@ export default {
     };
 
     const state: TokensProviderState = reactive({
+      loading: true,
       injectedTokens: {
         [networkConfig.nativeAsset.address]: nativeAsset,
       },
@@ -199,6 +202,7 @@ export default {
      * The prices, balances and allowances maps provide dynamic
      * metadata for each token in the tokens state array.
      ****************************************************************/
+    const pricesQueryEnabled = computed(() => !state.loading);
     const {
       data: priceData,
       isSuccess: priceQuerySuccess,
@@ -208,7 +212,7 @@ export default {
     } = useTokenPricesQuery(
       tokenAddresses,
       toRef(state, 'injectedPrices'),
-      ref(true),
+      pricesQueryEnabled,
       {
         keepPreviousData: true,
         refetchOnWindowFocus: false,
@@ -495,6 +499,16 @@ export default {
       }
       return maxAmount;
     }
+
+    /**
+     * LIFECYCLE
+     */
+    onBeforeMount(async () => {
+      // Inject veBAL because it's not in tokenlists.
+      const { veBAL } = configService.network.addresses;
+      await injectTokens([veBAL]);
+      state.loading = false;
+    });
 
     provide(TokensProviderSymbol, {
       // state
