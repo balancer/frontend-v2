@@ -36,7 +36,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     const userAddress = await params.signer.getAddress();
     await this.queryExit(params);
     if (!this.lastSwapRoute)
-      throw new Error('Could not fetch swap route for join.');
+      throw new Error('Could not fetch swap route for exit.');
 
     const swap = this.getSwapAttributes(
       params.exitType,

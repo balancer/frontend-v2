@@ -8,6 +8,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
 
 export type AmountsOut = Record<Address, string>;
 
@@ -26,6 +27,7 @@ export type ExitParams = {
   slippageBsp: number;
   relayerSignature?: string;
   poolCalculator: PoolCalculator;
+  poolExchange: PoolExchange;
 };
 
 export type QueryOutput = {

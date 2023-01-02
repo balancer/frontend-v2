@@ -53,6 +53,7 @@ import { useQuery, useQueryClient } from 'vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
 
 /**
  * TYPES
@@ -150,6 +151,7 @@ const provider = (props: Props) => {
    */
   const exitPoolService = new ExitPoolService(pool);
   const poolCalculator = new PoolCalculator(pool, allTokens, balances, 'exit');
+  const poolExchange = new PoolExchange(pool);
 
   /**
    * COMPUTED
@@ -346,6 +348,7 @@ const provider = (props: Props) => {
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
         poolCalculator,
+        poolExchange,
       });
 
       priceImpact.value = output.priceImpact;
@@ -385,6 +388,7 @@ const provider = (props: Props) => {
         prices: prices.value,
         relayerSignature: '',
         poolCalculator,
+        poolExchange,
       });
 
       singleAmountOut.max =
@@ -410,6 +414,7 @@ const provider = (props: Props) => {
         prices: prices.value,
         relayerSignature: relayerSignature.value,
         poolCalculator,
+        poolExchange,
       });
     } catch (error) {
       txError.value = (error as Error).message;

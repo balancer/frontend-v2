@@ -1,16 +1,12 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { getTimestampSecondsFromNow } from '@/composables/useTime';
-import { POOLS } from '@/constants/pools';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { getMinusSlippage } from '@/composables/useSlippage';
 
-import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
-import { vaultService } from '@/services/contracts/vault.service';
+import { indexOfAddress, isSameAddress, selectByAddress } from '@/lib/utils';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, BatchSwap, SwapInfo, SwapType } from '@balancer-labs/sdk';
+import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { BigNumber } from '@ethersproject/bignumber';
-import { JsonRpcSigner } from '@ethersproject/providers';
+import { formatFixed } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
@@ -26,7 +22,7 @@ import {
  * the pool.
  */
 export class LegacySwapExitHandler implements ExitPoolHandler {
-  private lastSwapRoute?: SwapInfo;
+  private bptIn?: string;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -35,29 +31,67 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
   ) {}
 
   async exit(params: ExitParams): Promise<TransactionResponse> {
-    const userAddress = await params.signer.getAddress();
+    console.log('params', params, 'pool', this.pool);
+    const maxedOut: boolean = params.exitType === ExitType.GivenIn;
+    const tokenOut = selectByAddress(
+      params.tokenInfo,
+      params.amountsOut[0].address
+    );
+
+    if (!tokenOut) {
+      throw new Error('Could not find exit token in pool tokens list.');
+    }
+
+    const amountOut = maxedOut
+      ? // If maxed out, we need to subtract the slippage from the amount
+        getMinusSlippage(
+          params.amountsOut[0].value,
+          tokenOut.decimals,
+          params.slippageBsp
+        )
+      : params.amountsOut[0].value;
+
+    const allPoolTokens: string[] = this.pool.value.tokens.map(
+      token => token.address
+    );
+
+    const tokenIndex = indexOfAddress(allPoolTokens, tokenOut.address);
+    this.pool.value.tokensList.findIndex(address =>
+      isSameAddress(address, tokenOut.address)
+    );
     await this.queryExit(params);
-    if (!this.lastSwapRoute)
-      throw new Error('Could not fetch swap route for join.');
 
-    const swap = this.getSwapAttributes(
-      params.exitType,
-      this.lastSwapRoute,
-      params.slippageBsp,
-      userAddress
-    );
+    // Set token amounts to 0
+    const allPoolTokensAmounts = [...allPoolTokens.map(() => '0')];
+    // Set the exit token amount to amountOut
+    allPoolTokensAmounts[tokenIndex] = amountOut;
 
-    const { kind, swaps, assets, funds, limits } = swap.attributes as BatchSwap;
-    return vaultService.batchSwap(
-      kind,
-      swaps,
-      assets,
-      funds,
-      limits as string[]
-    );
+    if (!this.bptIn) throw new Error('Could not calculate bptIn.');
+    console.log('parparp', [
+      params.signer,
+      allPoolTokensAmounts,
+      allPoolTokens,
+      this.bptIn,
+      maxedOut ? tokenIndex : null,
+      !maxedOut,
+    ]);
+    const tx = await params.poolExchange
+      .exit(
+        params.signer,
+        allPoolTokensAmounts,
+        allPoolTokens,
+        this.bptIn,
+        maxedOut ? tokenIndex : null,
+        !maxedOut
+      )
+      .catch((error: Error) => {
+        throw new Error(error.message);
+      });
+    return tx;
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
+    console.log('queryExit params', params);
     if (params.exitType === ExitType.GivenIn) {
       return this.queryOutGivenIn(params);
     } else {
@@ -97,7 +131,7 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
           .toString(),
         tokenOut.decimals
       );
-
+      this.bptIn = bptIn;
       const result = {
         amountsOut: { [tokenOut.address]: maxOut },
         priceImpact: 0,
@@ -134,9 +168,12 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
     // signer,
     poolCalculator,
   }: ExitParams): Promise<QueryOutput> {
+    const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
-    if (!tokenOut)
-      throw new Error('Could not find exit token in pool tokens list.');
+    if (!tokenOut || !tokenIn)
+      throw new Error('Missing critical token metadata.');
+
+    const amountOut = amountsOut[0].value;
     const tokenOutIndex = this.pool.value.tokensList.findIndex(address =>
       isSameAddress(address, tokenOut.address)
     );
@@ -146,69 +183,18 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
       tokenOut.decimals
     );
 
-    const amountOut = poolCalculator
+    this.bptIn = poolCalculator
       .bptInForExactTokenOut(safeAmountOut, tokenOutIndex)
       .toString();
+    // Not needed
+    const amountIn = formatFixed(this.bptIn, tokenIn.decimals);
 
     const result = {
+      amountIn,
       amountsOut: { [tokenOut.address]: amountOut },
       priceImpact: 0,
     };
     console.log({ queryInGivenOut: result });
     return result;
-  }
-
-  private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {
-    let price: number;
-
-    const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (gasPriceParams) {
-      price = gasPriceParams.price;
-    } else {
-      price = (await signer.getGasPrice()).toNumber();
-    }
-
-    if (!price) throw new Error('Failed to fetch gas price.');
-
-    return BigNumber.from(price);
-  }
-
-  private calcPriceImpact(
-    amountIn: string,
-    amountOut: string,
-    marketSp: string
-  ): number {
-    const effectivePrice = bnum(amountIn).div(amountOut);
-    const priceImpact = effectivePrice.div(marketSp).minus(1) || 1; // If fails to calculate return error value of 100%
-
-    // Don't return negative price impact
-    return Math.max(0, priceImpact.toNumber());
-  }
-
-  private getSwapAttributes(
-    exitType: ExitType,
-    swapInfo: SwapInfo,
-    maxSlippage: number,
-    userAddress: string
-  ) {
-    const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
-    const kind =
-      exitType === ExitType.GivenIn
-        ? SwapType.SwapExactIn
-        : SwapType.SwapExactOut;
-
-    return this.sdk.swaps.buildSwap({
-      userAddress,
-      swapInfo,
-      kind,
-      deadline,
-      maxSlippage,
-    });
-  }
-
-  private formatAddressForSor(address: string): string {
-    return isSameAddress(address, NATIVE_ASSET_ADDRESS)
-      ? POOLS.ZeroAddress
-      : address;
   }
 }
