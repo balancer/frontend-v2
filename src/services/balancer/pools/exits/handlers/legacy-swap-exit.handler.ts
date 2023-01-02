@@ -6,9 +6,9 @@ import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { formatFixed } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 
 import {
   ExitParams,
@@ -23,15 +23,17 @@ import {
  */
 export class LegacySwapExitHandler implements ExitPoolHandler {
   private bptIn?: string;
+  private allPoolTokens: string[];
 
   constructor(
     public readonly pool: Ref<Pool>,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
-  ) {}
+  ) {
+    this.allPoolTokens = this.pool.value.tokens.map(token => token.address);
+  }
 
   async exit(params: ExitParams): Promise<TransactionResponse> {
-    console.log('params', params, 'pool', this.pool);
     const maxedOut: boolean = params.exitType === ExitType.GivenIn;
     const tokenOut = selectByAddress(
       params.tokenInfo,
@@ -51,37 +53,27 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
         )
       : params.amountsOut[0].value;
 
-    const allPoolTokens: string[] = this.pool.value.tokens.map(
-      token => token.address
-    );
-
-    const tokenIndex = indexOfAddress(allPoolTokens, tokenOut.address);
+    const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOut.address);
     this.pool.value.tokensList.findIndex(address =>
       isSameAddress(address, tokenOut.address)
     );
     await this.queryExit(params);
 
-    // Set token amounts to 0
-    const allPoolTokensAmounts = [...allPoolTokens.map(() => '0')];
-    // Set the exit token amount to amountOut
-    allPoolTokensAmounts[tokenIndex] = amountOut;
-
     if (!this.bptIn) throw new Error('Could not calculate bptIn.');
-    console.log('parparp', [
-      params.signer,
-      allPoolTokensAmounts,
-      allPoolTokens,
-      this.bptIn,
-      maxedOut ? tokenIndex : null,
-      !maxedOut,
-    ]);
+
+    const fullAmounts = this.getFullAmounts(
+      this.allPoolTokens,
+      tokenOutIndex,
+      amountOut
+    );
+
     const tx = await params.poolExchange
       .exit(
         params.signer,
-        allPoolTokensAmounts,
-        allPoolTokens,
+        fullAmounts,
+        this.allPoolTokens,
         this.bptIn,
-        maxedOut ? tokenIndex : null,
+        maxedOut ? tokenOutIndex : null,
         !maxedOut
       )
       .catch((error: Error) => {
@@ -91,7 +83,6 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
-    console.log('queryExit params', params);
     if (params.exitType === ExitType.GivenIn) {
       return this.queryOutGivenIn(params);
     } else {
@@ -124,20 +115,15 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
     const tokenIndex = this.pool.value.tokensList.findIndex(address =>
       isSameAddress(address, tokenOut.address)
     );
+
+    let maxOut: string;
     try {
-      const maxOut = formatUnits(
+      maxOut = formatUnits(
         poolCalculator
           .exactBPTInForTokenOut(bptBalanceScaled, tokenIndex)
           .toString(),
         tokenOut.decimals
       );
-      this.bptIn = bptIn;
-      const result = {
-        amountsOut: { [tokenOut.address]: maxOut },
-        priceImpact: 0,
-      };
-      console.log({ queryOutGivenIn: result });
-      return result;
     } catch (error) {
       throw new Error('SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT');
       // TODO: Handle this error
@@ -156,6 +142,29 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
       //   });
       // }
     }
+
+    const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOut.address);
+    const amountOut = amountsOut[0].value || '0';
+    const fullAmounts = this.getFullAmounts(
+      this.allPoolTokens,
+      tokenOutIndex,
+      amountOut
+    );
+    this.bptIn = bptIn;
+
+    const priceImpact = this.getPriceImpact({
+      poolCalculator,
+      fullAmounts,
+      exactOut: true,
+      tokenOutIndex,
+      fullBPTIn: this.bptIn,
+    });
+    const result = {
+      amountsOut: { [tokenOut.address]: maxOut },
+      priceImpact,
+    };
+
+    return result;
   }
 
   /**
@@ -174,9 +183,7 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
       throw new Error('Missing critical token metadata.');
 
     const amountOut = amountsOut[0].value;
-    const tokenOutIndex = this.pool.value.tokensList.findIndex(address =>
-      isSameAddress(address, tokenOut.address)
-    );
+    const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOut.address);
 
     const safeAmountOut = overflowProtected(
       amountsOut[0].value,
@@ -186,15 +193,59 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
     this.bptIn = poolCalculator
       .bptInForExactTokenOut(safeAmountOut, tokenOutIndex)
       .toString();
-    // Not needed
-    const amountIn = formatFixed(this.bptIn, tokenIn.decimals);
 
+    const fullAmounts = this.getFullAmounts(
+      this.allPoolTokens,
+      tokenOutIndex,
+      amountOut
+    );
+
+    const priceImpact = this.getPriceImpact({
+      poolCalculator,
+      fullAmounts,
+      exactOut: true,
+      tokenOutIndex,
+      fullBPTIn: this.bptIn,
+    });
     const result = {
-      amountIn,
       amountsOut: { [tokenOut.address]: amountOut },
-      priceImpact: 0,
+      priceImpact,
     };
-    console.log({ queryInGivenOut: result });
+
     return result;
+  }
+
+  private getPriceImpact({
+    poolCalculator,
+    fullAmounts,
+    exactOut,
+    tokenOutIndex,
+    fullBPTIn,
+  }: {
+    poolCalculator: PoolCalculator;
+    fullAmounts: string[];
+    exactOut: boolean;
+    tokenOutIndex: number;
+    fullBPTIn: string;
+  }): number {
+    return poolCalculator
+      .priceImpact(fullAmounts, {
+        exactOut: exactOut,
+        tokenIndex: tokenOutIndex,
+        queryBPT: fullBPTIn,
+      })
+      .toNumber();
+  }
+
+  private getFullAmounts(
+    poolTokens: string[],
+    tokenOutIndex: number,
+    tokenOutAmount: string
+  ): string[] {
+    // Set token amounts to 0
+    const allPoolTokensAmounts = poolTokens.map(() => '0');
+    // Set the exit token amount to tokenOutAmount
+    allPoolTokensAmounts[tokenOutIndex] = tokenOutAmount;
+    return allPoolTokensAmounts;
   }
 }
