@@ -29,10 +29,6 @@ input {
   @apply text-gray-900 dark:text-gray-50;
 }
 
-#storybook-app {
-  @apply text-gray-900 dark:text-gray-50;
-}
-
 a {
   @apply cursor-pointer;
 }
