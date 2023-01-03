@@ -1,53 +1,33 @@
-import { computed } from 'vue';
-import useTokens from './useTokens';
 import { bnum } from '@/lib/utils';
-import useStaking from './staking/useStaking';
 import { Pool } from '@/services/pool/types';
-import useNumbers, { FNumFormats } from './useNumbers';
-import { fiatValueOf } from './usePool';
-import useWeb3 from '@/services/web3/useWeb3';
+import { computed } from 'vue';
+import useStaking from './staking/useStaking';
+import useTokens from './useTokens';
+import useNumbers from '@/composables/useNumbers';
 
 export function useUserPoolPercentage(pool: Pool) {
-  const { isWalletReady } = useWeb3();
-  const { fNum2 } = useNumbers();
   const { balanceFor } = useTokens();
   const {
     userData: { stakedSharesForProvidedPool },
   } = useStaking();
+  const { fNum2 } = useNumbers();
 
-  const bptBalance = computed(() =>
-    bnum(balanceFor(pool.address)).plus(stakedSharesForProvidedPool.value)
+  const userPoolPercentage = computed(() => {
+    const bptBalance = bnum(balanceFor(pool.address)).plus(
+      stakedSharesForProvidedPool.value
+    );
+    return bptBalance.div(bnum(pool.totalLiquidity)).multipliedBy(100);
+  });
+
+  const userPoolPercentageLabel = computed(
+    () =>
+      fNum2(userPoolPercentage.value.toString(), {
+        maximumSignificantDigits: 2,
+      }) + '%'
   );
-
-  const myPoolPercentage = computed(() =>
-    bptBalance.value.div(bnum(pool.totalLiquidity)).multipliedBy(100)
-  );
-
-  const bptBalanceWithoutStaked = computed((): string =>
-    bnum(balanceFor(pool.address)).toString()
-  );
-
-  const fiatValue = computed(() =>
-    fiatValueOf(pool, bptBalance.value.toString())
-  );
-
-  const formattedFiatValue = computed(() =>
-    isWalletReady ? fNum2(fiatValue.value, FNumFormats.fiat) : '-'
-  );
-
-  const formattedTotalLiquidityFiatValue = computed(() =>
-    isWalletReady ? fNum2(pool.totalLiquidity, FNumFormats.fiat) : '-'
-  );
-
-  const poolLiquidity = computed(() => pool.totalLiquidity || 0);
 
   return {
-    bptBalance,
-    bptBalanceWithoutStaked,
-    formattedFiatValue,
-    fiatValue,
-    poolLiquidity,
-    formattedTotalLiquidityFiatValue,
-    myPoolPercentage,
+    userPoolPercentage,
+    userPoolPercentageLabel,
   };
 }

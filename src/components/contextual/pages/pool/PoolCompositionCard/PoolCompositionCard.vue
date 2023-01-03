@@ -2,11 +2,12 @@
 import useBreakpoints from '@/composables/useBreakpoints';
 import { removeBptFrom, usePool } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
-import { toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs } from 'vue';
 
 import { isWeightedLike } from '@/composables/usePool';
 import TokenBreakdown from './components/TokenBreakdown.vue';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -27,14 +28,49 @@ const isWeighted = isWeightedLike(pool.value.poolType);
  */
 const { isDeepPool } = usePool(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
-const { myPoolPercentage } = useUserPoolPercentage(pool.value);
+const { userPoolPercentage, userPoolPercentageLabel } = useUserPoolPercentage(
+  pool.value
+);
+const { t } = useI18n();
 
 /**
- * METHODS
+ * STATE
  */
+const TOTAL_COMPOSITION = 'TOTAL_COMPOSITION';
+const MY_POOL_SHARE = 'MY_POOL_SHARE';
+
+const tabs = [
+  {
+    value: TOTAL_COMPOSITION,
+    label: t('poolComposition.tabs.totalComposition'),
+  },
+  {
+    value: MY_POOL_SHARE,
+    label: t('poolComposition.tabs.myPoolShare'),
+  },
+];
+const activeTab = ref(tabs[0].value);
+
+/**
+ * COMPUTED
+ */
+const showUserShares = computed(() => activeTab.value === MY_POOL_SHARE);
+const userHasShares = computed(() => userPoolPercentage.value.gt(0));
+
+/**
+ * LIFECYCLE
+ */
+onMounted(() => {
+  if (userHasShares.value) activeTab.value = MY_POOL_SHARE;
+});
 </script>
 
 <template>
+  <div
+    class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
+  >
+    <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px" />
+  </div>
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
     :square="upToLargeBreakpoint"
@@ -69,9 +105,13 @@ const { myPoolPercentage } = useUserPoolPercentage(pool.value);
           :token="token"
           :isWeighted="isWeighted"
           :isDeepPool="isDeepPool"
-          :myPoolPercentage="myPoolPercentage"
+          :userPoolPercentage="userPoolPercentage"
+          :showUserShares="showUserShares"
         />
       </div>
+    </div>
+    <div v-if="userHasShares" class="m-3">
+      {{ $t('poolComposition.userShares', [userPoolPercentageLabel]) }}
     </div>
   </BalCard>
 </template>

@@ -3,20 +3,14 @@ import { mount } from 'vue-composable-tester';
 import { useUserPoolPercentage } from './useUserPoolPercentage';
 import { aPool } from '@tests/unit/builders/pool.builders';
 
-const BoostedPoolMock = aPool();
-BoostedPoolMock.totalLiquidity = '100';
-BoostedPoolMock.totalShares = '100';
-
 const stakedShares = '5';
 const bptBalance = '10';
 
-vi.mock('@/services/web3/useWeb3');
 vi.mock('@/composables/staking/useStaking', () => {
   return {
     default: () => {
       return {
         userData: {
-          // stakedSharesForProvidedPool: ref('0.002409248717971854'),
           stakedSharesForProvidedPool: ref(stakedShares),
         },
       };
@@ -34,47 +28,20 @@ vi.mock('@/composables/useTokens', () => {
   };
 });
 
-const { result } = mount(() => useUserPoolPercentage(BoostedPoolMock));
-
-describe('useMyBalance', () => {
-  it('adds my bpt and my stacked shares to calculate bptBalance', () => {
-    expect(result.bptBalance.value.toString()).toBe('15');
-  });
-
-  it('bptBalanceWithoutStaked', () => {
-    expect(result.bptBalanceWithoutStaked.value.toString()).toBe('10');
-  });
-
-  it('poolLiquidity', () => {
-    expect(result.poolLiquidity.value.toString()).toBe('100');
-  });
-
-  it('formattedFiatValue', () => {
-    expect(result.formattedFiatValue.value.toString()).toBe('$15.00');
-  });
-
-  it('TDB', () => {
-    expect(result.formattedTotalLiquidityFiatValue.value.toString()).toBe(
-      '$100.00'
-    );
-    expect(result.fiatValue.value.toString()).toBe('15');
-    expect(result.myPoolPercentage.value.toString()).toBe('15');
-  });
-
-  it('TDB2', () => {
-    const applyMyPoolPercentageTo = (value: string): number =>
-      (Number(value) * Number(result.myPoolPercentage.value)) / 100;
-
-    expect(applyMyPoolPercentageTo('100')).toBe(15);
-    expect(applyMyPoolPercentageTo('50')).toBe(7.5);
-    expect(applyMyPoolPercentageTo('50')).toBe(7.5);
-    expect(applyMyPoolPercentageTo('17148799.021266')).toBe(2572319.8531899);
-  });
+it('calculates user pool percentage', () => {
+  const pool = aPool({ totalLiquidity: '100', totalShares: '100' });
+  const { result } = mount(() => useUserPoolPercentage(pool));
+  expect(result.userPoolPercentage.value.toString()).toBe('15');
 });
 
-test('Generator', () => {
-  const poolMock = aPool();
-  poolMock.totalLiquidity = '100';
-  console.log('poolMock', poolMock);
-  console.log('totalLiquidity', poolMock.totalLiquidity);
+it('calculates user pool percentage label', () => {
+  const pool = aPool({ totalLiquidity: '8888888', totalShares: '100' });
+  const { result } = mount(() => useUserPoolPercentage(pool));
+  expect(result.userPoolPercentageLabel.value.toString()).toBe('0.00017%');
+});
+
+it('calculates user pool percentage label when user has a very small share', () => {
+  const pool = aPool({ totalLiquidity: '88888888888', totalShares: '100' });
+  const { result } = mount(() => useUserPoolPercentage(pool));
+  expect(result.userPoolPercentageLabel.value.toString()).toBe('< 0.0001%');
 });

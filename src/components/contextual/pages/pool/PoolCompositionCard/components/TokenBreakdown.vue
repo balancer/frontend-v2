@@ -4,6 +4,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
 import { useTokenBreakdown } from './composables/useTokenBreakdown';
 import { bnum } from '@/lib/utils';
+import { BigNumber } from 'bignumber.js';
 
 /**
  * TYPES
@@ -14,7 +15,8 @@ type Props = {
   parentLevel?: number;
   isWeighted: boolean;
   isDeepPool: boolean;
-  myPoolPercentage: number;
+  userPoolPercentage: BigNumber;
+  showUserShares: boolean;
 };
 
 /**
@@ -25,8 +27,14 @@ const props = withDefaults(defineProps<Props>(), {
   shareOfParentInPool: 1,
 });
 
-const { token, shareOfParentInPool, isWeighted, isDeepPool, myPoolPercentage } =
-  toRefs(props);
+const {
+  token,
+  shareOfParentInPool,
+  isWeighted,
+  isDeepPool,
+  userPoolPercentage,
+  showUserShares,
+} = toRefs(props);
 
 /**
  * COMPOSABLES
@@ -37,7 +45,7 @@ const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
   token,
   shareOfParentInPool,
   isDeepPool,
-  myPoolPercentage
+  userPoolPercentage
 );
 
 /**
@@ -130,7 +138,8 @@ const shareOfTokenInPool = computed((): number => {
       :parentLevel="currentLevel"
       :isWeighted="isWeighted"
       :isDeepPool="isDeepPool"
-      :myPoolPercentage="myPoolPercentage"
+      :userPoolPercentage="userPoolPercentage"
+      :showUserShares="showUserShares"
     />
   </template>
 </template>

@@ -1,12 +1,13 @@
 import { removeBptFrom } from '@/composables/usePool';
 import { PoolToken } from '@/services/pool/types';
 import { BoostedPoolMock, PoolMock } from '@/__mocks__/pool';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { mount } from 'vue-composable-tester';
 import { useTokenBreakdown } from './useTokenBreakdown';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
+import { BigNumber } from 'bignumber.js';
 
 // TODO: refactor providers to avoid mocking useTokens
 vi.mock('@/composables/useTokens');
@@ -15,7 +16,7 @@ const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
 const isDeepPool = ref(true);
 
 // Assuming that user owns 15% of the pool
-const applyMyPoolPercentageTo = number => number * 0.15;
+const userPoolPercentage = ref(new BigNumber(15)) as Ref<BigNumber>;
 
 it('Works for a parent token in a deep nested pool', async () => {
   const token = ref(bbaDaiToken);
@@ -25,13 +26,15 @@ it('Works for a parent token in a deep nested pool', async () => {
       token,
       shareOfParentInPool,
       isDeepPool,
-      applyMyPoolPercentageTo
+      userPoolPercentage
     )
   );
 
   // Hides parent token balance and fiat
   expect(result.balanceLabel.value).toEqual('');
+  expect(result.userBalanceLabel.value).toEqual('');
   expect(result.fiatLabel.value).toEqual('');
+  expect(result.userFiatLabel.value).toEqual('');
 
   expect(result.tokenWeightLabel.value).toEqual('');
 });
@@ -50,14 +53,16 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
         aDaiToken,
         shareOfParentInPool,
         isDeepPool,
-        applyMyPoolPercentageTo
+        userPoolPercentage
       )
     );
 
     expect(result.balanceLabel.value).toEqual('24,104');
+    expect(result.userBalanceLabel.value).toEqual('3,615.6517');
     //useTokens global mock is mocking priceFor to return 2
     // so fiat should be double the balance
     expect(result.fiatLabel.value).toEqual('$48,209');
+    expect(result.userFiatLabel.value).toEqual('$7,231.30');
 
     expect(result.tokenWeightLabel.value).toEqual('');
   });
@@ -69,7 +74,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
         daiToken,
         shareOfParentInPool,
         isDeepPool,
-        applyMyPoolPercentageTo
+        userPoolPercentage
       )
     );
 
@@ -94,7 +99,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
         token,
         shareOfParentInPool,
         isDeepPool,
-        applyMyPoolPercentageTo
+        userPoolPercentage
       )
     );
 
@@ -112,7 +117,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
         token,
         shareOfParentInPool,
         isDeepPool,
-        applyMyPoolPercentageTo
+        userPoolPercentage
       )
     );
 
@@ -130,7 +135,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
         token,
         shareOfParentInPool,
         isDeepPool,
-        applyMyPoolPercentageTo
+        userPoolPercentage
       )
     );
 
@@ -154,7 +159,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
         token,
         shareOfParentInPool,
         isDeepPool,
-        applyMyPoolPercentageTo
+        userPoolPercentage
       )
     );
 

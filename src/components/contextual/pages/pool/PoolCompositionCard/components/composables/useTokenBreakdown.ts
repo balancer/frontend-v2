@@ -3,12 +3,13 @@ import { bnum } from '@/lib/utils';
 import { PoolToken } from '@/services/pool/types';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isNumber } from '@/lib/utils/numbers';
+import { BigNumber } from 'bignumber.js';
 
 export function useTokenBreakdown(
   token: Ref<PoolToken>,
   shareOfParentInPool: Ref<number>,
   isDeepPool: Ref<boolean>,
-  myPoolPercentage: Ref<number>
+  userPoolPercentage: Ref<BigNumber>
 ) {
   const { fNum2, toFiat } = useNumbers();
 
@@ -28,8 +29,8 @@ export function useTokenBreakdown(
     return hasNestedTokens && isDeepPool.value;
   });
 
-  const applyMyPoolPercentageTo = (value: string): number =>
-    (Number(value) * Number(myPoolPercentage.value)) / 100;
+  const applyUserPoolPercentageTo = (value: string): number =>
+    (Number(value) * Number(userPoolPercentage.value)) / 100;
 
   const balanceValue = computed(() => {
     if (isParentTokenInDeepPool.value) return '';
@@ -46,9 +47,10 @@ export function useTokenBreakdown(
   });
 
   const balanceLabel = computed(() => formatBalanceValue(balanceValue.value));
-  const myBalanceLabel = computed(() =>
-    formatBalanceValue(applyMyPoolPercentageTo(balanceValue.value))
-  );
+  const userBalanceLabel = computed(() => {
+    if (balanceValue.value === '') return '';
+    return formatBalanceValue(applyUserPoolPercentageTo(balanceValue.value));
+  });
 
   function formatBalanceValue(value: string | number) {
     if (!isNumber(value)) return value;
@@ -79,9 +81,10 @@ export function useTokenBreakdown(
 
   const fiatLabel = computed(() => formatFiatValue(fiatValue.value));
 
-  const myFiatLabel = computed(() =>
-    formatFiatValue(applyMyPoolPercentageTo(fiatValue.value))
-  );
+  const userFiatLabel = computed(() => {
+    if (fiatValue.value === '') return '';
+    return formatFiatValue(applyUserPoolPercentageTo(fiatValue.value));
+  });
 
   const tokenWeightLabel = computed(() => {
     if (!token.value || !token.value.weight) return '';
@@ -90,9 +93,9 @@ export function useTokenBreakdown(
 
   return {
     balanceLabel,
-    myBalanceLabel,
+    userBalanceLabel,
     fiatLabel,
-    myFiatLabel,
+    userFiatLabel,
     tokenWeightLabel,
   };
 }
