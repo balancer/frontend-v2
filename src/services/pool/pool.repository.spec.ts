@@ -5,12 +5,11 @@ import { computed } from 'vue';
 jest.mock('@/services/web3/useWeb3');
 
 describe('Building a pool repository', () => {
-  it('Logs when balancer api provider is skipped', () => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const log = jest.spyOn(console, 'log').mockImplementationOnce(() => {});
-    new PoolRepository(computed(() => ({} as TokenInfoMap)));
-    expect(log).toBeCalledWith(
-      'Skipping balancer api provider in your current network (Goerli)'
+  it('avoids balancer Api as a repository when it is not defined', () => {
+    const poolRepository = new PoolRepository(
+      computed(() => ({} as TokenInfoMap))
     );
+    // @ts-ignore
+    expect(poolRepository.repository.providers).toHaveLength(1);
   });
 });

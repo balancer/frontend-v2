@@ -16,7 +16,7 @@ export default class PoolRepository {
   queryArgs: GraphQLArgs;
 
   constructor(private tokens: ComputedRef<TokenInfoMap>) {
-    this.repository = new PoolsFallbackRepository(this.buildProviders(), {
+    this.repository = new PoolsFallbackRepository(this.buildRepositories(), {
       timeout: 30 * 1000,
     });
     this.queryArgs = {};
@@ -58,15 +58,15 @@ export default class PoolRepository {
     };
   }
 
-  private buildProviders() {
-    const providers: SDKPoolRepository[] = [];
-    if (isBalancerApiDefined()) {
+  private buildRepositories() {
+    const repositories: SDKPoolRepository[] = [];
+    if (isBalancerApiDefined) {
       const balancerApiRepository = this.initializeDecoratedAPIRepository();
-      providers.push(balancerApiRepository);
+      repositories.push(balancerApiRepository);
     }
     const subgraphRepository = this.initializeDecoratedSubgraphRepository();
-    providers.push(subgraphRepository);
+    repositories.push(subgraphRepository);
 
-    return providers;
+    return repositories;
   }
 }

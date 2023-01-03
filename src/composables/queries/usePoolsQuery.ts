@@ -54,9 +54,12 @@ export default function usePoolsQuery(
    */
 
   function initializePoolsRepository(): PoolsFallbackRepository {
-    const fallbackRepository = new PoolsFallbackRepository(buildProviders(), {
-      timeout: 30 * 1000,
-    });
+    const fallbackRepository = new PoolsFallbackRepository(
+      buildRepositories(),
+      {
+        timeout: 30 * 1000,
+      }
+    );
     return fallbackRepository;
   }
 
@@ -101,16 +104,16 @@ export default function usePoolsQuery(
     };
   }
 
-  function buildProviders() {
-    const providers: SDKPoolRepository[] = [];
-    if (isBalancerApiDefined()) {
+  function buildRepositories() {
+    const repositories: SDKPoolRepository[] = [];
+    if (isBalancerApiDefined) {
       const balancerApiRepository = initializeDecoratedAPIRepository();
-      providers.push(balancerApiRepository);
+      repositories.push(balancerApiRepository);
     }
     const subgraphRepository = initializeDecoratedSubgraphRepository();
-    providers.push(subgraphRepository);
+    repositories.push(subgraphRepository);
 
-    return providers;
+    return repositories;
   }
 
   function getQueryArgs(options: PoolsRepositoryFetchOptions): GraphQLArgs {
