@@ -187,9 +187,7 @@ function handleVoteSuccess() {
       v-if="!!activeVotingGauge"
       :gauge="activeVotingGauge"
       :logoURIs="orderedTokenURIs(activeVotingGauge)"
-      :poolURL="
-        poolURLFor(activeVotingGauge.pool.id, activeVotingGauge.network)
-      "
+      :poolURL="poolURLFor(activeVotingGauge.pool, activeVotingGauge.network)"
       :unallocatedVoteWeight="unallocatedVoteWeight"
       :veBalLockInfo="veBalLockInfoQuery.data.value"
       @success="handleVoteSuccess"
