@@ -31,9 +31,10 @@ export default class PoolRepository {
   private initializeDecoratedAPIRepository() {
     return {
       fetch: async (): Promise<Pool[]> => {
-        const pools = await balancerAPIService.pool.get(this.queryArgs);
-        if (!pools.length) throw new Error('Cannot find pool via Balancer API');
-        return pools;
+        const pool = await balancerAPIService.pool.get(this.queryArgs);
+        if (!pool) throw new Error('Cannot find pool via Balancer API');
+
+        return [pool];
       },
       get skip(): number {
         return 0;
