@@ -5,12 +5,7 @@ import * as providerMap from './providers';
 
 // The order registration of the providers is important but Object.values behaves differently in the vite bundle.
 // Setting explicit execution order in the following array:
-const providers = [
-  providerMap.UserSettingsProvider,
-  providerMap.TokenListProvider,
-  providerMap.TokensProvider,
-  providerMap.AppProvider,
-];
+const providers = [providerMap.TokenListProvider, providerMap.TokensProvider];
 
 export default defineComponent({
   components: {
