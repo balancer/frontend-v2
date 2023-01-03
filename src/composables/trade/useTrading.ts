@@ -12,7 +12,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { networkId } from '../useNetwork';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
 
