@@ -15,7 +15,7 @@ import useTokenApproval from '@/composables/trade/useTokenApproval';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, bnumZero } from '@/lib/utils';
 import { isStETH } from '@/lib/utils/balancer/lido';
