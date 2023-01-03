@@ -20,7 +20,10 @@ export default class SinglePool {
     this.queryBuilder = _queryBuilder;
   }
 
-  public async get(args: GraphQLArgs = {}, attrs: any = {}): Promise<Pool> {
+  public async get(
+    args: GraphQLArgs = {},
+    attrs: any = {}
+  ): Promise<Pool | undefined> {
     const query = this.queryBuilder(args, attrs);
     if (!query.args.chainId) {
       throw new Error('Invalid query - missing chainId');
