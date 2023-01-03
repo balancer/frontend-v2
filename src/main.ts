@@ -23,6 +23,10 @@ import Web3Plugin from '@/services/web3/web3.plugin';
 import store from '@/store';
 
 import Root from './Root';
+import {
+  userSettingsProvider,
+  UserSettingsProviderSymbol,
+} from './providers/user-settings.provider';
 
 echarts.use([
   TooltipComponent,
@@ -45,6 +49,8 @@ const app = createApp(Root)
 
 registerDirectives(app);
 initSentry(app);
+
+app.provide(UserSettingsProviderSymbol, userSettingsProvider());
 
 app.mount('#app');
 

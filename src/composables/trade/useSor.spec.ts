@@ -1,7 +1,7 @@
+import { mountComposable } from '@/tests/mount-helpers';
 import { BigNumber } from '@ethersproject/bignumber';
 import OldBigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
-import { mount } from 'vue-composable-tester';
 
 import useSor from '@/composables/trade/useSor';
 import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
@@ -11,7 +11,6 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 vi.mock('vuex');
 vi.mock('@/composables/useEthereumTxType');
 vi.mock('@/composables/useEthers');
-vi.mock('@/composables/useUserSettings');
 vi.mock('@/composables/useTransactions');
 vi.mock('@/lib/utils/balancer/helpers/sor/sorManager');
 vi.mock('@/locales');
@@ -72,7 +71,7 @@ const mockProps = {
 describe('useSor', () => {
   it('Should load', () => {
     vi.spyOn(console, 'time');
-    const { result } = mount(() => useSor(mockProps));
+    const { result } = mountComposable(() => useSor(mockProps));
     expect(result).toBeTruthy();
   });
 });
@@ -96,7 +95,7 @@ describe('setSwapCost', () => {
   });
 
   it('Should pass a correct gas price to sorManager', async () => {
-    const { result: sor } = mount(() => useSor(mockProps));
+    const { result: sor } = mountComposable(() => useSor(mockProps));
 
     const tokenAddress = '0x0';
     const tokenDecimals = 5;

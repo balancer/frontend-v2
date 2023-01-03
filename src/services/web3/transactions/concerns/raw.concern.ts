@@ -58,7 +58,6 @@ export class RawConcern extends TransactionConcern {
     options: TransactionRequest,
     error: WalletError
   ): Promise<void> {
-    await this.signer.getAddress();
     const sender = await this.signer.getAddress();
     captureException(`Failed raw transaction:
       Sender: ${sender}
