@@ -4,7 +4,7 @@ A set of foundational components for use throughout the UI.
 
 ## Forms
 
-Forms are difficult to demo via the storybook UI because they include stitching together a couple of different components plus validations. So instead here is a simple example of how a form can be used:
+Here is a simple example of how a form can be used:
 
 ```vue
 // ExampleUserForm.vue
