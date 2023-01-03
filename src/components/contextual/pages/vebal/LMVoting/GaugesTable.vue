@@ -141,7 +141,7 @@ function isInternalUrl(url: string): boolean {
 }
 
 function redirectToPool(gauge: VotingGaugeWithVotes, inNewTab) {
-  const redirectUrl = poolURLFor(gauge.pool.id, gauge.network);
+  const redirectUrl = poolURLFor(gauge.pool, gauge.network);
   if (!isInternalUrl(redirectUrl)) {
     window.location.href = redirectUrl;
   } else {
@@ -154,7 +154,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes, inNewTab) {
 }
 
 function getPoolExternalUrl(gauge: VotingGaugeWithVotes) {
-  const poolUrl = poolURLFor(gauge.pool.id, gauge.network);
+  const poolUrl = poolURLFor(gauge.pool, gauge.network);
   return isInternalUrl(poolUrl) ? null : poolUrl;
 }
 
