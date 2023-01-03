@@ -201,21 +201,20 @@ export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
  * @summary returns full URL for pool id, given network.
  */
 export function poolURLFor(
-  poolId: string,
-  network: Network,
-  poolType?: string | PoolType
+  pool: Pick<Pool, 'id' | 'poolType'>,
+  network: Network
 ): string {
   if (network === Network.OPTIMISM) {
-    return `https://op.beets.fi/#/pool/${poolId}`;
+    return `https://op.beets.fi/#/pool/${pool.id}`;
   }
-  if (poolType && poolType.toString() === 'Element') {
-    return `https://app.element.fi/pools/${addressFor(poolId)}`;
+  if (pool.poolType && pool.poolType.toString() === 'Element') {
+    return `https://app.element.fi/pools/${addressFor(pool.id)}`;
   }
-  if (poolType && poolType.toString() === 'FX') {
+  if (pool.poolType && pool.poolType.toString() === 'FX') {
     return `https://app.xave.finance/#/pool`;
   }
 
-  return `${appUrl()}/${getNetworkSlug(network)}/pool/${poolId}`;
+  return `${appUrl()}/${getNetworkSlug(network)}/pool/${pool.id}`;
 }
 
 /**
