@@ -62,5 +62,5 @@ export default function useGraphQuery<T>(
     }
   };
 
-  return useQuery(queryKey, queryFn, options as any);
+  return useQuery<T>(queryKey, queryFn, options);
 }
