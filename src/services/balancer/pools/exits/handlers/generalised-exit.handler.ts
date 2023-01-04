@@ -4,10 +4,10 @@ import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import {
-  ExitParams,
   ExitPoolHandler,
   QueryOutput,
   AmountsOut,
+  ExitType,
 } from './exit-pool.handler';
 import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
@@ -15,8 +15,17 @@ import { bnum, isSameAddress } from '@/lib/utils';
 import { flatTokenTree } from '@/composables/usePool';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { JsonRpcSigner } from '@ethersproject/providers';
 
 type ExitResponse = Awaited<ReturnType<typeof balancer.pools.generalisedExit>>;
+
+export type DeepExitParams = {
+  exitType: ExitType.DeepGivenIn;
+  bptIn: string;
+  signer: JsonRpcSigner;
+  slippageBsp: number;
+  relayerSignature?: string;
+};
 
 /**
  * Handles exits using SDK's generalisedExit function.
@@ -30,7 +39,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async exit(params: ExitParams): Promise<TransactionResponse> {
+  async exit(params: DeepExitParams): Promise<TransactionResponse> {
     await this.queryExit(params);
 
     if (!this.lastExitRes) {
@@ -48,7 +57,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     signer,
     slippageBsp,
     relayerSignature,
-  }: ExitParams): Promise<QueryOutput> {
+  }: DeepExitParams): Promise<QueryOutput> {
     const evmAmountIn = parseFixed(
       bptIn || '0',
       this.pool.value.onchain?.decimals ?? 18

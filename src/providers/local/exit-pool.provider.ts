@@ -28,7 +28,10 @@ import {
   removeAddress,
   selectByAddress,
 } from '@/lib/utils';
-import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
+import {
+  ExitHandlerType,
+  ExitPoolService,
+} from '@/services/balancer/pools/exits/exit-pool.service';
 import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -102,7 +105,6 @@ const provider = (props: Props) => {
   const {
     injectTokens,
     getTokens,
-    prices,
     balanceFor,
     tokens: allTokens,
     balances,
@@ -254,15 +256,24 @@ const provider = (props: Props) => {
   // The type of exit to perform, is the user specifying the bptIn or the amount
   // of a token they want out?
   const exitType = computed((): ExitType => {
-    if (isSingleAssetExit.value && !singleAssetMaxed.value)
-      // It's a single asset exit but the user has not maximized the withdrawal.
-      // So they are specifying an amount out.
-      return ExitType.GivenOut;
+    const isSwap = exitHandlerType.value === ExitHandlerType.SwapExit;
+    const isLegacySwap =
+      exitHandlerType.value === ExitHandlerType.LegacySwapExit;
 
-    // It's either a single asset exit where the user has maxed their amount out
-    // so we should use their BPT balance or it's a proportional exit and they
-    // have specified bptIn via the slider.
-    return ExitType.GivenIn;
+    if (isSwap || isLegacySwap) {
+      if (isSingleAssetExit.value && !singleAssetMaxed.value) {
+        // It's a single asset exit but the user has not maximized the withdrawal.
+        // So they are specifying an amount out.
+        return isSwap ? ExitType.SwapGivenOut : ExitType.LegacySwapGivenOut;
+      }
+
+      // It's either a single asset exit where the user has maxed their amount out
+      // so we should use their BPT balance or it's a proportional exit and they
+      // have specified bptIn via the slider.
+      return isSwap ? ExitType.SwapGivenIn : ExitType.LegacySwapGivenIn;
+    } else {
+      return ExitType.DeepGivenIn;
+    }
   });
 
   // Internal bptIn value, some cases require bptBalance to be used when they
@@ -314,6 +325,16 @@ const provider = (props: Props) => {
 
   const fiatValueIn = computed(() => fiatValueOf(pool.value, bptIn.value));
 
+  const exitHandlerType = computed((): ExitHandlerType => {
+    if (isSingleAssetExit.value && !hasPremintedBPT.value) {
+      return ExitHandlerType.LegacySwapExit;
+    } else if (isSingleAssetExit.value) {
+      return ExitHandlerType.SwapExit;
+    } else {
+      return ExitHandlerType.DeepExit;
+    }
+  });
+
   /**
    * METHODS
    */
@@ -330,10 +351,7 @@ const provider = (props: Props) => {
     // Proportional exit, and BPT in is 0 or less
     if (!isSingleAssetExit.value && !hasBptIn.value) return;
 
-    exitPoolService.setExitHandler(
-      isSingleAssetExit.value,
-      hasPremintedBPT.value
-    );
+    exitPoolService.setExitHandler(exitHandlerType.value);
 
     // Invalidate previous query in order to prevent stale data
     queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
@@ -346,7 +364,6 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         poolCalculator,
         poolExchange,
       });
@@ -371,26 +388,32 @@ const provider = (props: Props) => {
     if (!hasFetchedPoolsForSor.value) return;
     if (!isSingleAssetExit.value) return;
 
-    exitPoolService.setExitHandler(
-      isSingleAssetExit.value,
-      hasPremintedBPT.value
-    );
+    const exitHandler = exitPoolService.setExitHandler(exitHandlerType.value);
     singleAmountOut.max = '';
 
     try {
-      const output = await exitPoolService.queryExit({
-        exitType: ExitType.GivenIn,
-        bptIn: bptBalance.value,
-        amountsOut: [singleAmountOut],
-        signer: getSigner(),
-        slippageBsp: slippageBsp.value,
-        tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
-        relayerSignature: '',
-        poolCalculator,
-        poolExchange,
-      });
-
+      let output;
+      if (exitHandlerType.value === ExitHandlerType.LegacySwapExit) {
+        output = await exitHandler.queryExit({
+          exitType: ExitType.LegacySwapGivenIn,
+          bptIn: bptBalance.value,
+          amountsOut: [singleAmountOut],
+          signer: getSigner(),
+          slippageBsp: slippageBsp.value,
+          tokenInfo: exitTokenInfo.value,
+          poolCalculator,
+          poolExchange,
+        });
+      } else {
+        output = await exitHandler.queryExit({
+          exitType: ExitType.SwapGivenIn,
+          bptIn: bptBalance.value,
+          amountsOut: [singleAmountOut],
+          signer: getSigner(),
+          slippageBsp: slippageBsp.value,
+          tokenInfo: exitTokenInfo.value,
+        });
+      }
       singleAmountOut.max =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
     } catch (error) {
@@ -411,7 +434,6 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         relayerSignature: relayerSignature.value,
         poolCalculator,
         poolExchange,
@@ -437,7 +459,7 @@ const provider = (props: Props) => {
    */
   watch(isSingleAssetExit, _isSingleAssetExit => {
     bptIn.value = '';
-    exitPoolService.setExitHandler(_isSingleAssetExit, hasPremintedBPT.value);
+    exitPoolService.setExitHandler(exitHandlerType.value);
     if (!_isSingleAssetExit) {
       setInitialPropAmountsOut();
     }
@@ -451,10 +473,7 @@ const provider = (props: Props) => {
     // refactoted probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
 
-    exitPoolService.setExitHandler(
-      isSingleAssetExit.value,
-      hasPremintedBPT.value
-    );
+    exitPoolService.setExitHandler(exitHandlerType.value);
 
     if (!props.isSingleAssetExit) {
       setInitialPropAmountsOut();

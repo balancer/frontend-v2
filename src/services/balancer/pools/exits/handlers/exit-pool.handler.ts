@@ -1,34 +1,23 @@
 import { Address, BalancerSDK } from '@balancer-labs/sdk';
-import { AmountOut } from '@/providers/local/exit-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
-import { JsonRpcSigner } from '@ethersproject/providers';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
+import { SwapExitParams } from './swap-exit.handler';
+import { LegacySwapExitParams } from './legacy-swap-exit.handler';
+import { DeepExitParams } from './deep-exit.handler';
 
 export type AmountsOut = Record<Address, string>;
 
 export enum ExitType {
-  GivenIn, // When BPT in is specified.
-  GivenOut, // When an amount out is specified.
+  SwapGivenIn, // When BPT in is specified.
+  SwapGivenOut, // When an amount out is specified.
+  LegacySwapGivenIn, // When BPT in is specified.
+  LegacySwapGivenOut, // When an amount out is specified.
+  DeepGivenIn, // When BPT in is specified.
 }
 
-export type ExitParams = {
-  exitType: ExitType;
-  bptIn: string;
-  amountsOut: AmountOut[];
-  tokenInfo: TokenInfoMap;
-  prices: TokenPrices;
-  signer: JsonRpcSigner;
-  slippageBsp: number;
-  relayerSignature?: string;
-  poolCalculator: PoolCalculator;
-  poolExchange: PoolExchange;
-};
+export type ExitParams = LegacySwapExitParams | SwapExitParams | DeepExitParams;
 
 export type QueryOutput = {
   priceImpact: number;

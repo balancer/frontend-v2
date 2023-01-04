@@ -4,20 +4,35 @@ import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
+import { AmountOut } from '@/providers/local/exit-pool.provider';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
+import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK, BatchSwap, SwapInfo, SwapType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Ref } from 'vue';
-import {
-  ExitParams,
-  ExitPoolHandler,
-  ExitType,
-  QueryOutput,
-} from './exit-pool.handler';
+import { ExitPoolHandler, ExitType, QueryOutput } from './exit-pool.handler';
+
+export type SwapExitParamsGivenIn = {
+  exitType: ExitType.SwapGivenIn;
+  bptIn: string;
+  amountsOut: AmountOut[];
+  tokenInfo: TokenInfoMap;
+  signer: JsonRpcSigner;
+  slippageBsp: number;
+};
+export type SwapExitParamsGivenOut = {
+  exitType: ExitType.SwapGivenOut;
+  amountsOut: AmountOut[];
+  tokenInfo: TokenInfoMap;
+  signer: JsonRpcSigner;
+  slippageBsp: number;
+};
+
+export type SwapExitParams = SwapExitParamsGivenIn | SwapExitParamsGivenOut;
 
 /**
  * Handles exits for single asset flows where we need to use a BatchSwap to exit
@@ -32,7 +47,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async exit(params: ExitParams): Promise<TransactionResponse> {
+  async exit(params: SwapExitParams): Promise<TransactionResponse> {
     const userAddress = await params.signer.getAddress();
     await this.queryExit(params);
     if (!this.lastSwapRoute)
@@ -55,8 +70,8 @@ export class SwapExitHandler implements ExitPoolHandler {
     );
   }
 
-  async queryExit(params: ExitParams): Promise<QueryOutput> {
-    if (params.exitType === ExitType.GivenIn) {
+  async queryExit(params: SwapExitParams): Promise<QueryOutput> {
+    if (params.exitType === ExitType.SwapGivenIn) {
       return this.queryOutGivenIn(params);
     } else {
       return this.queryInGivenOut(params);
@@ -76,7 +91,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     tokenInfo,
     amountsOut,
     signer,
-  }: ExitParams): Promise<QueryOutput> {
+  }: SwapExitParamsGivenIn): Promise<QueryOutput> {
     const amountIn = bptIn;
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
 
@@ -112,7 +127,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       amountOut,
       this.lastSwapRoute.marketSp
     );
-    console.log({ amountsOut: { [tokenOut.address]: amountOut }, priceImpact });
+
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 
@@ -123,7 +138,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     tokenInfo,
     amountsOut,
     signer,
-  }: ExitParams): Promise<QueryOutput> {
+  }: SwapExitParamsGivenOut): Promise<QueryOutput> {
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
     if (!tokenIn || !tokenOut)
@@ -134,10 +149,6 @@ export class SwapExitHandler implements ExitPoolHandler {
       return { amountsOut: {}, priceImpact: 0 };
 
     if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
-    console.log({
-      tokenIn: tokenIn.address,
-      tokenOut: tokenOut.address,
-    });
 
     const safeAmountOut = overflowProtected(
       amountsOut[0].value,
@@ -153,7 +164,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       gasPrice,
       maxPools: 4,
     });
-    console.log({ lastSwapRoute: this.lastSwapRoute });
+
     const amountIn = formatFixed(
       this.lastSwapRoute.returnAmount,
       tokenIn.decimals
@@ -165,7 +176,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       amountOut,
       this.lastSwapRoute.marketSp
     );
-    console.log({ amountsOut: { [tokenOut.address]: amountOut }, priceImpact });
+
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 
@@ -204,7 +215,7 @@ export class SwapExitHandler implements ExitPoolHandler {
   ) {
     const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
     const kind =
-      exitType === ExitType.GivenIn
+      exitType === ExitType.SwapGivenIn
         ? SwapType.SwapExactIn
         : SwapType.SwapExactOut;
 

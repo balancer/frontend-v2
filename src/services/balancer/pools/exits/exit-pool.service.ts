@@ -1,4 +1,3 @@
-import { isDeep } from '@/composables/usePool';
 import { balancer } from '@/lib/balancer.sdk';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
@@ -13,6 +12,12 @@ import {
 } from './handlers/exit-pool.handler';
 import { LegacySwapExitHandler } from './handlers/legacy-swap-exit.handler';
 
+export enum ExitHandlerType {
+  SwapExit = 'SwapExit',
+  LegacySwapExit = 'LegacySwapExit',
+  DeepExit = 'DeepExit',
+}
+
 /**
  * ExitPoolService acts as an adapter to underlying handlers based on the pool
  * type or other criteria. It wraps calls to the functions defined in the
@@ -21,7 +26,6 @@ import { LegacySwapExitHandler } from './handlers/legacy-swap-exit.handler';
 export class ExitPoolService {
   // The exit pool handler class to call exit pool interface functions.
   public exitHandler: ExitPoolHandler;
-
   /**
    * Initialize the ExitPoolService
    *
@@ -34,7 +38,7 @@ export class ExitPoolService {
     public readonly sdk = balancer,
     public readonly gasPriceServ = gasPriceService
   ) {
-    this.exitHandler = this.setExitHandler();
+    this.exitHandler = this.setExitHandler(ExitHandlerType.DeepExit);
   }
 
   /**
@@ -43,28 +47,30 @@ export class ExitPoolService {
    * @param {boolean} [swapExit=false] - Flag to ensure SwapExitHandler is used for exiting.
    * @returns {ExitPoolHandler} The ExitPoolHandler class to be used.
    */
-  setExitHandler(swapExit = false, hasPremintedBPT = true): ExitPoolHandler {
+  setExitHandler(type: ExitHandlerType): ExitPoolHandler {
     const { pool, sdk, gasPriceServ } = this;
-    console.log({
-      swapExit,
-      hasPremintedBPT,
-    });
-    if (swapExit && !hasPremintedBPT) {
-      return (this.exitHandler = new LegacySwapExitHandler(
-        pool,
-        sdk,
-        gasPriceServ
-      ));
-    } else if (swapExit) {
-      return (this.exitHandler = new SwapExitHandler(pool, sdk, gasPriceServ));
-    } else if (isDeep(pool.value)) {
-      return (this.exitHandler = new GeneralisedExitHandler(
-        pool,
-        sdk,
-        gasPriceServ
-      ));
-    } else {
-      throw new Error(`Pool type not handled: ${pool.value.poolType}`);
+
+    switch (type) {
+      case ExitHandlerType.LegacySwapExit:
+        return (this.exitHandler = new LegacySwapExitHandler(
+          pool,
+          sdk,
+          gasPriceServ
+        ));
+      case ExitHandlerType.SwapExit:
+        return (this.exitHandler = new SwapExitHandler(
+          pool,
+          sdk,
+          gasPriceServ
+        ));
+      case ExitHandlerType.DeepExit:
+        return (this.exitHandler = new GeneralisedExitHandler(
+          pool,
+          sdk,
+          gasPriceServ
+        ));
+      default:
+        throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
   }
 

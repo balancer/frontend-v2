@@ -9,13 +9,37 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
+import { JsonRpcSigner } from '@ethersproject/providers';
 
-import {
-  ExitParams,
-  ExitPoolHandler,
-  ExitType,
-  QueryOutput,
-} from './exit-pool.handler';
+import { ExitPoolHandler, ExitType, QueryOutput } from './exit-pool.handler';
+import { AmountOut } from '@/providers/local/exit-pool.provider';
+import { TokenInfoMap } from '@/types/TokenList';
+
+export type LegacySwapExitParamsGivenIn = {
+  exitType: ExitType.LegacySwapGivenIn;
+  bptIn: string;
+  amountsOut: AmountOut[];
+  tokenInfo: TokenInfoMap;
+  poolCalculator: PoolCalculator;
+  slippageBsp: number;
+  poolExchange: PoolExchange;
+  signer: JsonRpcSigner;
+};
+
+export type LegacySwapExitParamsGivenOut = {
+  exitType: ExitType.LegacySwapGivenOut;
+  amountsOut: AmountOut[];
+  tokenInfo: TokenInfoMap;
+  poolCalculator: PoolCalculator;
+  slippageBsp: number;
+  poolExchange: PoolExchange;
+  signer: JsonRpcSigner;
+};
+
+export type LegacySwapExitParams =
+  | LegacySwapExitParamsGivenIn
+  | LegacySwapExitParamsGivenOut;
 
 /**
  * Handles exits for single asset flows where we need to use a BatchSwap to exit
@@ -33,8 +57,8 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
     this.allPoolTokens = this.pool.value.tokens.map(token => token.address);
   }
 
-  async exit(params: ExitParams): Promise<TransactionResponse> {
-    const maxedOut: boolean = params.exitType === ExitType.GivenIn;
+  async exit(params: LegacySwapExitParams): Promise<TransactionResponse> {
+    const maxedOut: boolean = params.exitType === ExitType.LegacySwapGivenIn;
     const tokenOut = selectByAddress(
       params.tokenInfo,
       params.amountsOut[0].address
@@ -82,8 +106,8 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
     return tx;
   }
 
-  async queryExit(params: ExitParams): Promise<QueryOutput> {
-    if (params.exitType === ExitType.GivenIn) {
+  async queryExit(params: LegacySwapExitParams): Promise<QueryOutput> {
+    if (params.exitType === ExitType.LegacySwapGivenIn) {
       return this.queryOutGivenIn(params);
     } else {
       return this.queryInGivenOut(params);
@@ -102,9 +126,8 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
     bptIn,
     tokenInfo,
     amountsOut,
-    // signer,
     poolCalculator,
-  }: ExitParams): Promise<QueryOutput> {
+  }: LegacySwapExitParamsGivenIn): Promise<QueryOutput> {
     const bptBalanceScaled = parseUnits(
       bptIn,
       this.pool.value.onchain?.decimals || 18
@@ -171,12 +194,10 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
    * Get swap given specified amount out.
    */
   private async queryInGivenOut({
-    // bptIn,
     tokenInfo,
     amountsOut,
-    // signer,
     poolCalculator,
-  }: ExitParams): Promise<QueryOutput> {
+  }: LegacySwapExitParamsGivenOut): Promise<QueryOutput> {
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
     if (!tokenOut || !tokenIn)
