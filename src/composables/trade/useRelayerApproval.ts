@@ -60,9 +60,7 @@ export default function useRelayerApproval(
 
   const loading = computed(
     (): boolean =>
-      relayerApproval.isLoading.value ||
-      relayerApproval.isError.value ||
-      relayerApproval.isIdle.value
+      relayerApproval.isLoading.value || relayerApproval.isError.value
   );
 
   const action = computed(
@@ -118,7 +116,7 @@ export default function useRelayerApproval(
     approved.value = await txListener(tx, {
       onTxConfirmed: () => {
         approving.value = false;
-        relayerApproval.refetch.value();
+        relayerApproval.refetch();
       },
       onTxFailed: () => {
         approving.value = false;

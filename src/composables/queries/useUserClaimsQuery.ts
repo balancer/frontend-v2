@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -17,9 +16,9 @@ type UserClaimsQueryResponse = {
   timestamp: string | null;
 };
 
-export default function useUserClaimsQuery(
-  options: UseQueryOptions<UserClaimsQueryResponse> = {}
-) {
+type QueryOptions = UseQueryOptions<UserClaimsQueryResponse>;
+
+export default function useUserClaimsQuery(options: QueryOptions = {}) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
@@ -52,5 +51,9 @@ export default function useUserClaimsQuery(
     ...options,
   });
 
-  return useQuery<UserClaimsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<UserClaimsQueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

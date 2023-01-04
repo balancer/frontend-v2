@@ -27,7 +27,6 @@ const {
     totalStakedFiatValue,
     isLoadingUserStakingData,
     isLoadingStakedPools,
-    isUserStakeDataIdle,
   },
 } = useStaking();
 
@@ -40,11 +39,7 @@ const classes = computed(() => ({
 }));
 
 const isStakingLoading = computed(() => {
-  return (
-    isLoadingStakedPools.value ||
-    isLoadingUserStakingData.value ||
-    isUserStakeDataIdle.value
-  );
+  return isLoadingStakedPools.value || isLoadingUserStakingData.value;
 });
 
 const totalInvestedLabel = computed((): string => {

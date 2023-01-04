@@ -1,10 +1,8 @@
 import { formatUnits } from '@ethersproject/units';
+import { useQuery } from '@tanstack/vue-query';
 import { intersection } from 'lodash';
-import { QueryObserverResult, RefetchOptions } from 'react-query';
-import { computed, ComputedRef, reactive, Ref, ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { computed, reactive, Ref, ref } from 'vue';
 
-import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
@@ -59,63 +57,15 @@ export type PoolGaugesResponse = {
   pools: PoolGaugesInfo[];
 };
 
-export type UserStakingDataResponse = {
-  // a list of the gauge shares owned by that user
-  // a gauge share represents the amount of staked
-  // BPT a user has in a pool, given balance >= 0
-  userGaugeShares: ComputedRef<UserGaugeShare[]>;
-  // a list of eligible gauges the user can stake into
-  // this list is pulled against the users invested
-  // pool ids
-  userLiquidityGauges: ComputedRef<TLiquidityGauge[]>;
-  // the amount of staked shares a user has for the
-  // provided pool address to this instance, if there
-  // is one. otherwise 0
-  stakedSharesForProvidedPool: Ref<string>;
-  // a list of pools the user has a stake in
-  stakedPools: Ref<PoolWithShares[]>;
-  // Total fiat value of all staked pools for user
-  totalStakedFiatValue: Ref<string>;
-  // loading flag for pulling actual pool data for the
-  // staked pools, not to be confused with isLoadingUserStakingData
-  // which is the flag for pulling gauge data
-  isLoadingStakedPools: Ref<boolean>;
-  isUserStakeDataIdle: Ref<boolean>;
-  isLoadingUserStakingData: Ref<boolean>;
-  isLoadingStakedShares: Ref<boolean>;
-  isStakedSharesIdle: Ref<boolean>;
-  isRefetchingStakedShares: Ref<boolean>;
-  isStakedPoolsQueryEnabled: Ref<boolean>;
-  isLoadingUserPools: Ref<boolean>;
-  isUserPoolsIdle: Ref<boolean>;
-  refetchStakedShares: Ref<() => void>;
-  getStakedShares: () => Promise<string>;
-  refetchUserStakingData: Ref<
-    (options?: RefetchOptions) => Promise<QueryObserverResult>
-  >;
-  stakedSharesMap: Ref<Record<string, string>>;
-  poolBoosts: Ref<Record<string, string> | undefined>;
-  isLoadingBoosts: Ref<boolean>;
-  getBoostFor: (poolAddress: string) => string;
-  hasNonPrefGaugeBalances: Ref<boolean | undefined>;
-  refetchHasNonPrefGauge: Ref<() => void>;
-  poolGaugeAddresses: Ref<PoolGaugesInfo>;
-};
-
-export default function useUserStakingData(
-  poolAddress: Ref<string>
-): UserStakingDataResponse {
+export default function useUserStakingData(poolAddress: Ref<string>) {
   /** COMPOSABLES */
   const { account, isWalletReady } = useWeb3();
 
   /**
    * QUERIES
    */
-  const {
-    data: userPoolsResponse,
-    isLoading: isLoadingUserPools,
-    isIdle: isUserPoolsIdle,
-  } = useUserPoolsQuery();
+  const { data: userPoolsResponse, isLoading: isLoadingUserPools } =
+    useUserPoolsQuery();
 
   /** QUERY ARGS */
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
@@ -129,7 +79,6 @@ export default function useUserStakingData(
   const {
     data: stakingData,
     isLoading: isLoadingUserStakingData,
-    isIdle: isUserStakeDataIdle,
     refetch: refetchUserStakingData,
   } = useGraphQuery<UserGaugeSharesResponse>(
     subgraphs.gauge,
@@ -212,7 +161,6 @@ export default function useUserStakingData(
   const {
     data: stakedSharesResponse,
     isLoading: isLoadingStakedShares,
-    isIdle: isStakedSharesIdle,
     isRefetching: isRefetchingStakedShares,
     refetch: refetchStakedShares,
   } = useQuery<string>(
@@ -226,19 +174,25 @@ export default function useUserStakingData(
 
   /**
    * COMPUTED
-   * Need to wrap the extracted query response vars into
-   * computed properties so they retain reactivity
-   * when returned by this composable
    */
+  // the amount of staked shares a user has for the
+  // provided pool address to this instance, if there
+  // is one. otherwise 0
   const stakedSharesForProvidedPool = computed(
     () => stakedSharesResponse.value || '0'
   );
 
+  // a list of the gauge shares owned by that user
+  // a gauge share represents the amount of staked
+  // BPT a user has in a pool, given balance >= 0
   const userGaugeShares = computed(() => {
     if (!stakingData.value?.gaugeShares) return [];
     return stakingData.value.gaugeShares;
   });
 
+  // a list of eligible gauges the user can stake into
+  // this list is pulled against the users invested
+  // pool ids
   const userLiquidityGauges = computed(() => {
     if (!stakingData.value?.liquidityGauges) return [];
     return stakingData.value.liquidityGauges;
@@ -264,6 +218,9 @@ export default function useUserStakingData(
     () => stakedPoolIds.value.length > 0
   );
 
+  // isLoadingStakedPools is the loading flag for pulling actual pool data for the
+  // staked pools, not to be confused with isLoadingUserStakingData
+  // which is the flag for pulling gauge data
   const { data: stakedPoolsResponse, isLoading: isLoadingStakedPools } =
     usePoolsQuery(
       ref([]),
@@ -323,6 +280,7 @@ export default function useUserStakingData(
     })
   );
 
+  // a list of pools the user has a stake in
   const stakedPools = computed<PoolWithShares[]>(() => {
     return (stakedPoolsResponse.value?.pages[0].pools || []).map(pool => {
       const stakedBpt = stakedSharesMap.value[pool.id];
@@ -334,6 +292,7 @@ export default function useUserStakingData(
     });
   });
 
+  // Total fiat value of all staked pools for user
   const totalStakedFiatValue = computed((): string =>
     stakedPools.value
       .reduce((acc, { shares }) => acc.plus(shares), bnum(0))
@@ -370,15 +329,15 @@ export default function useUserStakingData(
     userLiquidityGauges,
     stakedSharesForProvidedPool,
     isLoadingUserStakingData,
+    // loading flag for pulling actual pool data for the
+    // staked pools, not to be confused with isLoadingUserStakingData
+    // which is the flag for pulling gauge data
     isLoadingStakedPools,
     isLoadingStakedShares,
-    isUserStakeDataIdle,
-    isStakedSharesIdle,
     isRefetchingStakedShares,
     refetchStakedShares,
     isStakedPoolsQueryEnabled,
     isLoadingUserPools,
-    isUserPoolsIdle,
     stakedSharesMap,
     refetchUserStakingData,
     stakedPools,
@@ -392,3 +351,5 @@ export default function useUserStakingData(
     getBoostFor,
   };
 }
+
+export type UserStakingData = ReturnType<typeof useUserStakingData>;

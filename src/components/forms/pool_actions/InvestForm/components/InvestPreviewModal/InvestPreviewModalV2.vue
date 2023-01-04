@@ -156,11 +156,11 @@ function handleShowStakeModal() {
 // networks like Polygon.
 useIntervalFn(() => {
   if (!isLoadingQuery.value && !txInProgress.value) {
-    queryJoinQuery.refetch.value();
+    queryJoinQuery.refetch();
   }
 }, oneSecondInMs * 10);
 </script>
-  
+
 <template>
   <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
     <template #header>

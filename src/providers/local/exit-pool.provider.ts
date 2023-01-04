@@ -42,7 +42,7 @@ import {
   watch,
   onMounted,
 } from 'vue';
-import { useQuery, useQueryClient } from 'vue-query';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 

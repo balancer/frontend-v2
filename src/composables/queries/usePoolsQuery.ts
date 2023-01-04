@@ -1,6 +1,5 @@
-import { UseInfiniteQueryOptions } from 'react-query/types';
 import { reactive, Ref, ref, watch } from 'vue';
-import { useInfiniteQuery } from 'vue-query';
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -34,9 +33,11 @@ type FilterOptions = {
   pageSize?: number;
 };
 
+type QueryOptions = UseInfiniteQueryOptions<PoolsQueryResponse>;
+
 export default function usePoolsQuery(
   filterTokens: Ref<string[]> = ref([]),
-  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
+  options: QueryOptions = {},
   filterOptions?: FilterOptions
 ) {
   /**
@@ -203,5 +204,9 @@ export default function usePoolsQuery(
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
   });
 
-  return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useInfiniteQuery<PoolsQueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

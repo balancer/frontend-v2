@@ -51,10 +51,7 @@ const _isVeBalPool = isVeBalPool(poolId);
 const poolQuery = usePoolQuery(poolId, undefined, undefined);
 const pool = computed(() => poolQuery.data.value);
 const poolQueryLoading = computed(
-  () =>
-    poolQuery.isLoading.value ||
-    poolQuery.isIdle.value ||
-    Boolean(poolQuery.error.value)
+  () => poolQuery.isLoading.value || Boolean(poolQuery.error.value)
 );
 const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
@@ -69,9 +66,7 @@ const {
 const poolSnapshotsQuery = usePoolSnapshotsQuery(poolId, undefined, {
   refetchOnWindowFocus: false,
 });
-const isLoadingSnapshots = computed(
-  () => poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
-);
+const isLoadingSnapshots = computed(() => poolSnapshotsQuery.isLoading.value);
 
 const snapshots = computed(() => poolSnapshotsQuery.data.value);
 //#endregion
@@ -89,10 +84,7 @@ const historicalPrices = computed(() => historicalPricesQuery.data.value);
 //#region APR query
 const aprQuery = usePoolAprQuery(poolId);
 const loadingApr = computed(
-  () =>
-    aprQuery.isLoading.value ||
-    aprQuery.isIdle.value ||
-    Boolean(aprQuery.error.value)
+  () => aprQuery.isLoading.value || Boolean(aprQuery.error.value)
 );
 const poolApr = computed(() => aprQuery.data.value);
 //#endregion
@@ -182,7 +174,7 @@ watch(poolQuery.error, () => {
       label: t('alerts.pool-fetch-error'),
       type: AlertType.ERROR,
       persistent: true,
-      action: poolQuery.refetch.value,
+      action: poolQuery.refetch,
       actionLabel: t('alerts.retry-label'),
       priority: AlertPriority.MEDIUM,
     });

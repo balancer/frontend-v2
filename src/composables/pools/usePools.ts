@@ -35,7 +35,7 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
    * METHODS
    */
   function loadMorePools() {
-    poolsQuery.fetchNextPage.value();
+    poolsQuery.fetchNextPage();
   }
 
   /**

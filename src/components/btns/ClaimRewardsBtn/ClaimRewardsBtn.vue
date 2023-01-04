@@ -65,7 +65,7 @@ function claimTx() {
     color="gradient"
     size="sm"
     :actionFn="claimTx"
-    :onConfirmFn="gaugesQuery.refetch.value"
+    :onConfirmFn="gaugesQuery.refetch"
     action="claim"
     :summary="`${t('claim')} ${fNum2(props.fiatValue, FNumFormats.fiat)}`"
     :confirmingLabel="t('claiming')"

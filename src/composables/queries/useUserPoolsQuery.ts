@@ -1,7 +1,6 @@
 import { flatten, keyBy } from 'lodash';
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -22,9 +21,9 @@ type UserPoolsQueryResponse = {
   tokens: string[];
 };
 
-export default function useUserPoolsQuery(
-  options: UseQueryOptions<UserPoolsQueryResponse> = {}
-) {
+type QueryOptions = UseQueryOptions<UserPoolsQueryResponse>;
+
+export default function useUserPoolsQuery(options: QueryOptions = {}) {
   /**
    * COMPOSABLES
    */
@@ -105,5 +104,9 @@ export default function useUserPoolsQuery(
     ...options,
   });
 
-  return useQuery<UserPoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<UserPoolsQueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

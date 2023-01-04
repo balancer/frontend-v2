@@ -59,7 +59,7 @@ const poolActivitiesIsFetchingNextPage = computed(
  * METHODS
  */
 function loadMorePoolActivities() {
-  poolActivitiesQuery.fetchNextPage.value();
+  poolActivitiesQuery.fetchNextPage();
 }
 </script>
 

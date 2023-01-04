@@ -11,7 +11,7 @@ import {
 } from 'lodash';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useQuery } from 'vue-query';
+import { useQuery } from '@tanstack/vue-query';
 
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';

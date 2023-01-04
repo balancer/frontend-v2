@@ -35,7 +35,7 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { TransactionActionInfo } from '@/types/transactions';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
-import { useQuery, useQueryClient } from 'vue-query';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
@@ -245,7 +245,7 @@ const provider = (props: Props) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
-    queryJoinQuery.remove.value();
+    queryJoinQuery.remove();
   }
 
   /**

@@ -21,9 +21,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { configService } from '@/services/config/config.service';
 
-import useUserStakingData, {
-  UserStakingDataResponse,
-} from './userUserStakingData';
+import useUserStakingData, { UserStakingData } from './userUserStakingData';
 
 export const isL2StakingAprLive = isAfter(new Date(), fromUnixTime(1651104000));
 
@@ -37,7 +35,7 @@ export type StakingProvider = {
   stakeBPT: () => Promise<TransactionResponse>;
   unstakeBPT: () => Promise<TransactionResponse>;
   setPoolAddress: (address: string) => void;
-  userData: UserStakingDataResponse;
+  userData: UserStakingData;
 };
 
 export async function getGaugeAddress(poolAddress: string): Promise<string> {
@@ -113,13 +111,10 @@ export default defineComponent({
       isLoadingUserStakingData,
       isLoadingStakedPools,
       isLoadingStakedShares,
-      isUserStakeDataIdle,
-      isStakedSharesIdle,
       isRefetchingStakedShares,
       refetchStakedShares,
       isStakedPoolsQueryEnabled,
       isLoadingUserPools,
-      isUserPoolsIdle,
       stakedSharesMap,
       refetchUserStakingData,
       stakedPools,
@@ -232,13 +227,10 @@ export default defineComponent({
         isLoadingUserStakingData,
         isLoadingStakedPools,
         isLoadingStakedShares,
-        isUserStakeDataIdle,
-        isStakedSharesIdle,
         isRefetchingStakedShares,
         refetchStakedShares,
         isStakedPoolsQueryEnabled,
         isLoadingUserPools,
-        isUserPoolsIdle,
         stakedSharesMap,
         refetchUserStakingData,
         stakedPools,

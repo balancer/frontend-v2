@@ -37,9 +37,7 @@ export default function useVotingGauges() {
 
   const isLoading = computed(
     (): boolean =>
-      gaugeVotesQuery.isLoading.value ||
-      gaugeVotesQuery.isIdle.value ||
-      !!gaugeVotesQuery.error.value
+      gaugeVotesQuery.isLoading.value || !!gaugeVotesQuery.error.value
   );
 
   const votingGauges = computed(() => gaugeVotesQuery.data.value || []);

@@ -33,12 +33,10 @@ export function useLock() {
    * COMPUTED
    */
   const isLoadingLockPool = computed(
-    (): boolean => lockPoolQuery.isLoading.value || lockPoolQuery.isIdle.value
+    (): boolean => lockPoolQuery.isLoading.value
   );
 
-  const isLoadingLockInfo = computed(
-    (): boolean => lockQuery.isLoading.value || lockQuery.isIdle.value
-  );
+  const isLoadingLockInfo = computed((): boolean => lockQuery.isLoading.value);
 
   const isLoadingLock = computed(
     (): boolean => isLoadingLockPool.value || isLoadingLockInfo.value

@@ -53,7 +53,7 @@ const poolSwapsIsFetchingNextPage = computed(
  * METHODS
  */
 function loadMorePoolSwaps() {
-  poolSwapsQuery.fetchNextPage.value();
+  poolSwapsQuery.fetchNextPage();
 }
 </script>
 

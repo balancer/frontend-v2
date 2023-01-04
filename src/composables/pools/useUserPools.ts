@@ -12,9 +12,7 @@ export default function useUserPools() {
     () => userPoolsQuery.data.value?.totalInvestedAmount
   );
 
-  const isLoadingUserPools = computed(
-    () => userPoolsQuery.isLoading.value || userPoolsQuery.isIdle.value
-  );
+  const isLoadingUserPools = computed(() => userPoolsQuery.isLoading.value);
 
   return {
     userPools,

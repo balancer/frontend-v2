@@ -67,9 +67,10 @@ export interface TokensProviderResponse {
   priceQueryLoading: Ref<boolean>;
   balancesQueryError: Ref<boolean>;
   allowancesQueryError: Ref<boolean>;
-  refetchPrices: Ref<() => void>;
-  refetchBalances: Ref<() => void>;
-  refetchAllowances: Ref<() => void>;
+  // This any types will be updated in the next PR
+  refetchPrices: any;
+  refetchBalances: any;
+  refetchAllowances: any;
   injectTokens: (addresses: string[]) => Promise<void>;
   searchTokens: (
     query: string,

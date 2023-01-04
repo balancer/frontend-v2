@@ -6,7 +6,7 @@ import {
 import { getAddress } from '@ethersproject/address';
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useQueryClient } from 'vue-query';
+import { useQueryClient } from '@tanstack/vue-query';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
@@ -138,9 +138,9 @@ onBeforeMount(async () => {
 async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
-  await refetchStakedShares.value();
-  await refetchUserStakingData.value();
-  await refetchHasNonPrefGauge.value();
+  await refetchStakedShares();
+  await refetchUserStakingData();
+  await refetchHasNonPrefGauge();
   await queryClient.refetchQueries(['staking']);
   emit('success');
 }

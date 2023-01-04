@@ -33,7 +33,6 @@ const { balanceFor } = useTokens();
 const {
   userData: {
     refetchStakedShares,
-    isStakedSharesIdle,
     isLoadingStakedShares,
     isRefetchingStakedShares,
     stakedSharesForProvidedPool,
@@ -81,7 +80,7 @@ function handlePreviewClose() {
 }
 
 async function handleActionSuccess() {
-  await refetchStakedShares.value();
+  await refetchStakedShares();
 }
 </script>
 
@@ -89,10 +88,7 @@ async function handleActionSuccess() {
   <div>
     <AnimatePresence
       :isVisible="
-        !isLoadingStakedShares &&
-        !isStakedSharesIdle &&
-        !isLoadingPoolEligibility &&
-        !isLoadingBoosts
+        !isLoadingStakedShares && !isLoadingPoolEligibility && !isLoadingBoosts
       "
     >
       <div class="relative">

@@ -19,7 +19,7 @@ import registerDirectives from '@/plugins/directives';
 import i18n from '@/plugins/i18n';
 import router from '@/plugins/router';
 import initSentry from '@/plugins/sentry';
-import vueQuery from '@/plugins/vueQuery';
+import { VueQueryPlugin } from '@tanstack/vue-query';
 import Web3Plugin from '@/services/web3/web3.plugin';
 import store from '@/store';
 
@@ -44,7 +44,7 @@ const app = createApp(Root)
   .use(router)
   .use(store)
   .use(blocknative)
-  .use(vueQuery)
+  .use(VueQueryPlugin)
   .use(Web3Plugin)
   .use(VueVirtualScroller);
 

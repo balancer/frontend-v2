@@ -164,7 +164,7 @@ useIntervalFn(async () => {
 }, oneSecondInMs);
 
 watch(isMismatchedNetwork, () => {
-  userClaimsQuery.refetch.value();
+  userClaimsQuery.refetch();
 });
 
 // METHODS
@@ -200,7 +200,7 @@ async function claimAvailableRewards() {
       txListener(tx, {
         onTxConfirmed: () => {
           isClaiming.value = false;
-          userClaimsQuery.refetch.value();
+          userClaimsQuery.refetch();
         },
         onTxFailed: () => {
           isClaiming.value = false;

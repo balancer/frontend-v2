@@ -9,9 +9,8 @@ import {
   nth,
   tail,
 } from 'lodash';
-import { QueryKey } from 'react-query';
 import { computed, reactive, Ref, ref, watch } from 'vue';
-import { useQueries } from 'vue-query';
+import { QueryKey, useQueries } from '@tanstack/vue-query';
 
 export function queryTemplatesEmitter(
   queryTemplates: Promise<any>[] | Promise<any>
@@ -251,21 +250,13 @@ export default function useQueryStreams(
 
   const dataStates = computed(() => {
     type DataState = {
-      [key: keyof typeof queryTemplates]:
-        | 'idle'
-        | 'error'
-        | 'loading'
-        | 'success';
+      [key: keyof typeof queryTemplates]: 'error' | 'loading' | 'success';
     };
     const statesPerPage: [number, DataState][] = [];
 
     for (let i = 0; i < currentPage.value; i++) {
       const states: {
-        [key: keyof typeof queryTemplates]:
-          | 'idle'
-          | 'error'
-          | 'loading'
-          | 'success';
+        [key: keyof typeof queryTemplates]: 'error' | 'loading' | 'success';
       } = {};
       Object.keys(queryTemplates).forEach((queryKey, j) => {
         states[queryKey] = responses[j].status;
