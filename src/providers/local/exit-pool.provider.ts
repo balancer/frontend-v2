@@ -388,13 +388,13 @@ const provider = (props: Props) => {
     if (!hasFetchedPoolsForSor.value) return;
     if (!isSingleAssetExit.value) return;
 
-    const exitHandler = exitPoolService.setExitHandler(exitHandlerType.value);
+    exitPoolService.setExitHandler(exitHandlerType.value);
     singleAmountOut.max = '';
 
     try {
       let output;
       if (exitHandlerType.value === ExitHandlerType.LegacySwapExit) {
-        output = await exitHandler.queryExit({
+        output = await exitPoolService.queryExit({
           exitType: ExitType.LegacySwapGivenIn,
           bptIn: bptBalance.value,
           amountsOut: [singleAmountOut],
@@ -405,7 +405,7 @@ const provider = (props: Props) => {
           poolExchange,
         });
       } else {
-        output = await exitHandler.queryExit({
+        output = await exitPoolService.queryExit({
           exitType: ExitType.SwapGivenIn,
           bptIn: bptBalance.value,
           amountsOut: [singleAmountOut],
