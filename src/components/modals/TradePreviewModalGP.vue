@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { SubgraphPoolBase } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -250,7 +249,7 @@ const gnosisRelayerApproval = useRelayerApproval(
   props.trading.isGnosisTrade
 );
 
-const pools = computed<(Pool | SubgraphPoolBase)[]>(
+const pools = computed<SubgraphPoolBase[]>(
   // @ts-ignore - Fix types incompatibility error
   () => {
     return props.trading.sor.pools.value;
