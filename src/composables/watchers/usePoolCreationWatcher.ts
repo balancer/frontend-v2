@@ -40,6 +40,7 @@ export default function usePoolCreationWatcher() {
         action: navigateToPoolCreation,
         actionLabel: t('returnToPoolCreation'),
         priority: AlertPriority.LOW,
+        rememberClose: true,
       });
     }
   });
