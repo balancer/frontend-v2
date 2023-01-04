@@ -4,7 +4,7 @@ import { computed } from 'vue';
 
 import { bnum } from '@/lib/utils';
 
-import useUserSettings from './useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 
 export default function useSlippage() {
   const { slippage } = useUserSettings();

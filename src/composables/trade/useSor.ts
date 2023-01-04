@@ -1,5 +1,4 @@
 import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import {
   AddressZero,
@@ -102,7 +101,7 @@ export default function useSor({
   slippageBufferRate,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
-  const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
+  const pools = ref<SubgraphPoolBase[]>([]);
   const sorReturn = ref<SorReturn>({
     hasSwaps: false,
     tokenIn: '',
