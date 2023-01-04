@@ -15,6 +15,7 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { ExitPoolHandler, ExitType, QueryOutput } from './exit-pool.handler';
 import { AmountOut } from '@/providers/local/exit-pool.provider';
 import { TokenInfoMap } from '@/types/TokenList';
+import i18n from '@/plugins/i18n';
 
 export type LegacySwapExitParamsGivenIn = {
   exitType: ExitType.LegacySwapGivenIn;
@@ -147,23 +148,14 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
           .toString(),
         tokenOut.decimals
       );
-    } catch (error) {
-      throw new Error('SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT');
+    } catch (error: any) {
       // TODO: Handle this error
-      // if ((error as Error).message.includes('MIN_BPT_IN_FOR_TOKEN_OUT')) {
-      //   setError(WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT);
-      //   return poolTokens.value.map((token, tokenIndex) => {
-      //     return formatUnits(
-      //       poolCalculator
-      //         .exactBPTInForTokenOut(
-      //           parseUnits(absMaxBpt.value, poolDecimals.value).toString(),
-      //           tokenIndex
-      //         )
-      //         .toString(),
-      //       token.decimals
-      //     );
-      //   });
-      // }
+      if ((error as Error).message.includes('MIN_BPT_IN_FOR_TOKEN_OUT')) {
+        throw new Error(
+          i18n.global.t(`withdraw.errors.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT`)
+        );
+      }
+      throw new Error((error as Error).message);
     }
 
     const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOut.address);
@@ -249,13 +241,18 @@ export class LegacySwapExitHandler implements ExitPoolHandler {
     tokenOutIndex: number;
     fullBPTIn: string;
   }): number {
-    return poolCalculator
-      .priceImpact(fullAmounts, {
-        exactOut: exactOut,
-        tokenIndex: tokenOutIndex,
-        queryBPT: fullBPTIn,
-      })
-      .toNumber();
+    try {
+      return poolCalculator
+        .priceImpact(fullAmounts, {
+          exactOut: exactOut,
+          tokenIndex: tokenOutIndex,
+          queryBPT: fullBPTIn,
+        })
+        .toNumber();
+    } catch (error) {
+      console.error('Error calculating price impact', error);
+      return 1;
+    }
   }
 
   private getFullAmounts(
