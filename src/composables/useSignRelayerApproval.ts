@@ -1,5 +1,5 @@
 import useWeb3 from '@/services/web3/useWeb3';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import useNetwork from './useNetwork';
 import { Relayer } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
@@ -10,7 +10,7 @@ import useRelayerApproval, {
   relayerAddressMap,
   Relayer as RelayerType,
 } from '@/composables/trade/useRelayerApproval';
-import { lsGet } from '@/lib/utils';
+import useGnosisSafeApp from '@/composables/useGnosisSafeApp';
 
 /**
  * STATE
@@ -24,9 +24,9 @@ export default function useSignRelayerApproval(relayerType: RelayerType) {
   const { account, getSigner } = useWeb3();
   const { networkId } = useNetwork();
   const { t } = useI18n();
-  const { action: gnosisApprovalAction } = useRelayerApproval(
-    RelayerType.GNOSIS
-  );
+  const { isGnosisSafeApp } = useGnosisSafeApp();
+  const { action: relayerApprovalTransaction } =
+    useRelayerApproval(relayerType);
 
   /**
    * METHODS
@@ -44,7 +44,7 @@ export default function useSignRelayerApproval(relayerType: RelayerType) {
     relayerSignature.value = signature;
   }
 
-  const signRelayerAction: TransactionActionInfo = {
+  const relayerApprovalSignature: TransactionActionInfo = {
     label: t('approveBatchRelayer'),
     loadingLabel: t('checkWallet'),
     confirmingLabel: t('approvingBatchRelayer'),
@@ -53,14 +53,14 @@ export default function useSignRelayerApproval(relayerType: RelayerType) {
     isSignAction: true,
   };
 
-  function getAction() {
-    const provider = lsGet('connectedProvider');
-    if (provider === 'gnosis') {
-      return gnosisApprovalAction.value;
-    }
-
-    return signRelayerAction;
-  }
+  /**
+   * COMPUTED
+   */
+  const approvalTransactionOrSignature = computed(() => {
+    return isGnosisSafeApp.value
+      ? relayerApprovalTransaction.value
+      : relayerApprovalSignature;
+  });
 
   /**
    * WATCHERS
@@ -71,7 +71,6 @@ export default function useSignRelayerApproval(relayerType: RelayerType) {
 
   return {
     relayerSignature,
-    signRelayerApproval,
-    signRelayerAction: getAction(),
+    signRelayerAction: approvalTransactionOrSignature.value,
   };
 }

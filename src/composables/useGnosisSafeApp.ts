@@ -1,11 +1,13 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
 import useDarkMode from '@/composables/useDarkMode';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import useWeb3 from '@/services/web3/useWeb3';
 
-const isGnosisSafeApp = async (): Promise<boolean> => {
+export const isGnosisSafeApp = ref(false);
+
+const checkIfGnosisSafeApp = async (): Promise<boolean> => {
   // Can't be a Safe app if we're not running in an iframe
   if (window.self === window.top) return false;
 
@@ -26,10 +28,16 @@ export default function useGnosisSafeApp() {
   onBeforeMount(async () => {
     // If we're running as a Safe App we want to automatically
     // connect to the provided safe.
-    if (await isGnosisSafeApp()) {
+    isGnosisSafeApp.value = await checkIfGnosisSafeApp();
+    console.log(isGnosisSafeApp.value);
+    if (isGnosisSafeApp.value) {
       await connectWallet('gnosis');
       // Disable darkmode by default
       if (darkMode) toggleDarkMode();
     }
   });
+
+  return {
+    isGnosisSafeApp,
+  };
 }
