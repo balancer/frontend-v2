@@ -74,6 +74,6 @@ export async function convertStEthWrap({ amount, isWrap }: ConversionParams) {
 
     return isWrap ? amount.mul(rate).div(ONE) : amount.mul(ONE).div(rate);
   } catch (error) {
-    throw new Error(`Failed to convert stETH: ${error}`);
+    throw new Error('Failed to convert stETH', { cause: error });
   }
 }
