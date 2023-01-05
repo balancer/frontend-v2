@@ -264,7 +264,7 @@ export default function useUserStakingData(poolAddress: Ref<string>) {
     () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
   );
 
-  const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery<
+  const { data: poolBoosts, isInitialLoading: isLoadingBoosts } = useQuery<
     Record<string, string>
   >(
     ['gauges', 'boosts', { account, userGaugeShares }],
