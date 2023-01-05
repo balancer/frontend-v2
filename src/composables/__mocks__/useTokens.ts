@@ -38,6 +38,7 @@ const mockTokens = {
 export default function useTokens() {
   return {
     injectTokens: vi.fn(),
+    approvalsRequired: vi.fn().mockReturnValue([]),
     priceFor: () => 2,
     hasBalance: vi.fn().mockReturnValue(false),
     balanceFor: vi.fn().mockReturnValue('0'),

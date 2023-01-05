@@ -3,18 +3,23 @@ import { Pool } from '@/services/pool/types';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-type JoinResponse = Awaited<ReturnType<typeof balancer.pools.generalisedJoin>>;
-
 /**
  * Handles generalized joins for deep pools using SDK functions.
  */
-export class GeneralisedJoinHandler implements JoinPoolHandler {
-  private lastJoinRes?: JoinResponse;
+
+interface GeneralisedJoinResponse {
+  to: string;
+  callData: string;
+  minOut: string;
+  expectedOut: string;
+  priceImpact: string;
+}
+export class DeepPoolJoinHandler implements JoinPoolHandler {
+  private lastGeneralisedJoinRes?: GeneralisedJoinResponse;
 
   constructor(
     public readonly pool: Pool,
@@ -23,15 +28,13 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
   ) {}
 
   async join(params: JoinParams): Promise<TransactionResponse> {
+    const { signer } = params;
     await this.queryJoin(params);
-
-    if (!this.lastJoinRes) {
+    if (!this.lastGeneralisedJoinRes) {
       throw new Error('Could not query generalised join');
     }
-
-    const txBuilder = new TransactionBuilder(params.signer);
-    const { to, callData } = this.lastJoinRes;
-
+    const txBuilder = new TransactionBuilder(signer);
+    const { to, callData } = this.lastGeneralisedJoinRes;
     return txBuilder.raw.sendTransaction({ to, data: callData });
   }
 
@@ -42,13 +45,13 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     slippageBsp,
     relayerSignature,
   }: JoinParams): Promise<QueryOutput> {
-    const evmAmountsIn: string[] = amountsIn.map(({ address, value }) => {
+    const parsedAmountsIn: string[] = amountsIn.map(({ address, value }) => {
       const token = selectByAddress(tokensIn, address);
 
-      if (!token || !token.decimals)
-        throw new Error(`Token metadata missing for: ${address}`);
+      if (!token?.decimals) throw new Error('Token decimals missing.');
 
-      return parseFixed(value || '0', token.decimals).toString();
+      const parsedAmount = parseFixed(value || '0', token.decimals).toString();
+      return parsedAmount;
     });
 
     const tokenAddresses: string[] = amountsIn.map(({ address }) => address);
@@ -57,26 +60,30 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const slippage = slippageBsp.toString();
     const poolId = this.pool.id;
 
-    this.lastJoinRes = await balancer.pools.generalisedJoin(
-      poolId,
-      tokenAddresses,
-      evmAmountsIn,
-      signerAddress,
-      wrapLeafTokens,
-      slippage,
-      relayerSignature
-    );
+    this.lastGeneralisedJoinRes = await this.sdk.pools
+      .generalisedJoin(
+        poolId,
+        tokenAddresses,
+        parsedAmountsIn,
+        signerAddress,
+        wrapLeafTokens,
+        slippage,
+        relayerSignature
+      )
+      .catch(err => {
+        console.error(err);
+        throw new Error(err);
+      });
 
-    if (!this.lastJoinRes) {
+    if (!this.lastGeneralisedJoinRes) {
       throw new Error('Failed to fetch expected output.');
     }
-
     const bptOut = formatFixed(
-      this.lastJoinRes.expectedOut,
+      this.lastGeneralisedJoinRes.expectedOut,
       this.pool.onchain?.decimals || 18
     );
     const priceImpact: number = bnum(
-      formatFixed(this.lastJoinRes.priceImpact, 18)
+      formatFixed(this.lastGeneralisedJoinRes.priceImpact, 18)
     ).toNumber();
 
     if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity.');

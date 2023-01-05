@@ -3,7 +3,6 @@ import { balancer } from '@/lib/balancer.sdk';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Ref } from 'vue';
 import { SwapJoinHandler } from './handlers/swap-join.handler';
 import {
   JoinParams,
@@ -29,7 +28,7 @@ export class JoinPoolService {
    * @param {GasPriceService} gasPriceServ - Gas price service for fetching gas price.
    */
   constructor(
-    public readonly pool: Ref<Pool>,
+    public readonly pool: Pool,
     public readonly sdk = balancer,
     public readonly gasPriceServ = gasPriceService
   ) {
@@ -47,14 +46,14 @@ export class JoinPoolService {
 
     if (swapJoin) {
       return (this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ));
-    } else if (isDeep(pool.value)) {
+    } else if (isDeep(pool)) {
       return (this.joinHandler = new GeneralisedJoinHandler(
         pool,
         sdk,
         gasPriceServ
       ));
     } else {
-      throw new Error(`Pool type not handled: ${pool.value.poolType}`);
+      throw new Error(`Pool type not handled: ${pool.poolType}`);
     }
   }
 

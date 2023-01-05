@@ -41,7 +41,8 @@ export default function useTokenPricesQuery(
     const priceData = await Promise.all(
       addresses.value.map(a => balancer.data.tokenPrices.find(a))
     );
-
+    // console.log({ priceData: JSON.stringify(priceData) });
+    // console.log({ sdk: balancer.data.tokenPrices });
     let prices = addresses.value.reduce(
       (obj, key, index) => ({
         ...obj,
@@ -52,6 +53,8 @@ export default function useTokenPricesQuery(
 
     prices = injectCustomTokens(prices, pricesToInject.value);
     console.log('Fetching', Object.values(prices).length, 'prices');
+    // console.log({ prices });
+    // console.log({ priceData, addresses });
     return prices;
   };
 

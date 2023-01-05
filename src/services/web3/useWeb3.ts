@@ -49,6 +49,7 @@ export default function useWeb3() {
   const appNetworkConfig = configService.network;
 
   const { networkId } = useNetwork();
+  // console.log({ networkId, account });
 
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {

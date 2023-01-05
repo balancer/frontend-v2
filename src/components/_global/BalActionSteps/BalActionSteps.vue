@@ -27,6 +27,7 @@ import {
 } from '@/types/transactions';
 import signature from '@/assets/images/icons/signature.svg';
 import { captureException } from '@sentry/core';
+import BalHorizSteps from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
 
 /**
  * TYPES

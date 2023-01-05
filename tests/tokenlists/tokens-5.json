@@ -61,6 +61,62 @@
         "symbol": "miMATIC",
         "decimals": 18,
         "logoURI": "https://assets.coingecko.com/coins/images/15264/large/mimatic-red.png?1620281018"
+      },
+      {
+        "address": "0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e",
+        "chainId": 5,
+        "name": "Balancer Aave Boosted StablePool",
+        "symbol": "bb-a-usd2",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xa13a9247ea42d743238089903570127dda72fe44.png"
+      },
+      {
+        "address": "0xd03d4d8b4669d135569215dd6c4e790307c8e14b",
+        "chainId": 5,
+        "name": "Balancer Aave Boosted Pool (USDT)",
+        "symbol": "bb-a-USDT",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x2f4eb100552ef93840d5adc30560e5513dfffacb.png"
+      },
+      {
+        "address": "0x4d983081b9b9f3393409a4cdf5504d0aea9cd94c",
+        "chainId": 5,
+        "name": "Balancer Aave Boosted Pool (USDC)",
+        "symbol": "bb-a-USDC",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x82698aecc9e28e9bb27608bd52cf57f704bd1b83.png"
+      },
+      {
+        "address": "0x594920068382f64e4bc06879679bd474118b97b1",
+        "chainId": 5,
+        "name": "Balancer Aave Boosted Pool (DAI)",
+        "symbol": "bb-a-DAI",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xae37d54ae477268b9997d4161b96b8200755935c.png"
+      },
+      {
+        "address": "0xdabd33683bafdd448968ab6d6f47c3535c64bf0c",
+        "chainId": 5,
+        "name": "USD Coin",
+        "symbol": "USDC",
+        "decimals": 6,
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+      },
+      {
+        "address": "0xb8096bc53c3ce4c11ebb0069da0341d75264b104",
+        "chainId": 5,
+        "name": "Dai Stablecoin",
+        "symbol": "DAI",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png"
+      },
+      {
+        "address": "0x14468fd5e1de5a5a4882fa5f4e2217c5a8ddcadb",
+        "chainId": 5,
+        "name": "Tether USD",
+        "symbol": "USDT",
+        "decimals": 6,
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png"
       }
     ]
   },

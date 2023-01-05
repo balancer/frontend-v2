@@ -11,15 +11,28 @@ import { TokenInfoMap } from '@/types/TokenList';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
 import InvestActionsV2 from './components/InvestActionsV2.vue';
-import useJoinPool from '@/composables/pools/useJoinPool';
 import { useIntervalFn } from '@vueuse/shared';
 import { oneSecondInMs } from '@/composables/useTime';
+import { AmountIn } from '@/providers/local/join-pool.provider';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
+  isSingleAssetJoin: boolean;
+  amountsIn: AmountIn[];
+  bptOut: string;
+  fiatValueIn: string;
+  fiatValueOut: string;
+  priceImpact: number;
+  highPriceImpact: boolean;
+  rektPriceImpact: boolean;
+  missingPricesIn: boolean;
+  isLoadingQuery: boolean;
+  txInProgress: boolean;
+  queryJoinQuery: any;
+  resetAmounts: () => void;
 };
 
 type AmountMap = {
@@ -47,21 +60,6 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const {
-  isSingleAssetJoin,
-  amountsIn,
-  bptOut,
-  fiatValueIn,
-  fiatValueOut,
-  priceImpact,
-  highPriceImpact,
-  rektPriceImpact,
-  isLoadingQuery,
-  txInProgress,
-  queryJoinQuery,
-  missingPricesIn,
-  resetAmounts,
-} = useJoinPool();
 
 /**
  * COMPUTED
@@ -78,7 +76,7 @@ const showTokensOut = computed<boolean>(
 
 const amountInMap = computed((): AmountMap => {
   const amountMap = {};
-  amountsIn.value.forEach(amountIn => {
+  props.amountsIn.forEach(amountIn => {
     amountMap[amountIn.address] = amountIn.value;
   });
   return amountMap;
@@ -86,7 +84,7 @@ const amountInMap = computed((): AmountMap => {
 
 const amountOutMap = computed((): AmountMap => {
   const amountMap = {
-    [props.pool.address]: bptOut.value,
+    [props.pool.address]: props.bptOut,
   };
   return amountMap;
 });
@@ -115,9 +113,9 @@ const fiatAmountInMap = computed((): AmountMap => {
 });
 
 const fiatAmountOutMap = computed((): AmountMap => {
-  if (!fiatValueOut.value) return {};
+  if (!props.fiatValueOut) return {};
   const fiatAmountMap = {
-    [props.pool.address]: fiatValueOut.value,
+    [props.pool.address]: props.fiatValueOut,
   };
   return fiatAmountMap;
 });
@@ -134,7 +132,7 @@ const fiatTotalOut = computed((): string =>
  */
 function handleClose(): void {
   if (investmentConfirmed.value) {
-    resetAmounts();
+    props.resetAmounts();
     investmentConfirmed.value = false;
   }
   emit('close');
@@ -155,8 +153,8 @@ function handleShowStakeModal() {
 // Originally we did it every block but this is overfetching on short blocktime
 // networks like Polygon.
 useIntervalFn(() => {
-  if (!isLoadingQuery.value && !txInProgress.value) {
-    queryJoinQuery.refetch.value();
+  if (!props.isLoadingQuery && !props.txInProgress) {
+    props.queryJoinQuery.refetch();
   }
 }, oneSecondInMs * 10);
 </script>
@@ -180,6 +178,7 @@ useIntervalFn(() => {
     </template>
 
     <TokenAmounts
+      data-testid="tokens-in"
       :title="$t('investment.preview.titles.tokenIn')"
       :amountMap="amountInMap"
       :tokenMap="tokenInMap"
@@ -189,6 +188,7 @@ useIntervalFn(() => {
     />
     <TokenAmounts
       v-if="showTokensOut"
+      data-testid="tokens-out"
       showZeroAmounts
       :title="$t('investment.preview.titles.tokenOut')"
       class="mt-4"
