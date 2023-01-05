@@ -138,10 +138,12 @@ onBeforeMount(async () => {
 async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
-  await refetchStakedShares();
-  await refetchUserStakingData();
-  await refetchHasNonPrefGauge();
-  await queryClient.refetchQueries(['staking']);
+  await Promise.allSettled([
+    refetchStakedShares(),
+    refetchUserStakingData(),
+    refetchHasNonPrefGauge(),
+    queryClient.refetchQueries({ queryKey: ['staking'] }),
+  ]);
   emit('success');
 }
 
