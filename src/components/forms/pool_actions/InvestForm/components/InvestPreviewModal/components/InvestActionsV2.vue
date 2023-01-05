@@ -57,6 +57,7 @@ const {
   resetTxState,
   approvalActions: joinPoolApprovalActions,
 } = useJoinPool();
+
 const approvalActions = ref(joinPoolApprovalActions.value);
 
 const tokensToApprove = computed(() =>
