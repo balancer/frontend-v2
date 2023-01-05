@@ -5,7 +5,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { SwapExitParams } from './swap-exit.handler';
 import { LegacySwapExitParams } from './legacy-swap-exit.handler';
-import { DeepExitParams } from './deep-exit.handler';
+import { GeneralisedExitParams } from './generalised-exit.handler';
 
 export type AmountsOut = Record<Address, string>;
 
@@ -17,7 +17,10 @@ export enum ExitType {
   DeepGivenIn, // When BPT in is specified.
 }
 
-export type ExitParams = LegacySwapExitParams | SwapExitParams | DeepExitParams;
+export type ExitParams =
+  | LegacySwapExitParams
+  | SwapExitParams
+  | GeneralisedExitParams;
 
 export type QueryOutput = {
   priceImpact: number;

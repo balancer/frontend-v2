@@ -19,7 +19,7 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 
 type ExitResponse = Awaited<ReturnType<typeof balancer.pools.generalisedExit>>;
 
-export type DeepExitParams = {
+export type GeneralisedExitParams = {
   exitType: ExitType.DeepGivenIn;
   bptIn: string;
   signer: JsonRpcSigner;
@@ -39,7 +39,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async exit(params: DeepExitParams): Promise<TransactionResponse> {
+  async exit(params: GeneralisedExitParams): Promise<TransactionResponse> {
     await this.queryExit(params);
 
     if (!this.lastExitRes) {
@@ -57,7 +57,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     signer,
     slippageBsp,
     relayerSignature,
-  }: DeepExitParams): Promise<QueryOutput> {
+  }: GeneralisedExitParams): Promise<QueryOutput> {
     const evmAmountIn = parseFixed(
       bptIn || '0',
       this.pool.value.onchain?.decimals ?? 18
