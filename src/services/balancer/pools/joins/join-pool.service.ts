@@ -10,7 +10,7 @@ import {
   JoinPoolHandler,
   QueryOutput,
 } from './handlers/join-pool.handler';
-import { DeepPoolJoinHandler } from './handlers/deep-pool-join.handler';
+import { GeneralisedJoinHandler } from './handlers/generalised-join.handler';
 
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
@@ -48,7 +48,7 @@ export class JoinPoolService {
     if (swapJoin) {
       return (this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ));
     } else if (isDeep(pool.value)) {
-      return (this.joinHandler = new DeepPoolJoinHandler(
+      return (this.joinHandler = new GeneralisedJoinHandler(
         pool,
         sdk,
         gasPriceServ
