@@ -13,12 +13,12 @@
   "publicRpc": "https://polygon-rpc.com",
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
-  "balancerApi": "https://berfqtb52bc4hetoouojoshqem.appsync-api.eu-west-2.amazonaws.com/graphql",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-prune-v2",
+  "balancerApi": "https://api.balancer.fi",
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [
-      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2"
+      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-prune-v2"
     ],
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic",
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon",
