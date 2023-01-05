@@ -7,7 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 export const isGnosisSafeApp = ref(false);
 
-const checkIfGnosisSafeApp = async (): Promise<boolean> => {
+async function checkIfGnosisSafeApp(): Promise<boolean> {
   // Can't be a Safe app if we're not running in an iframe
   if (window.self === window.top) return false;
 
@@ -19,7 +19,7 @@ const checkIfGnosisSafeApp = async (): Promise<boolean> => {
   } catch {
     return false;
   }
-};
+}
 
 export default function useGnosisSafeApp() {
   const { connectWallet } = useWeb3();
