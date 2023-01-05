@@ -17,8 +17,8 @@
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "subgraphs": {
     "main": [
-      "https://gateway.thegraph.com/api/{{GRAPH_KEY}}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM",
-      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2"
+      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
+      "https://gateway.thegraph.com/api/{{GRAPH_KEY}}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM"
     ],
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges",
