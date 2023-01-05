@@ -61,7 +61,7 @@ onMounted(() => resetTabs());
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
           <BalTabs
-            v-if="isDeepPool && isPreMintedBptPool"
+            v-if="isDeepPool"
             v-model="activeTab"
             :tabs="tabs"
             class="p-0 m-0 -mb-px whitespace-nowrap"
