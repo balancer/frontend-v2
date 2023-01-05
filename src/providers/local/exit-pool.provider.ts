@@ -17,7 +17,7 @@ import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
-import QUERY_KEYS, { QUERY_EXIT_ROOT_KEY } from '@/constants/queryKeys';
+import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
@@ -42,7 +42,7 @@ import {
   watch,
   onMounted,
 } from 'vue';
-import { useQuery, useQueryClient } from '@tanstack/vue-query';
+import { useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 
@@ -103,7 +103,6 @@ const provider = (props: Props) => {
   const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
     Relayer.BATCH_V4
   );
-  const queryClient = useQueryClient();
 
   const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
@@ -114,7 +113,10 @@ const provider = (props: Props) => {
     (): boolean => isMounted.value && !txInProgress.value
   );
 
-  const queryExitQuery = useQuery<void, Error>(
+  const queryExitQuery = useQuery<
+    Awaited<ReturnType<typeof debounceQueryExit>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Exits.QueryExit(
       bptIn,
       hasFetchedPoolsForSor,
@@ -125,7 +127,10 @@ const provider = (props: Props) => {
     reactive({ enabled: queriesEnabled })
   );
 
-  const singleAssetMaxQuery = useQuery<void, Error>(
+  const singleAssetMaxQuery = useQuery<
+    Awaited<ReturnType<typeof debounceGetSingleAssetMax>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Exits.SingleAssetMax(
       hasFetchedPoolsForSor,
       isSingleAssetExit,
@@ -301,18 +306,15 @@ const provider = (props: Props) => {
    * Simulate exit transaction to get expected output and calculate price impact.
    */
   async function queryExit() {
-    if (!hasFetchedPoolsForSor.value) return;
+    if (!hasFetchedPoolsForSor.value) return null;
 
     // Single asset exit, and token out amount is 0 or less
-    if (isSingleAssetExit.value && !hasAmountsOut.value) return;
+    if (isSingleAssetExit.value && !hasAmountsOut.value) return null;
 
     // Proportional exit, and BPT in is 0 or less
-    if (!isSingleAssetExit.value && !hasBptIn.value) return;
+    if (!isSingleAssetExit.value && !hasBptIn.value) return null;
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
-
-    // Invalidate previous query in order to prevent stale data
-    queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
 
     try {
       const output = await exitPoolService.queryExit({
@@ -332,6 +334,7 @@ const provider = (props: Props) => {
         max: '',
         valid: true,
       }));
+      return output;
     } catch (error) {
       captureException(error);
       throw error;
@@ -342,8 +345,8 @@ const provider = (props: Props) => {
    * Fetch maximum amount out given bptBalance as bptIn.
    */
   async function getSingleAssetMax() {
-    if (!hasFetchedPoolsForSor.value) return;
-    if (!isSingleAssetExit.value) return;
+    if (!hasFetchedPoolsForSor.value) return null;
+    if (!isSingleAssetExit.value) return null;
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
     singleAmountOut.max = '';
@@ -361,6 +364,7 @@ const provider = (props: Props) => {
       });
 
       singleAmountOut.max = output.amountsOut[singleAmountOut.address];
+      return output;
     } catch (error) {
       captureException(error);
       throw error;
