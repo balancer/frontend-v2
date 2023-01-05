@@ -16,21 +16,13 @@ import { flatTokenTree } from '@/composables/usePool';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-interface GeneralisedExitResponse {
-  to: string;
-  callData: string;
-  tokensOut: string[];
-  expectedAmountsOut: string[];
-  minAmountsOut: string[];
-  priceImpact: string;
-}
+type ExitResponse = Awaited<ReturnType<typeof balancer.pools.generalisedExit>>;
 
 /**
- * Handles exits for single asset flows where we need to use a BatchSwap to exit
- * the pool.
+ * Handles exits using SDK's generalisedExit function.
  */
-export class DeepExitHandler implements ExitPoolHandler {
-  private lastGeneralisedExitRes?: GeneralisedExitResponse;
+export class GeneralisedExitHandler implements ExitPoolHandler {
+  private lastExitRes?: ExitResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -39,13 +31,15 @@ export class DeepExitHandler implements ExitPoolHandler {
   ) {}
 
   async exit(params: ExitParams): Promise<TransactionResponse> {
-    const { signer } = params;
     await this.queryExit(params);
-    if (!this.lastGeneralisedExitRes) {
-      throw new Error('Could not query generalised join');
+
+    if (!this.lastExitRes) {
+      throw new Error('Could not query generalised exit');
     }
-    const txBuilder = new TransactionBuilder(signer);
-    const { to, callData } = this.lastGeneralisedExitRes;
+
+    const txBuilder = new TransactionBuilder(params.signer);
+    const { to, callData } = this.lastExitRes;
+
     return txBuilder.raw.sendTransaction({ to, data: callData });
   }
 
@@ -55,40 +49,47 @@ export class DeepExitHandler implements ExitPoolHandler {
     slippageBsp,
     relayerSignature,
   }: ExitParams): Promise<QueryOutput> {
-    const bnumAmount = parseFixed(
+    const evmAmountIn = parseFixed(
       bptIn || '0',
       this.pool.value.onchain?.decimals ?? 18
     );
 
-    if (bnumAmount.lte(0)) throw new Error('BPT in amount is 0.');
+    if (evmAmountIn.lte(0)) throw new Error('BPT in amount is 0.');
 
     const signerAddress = await signer.getAddress();
-
     const slippage = slippageBsp.toString();
-    const poolId = this.pool.value.id;
 
-    this.lastGeneralisedExitRes = await balancer.pools
-      .generalisedExit(
-        poolId,
-        bnumAmount.toString(),
-        signerAddress,
-        slippage,
-        relayerSignature
-      )
-      .catch(err => {
-        console.error(err);
-        throw new Error(err);
-      });
-    if (!this.lastGeneralisedExitRes) throw new Error('Not enough liquidity.');
+    this.lastExitRes = await balancer.pools.generalisedExit(
+      this.pool.value.id,
+      evmAmountIn.toString(),
+      signerAddress,
+      slippage,
+      relayerSignature
+    );
+    if (!this.lastExitRes) throw new Error('Failed to query exit.');
 
-    const tokenAddressesOut = this.lastGeneralisedExitRes.tokensOut;
-    const allPoolTokens = flatTokenTree(this.pool.value);
+    const priceImpact: number = bnum(
+      formatFixed(this.lastExitRes.priceImpact, 18)
+    ).toNumber();
+
+    return {
+      priceImpact,
+      amountsOut: this.formatAmountsOut(this.lastExitRes),
+    };
+  }
+
+  /**
+   * PRIVATE METHODS
+   */
+  private formatAmountsOut(exitRes: ExitResponse): AmountsOut {
     const amountsOut: AmountsOut = {};
+    const allPoolTokens = flatTokenTree(this.pool.value);
 
-    this.lastGeneralisedExitRes.expectedAmountsOut.forEach((amount, i) => {
+    exitRes.expectedAmountsOut.forEach((amount, i) => {
       const token = allPoolTokens.find(poolToken =>
-        isSameAddress(poolToken.address, tokenAddressesOut[i])
+        isSameAddress(poolToken.address, exitRes.tokensOut[i])
       );
+
       if (token) {
         const realAddress = getAddress(token.address);
         const scaledAmount = formatFixed(
@@ -99,13 +100,6 @@ export class DeepExitHandler implements ExitPoolHandler {
       }
     });
 
-    const priceImpact: number = bnum(
-      formatFixed(this.lastGeneralisedExitRes.priceImpact, 18)
-    ).toNumber();
-
-    return {
-      priceImpact,
-      amountsOut,
-    };
+    return amountsOut;
   }
 }
