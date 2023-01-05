@@ -1,8 +1,8 @@
-import { mount } from 'vue-composable-tester';
 import BigNumber from 'bignumber.js';
 
 import { FiatCurrency } from '@/constants/currency';
 
+import { mountComposable } from '@/tests/mount-helpers';
 import useNumbers, { FNumFormats } from './useNumbers';
 
 const mockTokens = {
@@ -17,7 +17,6 @@ const mockTokens = {
 
 const mockDefaultCurrency = FiatCurrency.usd;
 
-jest.mock('@/composables/useUserSettings');
 jest.mock('@/composables/useTokens', () => {
   return jest.fn().mockImplementation(() => {
     return {
@@ -34,7 +33,7 @@ jest.mock('@/composables/useTokens', () => {
 });
 
 describe('useNumbers', () => {
-  const { result } = mount(() => useNumbers());
+  const { result } = mountComposable(() => useNumbers());
 
   it('Should load', () => {
     expect(result).toBeTruthy();

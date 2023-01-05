@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { SubgraphPoolBase, SwapV2 } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
@@ -19,7 +18,7 @@ interface Props {
   amountIn: string;
   addressOut: string;
   amountOut: string;
-  pools: (Pool | SubgraphPoolBase)[];
+  pools: SubgraphPoolBase[];
   sorReturn: SorReturn;
 }
 
