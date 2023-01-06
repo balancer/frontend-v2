@@ -1,5 +1,5 @@
 import { Network } from '@balancer-labs/sdk';
-import { computed } from 'vue';
+import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { networkId } from './useNetwork';
 
@@ -74,7 +74,7 @@ const POOL_ISSUES = {
 
 const issues = POOL_ISSUES[networkId.value];
 
-export function usePoolWarning(poolId: string) {
+export function usePoolWarning(poolId: Ref<string>) {
   const { t } = useI18n();
 
   /**
@@ -82,7 +82,7 @@ export function usePoolWarning(poolId: string) {
    */
   const issueKeys = computed((): PoolWarning[] => {
     return Object.keys(issues)
-      .map(issueKey => issues[issueKey].includes(poolId) && issueKey)
+      .map(issueKey => issues[issueKey].includes(poolId.value) && issueKey)
       .filter(issueKey => !!issueKey);
   });
 

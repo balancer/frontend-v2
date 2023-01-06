@@ -17,12 +17,13 @@ type Props = {
  * PROPS
  */
 const props = defineProps<Props>();
+const poolId = computed(() => props.pool.id);
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { isAffectedBy } = usePoolWarning(props.pool.id);
+const { isAffectedBy } = usePoolWarning(poolId);
 
 /**
  * COMPUTED

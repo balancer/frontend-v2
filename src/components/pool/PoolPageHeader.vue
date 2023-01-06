@@ -17,7 +17,6 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import useStaking from '@/composables/staking/useStaking';
-import { useRoute } from 'vue-router';
 
 /**
  * TYPES
@@ -43,8 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
   poolApr: undefined,
 });
 
-const route = useRoute();
-const poolId = (route.params.id as string).toLowerCase();
+const poolId = computed(() => toRef(props, 'pool').value.id);
 
 /**
  * COMPOSABLES
