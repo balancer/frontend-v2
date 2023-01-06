@@ -109,10 +109,10 @@
 <script lang="ts">
 import { computed, defineComponent, toRefs } from 'vue';
 
-import useRelayerApproval, {
+import useRelayerApprovalTx, {
   Relayer,
-} from '@/composables/trade/useRelayerApproval';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
+} from '@/composables/approvals/useRelayerApprovalTxApprovalTx';
+import useTokenApproval from '@/composables/approvals/useTokenApprovaloval';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
@@ -168,7 +168,10 @@ export default defineComponent({
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
 
-    const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
+    const lidoRelayerApproval = useRelayerApprovalTx(
+      Relayer.LIDO,
+      isStETHTrade
+    );
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 

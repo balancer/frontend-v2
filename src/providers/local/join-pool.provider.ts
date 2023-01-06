@@ -30,11 +30,11 @@ import {
   toRef,
   watch,
 } from 'vue';
-import useRelayerApproval, {
+import useRelayerApprovalTx, {
   Relayer,
-} from '@/composables/trade/useRelayerApproval';
+} from '@/composables/approvals/useRelayerApprovalTx';
 import { TransactionActionInfo } from '@/types/transactions';
-import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
+import useRelayerApproval from '@/composables/approvals/useRelayerApproval';
 import { useQuery, useQueryClient } from 'vue-query';
 import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
@@ -104,8 +104,8 @@ const provider = (props: Props) => {
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const { txState, txInProgress, resetTxState } = useTxState();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
+  const relayerApproval = useRelayerApprovalTx(Relayer.BATCH_V4);
+  const { relayerSignature, signRelayerAction } = useRelayerApproval(
     Relayer.BATCH_V4
   );
   const queryClient = useQueryClient();

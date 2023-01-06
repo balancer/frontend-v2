@@ -2,9 +2,9 @@
 import { computed, ref, toRefs } from 'vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
-import useRelayerApproval, {
+import useRelayerApprovalTx, {
   Relayer,
-} from '@/composables/trade/useRelayerApproval';
+} from '@/composables/approvals/useRelayerApprovalTxApprovalTx';
 import useTokens from '@/composables/useTokens';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
@@ -45,7 +45,7 @@ const { data: poolsResponse, isLoading: isLoadingPools } = usePoolsQuery(
 
 const poolsData = computed(() => poolsResponse.value?.pages?.[0].pools);
 
-const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
+const batchRelayerApproval = useRelayerApprovalTx(Relayer.BATCH);
 
 const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
 

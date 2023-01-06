@@ -1,6 +1,6 @@
-import useRelayerApproval, {
+import useRelayerApprovalTx, {
   Relayer,
-} from '@/composables/trade/useRelayerApproval';
+} from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -9,7 +9,7 @@ import {
   tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePool';
-import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
+import useRelayerApproval from '@/composables/approvals/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
 import useUserSettings from '@/composables/useUserSettings';
@@ -99,8 +99,8 @@ const provider = (props: Props) => {
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
+  const relayerApproval = useRelayerApprovalTx(Relayer.BATCH_V4);
+  const { relayerSignature, signRelayerAction } = useRelayerApproval(
     Relayer.BATCH_V4
   );
   const queryClient = useQueryClient();

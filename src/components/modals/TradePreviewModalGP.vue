@@ -8,10 +8,10 @@ import { useI18n } from 'vue-i18n';
 
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { TradeQuote } from '@/composables/trade/types';
-import useRelayerApproval, {
+import useRelayerApprovalTx, {
   Relayer,
-} from '@/composables/trade/useRelayerApproval';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
+} from '@/composables/approvals/useRelayerApprovalTxApprovalTx';
+import useTokenApproval from '@/composables/approvals/useTokenApprovaloval';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
@@ -245,7 +245,7 @@ const tokenApproval = useTokenApproval(
   tokens
 );
 
-const gnosisRelayerApproval = useRelayerApproval(
+const gnosisRelayerApproval = useRelayerApprovalTx(
   Relayer.GNOSIS,
   props.trading.isGnosisTrade
 );
@@ -270,7 +270,7 @@ const isStETHTrade = computed(
     wrapType.value === WrapType.NonWrap
 );
 
-const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
+const lidoRelayerApproval = useRelayerApprovalTx(Relayer.LIDO, isStETHTrade);
 
 const requiresTokenApproval = computed(() => {
   if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
