@@ -47,7 +47,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
 /**
  * COMPOSABLES
  */
-const { isAffected, warnings } = usePoolWarning(poolId);
+const { isAffected, warnings } = usePoolWarning(poolId.value);
 const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
