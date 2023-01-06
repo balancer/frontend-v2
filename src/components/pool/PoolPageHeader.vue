@@ -17,6 +17,7 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import useStaking from '@/composables/staking/useStaking';
+import { useRoute } from 'vue-router';
 
 /**
  * TYPES
@@ -42,12 +43,13 @@ const props = withDefaults(defineProps<Props>(), {
   poolApr: undefined,
 });
 
-const poolId = computed(() => toRef(props, 'pool').value.id);
+const route = useRoute();
+const poolId = (route.params.id as string).toLowerCase();
 
 /**
  * COMPOSABLES
  */
-const { isAffected, warnings } = usePoolWarning(poolId.value);
+const { isAffected, warnings } = usePoolWarning(poolId);
 const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
