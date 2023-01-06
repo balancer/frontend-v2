@@ -412,7 +412,7 @@ const POOLS_POLYGON: Pools = {
       '0xe22483774bd8611be2ad2f4194078dac9159f4ba0000000000000000000008f0', // 2BRL
       '0xbf29ef6e23af0ac5b6bf931c8b3f1080f5bc120600000000000000000000091f', // vQi stable
       '0x761b2bab155238fbf83f35627c495e28eb66546c0000000000000000000009fb', // FRAX - USDC-USDT (Stable)
-      '0x7079a25dec33be61bbd81b2fb69b468e80d3e72c0000000000000000000009ff', // FRAX - bb-am-USDC (ComposableStable)
+      '0x31bccf9e28b94e5dacebaa67fe8bc1603cecd904000000000000000000000a01', // FRAX - bb-am-USDC (new ComposableStable)
     ],
   },
   Investment: {
