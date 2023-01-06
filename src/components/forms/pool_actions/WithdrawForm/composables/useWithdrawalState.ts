@@ -1,8 +1,6 @@
 import { computed, reactive, Ref, toRefs } from 'vue';
 
-import useRelayerApprovalTx, {
-  Relayer,
-} from '@/composables/approvals/useRelayerApprovalTx';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import i18n from '@/plugins/i18n';
@@ -10,6 +8,7 @@ import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
+import { RelayerType } from '@/composables/approvals/useRelayerApproval';
 
 /**
  * TYPES
@@ -109,7 +108,7 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
    */
   const { nativeAsset } = useTokens();
   const { replaceWethWithEth } = useTokenHelpers();
-  const batchRelayerApproval = useRelayerApprovalTx(Relayer.BATCH);
+  const batchRelayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
 
   /**
    * COMPUTED

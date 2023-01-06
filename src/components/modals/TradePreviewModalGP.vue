@@ -7,10 +7,8 @@ import { useI18n } from 'vue-i18n';
 
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { TradeQuote } from '@/composables/trade/types';
-import useRelayerApprovalTx, {
-  Relayer,
-} from '@/composables/approvals/useRelayerApprovalTxApprovalTx';
-import useTokenApproval from '@/composables/approvals/useTokenApprovaloval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
+import useTokenApproval from '@/composables/approvals/useTokenApproval';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
@@ -20,6 +18,7 @@ import { bnum, bnumZero } from '@/lib/utils';
 import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import useWeb3 from '@/services/web3/useWeb3';
+import { RelayerType } from '@/composables/approvals/useRelayerApproval';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
@@ -245,7 +244,7 @@ const tokenApproval = useTokenApproval(
 );
 
 const gnosisRelayerApproval = useRelayerApprovalTx(
-  Relayer.GNOSIS,
+  RelayerType.GNOSIS,
   props.trading.isGnosisTrade
 );
 
@@ -269,7 +268,10 @@ const isStETHTrade = computed(
     wrapType.value === WrapType.NonWrap
 );
 
-const lidoRelayerApproval = useRelayerApprovalTx(Relayer.LIDO, isStETHTrade);
+const lidoRelayerApproval = useRelayerApprovalTx(
+  RelayerType.LIDO,
+  isStETHTrade
+);
 
 const requiresTokenApproval = computed(() => {
   if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
