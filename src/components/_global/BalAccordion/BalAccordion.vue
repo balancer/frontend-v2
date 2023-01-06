@@ -203,7 +203,7 @@ watch(
           v-else
           ref="handleBarElement"
           :class="[
-            'w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl',
+            'transition-all w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl',
             {
               'border-b dark:border-gray-900': i !== sections.length - 1,
             },
