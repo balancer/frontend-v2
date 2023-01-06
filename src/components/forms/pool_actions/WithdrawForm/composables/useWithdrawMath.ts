@@ -22,7 +22,7 @@ import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 // Composables
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import {

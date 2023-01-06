@@ -1,13 +1,5 @@
 import { parseUnits } from '@ethersproject/units';
-import {
-  computed,
-  ComputedRef,
-  InjectionKey,
-  provide,
-  reactive,
-  Ref,
-  toRefs,
-} from 'vue';
+import { computed, inject, InjectionKey, reactive, toRefs } from 'vue';
 
 import { FiatCurrency } from '@/constants/currency';
 import LS_KEYS from '@/constants/local-storage.keys';
@@ -22,21 +14,9 @@ export interface UserSettingsState {
   slippage: string;
 }
 
-export interface UserSettingsProviderResponse {
-  currency: Ref<FiatCurrency>;
-  slippage: Ref<string>;
-  slippageScaled: ComputedRef<string>;
-  slippageBsp: ComputedRef<number>;
-  setCurrency: (newCurrency: FiatCurrency) => void;
-  setSlippage: (newSlippage: string) => void;
-}
-
 /**
  * SETUP
  */
-export const UserSettingsProviderSymbol: InjectionKey<UserSettingsProviderResponse> =
-  Symbol(symbolKeys.Providers.App);
-
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
 const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
 
@@ -69,23 +49,23 @@ function setSlippage(newSlippage: string): void {
   state.slippage = newSlippage;
 }
 
-/**
- * UserSettingsProvider
- * Provides global user settings interface
- */
-export default {
-  name: 'UserSettingsProvider',
+export const userSettingsProvider = () => {
+  return {
+    ...toRefs(state),
+    // methods
+    setCurrency,
+    setSlippage,
+    slippageScaled,
+    slippageBsp,
+  };
+};
 
-  setup(props, { slots }) {
-    provide(UserSettingsProviderSymbol, {
-      ...toRefs(state),
-      // methods
-      setCurrency,
-      setSlippage,
-      slippageScaled,
-      slippageBsp,
-    });
+export type Response = ReturnType<typeof userSettingsProvider>;
+export const providerResponse = {} as Response;
+export const UserSettingsProviderSymbol: InjectionKey<Response> = Symbol(
+  symbolKeys.Providers.App
+);
 
-    return () => slots.default();
-  },
+export const useUserSettings = (): Response => {
+  return inject(UserSettingsProviderSymbol, providerResponse);
 };

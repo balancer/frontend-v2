@@ -2,7 +2,7 @@ import useNumbers from '@/composables/useNumbers';
 import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '../user-settings.provider';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
