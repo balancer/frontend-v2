@@ -2,7 +2,7 @@ import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
-import { BarChart, LineChart } from 'echarts/charts';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
 import {
   GridComponent,
   LegendComponent,
@@ -24,6 +24,10 @@ import Web3Plugin from '@/services/web3/web3.plugin';
 import store from '@/store';
 
 import Root from './Root';
+import {
+  userSettingsProvider,
+  UserSettingsProviderSymbol,
+} from './providers/user-settings.provider';
 
 echarts.use([
   TooltipComponent,
@@ -32,6 +36,7 @@ echarts.use([
   GridComponent,
   LegendComponent,
   BarChart,
+  PieChart,
 ]);
 
 const app = createApp(Root)
@@ -46,6 +51,8 @@ const app = createApp(Root)
 registerDirectives(app);
 registerGlobalComponents(app);
 initSentry(app);
+
+app.provide(UserSettingsProviderSymbol, userSettingsProvider());
 
 app.mount('#app');
 

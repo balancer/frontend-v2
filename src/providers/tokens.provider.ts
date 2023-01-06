@@ -17,7 +17,7 @@ import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useConfig from '@/composables/useConfig';
 import useTokenLists from '@/composables/useTokenLists';
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
 import {
@@ -200,7 +200,6 @@ export default {
      * metadata for each token in the tokens state array.
      ****************************************************************/
     const pricesQueryEnabled = computed(() => !state.loading);
-
     const {
       data: priceData,
       isSuccess: priceQuerySuccess,
@@ -493,15 +492,9 @@ export default {
      * LIFECYCLE
      */
     onBeforeMount(async () => {
-      const tokensToInject = compact([
-        configService.network.addresses.stETH,
-        configService.network.addresses.wstETH,
-        configService.network.addresses.veBAL,
-        TOKENS.Addresses.BAL,
-        TOKENS.Addresses.wNativeAsset,
-      ]);
-
-      await injectTokens(tokensToInject);
+      // Inject veBAL because it's not in tokenlists.
+      const { veBAL } = configService.network.addresses;
+      await injectTokens([veBAL]);
       state.loading = false;
     });
 

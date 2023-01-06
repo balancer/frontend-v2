@@ -12,7 +12,7 @@ import {
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,

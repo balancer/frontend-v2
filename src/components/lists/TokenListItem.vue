@@ -53,7 +53,7 @@ import { computed, onMounted, onUnmounted, PropType, ref } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import { TokenInfo } from '@/types/TokenList';
 
 export default {
