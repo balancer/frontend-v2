@@ -30,7 +30,7 @@ import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
-import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningTooltip.vue';
+import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 
 /**
  * TYPES
@@ -306,7 +306,7 @@ function iconAddresses(pool: PoolWithShares) {
             />
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
-          <PoolMigrationWarningTooltip :pool="pool" />
+          <PoolWarningTooltip :pool="pool" />
         </div>
       </template>
       <template #volumeCell="pool">
