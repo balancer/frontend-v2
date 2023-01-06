@@ -1,10 +1,10 @@
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber } from 'ethers';
 
 import configs from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 
-import { getStETHByWstETH, getWstETHByStETH } from './lido';
+import { convertStEthWrap } from './lido';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 export enum WrapType {
@@ -35,19 +35,20 @@ export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
   return WrapType.NonWrap;
 };
 
-export const getWrapOutput = (
+export const getWrapOutput = async (
   wrapper: string,
   wrapType: WrapType,
-  wrapAmount: BigNumberish
-): BigNumber => {
+  wrapAmount: BigNumber
+): Promise<BigNumber> => {
   if (wrapType === WrapType.NonWrap) throw new Error('Invalid wrap type');
   const { weth, wstETH } = configService.network.addresses;
 
   if (wrapper === weth) return BigNumber.from(wrapAmount);
   if (wrapper === wstETH) {
-    return wrapType === WrapType.Wrap
-      ? getWstETHByStETH(wrapAmount)
-      : getStETHByWstETH(wrapAmount);
+    return convertStEthWrap({
+      amount: wrapAmount,
+      isWrap: wrapType === WrapType.Wrap,
+    });
   }
   throw new Error('Unknown wrapper');
 };

@@ -14,7 +14,7 @@
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-prune-v2",
-  "balancerApi": "https://berfqtb52bc4hetoouojoshqem.appsync-api.eu-west-2.amazonaws.com/graphql",
+  "balancerApi": "https://api.balancer.fi",
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [

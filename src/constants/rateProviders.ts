@@ -41,6 +41,9 @@ const ALLOWED_RATE_PROVIDERS_MAP = {
     '0xd03d4d8b4669d135569215dd6c4e790307c8e14b': {
       '0xd03d4d8b4669d135569215dd6c4e790307c8e14b': true,
     },
+    '0x6320cd32aa674d2898a68ec82e869385fc5f7e2f': {
+      '0x80a94f458491ca88f09767e58a92fd23cbf1196f': true,
+    },
   },
   [Network.POLYGON]: {
     '*': {
@@ -58,6 +61,9 @@ const ALLOWED_RATE_PROVIDERS_MAP = {
       '0x0000000000000000000000000000000000000000': true,
     },
     '0x5979d7b546e38e414f7e9822514be443a4800529': {
+      '0xf7c5c26b574063e7b098ed74fad6779e65e3f836': true,
+    },
+    '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': {
       '0xf7c5c26b574063e7b098ed74fad6779e65e3f836': true,
     },
   },
