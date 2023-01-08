@@ -62,4 +62,13 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [],
   },
+  '100': {
+    Balancer: {
+      Default:
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
+      Vetted:
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json',
+    },
+    External: [],
+  },
 };

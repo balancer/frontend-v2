@@ -45,6 +45,12 @@ const networks = ref([
     networkSlug: 'arbitrum',
     key: '42161',
   },
+  {
+    id: 'gnosis-chain',
+    name: 'Gnosis Chain',
+    networkSlug: 'gnosis-chain',
+    key: '100',
+  },
 ]);
 
 const networksDev = ref([

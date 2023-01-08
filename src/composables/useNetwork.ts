@@ -37,9 +37,12 @@ export const networkId = ref<Network>(NETWORK_ID);
 export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
 export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
+export const isGnosis = computed(() => networkId.value === 100);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
-export const isL2 = computed(() => isPolygon.value || isArbitrum.value);
+export const isL2 = computed(
+  () => isPolygon.value || isArbitrum.value || isGnosis.value
+);
 export const isTestnet = computed(() => isGoerli.value);
 
 /**
@@ -56,6 +59,8 @@ export function networkFor(key: string | number): Network {
       return Network.POLYGON;
     case '42161':
       return Network.ARBITRUM;
+    case '100':
+      return 100;
     default:
       throw new Error('Network not supported');
   }
