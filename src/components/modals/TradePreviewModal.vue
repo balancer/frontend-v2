@@ -109,15 +109,14 @@
 <script lang="ts">
 import { computed, defineComponent, toRefs } from 'vue';
 
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
+import useTokenApproval from '@/composables/approvals/useTokenApproval';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { RelayerType } from '@/composables/approvals/useRelayerApproval';
 
 export default defineComponent({
   props: {
@@ -168,7 +167,10 @@ export default defineComponent({
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
 
-    const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
+    const lidoRelayerApproval = useRelayerApprovalTx(
+      RelayerType.LIDO,
+      isStETHTrade
+    );
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 

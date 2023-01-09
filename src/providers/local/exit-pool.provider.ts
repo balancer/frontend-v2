@@ -1,6 +1,4 @@
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -9,7 +7,9 @@ import {
   tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePool';
-import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
 import { useUserSettings } from '@/providers/user-settings.provider';
@@ -99,9 +99,9 @@ const provider = (props: Props) => {
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
-    Relayer.BATCH_V4
+  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+  const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
+    RelayerType.BATCH_V4
   );
   const queryClient = useQueryClient();
 
@@ -169,7 +169,7 @@ const provider = (props: Props) => {
   );
 
   const approvalActions = computed((): TransactionActionInfo[] =>
-    shouldSignRelayer.value ? [signRelayerAction] : []
+    shouldSignRelayer.value ? [relayerApprovalAction.value] : []
   );
 
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.

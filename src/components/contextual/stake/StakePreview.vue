@@ -12,7 +12,7 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
