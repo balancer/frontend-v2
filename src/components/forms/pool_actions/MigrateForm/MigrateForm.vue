@@ -3,7 +3,7 @@ import { computed, ref, toRefs } from 'vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 

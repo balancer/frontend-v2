@@ -3,7 +3,7 @@ import { computed, reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { GraphQLArgs } from '@balancer-labs/sdk';
 
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import { poolsStoreService } from '@/services/pool/pools-store.service';

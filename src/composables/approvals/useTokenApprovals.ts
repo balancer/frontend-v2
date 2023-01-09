@@ -5,7 +5,7 @@ import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useEthers from '@/composables/useEthers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 import { bnum } from '@/lib/utils';
 import { tokenService } from '@/services/token/token.service';

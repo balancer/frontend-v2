@@ -1,6 +1,6 @@
 import useNumbers from '@/composables/useNumbers';
 import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { useTxState } from '@/composables/useTxState';
 import { useUserSettings } from '../user-settings.provider';
 import {

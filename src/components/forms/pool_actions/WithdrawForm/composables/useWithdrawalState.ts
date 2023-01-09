@@ -2,7 +2,7 @@ import { computed, reactive, Ref, toRefs } from 'vue';
 
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import { isDeep } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';

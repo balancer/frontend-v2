@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, formatWordListAsSentence, isSameAddress } from '@/lib/utils';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';

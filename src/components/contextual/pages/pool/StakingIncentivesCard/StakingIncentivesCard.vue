@@ -6,7 +6,7 @@ import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBloc
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 

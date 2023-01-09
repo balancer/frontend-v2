@@ -15,7 +15,7 @@ import {
 
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import symbolKeys from '@/constants/symbol.keys';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';

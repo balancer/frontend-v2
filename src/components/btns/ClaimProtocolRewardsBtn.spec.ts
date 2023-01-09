@@ -12,18 +12,14 @@ ClaimProtocolRewardsBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };
 
 jest.mock('@/services/balancer/contracts/contracts/fee-distributor');
-jest.mock('@/composables/useTransactions');
-jest.mock('@/composables/useTokens');
-jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useNumbers');
+jest.mock('@/providers/tokens.provider');
 jest.mock('@/composables/queries/useProtocolRewardsQuery');
-jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockClaimBalance = jest.fn().mockResolvedValue(txResponseMock);
 const mockClaimBalances = jest.fn().mockResolvedValue(txResponseMock);
 
-describe.only('ClaimProtocolRewardsBtn', () => {
+describe('ClaimProtocolRewardsBtn', () => {
   beforeAll(() => {
     // @ts-ignore
     FeeDistributor.mockImplementation(() => {

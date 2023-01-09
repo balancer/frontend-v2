@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import useTokenApprovals, {
   ApprovalStateMap,
 } from '@/composables/approvals/useTokenApprovals';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
