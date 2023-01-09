@@ -114,7 +114,7 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';

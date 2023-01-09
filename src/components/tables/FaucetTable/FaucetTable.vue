@@ -8,8 +8,8 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import DripBtn from '@/components/btns/DripBtn/DripBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokenLists from '@/composables/useTokenLists';
-import useTokens from '@/composables/useTokens';
+import { useTokenLists } from '@/providers/token-lists.provider';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * COMPOSABLES

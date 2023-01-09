@@ -10,7 +10,7 @@ import {
   tokenTreeNodes,
 } from '@/composables/usePool';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { useTxState } from '@/composables/useTxState';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import {

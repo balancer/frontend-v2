@@ -10,7 +10,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 
 import useConfig from '../useConfig';
 import useEthers from '../useEthers';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from '../useTransactions';
 
 export default function useTokenApproval(

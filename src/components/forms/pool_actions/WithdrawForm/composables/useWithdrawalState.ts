@@ -4,7 +4,7 @@ import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import { isDeep } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';

@@ -1,4 +1,4 @@
-import { mount } from 'vue-composable-tester';
+import { mount } from '@/tests/mount-composable-tester';
 
 import useBreakpoints from './useBreakpoints';
 

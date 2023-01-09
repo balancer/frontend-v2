@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from '@/composables/useVeBAL';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';

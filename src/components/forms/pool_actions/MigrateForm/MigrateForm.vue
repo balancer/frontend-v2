@@ -5,7 +5,7 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 

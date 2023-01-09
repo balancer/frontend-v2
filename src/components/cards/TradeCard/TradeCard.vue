@@ -176,7 +176,7 @@ import useValidation, {
 } from '@/composables/trade/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { TOKENS } from '@/constants/tokens';
 import { lsGet } from '@/lib/utils';
 import { WrapType } from '@/lib/utils/balancer/wrapper';

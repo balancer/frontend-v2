@@ -13,7 +13,7 @@ import useRelayerApproval, {
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, bnumZero } from '@/lib/utils';
