@@ -14,14 +14,10 @@ import { createApp } from 'vue';
 
 import { registerGlobalComponents } from '@/plugins/components';
 import registerDirectives from '@/plugins/directives';
-import { registerPlugins } from '@/plugins/register-plugins';
+import { registerPlugins } from '@/plugins';
 import initSentry from '@/plugins/sentry';
 
 import App from './App.vue';
-import {
-  userSettingsProvider,
-  UserSettingsProviderSymbol,
-} from './providers/user-settings.provider';
 
 echarts.use([
   TooltipComponent,
@@ -39,8 +35,6 @@ registerPlugins(app);
 registerDirectives(app);
 registerGlobalComponents(app);
 initSentry(app);
-
-app.provide(UserSettingsProviderSymbol, userSettingsProvider());
 
 app.mount('#app');
 

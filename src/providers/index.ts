@@ -3,7 +3,7 @@ import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideTokens } from '@/providers/tokens.provider';
 
 // Provides global providers that can be injected from any component
-export function globalProvide() {
+export function initGlobalProviders() {
   const userSettings = provideUserSettings();
   const tokenLists = provideTokenLists();
   provideTokens(userSettings, tokenLists);
