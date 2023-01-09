@@ -1,8 +1,8 @@
 import useNumbers from '@/composables/useNumbers';
 import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { useTxState } from '@/composables/useTxState';
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '../user-settings.provider';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
@@ -30,11 +30,11 @@ import {
   toRef,
   watch,
 } from 'vue';
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import { TransactionActionInfo } from '@/types/transactions';
-import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
 import { useQuery, useQueryClient } from 'vue-query';
 import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
@@ -104,9 +104,9 @@ const provider = (props: Props) => {
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const { txState, txInProgress, resetTxState } = useTxState();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
-    Relayer.BATCH_V4
+  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+  const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
+    RelayerType.BATCH_V4
   );
   const queryClient = useQueryClient();
 
@@ -194,7 +194,7 @@ const provider = (props: Props) => {
   );
 
   const approvalActions = computed((): TransactionActionInfo[] =>
-    shouldSignRelayer.value ? [signRelayerAction] : []
+    shouldSignRelayer.value ? [relayerApprovalAction.value] : []
   );
 
   const isLoadingQuery = computed(

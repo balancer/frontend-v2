@@ -4,7 +4,7 @@ import {
   SwapInfo,
   SwapTypes,
 } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
+import { Pool } from '@/services/pool/types';
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { captureException } from '@sentry/browser';
@@ -24,10 +24,11 @@ import { balancer } from '@/lib/balancer.sdk';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from '../useTransactions';
-import useSignRelayerApproval from '../useSignRelayerApproval';
-import { Relayer } from './useRelayerApproval';
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
 
 import { TradeQuote } from './types';
 import useNumbers, { FNumFormats } from '../useNumbers';
@@ -84,7 +85,7 @@ export default function useJoinExit({
   // COMPOSABLES
   const { account, getSigner } = useWeb3();
   const { injectTokens, getToken } = useTokens();
-  const { relayerSignature } = useSignRelayerApproval(Relayer.BATCH_V4);
+  const { relayerSignature } = useRelayerApproval(RelayerType.BATCH_V4);
   const { addTransaction } = useTransactions();
   const { fNum2 } = useNumbers();
 

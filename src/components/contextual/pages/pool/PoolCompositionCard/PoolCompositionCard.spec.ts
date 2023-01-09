@@ -4,9 +4,7 @@ import { BoostedPoolMock } from '@/__mocks__/pool';
 import PoolCompositionCard from './PoolCompositionCard.vue';
 import { render, screen, within } from '@testing-library/vue';
 
-// TODO: refactor providers to avoid mocking useTokens
-jest.mock('@/composables/useTokens');
-jest.mock('@/services/web3/useWeb3');
+jest.mock('@/providers/tokens.provider');
 
 function renderComponent() {
   render(PoolCompositionCard, {
@@ -22,7 +20,7 @@ function renderComponent() {
 }
 
 describe('Given a boosted pool with a deep bb-a-DAI linear token, should render correct balance and fiat', () => {
-  it.only('for wrapped tokens (aUSDT)', async () => {
+  it('for wrapped tokens (aUSDT)', async () => {
     renderComponent();
     const aUSDT = await screen.findByRole('link', {
       name: /aUSDT/i,

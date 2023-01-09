@@ -1,12 +1,5 @@
-import { inject } from 'vue';
+import { version } from '../../package.json';
 
-import {
-  AppProviderResponse,
-  AppProviderSymbol,
-} from '@/providers/app.provider';
-
-const defaultProviderResponse = {} as AppProviderResponse;
-
-export default function useApp(): AppProviderResponse {
-  return inject(AppProviderSymbol, defaultProviderResponse);
+export default function useApp() {
+  return { version };
 }

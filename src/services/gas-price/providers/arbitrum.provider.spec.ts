@@ -11,7 +11,7 @@ describe('Arbitrum Provider', () => {
   beforeEach(() => {
     server.use(
       rest.post(
-        'https://arb-mainnet.g.alchemy.com/v2/VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh',
+        'https://arbitrum-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66',
         (req, res, ctx) => {
           return req.json().then(data => {
             if (data.method === 'eth_gasPrice')

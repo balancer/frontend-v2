@@ -3,7 +3,7 @@ import { computed, reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { GraphQLArgs } from '@balancer-labs/sdk';
 
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import { poolsStoreService } from '@/services/pool/pools-store.service';
@@ -73,6 +73,8 @@ export default function usePoolQuery(
     } else {
       pool = await poolRepository.fetch(getQueryArgs());
     }
+
+    if (!pool) throw new Error('Pool does not exist');
 
     if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');
 

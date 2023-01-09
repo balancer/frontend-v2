@@ -45,8 +45,9 @@ export default class Pools {
 
     if (!this.repository || !_.isEqual(query, this.lastQuery)) {
       this.lastQuery = _.cloneDeep(query);
+      const graphQLUrl = `${configService.network.balancerApi}/graphql`;
       this.repository = new PoolsBalancerAPIRepository({
-        url: configService.network.balancerApi || '',
+        url: graphQLUrl,
         apiKey: configService.network.keys.balancerApi || '',
         query: query,
       });

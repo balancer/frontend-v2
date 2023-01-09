@@ -5,7 +5,7 @@ import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { Rules } from '@/types';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -90,6 +90,8 @@ const emit = defineEmits<{
   (e: 'update:slider', value: number): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: KeyboardEvent);
+  (e: 'focus', value: Event);
+  (e: 'setMax', value: string);
 }>();
 
 /**
@@ -215,6 +217,7 @@ const setMax = () => {
     ? props.customBalance
     : getMaxBalanceFor(_address.value, props.disableNativeAssetBuffer);
 
+  emit('setMax', maxAmount);
   handleAmountChange(maxAmount);
 };
 
@@ -253,6 +256,7 @@ watch(_address, async (newAddress, oldAddress) => {
     v-bind="$attrs"
     inputAlignRight
     @blur="emit('blur', $event)"
+    @focus="emit('focus', $event)"
     @input="emit('input', $event)"
     @update:model-value="handleAmountChange($event)"
     @update:is-valid="emit('update:isValid', $event)"

@@ -9,14 +9,14 @@ import { useI18n } from 'vue-i18n';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { TradeQuote } from '@/composables/trade/types';
 import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
+import useTokenApproval from '@/composables/approvals/useTokenApproval';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
+import { useTokens } from '@/providers/tokens.provider';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, bnumZero } from '@/lib/utils';
 import { isStETH } from '@/lib/utils/balancer/lido';
@@ -43,8 +43,12 @@ const emit = defineEmits(['trade', 'close']);
 const { t } = useI18n();
 const { fNum2, toFiat } = useNumbers();
 const { tokens, balanceFor, approvalRequired } = useTokens();
-const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
-  Relayer.BATCH_V4
+const {
+  relayerSignature: batchRelayerSignature,
+  relayerApprovalAction: batchRelayerApprovalAction,
+} = useRelayerApproval(RelayerType.BATCH_V4);
+const { isUnlocked: batchRelayerIsUnlocked } = useRelayerApprovalTx(
+  RelayerType.BATCH_V4
 );
 const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
 const { slippage } = useUserSettings();
@@ -250,10 +254,8 @@ const tokenApproval = useTokenApproval(
   tokens
 );
 
-const batchRelayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-
-const gnosisRelayerApproval = useRelayerApproval(
-  Relayer.GNOSIS,
+const gnosisRelayerApproval = useRelayerApprovalTx(
+  RelayerType.GNOSIS,
   props.trading.isGnosisTrade
 );
 
@@ -277,7 +279,10 @@ const isStETHTrade = computed(
     wrapType.value === WrapType.NonWrap
 );
 
-const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
+const lidoRelayerApproval = useRelayerApprovalTx(
+  RelayerType.LIDO,
+  isStETHTrade
+);
 
 const requiresTokenApproval = computed(() => {
   if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
@@ -295,8 +300,8 @@ const requiresTokenApproval = computed(() => {
 const requiresBatchRelayerApproval = computed(
   () =>
     props.trading.isJoinExitTrade.value &&
-    !batchRelayerApproval.isUnlocked.value &&
-    !relayerSignature.value
+    !batchRelayerIsUnlocked.value &&
+    !batchRelayerSignature.value
 );
 
 const requiresGnosisRelayerApproval = computed(
@@ -319,9 +324,7 @@ const showTokenApprovalStep = computed(
 );
 
 const showBatchRelayerApprovalStep = computed(
-  () =>
-    props.trading.isJoinExitTrade.value &&
-    !batchRelayerApproval.isUnlocked.value
+  () => props.trading.isJoinExitTrade.value && !batchRelayerIsUnlocked.value
 );
 
 const showGnosisRelayerApprovalStep = computed(
@@ -403,7 +406,9 @@ const actions = computed((): TransactionActionInfo[] => [
         },
       ]
     : []),
-  ...(showBatchRelayerApprovalStep.value ? [signRelayerAction] : []),
+  ...(showBatchRelayerApprovalStep.value
+    ? [batchRelayerApprovalAction.value]
+    : []),
   ...(showTokenApprovalStep.value
     ? [
         {
