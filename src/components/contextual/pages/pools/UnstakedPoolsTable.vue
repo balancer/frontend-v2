@@ -55,7 +55,8 @@ const noPoolsLabel = computed(() => {
 const poolsToRenderKey = computed(() => JSON.stringify(poolsToRender.value));
 
 // first retrieve all the pools the user has liquidity for
-const { data: userPools, isLoading: isLoadingUserPools } = useUserPoolsQuery();
+const { data: userPools, isInitialLoading: isLoadingUserPools } =
+  useUserPoolsQuery();
 
 const partiallyStakedPools = computed(() => {
   const stakedPoolIds = stakedPools.value?.map(pool => pool.id);

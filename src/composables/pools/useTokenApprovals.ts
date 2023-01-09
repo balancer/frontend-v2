@@ -119,7 +119,7 @@ export default function useTokenApprovals(
 
       txListener(tx, {
         onTxConfirmed: async () => {
-          await refetchAllowances.value();
+          await refetchAllowances();
           state.confirming = false;
           state.approved = true;
         },

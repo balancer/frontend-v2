@@ -11,7 +11,7 @@ import useNetwork from '../useNetwork';
 /**
  * TYPES
  */
-type QueryResponse = Gauge[] | undefined;
+type QueryResponse = Gauge[] | null;
 type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
@@ -45,7 +45,7 @@ export default function useGaugesDecorationQuery(
    * QUERY FUNCTION
    */
   const queryFn = async () => {
-    if (!gauges.value) return undefined;
+    if (!gauges.value) return null;
     return await gaugesDecorator.decorate(gauges.value, account.value);
   };
 

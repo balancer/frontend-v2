@@ -39,7 +39,7 @@ export default function useGlobalQueryWatchers() {
         label: t('alerts.balances-fetch-error'),
         type: AlertType.ERROR,
         persistent: true,
-        action: refetchBalances.value,
+        action: refetchBalances,
         actionLabel: t('alerts.retry-label'),
         priority: AlertPriority.MEDIUM,
       });
@@ -55,7 +55,7 @@ export default function useGlobalQueryWatchers() {
         label: t('alerts.allowances-fetch-error'),
         type: AlertType.ERROR,
         persistent: true,
-        action: refetchAllowances.value,
+        action: refetchAllowances,
         actionLabel: t('alerts.retry-label'),
         priority: AlertPriority.MEDIUM,
       });

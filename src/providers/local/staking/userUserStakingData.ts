@@ -64,7 +64,7 @@ export default function useUserStakingData(poolAddress: Ref<string>) {
   /**
    * QUERIES
    */
-  const { data: userPoolsResponse, isLoading: isLoadingUserPools } =
+  const { data: userPoolsResponse, isInitialLoading: isLoadingUserPools } =
     useUserPoolsQuery();
 
   /** QUERY ARGS */
@@ -160,7 +160,7 @@ export default function useUserStakingData(poolAddress: Ref<string>) {
   // staked balances are updated
   const {
     data: stakedSharesResponse,
-    isLoading: isLoadingStakedShares,
+    isInitialLoading: isLoadingStakedShares,
     isRefetching: isRefetchingStakedShares,
     refetch: refetchStakedShares,
   } = useQuery<string>(
@@ -221,7 +221,7 @@ export default function useUserStakingData(poolAddress: Ref<string>) {
   // isLoadingStakedPools is the loading flag for pulling actual pool data for the
   // staked pools, not to be confused with isLoadingUserStakingData
   // which is the flag for pulling gauge data
-  const { data: stakedPoolsResponse, isLoading: isLoadingStakedPools } =
+  const { data: stakedPoolsResponse, isInitialLoading: isLoadingStakedPools } =
     usePoolsQuery(
       ref([]),
       reactive({
