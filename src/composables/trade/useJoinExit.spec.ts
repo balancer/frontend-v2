@@ -1,6 +1,6 @@
 import { parseFixed } from '@ethersproject/bignumber';
 import { computed, ref } from 'vue';
-import { mount } from 'vue-composable-tester';
+import { mount } from '@/tests/mount-composable-tester';
 
 import useJoinExit from '@/composables/trade/useJoinExit';
 import BigNumber from 'bignumber.js';
@@ -9,30 +9,32 @@ jest.mock('vue-i18n');
 jest.mock('vuex');
 jest.mock('@/composables/useEthereumTxType');
 jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useUserSettings');
 jest.mock('@/composables/useTransactions');
 jest.mock('@/locales');
 jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 
-jest.mock('@/composables/useTokens', () => {
-  return jest.fn().mockImplementation(() => {
+jest.mock('@/providers/tokens.provider', () => ({
+  useTokens: () => {
     return {
       injectTokens: jest.fn().mockImplementation(),
       priceFor: jest.fn().mockImplementation(),
       useTokens: jest.fn().mockImplementation(),
       getToken: jest.fn().mockImplementation(),
     };
-  });
-});
+  },
+}));
 
-jest.mock('@/composables/useSignRelayerApproval', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
+jest.mock('@/composables/approvals/useRelayerApproval', () => ({
+  __esModule: true,
+  default: () =>
+    jest.fn().mockImplementation(() => ({
       relayerSignature: '-',
-    };
-  });
-});
+    })),
+  RelayerType: {
+    BATCH_V4: 'BATCH_V4',
+  },
+}));
 
 const mockAmount = new BigNumber(10);
 jest.mock('@/lib/balancer.sdk', () => {
