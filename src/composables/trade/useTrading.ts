@@ -8,8 +8,9 @@ import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { bnum, isSameAddress, lsGet, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
-import useWeb3 from '@/services/web3/useWeb3';
+import { Pool } from '@/services/pool/types';
 
+import useWeb3 from '@/services/web3/useWeb3';
 import { networkId } from '../useNetwork';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
@@ -17,7 +18,6 @@ import { useUserSettings } from '@/providers/user-settings.provider';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
 import useJoinExit from './useJoinExit';
-import { SubgraphPoolBase } from '@balancer-labs/sdk';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis' | 'joinExit';
 
@@ -181,7 +181,7 @@ export default function useTrading(
     tokenIn,
     tokenOut,
     slippageBufferRate,
-    pools: sor.pools as Ref<SubgraphPoolBase[]>,
+    pools: sor.pools as Ref<Pool[]>,
   });
 
   const isLoading = computed(() => {
