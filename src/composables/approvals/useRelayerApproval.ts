@@ -8,20 +8,20 @@ import { useI18n } from 'vue-i18n';
 import { TransactionActionInfo } from '@/types/transactions';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useGnosisSafeApp from '@/composables/useGnosisSafeApp';
-import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
+import { COW_RELAYER_CONTRACT_ADDRESS } from '@/services/cowswap/constants';
 
 /**
  * TYPES
  */
 export enum RelayerType {
-  GNOSIS = 'Gnosis',
+  COWSWAP = 'Cowswap',
   LIDO = 'Lido',
   BATCH = 'Batch',
   BATCH_V4 = 'BATCH_V4',
 }
 
 export const relayerAddressMap = {
-  [RelayerType.GNOSIS]: GP_RELAYER_CONTRACT_ADDRESS,
+  [RelayerType.COWSWAP]: COW_RELAYER_CONTRACT_ADDRESS,
   [RelayerType.LIDO]: configService.network.addresses.lidoRelayer,
   [RelayerType.BATCH]: configService.network.addresses.batchRelayer,
   [RelayerType.BATCH_V4]: configService.network.addresses.batchRelayerV4,

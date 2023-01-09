@@ -26,7 +26,7 @@ export const API_URLS = {
     : 'https://protocol-mainnet.gnosis.io/api',
 };
 
-export default class GnosisProtocolService {
+export default class CowswapProtocolService {
   baseURL: string;
 
   constructor(apiVersion = 'v1') {
@@ -103,7 +103,7 @@ export default class GnosisProtocolService {
 
       return data;
     } catch (e) {
-      console.log(`[Gnosis Protocol]: Failed to get order ${orderId}`, e);
+      console.log(`[Cowswap Protocol]: Failed to get order ${orderId}`, e);
     }
 
     return null;
@@ -146,11 +146,11 @@ export default class GnosisProtocolService {
 
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Protocol]: Failed to get price from API`, e);
+      console.log(`[Cowswap Protocol]: Failed to get price from API`, e);
     }
 
     return null;
   }
 }
 
-export const gnosisProtocolService = new GnosisProtocolService();
+export const cowswapProtocolService = new CowswapProtocolService();
