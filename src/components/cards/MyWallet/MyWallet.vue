@@ -179,7 +179,7 @@ const emit = defineEmits<{
             {{ noTokensMessage }}.
           </p>
         </div>
-        <div v-else class="flex mt-4 lg:mt-0 w-full font-medium">
+        <div v-else class="flex mt-4 w-full font-medium">
           <BalLink @click="startConnectWithInjectedProvider">
             {{ t('connectYourWallet') }}
           </BalLink>

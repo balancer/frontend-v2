@@ -25,7 +25,7 @@ import {
   SorManager,
   SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { getStETHByWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
+import { convertStEthWrap, isStEthAddress } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
@@ -355,12 +355,10 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        if (isMainnet.value) {
-          tokenOutAmount = await adjustedPiAmount(
-            tokenOutAmount,
-            tokenOutAddress
-          );
-        }
+        tokenOutAmount = await adjustedPiAmount(
+          tokenOutAmount,
+          tokenOutAddress
+        );
 
         const priceImpactCalc = calcPriceImpact(
           tokenOutDecimals,
@@ -689,11 +687,14 @@ export default function useSor({
    */
   async function adjustedPiAmount(
     amount: BigNumber,
-    address: string
+    address: string,
+    isWrap = true
   ): Promise<BigNumber> {
-    if (isSameAddress(address, appNetworkConfig.addresses.wstETH)) {
-      const StEthAmount = await getStETHByWstETH(amount);
-      return StEthAmount;
+    if (
+      isSameAddress(address, appNetworkConfig.addresses.wstETH) &&
+      isMainnet.value
+    ) {
+      return convertStEthWrap({ amount, isWrap });
     }
     return amount;
   }
