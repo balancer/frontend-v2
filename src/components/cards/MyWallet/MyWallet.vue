@@ -4,10 +4,8 @@ import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
-import { includesAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
@@ -30,6 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { explorerLinks } = useWeb3();
 
 const networkName = configService.network.name;
 const { t } = useI18n();
@@ -37,7 +36,6 @@ const { isDeepPool, isPreMintedBptPool } = usePool(toRef(props, 'pool'));
 
 const {
   tokensWithBalance,
-  poolTokenAddresses,
   poolTokensWithBalance,
   poolTokensWithoutBalance,
   notPoolTokensWithBalance,
@@ -59,13 +57,8 @@ const noTokensMessage = computed(() => {
 const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 function handleAssetClick(tokenAddress) {
-  const isPoolToken = includesAddress(poolTokenAddresses.value, tokenAddress);
-  emit('click:asset', tokenAddress, isPoolToken);
+  window.open(explorerLinks.addressLink(tokenAddress));
 }
-
-const emit = defineEmits<{
-  (e: 'click:asset', tokenAddress: Address, isPoolToken: boolean): void;
-}>();
 </script>
 
 <template>
