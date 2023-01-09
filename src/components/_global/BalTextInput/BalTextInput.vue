@@ -63,6 +63,7 @@ const emit = defineEmits<{
   (e: 'keydown', value: KeyboardEvent);
   (e: 'mouseOver', value: Event);
   (e: 'mouseLeave', value: Event);
+  (e: 'focus', value: Event);
 }>();
 
 /**

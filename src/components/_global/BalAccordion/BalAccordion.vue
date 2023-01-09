@@ -203,7 +203,7 @@ watch(
           v-else
           ref="handleBarElement"
           :class="[
-            'w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800',
+            'transition-all w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl',
             {
               'border-b dark:border-gray-900': i !== sections.length - 1,
             },
@@ -223,7 +223,7 @@ watch(
             v-if="isContentVisible"
             ref="activeSectionElement"
             :class="{
-              'border-b active-section rounded-b':
+              'border-b dark:border-gray-900 active-section rounded-b':
                 isContentVisible && showSectionBorder,
             }"
           >

@@ -159,7 +159,6 @@
 
 <script lang="ts">
 import { SubgraphPoolBase } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { computed, defineComponent, onBeforeMount, ref } from 'vue';
@@ -272,7 +271,7 @@ export default defineComponent({
       }
       return t('swap');
     });
-    const pools = computed<(Pool | SubgraphPoolBase)[]>(
+    const pools = computed<SubgraphPoolBase[]>(
       // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
       () => {
         return trading.sor.pools.value;

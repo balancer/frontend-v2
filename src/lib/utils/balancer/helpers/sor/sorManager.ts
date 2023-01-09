@@ -6,7 +6,6 @@ import {
   SwapOptions,
   SwapTypes,
 } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
@@ -44,7 +43,7 @@ export class SorManager {
   private isFetching: boolean;
   maxPools: number;
   gasPrice: BigNumber;
-  selectedPools: (SubgraphPoolBase | Pool)[] = [];
+  selectedPools: SubgraphPoolBase[] = [];
 
   constructor(
     provider: Provider,

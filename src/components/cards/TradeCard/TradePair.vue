@@ -96,13 +96,11 @@ const rateLabel = computed(() => {
  * METHODS
  */
 function handleInAmountChange(value: string): void {
-  emit('update:exactIn', true);
   emit('update:tokenInAmount', value);
   emit('amountChange');
 }
 
 function handleOutAmountChange(value: string): void {
-  emit('update:exactIn', false);
   emit('update:tokenOutAmount', value);
   emit('amountChange');
 }
@@ -159,6 +157,8 @@ onMounted(() => {
       :ignoreWalletBalance="tradeLoading"
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
+      @input="emit('update:exactIn', true)"
+      @set-max="emit('update:exactIn', true)"
     />
 
     <div class="flex items-center my-2">
@@ -183,6 +183,7 @@ onMounted(() => {
       :excludedTokens="[veBalTokenInfo?.address]"
       @update:amount="handleOutAmountChange"
       @update:address="handleOutputTokenChange"
+      @input="emit('update:exactIn', false)"
     />
   </div>
 </template>
