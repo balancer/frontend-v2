@@ -22,7 +22,13 @@ import {
 import QUERY_KEYS, { QUERY_EXIT_ROOT_KEY } from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
+import {
+  bnSum,
+  bnum,
+  isSameAddress,
+  removeAddress,
+  selectByAddress,
+} from '@/lib/utils';
 import {
   ExitHandler,
   ExitPoolService,
@@ -188,11 +194,8 @@ const provider = (props: Props) => {
 
   const exitHandlerType = computed((): ExitHandler => {
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
-    if (isWeightedPool.value && isSingleAssetExit.value) {
-      if (singleAssetMaxed.value) return ExitHandler.ExactIn;
-
+    if (isWeightedPool.value && isSingleAssetExit.value)
       return ExitHandler.ExactOut;
-    }
 
     return ExitHandler.Generalised;
   });
@@ -370,7 +373,11 @@ const provider = (props: Props) => {
     if (!hasFetchedPoolsForSor.value) return;
     if (!isSingleAssetExit.value) return;
 
-    exitPoolService.setExitHandler(exitHandlerType.value);
+    const exitHandler = shouldUseSwapExit.value
+      ? ExitHandler.Swap
+      : ExitHandler.ExactIn;
+
+    exitPoolService.setExitHandler(exitHandler);
     singleAmountOut.max = '';
 
     try {
@@ -384,8 +391,10 @@ const provider = (props: Props) => {
         prices: prices.value,
         relayerSignature: '',
       });
-
-      singleAmountOut.max = output.amountsOut[singleAmountOut.address];
+      console.log({ output, address: singleAmountOut.address });
+      singleAmountOut.max =
+        selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
+      console.log(singleAmountOut.max);
     } catch (error) {
       captureException(error);
       throw new Error('Failed to calculate max.', { cause: error });
