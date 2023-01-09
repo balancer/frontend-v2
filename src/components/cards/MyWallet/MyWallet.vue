@@ -11,6 +11,7 @@ import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
 import { usePool } from '@/composables/usePool';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
+import { useTradeState } from '@/composables/trade/useTradeState';
 
 type Props = {
   excludedTokens?: string[];
@@ -28,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { explorerLinks } = useWeb3();
+const { setTokenInAddress } = useTradeState();
 
 const networkName = configService.network.name;
 const { t } = useI18n();
@@ -57,7 +58,7 @@ const noTokensMessage = computed(() => {
 const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 function handleAssetClick(tokenAddress) {
-  window.open(explorerLinks.addressLink(tokenAddress));
+  setTokenInAddress(tokenAddress);
 }
 </script>
 
