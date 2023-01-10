@@ -1,6 +1,6 @@
-import { h } from 'vue';
+import { defineComponent, h } from 'vue';
 import vueQuery from '@/plugins/vueQuery';
-import * as providerMap from '@/providers';
+import { initGlobalProviders } from '@/providers';
 import { render, RenderOptions } from '@testing-library/vue';
 import Web3Plugin from '@/services/web3/web3.plugin';
 import blocknative from '@/plugins/blocknative';
@@ -10,13 +10,15 @@ interface ProviderComponent {
   props: RenderOptions['props'];
 }
 
-// The order registration of the providers is important but Object.values behaves differently in the vite bundle.
-// Setting explicit execution order in the following array:
+const RootProvider = defineComponent({
+  setup(props, { slots }) {
+    initGlobalProviders();
+    return () => h('div', {}, slots.default && slots.default());
+  },
+});
+
 const rootProviders: ProviderComponent[] = [
-  { component: providerMap.UserSettingsProvider, props: {} },
-  { component: providerMap.TokenListProvider, props: {} },
-  { component: providerMap.TokensProvider, props: {} },
-  { component: providerMap.AppProvider, props: {} },
+  { component: RootProvider, props: {} },
 ];
 
 export default function renderComponent(
@@ -25,12 +27,10 @@ export default function renderComponent(
   providers: ProviderComponent[] = []
 ) {
   const { props, ...restOptions } = options;
+  const allProviders: ProviderComponent[] = [...rootProviders, ...providers];
 
   return render(
-    renderWithRootProviders(componentUnderTest, props, [
-      ...rootProviders,
-      ...providers,
-    ]),
+    renderComponentWithRootProviders(componentUnderTest, props, allProviders),
     {
       ...getOptions(restOptions),
     }
@@ -49,7 +49,7 @@ function getOptions(
   };
 }
 
-function renderWithRootProviders(
+function renderComponentWithRootProviders(
   componentUnderTest,
   props: RenderOptions['props'] = {},
   providers: ProviderComponent[]

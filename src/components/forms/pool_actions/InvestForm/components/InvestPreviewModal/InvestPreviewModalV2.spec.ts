@@ -38,8 +38,7 @@ jest.mock('@/services/rpc-provider/rpc-provider.service');
 // });
 // jest.setTimeout(10000);
 jest.unmock('@/services/web3/useWeb3');
-jest.unmock('@/composables/useTokens');
-jest.unmock('@/composables/useUserSettings');
+
 // jest.mock('@/composables/useTokens');
 // jest.mock('@/composables/useUserSettings', () => {
 //   return jest.fn().mockImplementation(() => {

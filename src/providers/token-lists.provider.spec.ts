@@ -19,9 +19,22 @@ function mountComposableWithTokenLists() {
 describe('Token lists provider should', () => {
   test('provide active TokenList', async () => {
     const { result } = mountComposableWithTokenLists();
-    expect(firstTokenListSymbols(result.activeTokenLists.value)).toEqual(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC","bb-a-usd2","bb-a-USDT","bb-a-USDC","bb-a-DAI","USDC","DAI","USDT"]'
-    );
+    expect(firstTokenListSymbols(result.activeTokenLists.value)).toEqual([
+      'BAL',
+      'DAI',
+      'USDT',
+      'USDC',
+      'WETH',
+      'WBTC',
+      'miMATIC',
+      'bb-a-usd2',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
+      'USDC',
+      'DAI',
+      'USDT',
+    ]);
   });
 
   test('provide approved TokenList', async () => {
