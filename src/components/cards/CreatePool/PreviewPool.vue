@@ -40,6 +40,7 @@ const {
   feeController,
   thirdPartyFeeController,
   createPoolTxHash,
+  sortSeedTokens,
   goBack,
   setActiveStep,
   getScaledAmounts,
@@ -57,6 +58,7 @@ const { userNetworkConfig, account } = useWeb3();
  * LIFECYCLE
  */
 onBeforeMount(() => {
+  sortSeedTokens();
   poolName.value = poolName.value || getPoolSymbol();
   poolSymbol.value = poolSymbol.value || getPoolSymbol();
 });
