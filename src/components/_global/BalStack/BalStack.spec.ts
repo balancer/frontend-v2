@@ -2,7 +2,7 @@ import { render } from '@testing-library/vue';
 
 import BalStack from './BalStack.vue';
 
-describe.only('BalStack', () => {
+describe('BalStack', () => {
   describe('When using BalStack', () => {
     it('should render items', () => {
       const { getByText } = render(BalStack, {

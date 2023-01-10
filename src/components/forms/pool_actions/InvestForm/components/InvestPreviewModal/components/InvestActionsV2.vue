@@ -12,7 +12,7 @@ import useStaking from '@/composables/staking/useStaking';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';

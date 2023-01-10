@@ -11,7 +11,7 @@ import {
   isDeep,
   isVeBalPoolAddress,
 } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * TYPES

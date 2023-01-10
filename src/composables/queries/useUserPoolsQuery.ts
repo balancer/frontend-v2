@@ -14,7 +14,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '../useNetwork';
 import { tokensListExclBpt } from '../usePool';
 import { tokenTreeLeafs } from '../usePool';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useGaugesQuery from './useGaugesQuery';
 
 type UserPoolsQueryResponse = {

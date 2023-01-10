@@ -10,7 +10,7 @@ import useExitPool from '@/composables/pools/useExitPool';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { isDeep } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { useI18n } from 'vue-i18n';
 
 /**

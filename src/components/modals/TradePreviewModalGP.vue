@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { SubgraphPoolBase } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -8,19 +7,18 @@ import { useI18n } from 'vue-i18n';
 
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { TradeQuote } from '@/composables/trade/types';
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
+import useTokenApproval from '@/composables/approvals/useTokenApproval';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
+import { useTokens } from '@/providers/tokens.provider';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, bnumZero } from '@/lib/utils';
 import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import useWeb3 from '@/services/web3/useWeb3';
+import { RelayerType } from '@/composables/approvals/useRelayerApproval';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
@@ -245,12 +243,12 @@ const tokenApproval = useTokenApproval(
   tokens
 );
 
-const gnosisRelayerApproval = useRelayerApproval(
-  Relayer.GNOSIS,
+const gnosisRelayerApproval = useRelayerApprovalTx(
+  RelayerType.GNOSIS,
   props.trading.isGnosisTrade
 );
 
-const pools = computed<(Pool | SubgraphPoolBase)[]>(
+const pools = computed<SubgraphPoolBase[]>(
   // @ts-ignore - Fix types incompatibility error
   () => {
     return props.trading.sor.pools.value;
@@ -270,7 +268,10 @@ const isStETHTrade = computed(
     wrapType.value === WrapType.NonWrap
 );
 
-const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
+const lidoRelayerApproval = useRelayerApprovalTx(
+  RelayerType.LIDO,
+  isStETHTrade
+);
 
 const requiresTokenApproval = computed(() => {
   if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {

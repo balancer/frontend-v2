@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from '@/composables/useVeBAL';
 import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import { includesAddress } from '@/lib/utils';

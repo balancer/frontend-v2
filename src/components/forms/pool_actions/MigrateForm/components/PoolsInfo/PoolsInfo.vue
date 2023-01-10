@@ -14,7 +14,7 @@ import { TokenInfo } from '@/types/TokenList';
 import { PoolMigrationInfo } from '../../types';
 import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { fiatValueOf } from '@/composables/usePool';
 
 type Props = {

@@ -12,7 +12,7 @@ class StaticJsonRpcBatchProvider extends providers.JsonRpcBatchProvider {
       if (!network) {
         logger.throwError(
           'no network detected',
-          Logger.errors.UNKNOWN_ERROR,
+          Logger.errors.UNKNOWN_ERROR as any,
           {}
         );
       }

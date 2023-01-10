@@ -4,7 +4,7 @@ import { computed, ref, toRef } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { tokensListExclBpt, usePool } from '@/composables/usePool';
 // Composables
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
@@ -91,7 +91,7 @@ const fiatTotal = computed(() => {
   return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
-  
+
   <template>
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
@@ -117,4 +117,3 @@ const fiatTotal = computed(() => {
     </div>
   </BalCard>
 </template>
-  

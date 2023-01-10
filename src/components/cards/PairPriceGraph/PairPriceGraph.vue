@@ -16,7 +16,7 @@ import { useQuery } from 'vue-query';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTailwind from '@/composables/useTailwind';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import useWeb3 from '@/services/web3/useWeb3';

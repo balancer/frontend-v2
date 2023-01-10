@@ -14,7 +14,7 @@ import {
   isDeep,
   tokensListExclBpt,
 } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
   bnum,
@@ -228,7 +228,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
   }
 });
 </script>
-  
+
   <template>
   <div>
     <BalAlert
@@ -327,4 +327,3 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     </StakingProvider>
   </div>
 </template>
-  

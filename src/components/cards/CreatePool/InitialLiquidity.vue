@@ -6,7 +6,7 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { isGreaterThan } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';

@@ -1,40 +1,11 @@
-import { mount } from 'vue-composable-tester';
 import BigNumber from 'bignumber.js';
-
-import { FiatCurrency } from '@/constants/currency';
-
+import { mountComposable } from '@/tests/mount-helpers';
 import useNumbers, { FNumFormats } from './useNumbers';
 
-const mockTokens = {
-  ETH: {
-    address: '0xEee',
-    price: {
-      usd: 3000,
-      eur: 2500,
-    },
-  },
-};
-
-const mockDefaultCurrency = FiatCurrency.usd;
-
-jest.mock('@/composables/useUserSettings');
-jest.mock('@/composables/useTokens', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      priceFor: jest
-        .fn()
-        .mockImplementation((address, currency = mockDefaultCurrency) => {
-          const token = Object.values(mockTokens).find(
-            token => address === token.address
-          );
-          return token?.price[currency];
-        }),
-    };
-  });
-});
+jest.mock('@/providers/tokens.provider');
 
 describe('useNumbers', () => {
-  const { result } = mount(() => useNumbers());
+  const { result } = mountComposable(() => useNumbers());
 
   it('Should load', () => {
     expect(result).toBeTruthy();
@@ -313,10 +284,12 @@ describe('useNumbers', () => {
   describe('toFiat', () => {
     const { toFiat } = result;
 
-    it('Should return the value of ETH in USD, when called without a currency', () => {
-      const totalEth = 2.5;
-      const expectedValue = (totalEth * mockTokens.ETH.price.usd).toString();
-      const value = toFiat(totalEth, mockTokens.ETH.address);
+    it('Should multiply amount by token price', async () => {
+      const amount = 2.5;
+      //priceFor function always returns 2 in the tokens.provider mock
+      const priceFor = 2;
+      const expectedValue = (amount * priceFor).toString();
+      const value = toFiat(amount, 'any token address');
       expect(value).toEqual(expectedValue);
     });
   });

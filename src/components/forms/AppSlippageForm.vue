@@ -2,7 +2,7 @@
 import { computed, reactive, watch } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import { bnum } from '@/lib/utils';
 
 const FIXED_OPTIONS = ['0.005', '0.01', '0.02'];

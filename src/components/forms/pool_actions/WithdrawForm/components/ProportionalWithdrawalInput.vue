@@ -6,7 +6,7 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 // Types
 import { Pool } from '@/services/pool/types';

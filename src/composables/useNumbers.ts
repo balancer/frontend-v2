@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
 
-import useUserSettings from '@/composables/useUserSettings';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
-import useTokens from './useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 
 interface Options {
   format?: string;

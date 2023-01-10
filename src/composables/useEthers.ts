@@ -13,7 +13,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 
 import useBlocknative from './useBlocknative';
 import { toJsTimestamp } from './useTime';
-import useTokens from './useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from './useTransactions';
 
 type ConfirmedTxCallback = (receipt: TransactionReceipt) => void;
