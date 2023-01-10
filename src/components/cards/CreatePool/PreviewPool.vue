@@ -42,7 +42,6 @@ const {
   createPoolTxHash,
   goBack,
   setActiveStep,
-  sortSeedTokens,
   getScaledAmounts,
   saveState,
   getPoolSymbol,
@@ -58,8 +57,6 @@ const { userNetworkConfig, account } = useWeb3();
  * LIFECYCLE
  */
 onBeforeMount(() => {
-  sortSeedTokens();
-
   poolName.value = poolName.value || getPoolSymbol();
   poolSymbol.value = poolSymbol.value || getPoolSymbol();
 });
