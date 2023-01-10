@@ -4,7 +4,6 @@ import {
   SwapInfo,
   SwapTypes,
 } from '@balancer-labs/sdk';
-import { Pool } from '@/services/pool/types';
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { captureException } from '@sentry/browser';
@@ -58,7 +57,7 @@ type Props = {
   tokenIn: ComputedRef<TokenInfo>;
   tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
-  pools: Ref<(Pool | SubgraphPoolBase)[]>;
+  pools: Ref<SubgraphPoolBase[]>;
 };
 
 export type useJoinExit = ReturnType<typeof useJoinExit>;
