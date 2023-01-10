@@ -16,15 +16,12 @@ import { TokenInfo } from '@/types/TokenList';
  */
 export class ExactInExitHandler implements ExitPoolHandler {
   private lastExitRes?: ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
-  private allPoolTokens: string[];
 
   constructor(
     public readonly pool: Ref<Pool>,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
-  ) {
-    this.allPoolTokens = this.pool.value.tokens.map(token => token.address);
-  }
+  ) {}
 
   async exit(params: ExitParams): Promise<TransactionResponse> {
     await this.queryExit(params);
@@ -50,7 +47,10 @@ export class ExactInExitHandler implements ExitPoolHandler {
       throw new Error('Could not find exit token in pool tokens list.');
 
     const tokenOutAddress = tokenOut.address;
-    const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOutAddress);
+    const tokenOutIndex = indexOfAddress(
+      this.pool.value.tokensList,
+      tokenOutAddress
+    );
 
     const evmBptIn = parseFixed(bptIn, 18).toString();
     const singleTokenMaxOut =

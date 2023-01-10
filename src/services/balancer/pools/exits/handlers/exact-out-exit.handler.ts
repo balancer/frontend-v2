@@ -16,15 +16,12 @@ import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
  */
 export class ExactOutExitHandler implements ExitPoolHandler {
   private lastExitRes?: ReturnType<PoolWithMethods['buildExitExactTokensOut']>;
-  private allPoolTokens: string[];
 
   constructor(
     public readonly pool: Ref<Pool>,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
-  ) {
-    this.allPoolTokens = this.pool.value.tokens.map(token => token.address);
-  }
+  ) {}
 
   async exit(params: ExitParams): Promise<TransactionResponse> {
     await this.queryExit(params);
@@ -49,21 +46,24 @@ export class ExactOutExitHandler implements ExitPoolHandler {
       throw new Error('Could not find exit token in pool tokens list.');
 
     const tokenOutAddress = tokenOut.address;
-    const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOutAddress);
+    const tokenOutIndex = indexOfAddress(
+      this.pool.value.tokensList,
+      tokenOutAddress
+    );
     const evmAmountOut = parseFixed(
       amountsOut[0].value,
       tokenOut.decimals
     ).toString();
 
     const fullAmountsOut = this.getFullAmounts(
-      this.allPoolTokens,
+      this.pool.value.tokensList,
       tokenOutIndex,
       evmAmountOut
     );
 
     this.lastExitRes = await sdkPool.buildExitExactTokensOut(
       exiter,
-      this.allPoolTokens,
+      this.pool.value.tokensList,
       fullAmountsOut,
       slippage
     );
