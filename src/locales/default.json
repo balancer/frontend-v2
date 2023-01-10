@@ -1232,6 +1232,10 @@
     "actionLabel": "Dismiss",
     "title": "An error has occurred"
   },
+  "isJoinExitTipDescription": {
+    "withApproval": "The best path for your swap is a ‘join pool’ operation. This uses a little more gas but gets a better price. Requires a free, one-time Batch Relayer signature.",
+    "noApproval": "The best swap for this is a ‘join pool’ operation. This uses a little more gas but gets a better price. "
+  },
   "tradeSuccess": "Successfully swapped your tokens",
   "tradeSummary": {
     "exactIn": {
