@@ -373,11 +373,11 @@ const provider = (props: Props) => {
     if (!hasFetchedPoolsForSor.value) return;
     if (!isSingleAssetExit.value) return;
 
-    const exitHandler = shouldUseSwapExit.value
+    const singleAssetMaxedExitHandler = shouldUseSwapExit.value
       ? ExitHandler.Swap
       : ExitHandler.ExactIn;
 
-    exitPoolService.setExitHandler(exitHandler);
+    exitPoolService.setExitHandler(singleAssetMaxedExitHandler);
     singleAmountOut.max = '';
 
     try {
@@ -391,10 +391,9 @@ const provider = (props: Props) => {
         prices: prices.value,
         relayerSignature: '',
       });
-      console.log({ output, address: singleAmountOut.address });
+
       singleAmountOut.max =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
-      console.log(singleAmountOut.max);
     } catch (error) {
       captureException(error);
       throw new Error('Failed to calculate max.', { cause: error });

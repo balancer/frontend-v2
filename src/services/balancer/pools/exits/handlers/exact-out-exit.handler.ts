@@ -1,11 +1,12 @@
-import { bspToDec } from '@/composables/useNumbers';
 import { balancer } from '@/lib/balancer.sdk';
 import { indexOfAddress, selectByAddress } from '@/lib/utils';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { TokenInfo } from '@/types/TokenList';
 import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
 
@@ -14,7 +15,7 @@ import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
  * buildExitExactTokensOut function.
  */
 export class ExactOutExitHandler implements ExitPoolHandler {
-  exitRes?: ReturnType<PoolWithMethods['buildExitExactTokensOut']>;
+  private lastExitRes?: ReturnType<PoolWithMethods['buildExitExactTokensOut']>;
   private allPoolTokens: string[];
 
   constructor(
@@ -25,27 +26,34 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     this.allPoolTokens = this.pool.value.tokens.map(token => token.address);
   }
 
-  async exit(params: ExitParams): Promise<any> {
-    // async exit(params: ExitParams): Promise<TransactionResponse> {
-    return;
+  async exit(params: ExitParams): Promise<TransactionResponse> {
+    await this.queryExit(params);
+
+    if (!this.lastExitRes) throw new Error('Failed to construct exit.');
+
+    const txBuilder = new TransactionBuilder(params.signer);
+    const { to, data } = this.lastExitRes;
+
+    return txBuilder.raw.sendTransaction({ to, data });
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
-    const { signer, tokenInfo, slippageBsp, amountsOut, bptIn } = params;
+    const { signer, tokenInfo, slippageBsp, amountsOut } = params;
+    const exiter = await signer.getAddress();
+    const slippage = slippageBsp.toString();
     const sdkPool = await balancer.pools.find(this.pool.value.id);
-    if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
-
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
+
+    if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     if (!tokenOut)
       throw new Error('Could not find exit token in pool tokens list.');
 
     const tokenOutAddress = tokenOut.address;
+    const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOutAddress);
     const evmAmountOut = parseFixed(
       amountsOut[0].value,
       tokenOut.decimals
     ).toString();
-
-    const tokenOutIndex = indexOfAddress(this.allPoolTokens, tokenOutAddress);
 
     const fullAmountsOut = this.getFullAmounts(
       this.allPoolTokens,
@@ -53,34 +61,44 @@ export class ExactOutExitHandler implements ExitPoolHandler {
       evmAmountOut
     );
 
-    const exiter = await signer.getAddress();
-    const slippage = slippageBsp.toString();
-
-    this.exitRes = await sdkPool.buildExitExactTokensOut(
+    this.lastExitRes = await sdkPool.buildExitExactTokensOut(
       exiter,
       this.allPoolTokens,
       fullAmountsOut,
       slippage
     );
-    if (!this.exitRes) throw new Error('Failed to construct exit.');
+    if (!this.lastExitRes) throw new Error('Failed to construct exit.');
+
+    const minAmountsOut = this.lastExitRes.minAmountsOut;
 
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
-    const isJoin = false;
-    const minAmountsOut = this.exitRes.minAmountsOut;
-
     const priceImpact = await sdkPool.calcPriceImpact(
       minAmountsOut,
-      this.exitRes.maxBPTIn,
-      isJoin
+      this.lastExitRes.maxBPTIn,
+      false
     );
 
     const scaledPriceImpact = formatFixed(priceImpact, 18);
+    const scaledMinAmountOut = this.getScaledMinAmountOut(
+      minAmountsOut,
+      tokenOutIndex,
+      tokenOut
+    );
 
     return {
-      amountsOut: { [tokenOutAddress]: minAmountsOut[0] },
+      amountsOut: { [tokenOutAddress]: scaledMinAmountOut },
       priceImpact: Number(scaledPriceImpact),
     };
+  }
+
+  private getScaledMinAmountOut(
+    minAmountsOut: string[],
+    tokenOutIndex: number,
+    tokenOut: TokenInfo
+  ) {
+    const minAmountOut = minAmountsOut[tokenOutIndex];
+    return formatFixed(minAmountOut, tokenOut.decimals).toString();
   }
 
   private getFullAmounts(
