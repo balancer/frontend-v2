@@ -52,6 +52,8 @@ const {
 } = usePoolCreation();
 const { t } = useI18n();
 
+const tokenAddresses = ref([] as string[]);
+
 /**
  * COMPUTED
  */
@@ -62,11 +64,14 @@ const areAmountsMaxed = computed(() => {
   return isMaxed;
 });
 
-const isExceedingWalletBalance = computed((): boolean =>
-  seedTokens.value.some(token =>
-    bnum(token.amount).gt(balanceFor(token.tokenAddress))
-  )
-);
+const isExceedingWalletBalance = computed(() => {
+  // need to perform rounding here as JS cuts off those
+  // really long numbers which makes it impossible to compare
+  const isExceeding = tokenAddresses.value.some((t, i) =>
+    bnum(seedTokens.value[i].amount).gt(balanceFor(t))
+  );
+  return isExceeding;
+});
 
 const arbitrageDelta = computed(() => {
   let totalPctDelta = bnum(0);
@@ -92,6 +97,7 @@ const hasZeroAmount = computed(() => {
  * LIFECYCLE
  */
 onBeforeMount(() => {
+  tokenAddresses.value = [...seedTokens.value.map(token => token.tokenAddress)];
   if (isWethPool.value) setNativeAssetIfRequired();
 });
 
@@ -164,10 +170,12 @@ function handleAddressChange(newAddress: string): void {
   useNativeAsset.value = isSameAddress(newAddress, nativeAsset.address);
 }
 
-function tokenOptions(tokenAddress: string): string[] {
-  if (isSameAddress(tokenAddress, wrappedNativeAsset.value.address))
+function tokenOptions(index: number): string[] {
+  if (
+    isSameAddress(tokenAddresses.value[index], wrappedNativeAsset.value.address)
+  )
     return [wrappedNativeAsset.value.address, nativeAsset.address];
-  if (isSameAddress(tokenAddress, nativeAsset.address))
+  if (isSameAddress(tokenAddresses.value[index], nativeAsset.address))
     return [nativeAsset.address, wrappedNativeAsset.value.address];
   return [];
 }
@@ -185,10 +193,11 @@ function setNativeAssetIfRequired(): void {
   ) {
     // the native asset flag may not be set
     useNativeAsset.value = true;
-    seedTokens.value.forEach(token => {
-      if (isSameAddress(token.tokenAddress, wrappedNativeAsset.value.address)) {
-        token.tokenAddress = nativeAsset.address;
+    tokenAddresses.value = tokenAddresses.value.map(address => {
+      if (isSameAddress(address, wrappedNativeAsset.value.address)) {
+        return nativeAsset.address;
       }
+      return address;
     });
   }
 }
@@ -256,11 +265,11 @@ function saveAndProceed() {
             v-for="(token, i) in seedTokens"
             :key="i"
             v-model:amount="token.amount"
-            v-model:address="token.tokenAddress"
+            v-model:address="tokenAddresses[i]"
             fixedToken
             :weight="token.weight / 100"
             :name="`initial-token-${token.tokenAddress}`"
-            :options="tokenOptions(token.tokenAddress)"
+            :options="tokenOptions(i)"
             :rules="[isGreaterThan(0)]"
             @update:amount="handleAmountChange(token.tokenAddress)"
             @update:address="handleAddressChange($event)"
