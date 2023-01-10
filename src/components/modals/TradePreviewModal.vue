@@ -764,7 +764,7 @@ watch(blockNumber, () => {
         :description="
           showBatchRelayerApprovalStep
             ? $t('isJoinExitTipDescription.withApproval')
-            : $t('isJoinExitTipDescription.noApproval')
+            : $t('isJoinExitTipDescription.withoutApproval')
         "
         block
       />
