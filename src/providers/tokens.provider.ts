@@ -71,9 +71,7 @@ export const tokensProvider = (
 
   const state: TokensProviderState = reactive({
     loading: true,
-    injectedTokens: {
-      [networkConfig.nativeAsset.address]: nativeAsset,
-    },
+    injectedTokens: {},
     allowanceContracts: compact([
       networkConfig.addresses.vault,
       networkConfig.addresses.wstETH,
@@ -91,6 +89,7 @@ export const tokensProvider = (
    */
   const allTokenListTokens = computed(
     (): TokenInfoMap => ({
+      [networkConfig.nativeAsset.address]: nativeAsset,
       ...mapTokenListTokens(Object.values(allTokenLists)),
       ...state.injectedTokens,
     })
@@ -120,6 +119,7 @@ export const tokensProvider = (
    */
   const tokens = computed(
     (): TokenInfoMap => ({
+      [networkConfig.nativeAsset.address]: nativeAsset,
       ...activeTokenListTokens.value,
       ...state.injectedTokens,
     })

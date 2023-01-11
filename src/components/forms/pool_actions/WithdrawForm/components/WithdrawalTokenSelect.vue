@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
 
-import { usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -40,9 +40,10 @@ const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
  * COMPUTED
  */
 const tokenAddresses = computed(() => {
+  const tokensList = tokensListExclBpt(props.pool);
   if (isDeepPool.value) return props.pool?.mainTokens || [];
-  if (isWethPool.value) return [nativeAsset.address, ...props.pool.tokensList];
-  return props.pool.tokensList;
+  if (isWethPool.value) return [nativeAsset.address, ...tokensList];
+  return tokensList;
 });
 
 const options = computed(() => {
