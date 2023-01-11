@@ -7,6 +7,7 @@ import { bnum } from '@/lib/utils';
 
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
+import { tokensListExclBpt } from '@/composables/usePool';
 
 export default class Weighted {
   calc: Calculator;
@@ -114,7 +115,7 @@ export default class Weighted {
         bptAmount =
           opts.queryBPT ||
           parseUnits(this.calc.bptBalance, this.calc.poolDecimals).toString();
-        tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
+        tokenAmounts = tokensListExclBpt(this.calc.pool.value).map((_, i) => {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
             bptAmount,

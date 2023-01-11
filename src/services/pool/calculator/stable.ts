@@ -8,6 +8,7 @@ import { bnum, selectByAddress, isSameAddress } from '@/lib/utils';
 
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
+import { tokensListExclBpt } from '@/composables/usePool';
 
 /**
  * The stableMathEvm works with all values scaled to 18 decimals,
@@ -113,7 +114,7 @@ export default class Stable {
     // tokenIndex does not account for pre-minted BPT
     // So you must get the address from an address list that also excludes
     // pre-minted BPT.
-    const tokenOutAddress = this.calc.pool.value.tokensList[tokenIndex];
+    const tokenOutAddress = tokensListExclBpt(this.calc.pool.value)[tokenIndex];
     const tokenOutDecimals =
       selectByAddress(this.calc.poolTokens, tokenOutAddress)?.decimals || 18;
     const tokenOutPriceRate =
@@ -171,7 +172,7 @@ export default class Stable {
           this.calc.bptBalance,
           this.calc.poolDecimals
         ).toString();
-        tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
+        tokenAmounts = tokensListExclBpt(this.calc.pool.value).map((_, i) => {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
             bptAmount.toString(),
