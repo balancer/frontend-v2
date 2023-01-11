@@ -98,7 +98,7 @@ const config: Record<Network | number, Config> = {
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,
-  [100]: gnosisChain,
+  [Network.GNOSIS]: gnosisChain,
   12345: test,
   // @ts-ignore
   17: docker,

@@ -67,6 +67,18 @@ export const TOKENS_ARBITRUM: TokenConstants = {
   },
 };
 
+export const TOKENS_GNOSIS: TokenConstants = {
+  Popular: {
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
+  },
+  Addresses: {
+    nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    wNativeAsset: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
+    WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+    BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8',
+  },
+};
+
 export const TOKENS_GOERLI: TokenConstants = {
   Popular: {
     Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'USDT', 'WETH'],
@@ -125,6 +137,7 @@ const TOKENS_MAP = {
   [Network.MAINNET]: TOKENS_MAINNET,
   [Network.POLYGON]: TOKENS_POLYGON,
   [Network.ARBITRUM]: TOKENS_ARBITRUM,
+  [Network.GNOSIS]: TOKENS_GNOSIS,
 };
 
 export const TOKENS: TokenConstants = TOKENS_MAP[networkId.value]

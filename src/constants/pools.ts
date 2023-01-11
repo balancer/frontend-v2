@@ -734,7 +734,7 @@ const POOLS_MAP = {
   [Network.MAINNET]: POOLS_MAINNET,
   [Network.POLYGON]: POOLS_POLYGON,
   [Network.ARBITRUM]: POOLS_ARBITRUM,
-  [100]: POOLS_GNOSIS,
+  [Network.GNOSIS]: POOLS_GNOSIS,
 };
 
 export const POOLS: Pools = POOLS_MAP[networkId.value]
