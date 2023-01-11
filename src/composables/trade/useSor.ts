@@ -42,7 +42,7 @@ import useEthers from '../useEthers';
 import useFathom from '../useFathom';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import { isMainnet } from '../useNetwork';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
 import { captureException } from '@sentry/browser';

@@ -1,11 +1,13 @@
 import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 // import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite';
-import { Plugin, loadEnv } from 'vite';
+import { loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
 import nodePolyfills from 'vite-plugin-node-stdlib-browser';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import rollupPolyfillNode from 'rollup-plugin-polyfill-node';
 import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
@@ -15,8 +17,8 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig(({ mode }) => {
   const plugins = [
     vue(),
-    // Avoid nodePolyfills in vitest:
-    mode === 'test' ? null : (nodePolyfills() as unknown as Plugin),
+    // avoid nodePolyfills in vitest:
+    mode === 'test' ? null : nodePolyfills(),
     // AutoImport({
     //   imports: [
     //     'vue',
@@ -31,6 +33,14 @@ export default defineConfig(({ mode }) => {
       dirs: ['src/components/_global/**'],
       extensions: ['vue'],
       dts: true,
+    }),
+    VueI18nPlugin({
+      /* options */
+      // locale messages resource pre-compile option
+      include: resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        './src/locales/**'
+      ),
     }),
   ];
 
@@ -122,10 +132,7 @@ export default defineConfig(({ mode }) => {
         'jest-extended/all',
       ],
       coverage: { reporter: ['text', 'lcov'] }, // lcov reporter is used by IDE coverage extensions
-      include: [
-        'tests/unit/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-        'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      ],
+      include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
   };
 });

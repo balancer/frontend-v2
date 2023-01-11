@@ -1,15 +1,15 @@
-import { fireEvent, render } from '@testing-library/vue';
+import { fireEvent } from '@testing-library/vue';
 
 import { txResponseMock } from '@/__mocks__/transactions';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
+import { renderComponent } from '@/tests/renderComponent';
 
 vi.mock('@/composables/useTransactions');
 vi.mock('@/composables/useEthers');
 vi.mock('@/composables/queries/useGaugesQuery');
 vi.mock('@/composables/queries/useGaugesDecorationQuery');
-vi.mock('@/services/web3/useWeb3');
 vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockClaimRewards = vi.fn().mockResolvedValue(txResponseMock);
@@ -29,7 +29,7 @@ describe('ClaimRewardsBtn', () => {
   });
 
   it('should render props', () => {
-    const { getByText } = render(ClaimRewardsBtn, {
+    const { getByText } = renderComponent(ClaimRewardsBtn, {
       props: {
         gauge,
         fiatValue: '1000',
@@ -39,7 +39,7 @@ describe('ClaimRewardsBtn', () => {
   });
 
   it('Calls LiquidityGauge.claimRewards on click', async () => {
-    const { getByText } = render(ClaimRewardsBtn, {
+    const { getByText } = renderComponent(ClaimRewardsBtn, {
       props: {
         gauge,
         fiatValue: '1000',

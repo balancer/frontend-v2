@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 import { POOL_MIGRATIONS_MAP } from '../../../constants';

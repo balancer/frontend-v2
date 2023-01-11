@@ -17,7 +17,7 @@ import { isL2, isMainnet } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';

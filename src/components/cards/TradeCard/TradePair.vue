@@ -4,7 +4,7 @@ import { computed, ref, watchEffect, onMounted } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 

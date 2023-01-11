@@ -1,8 +1,6 @@
 import { configService } from '@/services/config/config.service';
 import { SubgraphFallbackService } from './subgraph-fallback.service';
 
-vi.mock('axios');
-
 describe('Subgraph fallback service', () => {
   const subgraphFallbackService = new SubgraphFallbackService();
 

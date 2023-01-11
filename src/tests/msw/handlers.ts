@@ -17,6 +17,10 @@ const chainIdHandler = (req, res, ctx) => {
   });
 };
 
+const emptyJsonHandler = (req, res, ctx) => {
+  return res(ctx.json({}));
+};
+
 export const handlers = [
   rest.get('https://cloudflare-ipfs.com/ipfs/xyz', (req, res, ctx) => {
     return res(ctx.text('ipfs test response'));
@@ -39,6 +43,8 @@ export const handlers = [
   rest.post('https://mainnet.infura.io/v3/*', chainIdHandler),
   rest.post('https://goerli.infura.io/v3/*', chainIdHandler),
   rest.post('https://eth-goerli.alchemyapi.io/v2/*', chainIdHandler),
+
+  rest.get('https://api.blocknative.com/v0', emptyJsonHandler),
 
   rest.get(
     'https://api.coingecko.com/api/v3/coins/ethereum/contract/*/market_chart/range',
