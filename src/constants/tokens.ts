@@ -69,7 +69,7 @@ export const TOKENS_ARBITRUM: TokenConstants = {
 
 export const TOKENS_GNOSIS: TokenConstants = {
   Popular: {
-    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
+    Symbols: ['xDAI', 'WXDAI', 'WETH', 'BAL'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
