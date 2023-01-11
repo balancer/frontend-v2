@@ -15,12 +15,20 @@ import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
 import { debounce } from 'lodash';
+import TokenSearchTextInput from '@/components/inputs/TokenSearchTextInput.vue';
+import { Network } from '@balancer-labs/sdk';
+import GaugesFilters from './GaugesFilters.vue';
 
 /**
  * DATA
  */
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 const tokenFilter = ref('');
+const networks = {
+  [Network.MAINNET]: 'Ethereum',
+  [Network.POLYGON]: 'Polygon',
+  [Network.ARBITRUM]: 'Arbitrum',
+};
 /**
  * COMPOSABLES
  */
@@ -90,7 +98,7 @@ const debouncedFilterText = computed({
   get() {
     return tokenFilter.value;
   },
-  set: debounce(function (newValue) {
+  set: debounce(newValue => {
     tokenFilter.value = newValue;
   }, 500),
 });
@@ -203,12 +211,14 @@ function handleVoteSuccess() {
       v-if="shouldResubmitVotes"
       class="mx-4 xl:mx-0 mb-7"
     ></ResubmitVotesAlert>
-    <input
-      v-model="debouncedFilterText"
-      type="text"
-      class="pl-2 mr-5 ml-6 w-48 border-2"
-      placeholder="Filter by token name"
-    />
+    <div class="flex">
+      <TokenSearchTextInput
+        v-model="debouncedFilterText"
+        :placeholder="$t('filterByToken')"
+        class="mr-5"
+      />
+      <GaugesFilters :networkOptions="networks" :activeNetworkOptions="[]" />
+    </div>
 
     <GaugesTable
       :key="gaugesTableKey"
