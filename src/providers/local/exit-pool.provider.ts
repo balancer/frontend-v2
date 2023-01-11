@@ -343,7 +343,7 @@ const provider = (props: Props) => {
 
     // Invalidate previous query in order to prevent stale data
     queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
-    console.log('hello');
+
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
