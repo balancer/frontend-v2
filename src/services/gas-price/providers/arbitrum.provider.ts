@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { GasPrice } from './types';
-import { configService } from '@/services/config/config.service';
 
 interface ArbitrumGasStationResponse {
   id: number;
