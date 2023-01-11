@@ -255,7 +255,7 @@ export const tokensProvider = (
 
     const newTokens = await tokenService.metadata.get(
       injectable,
-      allTokenLists
+      allTokenLists.value
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };

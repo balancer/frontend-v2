@@ -33,7 +33,7 @@ const mutations = {
   setLocale(state: AppState, locale: AppState['locale']) {
     state.locale = locale;
     lsSet(LS_KEYS.App.Locale, locale);
-    i18n.global.locale = locale;
+    i18n.global.locale.value = locale;
   },
 
   setTransactionDeadline(
