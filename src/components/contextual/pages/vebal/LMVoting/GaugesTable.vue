@@ -34,7 +34,7 @@ import { oneSecondInMs } from '@/composables/useTime';
  * TYPES
  */
 type Props = {
-  expiredGauges?: string[];
+  expiredGauges?: Readonly<string[]>;
   data?: VotingGaugeWithVotes[];
   isLoading?: boolean;
   noPoolsLabel?: string;
@@ -45,7 +45,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  expiredGauges: () => [],
+  expiredGauges: () => [] as never[],
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,

@@ -7,19 +7,20 @@ import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { poolURLFor } from '@/composables/usePool';
 import useVotingGauges from '@/composables/useVotingGauges';
-import { bnum, scale } from '@/lib/utils';
+import { bnum, isSameAddress, scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 
 import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
+import { debounce } from 'lodash';
 
 /**
  * DATA
  */
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
-
+const tokenFilter = ref('');
 /**
  * COMPOSABLES
  */
@@ -72,6 +73,37 @@ const hasExpiredLock = computed(
 
 const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
 
+const showExpiredGauges = ref(false);
+const gaugesFilteredByExpiring = computed(() => {
+  if (showExpiredGauges.value) {
+    return votingGauges.value;
+  }
+
+  return votingGauges.value.filter(gauge => {
+    return !expiredGauges.value?.some(expGauge =>
+      isSameAddress(expGauge, gauge.address)
+    );
+  });
+});
+
+const debouncedFilterText = computed({
+  get() {
+    return tokenFilter.value;
+  },
+  set: debounce(function (newValue) {
+    tokenFilter.value = newValue;
+  }, 500),
+});
+
+const filteredVotingGauges = computed(() => {
+  return gaugesFilteredByExpiring.value.filter(gauge => {
+    return gauge.pool.tokens.some(token => {
+      return token.symbol
+        ?.toLowerCase()
+        .includes(tokenFilter.value.toLowerCase());
+    });
+  });
+});
 /**
  * METHODS
  */
@@ -171,11 +203,18 @@ function handleVoteSuccess() {
       v-if="shouldResubmitVotes"
       class="mx-4 xl:mx-0 mb-7"
     ></ResubmitVotesAlert>
+    <input
+      v-model="debouncedFilterText"
+      type="text"
+      class="pl-2 mr-5 ml-6 w-48 border-2"
+      placeholder="Filter by token name"
+    />
+
     <GaugesTable
       :key="gaugesTableKey"
       :expiredGauges="expiredGauges"
       :isLoading="isLoading"
-      :data="votingGauges"
+      :data="filteredVotingGauges"
       :noPoolsLabel="$t('noInvestments')"
       showPoolShares
       class="mb-8"
