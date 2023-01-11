@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { GasPrice } from './types';
-import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
 
 interface ArbitrumGasStationResponse {
   id: number;
@@ -17,22 +15,22 @@ export default class ArbitrumProvider {
         this.fetchArbitrumProvider('eth_gasPrice'),
         this.fetchArbitrumProvider('eth_maxPriorityFeePerGas'),
       ]);
-      const price = bnum(gasPrice.result).toNumber();
-      const maxPriorityFeePerGas = bnum(maxPriorityFee.result).toNumber();
+      const price  =4;
+      const maxPriorityFeePerGas = 4;
 
       return {
         price,
         maxPriorityFeePerGas,
       };
     } catch (error) {
-      console.log('[Arbitrum] Gas Platform Error', error);
+      // console.log('[Arbitrum] Gas Platform Error', error);
       return null;
     }
   }
 
   private async fetchArbitrumProvider(method: string) {
     const { data } = await axios.post<ArbitrumGasStationResponse>(
-      configService.getNetworkRpc(Network.ARBITRUM),
+      'https://arbitrum-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66',
       { method, id: 1, jsonrpc: '2.0' }
     );
 
