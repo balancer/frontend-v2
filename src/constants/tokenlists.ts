@@ -65,10 +65,12 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '100': {
     Balancer: {
       Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/gnosis.listed.tokenlist.json',
       Vetted:
-        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/gnosis.vetted.tokenlist.json',
     },
-    External: [],
+    External: [
+      'https://unpkg.com/@1hive/default-token-list@latest/build/honeyswap-default.tokenlist.json',
+    ],
   },
 };

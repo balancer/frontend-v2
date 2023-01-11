@@ -74,8 +74,8 @@ export const TOKENS_GNOSIS: TokenConstants = {
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
-    WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
-    BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8',
+    WETH: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
+    BAL: '0x7eF541E2a22058048904fE5744f9c7E4C57AF717',
   },
 };
 
