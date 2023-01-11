@@ -755,6 +755,19 @@ watch(blockNumber, () => {
         :actionLabel="$t('tradeSubmissionError.actionLabel')"
         @action-click="trading.resetSubmissionError"
       />
+      <BalAlert
+        v-if="trading.isJoinExitTrade"
+        class="p-3 mt-4"
+        type="tip"
+        size="md"
+        :title="''"
+        :description="
+          showBatchRelayerApprovalStep
+            ? $t('isJoinExitTipDescription.withApproval')
+            : $t('isJoinExitTipDescription.withoutApproval')
+        "
+        block
+      />
     </div>
     <TradeRoute
       v-if="showTradeRoute"

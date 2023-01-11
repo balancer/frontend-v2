@@ -8,7 +8,7 @@ import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { bnum, isSameAddress, lsGet, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { COW_SUPPORTED_NETWORKS } from '@/services/cowswap/constants';
-import { Pool } from '@/services/pool/types';
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { networkId } from '../useNetwork';
@@ -181,7 +181,7 @@ export default function useTrading(
     tokenIn,
     tokenOut,
     slippageBufferRate,
-    pools: sor.pools as Ref<Pool[]>,
+    pools: sor.pools as Ref<SubgraphPoolBase[]>,
   });
 
   const isLoading = computed(() => {
@@ -259,11 +259,11 @@ export default function useTrading(
   function getQuote() {
     if (isCowswapTrade.value) {
       return cowswap.getQuote();
-    } else if (isJoinExitTrade.value) {
-      return joinExit.getQuote();
-    } else {
-      return sor.getQuote();
     }
+    if (isJoinExitTrade.value) {
+      return joinExit.getQuote();
+    }
+    return sor.getQuote();
   }
 
   function resetAmounts() {
