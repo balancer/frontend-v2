@@ -91,8 +91,8 @@ export const tokensProvider = (
    */
   const allTokenListTokens = computed(
     (): TokenInfoMap => ({
-      ...mapTokenListTokens(Object.values(allTokenLists)),
       ...state.injectedTokens,
+      ...mapTokenListTokens(Object.values(allTokenLists)),
     })
   );
 
@@ -120,8 +120,8 @@ export const tokensProvider = (
    */
   const tokens = computed(
     (): TokenInfoMap => ({
-      ...activeTokenListTokens.value,
       ...state.injectedTokens,
+      ...activeTokenListTokens.value,
     })
   );
 
