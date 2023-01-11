@@ -194,8 +194,10 @@ const provider = (props: Props) => {
 
   const exitHandlerType = computed((): ExitHandler => {
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
-    if (isWeightedPool.value && isSingleAssetExit.value)
+    if (isWeightedPool.value && isSingleAssetExit.value) {
+      if (singleAssetMaxed.value) return ExitHandler.ExactIn;
       return ExitHandler.ExactOut;
+    }
 
     return ExitHandler.Generalised;
   });
@@ -341,7 +343,7 @@ const provider = (props: Props) => {
 
     // Invalidate previous query in order to prevent stale data
     queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
-
+    console.log('hello');
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
@@ -372,6 +374,9 @@ const provider = (props: Props) => {
   async function getSingleAssetMax() {
     if (!hasFetchedPoolsForSor.value) return;
     if (!isSingleAssetExit.value) return;
+
+    // If the user has not BPT, there is no maximum amount out.
+    if (!hasBpt.value) return;
 
     const singleAssetMaxedExitHandler = shouldUseSwapExit.value
       ? ExitHandler.Swap
