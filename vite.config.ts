@@ -15,8 +15,8 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig(({ mode }) => {
   const plugins = [
     vue(),
-    // Type assertion to avoid TS errors in defineConfig
-    nodePolyfills() as unknown as Plugin,
+    // Avoid nodePolyfills in vitest:
+    mode === 'test' ? null : (nodePolyfills() as unknown as Plugin),
     // AutoImport({
     //   imports: [
     //     'vue',
