@@ -470,7 +470,8 @@
       },
       "noPoolTokensToJoinWith": {
         "title": "You have no pool tokens to join with",
-        "description": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact. \n\nHowever, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens. "
+        "paragraph1": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact.",
+        "paragraph2": "However, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens."
       }
     },
     "error": {

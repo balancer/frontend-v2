@@ -42,7 +42,8 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
+const { managedPoolWithTradingHalted, isDeepPool, isPreMintedBptPool } =
+  usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -139,6 +140,7 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
 
     <MissingPoolTokensAlert
       v-if="!isSingleAssetJoin"
+      :showSingleTokenSuggestion="isDeepPool && isPreMintedBptPool"
       :poolTokensWithBalance="poolTokensWithBalance"
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
