@@ -10,7 +10,7 @@ import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { oneSecondInMs } from '@/composables/useTime';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTranasactionErrors from '@/composables/useTransactionErrors';
 import useTransactions from '@/composables/useTransactions';
 import { TOKENS } from '@/constants/tokens';

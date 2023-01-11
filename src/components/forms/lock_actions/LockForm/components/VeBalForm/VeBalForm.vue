@@ -2,7 +2,7 @@
 import { computed, ref, toRef } from 'vue';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { expectedVeBal } from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';

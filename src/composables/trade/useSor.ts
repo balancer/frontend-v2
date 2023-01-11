@@ -1,5 +1,4 @@
 import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import {
   AddressZero,
@@ -26,7 +25,7 @@ import {
   SorManager,
   SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { getStETHByWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
+import { convertStEthWrap, isStEthAddress } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
@@ -43,7 +42,7 @@ import useEthers from '../useEthers';
 import useFathom from '../useFathom';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import { isMainnet } from '../useNetwork';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
 import { captureException } from '@sentry/browser';
@@ -102,7 +101,7 @@ export default function useSor({
   slippageBufferRate,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
-  const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
+  const pools = ref<SubgraphPoolBase[]>([]);
   const sorReturn = ref<SorReturn>({
     hasSwaps: false,
     tokenIn: '',
@@ -356,12 +355,10 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        if (isMainnet.value) {
-          tokenOutAmount = await adjustedPiAmount(
-            tokenOutAmount,
-            tokenOutAddress
-          );
-        }
+        tokenOutAmount = await adjustedPiAmount(
+          tokenOutAmount,
+          tokenOutAddress
+        );
 
         const priceImpactCalc = calcPriceImpact(
           tokenOutDecimals,
@@ -690,11 +687,14 @@ export default function useSor({
    */
   async function adjustedPiAmount(
     amount: BigNumber,
-    address: string
+    address: string,
+    isWrap = true
   ): Promise<BigNumber> {
-    if (isSameAddress(address, appNetworkConfig.addresses.wstETH)) {
-      const StEthAmount = await getStETHByWstETH(amount);
-      return StEthAmount;
+    if (
+      isSameAddress(address, appNetworkConfig.addresses.wstETH) &&
+      isMainnet.value
+    ) {
+      return convertStEthWrap({ amount, isWrap });
     }
     return amount;
   }

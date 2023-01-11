@@ -56,22 +56,7 @@ const global = {
 };
 
 jest.mock('vue-router');
-jest.mock('@/composables/useTokens');
-jest.mock('@/services/web3/useWeb3', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      isWalletReady: new Proxy(
-        {},
-        {
-          get() {
-            return true;
-          },
-        }
-      ),
-      account: { value: '0x0000000000000000000000000000000000000000' },
-    };
-  });
-});
+jest.mock('@/providers/tokens.provider');
 
 const gaugeId = '0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac';
 

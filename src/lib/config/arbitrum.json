@@ -14,7 +14,7 @@
   "explorer": "https://arbiscan.io",
   "explorerName": "Arbiscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
-  "balancerApi": "https://berfqtb52bc4hetoouojoshqem.appsync-api.eu-west-2.amazonaws.com/graphql",
+  "balancerApi": "https://api.balancer.fi",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {

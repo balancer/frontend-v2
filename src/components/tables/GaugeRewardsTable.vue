@@ -8,7 +8,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import ClaimRewardsBtn from '@/components/btns/ClaimRewardsBtn/ClaimRewardsBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { TokenInfo } from '@/types/TokenList';

@@ -11,19 +11,16 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 jest.mock('vue-i18n');
 jest.mock('vuex');
 jest.mock('@/composables/useEthereumTxType');
-jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useTransactions');
 jest.mock('@/lib/utils/balancer/helpers/sor/sorManager');
 jest.mock('@/locales');
-jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockNativeAssetAddress = configService.network.nativeAsset.address;
 const mockEthPrice = 3000;
 const mockTokenPrice = 0.2;
 
-jest.mock('@/composables/useTokens', () => {
-  return jest.fn().mockImplementation(() => {
+jest.mock('@/providers/tokens.provider', () => ({
+  useTokens: () => {
     return {
       injectTokens: jest.fn().mockImplementation(),
       priceFor: jest.fn().mockImplementation(address => {
@@ -35,8 +32,8 @@ jest.mock('@/composables/useTokens', () => {
       useTokens: jest.fn().mockImplementation(),
       getToken: jest.fn().mockImplementation(),
     };
-  });
-});
+  },
+}));
 
 const mockTokenInfo = {
   chainId: 1,

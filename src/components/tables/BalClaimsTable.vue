@@ -19,7 +19,7 @@ import { GaugePool } from '@/composables/useClaimsData';
 
 import { Gauge } from '@/services/balancer/gauges/types';
 import { POOLS } from '@/constants/pools';
-import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningTooltip.vue';
+import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import useNetwork from '@/composables/useNetwork';
 
 /**
@@ -155,7 +155,7 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
             :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="isStableLike(pool.poolType)"
           />
-          <PoolMigrationWarningTooltip :pool="pool" />
+          <PoolWarningTooltip :pool="pool" />
         </div>
       </template>
       <template #claimColumnCell="{ gauge, amount }">

@@ -1,24 +1,24 @@
 import { ComputedRef } from 'vue';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import { GraphQLArgs, PoolsFallbackRepository } from '@balancer-labs/sdk';
+import {
+  GraphQLArgs,
+  PoolRepository as SDKPoolRepository,
+  PoolsFallbackRepository,
+} from '@balancer-labs/sdk';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
+import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
 
 export default class PoolRepository {
   repository: PoolsFallbackRepository;
   queryArgs: GraphQLArgs;
 
   constructor(private tokens: ComputedRef<TokenInfoMap>) {
-    const balancerApiRepository = this.initializeDecoratedAPIRepository();
-    const subgraphRepository = this.initializeDecoratedSubgraphRepository();
-    this.repository = new PoolsFallbackRepository(
-      [balancerApiRepository, subgraphRepository],
-      {
-        timeout: 30 * 1000,
-      }
-    );
+    this.repository = new PoolsFallbackRepository(this.buildRepositories(), {
+      timeout: 30 * 1000,
+    });
     this.queryArgs = {};
   }
 
@@ -31,9 +31,10 @@ export default class PoolRepository {
   private initializeDecoratedAPIRepository() {
     return {
       fetch: async (): Promise<Pool[]> => {
-        const pools = await balancerAPIService.pool.get(this.queryArgs);
-        if (!pools.length) throw new Error('Cannot find pool via Balancer API');
-        return pools;
+        const pool = await balancerAPIService.pool.get(this.queryArgs);
+        if (!pool) throw new Error('Cannot find pool via Balancer API');
+
+        return [pool];
       },
       get skip(): number {
         return 0;
@@ -58,5 +59,17 @@ export default class PoolRepository {
         return 0;
       },
     };
+  }
+
+  private buildRepositories() {
+    const repositories: SDKPoolRepository[] = [];
+    if (isBalancerApiDefined) {
+      const balancerApiRepository = this.initializeDecoratedAPIRepository();
+      repositories.push(balancerApiRepository);
+    }
+    const subgraphRepository = this.initializeDecoratedSubgraphRepository();
+    repositories.push(subgraphRepository);
+
+    return repositories;
   }
 }

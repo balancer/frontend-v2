@@ -2,7 +2,7 @@
 import { computed, ref, toRef } from 'vue';
 
 import { usePool } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';

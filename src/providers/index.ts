@@ -1,8 +1,10 @@
-/* eslint-disable simple-import-sort/exports */
-/**
- * Order is important here!
- * If a provider is dependent on another it must be imported/exported below
- * the dependency.
- */
-export { default as TokenListProvider } from './token-lists.provider';
-export { default as TokensProvider } from './tokens.provider';
+import { provideUserSettings } from '@/providers/user-settings.provider';
+import { provideTokenLists } from '@/providers/token-lists.provider';
+import { provideTokens } from '@/providers/tokens.provider';
+
+// Provides global providers that can be injected from any component
+export function initGlobalProviders() {
+  const userSettings = provideUserSettings();
+  const tokenLists = provideTokenLists();
+  provideTokens(userSettings, tokenLists);
+}

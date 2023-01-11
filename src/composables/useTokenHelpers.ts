@@ -5,7 +5,7 @@ import { TOKENS } from '@/constants/tokens';
 import { isSameAddress } from '@/lib/utils';
 import { TokenInfo } from '@/types/TokenList';
 
-import useTokens from './useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 
 const balAddress = getAddress(TOKENS.Addresses.BAL);
 
