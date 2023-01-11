@@ -59,7 +59,6 @@ const { userNetworkConfig, account } = useWeb3();
  */
 onBeforeMount(() => {
   sortSeedTokens();
-
   poolName.value = poolName.value || getPoolSymbol();
   poolSymbol.value = poolSymbol.value || getPoolSymbol();
 });

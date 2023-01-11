@@ -33,7 +33,6 @@ const {
 const { fNum2 } = useNumbers();
 const {
   seedTokens,
-  tokensList,
   totalLiquidity,
   scaledLiquidity,
   manuallySetToken,
@@ -98,7 +97,7 @@ const hasZeroAmount = computed(() => {
  * LIFECYCLE
  */
 onBeforeMount(() => {
-  tokenAddresses.value = [...tokensList.value];
+  tokenAddresses.value = [...seedTokens.value.map(token => token.tokenAddress)];
   if (isWethPool.value) setNativeAssetIfRequired();
 });
 
@@ -263,16 +262,16 @@ function saveAndProceed() {
         </BalStack>
         <BalStack vertical>
           <TokenInput
-            v-for="(address, i) in tokenAddresses"
+            v-for="(token, i) in seedTokens"
             :key="i"
-            v-model:amount="seedTokens[i].amount"
+            v-model:amount="token.amount"
             v-model:address="tokenAddresses[i]"
             fixedToken
-            :weight="seedTokens[i].weight / 100"
-            :name="`initial-token-${seedTokens[i].tokenAddress}`"
+            :weight="token.weight / 100"
+            :name="`initial-token-${token.tokenAddress}`"
             :options="tokenOptions(i)"
             :rules="[isGreaterThan(0)]"
-            @update:amount="handleAmountChange(address)"
+            @update:amount="handleAmountChange(token.tokenAddress)"
             @update:address="handleAddressChange($event)"
           />
         </BalStack>
