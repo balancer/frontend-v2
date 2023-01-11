@@ -192,6 +192,11 @@ describe('InvestPreviewModalV2.vue', () => {
           highPriceImpact: false,
           rektPriceImpact: false,
           missingPricesIn: false,
+          isLoadingQuery: false,
+          txInProgress: false,
+          queryJoinQuery: {
+            refetch: jest.fn(),
+          },
           resetAmounts: jest.fn(),
         },
       },
