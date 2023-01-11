@@ -31,7 +31,7 @@
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "symbol": "xDAI",
     "decimals": 18,
-    "deeplinkId": "ether",
+    "deeplinkId": "xdai",
     "logoURI": "tokens/xdai.png",
     "minTransactionBuffer": "0.05"
   },
