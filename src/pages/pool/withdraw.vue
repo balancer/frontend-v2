@@ -22,7 +22,7 @@ import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
  */
 const { network } = configService;
 const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
-const { isDeepPool, isPreMintedBptPool } = usePool(pool);
+const { isDeepPool } = usePool(pool);
 const { activeTab, resetTabs } = useWithdrawPageTabs();
 
 // Instead of refetching pool data on every block, we refetch every minute to prevent
