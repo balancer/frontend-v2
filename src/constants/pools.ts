@@ -572,7 +572,7 @@ const POOLS_GNOSIS: Pools = {
   DynamicFees: {
     Gauntlet: [],
   },
-  BlockList: [''],
+  BlockList: [],
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
@@ -588,7 +588,7 @@ const POOLS_GNOSIS: Pools = {
     AllowList: [],
   },
   Investment: {
-    AllowList: [''],
+    AllowList: [],
   },
   Factories: {},
   Stakable: {
