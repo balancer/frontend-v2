@@ -1,6 +1,0 @@
-node_modules/
-dist/
-tokenlists.json
-public/data/tokenlists/*.json
-package-lock.json
-components.d.ts

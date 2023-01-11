@@ -1,4 +1,0 @@
-dist/
-build/
-public/data/tokenlists.json
-public/data/tokenlists/*.json

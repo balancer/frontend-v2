@@ -1,7 +1,0 @@
-FROM node:14-alpine
-
-RUN npm install -g npm@7
-RUN mkdir -p /app
-WORKDIR /app
-
-CMD [ "npm", "run", "serve" ]
