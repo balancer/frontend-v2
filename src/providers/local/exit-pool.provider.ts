@@ -410,6 +410,9 @@ const provider = (props: Props) => {
    */
   async function exit(): Promise<TransactionResponse> {
     try {
+      txError.value = '';
+      exitPoolService.setExitHandler(exitHandlerType.value);
+
       return exitPoolService.exit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
