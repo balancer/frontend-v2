@@ -23,7 +23,7 @@ export default function useGlobalQueryWatchers() {
         label: t('alerts.price-fetch-error'),
         type: AlertType.ERROR,
         persistent: true,
-        action: refetchPrices.value,
+        action: refetchPrices,
         actionLabel: t('alerts.retry-label'),
         priority: AlertPriority.MEDIUM,
       });
