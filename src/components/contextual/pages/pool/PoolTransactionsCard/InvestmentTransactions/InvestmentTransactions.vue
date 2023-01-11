@@ -61,12 +61,21 @@ const { t } = useI18n();
  * STATE
  */
 const activeTab = ref(tabs.value[0].value);
+
+/**
+ * COMPUTED
+ */
+const title = computed((): string => {
+  if (isDeepPool.value || isStablePhantomPool.value) return t('poolActivity');
+
+  return t('liquidityProvision');
+});
 </script>
 
 <template>
   <div>
     <div>
-      <h4 class="px-4 lg:px-0 mb-5" v-text="$t('liquidityProvision')" />
+      <h4 class="px-4 lg:px-0 mb-5" v-text="title" />
       <div
         class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
       >

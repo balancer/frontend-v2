@@ -6,7 +6,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { Pool } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,

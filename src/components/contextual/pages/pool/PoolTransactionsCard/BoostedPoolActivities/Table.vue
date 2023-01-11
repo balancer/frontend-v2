@@ -8,7 +8,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool, PoolSwap } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';

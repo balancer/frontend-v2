@@ -11,23 +11,13 @@ import {
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { createApp } from 'vue';
-import VueVirtualScroller from 'vue3-virtual-scroller';
 
-import blocknative from '@/plugins/blocknative';
 import { registerGlobalComponents } from '@/plugins/components';
 import registerDirectives from '@/plugins/directives';
-import i18n from '@/plugins/i18n';
-import router from '@/plugins/router';
+import { registerPlugins } from '@/plugins';
 import initSentry from '@/plugins/sentry';
-import { VueQueryPlugin } from '@tanstack/vue-query';
-import Web3Plugin from '@/services/web3/web3.plugin';
-import store from '@/store';
 
-import Root from './Root';
-import {
-  userSettingsProvider,
-  UserSettingsProviderSymbol,
-} from './providers/user-settings.provider';
+import App from './App.vue';
 
 echarts.use([
   TooltipComponent,
@@ -39,20 +29,12 @@ echarts.use([
   PieChart,
 ]);
 
-const app = createApp(Root)
-  .use(i18n)
-  .use(router)
-  .use(store)
-  .use(blocknative)
-  .use(VueQueryPlugin)
-  .use(Web3Plugin)
-  .use(VueVirtualScroller);
+const app = createApp(App);
 
+registerPlugins(app);
 registerDirectives(app);
 registerGlobalComponents(app);
 initSentry(app);
-
-app.provide(UserSettingsProviderSymbol, userSettingsProvider());
 
 app.mount('#app');
 

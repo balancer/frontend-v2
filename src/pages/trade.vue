@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
@@ -19,6 +19,18 @@ const showPriceGraphModal = ref(false);
  */
 const { setSelectedTokens } = usePoolFilters();
 const { upToLargeBreakpoint } = useBreakpoints();
+
+/**
+ * COMPUTED
+ */
+const sections = computed(() => {
+  const sections = [
+    { title: 'My wallet', id: 'my-wallet' },
+    { title: 'Price chart', id: 'price-chart' },
+  ];
+  if (isL2.value) sections.push({ title: 'Bridge assets', id: 'bridge' });
+  return sections;
+});
 
 /**
  * METHODS
@@ -52,11 +64,7 @@ onMounted(() => {
         <BalAccordion
           v-if="upToLargeBreakpoint"
           class="w-full"
-          :sections="[
-            { title: 'My wallet', id: 'my-wallet' },
-            { title: 'Price chart', id: 'price-chart' },
-            { title: 'Bridge assets', id: 'bridge' },
-          ]"
+          :sections="sections"
         >
           <template #my-wallet>
             <MyWallet />
@@ -64,8 +72,8 @@ onMounted(() => {
           <template #price-chart>
             <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
           </template>
-          <template #bridge>
-            <BridgeLink v-if="isL2" />
+          <template v-if="isL2" #bridge>
+            <BridgeLink />
           </template>
         </BalAccordion>
       </div>

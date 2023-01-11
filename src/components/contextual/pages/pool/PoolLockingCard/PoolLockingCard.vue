@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { useLock } from '@/composables/useLock';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';

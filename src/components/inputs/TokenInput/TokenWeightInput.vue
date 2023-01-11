@@ -3,7 +3,7 @@ import { computed, ref, watchEffect } from 'vue';
 import anime from 'animejs';
 
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { TokenInfo } from '@/types/TokenList';
 
 /**

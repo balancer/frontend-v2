@@ -4,7 +4,6 @@ import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { configService } from '@/services/config/config.service';
-import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
@@ -12,25 +11,12 @@ import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { relayerAddressMap, RelayerType } from './useRelayerApproval';
 
 const vaultAddress = configService.network.addresses.vault;
 
-export enum Relayer {
-  GNOSIS = 'Gnosis',
-  LIDO = 'Lido',
-  BATCH = 'Batch',
-  BATCH_V4 = 'BATCH_V4',
-}
-
-export const relayerAddressMap = {
-  [Relayer.GNOSIS]: GP_RELAYER_CONTRACT_ADDRESS,
-  [Relayer.LIDO]: configService.network.addresses.lidoRelayer,
-  [Relayer.BATCH]: configService.network.addresses.batchRelayer,
-  [Relayer.BATCH_V4]: configService.network.addresses.batchRelayerV4,
-};
-
-export default function useRelayerApproval(
-  relayer: Relayer,
+export default function useRelayerApprovalTx(
+  relayer: RelayerType,
   isEnabled: Ref<boolean> = ref(true)
 ) {
   /**

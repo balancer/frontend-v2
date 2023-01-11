@@ -1,9 +1,11 @@
 import { AddressZero } from '@ethersproject/constants';
 
 import { configService } from '@/services/config/config.service';
+import { ref } from 'vue';
 
 export default function useWeb3Mock() {
   return {
+    isWalletReady: ref(true),
     getProvider: jest.fn().mockImplementation(),
     appNetworkConfig: {
       nativeAsset: {

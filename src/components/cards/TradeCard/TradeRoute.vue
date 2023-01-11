@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { isSameAddress } from '@/lib/utils';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
