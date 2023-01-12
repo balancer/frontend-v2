@@ -189,9 +189,11 @@ export default function useTrading(
       return false;
     }
 
-    return isBalancerTrade.value
-      ? sor.poolsLoading.value
-      : gnosis.updatingQuotes.value;
+    if (!isBalancerTrade.value) {
+      return gnosis.updatingQuotes.value;
+    }
+
+    return joinExit.swapInfoLoading.value || sor.poolsLoading.value;
   });
 
   const isConfirming = computed(

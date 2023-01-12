@@ -5,8 +5,11 @@ import {
   SwapTypes,
 } from '@balancer-labs/sdk';
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
+import OldBigNumber from 'bignumber.js';
+import { formatUnits } from '@ethersproject/units';
 import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { captureException } from '@sentry/browser';
+import { bnum } from '@/lib/utils';
 
 import {
   computed,
@@ -16,7 +19,6 @@ import {
   Ref,
   ref,
   toRefs,
-  watchEffect,
 } from 'vue';
 
 import { balancer } from '@/lib/balancer.sdk';
@@ -80,6 +82,7 @@ export default function useJoinExit({
   const confirming = ref(false);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
+  const swapInfoLoading = ref(true);
 
   // COMPOSABLES
   const { account, getSigner } = useWeb3();
@@ -104,24 +107,58 @@ export default function useJoinExit({
     priceImpact.value = 0;
   }
 
+  async function getSwapInfo(): Promise<void> {
+    swapInfoLoading.value = true;
+    swapInfo.value = await balancer.sor.getSwaps(
+      tokenInAddressInput.value,
+      tokenOutAddressInput.value,
+      exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
+      parseFixed(
+        tokenInAmountInput.value || tokenOutAmountInput.value || '0',
+        18
+      ),
+      undefined,
+      true
+    );
+    swapInfoLoading.value = false;
+  }
+
   async function handleAmountChange(): Promise<void> {
-    const amount = exactIn.value
-      ? tokenInAmountInput.value
-      : tokenOutAmountInput.value;
-    // Avoid using SOR if querying a zero value or (un)wrapping trade
-    const zeroValueTrade = amount === '' || amount === '0';
-    if (zeroValueTrade) {
-      resetInputAmounts(amount);
+    // Prevent quering undefined input amounts
+    if (
+      (exactIn.value && !tokenInAmountInput.value) ||
+      (!exactIn.value && !tokenOutAmountInput.value)
+    ) {
       return;
     }
 
-    const tokenInAddress = tokenInAddressInput.value;
-    const tokenOutAddress = tokenOutAddressInput.value;
+    const amountToExchange = exactIn.value
+      ? tokenInAmountScaled.value
+      : tokenOutAmountScaled.value;
 
-    if (!tokenInAddress || !tokenOutAddress) {
-      if (exactIn.value) tokenOutAmountInput.value = '';
-      else tokenInAmountInput.value = '';
+    if (amountToExchange === undefined) {
       return;
+    }
+
+    if (amountToExchange.isZero()) {
+      tokenInAmountInput.value = '0';
+      tokenOutAmountInput.value = '0';
+      return;
+    }
+
+    await getSwapInfo();
+
+    const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
+    const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
+
+    if (exactIn.value) {
+      tokenOutAmountInput.value = bnum(
+        formatUnits(swapInfo.value?.returnAmount ?? '0', tokenOutDecimals)
+      ).toFixed(6, OldBigNumber.ROUND_DOWN);
+    } else {
+      tokenInAmountInput.value = bnum(
+        formatUnits(swapInfo.value?.returnAmount ?? '0', tokenInDecimals)
+      ).toFixed(6, OldBigNumber.ROUND_DOWN);
     }
   }
 
@@ -220,6 +257,10 @@ export default function useJoinExit({
     };
   }
 
+  function getTokenDecimals(tokenAddress: string) {
+    return getToken(tokenAddress)?.decimals;
+  }
+
   // LIFECYCLE
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -231,20 +272,6 @@ export default function useJoinExit({
     }
     await injectTokens(unknownAssets);
     await handleAmountChange();
-  });
-
-  watchEffect(async () => {
-    swapInfo.value = await balancer.sor.getSwaps(
-      tokenInAddressInput.value,
-      tokenOutAddressInput.value,
-      exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
-      parseFixed(
-        tokenInAmountInput.value || tokenOutAmountInput.value || '0',
-        18
-      ),
-      undefined,
-      true
-    );
   });
 
   return {
@@ -261,6 +288,7 @@ export default function useJoinExit({
     getQuote,
     resetState,
     confirming,
+    swapInfoLoading,
     resetInputAmounts,
   };
 }
