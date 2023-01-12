@@ -1,4 +1,4 @@
-import { Response } from '../tokens.provider';
+import { TokensResponse } from '../tokens.provider';
 import { mock } from 'jest-mock-extended';
 
 const mockTokens = {
@@ -42,7 +42,7 @@ export function useTokens() {
   return tokensProvider();
 }
 
-export const mockTokensProvider = mock<Response>();
+export const mockTokensProvider = mock<TokensResponse>();
 mockTokensProvider.priceFor.mockReturnValue(2);
 mockTokensProvider.balanceFor.mockReturnValue('0');
 mockTokensProvider.getTokens.mockImplementation(addresses => {
@@ -56,6 +56,6 @@ mockTokensProvider.getToken.mockImplementation(address => {
   return mockTokens[address];
 });
 
-export function tokensProvider(): Response {
+export function tokensProvider(): TokensResponse {
   return mockTokensProvider;
 }

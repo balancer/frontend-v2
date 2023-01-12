@@ -12,6 +12,7 @@ jest.mock('@/composables/queries/useGaugesQuery');
 jest.mock('@/composables/queries/useGaugesDecorationQuery');
 jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
+jest.mock('@/providers/tokens.provider');
 
 const mockClaimRewards = jest.fn().mockResolvedValue(txResponseMock);
 jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
