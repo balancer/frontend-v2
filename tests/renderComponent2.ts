@@ -1,10 +1,11 @@
 import { defineComponent, h } from 'vue';
 import vueQuery from '@/plugins/vueQuery';
-import { initGlobalProviders } from '@/providers';
 import { render, RenderOptions } from '@testing-library/vue';
 import Web3Plugin from '@/services/web3/web3.plugin';
 import blocknative from '@/plugins/blocknative';
-
+import { provideUserSettings } from '@/providers/user-settings.provider';
+import { provideTokenLists } from '@/providers/token-lists.provider';
+import { provideTokens } from '@/providers/tokens.provider';
 interface ProviderComponent {
   component: any;
   props: RenderOptions['props'];
@@ -12,7 +13,9 @@ interface ProviderComponent {
 
 const RootProvider = defineComponent({
   setup(props, { slots }) {
-    initGlobalProviders();
+    const userSettings = provideUserSettings();
+    const tokenLists = provideTokenLists();
+    provideTokens(userSettings, tokenLists);
     return () => h('div', {}, slots.default && slots.default());
   },
 });
