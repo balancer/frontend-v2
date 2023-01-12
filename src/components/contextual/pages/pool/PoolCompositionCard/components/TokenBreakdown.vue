@@ -144,7 +144,7 @@ const shareOfTokenInPool = computed((): number => {
   content: '';
   top: 14px;
   left: -15px;
-  @apply absolute border border-solid border-gray-200 dark:border-gray-700 w-3;
+  @apply absolute border border-solid bg-gray-200 border-gray-200 dark:border-gray-700 w-3 dark:bg-gray-700;
 }
 
 .nested-token::before {
@@ -152,7 +152,7 @@ const shareOfTokenInPool = computed((): number => {
   height: calc(100% + 14px);
   left: -15px;
   top: -28px;
-  @apply absolute border border-gray-200 dark:border-gray-700;
+  @apply absolute border bg-gray-200 border-gray-200 dark:border-gray-700 dark:bg-gray-700;
 }
 
 .level-1 {
@@ -176,7 +176,7 @@ const shareOfTokenInPool = computed((): number => {
   height: calc(100% + 16px);
   left: -36px;
   top: -28px;
-  @apply absolute border border-gray-200 dark:border-gray-700;
+  @apply absolute bg-gray-200 border border-gray-200 dark:border-gray-700 dark:bg-gray-700;
 }
 
 @media (min-width: 640px) {
