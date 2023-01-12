@@ -381,7 +381,7 @@
   "gaugeFilter": {
     "gaugeDisplay": "Pool gauge display",
     "hideExpired": "Hide expired pools",
-    "moreOptions": "More options",
+    "moreFilters": "More filters",
     "showStake": "Show pools where I stake"
   },
   "getLpTokens": "Get LP tokens",

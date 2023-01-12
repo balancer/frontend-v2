@@ -16,11 +16,10 @@ const emit = defineEmits<{
 /**
  * PROPS
  */
-const props = defineProps<Props>();
+defineProps<Props>();
 
-function handleExpInput() {
-  console.log('emited');
-  emit('update:debouncedHideExpiredGauges', !props.debouncedHideExpiredGauges);
+function handleExpInput(e) {
+  emit('update:debouncedHideExpiredGauges', e.target.checked);
 }
 </script>
 
@@ -28,10 +27,10 @@ function handleExpInput() {
   <BalPopover noPad>
     <template #activator>
       <div class="gauge-filter">
-        <div class="flex flex-1 justify-between items-center h-full">
-          <BalIcon name="filter" size="lg" />
-          <div>
-            {{ $t('gaugeFilter.moreOptions') }}
+        <div class="flex flex-1 items-center h-full text-gray-600">
+          <BalIcon name="filter" size="lg" class="mr-3" />
+          <div class="text-gray-600">
+            {{ $t('gaugeFilter.moreFilters') }}
           </div>
         </div>
       </div>
@@ -47,13 +46,14 @@ function handleExpInput() {
         <div
           v-for="network in Object.keys(networkOptions)"
           :key="network"
-          class="flex py-3 text-base hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer gray-850"
+          class="flex py-1 text-base text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
           @click="emit('choose-network', Number(network))"
         >
           <BalCheckbox
             :modelValue="activeNetworkOptions.includes(Number(network))"
             name="highPriceImpactAccepted"
             :label="networkOptions[network]"
+            noMargin
           />
         </div>
 
@@ -62,19 +62,12 @@ function handleExpInput() {
         </div>
 
         <BalCheckbox
-          class="flex py-3 text-base hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer gray-850"
+          class="flex py-1 text-base text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
           name="highPriceImpactAccepted"
           :label="$t('gaugeFilter.hideExpired')"
           noMargin
           :modelValue="debouncedHideExpiredGauges"
           @input="handleExpInput"
-        />
-        <BalCheckbox
-          class="flex py-3 text-base hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer gray-850"
-          :modelValue="true"
-          name="highPriceImpactAccepted"
-          :label="$t('gaugeFilter.showStake')"
-          noMargin
         />
       </div>
     </template>

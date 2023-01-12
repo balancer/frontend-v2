@@ -30,7 +30,6 @@ const networks = {
   [Network.ARBITRUM]: 'Arbitrum',
 };
 const activeNetworkOptions = ref<Network[]>([]);
-// const showStaked = ref(false);
 
 /**
  * COMPOSABLES
@@ -89,8 +88,11 @@ const gaugesFilteredByExpiring = computed(() => {
   if (!hideExpiredGauges.value) {
     return votingGauges.value;
   }
-
+  console.log(votingGauges.value);
   return votingGauges.value.filter(gauge => {
+    if (Number(gauge.userVotes) > 0) {
+      console.log('user', gauge);
+    }
     return !expiredGauges.value?.some(expGauge =>
       isSameAddress(expGauge, gauge.address)
     );
@@ -111,7 +113,6 @@ const debouncedHideExpiredGauges = computed({
     return hideExpiredGauges.value;
   },
   set: debounce(value => {
-    console.log('hide');
     hideExpiredGauges.value = value;
   }, 500),
 });
@@ -120,7 +121,6 @@ const debActive = ref<any[]>([]);
 const filteredVotingGauges = computed(() => {
   return gaugesFilteredByExpiring.value.filter(gauge => {
     let showByNetwork = true;
-    // console.log('ga', gauge, activeNetworkOptions.value);
     if (
       debActive.value.length > 0 &&
       !debActive.value.includes(gauge.network)
@@ -154,7 +154,6 @@ function handleVoteSuccess() {
   refetchVotingGauges.value();
 }
 function chooseNetwork(network: Network) {
-  console.log(network);
   const index = activeNetworkOptions.value.indexOf(network);
   index === -1
     ? activeNetworkOptions.value.push(network)
