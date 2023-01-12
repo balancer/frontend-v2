@@ -389,12 +389,10 @@ export default function usePoolCreation() {
         if (!tokenInfo) return '0';
         const amount = new BigNumber(token.amount);
         const scaledAmount = scale(amount, tokenInfo.decimals);
-        console.log(`scaledAmount ${scaledAmount}}`);
         const scaledRoundedAmount = scaledAmount.toFixed(
           0,
           BigNumber.ROUND_FLOOR
         );
-        console.log(`scaledRoundedAmount ${scaledRoundedAmount}}`);
         return scaledRoundedAmount;
       }
     );
