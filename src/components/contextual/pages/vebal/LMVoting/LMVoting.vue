@@ -29,6 +29,9 @@ const networks = {
   [Network.POLYGON]: 'Polygon',
   [Network.ARBITRUM]: 'Arbitrum',
 };
+const activeNetworkOptions = ref<Network[]>([]);
+// const showStaked = ref(false);
+
 /**
  * COMPOSABLES
  */
@@ -81,9 +84,9 @@ const hasExpiredLock = computed(
 
 const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
 
-const showExpiredGauges = ref(false);
+const hideExpiredGauges = ref(true);
 const gaugesFilteredByExpiring = computed(() => {
-  if (showExpiredGauges.value) {
+  if (!hideExpiredGauges.value) {
     return votingGauges.value;
   }
 
@@ -103,13 +106,36 @@ const debouncedFilterText = computed({
   }, 500),
 });
 
+const debouncedHideExpiredGauges = computed({
+  get() {
+    return hideExpiredGauges.value;
+  },
+  set: debounce(value => {
+    console.log('hide');
+    hideExpiredGauges.value = value;
+  }, 500),
+});
+const debActive = ref<any[]>([]);
+
 const filteredVotingGauges = computed(() => {
   return gaugesFilteredByExpiring.value.filter(gauge => {
-    return gauge.pool.tokens.some(token => {
-      return token.symbol
-        ?.toLowerCase()
-        .includes(tokenFilter.value.toLowerCase());
-    });
+    let showByNetwork = true;
+    // console.log('ga', gauge, activeNetworkOptions.value);
+    if (
+      debActive.value.length > 0 &&
+      !debActive.value.includes(gauge.network)
+    ) {
+      showByNetwork = false;
+    }
+
+    return (
+      showByNetwork &&
+      gauge.pool.tokens.some(token => {
+        return token.symbol
+          ?.toLowerCase()
+          .includes(tokenFilter.value.toLowerCase());
+      })
+    );
   });
 });
 /**
@@ -126,6 +152,13 @@ function handleModalClose() {
 
 function handleVoteSuccess() {
   refetchVotingGauges.value();
+}
+function chooseNetwork(network: Network) {
+  console.log(network);
+  const index = activeNetworkOptions.value.indexOf(network);
+  index === -1
+    ? activeNetworkOptions.value.push(network)
+    : activeNetworkOptions.value.splice(index, 1);
 }
 </script>
 
@@ -217,7 +250,16 @@ function handleVoteSuccess() {
         :placeholder="$t('filterByToken')"
         class="mr-5"
       />
-      <GaugesFilters :networkOptions="networks" :activeNetworkOptions="[]" />
+
+      <GaugesFilters
+        :networkOptions="networks"
+        :activeNetworkOptions="activeNetworkOptions"
+        :debouncedHideExpiredGauges="debouncedHideExpiredGauges"
+        @update:debounced-hide-expired-gauges="
+          debouncedHideExpiredGauges = $event
+        "
+        @choose-network="chooseNetwork"
+      />
     </div>
 
     <GaugesTable

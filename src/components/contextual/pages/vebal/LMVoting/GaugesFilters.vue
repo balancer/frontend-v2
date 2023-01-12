@@ -5,16 +5,23 @@
 type Props = {
   networkOptions: { [key: number]: string };
   activeNetworkOptions: number[];
+  debouncedHideExpiredGauges: boolean;
 };
 
 const emit = defineEmits<{
-  (e: 'change-option', value: number): void;
+  (e: 'choose-network', value: number): void;
+  (e: 'update:debouncedHideExpiredGauges', value: boolean): void;
 }>();
 
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
+
+function handleExpInput() {
+  console.log('emited');
+  emit('update:debouncedHideExpiredGauges', !props.debouncedHideExpiredGauges);
+}
 </script>
 
 <template>
@@ -24,29 +31,51 @@ defineProps<Props>();
         <div class="flex flex-1 justify-between items-center h-full">
           <BalIcon name="filter" size="lg" />
           <div>
-            {{ 'More Options' }}
+            {{ $t('gaugeFilter.moreOptions') }}
           </div>
         </div>
       </div>
     </template>
     <template #default="{ close }">
-      <div class="flex overflow-hidden flex-col w-44 rounded-lg" @click="close">
-        <div class="py-2 px-3 text-xl font-medium whitespace-nowrap">
-          {{ $t('network') }}:
+      <div
+        class="flex overflow-hidden flex-col py-4 px-3 w-64 rounded-lg"
+        @click="close"
+      >
+        <div class="text-xl font-bold whitespace-nowrap">
+          {{ $t('network') }}
         </div>
         <div
           v-for="network in Object.keys(networkOptions)"
           :key="network"
-          class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
-          @click="emit('change-option', Number(network))"
+          class="flex py-3 text-base hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer gray-850"
+          @click="emit('choose-network', Number(network))"
         >
           <BalCheckbox
             :modelValue="activeNetworkOptions.includes(Number(network))"
             name="highPriceImpactAccepted"
-            size="sm"
             :label="networkOptions[network]"
           />
         </div>
+
+        <div class="py-2 text-xl font-bold">
+          {{ $t('gaugeFilter.gaugeDisplay') }}
+        </div>
+
+        <BalCheckbox
+          class="flex py-3 text-base hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer gray-850"
+          name="highPriceImpactAccepted"
+          :label="$t('gaugeFilter.hideExpired')"
+          noMargin
+          :modelValue="debouncedHideExpiredGauges"
+          @input="handleExpInput"
+        />
+        <BalCheckbox
+          class="flex py-3 text-base hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer gray-850"
+          :modelValue="true"
+          name="highPriceImpactAccepted"
+          :label="$t('gaugeFilter.showStake')"
+          noMargin
+        />
       </div>
     </template>
   </BalPopover>

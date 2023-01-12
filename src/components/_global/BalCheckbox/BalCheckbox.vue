@@ -1,13 +1,13 @@
 <template>
   <div :class="['bal-checkbox', wrapperClasses]">
     <div class="flex">
-      <div class="flex items-start">
+      <div class="flex items-center">
         <input
           type="checkbox"
           :name="name"
           :checked="modelValue"
           :class="[
-            'bal-checkbox-input relative top-2 hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
+            'bal-checkbox-input hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
             inputClasses,
           ]"
           @change="onChange"
@@ -89,7 +89,7 @@ export default defineComponent({
         case 'lg':
           return 'w-6 h-6';
         default:
-          return 'w-5 h-5 mt-1';
+          return 'w-5 h-5';
       }
     });
 
