@@ -25,6 +25,7 @@ export const EmptyPoolMock: Pool = {
   protocolYieldFeeCache: '',
   lowerTarget: '',
   upperTarget: '',
+  protocolSwapFeeCache: '',
 };
 
 export { PoolMock, BoostedPoolMock };

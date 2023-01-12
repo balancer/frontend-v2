@@ -73,4 +73,5 @@ export const PoolMock: Pool = {
   totalWeight: '',
   lowerTarget: '',
   upperTarget: '',
+  protocolSwapFeeCache: '',
 };

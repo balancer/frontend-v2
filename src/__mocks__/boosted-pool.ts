@@ -645,4 +645,5 @@ export const BoostedPoolMock: Pool = {
   totalWeight: '',
   lowerTarget: '',
   upperTarget: '',
+  protocolSwapFeeCache: '',
 };
