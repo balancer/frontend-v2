@@ -1,8 +1,8 @@
+import { safeInject } from '@/providers/inject';
 import { pick } from 'lodash';
 import {
   ref,
   computed,
-  inject,
   InjectionKey,
   provide,
   reactive,
@@ -128,7 +128,6 @@ export const tokenListsProvider = () => {
 };
 
 export type TokenListsResponse = ReturnType<typeof tokenListsProvider>;
-export const providerResponse = {} as TokenListsResponse;
 export const TokenListsProviderSymbol: InjectionKey<TokenListsResponse> =
   Symbol(symbolKeys.Providers.TokenLists);
 
@@ -139,5 +138,5 @@ export function provideTokenLists(): TokenListsResponse {
 }
 
 export const useTokenLists = (): TokenListsResponse => {
-  return inject(TokenListsProviderSymbol, providerResponse);
+  return safeInject(TokenListsProviderSymbol);
 };

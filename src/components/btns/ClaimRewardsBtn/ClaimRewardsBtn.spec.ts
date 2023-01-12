@@ -6,12 +6,6 @@ import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.j
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
 import { renderComponent } from '@/tests/renderComponent';
 
-vi.mock('@/composables/useTransactions');
-vi.mock('@/composables/useEthers');
-vi.mock('@/composables/queries/useGaugesQuery');
-vi.mock('@/composables/queries/useGaugesDecorationQuery');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-
 const mockClaimRewards = vi.fn().mockResolvedValue(txResponseMock);
 vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
   return {
@@ -22,6 +16,14 @@ vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
     }),
   };
 });
+vi.mock('@/composables/useTransactions');
+vi.mock('@/composables/useEthers');
+vi.mock('@/composables/queries/useGaugesQuery');
+vi.mock('@/composables/queries/useGaugesDecorationQuery');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
+
+vi.mock('@/providers/tokens.provider');
 
 describe('ClaimRewardsBtn', () => {
   beforeEach(() => {

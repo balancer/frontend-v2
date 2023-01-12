@@ -2,7 +2,6 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { compact, pick } from 'lodash';
 import {
   computed,
-  inject,
   InjectionKey,
   onBeforeMount,
   provide,
@@ -23,6 +22,7 @@ import {
   includesAddress,
   isSameAddress,
 } from '@/lib/utils';
+import { safeInject } from '@/providers/inject';
 import { UserSettingsResponse } from '@/providers/user-settings.provider';
 import { TokenListsResponse } from '@/providers/token-lists.provider';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -76,9 +76,7 @@ export const tokensProvider = (
 
   const state: TokensProviderState = reactive({
     loading: true,
-    injectedTokens: {
-      [networkConfig.nativeAsset.address]: nativeAsset,
-    },
+    injectedTokens: {},
     allowanceContracts: compact([
       networkConfig.addresses.vault,
       networkConfig.addresses.wstETH,
@@ -96,6 +94,7 @@ export const tokensProvider = (
    */
   const allTokenListTokens = computed(
     (): TokenInfoMap => ({
+      [networkConfig.nativeAsset.address]: nativeAsset,
       ...mapTokenListTokens(allTokenLists.value),
       ...state.injectedTokens,
     })
@@ -123,6 +122,7 @@ export const tokensProvider = (
    */
   const tokens = computed(
     (): TokenInfoMap => ({
+      [networkConfig.nativeAsset.address]: nativeAsset,
       ...activeTokenListTokens.value,
       ...state.injectedTokens,
     })
@@ -484,9 +484,8 @@ export const tokensProvider = (
   };
 };
 
-export type Response = ReturnType<typeof tokensProvider>;
-export const providerResponse = {} as Response;
-export const TokensProviderSymbol: InjectionKey<Response> = Symbol(
+export type TokensResponse = ReturnType<typeof tokensProvider>;
+export const TokensProviderSymbol: InjectionKey<TokensResponse> = Symbol(
   symbolKeys.Providers.Tokens
 );
 
@@ -494,9 +493,11 @@ export function provideTokens(
   userSettings: UserSettingsResponse,
   tokenLists: TokenListsResponse
 ) {
-  provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+  const tokensResponse = tokensProvider(userSettings, tokenLists);
+  provide(TokensProviderSymbol, tokensResponse);
+  return tokensResponse;
 }
 
-export const useTokens = (): Response => {
-  return inject(TokensProviderSymbol, providerResponse);
+export const useTokens = (): TokensResponse => {
+  return safeInject(TokensProviderSymbol);
 };

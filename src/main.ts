@@ -15,7 +15,7 @@ import registerDirectives from '@/plugins/directives';
 import { registerPlugins } from '@/plugins';
 import initSentry from '@/plugins/sentry';
 
-import App from './App.vue';
+import Root from './Root.vue';
 
 echarts.use([
   TooltipComponent,
@@ -27,7 +27,7 @@ echarts.use([
   PieChart,
 ]);
 
-const app = createApp(App);
+const app = createApp(Root);
 
 registerPlugins(app);
 registerDirectives(app);

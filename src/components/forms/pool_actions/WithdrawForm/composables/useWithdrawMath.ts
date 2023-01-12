@@ -17,7 +17,7 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, usePool } from '@/composables/usePool';
+import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import { useTokens } from '@/providers/tokens.provider';
@@ -114,14 +114,14 @@ export default function useWithdrawMath(
     if (isDeep(pool.value)) {
       return pool.value.mainTokens || [];
     }
-    return pool.value.tokensList;
+    return tokensListExclBpt(pool.value);
   });
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
   // The tokens of the pool
   const poolTokens = computed((): TokenInfo[] =>
-    pool.value.tokensList.map(address => getToken(address))
+    tokensListExclBpt(pool.value).map(address => getToken(address))
   );
 
   const tokenOutDecimals = computed(
@@ -206,6 +206,7 @@ export default function useWithdrawMath(
       'send',
       fixedRatioOverride
     );
+
     return receive;
   });
 
@@ -239,6 +240,7 @@ export default function useWithdrawMath(
 
   const fullAmounts = computed(() => {
     if (isProportional.value) return proportionalAmounts.value;
+
     return new Array(tokenCount.value).fill('0').map((_, i) => {
       return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';
     });
@@ -389,7 +391,7 @@ export default function useWithdrawMath(
 
   const fiatAmounts = computed((): string[] =>
     fullAmounts.value.map((amount, i) =>
-      toFiat(amount, withdrawalTokens.value[i].address)
+      toFiat(amount, withdrawalTokens.value[i]?.address)
     )
   );
 
