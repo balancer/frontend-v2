@@ -82,7 +82,7 @@ export default function useJoinExit({
   const confirming = ref(false);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
-  const swapInfoLoading = ref(true);
+  const swapInfoLoading = ref(false);
 
   // COMPOSABLES
   const { account, getSigner } = useWeb3();

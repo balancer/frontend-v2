@@ -282,12 +282,11 @@ export default function useTrading(
     if (isGnosisTrade.value) {
       gnosis.resetState(false);
       gnosis.handleAmountChange();
-    } else if (isJoinExitTrade.value) {
-      joinExit.resetState();
-      joinExit.handleAmountChange();
     } else {
       sor.resetState();
       sor.handleAmountChange();
+      joinExit.resetState();
+      joinExit.handleAmountChange();
     }
   }
 

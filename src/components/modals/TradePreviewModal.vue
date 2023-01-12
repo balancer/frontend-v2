@@ -756,7 +756,7 @@ watch(blockNumber, () => {
         @action-click="trading.resetSubmissionError"
       />
       <BalAlert
-        v-if="trading.isJoinExitTrade"
+        v-if="trading.isJoinExitTrade.value"
         class="p-3 mt-4"
         type="tip"
         size="md"
