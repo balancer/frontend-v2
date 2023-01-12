@@ -1,5 +1,6 @@
+import { safeInject } from '@/providers/inject';
 import { pick } from 'lodash';
-import { computed, inject, InjectionKey, reactive, toRefs, provide } from 'vue';
+import { computed, InjectionKey, reactive, toRefs, provide } from 'vue';
 
 import useNetwork from '@/composables/useNetwork';
 import localStorageKeys from '@/constants/local-storage.keys';
@@ -112,7 +113,6 @@ export const tokenListsProvider = () => {
 };
 
 export type TokenListsResponse = ReturnType<typeof tokenListsProvider>;
-export const providerResponse = {} as TokenListsResponse;
 export const TokenListsProviderSymbol: InjectionKey<TokenListsResponse> =
   Symbol(symbolKeys.Providers.TokenLists);
 
@@ -123,5 +123,5 @@ export function provideTokenLists(): TokenListsResponse {
 }
 
 export const useTokenLists = (): TokenListsResponse => {
-  return inject(TokenListsProviderSymbol, providerResponse);
+  return safeInject(TokenListsProviderSymbol);
 };

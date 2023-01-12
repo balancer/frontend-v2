@@ -144,7 +144,9 @@ async function submit(): Promise<TransactionResponse> {
     return tx;
   } catch (error) {
     txState.confirming = false;
-    return Promise.reject(error);
+    throw new Error('Failed to submit transaction.', {
+      cause: error,
+    });
   } finally {
     txState.init = false;
   }
