@@ -3,7 +3,6 @@ import { computed, ref } from 'vue';
 import { mount } from '@/tests/mount-composable-tester';
 
 import useJoinExit from '@/composables/trade/useJoinExit';
-import BigNumber from 'bignumber.js';
 
 jest.mock('vue-i18n');
 jest.mock('vuex');
@@ -36,7 +35,7 @@ jest.mock('@/composables/approvals/useRelayerApproval', () => ({
   },
 }));
 
-const mockAmount = new BigNumber(10);
+const mockAmount = 10;
 jest.mock('@/lib/balancer.sdk', () => {
   return {
     balancer: {
@@ -95,6 +94,7 @@ describe('useJoinExit', () => {
 
   it('Should pass return an available joinExit trade', async () => {
     const { result: joinExit } = mount(() => useJoinExit(mockProps));
+    await joinExit.handleAmountChange();
     expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(
       Number(mockAmount)
     );
