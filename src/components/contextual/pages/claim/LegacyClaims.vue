@@ -268,29 +268,29 @@ async function claimAvailableRewards() {
           <li class="mt-2">
             Claim BAL on other networks
             <template v-if="isArbitrum">
-              <BalLink href="https://app.balancer.fi" external>
+              <BalLink href="https://app.balancer.fi/#/ethereum/claim" external>
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://polygon.balancer.fi" external>
+              <BalLink href="https://app.balancer.fi/#/polygon/claim" external>
                 Polygon </BalLink
               >.
             </template>
             <template v-else-if="isPolygon">
-              <BalLink href="https://app.balancer.fi" external>
+              <BalLink href="https://app.balancer.fi/#/ethereum/claim" external>
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://arbitrum.balancer.fi" external>
+              <BalLink href="https://app.balancer.fi/#/arbitrum/claim" external>
                 Arbitrum </BalLink
               >.
             </template>
             <template v-else-if="isMainnet || isGoerli">
-              <BalLink href="https://polygon.balancer.fi" external>
+              <BalLink href="https://app.balancer.fi/#/polygon/claim" external>
                 Polygon
               </BalLink>
               and
-              <BalLink href="https://arbitrum.balancer.fi" external>
+              <BalLink href="https://app.balancer.fi/#/arbitrum/claim" external>
                 Arbitrum </BalLink
               >.
             </template>
