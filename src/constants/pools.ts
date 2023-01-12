@@ -585,7 +585,13 @@ const POOLS_GNOSIS: Pools = {
     'HighAmpComposableStable',
   ],
   Stable: {
-    AllowList: [],
+    AllowList: [
+      '0x0503dd6b2d3dd463c9bef67fb5156870af63393e000200000000000000000003',
+      '0x11884da90fb4221b3aa288a7741c51ec4fc43b2f000000000000000000000004',
+      '0x581ec1f5e7ced12b186deae32256adb53bdd5b08000000000000000000000001',
+      '0x707b7d4a1bae449d546dcab869256591bbb3d70b000000000000000000000000',
+      '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f000200000000000000000002',
+    ],
   },
   Investment: {
     AllowList: [],

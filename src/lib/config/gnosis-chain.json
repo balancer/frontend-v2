@@ -19,9 +19,9 @@
     "main": [
       "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gnosis-chain-v2"
     ],
-    "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain",
-    "blocks": "https://api.thegraph.com/subgraphs/name/blocklytics/gnosis-chain-blocks"
+    "aave": "",
+    "gauge": "",
+    "blocks": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gnosis-chain-v2"
   },
   "supportsEIP1559": true,
   "supportsElementPools": true,

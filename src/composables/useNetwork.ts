@@ -60,7 +60,7 @@ export function networkFor(key: string | number): Network {
     case '42161':
       return Network.ARBITRUM;
     case '100':
-      return 100;
+      return Network.GNOSIS;
     default:
       throw new Error('Network not supported');
   }
