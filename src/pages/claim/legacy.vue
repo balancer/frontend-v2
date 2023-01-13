@@ -11,11 +11,14 @@ const { isWalletReady } = useWeb3();
 
 <template>
   <div>
-    <HeroClaim />
+    <HeroClaim
+      :title="$t('claimHero.legacyTitle')"
+      :description="$t('claimHero.legacyDescription')"
+    />
     <div class="xl:container py-12 xl:px-4 xl:mx-auto">
       <template v-if="isWalletReady">
         <div class="px-4 xl:px-0">
-          <h2 :class="['font-body font-semibold text-2xl mt-8']">
+          <h2 :class="['font-body font-semibold text-2xl']">
             {{ $t('pages.claim.titles.legacyIncentives') }}
           </h2>
           <LegacyClaims />
