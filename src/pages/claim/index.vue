@@ -4,7 +4,6 @@ import { formatUnits } from '@ethersproject/units';
 import { computed, onBeforeMount, watch } from 'vue';
 
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
-import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import BalClaimsTable, {
   RewardRow,
 } from '@/components/tables/BalClaimsTable.vue';
@@ -336,14 +335,9 @@ onBeforeMount(async () => {
           </BalFlexGrid>
         </div>
 
-        <template v-if="isWalletReady">
-          <div class="px-4 xl:px-0">
-            <h2 :class="['font-body font-semibold text-2xl mt-8']">
-              {{ $t('pages.claim.titles.legacyIncentives') }}
-            </h2>
-            <LegacyClaims />
-          </div>
-        </template>
+        <BalLink tag="router-link" to="/claim/legacy">{{
+          $t('legacyClaims')
+        }}</BalLink>
       </div>
     </div>
   </div>

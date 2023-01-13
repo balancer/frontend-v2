@@ -4,7 +4,9 @@ import { isGoerli } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
 
 const ClaimPage = () =>
-  import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
+  import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim/index.vue');
+const LegacyClaimPage = () =>
+  import(/* webpackChunkName: "LegacyClaimPage" */ '@/pages/claim/legacy.vue');
 const CookiesPolicyPage = () =>
   import(
     /* webpackChunkName: "CookiesPolicyPage" */ '@/pages/cookies-policy.vue'
@@ -146,6 +148,11 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/claim',
     name: 'claim',
     component: ClaimPage,
+  },
+  {
+    path: '/:networkSlug/claim/legacy',
+    name: 'legacy-claim',
+    component: LegacyClaimPage,
   },
   {
     path: '/:networkSlug/portfolio',

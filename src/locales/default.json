@@ -1479,5 +1479,6 @@
       "otherTokens": "Other tokens (higher price impact)"
     }
   },
-  "poolActivity": "Pool activity"
+  "poolActivity": "Pool activity",
+  "legacyClaims": "Legacy claims"
 }
