@@ -337,6 +337,7 @@ onBeforeMount(async () => {
             </BalBtn>
           </BalFlexGrid>
           <BalLink
+            v-if="isWalletReady"
             tag="router-link"
             to="/claim/legacy"
             class="flex items-center"
