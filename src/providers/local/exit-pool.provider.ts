@@ -334,7 +334,7 @@ const provider = (props: Props) => {
       }));
     } catch (error) {
       captureException(error);
-      throw error;
+      throw new Error('Failed to construct exit.', { cause: error });
     }
   }
 
@@ -363,7 +363,7 @@ const provider = (props: Props) => {
       singleAmountOut.max = output.amountsOut[singleAmountOut.address];
     } catch (error) {
       captureException(error);
-      throw error;
+      throw new Error('Failed to calculate max.', { cause: error });
     }
   }
 
@@ -384,7 +384,7 @@ const provider = (props: Props) => {
       });
     } catch (error) {
       txError.value = (error as Error).message;
-      throw error;
+      throw new Error('Failed to submit exit transaction.', { cause: error });
     }
   }
 

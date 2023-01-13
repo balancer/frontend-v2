@@ -23,7 +23,6 @@ import { useSidebar } from './composables/useSidebar';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
-import { initGlobalProviders } from './providers';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -46,12 +45,6 @@ export default defineComponent({
      * STATE
      */
     const layout = ref('DefaultLayout');
-
-    /**
-     * GLOBAL PROVIDERS
-     */
-    initGlobalProviders();
-
     /**
      * COMPOSABLES
      */

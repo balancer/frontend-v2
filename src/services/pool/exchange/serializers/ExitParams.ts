@@ -7,6 +7,7 @@ import {
   preMintedBptIndex,
   isComposableStable,
   isStableLike,
+  tokensListExclBpt,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
@@ -89,9 +90,11 @@ export default class ExitParams {
   }
 
   private parseAmounts(amounts: string[]): BigNumber[] {
+    const tokensList = tokensListExclBpt(this.pool.value);
+
     try {
       return amounts.map((amount, i) => {
-        const token = this.pool.value.tokensList[i];
+        const token = tokensList[i];
         return parseUnits(
           amount,
           this.pool.value?.onchain?.tokens?.[token]?.decimals
@@ -116,6 +119,7 @@ export default class ExitParams {
     ) {
       tokensOutProcessed.splice(preMintedBptIdx, 0, this.pool.value.address);
     }
+
     return tokensOutProcessed;
   }
 
