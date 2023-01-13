@@ -6,7 +6,6 @@ import { ref } from 'vue';
  */
 type Props = {
   networkOptions: { [key: number]: string };
-  // activeNetworkOptions: number[];
   debouncedHideExpiredGauges: boolean;
   debouncedActiveNetworkFilters: number[];
 };

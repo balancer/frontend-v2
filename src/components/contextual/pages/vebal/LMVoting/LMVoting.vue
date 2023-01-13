@@ -22,14 +22,15 @@ import GaugesFilters from './GaugesFilters.vue';
 /**
  * DATA
  */
-const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 const tokenFilter = ref('');
+const hideExpiredGauges = ref(true);
+const activeNetworkFilters = ref<Network[]>([]);
+const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 const networks = {
   [Network.MAINNET]: 'Ethereum',
   [Network.POLYGON]: 'Polygon',
   [Network.ARBITRUM]: 'Arbitrum',
 };
-const activeNetworkFilters = ref<Network[]>([]);
 
 /**
  * COMPOSABLES
@@ -83,7 +84,6 @@ const hasExpiredLock = computed(
 
 const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
 
-const hideExpiredGauges = ref(true);
 const gaugesFilteredByExpiring = computed(() => {
   if (!hideExpiredGauges.value) {
     return votingGauges.value;
@@ -127,6 +127,7 @@ const debouncedActiveNetworkFilters = computed({
 });
 
 const filteredVotingGauges = computed(() => {
+  // put filter by expiring in separate computed to maintain readability
   return gaugesFilteredByExpiring.value.filter(gauge => {
     let showByNetwork = true;
     if (
