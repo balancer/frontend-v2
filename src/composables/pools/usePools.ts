@@ -3,7 +3,7 @@ import { computed, Ref, ref, watch } from 'vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 import { tokenTreeLeafs } from '../usePool';
 

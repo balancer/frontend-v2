@@ -41,7 +41,12 @@ config.global.stubs = {
   RouterLink: RouterLinkStub,
   Jazzicon: true,
   BalIcon: true,
+  LightBulbIcon: true,
 };
+
+jest.mock('@/services/web3/useWeb3');
+jest.mock('@/composables/useEthers');
+jest.mock('@/composables/useTransactions');
 
 config.global.components = {
   BalBreakdown,

@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { includesAddress } from '@/lib/utils';
 import { PoolToken } from '@/services/pool/types';
 

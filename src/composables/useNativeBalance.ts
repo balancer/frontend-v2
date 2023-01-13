@@ -1,7 +1,7 @@
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed } from 'vue';
-import useTokens from './useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 
 export default function useNativeBalance() {
   const { hasBalance, nativeAsset, balanceFor } = useTokens();
