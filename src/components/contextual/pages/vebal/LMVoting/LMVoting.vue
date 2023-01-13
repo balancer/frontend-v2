@@ -88,10 +88,10 @@ const gaugesFilteredByExpiring = computed(() => {
   if (!hideExpiredGauges.value) {
     return votingGauges.value;
   }
-  // console.log(votingGauges.value);
+
   return votingGauges.value.filter(gauge => {
     if (Number(gauge.userVotes) > 0) {
-      // console.log('user', gauge);
+      return true;
     }
     return !expiredGauges.value?.some(expGauge =>
       isSameAddress(expGauge, gauge.address)
