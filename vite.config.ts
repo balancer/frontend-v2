@@ -87,7 +87,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      include: ['tailwind.config.js'],
+      include: ['tailwind.config.js', 'color', 'mersenne-twister'],
     },
     server: {
       port: 8080,

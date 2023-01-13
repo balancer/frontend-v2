@@ -1,7 +1,3 @@
-// Setup file for jsdom.
-// This file will be executed in the testing environment before executing
-// setupFilesAfterEnv and before the test code itself.
-
 // Mock window.matchMedia
 // @ts-ignore
 Object.defineProperty(window, 'matchMedia', {

@@ -14,6 +14,7 @@ import { createApp } from 'vue';
 import registerDirectives from '@/plugins/directives';
 import { registerPlugins } from '@/plugins';
 import initSentry from '@/plugins/sentry';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 import Root from './Root.vue';
 
@@ -28,6 +29,8 @@ echarts.use([
 ]);
 
 const app = createApp(Root);
+
+app.component('Jazzicon', Jazzicon);
 
 registerPlugins(app);
 registerDirectives(app);
