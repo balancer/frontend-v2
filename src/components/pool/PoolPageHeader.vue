@@ -125,6 +125,9 @@ const poolTypeLabel = computed(() => {
 
   return key ? t(key) : t('unknownPoolType');
 });
+
+const poolMetadata = computed(() => POOLS.Metadata[props.pool?.id]);
+const hasMetadata = computed((): boolean => !!poolMetadata.value);
 </script>
 
 <template>
@@ -132,9 +135,9 @@ const poolTypeLabel = computed(() => {
     <BalLoadingBlock v-if="loadingPool || !pool" class="header-loading-block" />
     <div v-else class="flex flex-col">
       <div class="flex flex-wrap items-center -mt-2">
-        <div v-if="POOLS.Metadata[pool?.id]">
+        <div v-if="hasMetadata">
           <h3 class="pool-title">
-            {{ POOLS.Metadata[pool.id].name }}
+            {{ poolMetadata.name }}
           </h3>
           <h5 class="text-sm">
             {{ poolTypeLabel }}
@@ -143,6 +146,8 @@ const poolTypeLabel = computed(() => {
         <h3 v-else class="pool-title">
           {{ poolTypeLabel }}
         </h3>
+      </div>
+      <div class="flex">
         <div
           v-for="({ address, symbol, weight }, i) in titleTokens"
           :key="i"
@@ -292,6 +297,6 @@ const poolTypeLabel = computed(() => {
 }
 
 .header-loading-block {
-  height: 4.249rem;
+  height: 6.75rem;
 }
 </style>
