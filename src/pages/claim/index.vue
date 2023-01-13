@@ -4,7 +4,6 @@ import { formatUnits } from '@ethersproject/units';
 import { computed, onBeforeMount, watch } from 'vue';
 
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
-import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import BalClaimsTable, {
   RewardRow,
 } from '@/components/tables/BalClaimsTable.vue';
@@ -221,7 +220,10 @@ onBeforeMount(async () => {
 
 <template>
   <div>
-    <HeroClaim />
+    <HeroClaim
+      :title="$t('claimHero.title')"
+      :description="$t('claimHero.description')"
+    />
     <div>
       <div class="xl:container py-12 xl:px-4 xl:mx-auto">
         <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
@@ -334,16 +336,15 @@ onBeforeMount(async () => {
               {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
             </BalBtn>
           </BalFlexGrid>
+          <BalLink
+            v-if="isWalletReady"
+            tag="router-link"
+            to="/claim/legacy"
+            class="flex items-center"
+            >{{ $t('legacyClaims') }}
+            <BalIcon name="arrow-right" size="sm" class="mx-1"
+          /></BalLink>
         </div>
-
-        <template v-if="isWalletReady">
-          <div class="px-4 xl:px-0">
-            <h2 :class="['font-body font-semibold text-2xl mt-8']">
-              {{ $t('pages.claim.titles.legacyIncentives') }}
-            </h2>
-            <LegacyClaims />
-          </div>
-        </template>
       </div>
     </div>
   </div>
