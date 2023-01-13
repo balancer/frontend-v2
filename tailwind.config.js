@@ -6,6 +6,7 @@ module.exports = {
       safelist: [
         /^shadow/,
         /^bg/,
+        /^ring/,
         /^text/,
         /^border/,
         /^from/,
@@ -175,6 +176,7 @@ module.exports = {
       borderRadius: ['first', 'last'],
       zIndex: ['hover'],
       borderWidth: ['dark', 'last'],
+      ringColor: ['dark', 'group-hover'],
     },
   },
   plugins: [],
