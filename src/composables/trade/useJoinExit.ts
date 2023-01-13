@@ -133,7 +133,7 @@ export default function useJoinExit({
       return;
     }
 
-    if (Object.keys(pools.value).length === 0) return;
+    if (pools.value.length === 0) return;
 
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value
