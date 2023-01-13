@@ -271,6 +271,7 @@ function chooseNetwork(network: Network) {
       :isLoading="isLoading"
       :data="filteredVotingGauges"
       :noPoolsLabel="$t('noInvestments')"
+      :filterText="debouncedFilterText"
       showPoolShares
       class="mb-8"
       @clicked-vote="setActiveGaugeVote"

@@ -6,12 +6,14 @@ type Props = {
   hasBalance: boolean;
   symbol: string;
   isSelected: boolean;
+  isPicked: boolean;
   token: PoolToken;
 };
 
 withDefaults(defineProps<Props>(), {
   hasBalance: false,
   isSelected: false,
+  isPicked: false,
 });
 </script>
 
@@ -28,6 +30,7 @@ withDefaults(defineProps<Props>(), {
           'pill',
           {
             'pill-selected': isSelected,
+            'pill-picked': isPicked,
             'pill-hoverable': hasBalance,
           },
         ]"
@@ -86,6 +89,10 @@ withDefaults(defineProps<Props>(), {
 
 .pill-selected::before {
   @apply ring-2 ring-blue-500 dark:ring-blue-400;
+}
+
+.pill.pill-picked::before {
+  @apply bg-blue-50 dark:bg-blue-500 dark:bg-opacity-20;
 }
 
 .balance-indicator {
