@@ -214,6 +214,8 @@ const POOLS_MAINNET: Pools = {
       '0x4edcb2b46377530bc18bb4d2c7fe46a992c73e100000000000000000000003ec', // cbETH/wstETH
       '0x53bc3cba3832ebecbfa002c12023f8ab1aa3a3a0000000000000000000000411', // TUSD/bb-a-usd
       '0x4c8d2e60863e8d7e1033eda2b3d84e92a641802000000000000000000000040f', // FRAX/aave-usdc
+      '0x9c6d47ff73e0f5e51be5fd53236e3f595c5793f200020000000000000000042c', // cbeth/wsteth stable
+      '0xff4ce5aaab5a627bf82f4a571ab1ce94aa365ea6000200000000000000000426', // dola/usdc
     ],
   },
   Investment: {
@@ -513,6 +515,7 @@ const POOLS_ARBITRUM: Pools = {
       '0xd89746affa5483627a87e55713ec1905114394950002000000000000000000bf', // fluid stable
       '0x7bceaa9c5e7f4836fec3bce2d5346637c9b13970000000000000000000000102', // vesta new stable
       '0xfb5e6d0c1dfed2ba000fbc040ab8df3615ac329c000000000000000000000159', // stETH
+      '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316', // wsteth/weth stable
     ],
   },
   Investment: {
