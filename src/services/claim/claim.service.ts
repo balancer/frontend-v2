@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { chunk, flatten, groupBy } from 'lodash';
+import { chunk, flatten } from 'lodash';
 
 import { networkId } from '@/composables/useNetwork';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
@@ -21,8 +21,6 @@ import {
   ClaimStatus,
   ClaimWorkerMessage,
   ComputeClaimProofPayload,
-  MultiTokenCurrentRewardsEstimate,
-  MultiTokenCurrentRewardsEstimateResponse,
   MultiTokenPendingClaims,
   Report,
   Snapshot,
@@ -91,72 +89,6 @@ export class ClaimService {
       availableToClaim,
     };
   }
-
-  public async getMultiTokensCurrentRewardsEstimate(account: string): Promise<{
-    data: MultiTokenCurrentRewardsEstimate[];
-    timestamp: string | null;
-  }> {
-    try {
-      const response =
-        await axios.get<MultiTokenCurrentRewardsEstimateResponse>(
-          `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider-multitoken/${account}`
-        );
-      if (response.data.success) {
-        const multiTokenLiquidityProviders = response.data.result[
-          'liquidity-providers'
-        ]
-          .filter(incentive => incentive.chain_id === networkId.value)
-          .map(incentive => ({
-            ...incentive,
-            token_address: getAddress(incentive.token_address),
-          }));
-
-        const multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate[] =
-          [];
-
-        const multiTokenLiquidityProvidersByToken = Object.entries(
-          groupBy(multiTokenLiquidityProviders, 'token_address')
-        );
-
-        for (const [
-          token,
-          liquidityProvider,
-        ] of multiTokenLiquidityProvidersByToken) {
-          const rewards = liquidityProvider
-            .reduce(
-              (total, { current_estimate }) => total.plus(current_estimate),
-              bnum(0)
-            )
-            .toString();
-
-          const velocity =
-            liquidityProvider
-              .find(liquidityProvider => Number(liquidityProvider.velocity) > 0)
-              ?.velocity.toString() ?? '0';
-
-          if (Number(rewards) > 0) {
-            multiTokenCurrentRewardsEstimate.push({
-              rewards,
-              velocity,
-              token: getAddress(token),
-            });
-          }
-        }
-
-        return {
-          data: multiTokenCurrentRewardsEstimate,
-          timestamp: response.data.result.current_timestamp,
-        };
-      }
-    } catch (e) {
-      console.log('[Claim] Current Rewards Estimate Error', e);
-    }
-    return {
-      data: [],
-      timestamp: null,
-    };
-  }
-
   public async multiTokenClaimRewards(
     provider: Web3Provider,
     account: string,

@@ -505,8 +505,7 @@
       "title": "You have no token incentives to claim"
     },
     "tabs": {
-      "claimable": "Claimable now",
-      "currentEstimate": "Pending"
+      "claimable": "Claimable"
     },
     "title": "Token incentives"
   },
