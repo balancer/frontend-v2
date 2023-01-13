@@ -29,7 +29,7 @@ const networks = {
   [Network.POLYGON]: 'Polygon',
   [Network.ARBITRUM]: 'Arbitrum',
 };
-const activeNetworkOptions = ref<Network[]>([]);
+const activeNetworkFilters = ref<Network[]>([]);
 
 /**
  * COMPOSABLES
@@ -88,10 +88,10 @@ const gaugesFilteredByExpiring = computed(() => {
   if (!hideExpiredGauges.value) {
     return votingGauges.value;
   }
-  console.log(votingGauges.value);
+  // console.log(votingGauges.value);
   return votingGauges.value.filter(gauge => {
     if (Number(gauge.userVotes) > 0) {
-      console.log('user', gauge);
+      // console.log('user', gauge);
     }
     return !expiredGauges.value?.some(expGauge =>
       isSameAddress(expGauge, gauge.address)
@@ -116,14 +116,22 @@ const debouncedHideExpiredGauges = computed({
     hideExpiredGauges.value = value;
   }, 500),
 });
-const debActive = ref<any[]>([]);
+
+const debouncedActiveNetworkFilters = computed({
+  get() {
+    return activeNetworkFilters.value;
+  },
+  set: debounce(value => {
+    activeNetworkFilters.value = value;
+  }, 500),
+});
 
 const filteredVotingGauges = computed(() => {
   return gaugesFilteredByExpiring.value.filter(gauge => {
     let showByNetwork = true;
     if (
-      debActive.value.length > 0 &&
-      !debActive.value.includes(gauge.network)
+      debouncedActiveNetworkFilters.value.length > 0 &&
+      !debouncedActiveNetworkFilters.value.includes(gauge.network)
     ) {
       showByNetwork = false;
     }
@@ -138,6 +146,7 @@ const filteredVotingGauges = computed(() => {
     );
   });
 });
+
 /**
  * METHODS
  */
@@ -152,12 +161,6 @@ function handleModalClose() {
 
 function handleVoteSuccess() {
   refetchVotingGauges.value();
-}
-function chooseNetwork(network: Network) {
-  const index = activeNetworkOptions.value.indexOf(network);
-  index === -1
-    ? activeNetworkOptions.value.push(network)
-    : activeNetworkOptions.value.splice(index, 1);
 }
 </script>
 
@@ -256,12 +259,14 @@ function chooseNetwork(network: Network) {
 
       <GaugesFilters
         :networkOptions="networks"
-        :activeNetworkOptions="activeNetworkOptions"
         :debouncedHideExpiredGauges="debouncedHideExpiredGauges"
+        :debouncedActiveNetworkFilters="debouncedActiveNetworkFilters"
         @update:debounced-hide-expired-gauges="
           debouncedHideExpiredGauges = $event
         "
-        @choose-network="chooseNetwork"
+        @update:debounced-active-network-filters="
+          debouncedActiveNetworkFilters = $event
+        "
       />
     </div>
 

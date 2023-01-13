@@ -1,25 +1,40 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 /**
  * TYPES
  */
 type Props = {
   networkOptions: { [key: number]: string };
-  activeNetworkOptions: number[];
+  // activeNetworkOptions: number[];
   debouncedHideExpiredGauges: boolean;
+  debouncedActiveNetworkFilters: number[];
 };
 
 const emit = defineEmits<{
   (e: 'choose-network', value: number): void;
   (e: 'update:debouncedHideExpiredGauges', value: boolean): void;
+  (e: 'update:debouncedActiveNetworkFilters', value: number[]): void;
 }>();
 
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 function handleExpInput(e) {
   emit('update:debouncedHideExpiredGauges', e.target.checked);
+}
+
+const networkFiltersArr = ref([...props.debouncedActiveNetworkFilters]);
+function updateNetwork(network: number) {
+  const index = networkFiltersArr.value.indexOf(network);
+
+  index === -1
+    ? networkFiltersArr.value.push(network)
+    : networkFiltersArr.value.splice(index, 1);
+
+  emit('update:debouncedActiveNetworkFilters', [...networkFiltersArr.value]);
 }
 </script>
 
@@ -47,13 +62,13 @@ function handleExpInput(e) {
           v-for="network in Object.keys(networkOptions)"
           :key="network"
           class="flex py-1 text-base text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
-          @click="emit('choose-network', Number(network))"
         >
           <BalCheckbox
-            :modelValue="activeNetworkOptions.includes(Number(network))"
+            :modelValue="networkFiltersArr.includes(Number(network))"
             name="highPriceImpactAccepted"
             :label="networkOptions[network]"
             noMargin
+            @input="updateNetwork(Number(network))"
           />
         </div>
 
