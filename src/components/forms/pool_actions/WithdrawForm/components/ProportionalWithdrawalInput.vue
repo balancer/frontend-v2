@@ -5,7 +5,7 @@ import { computed, onBeforeMount, toRef, toRefs, watch } from 'vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, usePool } from '@/composables/usePool';
+import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 // Types
@@ -62,7 +62,7 @@ const tokens = computed((): TokenInfoMap => {
   if (isDeep(props.pool)) {
     return getTokens(props.pool.mainTokens || []);
   }
-  return getTokens(props.pool.tokensList);
+  return getTokens(tokensListExclBpt(props.pool));
 });
 
 const percentageLabel = computed(() => {

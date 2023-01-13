@@ -173,7 +173,9 @@ async function submit(): Promise<TransactionResponse> {
     txState.value.init = false;
     txState.value.confirming = false;
     console.error(error);
-    return Promise.reject(error);
+    throw new Error('Failed to submit withdrawal transaction.', {
+      cause: error,
+    });
   }
 }
 
