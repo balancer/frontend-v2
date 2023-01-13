@@ -7,7 +7,7 @@ import { Pool } from '@/services/pool/types';
 import { configService } from '@/services/config/config.service';
 import { POOLS } from '@/constants/pools';
 
-jest.mock('@/composables/useTokens');
+jest.mock('@/providers/tokens.provider');
 
 const EmptyAprBreakdownMock: AprBreakdown = {
   swapFees: 0,

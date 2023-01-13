@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 // Composables
 import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';

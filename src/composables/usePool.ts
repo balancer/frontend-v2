@@ -168,7 +168,9 @@ export function noInitLiquidity(pool: AnyPool): boolean {
 }
 
 export function preMintedBptIndex(pool: Pool): number | void {
-  return pool.tokens.findIndex(token => token.address === pool.address);
+  return pool.tokensList.findIndex(address =>
+    isSameAddress(address, pool.address)
+  );
 }
 
 /**

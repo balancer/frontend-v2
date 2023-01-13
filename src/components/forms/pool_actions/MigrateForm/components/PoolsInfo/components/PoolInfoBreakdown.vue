@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 import { POOL_MIGRATIONS_MAP } from '../../../constants';
+import { tokensListExclBpt } from '@/composables/usePool';
 
 type Props = {
   pool: Pool;
@@ -37,7 +38,7 @@ const showOldVHint = computed(
 <template>
   <div class="p-3 dark:bg-gray-800 rounded-lg border dark:border-gray-800">
     <BalBreakdown
-      :items="pool.tokensList"
+      :items="tokensListExclBpt(pool)"
       class="w-full cursor-pointer select-none"
       offsetClassOverrides="mt-4 ml-3"
       initVertBarClassOverrides="h-6 -mt-6"

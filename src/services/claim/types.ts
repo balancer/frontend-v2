@@ -22,28 +22,6 @@ export type ClaimStatus = boolean;
 
 export type Report = Record<string, any>;
 
-export type MultiTokenCurrentRewardsEstimateResponse = {
-  success: boolean;
-  result: {
-    current_timestamp: string;
-    'liquidity-providers': Array<{
-      snapshot_timestamp: string;
-      address: string;
-      token_address: string;
-      chain_id: number;
-      current_estimate: string;
-      velocity: string;
-      week: number;
-    }>;
-  };
-};
-
-export type MultiTokenCurrentRewardsEstimate = {
-  rewards: string;
-  velocity: string;
-  token: string;
-};
-
 export type ClaimProofTuple = [number, string, string, number, string[]]; // claimId, claimAmount, distributor, tokenIndex, proof
 
 export type ComputeClaimProofPayload = {

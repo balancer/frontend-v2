@@ -14,7 +14,7 @@ import useStaking from '@/composables/staking/useStaking';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import useNetwork from '@/composables/useNetwork';
@@ -204,7 +204,9 @@ async function submit(): Promise<TransactionResponse> {
     return tx;
   } catch (error) {
     console.error(error);
-    return Promise.reject(error);
+    throw new Error('Failed to submit transaction.', {
+      cause: error,
+    });
   }
 }
 

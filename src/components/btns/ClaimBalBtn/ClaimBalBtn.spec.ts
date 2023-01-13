@@ -11,17 +11,14 @@ import ClaimBalBtn from './ClaimBalBtn.vue';
 ClaimBalBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };
 
-jest.mock('@/composables/useTransactions');
-jest.mock('@/composables/useTokens');
-jest.mock('@/composables/useEthers');
+jest.mock('@/providers/tokens.provider');
 jest.mock('@/composables/queries/useGaugesQuery');
 jest.mock('@/composables/queries/useGaugesDecorationQuery');
-jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/balancer/contracts/contracts/balancer-minter');
 
 const mockGaugeAddress = getAddress(gauge.id);
 
-describe.only('ClaimBalBtn', () => {
+describe('ClaimBalBtn', () => {
   describe('When using ClaimBalBtn', () => {
     it('should render props', () => {
       const { getByText } = render(ClaimBalBtn, {

@@ -7,7 +7,7 @@ import { bnum } from '@/lib/utils';
 
 import useConfig from './useConfig';
 import { getPreviousThursday, oneYearInSecs, toJsTimestamp } from './useTime';
-import useTokens from './useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 
 /**

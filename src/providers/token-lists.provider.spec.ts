@@ -1,91 +1,94 @@
+import { mountComposable } from '@/tests/mount-helpers';
 import { TokenList, TokenListMap } from '@/types/TokenList';
-import { render, screen } from '@testing-library/vue';
-import TokenListsProvider from './token-lists.provider';
-import useTokenLists from '@/composables/useTokenLists';
-import { h } from 'vue';
+import { useTokenLists } from '@/providers/token-lists.provider';
 
-function renderWithTokenListProvider(componentUnderTest) {
-  render(TokenListsProvider, {
-    slots: { default: () => h(componentUnderTest) },
+function firstTokenListSymbols(tokenList: TokenListMap) {
+  return Object.values(tokenList)[0].tokens.map(t => t.symbol);
+}
+
+function tokenListSymbols(tokenList: TokenList) {
+  return tokenList.tokens.map(t => t.symbol);
+}
+
+function mountComposableWithTokenLists() {
+  return mountComposable(() => {
+    return useTokenLists();
   });
 }
 
-function renderFirstTokenListSymbols(tokenList: TokenListMap) {
-  return JSON.stringify(Object.values(tokenList)[0].tokens.map(t => t.symbol));
-}
-function renderTokenListSymbols(tokenList: TokenList) {
-  return JSON.stringify(tokenList.tokens.map(t => t.symbol));
-}
+jest.mock('@/services/web3/useWeb3');
 
 describe('Token lists provider should', () => {
   test('provide active TokenList', async () => {
-    const ComponentUnderTest = {
-      setup() {
-        const { activeTokenLists } = useTokenLists();
-
-        return () => `${renderFirstTokenListSymbols(activeTokenLists.value)}`;
-      },
-    };
-
-    renderWithTokenListProvider(ComponentUnderTest);
-    await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
-    );
+    const { result } = mountComposableWithTokenLists();
+    expect(firstTokenListSymbols(result.activeTokenLists.value)).toEqual([
+      'BAL',
+      'DAI',
+      'USDT',
+      'USDC',
+      'WETH',
+      'WBTC',
+      'miMATIC',
+    ]);
   });
 
   test('provide approved TokenList', async () => {
-    const ComponentUnderTest = {
-      setup() {
-        const { approvedTokenLists } = useTokenLists();
-
-        return () => `${renderFirstTokenListSymbols(approvedTokenLists.value)}`;
-      },
-    };
-    renderWithTokenListProvider(ComponentUnderTest);
-    await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
-    );
+    const { result } = mountComposableWithTokenLists();
+    expect(firstTokenListSymbols(result.approvedTokenLists.value)).toEqual([
+      'BAL',
+      'DAI',
+      'USDT',
+      'USDC',
+      'WETH',
+      'WBTC',
+      'miMATIC',
+    ]);
   });
 
   test('provide balancer TokenList', async () => {
-    const ComponentUnderTest = {
-      setup() {
-        const { balancerTokenLists } = useTokenLists();
-
-        return () => `${renderFirstTokenListSymbols(balancerTokenLists.value)}`;
-      },
-    };
-    renderWithTokenListProvider(ComponentUnderTest);
-    await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
-    );
+    const { result } = mountComposableWithTokenLists();
+    expect(firstTokenListSymbols(result.balancerTokenLists.value)).toEqual([
+      'BAL',
+      'DAI',
+      'USDT',
+      'USDC',
+      'WETH',
+      'WBTC',
+      'miMATIC',
+    ]);
   });
 
   test('provide default TokenList', async () => {
-    const ComponentUnderTest = {
-      setup() {
-        const { defaultTokenList } = useTokenLists();
-
-        return () => `${renderTokenListSymbols(defaultTokenList.value)}`;
-      },
-    };
-    renderWithTokenListProvider(ComponentUnderTest);
-    await screen.findByText(
-      '["BAL","DAI","USDT","USDC","WETH","WBTC","miMATIC"]'
-    );
+    const { result } = mountComposableWithTokenLists();
+    expect(tokenListSymbols(result.defaultTokenList.value)).toEqual([
+      'BAL',
+      'DAI',
+      'USDT',
+      'USDC',
+      'WETH',
+      'WBTC',
+      'miMATIC',
+    ]);
   });
 
   test('provide vetted TokenList', async () => {
-    const ComponentUnderTest = {
-      setup() {
-        const { vettedTokenList } = useTokenLists();
-
-        return () => `${renderTokenListSymbols(vettedTokenList.value)}`;
-      },
-    };
-    renderWithTokenListProvider(ComponentUnderTest);
-    await screen.findByText(
-      '["BAL","bb-a-DAI","bb-a-USDC","bb-a-USDT","bb-a-USD","DAI","FEI","GNO","USDT","USDC","WETH","WBTC","aDAI","aUSDC","aUSDT"]'
-    );
+    const { result } = mountComposableWithTokenLists();
+    expect(tokenListSymbols(result.vettedTokenList.value)).toEqual([
+      'BAL',
+      'bb-a-DAI',
+      'bb-a-USDC',
+      'bb-a-USDT',
+      'bb-a-USD',
+      'DAI',
+      'FEI',
+      'GNO',
+      'USDT',
+      'USDC',
+      'WETH',
+      'WBTC',
+      'aDAI',
+      'aUSDC',
+      'aUSDT',
+    ]);
   });
 });

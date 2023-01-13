@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * STATIC
