@@ -1,6 +1,8 @@
+// Run DEBUG=eslint:cli-engine npm run lint to discover eslint bottlenecks
 node_modules/
 dist/
 tokenlists.json
 public/data/tokenlists/*.json
 package-lock.json
 components.d.ts
+/tailwind-static
