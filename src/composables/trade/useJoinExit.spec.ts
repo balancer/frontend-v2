@@ -76,7 +76,7 @@ const mockProps = {
   tokenIn: computed(() => mockTokenInfoIn),
   tokenOut: computed(() => mockTokenInfoOut),
   slippageBufferRate: computed(() => 1),
-  pools: ref([]),
+  pools: ref({ '0x0000000000000000000000000000000000000000': '' }),
 };
 
 describe('useJoinExit', () => {

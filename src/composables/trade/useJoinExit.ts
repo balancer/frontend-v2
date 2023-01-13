@@ -19,6 +19,7 @@ import {
   Ref,
   ref,
   toRefs,
+  watch,
 } from 'vue';
 
 import { balancer } from '@/lib/balancer.sdk';
@@ -131,6 +132,8 @@ export default function useJoinExit({
     ) {
       return;
     }
+
+    if (Object.keys(pools.value).length === 0) return;
 
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value
@@ -272,6 +275,10 @@ export default function useJoinExit({
     }
     await injectTokens(unknownAssets);
     await handleAmountChange();
+  });
+
+  watch(pools, () => {
+    handleAmountChange();
   });
 
   return {
