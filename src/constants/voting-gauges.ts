@@ -1,7 +1,7 @@
 import { Network } from '@balancer-labs/sdk';
 import { PoolToken, PoolType } from '@/services/pool/types';
 
-import ALL_VOTING_GAUGES from '../../public/data/voting-gauges.json';
+import ALL_VOTING_GAUGES from '../../src/data/voting-gauges.json';
 
 export type VotingGauge = {
   address: string;

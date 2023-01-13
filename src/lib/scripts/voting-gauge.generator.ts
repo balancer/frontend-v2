@@ -519,7 +519,7 @@ async function getGaugeInfo(
 
   const jsonFilePath = path.resolve(
     __dirname,
-    '../../../public/data/voting-gauges.json'
+    '../../../src/data/voting-gauges.json'
   );
 
   fs.writeFile(jsonFilePath, JSON.stringify(votingGauges, null, 2), err => {
