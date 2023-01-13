@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import { balancerContractsService } from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
 import Vault from './vault';
@@ -38,7 +39,7 @@ describe('ProtocolFeesCollector', () => {
     });
 
     it('returns 0 if error thrown', async () => {
-      vi.spyOn(console, 'error');
+      vi.spyOn(console, 'error').mockImplementationOnce(noop);
       vault.instance.getProtocolFeesCollector.mockImplementation(() => {
         throw new Error('Failed to fetch addresss');
       });
