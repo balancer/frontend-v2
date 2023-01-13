@@ -76,8 +76,8 @@ function handleExpInput(e) {
 
 <style scoped>
 .gauge-filter {
-  @apply relative w-44 rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-4
-    dark:bg-gray-800 border-2 h-10 text-base transition-all;
+  @apply relative w-40 rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-4
+    dark:bg-gray-800 border-2 h-11 text-base transition-all;
 }
 
 .gauge-filter .bal-icon :deep(svg) {

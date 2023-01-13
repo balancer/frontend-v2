@@ -169,10 +169,14 @@ function chooseNetwork(network: Network) {
       <div class="px-4 xl:px-0 max-w-3xl">
         <h3 class="mb-2">
           {{ $t('veBAL.liquidityMining.title') }}
+          <BalTooltip
+            :text="$t('veBAL.liquidityMining.description')"
+            iconSize="sm"
+            iconClass="text-gray-400 dark:text-gray-600"
+            width="72"
+            class="mt-1"
+          />
         </h3>
-        <p class="">
-          {{ $t('veBAL.liquidityMining.description') }}
-        </p>
       </div>
       <div class="flex gap-2 xs:gap-3 px-4 xl:px-0">
         <BalCard shadow="none" class="md:w-48 min-w-max">
