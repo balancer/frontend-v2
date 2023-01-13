@@ -43,8 +43,8 @@ function updateNetwork(network: number) {
     <template #activator>
       <div class="gauge-filter">
         <div class="flex flex-1 items-center h-full text-gray-600">
-          <BalIcon name="filter" size="lg" class="mr-3" />
-          <div class="text-gray-600">
+          <BalIcon name="filter" size="lg" class="mr-3 dark:text-gray-100" />
+          <div class="text-gray-600 dark:text-gray-100">
             {{ $t('gaugeFilter.moreFilters') }}
           </div>
         </div>
@@ -61,7 +61,7 @@ function updateNetwork(network: number) {
         <div
           v-for="network in Object.keys(networkOptions)"
           :key="network"
-          class="flex py-1 text-base text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
+          class="flex py-1 text-base text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
         >
           <BalCheckbox
             :modelValue="networkFiltersArr.includes(Number(network))"
@@ -77,7 +77,7 @@ function updateNetwork(network: number) {
         </div>
 
         <BalCheckbox
-          class="flex py-1 text-base text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
+          class="flex py-1 text-base text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
           name="highPriceImpactAccepted"
           :label="$t('gaugeFilter.hideExpired')"
           noMargin
@@ -92,7 +92,7 @@ function updateNetwork(network: number) {
 <style scoped>
 .gauge-filter {
   @apply relative w-40 rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-4
-    dark:bg-gray-800 border-2 h-11 text-base transition-all;
+    dark:bg-gray-800  border-2 h-11 text-base transition-all;
 }
 
 .gauge-filter .bal-icon :deep(svg) {
