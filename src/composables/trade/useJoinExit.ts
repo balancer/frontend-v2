@@ -174,9 +174,17 @@ export default function useJoinExit({
         return;
       }
 
+      console.log(swapInfo.value.swaps);
+      const swap = swapInfo.value?.swaps[0];
+      const pool = pools.value.find(p => p.id === swap.poolId);
+      if (pool?.poolType === 'Weighted') alert('ok');
+      const ti = swapInfo.value.tokenAddresses[swap.assetInIndex];
+      const to = swapInfo.value.tokenAddresses[swap.assetOutIndex];
+      console.log([ti, to].includes(pool?.address ?? ''));
+
       const relayerCallData = buildRelayerCalls(
         swapInfo.value,
-        pools.value as SubgraphPoolBase[],
+        pools.value,
         account.value,
         balancer.contracts.relayerV4?.address ?? '',
         balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
@@ -189,6 +197,7 @@ export default function useJoinExit({
         signer
       );
       const tx = await relayerContract?.multicall(relayerCallData.rawCalls);
+      console.log(tx);
 
       const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
         ...FNumFormats.token,

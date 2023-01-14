@@ -1,14 +1,18 @@
 import { parseFixed } from '@ethersproject/bignumber';
-import { AddressZero } from '@ethersproject/constants';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { bnum, isSameAddress, lsGet, lsSet } from '@/lib/utils';
+import { bnum, lsGet, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
-import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import {
+  canUseJoinExit,
+  someJoinExit,
+  SubgraphPoolBase,
+  SwapTypes,
+} from '@balancer-labs/sdk';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { networkId } from '../useNetwork';
@@ -109,16 +113,28 @@ export default function useTrading(
     if (tradeGasless.value && isGnosisSupportedOnNetwork.value) {
       return 'gnosis';
     } else {
-      const isNonEthSwap =
-        !isSameAddress(tokenInAddressInput.value, AddressZero) &&
-        !isSameAddress(tokenOutAddressInput.value, AddressZero);
-      const joinExitSwapAvailable =
+      const swapInfoAvailable =
         joinExit.swapInfo.value?.returnAmount &&
         !joinExit.swapInfo.value?.returnAmount.isZero();
+
+      const joinExitSwapAvailable = swapInfoAvailable
+        ? canUseJoinExit(
+            SwapTypes.SwapExactIn,
+            tokenInAddressInput.value,
+            tokenOutAddressInput.value
+          )
+        : false;
+
+      const joinExitSwapPresent = joinExitSwapAvailable
+        ? someJoinExit(
+            sor.pools.value as SubgraphPoolBase[],
+            joinExit.swapInfo.value?.swaps ?? [],
+            joinExit.swapInfo.value?.tokenAddresses ?? []
+          )
+        : false;
+
       // Currently joinExit trade is only suitable for ExactIn and non-eth swaps
-      return exactIn.value && isNonEthSwap && joinExitSwapAvailable
-        ? 'joinExit'
-        : 'balancer';
+      return joinExitSwapPresent ? 'joinExit' : 'balancer';
     }
   });
 
