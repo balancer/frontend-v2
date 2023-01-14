@@ -119,7 +119,7 @@ export default function useTrading(
 
       const joinExitSwapAvailable = swapInfoAvailable
         ? canUseJoinExit(
-            SwapTypes.SwapExactIn,
+            exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
             tokenInAddressInput.value,
             tokenOutAddressInput.value
           )
@@ -132,7 +132,6 @@ export default function useTrading(
             joinExit.swapInfo.value?.tokenAddresses ?? []
           )
         : false;
-
       // Currently joinExit trade is only suitable for ExactIn and non-eth swaps
       return joinExitSwapPresent ? 'joinExit' : 'balancer';
     }
