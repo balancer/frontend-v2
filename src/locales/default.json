@@ -102,7 +102,9 @@
   "claim": "Claim",
   "claimHero": {
     "title": "Claim liquidity incentives",
+    "legacyTitle": "Claim legacy incentives",
     "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra on Mainnet pools.",
+    "legacyDescription": "Liquidity mining incentive systems before the launch of ve8020-tokenomics have been deprecated. If you provided liquidity before this change and have outstanding incentives you can claim them here.",
     "tipLabel": {
       "addLiquidity": "Add liquidity",
       "stake": "Stake your LP",
@@ -505,8 +507,7 @@
       "title": "You have no token incentives to claim"
     },
     "tabs": {
-      "claimable": "Claimable now",
-      "currentEstimate": "Pending"
+      "claimable": "Claimable"
     },
     "title": "Token incentives"
   },
@@ -1480,5 +1481,6 @@
       "otherTokens": "Other tokens (higher price impact)"
     }
   },
-  "poolActivity": "Pool activity"
+  "poolActivity": "Pool activity",
+  "legacyClaims": "Legacy claims"
 }

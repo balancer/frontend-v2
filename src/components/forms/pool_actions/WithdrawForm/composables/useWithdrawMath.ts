@@ -42,11 +42,12 @@ import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import { setError, WithdrawalError } from './useWithdrawalState';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { SHALLOW_COMPOSABLE_STABLE_BUFFER } from '@/constants/pools';
 
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 /**
  * TYPES
@@ -740,8 +741,15 @@ export default function useWithdrawMath(
   async function getBptOutGuide() {
     if (!isShallowComposableStablePool.value) return;
 
-    const bptIn = pool.value.onchain?.totalSupply || '0';
-    const amountsOut = Object.values(pool.value.onchain?.tokens || []).map(t =>
+    loadingData.value = true;
+
+    // Refetch onchain data for pool.
+    const [_pool] = await new PoolDecorator([cloneDeep(pool.value)]).decorate(
+      allTokens.value
+    );
+
+    const bptIn = _pool.onchain?.totalSupply || '0';
+    const amountsOut = Object.values(_pool.onchain?.tokens || []).map(t =>
       formatUnits(
         parseUnits(t.balance, t.decimals).mul(1000).div(10000),
         t.decimals
@@ -749,7 +757,6 @@ export default function useWithdrawMath(
     );
 
     try {
-      loadingData.value = true;
       const result = await poolExchange.queryExit(
         getSigner(),
         amountsOut,
