@@ -22,6 +22,7 @@ export async function multicall<T>(
   options: any = {},
   requireSuccess = false
 ): Promise<(T | null)[]> {
+  // console.log({ multicallAddress: configs[network].addresses.multicall });
   const multi = new Contract(
     configs[network].addresses.multicall,
     [
@@ -40,10 +41,20 @@ export async function multicall<T>(
       ]),
       options
     );
-
+    // console.log({
+    //   calls: calls[0][1],
+    //   res: res.map(([success, returnData], i) => {
+    //     if (!success) return null;
+    //     const decodedResult = itf.decodeFunctionResult(calls[i][1], returnData);
+    //     console.log({ decodedResult });
+    //     // Automatically unwrap any simple return values
+    //     return decodedResult.length > 1 ? decodedResult : decodedResult[0];
+    //   }),
+    // });
     return res.map(([success, returnData], i) => {
       if (!success) return null;
       const decodedResult = itf.decodeFunctionResult(calls[i][1], returnData);
+      // console.log({ decodedResult });
       // Automatically unwrap any simple return values
       return decodedResult.length > 1 ? decodedResult : decodedResult[0];
     });

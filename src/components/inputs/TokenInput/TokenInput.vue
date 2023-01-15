@@ -12,6 +12,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { TokenSelectProps } from '../TokenSelectInput/TokenSelectInput.vue';
 import { BalRangeInputProps } from '@/components/_global/BalRangeInput/BalRangeInput.vue';
+import { getAriaLabelledbyAttr } from './helpers';
 
 /**
  * TYPES
@@ -202,6 +203,7 @@ const priceImpactClass = computed(() =>
 
 const decimalLimit = computed<number>(() => token.value?.decimals || 18);
 
+const ariaLabelledby = computed(() => getAriaLabelledbyAttr(props.address));
 /**
  * METHODS
  */
@@ -252,6 +254,7 @@ watch(_address, async (newAddress, oldAddress) => {
     autocomplete="off"
     autocorrect="off"
     step="any"
+    :aria-labelledby="ariaLabelledby"
     spellcheck="false"
     v-bind="$attrs"
     inputAlignRight

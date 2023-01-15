@@ -14,6 +14,7 @@ import InvestActionsV2 from './components/InvestActionsV2.vue';
 import { useIntervalFn } from '@vueuse/shared';
 import { oneSecondInMs } from '@/composables/useTime';
 import { AmountIn } from '@/providers/local/join-pool.provider';
+import { useQuery } from 'vue-query';
 
 /**
  * TYPES
@@ -31,7 +32,7 @@ type Props = {
   missingPricesIn: boolean;
   isLoadingQuery: boolean;
   txInProgress: boolean;
-  queryJoinQuery: any;
+  queryJoinQuery: ReturnType<typeof useQuery>;
   resetAmounts: () => void;
 };
 
@@ -154,7 +155,7 @@ function handleShowStakeModal() {
 // networks like Polygon.
 useIntervalFn(() => {
   if (!props.isLoadingQuery && !props.txInProgress) {
-    props.queryJoinQuery.refetch();
+    props.queryJoinQuery.refetch.value();
   }
 }, oneSecondInMs * 10);
 </script>

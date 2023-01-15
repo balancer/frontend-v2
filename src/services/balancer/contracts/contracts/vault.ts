@@ -38,6 +38,7 @@ export default class Vault {
 
   constructor(service: Service, instanceABI = VaultAbi) {
     this.service = service;
+    // console.log(this.service.provider);
     this.instance = new Contract(
       this.service.config.addresses.vault,
       instanceABI,

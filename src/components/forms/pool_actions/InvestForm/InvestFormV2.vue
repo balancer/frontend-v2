@@ -155,6 +155,7 @@ watch(
       v-model:isValid="amountIn.valid"
       v-model:address="amountIn.address"
       v-model:amount="amountIn.value"
+      :data-testid="`token-input-${amountIn.address}`"
       :name="amountIn.address"
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"

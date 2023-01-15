@@ -252,11 +252,6 @@ const provider = (props: Props) => {
    * Simulate join transaction to get expected output and calculate price impact.
    */
   async function queryJoin() {
-    console.log('queryJoin called');
-    console.log({
-      toFiat: toFiat(amountsIn.value[0].value || 0, amountsIn.value[0].address),
-      priceFor: priceFor('0x6b175474e89094c44da98b954eedeac495271d0f'),
-    });
     // If form is empty or inputs are not valid, clear the price impact and
     // return early
     if (!hasAmountsIn.value) {

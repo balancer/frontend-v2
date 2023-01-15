@@ -6,12 +6,17 @@ import blocknative from '@/plugins/blocknative';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideTokens } from '@/providers/tokens.provider';
+
 interface ProviderComponent {
   component: any;
   props: RenderOptions['props'];
 }
 
-const RootProvider = defineComponent({
+interface AdditionalContext {
+  providers: ProviderComponent[];
+}
+
+const GlobalProvidersComponent = defineComponent({
   setup(props, { slots }) {
     const userSettings = provideUserSettings();
     const tokenLists = provideTokenLists();
@@ -21,19 +26,26 @@ const RootProvider = defineComponent({
 });
 
 const rootProviders: ProviderComponent[] = [
-  { component: RootProvider, props: {} },
+  { component: GlobalProvidersComponent, props: {} },
 ];
 
 export default function renderComponent(
   componentUnderTest,
   options: RenderOptions = {},
-  providers: ProviderComponent[] = []
+  additionalContext?: AdditionalContext
 ) {
+  const providers = additionalContext?.providers || [];
   const { props, ...restOptions } = options;
   const allProviders: ProviderComponent[] = [...rootProviders, ...providers];
 
+  // Create Modal teleport target
+  const el = document.createElement('div');
+  el.id = 'modal';
+  el.attributes.setNamedItem(document.createAttribute('teleport-target'));
+  document.body.appendChild(el);
+
   return render(
-    renderComponentWithRootProviders(componentUnderTest, props, allProviders),
+    renderComponentWithProviders(componentUnderTest, props, allProviders),
     {
       ...getOptions(restOptions),
     }
@@ -52,7 +64,7 @@ function getOptions(
   };
 }
 
-function renderComponentWithRootProviders(
+function renderComponentWithProviders(
   componentUnderTest,
   props: RenderOptions['props'] = {},
   providers: ProviderComponent[]

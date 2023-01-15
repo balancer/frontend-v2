@@ -1,9 +1,9 @@
 import { QueryClient, VUE_QUERY_CLIENT } from 'vue-query';
 
+export const queryClient = new QueryClient();
+
 export default {
   install: app => {
-    const queryClient = new QueryClient();
-
     queryClient.mount();
 
     // Make plugin available in options API

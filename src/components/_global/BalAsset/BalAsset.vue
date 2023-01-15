@@ -49,11 +49,6 @@ const iconSRC = computed(() => {
 
 const rootElement = computed(() => (props.button ? 'button' : 'div'));
 
-const rootElementAttrs = computed(() => ({
-  'aria-label': token.value?.symbol,
-  disabled: props.disabled,
-}));
-
 /**
  * WATCHERS
  */
@@ -71,7 +66,7 @@ watch(iconSRC, newURL => {
       width: `${size}px`,
       height: `${size}px`,
     }"
-    v-bind="rootElementAttrs"
+    :disabled="props.disabled"
   >
     <img
       v-if="iconSRC && !error"
@@ -88,6 +83,10 @@ watch(iconSRC, newURL => {
         height: `${size}px`,
       }"
     />
+    <span v-if="props.button" class="sr-only">
+      <!-- Visually hidden label for button -->
+      {{ token?.symbol }}
+    </span>
   </component>
 </template>
 

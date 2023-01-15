@@ -13,7 +13,7 @@ import useNetwork from '../useNetwork';
 /**
  * TYPES
  */
-type QueryResponse = BalanceMap;
+export type QueryResponse = BalanceMap;
 
 /**
  * Fetches all balances for provided tokens.

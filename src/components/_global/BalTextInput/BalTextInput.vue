@@ -34,6 +34,7 @@ type Props = {
   noBorder?: boolean;
   autoFocus?: boolean;
   format?: (input: string | number) => string | number;
+  dataTestid?: string;
 };
 
 /**
@@ -117,7 +118,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="['bal-text-input', parentClasses, borderRadiusClasses]">
+  <div
+    :data-testid="dataTestid"
+    :class="['bal-text-input', parentClasses, borderRadiusClasses]"
+  >
     <div
       :class="['input-container', inputContainerClasses, borderRadiusClasses]"
       @mouseover="onMouseOver"

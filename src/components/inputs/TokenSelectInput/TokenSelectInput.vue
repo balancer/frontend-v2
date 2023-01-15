@@ -6,6 +6,8 @@ import useNumbers from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress } from '@/lib/utils';
 import { TokenInfo } from '@/types/TokenList';
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
+import { getAriaLabelledbyAttr } from '../TokenInput/helpers';
 
 export type TokenSelectProps = {
   modelValue: string;
@@ -60,6 +62,8 @@ const token = computed((): TokenInfo | null => {
   return getToken(props.modelValue);
 });
 
+const ariaLabelledby = computed(() => getAriaLabelledbyAttr(props.modelValue));
+
 /**
  * METHODS
  */
@@ -78,7 +82,7 @@ function toggleModal(): void {
       <div class="w-8">
         <BalAsset :address="token?.address" class="shadow" />
       </div>
-      <span class="text-base font-medium">
+      <span :id="ariaLabelledby" class="text-base font-medium">
         {{ token?.symbol }}
       </span>
       <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
