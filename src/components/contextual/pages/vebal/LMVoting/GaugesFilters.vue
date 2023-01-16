@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { networksMap } from '@/composables/useNetwork';
+import { networkLabelMap } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
 import { ref, computed } from 'vue';
 
@@ -23,11 +23,34 @@ const emit = defineEmits<{
  */
 const props = defineProps<Props>();
 
+/**
+ * STATE
+ */
+const networkFiltersArr = ref([...props.activeNetworkFilters]);
+
+/**
+ * isExpiredFilterActive and activeNetworksArr are created to handle activeFiltersNum computed
+ * otherwise activeFiltersNum would change only after 500ms debounce which lead to poor UX
+ */
+const isExpiredFilterActive = ref(false);
+const activeNetworksArr = ref<number[]>([]);
+
+/**
+ * COMPUTED
+ */
+const activeFiltersNum = computed(() => {
+  return activeNetworksArr.value.length + Number(isExpiredFilterActive.value);
+});
+
+/**
+ * METHODS
+ */
 function handleExpInput(e) {
-  emit('update:showExpiredGauges', e.target.checked);
+  const { checked } = e.target;
+  isExpiredFilterActive.value = checked;
+  emit('update:showExpiredGauges', checked);
 }
 
-const networkFiltersArr = ref([...props.activeNetworkFilters]);
 function updateNetwork(network: number) {
   const index = networkFiltersArr.value.indexOf(network);
 
@@ -35,14 +58,10 @@ function updateNetwork(network: number) {
     ? networkFiltersArr.value.push(network)
     : networkFiltersArr.value.splice(index, 1);
 
-  emit('update:activeNetworkFilters', [...networkFiltersArr.value]);
+  const arr = [...networkFiltersArr.value];
+  emit('update:activeNetworkFilters', arr);
+  activeNetworksArr.value = arr;
 }
-/**
- * COMPUTED
- */
-const isFilterActive = computed(() => {
-  return props.activeNetworkFilters.length > 0 || props.showExpiredGauges;
-});
 </script>
 
 <template>
@@ -53,17 +72,16 @@ const isFilterActive = computed(() => {
           name="filter"
           size="lg"
           class="mr-3 text-gray-600 dark:text-gray-100"
-          :class="{
-            'text-blue-600 dark:text-blue-600': isFilterActive,
-          }"
         />
-        <div
-          class="text-gray-600 dark:text-gray-100"
-          :class="{
-            'text-blue-600 dark:text-blue-600': isFilterActive,
-          }"
-        >
+        <div class="flex text-gray-600 dark:text-gray-100">
           {{ $t('gaugeFilter.moreFilters') }}
+        </div>
+        <div v-if="activeFiltersNum > 0" class="px-2">
+          <div
+            class="flex justify-center items-center p-2 w-5 h-5 text-xs text-center text-white bg-blue-600 rounded-full"
+          >
+            {{ activeFiltersNum }}
+          </div>
         </div>
       </BalBtn>
     </template>
@@ -79,7 +97,7 @@ const isFilterActive = computed(() => {
         <BalCheckbox
           :modelValue="networkFiltersArr.includes(Number(network))"
           name="networkFilter"
-          :label="networksMap[network]"
+          :label="networkLabelMap[network]"
           noMargin
           alignCheckbox="items-center"
           @input="updateNetwork(Number(network))"

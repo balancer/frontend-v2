@@ -27,7 +27,7 @@ const NETWORK_ID =
 if (windowAvailable) localStorage.setItem('networkId', NETWORK_ID.toString());
 export const networkSlug = config[NETWORK_ID].slug;
 export const networkConfig = config[NETWORK_ID];
-export const networksMap = {
+export const networkLabelMap = {
   [Network.MAINNET]: 'Ethereum',
   [Network.POLYGON]: 'Polygon',
   [Network.ARBITRUM]: 'Arbitrum',
@@ -164,6 +164,6 @@ export default function useNetwork() {
     networkSlug,
     getSubdomain,
     handleNetworkSlug,
-    networksMap,
+    networkLabelMap,
   };
 }

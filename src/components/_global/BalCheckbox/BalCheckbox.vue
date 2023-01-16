@@ -8,6 +8,7 @@
           :checked="modelValue"
           :class="[
             'bal-checkbox-input hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
+            alignCheckbox === 'items-start' && 'relative top-2',
             inputClasses,
           ]"
           @change="onChange"
@@ -90,7 +91,9 @@ export default defineComponent({
         case 'lg':
           return 'w-6 h-6';
         default:
-          return 'w-5 h-5';
+          return `w-5 h-5 ${
+            props.alignCheckbox === 'items-start' ? 'mt-1' : ''
+          }`;
       }
     });
 
