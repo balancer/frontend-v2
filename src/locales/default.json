@@ -382,7 +382,7 @@
   "forum": "Forum",
   "gaugeFilter": {
     "gaugeDisplay": "Pool gauge display",
-    "hideExpired": "Hide expired pools",
+    "showExpired": "Show expired pools",
     "moreFilters": "More filters",
     "showStake": "Show pools where I stake"
   },

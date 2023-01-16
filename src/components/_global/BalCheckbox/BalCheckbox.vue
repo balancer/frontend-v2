@@ -1,7 +1,7 @@
 <template>
   <div :class="['bal-checkbox', wrapperClasses]">
     <div class="flex">
-      <div class="flex items-center">
+      <div :class="['flex', alignCheckbox]">
         <input
           type="checkbox"
           :name="name"
@@ -46,6 +46,7 @@ export default defineComponent({
     modelValue: { type: Boolean, default: false },
     label: { type: String, default: '' },
     noMargin: { type: Boolean, default: false },
+    alignCheckbox: { type: String, default: 'items-start' },
     rules: {
       type: Array as PropType<Rules>,
       default: () => [],

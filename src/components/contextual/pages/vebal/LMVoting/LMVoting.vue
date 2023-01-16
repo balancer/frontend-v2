@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
+import useDebouncedRef from '@/composables/useDebouncedRed';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { poolURLFor } from '@/composables/usePool';
 import useVotingGauges from '@/composables/useVotingGauges';
@@ -14,22 +15,23 @@ import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
-import { debounce } from 'lodash';
 import { Network } from '@balancer-labs/sdk';
 import GaugesFilters from './GaugesFilters.vue';
 
 /**
  * DATA
  */
-const tokenFilter = ref('');
-const hideExpiredGauges = ref(true);
-const activeNetworkFilters = ref<Network[]>([]);
+const tokenFilter = useDebouncedRef<string>('', 500);
+const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
+const activeNetworkFilters = useDebouncedRef<Network[]>([], 500);
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
-const networks = {
-  [Network.MAINNET]: 'Ethereum',
-  [Network.POLYGON]: 'Polygon',
-  [Network.ARBITRUM]: 'Arbitrum',
-};
+
+const networkFilters = [
+  Network.MAINNET,
+  Network.POLYGON,
+  Network.ARBITRUM,
+  Network.OPTIMISM,
+];
 
 /**
  * COMPOSABLES
@@ -84,7 +86,7 @@ const hasExpiredLock = computed(
 const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
 
 const gaugesFilteredByExpiring = computed(() => {
-  if (!hideExpiredGauges.value) {
+  if (showExpiredGauges.value) {
     return votingGauges.value;
   }
 
@@ -98,40 +100,13 @@ const gaugesFilteredByExpiring = computed(() => {
   });
 });
 
-const debouncedFilterText = computed({
-  get() {
-    return tokenFilter.value;
-  },
-  set: debounce(newValue => {
-    tokenFilter.value = newValue;
-  }, 500),
-});
-
-const debouncedHideExpiredGauges = computed({
-  get() {
-    return hideExpiredGauges.value;
-  },
-  set: debounce(value => {
-    hideExpiredGauges.value = value;
-  }, 500),
-});
-
-const debouncedActiveNetworkFilters = computed({
-  get() {
-    return activeNetworkFilters.value;
-  },
-  set: debounce(value => {
-    activeNetworkFilters.value = value;
-  }, 500),
-});
-
 const filteredVotingGauges = computed(() => {
   // put filter by expiring in separate computed to maintain readability
   return gaugesFilteredByExpiring.value.filter(gauge => {
     let showByNetwork = true;
     if (
-      debouncedActiveNetworkFilters.value.length > 0 &&
-      !debouncedActiveNetworkFilters.value.includes(gauge.network)
+      activeNetworkFilters.value.length > 0 &&
+      !activeNetworkFilters.value.includes(gauge.network)
     ) {
       showByNetwork = false;
     }
@@ -189,7 +164,7 @@ function handleVoteSuccess() {
     <div class="flex flex-wrap justify-between items-end px-4 lg:px-0">
       <div class="flex mb-3 lg:mb-0">
         <BalTextInput
-          v-model="debouncedFilterText"
+          v-model="tokenFilter"
           class="mr-5"
           name="tokenSearch"
           type="text"
@@ -204,15 +179,11 @@ function handleVoteSuccess() {
         </BalTextInput>
 
         <GaugesFilters
-          :networkOptions="networks"
-          :debouncedHideExpiredGauges="debouncedHideExpiredGauges"
-          :debouncedActiveNetworkFilters="debouncedActiveNetworkFilters"
-          @update:debounced-hide-expired-gauges="
-            debouncedHideExpiredGauges = $event
-          "
-          @update:debounced-active-network-filters="
-            debouncedActiveNetworkFilters = $event
-          "
+          :networkFilters="networkFilters"
+          :showExpiredGauges="showExpiredGauges"
+          :activeNetworkFilters="activeNetworkFilters"
+          @update:show-expired-gauges="showExpiredGauges = $event"
+          @update:active-network-filters="activeNetworkFilters = $event"
         />
       </div>
       <div class="flex gap-2 xs:gap-3">
@@ -287,7 +258,7 @@ function handleVoteSuccess() {
       :isLoading="isLoading"
       :data="filteredVotingGauges"
       :noPoolsLabel="$t('noInvestments')"
-      :filterText="debouncedFilterText"
+      :filterText="tokenFilter"
       showPoolShares
       class="mb-8"
       @clicked-vote="setActiveGaugeVote"
