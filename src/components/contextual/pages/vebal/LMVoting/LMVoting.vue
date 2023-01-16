@@ -144,7 +144,7 @@ function handleVoteSuccess() {
     <div
       class="flex flex-col lg:flex-row gap-4 lg:justify-between lg:items-end"
     >
-      <div class="px-4 xl:px-0 max-w-3xl">
+      <div class="px-4 xl:px-0 pb-2 max-w-3xl">
         <h3 class="mb-2">
           {{ $t('veBAL.liquidityMining.title') }}
           <BalTooltip
@@ -162,32 +162,8 @@ function handleVoteSuccess() {
       class="mx-4 xl:mx-0 mb-7"
     ></ResubmitVotesAlert>
     <div class="flex flex-wrap justify-between items-end px-4 lg:px-0">
-      <div class="flex mb-3 lg:mb-0">
-        <BalTextInput
-          v-model="tokenFilter"
-          class="mr-5"
-          name="tokenSearch"
-          type="text"
-          :placeholder="$t('filterByToken')"
-          size="sm"
-        >
-          <template #prepend>
-            <div class="flex items-center h-full">
-              <BalIcon name="search" size="md" class="px-2 text-gray-600" />
-            </div>
-          </template>
-        </BalTextInput>
-
-        <GaugesFilters
-          :networkFilters="networkFilters"
-          :showExpiredGauges="showExpiredGauges"
-          :activeNetworkFilters="activeNetworkFilters"
-          @update:show-expired-gauges="showExpiredGauges = $event"
-          @update:active-network-filters="activeNetworkFilters = $event"
-        />
-      </div>
       <div class="flex gap-2 xs:gap-3">
-        <BalCard shadow="none" class="md:w-48 min-w-max">
+        <BalCard shadow="none" class="p-0 md:w-48 min-w-max">
           <div class="flex items-center">
             <p class="inline mr-1 text-sm text-secondary">
               My unallocated votes
@@ -249,6 +225,30 @@ function handleVoteSuccess() {
             </span>
           </p>
         </BalCard>
+      </div>
+      <div class="flex mb-3 lg:mb-0">
+        <BalTextInput
+          v-model="tokenFilter"
+          class="mr-5"
+          name="tokenSearch"
+          type="text"
+          :placeholder="$t('filterByToken')"
+          size="sm"
+        >
+          <template #prepend>
+            <div class="flex items-center h-full">
+              <BalIcon name="search" size="md" class="px-2 text-gray-600" />
+            </div>
+          </template>
+        </BalTextInput>
+
+        <GaugesFilters
+          :networkFilters="networkFilters"
+          :showExpiredGauges="showExpiredGauges"
+          :activeNetworkFilters="activeNetworkFilters"
+          @update:show-expired-gauges="showExpiredGauges = $event"
+          @update:active-network-filters="activeNetworkFilters = $event"
+        />
       </div>
     </div>
 
