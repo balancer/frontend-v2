@@ -1,15 +1,14 @@
 import { computed, reactive, Ref, toRefs } from 'vue';
 
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
-import { isDeep } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { isDeep, tokensListExclBpt } from '@/composables/usePool';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
+import { useTokens } from '@/providers/tokens.provider';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
+import { RelayerType } from '@/composables/approvals/useRelayerApproval';
 
 /**
  * TYPES
@@ -109,16 +108,17 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
    */
   const { nativeAsset } = useTokens();
   const { replaceWethWithEth } = useTokenHelpers();
-  const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
+  const batchRelayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
 
   /**
    * COMPUTED
    */
   const tokensOut = computed(() => {
     if (!pool.value) return [];
+
     const poolTokens = isDeep(pool.value)
       ? pool.value.mainTokens || []
-      : pool.value.tokensList;
+      : tokensListExclBpt(pool.value);
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH

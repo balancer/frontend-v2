@@ -16,7 +16,10 @@
         :key="i"
         v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
-        :class="['token-icon', { absolute: !wrap, relative: wrap }]"
+        :class="[
+          'token-icon ring-2 ring-white dark:ring-gray-800 group-hover:ring-gray-50 dark:group-hover:ring-gray-800',
+          { absolute: !wrap, relative: wrap },
+        ]"
         :style="getBalAssetStyle(assetChunkIndex, i)"
         @click="$emit('click', addressOrURI)"
       />
@@ -180,7 +183,6 @@ export default defineComponent({
 
   @apply rounded-full overflow-hidden shadow-none;
   @apply bg-white dark:bg-gray-850;
-  @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
 }
 
 .my-wallet .token-icon {

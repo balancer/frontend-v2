@@ -5,8 +5,8 @@ import { useI18n } from 'vue-i18n';
 
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
-import useTokenLists from '@/composables/useTokenLists';
-import useTokens from '@/composables/useTokens';
+import { useTokenLists } from '@/providers/token-lists.provider';
+import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
 import { TokenInfoMap, TokenList } from '@/types/TokenList';
 import Search from './Search.vue';

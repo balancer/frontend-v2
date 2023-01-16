@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 // Composables
 import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -40,11 +40,6 @@ const emit = defineEmits<{
 }>();
 
 /**
- * STATE
- */
-const withdrawalConfirmed = ref(false);
-
-/**
  * COMPOSABLES
  */
 const { t } = useI18n();
@@ -55,6 +50,15 @@ const { tokensOut, maxSlider, resetTxState } = useWithdrawalState(
   toRef(props, 'pool')
 );
 const { account } = useWeb3();
+
+/**
+ * STATE
+ */
+const withdrawalConfirmed = ref(false);
+// Internal priceImpact - priceImpact from useWithdrawMaths can be dependent on
+// bptBalance which is updated when a tx is successful. This can result in
+// priceImpact becoming NaN. So in the preview modal we want it to be static.
+const _priceImpact = ref(priceImpact.value);
 
 /**
  * COMPUTED
@@ -146,7 +150,7 @@ watch(account, () => emit('close'));
     <WithdrawSummary
       :pool="pool"
       :fiatTotal="fiatTotal"
-      :priceImpact="priceImpact"
+      :priceImpact="_priceImpact"
     />
 
     <WithdrawActions

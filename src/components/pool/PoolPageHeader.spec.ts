@@ -20,35 +20,18 @@ PoolPageHeader.components = {
   BalAsset,
 };
 
-// neede to prevent jest teleport error
+// needed to prevent jest teleport error
 jest.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
   template: '<div>-</div>',
 }));
 
-jest.mock('@/locales');
-jest.mock('@/composables/useNumbers');
-jest.mock('@/composables/useTokens');
+jest.mock('@/providers/tokens.provider');
 jest.mock('@/composables/staking/useStaking', () => {
   return jest.fn().mockImplementation(() => {
     return {
       userData: {
         hasNonPrefGaugeBalances: false,
       },
-    };
-  });
-});
-jest.mock('@/services/web3/useWeb3', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      isWalletReady: new Proxy(
-        {},
-        {
-          get() {
-            return true;
-          },
-        }
-      ),
-      account: '0x0000000000000000000000000000000000000000',
     };
   });
 });

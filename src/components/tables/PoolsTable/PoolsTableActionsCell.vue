@@ -42,7 +42,7 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       v-if="isMigratablePool(pool)"
       color="gradient"
       size="sm"
-      @click.prevent="emit('click:migrate', pool)"
+      @click.prevent.stop="emit('click:migrate', pool)"
     >
       {{ $t('migrate') }}
     </BalBtn>
@@ -51,7 +51,7 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       color="gradient"
       size="sm"
       :disabled="isMigratablePool(pool)"
-      @click.prevent="emit('click:stake', pool)"
+      @click.prevent.stop="emit('click:stake', pool)"
     >
       {{ $t('stake') }}
     </BalBtn>

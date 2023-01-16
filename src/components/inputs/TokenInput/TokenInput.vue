@@ -5,7 +5,7 @@ import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { Rules } from '@/types';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';

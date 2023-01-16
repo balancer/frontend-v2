@@ -9,7 +9,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
 
 /**

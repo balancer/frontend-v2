@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units';
-import { computed, inject, InjectionKey, reactive, toRefs } from 'vue';
+import { computed, inject, InjectionKey, provide, reactive, toRefs } from 'vue';
 
 import { FiatCurrency } from '@/constants/currency';
 import LS_KEYS from '@/constants/local-storage.keys';
@@ -60,12 +60,17 @@ export const userSettingsProvider = () => {
   };
 };
 
-export type Response = ReturnType<typeof userSettingsProvider>;
-export const providerResponse = {} as Response;
-export const UserSettingsProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.App
-);
+export type UserSettingsResponse = ReturnType<typeof userSettingsProvider>;
+export const providerResponse = {} as UserSettingsResponse;
+export const UserSettingsProviderSymbol: InjectionKey<UserSettingsResponse> =
+  Symbol(symbolKeys.Providers.App);
 
-export const useUserSettings = (): Response => {
+export function provideUserSettings(): UserSettingsResponse {
+  const userSettings = userSettingsProvider();
+  provide(UserSettingsProviderSymbol, userSettings);
+  return userSettings;
+}
+
+export const useUserSettings = (): UserSettingsResponse => {
   return inject(UserSettingsProviderSymbol, providerResponse);
 };

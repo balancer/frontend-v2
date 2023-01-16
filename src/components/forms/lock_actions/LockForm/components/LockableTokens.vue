@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';

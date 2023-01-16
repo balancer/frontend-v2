@@ -1,6 +1,4 @@
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -9,8 +7,10 @@ import {
   tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePool';
-import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
-import useTokens from '@/composables/useTokens';
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
+import { useTokens } from '@/providers/tokens.provider';
 import { useTxState } from '@/composables/useTxState';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import {
@@ -99,9 +99,9 @@ const provider = (props: Props) => {
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
-    Relayer.BATCH_V4
+  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+  const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
+    RelayerType.BATCH_V4
   );
   const queryClient = useQueryClient();
 
@@ -169,7 +169,7 @@ const provider = (props: Props) => {
   );
 
   const approvalActions = computed((): TransactionActionInfo[] =>
-    shouldSignRelayer.value ? [signRelayerAction] : []
+    shouldSignRelayer.value ? [relayerApprovalAction.value] : []
   );
 
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
@@ -334,7 +334,7 @@ const provider = (props: Props) => {
       }));
     } catch (error) {
       captureException(error);
-      throw error;
+      throw new Error('Failed to construct exit.', { cause: error });
     }
   }
 
@@ -363,7 +363,7 @@ const provider = (props: Props) => {
       singleAmountOut.max = output.amountsOut[singleAmountOut.address];
     } catch (error) {
       captureException(error);
-      throw error;
+      throw new Error('Failed to calculate max.', { cause: error });
     }
   }
 
@@ -384,7 +384,7 @@ const provider = (props: Props) => {
       });
     } catch (error) {
       txError.value = (error as Error).message;
-      throw error;
+      throw new Error('Failed to submit exit transaction.', { cause: error });
     }
   }
 

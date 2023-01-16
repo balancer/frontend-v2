@@ -2,14 +2,13 @@ import { removeBptFrom } from '@/composables/usePool';
 import { PoolToken } from '@/services/pool/types';
 import { BoostedPoolMock, PoolMock } from '@/__mocks__/pool';
 import { ref } from 'vue';
-import { mount } from 'vue-composable-tester';
+import { mount } from '@/tests/mount-composable-tester';
 import { useTokenBreakdown } from './useTokenBreakdown';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 
-// TODO: refactor providers to avoid mocking useTokens
-jest.mock('@/composables/useTokens');
+jest.mock('@/providers/tokens.provider');
 
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
 const isDeepPool = ref(true);
