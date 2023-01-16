@@ -14,6 +14,8 @@ import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import BalChart from '@/components/_global/BalChart/BalChart.vue';
 import BalCheckbox from '@/components/_global/BalCheckbox/BalCheckbox.vue';
 import BalChip from '@/components/_global/BalChip/BalChip.vue';
+import BalDataList from '@/components/_global/BalDataList/BalDataList.vue';
+import BalDataListRow from '@/components/_global/BalDataList/BalDataListRow.vue';
 import BalDetailsTable from '@/components/_global/BalDetailsTable/BalDetailsTable.vue';
 import BalDropdown from '@/components/_global/BalDropdown/BalDropdown.vue';
 import BalFlexGrid from '@/components/_global/BalFlexGrid/BalFlexGrid.vue';
@@ -81,6 +83,8 @@ declare module '@vue/runtime-core' {
     BalChart: typeof BalChart;
     BalCheckbox: typeof BalCheckbox;
     BalChip: typeof BalChip;
+    BalDataList: typeof BalDataList;
+    BalDataListRow: typeof BalDataListRow;
     BalDetailsTable: typeof BalDetailsTable;
     BalDropdown: typeof BalDropdown;
     BalFlexGrid: typeof BalFlexGrid;
