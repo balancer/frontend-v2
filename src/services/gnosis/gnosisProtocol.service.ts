@@ -2,7 +2,6 @@ import { Network } from '@balancer-labs/sdk';
 import axios from 'axios';
 
 import { networkId } from '@/composables/useNetwork';
-import { IS_DEV } from '@/constants/env';
 
 import OperatorError from './errors/OperatorError';
 import {
@@ -21,9 +20,7 @@ import {
 import { getCanonicalMarket, toErc20Address } from './utils';
 
 export const API_URLS = {
-  [Network.MAINNET]: IS_DEV
-    ? 'https://protocol-mainnet.dev.gnosisdev.com/api'
-    : 'https://protocol-mainnet.gnosis.io/api',
+  [Network.MAINNET]: 'https://protocol-mainnet.gnosis.io/api',
 };
 
 export default class GnosisProtocolService {
