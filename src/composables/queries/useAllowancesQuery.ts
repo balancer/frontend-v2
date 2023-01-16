@@ -13,7 +13,7 @@ import useNetwork from '../useNetwork';
 /**
  * TYPES
  */
-type QueryResponse = ContractAllowancesMap;
+export type QueryResponse = ContractAllowancesMap;
 
 /**
  * Fetches all allowances for given tokens for each provided contract address.
@@ -54,7 +54,7 @@ export default function useAllowancesQuery(
       contractAddresses.value,
       tokens.value
     );
-
+    console.log({ allowances });
     return allowances;
   };
 

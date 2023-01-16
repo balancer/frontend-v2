@@ -18,7 +18,9 @@ import { queryClient } from '@/plugins/vueQuery';
 
 import { Multicaller, multicall } from '@/lib/utils/balancer/contract';
 import renderComponent from '@/tests/renderComponent';
-import { QueryResponse } from '@/composables/queries/useBalancesQuery';
+import { QueryResponse as UseBalancesQueryResponse } from '@/composables/queries/useBalancesQuery';
+import { configService } from '@/services/config/config.service';
+import { QueryResponse as UseAllowancesQueryResponse } from '@/composables/queries/useAllowancesQuery';
 
 jest.unmock('@/services/web3/useWeb3');
 jest.unmock('@/providers/tokens.provider');
@@ -144,8 +146,8 @@ const handlers = [
 const DAI = '0xB8096bC53c3cE4c11Ebb0069Da0341d75264B104';
 const TEST_ACCOUNT = '0x8fE3a2A5ae6BaA201C26fC7830EB713F33d6b313';
 
-function addTokenBalancesToCache(tokenBalances: QueryResponse) {
-  const defaultBalances = {
+function addTokenBalancesToCache(overrideBalances: UseBalancesQueryResponse) {
+  const balances = {
     '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE': '1.0',
     '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47': '1.0',
     '0x8c9e6c40d3402480ACE624730524fACC5482798c': '1.0',
@@ -164,17 +166,82 @@ function addTokenBalancesToCache(tokenBalances: QueryResponse) {
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': '1.0',
   };
 
-  const mergedBalances = { ...defaultBalances, ...tokenBalances };
+  // Update the initial balances with the token balances
+  Object.keys(overrideBalances).forEach(address => {
+    balances[address] = overrideBalances[address];
+  });
 
   const network = ref(Network.GOERLI);
   const account = ref(TEST_ACCOUNT);
-  const tokenAddresses = computed(() => Object.keys(mergedBalances));
+  const tokenAddresses = computed(() => Object.keys(balances));
 
   const balancesQueryKey = reactive(
     QUERY_KEYS.Account.Balances(network, account, tokenAddresses)
   );
 
-  queryClient.setQueryData<QueryResponse>(balancesQueryKey, mergedBalances);
+  queryClient.setQueryData<UseBalancesQueryResponse>(
+    balancesQueryKey,
+    balances,
+    {}
+  );
+}
+
+function addAllowancesToCache() {
+  const balances = {
+    '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE': '1.0',
+    '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47': '1.0',
+    '0x8c9e6c40d3402480ACE624730524fACC5482798c': '1.0',
+    '0x1f1f156E0317167c11Aa412E3d1435ea29Dc3cCE': '1.0',
+    '0xe0C9275E44Ea80eF17579d33c55136b7DA269aEb': '1.0',
+    '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1': '1.0',
+    '0x37f03a12241E9FD3658ad6777d289c3fb8512Bc9': '1.0',
+    '0x398106564948fEeb1fEdeA0709AE7D969D62a391': '1.0',
+    '0x3d5981BDD8D3E49EB7BBDC1d2B156a3eE019c18e': '1.0',
+    '0xd03D4d8B4669d135569215dD6C4e790307c8E14B': '1.0',
+    '0x4D983081b9B9f3393409A4CDf5504D0AeA9CD94c': '1.0',
+    '0x594920068382f64E4bC06879679bD474118b97b1': '1.0',
+    '0xDabD33683bAfDd448968Ab6d6f47C3535c64bf0c': '1.0',
+    [DAI]: '1.0',
+    '0x14468FD5E1de5A5a4882fa5f4e2217C5A8dDcadb': '1.0',
+    '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': '1.0',
+  };
+
+  const response = {
+    [configService.network.addresses.vault]: {
+      ...balances,
+    },
+    [configService.network.addresses.wstETH]: {
+      ...balances,
+    },
+    [configService.network.addresses.veBAL]: {
+      ...balances,
+    },
+  };
+  const network = ref(Network.GOERLI);
+  const account = ref(TEST_ACCOUNT);
+  const tokenAddresses = computed(() => Object.keys(balances));
+  const contractAddresses = ref([
+    configService.network.addresses.vault,
+    configService.network.addresses.wstETH,
+    configService.network.addresses.veBAL,
+  ]);
+
+  const allowancesQueryKey = reactive(
+    QUERY_KEYS.Account.Allowances(
+      network,
+      account,
+      contractAddresses,
+      tokenAddresses
+    )
+  );
+
+  // TODO: After vue-query update, use the query filters to
+  // set the query data so the key doesn't have to match exactly
+  queryClient.setQueryData<UseAllowancesQueryResponse>(
+    // ['account', 'allowances'],
+    allowancesQueryKey,
+    response
+  );
 }
 
 const testingUtils = generateTestingUtils({ providerType: 'MetaMask' });
@@ -202,8 +269,9 @@ async function clickConnectWallet() {
   await waitForElementToBeRemoved(connectButton);
 }
 
-async function factory(tokenBalances: QueryResponse = {}) {
+async function factory(tokenBalances: UseBalancesQueryResponse = {}) {
   mockWalletConnection();
+  addAllowancesToCache();
   addTokenBalancesToCache(tokenBalances);
   const renderResult = renderComponent(
     InvestFormV2,
