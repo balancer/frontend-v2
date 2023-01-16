@@ -22,6 +22,7 @@ import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
@@ -415,7 +416,7 @@ const actions = computed((): TransactionActionInfo[] => [
           confirmingLabel: `${t('confirming')} ${
             props.trading.tokenIn.value.symbol
           }`,
-          action: approveToken as () => Promise<any>,
+          action: approveToken,
           stepTooltip: t(
             'tradeSummary.transactionTypesTooltips.tokenApproval.content'
           ),
@@ -500,13 +501,13 @@ function handlePriceUpdate() {
   }
 }
 
-async function approveToken(): Promise<void> {
+async function approveToken(): Promise<TransactionResponse> {
   if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
     // If we're wrapping a token other than native ETH
     // we need to approve the underlying on the wrapper
-    await tokenApproval.approveSpender(props.trading.tokenOut.value.address);
+    return tokenApproval.approveSpender(props.trading.tokenOut.value.address);
   } else {
-    await tokenApproval.approveV2();
+    return tokenApproval.approveV2();
   }
 }
 
