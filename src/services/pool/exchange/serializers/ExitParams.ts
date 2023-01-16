@@ -9,7 +9,7 @@ import {
   isStableLike,
   tokensListExclBpt,
 } from '@/composables/usePool';
-import { isSameAddress } from '@/lib/utils';
+import { includesAddress, isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import ConfigService from '@/services/config/config.service';
@@ -109,18 +109,19 @@ export default class ExitParams {
   private parseTokensOut(tokensOut: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
     const preMintedBptIdx = preMintedBptIndex(this.pool.value);
-    const tokensOutProcessed = tokensOut.map(address =>
+    const newTokensOut = tokensOut.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
 
     if (
       isComposableStable(this.pool.value.poolType) &&
-      preMintedBptIdx !== undefined
+      preMintedBptIdx !== undefined &&
+      !includesAddress(newTokensOut, this.pool.value.address)
     ) {
-      tokensOutProcessed.splice(preMintedBptIdx, 0, this.pool.value.address);
+      newTokensOut.splice(preMintedBptIdx, 0, this.pool.value.address);
     }
 
-    return tokensOutProcessed;
+    return newTokensOut;
   }
 
   private txData(
