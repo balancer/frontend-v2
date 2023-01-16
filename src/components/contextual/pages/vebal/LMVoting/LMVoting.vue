@@ -15,7 +15,6 @@ import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
 import { debounce } from 'lodash';
-import TokenSearchTextInput from '@/components/inputs/TokenSearchTextInput.vue';
 import { Network } from '@balancer-labs/sdk';
 import GaugesFilters from './GaugesFilters.vue';
 
@@ -168,7 +167,7 @@ function handleVoteSuccess() {
 <template>
   <div class="flex flex-col">
     <div
-      class="flex flex-col lg:flex-row gap-4 lg:justify-between lg:items-end mb-7"
+      class="flex flex-col lg:flex-row gap-4 lg:justify-between lg:items-end"
     >
       <div class="px-4 xl:px-0 max-w-3xl">
         <h3 class="mb-2">
@@ -182,7 +181,41 @@ function handleVoteSuccess() {
           />
         </h3>
       </div>
-      <div class="flex gap-2 xs:gap-3 px-4 xl:px-0">
+    </div>
+    <ResubmitVotesAlert
+      v-if="shouldResubmitVotes"
+      class="mx-4 xl:mx-0 mb-7"
+    ></ResubmitVotesAlert>
+    <div class="flex flex-wrap justify-between items-end px-4 lg:px-0">
+      <div class="flex mb-3 lg:mb-0">
+        <BalTextInput
+          v-model="debouncedFilterText"
+          class="mr-5"
+          name="tokenSearch"
+          type="text"
+          :placeholder="$t('filterByToken')"
+          size="sm"
+        >
+          <template #prepend>
+            <div class="flex items-center h-full">
+              <BalIcon name="search" size="md" class="px-2 text-gray-600" />
+            </div>
+          </template>
+        </BalTextInput>
+
+        <GaugesFilters
+          :networkOptions="networks"
+          :debouncedHideExpiredGauges="debouncedHideExpiredGauges"
+          :debouncedActiveNetworkFilters="debouncedActiveNetworkFilters"
+          @update:debounced-hide-expired-gauges="
+            debouncedHideExpiredGauges = $event
+          "
+          @update:debounced-active-network-filters="
+            debouncedActiveNetworkFilters = $event
+          "
+        />
+      </div>
+      <div class="flex gap-2 xs:gap-3">
         <BalCard shadow="none" class="md:w-48 min-w-max">
           <div class="flex items-center">
             <p class="inline mr-1 text-sm text-secondary">
@@ -246,29 +279,6 @@ function handleVoteSuccess() {
           </p>
         </BalCard>
       </div>
-    </div>
-    <ResubmitVotesAlert
-      v-if="shouldResubmitVotes"
-      class="mx-4 xl:mx-0 mb-7"
-    ></ResubmitVotesAlert>
-    <div class="flex">
-      <TokenSearchTextInput
-        v-model="debouncedFilterText"
-        :placeholder="$t('filterByToken')"
-        class="mr-5"
-      />
-
-      <GaugesFilters
-        :networkOptions="networks"
-        :debouncedHideExpiredGauges="debouncedHideExpiredGauges"
-        :debouncedActiveNetworkFilters="debouncedActiveNetworkFilters"
-        @update:debounced-hide-expired-gauges="
-          debouncedHideExpiredGauges = $event
-        "
-        @update:debounced-active-network-filters="
-          debouncedActiveNetworkFilters = $event
-        "
-      />
     </div>
 
     <GaugesTable
