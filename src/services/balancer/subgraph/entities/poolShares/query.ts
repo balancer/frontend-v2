@@ -15,6 +15,7 @@ const defaultAttrs = {
 };
 
 export default (args = {}, attrs = {}) => ({
+  __name: 'PoolSharesQuery',
   poolShares: {
     __args: merge({}, defaultArgs, args),
     ...merge({}, defaultAttrs, attrs),

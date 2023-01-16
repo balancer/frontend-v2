@@ -135,6 +135,7 @@ export default function useUserStakingData(
     subgraphs.gauge,
     ['staking', 'data', { account, userPoolIds }],
     () => ({
+      __name: 'StakingData',
       gaugeShares: {
         __args: {
           where: { user: account.value.toLowerCase(), balance_gt: '0' },
@@ -169,6 +170,7 @@ export default function useUserStakingData(
     subgraphs.gauge,
     ['pool', 'gaugeAddresses', { poolAddress: poolAddress.value }],
     () => ({
+      __name: 'PoolGaugeAddresses',
       pools: {
         __args: {
           where: {

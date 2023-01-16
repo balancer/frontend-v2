@@ -1,4 +1,4 @@
-import { rest } from 'msw';
+import { graphql, rest } from 'msw';
 import gaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
 
 export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
@@ -31,12 +31,25 @@ export const handlers = [
   rest.post('*blocklytics/*-blocks', (req, res, ctx) => {
     return res(ctx.json({ data: { blocks: ['12345678'] } }));
   }),
-  rest.post('*/balancer-labs/balancer-gauges*', (req, res, ctx) => {
+  graphql.query('LiquidityGaugesQuery', (req, res, ctx) => {
+    return res(ctx.data(gaugesResponse.data));
+  }),
+  rest.post('*/balancer-labs/balancer-gauges*', req => {
+    // This catches all unhandled balancer-gauges graphql queries
     return req.json().then(data => {
-      if (data.query.startsWith('query { liquidityGauges')) {
-        return res(ctx.json(gaugesResponse));
-      }
-      console.log('Unhandled gauge request with payload: ', data);
+      console.log(
+        req.url.toString() + ' Unhandled graphql query with payload: ',
+        data
+      );
+    });
+  }),
+  rest.post('*/balancer-labs/balancer*', req => {
+    // This catches all unhandled balancer graphql queries
+    return req.json().then(data => {
+      console.log(
+        req.url.toString() + ' Unhandled graphql query with payload: ',
+        data
+      );
     });
   }),
 

@@ -8,7 +8,7 @@ import InvestFormV2 from './InvestFormV2.vue';
 import pool from '@/__mocks__/goerli-boosted-pool';
 import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
 import { server } from '@/tests/msw/server';
-import { rest } from 'msw';
+import { graphql, rest } from 'msw';
 import { generateTestingUtils } from 'eth-testing';
 
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -59,16 +59,21 @@ jest.mock('@/composables/staking/useStaking', () => {
     };
   });
 });
-
-// Mock token price data
-jest.mock('@/lib/balancer.sdk', () => {
+jest.mock('@balancer-labs/sdk', () => {
+  const originalModule = jest.requireActual('@balancer-labs/sdk');
   return {
-    hasFetchedPoolsForSor: {
-      value: true,
-    },
-    fetchPoolsForSor: jest.fn(),
-    balancer: {
+    __esModule: true,
+    ...originalModule,
+    PoolsSubgraphRepository: jest.fn().mockImplementation(() => ({
+      fetch: jest.fn().mockResolvedValue([]),
+    })),
+    BalancerSDK: jest.fn().mockImplementation(() => ({
+      swaps: {
+        fetchPools: jest.fn().mockResolvedValue(true),
+      },
+
       data: {
+        // Mock token price data
         tokenPrices: {
           find: async address => {
             const priceData = {
@@ -105,7 +110,7 @@ jest.mock('@/lib/balancer.sdk', () => {
           },
         },
       },
-    },
+    })),
   };
 });
 
@@ -116,6 +121,18 @@ const handlers = [
   //     return res(ctx.json({ ethereum: { eth: 1.0, usd: 1233.12 } }));
   //   }
   // ),
+  graphql.query('StakingData', (req, res, ctx) => {
+    return res(ctx.data({ gaugeShares: [], liquidityGauges: [] }));
+  }),
+  graphql.query('PoolGaugeAddresses', (req, res, ctx) => {
+    return res(ctx.data({ pools: [] }));
+  }),
+  graphql.query('PoolStakingEligibility', (req, res, ctx) => {
+    return res(ctx.data({ liquidityGauges: [] }));
+  }),
+  graphql.query('PoolSharesQuery', (req, res, ctx) => {
+    return res(ctx.data({ poolShares: [] }));
+  }),
   rest.post(
     'https://eth-mainnet.alchemyapi.io/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
     (req, res, ctx) => {

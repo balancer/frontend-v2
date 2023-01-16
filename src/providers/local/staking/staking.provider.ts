@@ -146,6 +146,7 @@ export default defineComponent({
       subgraphs.gauge,
       ['pool', 'eligibility', { poolAddress: poolAddress.value }],
       () => ({
+        __name: 'PoolStakingEligibility',
         liquidityGauges: {
           __args: {
             where: {
