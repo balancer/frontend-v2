@@ -11,7 +11,7 @@ import {
 type Props = {
   columns: ColumnDefinition<any>[];
   onRowClick?: (data: any, inNewTab?: boolean) => void;
-  data: Ref<any>;
+  data: any;
   link?: {
     to: string;
     getParams: (data: any) => Record<string, string>;
