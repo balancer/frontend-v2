@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { compact } from 'lodash';
-import { Ref } from 'vue';
 
 import {
   ColumnDefinition,
