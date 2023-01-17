@@ -380,6 +380,12 @@
   "fundPool": "Fund pool",
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
   "forum": "Forum",
+  "gaugeFilter": {
+    "gaugeDisplay": "Pool gauge display",
+    "showExpired": "Show expired pools",
+    "moreFilters": "More filters",
+    "showStake": "Show pools where I stake"
+  },
   "getLpTokens": "Get LP tokens",
   "gnosisErrors": {
     "lowAmount": {

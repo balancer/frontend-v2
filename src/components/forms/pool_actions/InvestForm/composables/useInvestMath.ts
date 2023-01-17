@@ -267,6 +267,7 @@ export default function useInvestMath(
    */
   async function getQueryBptOut() {
     if (!isShallowComposableStablePool.value) return;
+    if (!hasAmounts.value) return;
 
     try {
       loadingData.value = true;
