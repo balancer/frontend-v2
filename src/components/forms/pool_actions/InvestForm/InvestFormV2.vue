@@ -83,6 +83,15 @@ const forceProportionalInputs = computed(
   (): boolean => managedPoolWithTradingHalted.value
 );
 
+const previewDisabled = computed(
+  (): boolean =>
+    !hasAmountsIn.value ||
+    !hasValidInputs.value ||
+    isMismatchedNetwork.value ||
+    isLoadingQuery.value ||
+    !!queryError.value
+);
+
 const poolHasLowLiquidity = computed((): boolean =>
   bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
@@ -211,13 +220,7 @@ watch(
         v-else
         :label="$t('preview')"
         color="gradient"
-        :disabled="
-          !hasAmountsIn ||
-          !hasValidInputs ||
-          isMismatchedNetwork ||
-          isLoadingQuery ||
-          !!queryError
-        "
+        :disabled="previewDisabled"
         block
         @click="showInvestPreview = true"
       />

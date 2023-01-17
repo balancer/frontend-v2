@@ -3,6 +3,7 @@ import {
   within,
   fireEvent,
   waitForElementToBeRemoved,
+  waitFor,
 } from '@testing-library/vue';
 import InvestFormV2 from './InvestFormV2.vue';
 import pool from '@/__mocks__/goerli-boosted-pool';
@@ -24,7 +25,7 @@ import { QueryResponse as UseAllowancesQueryResponse } from '@/composables/queri
 
 jest.unmock('@/services/web3/useWeb3');
 jest.unmock('@/providers/tokens.provider');
-jest.mock('@ethersproject/providers');
+// jest.mock('@ethersproject/providers');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 
 // Mocking injecting veBAL token metadata
@@ -73,7 +74,15 @@ jest.mock('@balancer-labs/sdk', () => {
       swaps: {
         fetchPools: jest.fn().mockResolvedValue(true),
       },
-
+      pools: {
+        generalisedJoin: jest.fn().mockResolvedValue({
+          callData: '0xac9650d8000000000000000000',
+          expectedOut: '21625108427627685',
+          minOut: '21408857343351409',
+          priceImpact: '2985494340',
+          to: '0x2536dfeeCB7A0397CF98eDaDA8486254533b1aFA',
+        }),
+      },
       data: {
         // Mock token price data
         tokenPrices: {
@@ -254,7 +263,7 @@ function mockWalletConnection() {
   // );
   testingUtils.mockNotConnectedWallet();
   // Mock the connection request of MetaMask
-  testingUtils.mockRequestAccounts([TEST_ACCOUNT]);
+  testingUtils.mockRequestAccounts([TEST_ACCOUNT], { chainId: 5 });
   // testingUtils.mockAccounts([TEST_ACCOUNT]);
 }
 
@@ -347,6 +356,10 @@ describe('InvestFormV2.vue', () => {
 
     // Check the input value
     expect(DAI_input).toHaveValue(1.112);
+
+    // Check the preview button is not disabled
+    const previewBtn = await screen.findByRole('button', { name: /Preview/i });
+    await waitFor(() => expect(previewBtn).not.toBeDisabled());
   });
 
   it('should show error if input amount exceeds wallet balance', async () => {
@@ -357,6 +370,10 @@ describe('InvestFormV2.vue', () => {
     await fireEvent.update(BB_A_USDC_input, '2');
 
     await screen.findByText(/Exceeds wallet balance/i);
+
+    // Check the preview button is disabled
+    const previewBtn = await screen.findByRole('button', { name: /Preview/i });
+    expect(previewBtn).toBeDisabled();
   });
 
   it('should not show token input if user balance is 0', async () => {

@@ -113,7 +113,6 @@ export default function useWeb3() {
       process.env.NODE_ENV === 'test' ||
       (hasInjectedProvider() && getInjectedProvider().isCoinbaseWallet)
     ) {
-      console.log('asdfasdf');
       // Open wallet select modal because even if there's injected provider,
       // user might want to reject it and use another wallet.
       // If user has already accepted the injected provider, modal will be closed after
