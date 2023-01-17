@@ -2,8 +2,8 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { computed } from 'vue';
 import useStaking from './staking/useStaking';
-import useTokens from './useTokens';
 import useNumbers from '@/composables/useNumbers';
+import { useTokens } from '@/providers/tokens.provider';
 
 export function useUserPoolPercentage(pool: Pool) {
   const { balanceFor } = useTokens();

@@ -7,7 +7,7 @@ import useStaking from '@/composables/staking/useStaking';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { fiatValueOf, usePool } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';

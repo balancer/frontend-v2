@@ -1,10 +1,11 @@
 import { AddressZero } from '@ethersproject/constants';
 
 import { configService } from '@/services/config/config.service';
-import { computed } from 'vue';
+import { ref } from 'vue';
 
 export default function useWeb3Mock() {
   return {
+    isWalletReady: ref(true),
     getProvider: vi.fn(),
     appNetworkConfig: {
       nativeAsset: {
@@ -14,7 +15,6 @@ export default function useWeb3Mock() {
     account: {
       value: AddressZero,
     },
-    isWalletReady: computed(() => true),
     explorerLinks: {
       addressLink: (address: string) => `$test-explorer/address/${address}`,
     },

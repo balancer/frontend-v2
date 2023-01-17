@@ -12,8 +12,9 @@ import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
+import { tokensListExclBpt } from '../usePool';
 import { tokenTreeLeafs } from '../usePool';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useGaugesQuery from './useGaugesQuery';
 
 type UserPoolsQueryResponse = {
@@ -71,7 +72,7 @@ export default function useUserPoolsQuery(
     const tokens = flatten(
       pools.map(pool => {
         return [
-          ...pool.tokensList,
+          ...tokensListExclBpt(pool),
           ...tokenTreeLeafs(pool.tokens),
           pool.address,
         ];

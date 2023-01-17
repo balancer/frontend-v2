@@ -25,7 +25,7 @@ import { Token } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useNumbers, { FNumFormats } from '../useNumbers';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from '../useTransactions';
 import { TradeQuote } from './types';
 import { captureException } from '@sentry/browser';

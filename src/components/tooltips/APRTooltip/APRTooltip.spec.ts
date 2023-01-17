@@ -1,4 +1,3 @@
-import { render } from '@testing-library/vue';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { EmptyPoolMock } from '@/__mocks__/pool';
 
@@ -6,8 +5,9 @@ import APRTooltip from './APRTooltip.vue';
 import { Pool } from '@/services/pool/types';
 import { configService } from '@/services/config/config.service';
 import { POOLS } from '@/constants/pools';
+import { renderComponent } from '@/tests/renderComponent';
 
-vi.mock('@/composables/useTokens');
+vi.mock('@/providers/tokens.provider');
 
 const EmptyAprBreakdownMock: AprBreakdown = {
   swapFees: 0,
@@ -37,7 +37,7 @@ describe('APRTooltip', () => {
         min: 1522,
         max: 1522,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
@@ -65,7 +65,7 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         id: POOLS.IdsMap?.veBAL || '',
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
@@ -91,7 +91,7 @@ describe('APRTooltip', () => {
         min: 44,
         max: 567,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
@@ -127,7 +127,7 @@ describe('APRTooltip', () => {
         min: 271,
         max: 778,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
@@ -163,7 +163,7 @@ describe('APRTooltip', () => {
         min: 763,
         max: 763,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
@@ -190,7 +190,7 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         tokensList: [configService.network.addresses.wstETH],
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
@@ -216,7 +216,7 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         tokensList: [configService.network.addresses.stMATIC],
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
@@ -243,7 +243,7 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         tokensList: [configService.network.addresses.rETH],
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
@@ -272,7 +272,7 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         tokensList: [configService.network.addresses.rETH],
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
@@ -320,7 +320,7 @@ describe('APRTooltip', () => {
           '0xae37D54Ae477268B9997d4161B96b8200755935c',
         ],
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
@@ -371,7 +371,7 @@ describe('APRTooltip', () => {
         min: 595,
         max: 1446,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
@@ -407,7 +407,7 @@ describe('APRTooltip', () => {
         min: 17,
         max: 17,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
@@ -435,7 +435,7 @@ describe('APRTooltip', () => {
         min: 167,
         max: 645,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
@@ -480,7 +480,7 @@ describe('APRTooltip', () => {
         min: 1051,
         max: 1051,
       };
-      const { getByTestId } = render(APRTooltip, {
+      const { getByTestId } = renderComponent(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,

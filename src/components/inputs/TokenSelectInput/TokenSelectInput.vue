@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress } from '@/lib/utils';
 import { TokenInfo } from '@/types/TokenList';
 

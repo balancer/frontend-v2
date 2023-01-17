@@ -6,7 +6,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { AprBreakdown } from '@balancer-labs/sdk';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * TYPES

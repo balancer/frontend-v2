@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { SubgraphPoolBase, SwapV2 } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { isSameAddress } from '@/lib/utils';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
@@ -19,7 +18,7 @@ interface Props {
   amountIn: string;
   addressOut: string;
   amountOut: string;
-  pools: (Pool | SubgraphPoolBase)[];
+  pools: SubgraphPoolBase[];
   sorReturn: SorReturn;
 }
 

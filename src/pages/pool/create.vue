@@ -22,7 +22,7 @@ import usePoolCreation, {
 } from '@/composables/pools/usePoolCreation';
 import useAlerts from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { lsGet } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { StepState } from '@/types';

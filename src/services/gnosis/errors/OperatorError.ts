@@ -36,6 +36,8 @@ export enum ApiErrorCodes {
 function _mapActionToErrorDetail(action?: ApiActionType) {
   switch (action) {
     case 'get':
+      // https://www.i18next.com/overview/typescript#type-error-excessively-deep-and-possibly-infinite
+      //@ts-ignore
       return i18n.global.t('apiErrorCodeDetails.UnhandledGetError');
     case 'create':
       return i18n.global.t('apiErrorCodeDetails.UnhandledCreateError');

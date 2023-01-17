@@ -21,7 +21,7 @@ import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { PoolType } from '@balancer-labs/sdk';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
@@ -389,8 +389,11 @@ export default function usePoolCreation() {
         if (!tokenInfo) return '0';
         const amount = new BigNumber(token.amount);
         const scaledAmount = scale(amount, tokenInfo.decimals);
-        const scaledRoundedAmount = scaledAmount.dp(0, BigNumber.ROUND_FLOOR);
-        return scaledRoundedAmount.toString();
+        const scaledRoundedAmount = scaledAmount.toFixed(
+          0,
+          BigNumber.ROUND_FLOOR
+        );
+        return scaledRoundedAmount;
       }
     );
     return scaledAmounts;

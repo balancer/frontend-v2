@@ -102,7 +102,9 @@
   "claim": "Claim",
   "claimHero": {
     "title": "Claim liquidity incentives",
+    "legacyTitle": "Claim legacy incentives",
     "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra on Mainnet pools.",
+    "legacyDescription": "Liquidity mining incentive systems before the launch of ve8020-tokenomics have been deprecated. If you provided liquidity before this change and have outstanding incentives you can claim them here.",
     "tipLabel": {
       "addLiquidity": "Add liquidity",
       "stake": "Stake your LP",
@@ -378,6 +380,12 @@
   "fundPool": "Fund pool",
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
   "forum": "Forum",
+  "gaugeFilter": {
+    "gaugeDisplay": "Pool gauge display",
+    "showExpired": "Show expired pools",
+    "moreFilters": "More filters",
+    "showStake": "Show pools where I stake"
+  },
   "getLpTokens": "Get LP tokens",
   "gnosisErrors": {
     "lowAmount": {
@@ -505,8 +513,7 @@
       "title": "You have no token incentives to claim"
     },
     "tabs": {
-      "claimable": "Claimable now",
-      "currentEstimate": "Pending"
+      "claimable": "Claimable"
     },
     "title": "Token incentives"
   },
@@ -737,6 +744,10 @@
     },
     "renBTCWarning": {
       "title": "You are strongly advised to withdraw any liquidity from this pool ASAP to avoid losses! Ideally you should withdraw in a proportional fashion to reduce price impact. The Ren 1.0 network is expected to be <a href=\"https://medium.com/renproject/moving-on-from-alameda-da62a823ce93\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">sunset</a> in December 2022. This will render this version of the renBTC token as valueless, which will trend the overall pool value towards zero. Ren Protocol also strongly advises to <a href=\"https://twitter.com/renprotocol/status/1595807696296751104\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">bridge all ren assets</a> back to their native chain ASAP to avoid being left holding a valueless token which can no longer be redeemed for the native asset."
+    },
+    "poolProtocolFeeVulnWarning": {
+      "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://twitter.com/Balancer/status/1611363559685898247\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
+      "tooltip": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately."
     }
   },
   "popularBases": "Popular",
@@ -1482,5 +1493,7 @@
       "poolTokens": "Pool tokens (lowest price impact)",
       "otherTokens": "Other tokens (higher price impact)"
     }
-  }
+  },
+  "poolActivity": "Pool activity",
+  "legacyClaims": "Legacy claims"
 }

@@ -8,43 +8,29 @@ import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-vi.mock('vuex');
 vi.mock('@/composables/useEthereumTxType');
-vi.mock('@/composables/useEthers');
-vi.mock('@/composables/useTransactions');
 vi.mock('@/lib/utils/balancer/helpers/sor/sorManager');
-vi.mock('@/locales');
-vi.mock('@/services/web3/useWeb3');
 vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockNativeAssetAddress = configService.network.nativeAsset.address;
 const mockEthPrice = 3000;
 const mockTokenPrice = 0.2;
 
-vi.mock('@/composables/useTokens', () => {
-  return {
-    default: vi.fn().mockImplementation(() => {
-      return {
-        injectTokens: vi.fn(),
-        priceFor: vi.fn().mockImplementation(address => {
-          if (address === mockNativeAssetAddress) {
-            return mockEthPrice;
-          }
-          return mockTokenPrice;
-        }),
-        useTokens: vi.fn(),
-        getToken: vi.fn(),
-      };
-    }),
-  };
-});
-
-vi.mock('vue-i18n', () => {
-  return {
-    useI18n: () => ({ t: tKey => tKey }),
-    createI18n: vi.fn(),
-  };
-});
+vi.mock('@/providers/tokens.provider', () => ({
+  useTokens: () => {
+    return {
+      injectTokens: vi.fn(),
+      priceFor: vi.fn(address => {
+        if (address === mockNativeAssetAddress) {
+          return mockEthPrice;
+        }
+        return mockTokenPrice;
+      }),
+      useTokens: vi.fn(),
+      getToken: vi.fn(),
+    };
+  },
+}));
 
 const mockTokenInfo = {
   chainId: 1,

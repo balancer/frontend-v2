@@ -3,8 +3,8 @@ import { useRoute } from 'vue-router';
 
 // Composables
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import { isDeep } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
+import { isDeep, tokensListExclBpt } from '@/composables/usePool';
+import { useTokens } from '@/providers/tokens.provider';
 import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
@@ -47,7 +47,7 @@ export default function usePoolTransfers() {
       if (isDeep(pool.value)) {
         return pool.value.mainTokens || [];
       }
-      return pool.value?.tokensList || [];
+      return tokensListExclBpt(pool.value);
     }
     return [];
   });

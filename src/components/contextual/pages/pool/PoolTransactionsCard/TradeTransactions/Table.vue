@@ -7,7 +7,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { shortenLabel } from '@/lib/utils';
 import { bnum } from '@/lib/utils';
 import { PoolSwap } from '@/services/pool/types';
@@ -29,7 +29,6 @@ type SwapRow = {
 };
 
 type Props = {
-  tokens: string[];
   poolSwaps: PoolSwap[];
   isLoading?: boolean;
   isLoadingMore?: boolean;

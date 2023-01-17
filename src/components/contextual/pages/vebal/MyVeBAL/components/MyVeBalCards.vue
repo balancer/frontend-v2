@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from '@/composables/useVeBAL';
 import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
@@ -186,7 +186,7 @@ const cards = computed(() => {
         />
         <div>
           <router-link
-            v-if="card.showPlusIcon"
+            v-if="card.showPlusIcon && card.plusIconTo"
             :to="card.plusIconTo"
             class="flex items-center text-blue-600 dark:text-blue-400"
           >
