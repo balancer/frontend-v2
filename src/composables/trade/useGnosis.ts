@@ -285,6 +285,10 @@ export default function useGnosis({
       return;
     }
 
+    const inputAmount = exactIn.value
+      ? tokenInAmountInput.value
+      : tokenOutAmountInput.value;
+
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value
       : tokenOutAmountScaled.value;
@@ -293,7 +297,8 @@ export default function useGnosis({
       return;
     }
 
-    if (amountToExchange.isZero()) {
+    const zeroValueTrade = inputAmount === '' || inputAmount === '0';
+    if (zeroValueTrade) {
       tokenInAmountInput.value = '0';
       tokenOutAmountInput.value = '0';
       return;
