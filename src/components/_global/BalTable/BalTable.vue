@@ -321,7 +321,7 @@ watch(
         <!-- begin data rows -->
         <BalTableRow
           v-for="(dataItem, index) in unpinnedData"
-          :key="`tableRow-${index}`"
+          :key="`tableRow-${dataItem.id ?? index}`"
           :class="
             props.getTableRowClass
               ? props.getTableRowClass(dataItem, index)
