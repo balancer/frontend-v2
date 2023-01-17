@@ -265,32 +265,35 @@ function getPickedTokens(tokens: PoolToken[]) {
         </div>
       </template>
       <template #nextPeriodVotesCell="gauge">
-        <div v-if="!isLoading" class="flex justify-end py-4 px-6">
-          <GaugeVoteInfo :gauge="gauge" />
-          <div class="flex justify-end w-6">
-            <IconLimit
-              v-if="gauge.pool.symbol === 'veBAL'"
-              size="sm"
-              amount="10"
-              :tooltip="
-                $t(
-                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedVeBAL'
-                )
-              "
-            />
-            <IconLimit
-              v-else-if="gauge.relativeWeightCap !== 'null'"
-              size="sm"
-              :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
-              :tooltip="
-                $t(
-                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt',
-                  [(Number(gauge.relativeWeightCap) * 100).toFixed()]
-                )
-              "
-            />
+        <!-- Put to BalLazy the most expensive to render component -->
+        <BalLazy>
+          <div v-if="!isLoading" class="flex justify-end py-4 px-6">
+            <GaugeVoteInfo :gauge="gauge" />
+            <div class="flex justify-end w-6">
+              <IconLimit
+                v-if="gauge.pool.symbol === 'veBAL'"
+                size="sm"
+                amount="10"
+                :tooltip="
+                  $t(
+                    'veBAL.liquidityMining.limitsTooltip.distributionsCappedVeBAL'
+                  )
+                "
+              />
+              <IconLimit
+                v-else-if="gauge.relativeWeightCap !== 'null'"
+                size="sm"
+                :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
+                :tooltip="
+                  $t(
+                    'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt',
+                    [(Number(gauge.relativeWeightCap) * 100).toFixed()]
+                  )
+                "
+              />
+            </div>
           </div>
-        </div>
+        </BalLazy>
       </template>
       <template #myVotesCell="gauge">
         <div v-if="!isLoading" class="py-4 px-6 text-right">
