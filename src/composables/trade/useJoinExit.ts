@@ -177,7 +177,6 @@ export default function useJoinExit({
       console.log(swapInfo.value.swaps);
       const swap = swapInfo.value?.swaps[0];
       const pool = pools.value.find(p => p.id === swap.poolId);
-      if (pool?.poolType === 'Weighted') alert('ok');
       const ti = swapInfo.value.tokenAddresses[swap.assetInIndex];
       const to = swapInfo.value.tokenAddresses[swap.assetOutIndex];
       console.log([ti, to].includes(pool?.address ?? ''));
