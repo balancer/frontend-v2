@@ -35,6 +35,7 @@ export type Wallet =
   | 'gnosis'
   | 'walletlink'
   | 'tally';
+
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
@@ -42,12 +43,20 @@ export const SupportedWallets = [
   'gnosis',
   'walletlink',
 ] as Wallet[];
+
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase Wallet',
   tally: 'Tally',
+};
+
+export const networkMap = {
+  [Network.MAINNET]: 'mainnet',
+  [Network.GOERLI]: 'goerli',
+  [Network.POLYGON]: 'polygon',
+  [Network.ARBITRUM]: 'arbitrum-one',
 };
 
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -210,12 +219,6 @@ export default {
         const { account } = await connector.connect();
 
         setTag('wallet', wallet);
-        const networkMap = {
-          [Network.MAINNET]: 'mainnet',
-          [Network.GOERLI]: 'goerli',
-          [Network.POLYGON]: 'polygon',
-          [Network.ARBITRUM]: 'arbitrum-one',
-        };
         setTag('network', networkMap[chainId.value]);
 
         // listens to wallet/chain changed and disconnect events
