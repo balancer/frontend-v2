@@ -294,11 +294,11 @@ export default function useGnosis({
     }
 
     if (amountToExchange.isZero()) {
-      tokenInAmountInput.value = '0';
-      tokenOutAmountInput.value = '0';
+      exactIn.value
+        ? (tokenOutAmountInput.value = '0')
+        : (tokenInAmountInput.value = '0');
       return;
     }
-
     updatingQuotes.value = true;
     state.validationError = null;
 

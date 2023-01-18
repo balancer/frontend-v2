@@ -1307,6 +1307,7 @@
     "approve": "Approve",
     "claim": "Claim",
     "createPool": "Create pool",
+    "drip": "Drip",
     "fundPool": "Fund pool",
     "migratePool": "Migrate pool",
     "invest": "Add liquidity",

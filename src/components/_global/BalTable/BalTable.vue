@@ -304,7 +304,7 @@ watch(
         <PinHeader v-if="pinnedData.length" />
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
-          :key="`tableRow-${index}`"
+          :key="`tableRow-${dataItem.id ?? index}`"
           :class="getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
