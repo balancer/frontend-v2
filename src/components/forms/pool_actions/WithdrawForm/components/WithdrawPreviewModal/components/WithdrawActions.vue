@@ -28,6 +28,7 @@ import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 import router from '@/plugins/router';
 import { Goals, trackGoal } from '@/composables/useFathom';
 import { bnum } from '@/lib/utils';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * TYPES
@@ -64,6 +65,7 @@ const {
   resetTxState,
 } = useWithdrawalState(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
+const { refetchBalances } = useTokens();
 
 const {
   bptIn,
@@ -125,6 +127,7 @@ async function handleTransaction(tx): Promise<void> {
         Goals.Withdrawal,
         bnum(fiatTotal.value).times(100).toNumber() || 0
       );
+      await refetchBalances.value();
     },
     onTxFailed: () => {
       txState.value.confirming = false;
@@ -173,7 +176,9 @@ async function submit(): Promise<TransactionResponse> {
     txState.value.init = false;
     txState.value.confirming = false;
     console.error(error);
-    return Promise.reject(error);
+    throw new Error('Failed to submit withdrawal transaction.', {
+      cause: error,
+    });
   }
 }
 

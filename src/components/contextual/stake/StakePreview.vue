@@ -19,7 +19,7 @@ import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
-import { usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePool';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
@@ -103,7 +103,9 @@ watch(
 );
 
 /* COMPUTED */
-const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
+const assetRowWidth = computed(
+  () => (tokensListExclBpt(props.pool).length * 32) / 1.5
+);
 
 const isStakeAndZero = computed(
   () =>
@@ -148,21 +150,27 @@ async function handleSuccess({ receipt }) {
 }
 
 async function txWithNotification(action: () => Promise<TransactionResponse>) {
-  const tx = await action();
-  addTransaction({
-    id: tx.hash,
-    type: 'tx',
-    action: props.action,
-    summary: t(`transactionSummary.${props.action}`, {
-      pool: poolWeightsLabel(props.pool),
-      amount: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
-    }),
-    details: {
-      total: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
-      pool: props.pool,
-    },
-  });
-  return tx;
+  try {
+    const tx = await action();
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: props.action,
+      summary: t(`transactionSummary.${props.action}`, {
+        pool: poolWeightsLabel(props.pool),
+        amount: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+      }),
+      details: {
+        total: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+        pool: props.pool,
+      },
+    });
+    return tx;
+  } catch (error) {
+    throw new Error(`Failed create ${props.action} transaction`, {
+      cause: error,
+    });
+  }
 }
 
 async function loadApprovalsForGauge() {
@@ -202,7 +210,7 @@ function handleClose() {
           </span>
         </BalStack>
         <BalAssetSet
-          :addresses="pool.tokensList"
+          :addresses="tokensListExclBpt(pool)"
           :width="assetRowWidth"
           :size="32"
         />

@@ -5,6 +5,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
+import coingecko from '@/assets/images/icons/coingecko.svg';
 
 type Props = {
   toggleUnknownPriceModal?: () => void;
@@ -64,10 +65,7 @@ const hasUnknownPrice = computed(() =>
                 <span>{{ fNum2(priceFor(token), FNumFormats.fiat) }}</span>
               </div>
             </div>
-            <img
-              class="h-5"
-              :src="require('@/assets/images/icons/coingecko.svg')"
-            />
+            <img class="h-5" :src="coingecko" />
           </BalStack>
         </BalStack>
       </BalStack>

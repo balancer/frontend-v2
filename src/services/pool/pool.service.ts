@@ -2,7 +2,7 @@ import { differenceInWeeks } from 'date-fns';
 
 import { isStable } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
-import { bnum, isSameAddress } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import {
   OnchainPoolData,
   Pool,
@@ -76,12 +76,6 @@ export default class PoolService {
     }
 
     return (this.pool.apr = apr as AprBreakdown);
-  }
-
-  removeBptFromTokens(): string[] {
-    return (this.pool.tokensList = this.pool.tokensList.filter(
-      address => !isSameAddress(address, this.pool.address)
-    ));
   }
 
   formatPoolTokens(): PoolToken[] {

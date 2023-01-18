@@ -14,11 +14,13 @@ type Props = {
   tokens: PoolToken[];
   isStablePool?: boolean;
   selectedTokens?: string[];
+  pickedTokens?: string[];
 };
 
 const props = withDefaults(defineProps<Props>(), {
   isStablePool: false,
   selectedTokens: () => [],
+  pickedTokens: () => [],
 });
 
 const { fNum2 } = useNumbers();
@@ -38,6 +40,12 @@ const hasBalanceInHiddenTokens = computed(() =>
 const isSelectedInHiddenTokens = computed(() =>
   hiddenTokens.value.some(token =>
     includesAddress(props.selectedTokens, token.address)
+  )
+);
+
+const isSelectedInPickedTokens = computed(() =>
+  hiddenTokens.value.some(token =>
+    includesAddress(props.pickedTokens, token.address)
   )
 );
 
@@ -68,6 +76,7 @@ const MAX_PILLS = 11;
         :symbol="symbolFor(token)"
         :token="token"
         :isSelected="includesAddress(selectedTokens, token.address)"
+        :isPicked="includesAddress(pickedTokens, token.address)"
       />
     </template>
     <template v-else>
@@ -79,12 +88,14 @@ const MAX_PILLS = 11;
         :weight="weightFor(token)"
         :token="token"
         :isSelected="includesAddress(selectedTokens, token.address)"
+        :isPicked="includesAddress(pickedTokens, token.address)"
       />
       <HiddenTokensPills
         v-if="hiddenTokens.length > 0"
         :tokens="hiddenTokens"
         :hasBalance="hasBalanceInHiddenTokens"
         :isSelected="isSelectedInHiddenTokens"
+        :isPicked="isSelectedInPickedTokens"
       />
     </template>
   </div>

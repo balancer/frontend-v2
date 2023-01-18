@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useIntervalFn } from '@vueuse/core';
-import { differenceInSeconds } from 'date-fns';
 import { getAddress } from '@ethersproject/address';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -9,7 +7,6 @@ import BalLink from '@/components/_global/BalLink/BalLink.vue';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { oneSecondInMs } from '@/composables/useTime';
 import { useTokens } from '@/providers/tokens.provider';
 import useTranasactionErrors from '@/composables/useTransactionErrors';
 import useTransactions from '@/composables/useTransactions';
@@ -28,22 +25,16 @@ type ClaimableToken = {
 
 enum Tabs {
   CLAIMABLE = 'claimable',
-  CURRENT_ESTIMATE = 'currentEstimate',
 }
 
 const { t } = useI18n();
 
 const tabs = [
   { value: Tabs.CLAIMABLE, label: t('liquidityMiningPopover.tabs.claimable') },
-  {
-    value: Tabs.CURRENT_ESTIMATE,
-    label: t('liquidityMiningPopover.tabs.currentEstimate'),
-  },
 ];
 
 const activeTab = ref(tabs[0].value);
 const isClaiming = ref(false);
-const elapstedTimeSinceEstimateTimestamp = ref(0);
 const claimError = ref<TransactionError | null>(null);
 
 // COMPOSABLES
@@ -117,30 +108,6 @@ const claimableTokens = computed<ClaimableToken[]>(() => {
   return [BALTokenPlaceholder.value];
 });
 
-const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
-  if (
-    userClaims.value != null &&
-    userClaims.value.multiTokenCurrentRewardsEstimate.length > 0
-  ) {
-    return userClaims.value.multiTokenCurrentRewardsEstimate.map(
-      ({ token, rewards, velocity }) => {
-        const rewardsSinceTimestamp = bnum(velocity).times(
-          elapstedTimeSinceEstimateTimestamp.value
-        );
-        const totalRewards = bnum(rewards).plus(rewardsSinceTimestamp);
-
-        return {
-          token,
-          symbol: getToken(token)?.symbol,
-          amount: totalRewards.toString(),
-          fiatValue: totalRewards.times(priceFor(token)).toString(),
-        };
-      }
-    );
-  }
-  return [BALTokenPlaceholder.value];
-});
-
 const totalClaimableTokensFiatValue = computed(() =>
   claimableTokens.value
     .reduce((totalValue, { fiatValue }) => totalValue.plus(fiatValue), bnum(0))
@@ -152,16 +119,6 @@ const hasClaimableTokens = computed(() =>
     claimableToken => Number(claimableToken.amount) > 0
   )
 );
-
-useIntervalFn(async () => {
-  if (userClaims.value != null && userClaims.value.timestamp != null) {
-    const diffInSeconds = differenceInSeconds(
-      new Date(),
-      new Date(userClaims.value.timestamp)
-    );
-    elapstedTimeSinceEstimateTimestamp.value = diffInSeconds;
-  }
-}, oneSecondInMs);
 
 watch(isMismatchedNetwork, () => {
   userClaimsQuery.refetch();
@@ -259,31 +216,6 @@ async function claimAvailableRewards() {
             </div>
           </template>
         </template>
-        <template v-if="activeTab === Tabs.CURRENT_ESTIMATE">
-          <template
-            v-for="claimableToken in currentEstimateClaimableTokens"
-            :key="`token-${claimableToken.token}`"
-          >
-            <div
-              class="flex items-center py-2 px-3 mb-2 last:border-0 border-b dark:border-gray-900"
-            >
-              <BalAsset
-                :address="claimableToken.token"
-                :size="36"
-                class="mr-3"
-              />
-              <div>
-                <div class="font-medium">
-                  {{ fNum2(claimableToken.amount, FNumFormats.token) }}
-                  {{ claimableToken.symbol }}
-                </div>
-                <div class="text-gray-400 font-sm">
-                  {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
-                </div>
-              </div>
-            </div>
-          </template>
-        </template>
       </BalCard>
       <BalBtn
         v-if="!isAirdrop"
@@ -336,29 +268,47 @@ async function claimAvailableRewards() {
           <li class="mt-2">
             Claim BAL on other networks
             <template v-if="isArbitrum">
-              <BalLink href="https://app.balancer.fi" external>
+              <BalLink
+                href="https://app.balancer.fi/#/ethereum/claim/legacy"
+                external
+              >
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://polygon.balancer.fi" external>
+              <BalLink
+                href="https://app.balancer.fi/#/polygon/claim/legacy"
+                external
+              >
                 Polygon </BalLink
               >.
             </template>
             <template v-else-if="isPolygon">
-              <BalLink href="https://app.balancer.fi" external>
+              <BalLink
+                href="https://app.balancer.fi/#/ethereum/claim/legacy"
+                external
+              >
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://arbitrum.balancer.fi" external>
+              <BalLink
+                href="https://app.balancer.fi/#/arbitrum/claim/legacy"
+                external
+              >
                 Arbitrum </BalLink
               >.
             </template>
             <template v-else-if="isMainnet || isGoerli">
-              <BalLink href="https://polygon.balancer.fi" external>
+              <BalLink
+                href="https://app.balancer.fi/#/polygon/claim/legacy"
+                external
+              >
                 Polygon
               </BalLink>
               and
-              <BalLink href="https://arbitrum.balancer.fi" external>
+              <BalLink
+                href="https://app.balancer.fi/#/arbitrum/claim/legacy"
+                external
+              >
                 Arbitrum </BalLink
               >.
             </template>

@@ -2,7 +2,6 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { compact, pick } from 'lodash';
 import {
   computed,
-  inject,
   InjectionKey,
   onBeforeMount,
   provide,
@@ -23,6 +22,7 @@ import {
   includesAddress,
   isSameAddress,
 } from '@/lib/utils';
+import { safeInject } from '@/providers/inject';
 import { UserSettingsResponse } from '@/providers/user-settings.provider';
 import { TokenListsResponse } from '@/providers/token-lists.provider';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -34,7 +34,7 @@ import {
   NativeAsset,
   TokenInfo,
   TokenInfoMap,
-  TokenList,
+  TokenListMap,
 } from '@/types/TokenList';
 
 /**
@@ -59,7 +59,12 @@ export const tokensProvider = (
    */
   const { networkConfig } = useConfig();
   const { currency } = userSettings;
-  const { allTokenLists, activeTokenLists, balancerTokenLists } = tokenLists;
+  const {
+    tokensListPromise,
+    allTokenLists,
+    activeTokenLists,
+    balancerTokenLists,
+  } = tokenLists;
 
   /**
    * STATE
@@ -71,9 +76,7 @@ export const tokensProvider = (
 
   const state: TokensProviderState = reactive({
     loading: true,
-    injectedTokens: {
-      [networkConfig.nativeAsset.address]: nativeAsset,
-    },
+    injectedTokens: {},
     allowanceContracts: compact([
       networkConfig.addresses.vault,
       networkConfig.addresses.wstETH,
@@ -91,7 +94,8 @@ export const tokensProvider = (
    */
   const allTokenListTokens = computed(
     (): TokenInfoMap => ({
-      ...mapTokenListTokens(Object.values(allTokenLists)),
+      [networkConfig.nativeAsset.address]: nativeAsset,
+      ...mapTokenListTokens(allTokenLists.value),
       ...state.injectedTokens,
     })
   );
@@ -100,16 +104,14 @@ export const tokensProvider = (
    * All tokens from token lists that are toggled on.
    */
   const activeTokenListTokens = computed(
-    (): TokenInfoMap =>
-      mapTokenListTokens(Object.values(activeTokenLists.value))
+    (): TokenInfoMap => mapTokenListTokens(activeTokenLists.value)
   );
 
   /**
    * All tokens from Balancer token lists, e.g. 'listed' and 'vetted'.
    */
   const balancerTokenListTokens = computed(
-    (): TokenInfoMap =>
-      mapTokenListTokens(Object.values(balancerTokenLists.value))
+    (): TokenInfoMap => mapTokenListTokens(balancerTokenLists.value)
   );
 
   /**
@@ -120,6 +122,7 @@ export const tokensProvider = (
    */
   const tokens = computed(
     (): TokenInfoMap => ({
+      [networkConfig.nativeAsset.address]: nativeAsset,
       ...activeTokenListTokens.value,
       ...state.injectedTokens,
     })
@@ -200,10 +203,15 @@ export const tokensProvider = (
    * METHODS
    */
   /**
-   * Create token map from a token list tokens array.
+   * Create token map from a token list tokens array.const isEmpty = Object.keys(person).length === 0;
    */
-  function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
-    const tokens = [...tokenLists].map(list => list.tokens).flat();
+  function mapTokenListTokens(tokenListMap: TokenListMap): TokenInfoMap {
+    const isEmpty = Object.keys(tokenListMap).length === 0;
+    if (isEmpty) return {};
+
+    const tokens = [...Object.values(tokenListMap)]
+      .map(list => list.tokens)
+      .flat();
 
     const tokensMap = tokens.reduce<TokenInfoMap>((acc, token) => {
       const address: string = getAddress(token.address);
@@ -242,9 +250,12 @@ export const tokensProvider = (
     );
     if (injectable.length === 0) return;
 
+    //Wait for dynamic token list import to be resolved
+    await tokensListPromise;
+
     const newTokens = await tokenService.metadata.get(
       injectable,
-      allTokenLists
+      allTokenLists.value
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
@@ -473,9 +484,8 @@ export const tokensProvider = (
   };
 };
 
-export type Response = ReturnType<typeof tokensProvider>;
-export const providerResponse = {} as Response;
-export const TokensProviderSymbol: InjectionKey<Response> = Symbol(
+export type TokensResponse = ReturnType<typeof tokensProvider>;
+export const TokensProviderSymbol: InjectionKey<TokensResponse> = Symbol(
   symbolKeys.Providers.Tokens
 );
 
@@ -483,9 +493,11 @@ export function provideTokens(
   userSettings: UserSettingsResponse,
   tokenLists: TokenListsResponse
 ) {
-  provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+  const tokensResponse = tokensProvider(userSettings, tokenLists);
+  provide(TokensProviderSymbol, tokensResponse);
+  return tokensResponse;
 }
 
-export const useTokens = (): Response => {
-  return inject(TokensProviderSymbol, providerResponse);
+export const useTokens = (): TokensResponse => {
+  return safeInject(TokensProviderSymbol);
 };

@@ -24,6 +24,7 @@ import {
   preMintedBptIndex,
   removeBptFrom,
   usePool,
+  tokensListExclBpt,
 } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
@@ -140,7 +141,7 @@ const missingPrices = computed(() => {
     const tokens =
       isComposableStableLikePool.value && pool.value.mainTokens
         ? pool.value.mainTokens
-        : pool.value.tokensList;
+        : tokensListExclBpt(pool.value);
 
     return !tokens.every(token => includesAddress(tokensWithPrice, token));
   }
@@ -211,7 +212,7 @@ watch(poolQuery.error, () => {
                 :snapshots="snapshots"
                 :loading="isLoadingSnapshots"
                 :totalLiquidity="pool?.totalLiquidity"
-                :tokensList="pool?.tokensList"
+                :tokensList="pool ? tokensListExclBpt(pool) : []"
                 :poolType="pool?.poolType"
                 :poolPremintedBptIndex="poolPremintedBptIndex"
               />

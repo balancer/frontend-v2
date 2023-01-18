@@ -9,6 +9,7 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
+import { tokensListExclBpt } from '../usePool';
 
 type QueryOptions = QueryObserverOptions<HistoricalPrices>;
 
@@ -48,7 +49,12 @@ export default function useHistoricalPricesQuery(
     if (!pool.value && !storedPool) throw new Error('No pool');
 
     const createTime = storedPool?.createTime || pool.value?.createTime || 0;
-    const tokensList = storedPool?.tokensList || pool.value?.tokensList || [];
+    const tokensList = storedPool
+      ? tokensListExclBpt(storedPool)
+      : pool.value
+      ? tokensListExclBpt(pool.value)
+      : [];
+
     const shapshotDaysNum =
       days || differenceInDays(new Date(), new Date(createTime * 1000));
 

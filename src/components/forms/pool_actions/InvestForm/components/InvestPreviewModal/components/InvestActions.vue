@@ -30,6 +30,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { InvestMathResponse } from '../../../composables/useInvestMath';
 import { Goals, trackGoal } from '@/composables/useFathom';
 import { bnum } from '@/lib/utils';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * TYPES
@@ -79,6 +80,7 @@ const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
 const { networkSlug } = useNetwork();
+const { refetchBalances } = useTokens();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
@@ -165,6 +167,7 @@ async function handleTransaction(tx): Promise<void> {
         Goals.LiquidityAdded,
         bnum(fiatTotal.value).times(100).toNumber() || 0
       );
+      await refetchBalances.value();
     },
     onTxFailed: () => {
       console.error('Add liquidity failed');
@@ -204,7 +207,9 @@ async function submit(): Promise<TransactionResponse> {
     return tx;
   } catch (error) {
     console.error(error);
-    return Promise.reject(error);
+    throw new Error('Failed to submit transaction.', {
+      cause: error,
+    });
   }
 }
 

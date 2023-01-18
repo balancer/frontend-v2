@@ -10,9 +10,10 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
+import { isBlocked, tokensListExclBpt, tokenTreeLeafs } from '../usePool';
+
 import PoolRepository from '@/services/pool/pool.repository';
 import { configService } from '@/services/config/config.service';
-import { isBlocked, tokenTreeLeafs } from '../usePool';
 import useGaugesQuery from './useGaugesQuery';
 import { POOLS } from '@/constants/pools';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
@@ -88,7 +89,7 @@ export default function usePoolQuery(
 
     // Inject pool tokens into token registry
     await injectTokens([
-      ...pool.tokensList,
+      ...tokensListExclBpt(pool),
       ...tokenTreeLeafs(pool.tokens),
       pool.address,
     ]);

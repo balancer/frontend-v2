@@ -20,7 +20,7 @@ async function generate() {
     if (tokenListService.uris.All.find(uri => !!uri)) {
       const tokenlists = await tokenListService.getAll();
       fs.writeFileSync(
-        `./public/data/tokenlists/tokens-${networkId}.json`,
+        `./src/assets/data/tokenlists/tokens-${networkId}.json`,
         JSON.stringify(tokenlists)
       );
     }
@@ -31,7 +31,7 @@ async function generate() {
   try {
     console.log('⏳ Generating tokenlists...');
     await generate();
-    console.log('✅ Generated tokenlists at /public/data/tokenlists/*');
+    console.log('✅ Generated tokenlists at /src/assets/data/tokenlists/*');
   } catch (error) {
     console.error('Failed to generate tokenlists:', error);
     process.exit(1);

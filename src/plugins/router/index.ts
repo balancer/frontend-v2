@@ -4,7 +4,9 @@ import { isGoerli } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
 
 const ClaimPage = () =>
-  import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
+  import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim/index.vue');
+const LegacyClaimPage = () =>
+  import(/* webpackChunkName: "LegacyClaimPage" */ '@/pages/claim/legacy.vue');
 const CookiesPolicyPage = () =>
   import(
     /* webpackChunkName: "CookiesPolicyPage" */ '@/pages/cookies-policy.vue'
@@ -148,6 +150,11 @@ const routes: RouteRecordRaw[] = [
     component: ClaimPage,
   },
   {
+    path: '/:networkSlug/claim/legacy',
+    name: 'legacy-claim',
+    component: LegacyClaimPage,
+  },
+  {
     path: '/:networkSlug/portfolio',
     name: 'portfolio',
     component: PortfolioPage,
@@ -179,7 +186,7 @@ if (isGoerli.value) {
  * DEV/STAGING ONLY ROUTES
  */
 // if (
-//   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
+//   ['development', 'staging'].includes(import.meta.env.VITE_ENV || 'development')
 // ) {
 //   routes.push();
 // }

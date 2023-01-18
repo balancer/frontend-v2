@@ -11,13 +11,12 @@ import {
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { createApp } from 'vue';
-
-import { registerGlobalComponents } from '@/plugins/components';
 import registerDirectives from '@/plugins/directives';
 import { registerPlugins } from '@/plugins';
 import initSentry from '@/plugins/sentry';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
-import App from './App.vue';
+import Root from './Root.vue';
 
 echarts.use([
   TooltipComponent,
@@ -29,11 +28,12 @@ echarts.use([
   PieChart,
 ]);
 
-const app = createApp(App);
+const app = createApp(Root);
+
+app.component('Jazzicon', Jazzicon);
 
 registerPlugins(app);
 registerDirectives(app);
-registerGlobalComponents(app);
 initSentry(app);
 
 app.mount('#app');

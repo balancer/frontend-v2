@@ -1,4 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+type Props = {
+  title: string;
+  description: string;
+};
+
+defineProps<Props>();
+</script>
 
 <template>
   <div class="bg">
@@ -6,10 +13,10 @@
       <div class="hero-content">
         <div class="hero-text fade-in-slow">
           <h1 class="mb-3 text-white title text-shadow">
-            {{ $t('claimHero.title') }}
+            {{ title }}
           </h1>
           <p class="max-w-3xl body-text text-shadow">
-            {{ $t('claimHero.description') }}
+            {{ description }}
           </p>
         </div>
       </div>
@@ -135,7 +142,11 @@
 }
 
 .tip {
+  /*
+  group removed to avoid error in vite migration
   @apply flex flex-col items-center text-center group;
+  */
+  @apply flex flex-col items-center text-center;
 }
 
 .tip-icon {

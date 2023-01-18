@@ -54,7 +54,6 @@ function loadMorePoolSwaps() {
     <h4 class="px-4 lg:px-0 mb-5" v-text="$t('poolTransactions.tabs.swaps')" />
 
     <Table
-      :tokens="pool ? pool.tokensList : []"
       :poolSwaps="poolSwaps"
       :isLoading="loading || isLoadingPoolSwaps"
       :isLoadingMore="poolSwapsIsFetchingNextPage"

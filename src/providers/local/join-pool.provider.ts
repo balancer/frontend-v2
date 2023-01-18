@@ -278,7 +278,7 @@ const provider = (props: Props) => {
       return output;
     } catch (error) {
       captureException(error);
-      throw error;
+      throw new Error('Failed to construct join.', { cause: error });
     }
   }
 
@@ -300,7 +300,7 @@ const provider = (props: Props) => {
       });
     } catch (error) {
       txError.value = (error as Error).message;
-      throw error;
+      throw new Error('Failed to submit join transaction.', { cause: error });
     }
   }
 

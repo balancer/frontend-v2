@@ -7,6 +7,7 @@ import { Gauge, SubgraphGauge } from '@/services/balancer/gauges/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * TYPES
@@ -26,6 +27,7 @@ export default function useGaugesDecorationQuery(
    */
   const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
+  const { injectTokens } = useTokens();
 
   /**
    * COMPUTED
@@ -46,7 +48,10 @@ export default function useGaugesDecorationQuery(
    */
   const queryFn = async () => {
     if (!gauges.value) return null;
-    return await gaugesDecorator.decorate(gauges.value, account.value);
+    const _gauges = await gaugesDecorator.decorate(gauges.value, account.value);
+    const tokens = _gauges.map(gauge => gauge.rewardTokens).flat();
+    await injectTokens(tokens);
+    return _gauges;
   };
 
   /**

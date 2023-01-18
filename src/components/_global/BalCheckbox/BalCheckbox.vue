@@ -1,13 +1,14 @@
 <template>
   <div :class="['bal-checkbox', wrapperClasses]">
     <div class="flex">
-      <div class="flex items-start">
+      <div :class="['flex', alignCheckbox]">
         <input
           type="checkbox"
           :name="name"
           :checked="modelValue"
           :class="[
-            'bal-checkbox-input relative top-2 hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
+            'bal-checkbox-input hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
+            alignCheckbox === 'items-start' && 'relative top-2',
             inputClasses,
           ]"
           @change="onChange"
@@ -46,6 +47,7 @@ export default defineComponent({
     modelValue: { type: Boolean, default: false },
     label: { type: String, default: '' },
     noMargin: { type: Boolean, default: false },
+    alignCheckbox: { type: String, default: 'items-start' },
     rules: {
       type: Array as PropType<Rules>,
       default: () => [],
@@ -89,7 +91,9 @@ export default defineComponent({
         case 'lg':
           return 'w-6 h-6';
         default:
-          return 'w-5 h-5 mt-1';
+          return `w-5 h-5 ${
+            props.alignCheckbox === 'items-start' ? 'mt-1' : ''
+          }`;
       }
     });
 
@@ -151,7 +155,7 @@ export default defineComponent({
 
   appearance: none;
   -webkit-print-color-adjust: exact;
-  color-adjust: exact;
+  print-color-adjust: exact;
   vertical-align: middle;
   background-origin: border-box;
   user-select: none;

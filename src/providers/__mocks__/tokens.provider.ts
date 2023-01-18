@@ -1,5 +1,5 @@
-import { Response } from '../tokens.provider';
-import { mock } from 'jest-mock-extended';
+import { TokensResponse } from '../tokens.provider';
+import { mock } from 'vitest-mock-extended';
 
 const mockTokens = {
   '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2': {
@@ -42,7 +42,7 @@ export function useTokens() {
   return tokensProvider();
 }
 
-export const mockTokensProvider = mock<Response>();
+export const mockTokensProvider = mock<TokensResponse>();
 mockTokensProvider.priceFor.mockReturnValue(2);
 mockTokensProvider.balanceFor.mockReturnValue('0');
 mockTokensProvider.getTokens.mockImplementation(addresses => {
@@ -56,6 +56,6 @@ mockTokensProvider.getToken.mockImplementation(address => {
   return mockTokens[address];
 });
 
-export function tokensProvider(): Response {
+export function tokensProvider(): TokensResponse {
   return mockTokensProvider;
 }

@@ -59,7 +59,6 @@ function loadMorePoolSwaps() {
 
 <template>
   <Table
-    :tokens="pool ? pool.tokensList : []"
     :poolSwaps="poolSwaps"
     :pool="pool"
     :isLoading="loading || isLoadingPoolSwaps"

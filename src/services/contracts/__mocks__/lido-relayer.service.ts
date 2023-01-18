@@ -1,7 +1,7 @@
 export default function LidoRelayerService() {
   return {
-    swap: jest.fn().mockImplementation(),
-    batchSwap: jest.fn().mockImplementation(),
+    swap: vi.fn(),
+    batchSwap: vi.fn(),
   };
 }
 

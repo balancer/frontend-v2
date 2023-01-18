@@ -21,10 +21,52 @@ npm install
 Start the app:
 
 ```bash
-npm run serve
+npm run dev
 ```
 
 The app should be live at [http://localhost:8080](http://localhost:8080)
+
+### Testing
+
+Run unit tests:
+
+```bash
+npm run test:unit
+```
+
+Run unit tests in watch mode:
+
+```bash
+npm run test:unit:watch
+```
+
+Run unit tests with coverage:
+
+```bash
+npm run test:unit:coverage
+```
+
+### Build
+
+Run build:
+
+```bash
+npm run build
+```
+
+Preview build:
+
+```bash
+npm run preview
+```
+
+Run build in watch mode:
+
+```bash
+npm run build:watch
+```
+
+This mode is useful when you need to reproduce/fix bugs/issues in a **production-like** environment.
 
 ### Docker
 
@@ -82,3 +124,31 @@ The frontend can easily be deployed to any static host. Use the buttons below to
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/balancer-labs/frontend-v2)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer-labs/frontend-v2)
+
+## Vite setup
+
+This app is powered by [vite](https://vitejs.dev/), which:
+
+- Runs a development dev server with [esbuild](https://esbuild.github.io/).
+- Builds production bundle with [Rollup](https://rollupjs.org/guide/en/).
+
+Both tools above rely on native ES modules but our app also depends on libraries like [ethers.js](https://docs.ethers.io/) which use Node.js built-in modules (like Buffer, stream or crypto) that require browser polyfills. Thats why our `vite.config.ts` uses [vite-plugin-node-stdlib-browser](https://github.com/sodatea/vite-plugin-node-stdlib-browser) and [rollup-plugin-polyfill-node](https://www.npmjs.com/package/rollup-plugin-polyfill-node).
+
+### unplugin-vue magic 🪄
+
+We use some Vite plugins to improve the Vue developer experience.
+
+[unplugin-vue-components](https://github.com/antfu/unplugin-vue-components):
+
+Auto imports components located in `src/components/_global` so that they are available from every other component in the application (and from _vitest_).
+(It also auto generates a _d.ts_ file for the auto imported components).
+
+### Analyze bundle
+
+Analyze and visualize the bundle dependencies by adding these env vars to your `.env` file before running the build:
+
+```bash
+# Local .env file
+VITE_BUILD_ANALIZE=true
+VITE_BUILD_VISUALIZE=true
+```
