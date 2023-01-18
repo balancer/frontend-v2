@@ -204,7 +204,7 @@ export default function useTrading(
       return false;
     }
 
-    if (!isBalancerTrade.value) {
+    if (isGnosisTrade.value) {
       return gnosis.updatingQuotes.value;
     }
 
