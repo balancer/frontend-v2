@@ -230,13 +230,14 @@ export default function useJoinExit({
         successCallback();
       }
 
-      confirming.value = false;
-
       await txListener(tx, {
         onTxConfirmed: () => {
+          confirming.value = false;
           relayerApprovalQuery.refetch.value();
         },
-        onTxFailed: () => console.log('Transaction failed'),
+        onTxFailed: () => {
+          confirming.value = false;
+        },
       });
     } catch (e) {
       console.log(e);
