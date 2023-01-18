@@ -37,6 +37,8 @@ import { TradeQuote } from './types';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useEthers from '../useEthers';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 
 type JoinExitState = {
   validationErrors: {
@@ -191,11 +193,13 @@ export default function useJoinExit({
         relayerSignature.value || undefined
       );
 
-      const signer = getSigner();
-      const relayerContract = await balancer.contracts.relayerV4?.connect(
-        signer
-      );
-      const tx = await relayerContract?.multicall(relayerCallData.rawCalls);
+      const txBuilder = new TransactionBuilder(getSigner());
+      const tx = await txBuilder.contract.sendTransaction({
+        contractAddress: balancer.contracts.relayerV4?.address ?? '',
+        abi: BatchRelayerAbi,
+        action: 'multicall',
+        params: [relayerCallData.rawCalls],
+      });
       console.log(tx);
 
       const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
