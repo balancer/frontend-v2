@@ -69,36 +69,34 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     );
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');
 
-    const minAmountsOut = this.lastExitRes.minAmountsOut;
-
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
     const priceImpact = await sdkPool.calcPriceImpact(
-      minAmountsOut,
-      this.lastExitRes.maxBPTIn,
+      fullAmountsOut,
+      this.lastExitRes.expectedBPTIn,
       false
     );
 
     const scaledPriceImpact = formatFixed(priceImpact, 18);
-    const scaledMinAmountOut = this.getScaledMinAmountOut(
-      minAmountsOut,
+    const scaledAmountOut = this.getScaledAmountOut(
+      fullAmountsOut,
       tokenOutIndex,
       tokenOut
     );
 
     return {
-      amountsOut: { [tokenOutAddress]: scaledMinAmountOut },
+      amountsOut: { [tokenOutAddress]: scaledAmountOut },
       priceImpact: Number(scaledPriceImpact),
     };
   }
 
-  private getScaledMinAmountOut(
-    minAmountsOut: string[],
+  private getScaledAmountOut(
+    amountsOut: string[],
     tokenOutIndex: number,
     tokenOut: TokenInfo
   ) {
-    const minAmountOut = minAmountsOut[tokenOutIndex];
-    return formatFixed(minAmountOut, tokenOut.decimals).toString();
+    const amountOut = amountsOut[tokenOutIndex];
+    return formatFixed(amountOut, tokenOut.decimals).toString();
   }
 
   private getFullAmounts(
