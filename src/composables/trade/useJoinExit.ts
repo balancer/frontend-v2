@@ -29,11 +29,14 @@ import { TokenInfo } from '@/types/TokenList';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from '../useTransactions';
 import useRelayerApproval, {
+  relayerAddressMap,
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
 
 import { TradeQuote } from './types';
 import useNumbers, { FNumFormats } from '../useNumbers';
+import useEthers from '../useEthers';
+import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 
 type JoinExitState = {
   validationErrors: {
@@ -89,7 +92,10 @@ export default function useJoinExit({
   const { account, getSigner } = useWeb3();
   const { injectTokens, getToken } = useTokens();
   const { relayerSignature } = useRelayerApproval(RelayerType.BATCH_V4);
+  const relayerAddress = ref(relayerAddressMap[RelayerType.BATCH_V4]);
+  const relayerApprovalQuery = useRelayerApprovalQuery(relayerAddress);
   const { addTransaction } = useTransactions();
+  const { txListener } = useEthers();
   const { fNum2 } = useNumbers();
 
   const hasValidationError = computed(
@@ -174,13 +180,6 @@ export default function useJoinExit({
         return;
       }
 
-      console.log(swapInfo.value.swaps);
-      const swap = swapInfo.value?.swaps[0];
-      const pool = pools.value.find(p => p.id === swap.poolId);
-      const ti = swapInfo.value.tokenAddresses[swap.assetInIndex];
-      const to = swapInfo.value.tokenAddresses[swap.assetOutIndex];
-      console.log([ti, to].includes(pool?.address ?? ''));
-
       const relayerCallData = buildRelayerCalls(
         swapInfo.value,
         pools.value,
@@ -229,7 +228,15 @@ export default function useJoinExit({
       if (successCallback != null) {
         successCallback();
       }
+
       confirming.value = false;
+
+      await txListener(tx, {
+        onTxConfirmed: () => {
+          relayerApprovalQuery.refetch.value();
+        },
+        onTxFailed: () => console.log('Transaction failed'),
+      });
     } catch (e) {
       console.log(e);
       captureException(e);

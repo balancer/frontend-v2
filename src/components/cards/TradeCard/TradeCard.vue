@@ -175,11 +175,6 @@ import useValidation, {
   TradeValidation,
 } from '@/composables/trade/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
-import useRelayerApproval, {
-  relayerAddressMap,
-  RelayerType,
-} from '@/composables/approvals/useRelayerApproval';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { TOKENS } from '@/constants/tokens';
@@ -247,10 +242,6 @@ export default defineComponent({
       tokenOutAddress,
       tokenOutAmount
     );
-    const relayerApproval = useRelayerApprovalQuery(
-      ref(relayerAddressMap[RelayerType.BATCH_V4])
-    );
-    const { relayerSignature } = useRelayerApproval(RelayerType.BATCH_V4);
     // COMPUTED
     const isHighPriceImpact = computed(
       () =>
@@ -368,10 +359,6 @@ export default defineComponent({
       trading.trade(() => {
         trading.resetAmounts();
         modalTradePreviewIsOpen.value = false;
-        // if relayer signature was used, refetch the approval
-        if (relayerSignature.value) {
-          relayerApproval.refetch.value();
-        }
       });
     }
 
