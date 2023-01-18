@@ -29,14 +29,14 @@ import { TokenInfo } from '@/types/TokenList';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from '../useTransactions';
 import useRelayerApproval, {
-  relayerAddressMap,
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
+import { configService } from '@/services/config/config.service';
 
 import { TradeQuote } from './types';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useEthers from '../useEthers';
-import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
+import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 
 type JoinExitState = {
   validationErrors: {
@@ -92,8 +92,9 @@ export default function useJoinExit({
   const { account, getSigner } = useWeb3();
   const { injectTokens, getToken } = useTokens();
   const { relayerSignature } = useRelayerApproval(RelayerType.BATCH_V4);
-  const relayerAddress = ref(relayerAddressMap[RelayerType.BATCH_V4]);
-  const relayerApprovalQuery = useRelayerApprovalQuery(relayerAddress);
+  const relayerApprovalQuery = useRelayerApprovalQuery(
+    ref(configService.network.addresses.batchRelayerV4)
+  );
   const { addTransaction } = useTransactions();
   const { txListener } = useEthers();
   const { fNum2 } = useNumbers();

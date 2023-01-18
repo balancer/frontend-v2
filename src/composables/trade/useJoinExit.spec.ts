@@ -12,6 +12,7 @@ jest.mock('@/composables/useTransactions');
 jest.mock('@/locales');
 jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
+jest.mock('@/composables/queries/useRelayerApprovalQuery');
 
 jest.mock('@/providers/tokens.provider', () => ({
   useTokens: () => {
