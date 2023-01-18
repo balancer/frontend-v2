@@ -35,7 +35,7 @@ describe('ClaimProtocolRewardsBtn', () => {
     FeeDistributor.mockClear();
   });
 
-  it.only('should render props', () => {
+  it('should render props', () => {
     const { getByText } = renderComponent(ClaimProtocolRewardsBtn, {
       props: {
         fiatValue: '1000',
