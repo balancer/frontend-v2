@@ -8,10 +8,7 @@ import { usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import { useTokens } from '@/providers/tokens.provider';
-import {
-  HIGH_PRICE_IMPACT,
-  REKT_PRICE_IMPACT,
-} from '@/constants/poolLiquidity';
+import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -141,8 +138,7 @@ export default function useInvestMath(
   });
 
   const rektPriceImpact = computed((): boolean => {
-    if (loadingData.value) return false;
-    return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
+    return false;
   });
 
   const maximized = computed(() =>
