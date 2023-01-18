@@ -64,6 +64,7 @@ import MediumIcon from '@/components/_global/icons/brands/MediumIcon.vue';
 import TwitterIcon from '@/components/_global/icons/brands/TwitterIcon.vue';
 import YoutubeIcon from '@/components/_global/icons/brands/YoutubeIcon.vue';
 import BalCircle from '@/components/_global/shapes/BalCircle/BalCircle.vue';
+import BalLazy from '@/components/_global/BalLazy/BalLazy.vue';
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
@@ -131,5 +132,6 @@ declare module '@vue/runtime-core' {
     TwitterIcon: typeof TwitterIcon;
     YoutubeIcon: typeof YoutubeIcon;
     BalCircle: typeof BalCircle;
+    BalLazy: typeof BalLazy;
   }
 }
