@@ -8,12 +8,6 @@ jest.mock('@/locales');
 jest.mock('@/services/web3/useWeb3');
 jest.mock('@/composables/queries/useRelayerApprovalQuery');
 
-// jest.mock('vuex');
-// jest.mock('@/composables/useEthereumTxType');
-// jest.mock('@/composables/useEthers');
-// jest.mock('@/composables/useTransactions');
-// jest.mock('@/services/rpc-provider/rpc-provider.service');
-
 jest.mock('@/providers/user-settings.provider', () => ({
   useUserSettings: () => {
     return {
