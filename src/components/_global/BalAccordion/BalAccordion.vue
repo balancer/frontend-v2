@@ -150,7 +150,7 @@ watch(
             class="text-blue-400"
             :class="[
               activeSection === section.id ? '-rotate-180' : 'rotate-0',
-              'transform',
+              'transform transition-all',
             ]"
             name="chevron-down"
           />
