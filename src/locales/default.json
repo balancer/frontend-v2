@@ -1240,6 +1240,10 @@
     "actionLabel": "Dismiss",
     "title": "An error has occurred"
   },
+  "isJoinExitTipDescription": {
+    "withApproval": "This swap will be submitted via the Relayer. This uses a little more gas but gets a better price. Requires a free, one-time Batch Relayer signature.",
+    "withoutApproval": "This swap will be submitted via the Relayer. This uses a little more gas but gets a better price. "
+  },
   "tradeSuccess": "Successfully swapped your tokens",
   "tradeSummary": {
     "exactIn": {
@@ -1265,6 +1269,10 @@
       "lidoRelayerApproval": {
         "content": "Your permission is required to use the Lido relayer for stETH swaps.",
         "title": "Approve Lido relayer"
+      },
+      "batchRelayerApproval": {
+        "content": "Your permission is required to use the Batch relayer.",
+        "title": "Approve Batch relayer"
       },
       "tokenApproval": {
         "content": "Your permission is required to swap this token on Balancer. Approvals are required once per token, per wallet.",
