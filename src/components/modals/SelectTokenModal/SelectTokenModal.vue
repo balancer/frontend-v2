@@ -292,6 +292,7 @@ watchEffect(() => {
               :hideBalance="ignoreBalances"
               :balanceLoading="dynamicDataLoading"
               :focussed="index == state.focussedToken"
+              tabIndex="0"
               :class="{
                 'bg-gray-100 dark:bg-gray-800': index == state.focussedToken,
               }"
