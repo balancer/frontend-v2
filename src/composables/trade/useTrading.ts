@@ -7,16 +7,23 @@ import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { bnum, lsGet, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
-import useWeb3 from '@/services/web3/useWeb3';
+import {
+  canUseJoinExit,
+  someJoinExit,
+  SubgraphPoolBase,
+  SwapTypes,
+} from '@balancer-labs/sdk';
 
+import useWeb3 from '@/services/web3/useWeb3';
 import { networkId } from '../useNetwork';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
+import useJoinExit from './useJoinExit';
 
-export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
+export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis' | 'joinExit';
 
 export type UseTrading = ReturnType<typeof useTrading>;
 
@@ -103,14 +110,38 @@ export default function useTrading(
       return 'balancer';
     }
 
-    return tradeGasless.value && isGnosisSupportedOnNetwork.value
-      ? 'gnosis'
-      : 'balancer';
+    if (tradeGasless.value && isGnosisSupportedOnNetwork.value) {
+      return 'gnosis';
+    } else {
+      const swapInfoAvailable =
+        joinExit.swapInfo.value?.returnAmount &&
+        !joinExit.swapInfo.value?.returnAmount.isZero();
+
+      const joinExitSwapAvailable = swapInfoAvailable
+        ? canUseJoinExit(
+            exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
+            tokenInAddressInput.value,
+            tokenOutAddressInput.value
+          )
+        : false;
+
+      const joinExitSwapPresent = joinExitSwapAvailable
+        ? someJoinExit(
+            sor.pools.value as SubgraphPoolBase[],
+            joinExit.swapInfo.value?.swaps ?? [],
+            joinExit.swapInfo.value?.tokenAddresses ?? []
+          )
+        : false;
+      // Currently joinExit trade is only suitable for ExactIn and non-eth swaps
+      return joinExitSwapPresent ? 'joinExit' : 'balancer';
+    }
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
 
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
+
+  const isJoinExitTrade = computed(() => tradeRoute.value === 'joinExit');
 
   const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
 
@@ -154,22 +185,44 @@ export default function useTrading(
     slippageBufferRate,
   });
 
+  const joinExit = useJoinExit({
+    exactIn,
+    tokenInAddressInput,
+    tokenInAmountInput,
+    tokenOutAddressInput,
+    tokenOutAmountInput,
+    tokenInAmountScaled,
+    tokenOutAmountScaled,
+    tokenIn,
+    tokenOut,
+    slippageBufferRate,
+    pools: sor.pools as Ref<SubgraphPoolBase[]>,
+  });
+
   const isLoading = computed(() => {
     if (hasTradeQuote.value || isWrapUnwrapTrade.value) {
       return false;
     }
 
-    return isBalancerTrade.value
-      ? sor.poolsLoading.value
-      : gnosis.updatingQuotes.value;
+    if (isGnosisTrade.value) {
+      return gnosis.updatingQuotes.value;
+    }
+
+    return joinExit.swapInfoLoading.value || sor.poolsLoading.value;
   });
 
   const isConfirming = computed(
-    () => sor.confirming.value || gnosis.confirming.value
+    () =>
+      sor.confirming.value ||
+      gnosis.confirming.value ||
+      joinExit.confirming.value
   );
 
   const submissionError = computed(
-    () => sor.submissionError.value || gnosis.submissionError.value
+    () =>
+      sor.submissionError.value ||
+      gnosis.submissionError.value ||
+      joinExit.submissionError.value
   );
 
   // METHODS
@@ -181,6 +234,14 @@ export default function useTrading(
         }
 
         gnosis.resetState();
+      });
+    } else if (isJoinExitTrade.value) {
+      return joinExit.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        joinExit.resetState();
       });
     } else {
       // handles both Balancer and Wrap/Unwrap trades
@@ -197,6 +258,7 @@ export default function useTrading(
   function resetSubmissionError() {
     sor.submissionError.value = null;
     gnosis.submissionError.value = null;
+    joinExit.submissionError.value = null;
   }
 
   function setTradeGasless(flag: boolean) {
@@ -214,9 +276,11 @@ export default function useTrading(
   function getQuote() {
     if (isGnosisTrade.value) {
       return gnosis.getQuote();
-    } else {
-      return sor.getQuote();
     }
+    if (isJoinExitTrade.value) {
+      return joinExit.getQuote();
+    }
+    return sor.getQuote();
   }
 
   function resetAmounts() {
@@ -234,8 +298,12 @@ export default function useTrading(
       gnosis.resetState(false);
       gnosis.handleAmountChange();
     } else {
-      sor.resetState();
-      sor.handleAmountChange();
+      if (!isJoinExitTrade.value) {
+        sor.resetState();
+        sor.handleAmountChange();
+      }
+      joinExit.resetState();
+      joinExit.handleAmountChange();
     }
   }
 
@@ -265,6 +333,10 @@ export default function useTrading(
       if (!gnosis.hasValidationError.value) {
         gnosis.handleAmountChange();
       }
+    } else if (isJoinExitTrade.value) {
+      if (!joinExit.hasValidationError.value) {
+        joinExit.handleAmountChange();
+      }
     } else if (isBalancerTrade.value) {
       sor.updateTradeAmounts();
     }
@@ -291,8 +363,10 @@ export default function useTrading(
     isLoading,
     gnosis,
     sor,
+    joinExit,
     isGnosisTrade,
     isBalancerTrade,
+    isJoinExitTrade,
     wrapType,
     isWrapUnwrapTrade,
     tokenInAddressInput,

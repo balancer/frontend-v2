@@ -10,7 +10,6 @@
   "rpc": "https://arbitrum-mainnet.infura.io/v3/{{INFURA_KEY}}",
   "ws": "wss://arb-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "publicRpc": "https://arb1.arbitrum.io/rpc",
-  "loggingRpc": "https://arb-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://arbiscan.io",
   "explorerName": "Arbiscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",

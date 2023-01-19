@@ -146,7 +146,7 @@
     </div>
   </BalCard>
   <teleport to="#modal">
-    <TradePreviewModalGP
+    <TradePreviewModal
       v-if="modalTradePreviewIsOpen"
       :trading="trading"
       :error="error"
@@ -165,7 +165,7 @@ import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
+import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -188,7 +188,7 @@ import TradeRoute from './TradeRoute.vue';
 export default defineComponent({
   components: {
     TradePair,
-    TradePreviewModalGP,
+    TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover,
   },
@@ -236,13 +236,13 @@ export default defineComponent({
       tokenOutAddress,
       tokenOutAmount
     );
-    // COMPUTED
     const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount
     );
+    // COMPUTED
     const isHighPriceImpact = computed(
       () =>
         trading.sor.validationErrors.value.highPriceImpact &&
@@ -361,6 +361,7 @@ export default defineComponent({
         modalTradePreviewIsOpen.value = false;
       });
     }
+
     function handleErrorButtonClick() {
       if (trading.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;

@@ -110,7 +110,9 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
  * LIFECYCLE
  */
 onMounted(() => {
-  textInput.value?.focus();
+  if (props.autoFocus) {
+    textInput.value?.focus();
+  }
 });
 </script>
 

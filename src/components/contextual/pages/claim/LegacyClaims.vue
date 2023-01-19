@@ -268,29 +268,47 @@ async function claimAvailableRewards() {
           <li class="mt-2">
             Claim BAL on other networks
             <template v-if="isArbitrum">
-              <BalLink href="https://app.balancer.fi/#/ethereum/claim" external>
+              <BalLink
+                href="https://app.balancer.fi/#/ethereum/claim/legacy"
+                external
+              >
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://app.balancer.fi/#/polygon/claim" external>
+              <BalLink
+                href="https://app.balancer.fi/#/polygon/claim/legacy"
+                external
+              >
                 Polygon </BalLink
               >.
             </template>
             <template v-else-if="isPolygon">
-              <BalLink href="https://app.balancer.fi/#/ethereum/claim" external>
+              <BalLink
+                href="https://app.balancer.fi/#/ethereum/claim/legacy"
+                external
+              >
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://app.balancer.fi/#/arbitrum/claim" external>
+              <BalLink
+                href="https://app.balancer.fi/#/arbitrum/claim/legacy"
+                external
+              >
                 Arbitrum </BalLink
               >.
             </template>
             <template v-else-if="isMainnet || isGoerli">
-              <BalLink href="https://app.balancer.fi/#/polygon/claim" external>
+              <BalLink
+                href="https://app.balancer.fi/#/polygon/claim/legacy"
+                external
+              >
                 Polygon
               </BalLink>
               and
-              <BalLink href="https://app.balancer.fi/#/arbitrum/claim" external>
+              <BalLink
+                href="https://app.balancer.fi/#/arbitrum/claim/legacy"
+                external
+              >
                 Arbitrum </BalLink
               >.
             </template>

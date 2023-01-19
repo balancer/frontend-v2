@@ -21,7 +21,6 @@ export interface Config {
   rpc: string;
   publicRpc?: string;
   ws: string;
-  loggingRpc: string;
   explorer: string;
   explorerName: string;
   subgraph: string;
