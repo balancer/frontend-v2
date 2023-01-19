@@ -124,13 +124,6 @@ export default class PoolService {
     }
   }
 
-  public setUnwrappedTokens(): string[] {
-    const unwrappedTokens = Object.entries(
-      this.pool?.onchain?.linearPools || {}
-    ).map(([, linearPool]) => linearPool.unwrappedTokenAddress);
-    return (this.pool.unwrappedTokens = unwrappedTokens);
-  }
-
   public get isNew(): boolean {
     if (!this.pool.createTime) return false;
 
