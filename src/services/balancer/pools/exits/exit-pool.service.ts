@@ -1,6 +1,8 @@
-import { isDeep } from '@/composables/usePool';
 import { balancer } from '@/lib/balancer.sdk';
-import { gasPriceService } from '@/services/gas-price/gas-price.service';
+import {
+  GasPriceService,
+  gasPriceService,
+} from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
@@ -11,6 +13,18 @@ import {
   ExitPoolHandler,
   QueryOutput,
 } from './handlers/exit-pool.handler';
+import { BalancerSDK } from '@balancer-labs/sdk';
+import { ExactInExitHandler } from './handlers/exact-in-exit.handler';
+import { ExactOutExitHandler } from './handlers/exact-out-exit.handler';
+
+export enum ExitHandler {
+  Swap,
+  Generalised,
+  ExactOut,
+  ExactIn,
+}
+
+type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];
 
 /**
  * ExitPoolService acts as an adapter to underlying handlers based on the pool
@@ -33,28 +47,32 @@ export class ExitPoolService {
     public readonly sdk = balancer,
     public readonly gasPriceServ = gasPriceService
   ) {
-    this.exitHandler = this.setExitHandler();
+    this.exitHandler = this.setExitHandler(ExitHandler.Generalised);
   }
 
   /**
    * Sets ExitHandler class on instance.
    *
-   * @param {boolean} [swapExit=false] - Flag to ensure SwapExitHandler is used for exiting.
+   * @param {ExitHandler} type - The type of exit handler to use.
    * @returns {ExitPoolHandler} The ExitPoolHandler class to be used.
    */
-  setExitHandler(swapJoin = false): ExitPoolHandler {
+  setExitHandler(type: ExitHandler): ExitPoolHandler {
     const { pool, sdk, gasPriceServ } = this;
+    const handlerParams: HandlerParams = [pool, sdk, gasPriceServ];
 
-    if (swapJoin) {
-      return (this.exitHandler = new SwapExitHandler(pool, sdk, gasPriceServ));
-    } else if (isDeep(pool.value)) {
-      return (this.exitHandler = new GeneralisedExitHandler(
-        pool,
-        sdk,
-        gasPriceServ
-      ));
-    } else {
-      throw new Error(`Pool type not handled: ${pool.value.poolType}`);
+    switch (type) {
+      case ExitHandler.Swap:
+        return (this.exitHandler = new SwapExitHandler(...handlerParams));
+      case ExitHandler.Generalised:
+        return (this.exitHandler = new GeneralisedExitHandler(
+          ...handlerParams
+        ));
+      case ExitHandler.ExactIn:
+        return (this.exitHandler = new ExactInExitHandler(...handlerParams));
+      case ExitHandler.ExactOut:
+        return (this.exitHandler = new ExactOutExitHandler(...handlerParams));
+      default:
+        throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
   }
 

@@ -37,10 +37,11 @@ export default function useGaugeVotesQuery(
    */
   const queryFn = async (): Promise<VotingGaugeWithVotes[]> => {
     try {
-      return await gaugeControllerDecorator.decorateWithVotes(
+      const gauges = await gaugeControllerDecorator.decorateWithVotes(
         votingGauges,
         account.value
       );
+      return gauges.map(v => Object.freeze(v));
     } catch (error) {
       console.error('Failed to get gauge votes', error);
       return [];

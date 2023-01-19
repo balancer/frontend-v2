@@ -9,7 +9,7 @@ import {
   isManaged,
   isStableLike,
 } from '@/composables/usePool';
-import { isSameAddress } from '@/lib/utils';
+import { includesAddress, isSameAddress } from '@/lib/utils';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import ConfigService from '@/services/config/config.service';
@@ -116,21 +116,18 @@ export default class JoinParams {
   private parseTokensIn(tokensIn: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
     const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
-    const tokensInProcessed = tokensIn.map(address =>
+    const newTokensIn = tokensIn.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
 
     if (
       isComposableStable(this.pool.value.poolType) &&
-      poolTokenItselfIndex !== undefined
+      poolTokenItselfIndex !== undefined &&
+      !includesAddress(newTokensIn, this.pool.value.address)
     ) {
-      tokensInProcessed.splice(
-        poolTokenItselfIndex,
-        0,
-        this.pool.value.address
-      );
+      newTokensIn.splice(poolTokenItselfIndex, 0, this.pool.value.address);
     }
-    return tokensInProcessed;
+    return newTokensIn;
   }
 
   private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
