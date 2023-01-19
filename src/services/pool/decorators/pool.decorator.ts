@@ -1,4 +1,4 @@
-import { getTimeTravelBlock } from '@/composables/useSnapshots';
+// import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -72,7 +72,8 @@ export class PoolDecorator {
    * (see getTimeTravelBlock).
    */
   private async getSnapshots(): Promise<Pool[]> {
-    const blockNumber = await getTimeTravelBlock();
+    // TODO UNDO THIS BEFORE MERGE
+    const blockNumber = 26045241; //await getTimeTravelBlock();
     const block = { number: blockNumber };
     const isInPoolIds = { id: { in: this.pools.map(pool => pool.id) } };
     try {
