@@ -8,6 +8,7 @@ import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
 import nodePolyfills from 'vite-plugin-node-stdlib-browser';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import { createHtmlPlugin } from 'vite-plugin-html';
 import rollupPolyfillNode from 'rollup-plugin-polyfill-node';
 import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
@@ -15,8 +16,18 @@ import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({ mode }) => {
+  const envConfig = loadEnv(mode, process.cwd());
+
   const plugins = [
     vue(),
+    createHtmlPlugin({
+      minify: false,
+      inject: {
+        data: {
+          VITE_FATHOM_SITE_ID: envConfig.VITE_FATHOM_SITE_ID,
+        },
+      },
+    }),
     // avoid nodePolyfills in vitest:
     mode === 'test' ? null : nodePolyfills(),
     // AutoImport({
@@ -43,8 +54,6 @@ export default defineConfig(({ mode }) => {
       ),
     }),
   ];
-
-  const envConfig = loadEnv(mode, process.cwd());
 
   if (mode === 'production' && envConfig.VITE_SENTRY_AUTH_TOKEN) {
     /**

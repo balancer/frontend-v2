@@ -20,6 +20,7 @@ import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
 import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import StakeSummary from './StakeSummary.vue';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
@@ -199,7 +200,9 @@ function handleClose() {
       </BalCircle>
       <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
     </BalStack>
-    <BalCard shadow="none" noPad class="py-2 px-4">
+    <div
+      class="py-2 px-4 rounded-lg border dark:border-gray-700 divide-y dark:divide-gray-700"
+    >
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(currentShares) }} {{ $t('lpTokens') }}</h5>
@@ -213,51 +216,12 @@ function handleClose() {
           :size="32"
         />
       </BalStack>
-    </BalCard>
-    <BalCard shadow="none" noPad>
-      <div class="p-2 border-b dark:border-gray-900">
-        <h6 class="text-sm">
-          {{ $t('summary') }}
-        </h6>
-      </div>
-      <BalStack vertical spacing="xs" class="p-3">
-        <BalStack horizontal justify="between">
-          <span class="text-sm">
-            {{ $t('totalValueTo') }}
-            <span class="lowercase">
-              {{ action === 'stake' ? $t('stake') : $t('unstake') }}:
-            </span>
-          </span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">
-              ~{{ fNum2(fiatValueOfModifiedShares, FNumFormats.fiat) }}
-            </span>
-            <BalTooltip
-              :text="
-                action === 'stake'
-                  ? $t('staking.stakeValueTooltip')
-                  : $t('staking.unstakeValueTooltip')
-              "
-              width="40"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack>
-        <BalStack horizontal justify="between">
-          <span class="text-sm">{{ $t('staking.newTotalShare') }}:</span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">
-              ~{{ fNum2(totalUserPoolSharePct, FNumFormats.percent) }}
-            </span>
-            <BalTooltip
-              :text="$t('staking.totalShareTooltip')"
-              width="40"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack>
-      </BalStack>
-    </BalCard>
+    </div>
+    <StakeSummary
+      :action="action"
+      :fiatValue="fiatValueOfModifiedShares"
+      :sharePercentage="totalUserPoolSharePct"
+    />
     <BalActionSteps
       v-if="!isActionConfirmed"
       :actions="stakeActions"
