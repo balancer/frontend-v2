@@ -70,6 +70,7 @@ const POOL_ISSUES = {
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
     ],
   },
+  [Network.GNOSIS]: {},
 };
 
 const issues = POOL_ISSUES[networkId.value];
