@@ -90,13 +90,6 @@ export default class ConfigService {
       ALCHEMY_KEY: this.env.ALCHEMY_KEY,
     });
   }
-
-  public get loggingRpc(): string {
-    return template(this.network.loggingRpc, {
-      INFURA_KEY: this.env.INFURA_PROJECT_ID,
-      ALCHEMY_KEY: this.env.ALCHEMY_KEY,
-    });
-  }
 }
 
 export const configService = new ConfigService();
