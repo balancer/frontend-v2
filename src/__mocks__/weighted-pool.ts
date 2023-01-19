@@ -1,6 +1,7 @@
 import { Pool, PoolType } from '@/services/pool/types';
 
 export const PoolMock: Pool = {
+  protocolSwapFeeCache: '',
   onchain: {
     tokens: {
       '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7': {
