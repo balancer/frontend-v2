@@ -572,7 +572,7 @@ const POOLS_GNOSIS: Pools = {
   DynamicFees: {
     Gauntlet: [],
   },
-  BlockList: [],
+  BlockList: [''],
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
