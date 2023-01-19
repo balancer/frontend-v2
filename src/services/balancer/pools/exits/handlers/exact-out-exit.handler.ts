@@ -3,7 +3,6 @@ import { indexOfAddress, selectByAddress } from '@/lib/utils';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
-import { TokenInfo } from '@/types/TokenList';
 import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
@@ -50,10 +49,9 @@ export class ExactOutExitHandler implements ExitPoolHandler {
       this.pool.value.tokensList,
       tokenOutAddress
     );
-    const evmAmountOut = parseFixed(
-      amountsOut[0].value,
-      tokenOut.decimals
-    ).toString();
+
+    const amountOut = amountsOut[0].value;
+    const evmAmountOut = parseFixed(amountOut, tokenOut.decimals).toString();
 
     const fullAmountsOut = this.getFullAmounts(
       this.pool.value.tokensList,
@@ -78,25 +76,11 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     );
 
     const scaledPriceImpact = formatFixed(priceImpact, 18);
-    const scaledAmountOut = this.getScaledAmountOut(
-      fullAmountsOut,
-      tokenOutIndex,
-      tokenOut
-    );
 
     return {
-      amountsOut: { [tokenOutAddress]: scaledAmountOut },
+      amountsOut: { [tokenOutAddress]: amountOut },
       priceImpact: Number(scaledPriceImpact),
     };
-  }
-
-  private getScaledAmountOut(
-    amountsOut: string[],
-    tokenOutIndex: number,
-    tokenOut: TokenInfo
-  ) {
-    const amountOut = amountsOut[tokenOutIndex];
-    return formatFixed(amountOut, tokenOut.decimals).toString();
   }
 
   private getFullAmounts(
