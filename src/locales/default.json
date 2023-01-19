@@ -59,17 +59,17 @@
   "attribute": "Attribute",
   "approve": "Approve",
   "approved": "Approved",
-  "approvedGnosisRelayer": "Approved Gnosis relayer",
+  "approvedCowswapRelayer": "Approved Cowswap relayer",
   "approvedLidoRelayer": "Approved Lido relayer",
-  "approveGnosisRelayer": "Approve Gnosis relayer",
-  "approveGP": "Approve swapping on Gnosis Protocol",
+  "approveCowswapRelayer": "Approve Cowswap relayer",
+  "approveGP": "Approve swapping on Cowswap Protocol",
   "approveLidoRelayer": "Approve Lido relayer",
   "approveBatchRelayer": "Approve Batch relayer",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
   "approveTokens": "Approve tokens",
   "approving": "Approving",
-  "approvingGnosisRelayer": "Approving Gnosis relayer",
+  "approvingCowswapRelayer": "Approving Cowswap relayer",
   "approvingLidoRelayer": "Approving Lido relayer",
   "apr": "APR",
   "apyvisionPoolInsights": "More insights on APY.vision",
@@ -387,7 +387,7 @@
     "showStake": "Show pools where I stake"
   },
   "getLpTokens": "Get LP tokens",
-  "gnosisErrors": {
+  "cowswapErrors": {
     "lowAmount": {
       "header": "Your swap amount is too low",
       "body": "The fees for this transaction exceed the amount you want to swap."
@@ -404,7 +404,7 @@
       "header": "An error has occurred"
     }
   },
-  "gnosisWarnings": {
+  "cowswapWarnings": {
     "highFees": {
       "body": "You can still proceed with the swap but a high percentage of it will be consumed by swap fees.",
       "header": "The fees on this transaction exceed 20% of the swap amount."
@@ -1262,9 +1262,9 @@
     },
     "gasCosts": "Gas costs",
     "transactionTypesTooltips": {
-      "gnosisRelayerApproval": {
+      "cowswapRelayerApproval": {
         "content": "Your permission is required to use a batch relayer for gas-free, MEV-protected transactions.",
-        "title": "Approve swaps on Gnosis protocol"
+        "title": "Approve swaps on Cowswap protocol"
       },
       "lidoRelayerApproval": {
         "content": "Your permission is required to use the Lido relayer for stETH swaps.",

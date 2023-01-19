@@ -254,9 +254,9 @@ const tokenApproval = useTokenApproval(
   tokens
 );
 
-const gnosisRelayerApproval = useRelayerApprovalTx(
-  RelayerType.GNOSIS,
-  props.trading.isGnosisTrade
+const cowswapRelayerApproval = useRelayerApprovalTx(
+  RelayerType.COWSWAP,
+  props.trading.isCowswapTrade
 );
 
 const pools = computed<SubgraphPoolBase[]>(() => {
@@ -301,11 +301,11 @@ const requiresBatchRelayerApproval = computed(
     !batchRelayerSignature.value
 );
 
-const requiresGnosisRelayerApproval = computed(
+const requiresCowswapRelayerApproval = computed(
   () =>
-    props.trading.isGnosisTrade.value &&
+    props.trading.isCowswapTrade.value &&
     props.trading.requiresTokenApproval.value &&
-    !gnosisRelayerApproval.isUnlocked.value
+    !cowswapRelayerApproval.isUnlocked.value
 );
 
 const requiresLidoRelayerApproval = computed(
@@ -324,12 +324,12 @@ const showBatchRelayerApprovalStep = computed(
   () => props.trading.isJoinExitTrade.value && !batchRelayerIsUnlocked.value
 );
 
-const showGnosisRelayerApprovalStep = computed(
+const showCowswapRelayerApprovalStep = computed(
   () =>
-    requiresGnosisRelayerApproval.value ||
-    gnosisRelayerApproval.init.value ||
-    gnosisRelayerApproval.approved.value ||
-    gnosisRelayerApproval.approving.value
+    requiresCowswapRelayerApproval.value ||
+    cowswapRelayerApproval.init.value ||
+    cowswapRelayerApproval.approved.value ||
+    cowswapRelayerApproval.approving.value
 );
 
 const showLidoRelayerApprovalStep = computed(
@@ -344,7 +344,7 @@ const showLidoRelayerApprovalStep = computed(
 const requiresApproval = computed(
   () =>
     requiresBatchRelayerApproval.value ||
-    requiresGnosisRelayerApproval.value ||
+    requiresCowswapRelayerApproval.value ||
     requiresLidoRelayerApproval.value ||
     requiresTokenApproval.value
 );
@@ -356,8 +356,8 @@ const showPriceUpdateError = computed(
 
 const actionStepsLoading = computed(
   () =>
-    gnosisRelayerApproval.init.value ||
-    gnosisRelayerApproval.approving.value ||
+    cowswapRelayerApproval.init.value ||
+    cowswapRelayerApproval.approving.value ||
     lidoRelayerApproval.init.value ||
     lidoRelayerApproval.approving.value ||
     tokenApproval.approving.value ||
@@ -365,8 +365,8 @@ const actionStepsLoading = computed(
 );
 
 const actionStepsLoadingLabel = computed(() =>
-  requiresGnosisRelayerApproval.value
-    ? `${t('approvingGnosisRelayer')}...`
+  requiresCowswapRelayerApproval.value
+    ? `${t('approvingCowswapRelayer')}...`
     : requiresLidoRelayerApproval.value
     ? `${t('approvingLidoRelayer')}...`
     : requiresBatchRelayerApproval.value
@@ -377,15 +377,15 @@ const actionStepsLoadingLabel = computed(() =>
 );
 
 const actions = computed((): TransactionActionInfo[] => [
-  ...(showGnosisRelayerApprovalStep.value
+  ...(showCowswapRelayerApprovalStep.value
     ? [
         {
-          label: t('approveGnosisRelayer'),
-          loadingLabel: t('approvingGnosisRelayer'),
-          confirmingLabel: t('approveGnosisRelayer'),
-          action: gnosisRelayerApproval.approve,
+          label: t('approveCowswapRelayer'),
+          loadingLabel: t('approvingCowswapRelayer'),
+          confirmingLabel: t('approveCowswapRelayer'),
+          action: cowswapRelayerApproval.approve,
           stepTooltip: t(
-            'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content'
+            'tradeSummary.transactionTypesTooltips.cowswapRelayerApproval.content'
           ),
         },
       ]
@@ -429,7 +429,7 @@ const actions = computed((): TransactionActionInfo[] => [
     confirmingLabel: t('confirming'),
     action: trade as () => Promise<any>,
     stepTooltip:
-      props.trading.isGnosisTrade.value && !props.trading.isJoinExitTrade
+      props.trading.isCowswapTrade.value && !props.trading.isJoinExitTrade
         ? t('tradeSummary.transactionTypesTooltips.sign.content')
         : t('tradeSummary.transactionTypesTooltips.trade.content'),
   },
@@ -666,7 +666,7 @@ watch(blockNumber, () => {
             </div>
           </div>
         </template>
-        <div v-if="trading.isGnosisTrade.value" class="p-3 text-sm">
+        <div v-if="trading.isCowswapTrade.value" class="p-3 text-sm">
           <div class="summary-item-row">
             <div>
               {{ labels.tradeSummary.totalBeforeFees }}

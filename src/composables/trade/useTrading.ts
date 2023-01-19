@@ -6,7 +6,7 @@ import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { bnum, lsGet, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
-import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
+import { COW_SUPPORTED_NETWORKS } from '@/services/cowswap/constants';
 import {
   canUseJoinExit,
   someJoinExit,
@@ -19,11 +19,11 @@ import { networkId } from '../useNetwork';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { useUserSettings } from '@/providers/user-settings.provider';
-import useGnosis from './useGnosis';
+import useCowswap from './useCowswap';
 import useSor from './useSor';
 import useJoinExit from './useJoinExit';
 
-export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis' | 'joinExit';
+export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'cowswap' | 'joinExit';
 
 export type UseTrading = ReturnType<typeof useTrading>;
 
@@ -99,8 +99,8 @@ export default function useTrading(
     };
   });
 
-  const isGnosisSupportedOnNetwork = computed(() =>
-    GP_SUPPORTED_NETWORKS.includes(networkId.value)
+  const isCowswapSupportedOnNetwork = computed(() =>
+    COW_SUPPORTED_NETWORKS.includes(networkId.value)
   );
 
   const tradeRoute = computed<TradeRoute>(() => {
@@ -110,8 +110,8 @@ export default function useTrading(
       return 'balancer';
     }
 
-    if (tradeGasless.value && isGnosisSupportedOnNetwork.value) {
-      return 'gnosis';
+    if (tradeGasless.value && isCowswapSupportedOnNetwork.value) {
+      return 'cowswap';
     } else {
       const swapInfoAvailable =
         joinExit.swapInfo.value?.returnAmount &&
@@ -137,7 +137,7 @@ export default function useTrading(
     }
   });
 
-  const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
+  const isCowswapTrade = computed(() => tradeRoute.value === 'cowswap');
 
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
 
@@ -172,7 +172,7 @@ export default function useTrading(
     slippageBufferRate,
   });
 
-  const gnosis = useGnosis({
+  const cowswap = useCowswap({
     exactIn,
     tokenInAddressInput,
     tokenInAmountInput,
@@ -204,8 +204,8 @@ export default function useTrading(
       return false;
     }
 
-    if (isGnosisTrade.value) {
-      return gnosis.updatingQuotes.value;
+    if (isCowswapTrade.value) {
+      return cowswap.updatingQuotes.value;
     }
 
     return joinExit.swapInfoLoading.value || sor.poolsLoading.value;
@@ -214,26 +214,26 @@ export default function useTrading(
   const isConfirming = computed(
     () =>
       sor.confirming.value ||
-      gnosis.confirming.value ||
+      cowswap.confirming.value ||
       joinExit.confirming.value
   );
 
   const submissionError = computed(
     () =>
       sor.submissionError.value ||
-      gnosis.submissionError.value ||
+      cowswap.submissionError.value ||
       joinExit.submissionError.value
   );
 
   // METHODS
   function trade(successCallback?: () => void) {
-    if (isGnosisTrade.value) {
-      return gnosis.trade(() => {
+    if (isCowswapTrade.value) {
+      return cowswap.trade(() => {
         if (successCallback) {
           successCallback();
         }
 
-        gnosis.resetState();
+        cowswap.resetState();
       });
     } else if (isJoinExitTrade.value) {
       return joinExit.trade(() => {
@@ -257,7 +257,7 @@ export default function useTrading(
 
   function resetSubmissionError() {
     sor.submissionError.value = null;
-    gnosis.submissionError.value = null;
+    cowswap.submissionError.value = null;
     joinExit.submissionError.value = null;
   }
 
@@ -274,8 +274,8 @@ export default function useTrading(
   }
 
   function getQuote() {
-    if (isGnosisTrade.value) {
-      return gnosis.getQuote();
+    if (isCowswapTrade.value) {
+      return cowswap.getQuote();
     }
     if (isJoinExitTrade.value) {
       return joinExit.getQuote();
@@ -294,9 +294,9 @@ export default function useTrading(
       tokenInAmountInput.value = '';
     }
 
-    if (isGnosisTrade.value) {
-      gnosis.resetState(false);
-      gnosis.handleAmountChange();
+    if (isCowswapTrade.value) {
+      cowswap.resetState(false);
+      cowswap.handleAmountChange();
     } else {
       if (!isJoinExitTrade.value) {
         sor.resetState();
@@ -329,9 +329,9 @@ export default function useTrading(
   });
 
   watch(blockNumber, () => {
-    if (isGnosisTrade.value) {
-      if (!gnosis.hasValidationError.value) {
-        gnosis.handleAmountChange();
+    if (isCowswapTrade.value) {
+      if (!cowswap.hasValidationError.value) {
+        cowswap.handleAmountChange();
       }
     } else if (isJoinExitTrade.value) {
       if (!joinExit.hasValidationError.value) {
@@ -361,10 +361,10 @@ export default function useTrading(
     tradeRoute,
     exactIn,
     isLoading,
-    gnosis,
+    cowswap,
     sor,
     joinExit,
-    isGnosisTrade,
+    isCowswapTrade,
     isBalancerTrade,
     isJoinExitTrade,
     wrapType,
@@ -380,7 +380,7 @@ export default function useTrading(
     tradeGasless,
     toggleTradeGasless,
     isGaslessTradingDisabled,
-    isGnosisSupportedOnNetwork,
+    isCowswapSupportedOnNetwork,
     resetAmounts,
     // methods
     getQuote,
