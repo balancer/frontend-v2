@@ -206,7 +206,13 @@ watch(
           size="sm"
           class="w-full"
           autoFocus
-        />
+        >
+          <template #prepend>
+            <div class="flex justify-center items-center w-8 h-full">
+              <BalIcon name="search" size="sm" class="mr-2 text-gray-500" />
+            </div>
+          </template>
+        </BalTextInput>
       </div>
       <div>
         <div
@@ -238,7 +244,13 @@ watch(
           size="sm"
           class="w-full"
           autoFocus
-        />
+        >
+          <template #prepend>
+            <div class="flex justify-center items-center w-8 h-full">
+              <BalIcon name="search" size="sm" class="mr-2 text-gray-500" />
+            </div>
+          </template>
+        </BalTextInput>
       </div>
       <div class="overflow-hidden">
         <RecycleScroller
