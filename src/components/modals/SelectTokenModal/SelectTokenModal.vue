@@ -9,7 +9,6 @@ import { useTokenLists } from '@/providers/token-lists.provider';
 import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
 import { TokenInfoMap, TokenList } from '@/types/TokenList';
-import Search from './Search.vue';
 
 interface Props {
   open?: boolean;
@@ -199,11 +198,16 @@ watch(
       </div>
     </template>
     <template v-if="state.selectTokenList">
-      <Search
-        v-model="state.query"
-        :placeholder="$t('searchByName')"
-        class="flex-auto py-3 px-4 border-b dark:border-gray-700"
-      />
+      <div class="flex py-2 px-4">
+        <BalTextInput
+          v-model="state.query"
+          name="tokenSearchInput"
+          :placeholder="$t('searchByName')"
+          size="sm"
+          class="w-full"
+          autoFocus
+        />
+      </div>
       <div>
         <div
           v-if="Object.keys(tokenLists).length > 0"
@@ -226,14 +230,17 @@ watch(
       </div>
     </template>
     <template v-else>
-      <div class="flex border-b dark:border-gray-700">
-        <Search
+      <div class="flex py-2 px-4">
+        <BalTextInput
           v-model="state.query"
+          name="tokenSearchInput"
           :placeholder="$t('searchBy')"
-          class="flex-auto py-3 px-4"
+          size="sm"
+          class="w-full"
+          autoFocus
         />
       </div>
-      <div class="overflow-hidden rounded-lg">
+      <div class="overflow-hidden">
         <RecycleScroller
           v-if="tokens.length > 0"
           v-slot="{ item: token }"
