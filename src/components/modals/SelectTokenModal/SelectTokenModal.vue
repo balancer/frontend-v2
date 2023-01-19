@@ -163,19 +163,16 @@ watch(
   { immediate: true }
 );
 
-const { ArrowDown, ArrowUp, Enter } = useMagicKeys();
-watch(
-  () => state.focussedToken,
-  () => {
-    console.log(state.results, state.focussedToken);
-  }
-);
+const { ArrowDown, ArrowUp, Enter, Tab } = useMagicKeys();
 watchEffect(() => {
   if (
     ArrowDown.value &&
     state.focussedToken < Object.keys(state.results).length
   )
     state.focussedToken++;
+  if (Tab.value && state.focussedToken < Object.keys(state.results).length)
+    state.focussedToken++;
+
   if (ArrowUp.value && state.focussedToken > 0) state.focussedToken--;
 
   if (Enter.value) onSelectToken(focussedTokenAddress.value);
