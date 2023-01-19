@@ -3,6 +3,7 @@ import { BoostedPoolMock } from './boosted-pool';
 import { Pool, PoolType } from '@/services/pool/types';
 
 export const EmptyPoolMock: Pool = {
+  protocolSwapFeeCache: '',
   id: '',
   address: '',
   name: '',

@@ -24,6 +24,7 @@ import BalHorizSteps from '@/components/_global/BalHorizSteps/BalHorizSteps.vue'
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import BalImage from '@/components/_global/BalImage/BalImage.vue';
 import BalInlineInput from '@/components/_global/BalInlineInput/BalInlineInput.vue';
+import BalLazy from '@/components/_global/BalLazy/BalLazy.vue';
 import BalLink from '@/components/_global/BalLink/BalLink.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import BalLoadingIcon from '@/components/_global/BalLoadingIcon/BalLoadingIcon.vue';
@@ -66,7 +67,6 @@ import MediumIcon from '@/components/_global/icons/brands/MediumIcon.vue';
 import TwitterIcon from '@/components/_global/icons/brands/TwitterIcon.vue';
 import YoutubeIcon from '@/components/_global/icons/brands/YoutubeIcon.vue';
 import BalCircle from '@/components/_global/shapes/BalCircle/BalCircle.vue';
-import BalLazy from '@/components/_global/BalLazy/BalLazy.vue';
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
@@ -94,6 +94,7 @@ declare module '@vue/runtime-core' {
     BalIcon: typeof BalIcon;
     BalImage: typeof BalImage;
     BalInlineInput: typeof BalInlineInput;
+    BalLazy: typeof BalLazy;
     BalLink: typeof BalLink;
     BalLoadingBlock: typeof BalLoadingBlock;
     BalLoadingIcon: typeof BalLoadingIcon;
@@ -136,6 +137,5 @@ declare module '@vue/runtime-core' {
     TwitterIcon: typeof TwitterIcon;
     YoutubeIcon: typeof YoutubeIcon;
     BalCircle: typeof BalCircle;
-    BalLazy: typeof BalLazy;
   }
 }

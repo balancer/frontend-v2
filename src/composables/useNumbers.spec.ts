@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { mountComposable } from '@/tests/mount-helpers';
-import useNumbers, { FNumFormats } from './useNumbers';
+import useNumbers, { bspToDec, FNumFormats } from './useNumbers';
 
 jest.mock('@/providers/tokens.provider');
 
@@ -291,6 +291,13 @@ describe('useNumbers', () => {
       const expectedValue = (amount * priceFor).toString();
       const value = toFiat(amount, 'any token address');
       expect(value).toEqual(expectedValue);
+    });
+  });
+
+  describe('bspToDec', () => {
+    it('Returns correct decimal value', () => {
+      const val = bspToDec(500); // 5%
+      expect(val).toEqual(0.05);
     });
   });
 });
