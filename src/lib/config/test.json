@@ -9,7 +9,6 @@
   "unknown": false,
   "rpc": "https://mainnet.infura.io/v3/{{INFURA_KEY}}",
   "ws": "ws://balancer.fi:1234",
-  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://etherscan.io",
   "explorerName": "Etherscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
