@@ -69,17 +69,17 @@ export class ExactOutExitHandler implements ExitPoolHandler {
 
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
-    const priceImpact = await sdkPool.calcPriceImpact(
+    const evmPriceImpact = await sdkPool.calcPriceImpact(
       fullAmountsOut,
       this.lastExitRes.expectedBPTIn,
       false
     );
 
-    const scaledPriceImpact = formatFixed(priceImpact, 18);
+    const priceImpact = Number(formatFixed(evmPriceImpact, 18));
 
     return {
       amountsOut: { [tokenOutAddress]: amountOut },
-      priceImpact: Number(scaledPriceImpact),
+      priceImpact,
     };
   }
 

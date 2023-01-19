@@ -72,26 +72,26 @@ export class ExactInExitHandler implements ExitPoolHandler {
 
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
-    const priceImpact = await sdkPool.calcPriceImpact(
+    const evmPriceImpact = await sdkPool.calcPriceImpact(
       expectedAmountsOut,
       evmBptIn,
       false
     );
 
-    const scaledPriceImpact = formatFixed(priceImpact, 18);
-    const scaledAmountOut = this.getScaledAmountOut(
+    const priceImpact = Number(formatFixed(evmPriceImpact, 18));
+    const normalizedAmountOut = this.normalizeAmountOut(
       expectedAmountsOut,
       tokenOutIndex,
       tokenOut
     );
 
     return {
-      amountsOut: { [tokenOutAddress]: scaledAmountOut },
-      priceImpact: Number(scaledPriceImpact),
+      amountsOut: { [tokenOutAddress]: normalizedAmountOut },
+      priceImpact,
     };
   }
 
-  private getScaledAmountOut(
+  private normalizeAmountOut(
     amountsOut: string[],
     tokenOutIndex: number,
     tokenOut: TokenInfo
