@@ -1,7 +1,10 @@
 <template>
   <div
     ref="animateRef"
-    class="flex items-center py-3 px-4 text-base leading-5 opacity-0 highlight"
+    :class="[
+      'flex items-center py-3 px-4 text-base leading-5 opacity-0 highlight',
+      { 'bg-gray-100 dark:bg-gray-800': focussed },
+    ]"
   >
     <BalAsset
       :address="token.address"
@@ -51,6 +54,7 @@ export default {
     token: { type: Object as PropType<TokenInfo>, required: true },
     balanceLoading: { type: Boolean, default: true },
     hideBalance: { type: Boolean, default: false },
+    focussed: { type: Boolean, default: false },
   },
 
   setup(props) {
