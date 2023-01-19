@@ -45,31 +45,27 @@ const mockTokenInfoOut = {
   symbol: 'auraBAL',
 };
 
+jest.mock('@/lib/balancer.sdk', () => {
+  const mockSwapInfo = require('./__mocks__/mockSorSwapInfo.ts');
+  return {
+    balancer: {
+      sor: {
+        getSwaps: () => mockSwapInfo.default(),
+      },
+    },
+  };
+});
+
 jest.mock('@/composables/trade/useSor', () => {
-  const mockSorOutput = require('./__mocks__/mockSorOutput.ts').default;
+  const mockSorOutput = require('./__mocks__/mockSorOutput.json');
 
   return jest.fn(() => {
     return mockSorOutput;
   });
 });
 
-jest.mock('@balancer-labs/sdk', () => {
-  return {
-    someJoinExit: () => true,
-    canUseJoinExit: () => true,
-    Network: {
-      MAINNET: 1,
-      GOERLI: 5,
-    },
-    SwapTypes: {
-      SwapExactIn: 0,
-      SwapExactOut: 1,
-    },
-  };
-});
-
 jest.mock('@/providers/tokens.provider', () => {
-  const mockTokensOutput = { value: {} };
+  const mockTokensOutput = require('./__mocks__/mockTokensOutput.json');
 
   return {
     useTokens: () => {
@@ -84,16 +80,16 @@ jest.mock('@/providers/tokens.provider', () => {
   };
 });
 
-jest.mock('@/lib/balancer.sdk', () => {
-  const mockSwapInfo = require('./__mocks__/mockSorSwapInfo.ts');
-  return {
-    balancer: {
-      sor: {
-        getSwaps: () => mockSwapInfo.default(),
-      },
-    },
-  };
-});
+jest.mock('@/composables/approvals/useRelayerApproval', () => ({
+  __esModule: true,
+  default: () =>
+    jest.fn().mockImplementation(() => ({
+      relayerSignature: '-',
+    })),
+  RelayerType: {
+    BATCH_V4: 'BATCH_V4',
+  },
+}));
 
 const mockProps = {
   exactIn: ref(true),
