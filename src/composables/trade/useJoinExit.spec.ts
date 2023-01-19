@@ -104,7 +104,7 @@ describe('useJoinExit', () => {
     expect(result).toBeTruthy();
   });
 
-  it('Should pass return an available joinExit trade', async () => {
+  it('Should return an available joinExit trade', async () => {
     const { result: joinExit } = mount(() => useJoinExit(mockProps));
     await joinExit.handleAmountChange();
     expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(
