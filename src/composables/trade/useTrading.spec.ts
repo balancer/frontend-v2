@@ -24,7 +24,6 @@ jest.mock('@/services/web3/useWeb3', () => {
       _shallow: false,
       dep: {},
       __v_isRef: true,
-      _rawValue: 123,
       _value: 123,
     },
   });
@@ -51,21 +50,6 @@ jest.mock('@/composables/trade/useSor', () => {
   return jest.fn(() => {
     return mockSorOutput;
   });
-});
-
-jest.mock('@balancer-labs/sdk', () => {
-  return {
-    someJoinExit: () => true,
-    canUseJoinExit: () => true,
-    Network: {
-      MAINNET: 1,
-      GOERLI: 5,
-    },
-    SwapTypes: {
-      SwapExactIn: 0,
-      SwapExactOut: 1,
-    },
-  };
 });
 
 jest.mock('@/providers/tokens.provider', () => {
