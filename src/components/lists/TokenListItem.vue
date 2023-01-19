@@ -19,7 +19,7 @@
       v-if="!hideBalance"
       class="flex flex-col items-end font-medium text-right"
     >
-      <BalLoadingNumber v-if="balanceLoading" type="token" />
+      <BalLoadingBlock v-if="balanceLoading" class="w-14 h-4" />
       <template v-else>
         <template v-if="balance > 0">
           <template v-if="balance >= 0.0001">
@@ -27,22 +27,10 @@
           </template>
           <template v-else> &#60; 0.0001 </template>
         </template>
-        <template v-else>-</template>
-      </template>
-
-      <BalLoadingNumber
-        v-if="balanceLoading"
-        type="fiat"
-        numberWidth="2"
-        numberHeight="4"
-        class="text-sm font-normal"
-      />
-      <div v-else class="text-sm font-normal text-secondary">
-        <template v-if="value > 0">
+        <div v-if="value > 0" class="text-sm font-normal text-secondary">
           {{ fNum2(value, FNumFormats.fiat) }}
-        </template>
-        <template v-else>-</template>
-      </div>
+        </div>
+      </template>
     </span>
   </div>
 </template>
