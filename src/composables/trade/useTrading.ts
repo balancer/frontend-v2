@@ -4,7 +4,7 @@ import { useStore } from 'vuex';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { bnum, lsGet, lsSet } from '@/lib/utils';
+import { bnum, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { COW_SUPPORTED_NETWORKS } from '@/services/cowswap/constants';
 import {
@@ -27,9 +27,7 @@ export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'cowswap' | 'joinExit';
 
 export type UseTrading = ReturnType<typeof useTrading>;
 
-export const tradeGasless = ref<boolean>(
-  lsGet<boolean>(LS_KEYS.Trade.Gasless, true)
-);
+export const tradeGasless = ref<boolean>(false);
 
 export default function useTrading(
   exactIn: Ref<boolean>,

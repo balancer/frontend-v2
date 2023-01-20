@@ -60,7 +60,7 @@
         block
         @click.prevent="handlePreviewButton"
       />
-      <div
+      <!-- <div
         v-if="trading.isCowswapSupportedOnNetwork.value"
         class="flex items-center mt-5 h-8 text-sm"
       >
@@ -132,7 +132,7 @@
             </div>
           </div>
         </Transition>
-      </div>
+      </div> -->
       <TradeRoute
         v-if="alwaysShowRoutes"
         :addressIn="trading.tokenIn.value.address"
