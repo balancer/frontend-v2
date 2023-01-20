@@ -278,6 +278,7 @@ const provider = (props: Props) => {
       return output;
     } catch (error) {
       captureException(error);
+      console.error(error);
       throw new Error('Failed to construct join.', { cause: error });
     }
   }
