@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Network } from '@balancer-labs/sdk';
+import { Network, PoolToken } from '@balancer-labs/sdk';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -34,20 +34,22 @@ import { oneSecondInMs } from '@/composables/useTime';
  * TYPES
  */
 type Props = {
-  expiredGauges?: string[];
+  expiredGauges?: Readonly<string[]>;
   data?: VotingGaugeWithVotes[];
   isLoading?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
+  filterText?: string;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  expiredGauges: () => [],
+  expiredGauges: () => [] as never[],
   showPoolShares: false,
   noPoolsLabel: 'No pools',
+  filterText: '',
   isPaginated: false,
   data: () => [],
 });
@@ -175,6 +177,24 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
     ? 'expired-gauge-row'
     : '';
 }
+
+function getSelectedTokens(tokens: PoolToken[]) {
+  return tokens
+    .filter(
+      token => token.symbol?.toLowerCase() === props.filterText?.toLowerCase()
+    )
+    .map(item => item.address);
+}
+
+function getPickedTokens(tokens: PoolToken[]) {
+  return tokens
+    .filter(
+      token =>
+        props.filterText &&
+        token.symbol?.toLowerCase().includes(props.filterText?.toLowerCase())
+    )
+    .map(item => item.address);
+}
 </script>
 
 <template>
@@ -237,38 +257,43 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
+            :selectedTokens="getSelectedTokens(pool.tokens)"
+            :pickedTokens="getPickedTokens(pool.tokens)"
           />
           <BalChipNew v-if="getIsGaugeNew(addedTimestamp)" class="ml-2" />
           <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
         </div>
       </template>
       <template #nextPeriodVotesCell="gauge">
-        <div v-if="!isLoading" class="flex justify-end py-4 px-6">
-          <GaugeVoteInfo :gauge="gauge" />
-          <div class="flex justify-end w-6">
-            <IconLimit
-              v-if="gauge.pool.symbol === 'veBAL'"
-              size="sm"
-              amount="10"
-              :tooltip="
-                $t(
-                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedVeBAL'
-                )
-              "
-            />
-            <IconLimit
-              v-else-if="gauge.relativeWeightCap !== 'null'"
-              size="sm"
-              :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
-              :tooltip="
-                $t(
-                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt',
-                  [(Number(gauge.relativeWeightCap) * 100).toFixed()]
-                )
-              "
-            />
+        <!-- Put to BalLazy the most expensive to render component -->
+        <BalLazy>
+          <div v-if="!isLoading" class="flex justify-end py-4 px-6">
+            <GaugeVoteInfo :gauge="gauge" />
+            <div class="flex justify-end w-6">
+              <IconLimit
+                v-if="gauge.pool.symbol === 'veBAL'"
+                size="sm"
+                amount="10"
+                :tooltip="
+                  $t(
+                    'veBAL.liquidityMining.limitsTooltip.distributionsCappedVeBAL'
+                  )
+                "
+              />
+              <IconLimit
+                v-else-if="gauge.relativeWeightCap !== 'null'"
+                size="sm"
+                :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
+                :tooltip="
+                  $t(
+                    'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt',
+                    [(Number(gauge.relativeWeightCap) * 100).toFixed()]
+                  )
+                "
+              />
+            </div>
           </div>
-        </div>
+        </BalLazy>
       </template>
       <template #myVotesCell="gauge">
         <div v-if="!isLoading" class="py-4 px-6 text-right">

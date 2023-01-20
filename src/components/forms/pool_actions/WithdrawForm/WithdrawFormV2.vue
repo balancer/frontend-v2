@@ -9,8 +9,8 @@ import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
 import useExitPool from '@/composables/pools/useExitPool';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
-import { isDeep } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
+import { isDeep, isPreMintedBptType } from '@/composables/usePool';
 import { useI18n } from 'vue-i18n';
 
 /**
@@ -54,11 +54,20 @@ const hasValidInputs = computed(
   (): boolean => validAmounts.value && hasAcceptedHighPriceImpact.value
 );
 
+// Limit token select modal to a subset.
+const subsetTokens = computed((): string[] => {
+  if (isPreMintedBptType(pool.value.poolType)) return [];
+
+  return pool.value.tokensList;
+});
+
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
-  singleAmountOut.address = wrappedNativeAsset.value.address;
+  singleAmountOut.address = isPreMintedBptType(pool.value.poolType)
+    ? wrappedNativeAsset.value.address
+    : pool.value.tokensList[0];
 });
 </script>
 
@@ -67,7 +76,6 @@ onBeforeMount(() => {
     <ProportionalWithdrawalInputV2 v-if="!isSingleAssetExit" :pool="pool" />
     <template v-else>
       <template v-if="isDeep(pool)">
-        <!-- Render swap exit UI -->
         <TokenInput
           v-model:isValid="singleAmountOut.valid"
           v-model:address="singleAmountOut.address"
@@ -78,12 +86,9 @@ onBeforeMount(() => {
           :balanceLabel="$t('max')"
           :balanceLoading="isLoadingMax"
           :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-          :tokenSelectProps="{ ignoreBalances: true }"
+          :tokenSelectProps="{ ignoreBalances: true, subsetTokens }"
           ignoreWalletBalance
         />
-      </template>
-      <template v-else>
-        <!-- Render single asset exit UI -->
       </template>
     </template>
 

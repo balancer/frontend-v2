@@ -68,22 +68,24 @@ export default function useTokenApproval(
   /**
    * METHODS
    */
-  async function approveSpender(spender: string): Promise<void> {
+  async function approveSpender(spender: string): Promise<TransactionResponse> {
     approving.value = true;
     try {
       const [tx] = await approveTokens(getProvider(), spender, [
         tokenInAddress.value,
       ]);
       txHandler(tx, spender);
+      return tx;
     } catch (e) {
       console.log(e);
       approving.value = false;
+      return Promise.reject(e);
     }
   }
 
-  async function approveV2(): Promise<void> {
+  async function approveV2(): Promise<TransactionResponse> {
     console.log('[TokenApproval] Unlock V2');
-    approveSpender(configService.network.addresses.vault);
+    return approveSpender(configService.network.addresses.vault);
   }
 
   function txHandler(tx: TransactionResponse, spender: string): void {
