@@ -24,6 +24,7 @@ const defaultLocale = 'en-US';
 
 const i18n = createI18n({
   locale: defaultLocale,
+  legacy: false,
   messages,
   dateTimeFormats: {
     'en-US': {

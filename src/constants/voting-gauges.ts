@@ -1,7 +1,10 @@
 import { Network } from '@balancer-labs/sdk';
 import { PoolToken, PoolType } from '@/services/pool/types';
 
-import ALL_VOTING_GAUGES from '../../public/data/voting-gauges.json';
+// voting-gauges.json is inside src
+// If we wanted to make it static (public folder) we should use an async import like this solution shows:
+// https://stackoverflow.com/questions/74344683/how-to-import-a-json-file-from-public-directory-with-vite/74345564#74345564
+import ALL_VOTING_GAUGES from '@/data/voting-gauges.json';
 
 export type VotingGauge = {
   address: string;

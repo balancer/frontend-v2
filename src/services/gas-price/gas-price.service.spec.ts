@@ -1,5 +1,5 @@
 import { GasPriceService } from './gas-price.service';
-import { mock } from 'jest-mock-extended';
+import { mock } from 'vitest-mock-extended';
 import { Contract } from '@ethersproject/contracts';
 
 async function settingsForContractCall(contractMock) {

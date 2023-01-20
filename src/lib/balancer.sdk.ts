@@ -1,6 +1,7 @@
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import { ref } from 'vue';
+import { isTestMode } from '@/plugins/modes';
 
 const network = ((): Network => {
   switch (configService.network.key) {
@@ -34,4 +35,4 @@ export async function fetchPoolsForSor() {
   console.timeEnd('fetchPoolsForSor');
 }
 
-if (process.env.NODE_ENV !== 'test') fetchPoolsForSor();
+if (!isTestMode()) fetchPoolsForSor();

@@ -22,7 +22,7 @@ const urlNetworkId: Network | null = routeSlug
 const NETWORK_ID =
   urlNetworkId ||
   localStorageNetworkId ||
-  (Number(process.env.VUE_APP_NETWORK) as Network) ||
+  (Number(import.meta.env.VITE_NETWORK) as Network) ||
   Network.MAINNET;
 if (windowAvailable) localStorage.setItem('networkId', NETWORK_ID.toString());
 export const networkSlug = config[NETWORK_ID].slug;

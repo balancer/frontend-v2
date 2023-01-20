@@ -3,32 +3,33 @@ import { computed, ref } from 'vue';
 import { mount } from '@/tests/mount-composable-tester';
 
 import useJoinExit from '@/composables/trade/useJoinExit';
+import { noop } from 'lodash';
 
-jest.mock('vue-i18n');
-jest.mock('vuex');
-jest.mock('@/composables/useEthereumTxType');
-jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useTransactions');
-jest.mock('@/locales');
-jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/composables/queries/useRelayerApprovalQuery');
+vi.mock('vue-i18n');
+vi.mock('vuex');
+vi.mock('@/composables/useEthereumTxType');
+vi.mock('@/composables/useEthers');
+vi.mock('@/composables/useTransactions');
+vi.mock('@/locales');
+vi.mock('@/services/web3/useWeb3');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/composables/queries/useRelayerApprovalQuery');
 
-jest.mock('@/providers/tokens.provider', () => ({
+vi.mock('@/providers/tokens.provider', () => ({
   useTokens: () => {
     return {
-      injectTokens: jest.fn().mockImplementation(),
-      priceFor: jest.fn().mockImplementation(),
-      useTokens: jest.fn().mockImplementation(),
-      getToken: jest.fn().mockImplementation(),
+      injectTokens: vi.fn(noop),
+      priceFor: vi.fn(noop),
+      useTokens: vi.fn(noop),
+      getToken: vi.fn(noop),
     };
   },
 }));
 
-jest.mock('@/composables/approvals/useRelayerApproval', () => ({
+vi.mock('@/composables/approvals/useRelayerApproval', () => ({
   __esModule: true,
   default: () =>
-    jest.fn().mockImplementation(() => ({
+    vi.fn().mockImplementation(() => ({
       relayerSignature: '-',
     })),
   RelayerType: {
@@ -37,7 +38,7 @@ jest.mock('@/composables/approvals/useRelayerApproval', () => ({
 }));
 
 const mockAmount = 10;
-jest.mock('@/lib/balancer.sdk', () => {
+vi.mock('@/lib/balancer.sdk', () => {
   return {
     balancer: {
       sor: {
@@ -93,13 +94,13 @@ const mockProps = {
 
 describe('useJoinExit', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(console, 'time').mockImplementation();
-    jest.spyOn(console, 'timeEnd').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation(noop);
+    vi.spyOn(console, 'time').mockImplementation(noop);
+    vi.spyOn(console, 'timeEnd').mockImplementation(noop);
   });
 
   it('Should load', () => {
-    jest.spyOn(console, 'time').mockImplementation();
+    vi.spyOn(console, 'time').mockImplementation(noop);
     const { result } = mount(() => useJoinExit(mockProps));
     expect(result).toBeTruthy();
   });

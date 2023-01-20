@@ -18,8 +18,3 @@ export function registerPlugins(app: App) {
     .use(VueVirtualScroller);
   return app;
 }
-
-export function registerTestPlugins(app: App) {
-  app.use(blocknative).use(Web3Plugin).use(vueQuery).use(VueVirtualScroller);
-  return app;
-}

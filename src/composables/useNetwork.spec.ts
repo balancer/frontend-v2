@@ -4,8 +4,8 @@ import {
   handleNetworkSlug,
 } from './useNetwork';
 
-jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/config/config.service', () => {
+vi.mock('@/services/web3/useWeb3');
+vi.mock('@/services/config/config.service', () => {
   return {
     configService: {
       env: {

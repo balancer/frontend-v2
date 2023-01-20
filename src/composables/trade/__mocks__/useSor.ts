@@ -1,7 +1,7 @@
-import { mock } from 'jest-mock-extended';
+import { mock } from 'vitest-mock-extended';
 import { UseSor } from '../useSor';
 
-const useSor = jest.fn(() => mock<UseSor>());
+const useSor = vi.fn(() => mock<UseSor>());
 
 // console.log(useSor.);
 

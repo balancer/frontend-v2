@@ -155,7 +155,7 @@ export default defineComponent({
 
   appearance: none;
   -webkit-print-color-adjust: exact;
-  color-adjust: exact;
+  print-color-adjust: exact;
   vertical-align: middle;
   background-origin: border-box;
   user-select: none;

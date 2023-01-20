@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Network, PoolToken } from '@balancer-labs/sdk';
+import { PoolToken } from '@balancer-labs/sdk';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -29,6 +29,7 @@ import { orderedTokenURIs } from '@/composables/useVotingGauges';
 import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
+import { buildNetworkIconURL } from '@/lib/utils/urls';
 
 /**
  * TYPES
@@ -132,12 +133,6 @@ const dataKey = computed(() => JSON.stringify(props.data));
 /**
  * METHODS
  */
-function networkSrc(network: Network) {
-  return require(`@/assets/images/icons/networks/${getNetworkSlug(
-    network
-  )}.svg`);
-}
-
 function isInternalUrl(url: string): boolean {
   return url.includes('balancer.fi') || url.includes('localhost');
 }
@@ -236,7 +231,11 @@ function getPickedTokens(tokens: PoolToken[]) {
           <div
             class="flex justify-center items-center w-8 h-8 bg-gray-50 dark:bg-gray-800 rounded shadow-sm"
           >
-            <img :src="networkSrc(network)" :alt="network" class="w-6 h-6" />
+            <img
+              :src="buildNetworkIconURL(getNetworkSlug(network))"
+              :alt="network"
+              class="w-6 h-6"
+            />
           </div>
         </div>
       </template>

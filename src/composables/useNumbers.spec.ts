@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { mountComposable } from '@/tests/mount-helpers';
 import useNumbers, { bspToDec, FNumFormats } from './useNumbers';
 
-jest.mock('@/providers/tokens.provider');
+vi.mock('@/providers/tokens.provider');
 
 describe('useNumbers', () => {
   const { result } = mountComposable(() => useNumbers());

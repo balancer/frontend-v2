@@ -186,7 +186,7 @@ if (isGoerli.value) {
  * DEV/STAGING ONLY ROUTES
  */
 // if (
-//   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
+//   ['development', 'staging'].includes(import.meta.env.VITE_ENV || 'development')
 // ) {
 //   routes.push();
 // }
