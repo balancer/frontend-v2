@@ -15,15 +15,15 @@ import {
   FeeQuoteParams,
   OrderID,
   OrderMetaData,
-  PriceInformation,
+  CowSwapQuoteResponse,
   PriceQuoteParams,
 } from './types';
-import { getCanonicalMarket, toErc20Address } from './utils';
 
 export const API_URLS = {
+  // ? 'https://barn.api.cow.fi/mainnet/api' // doesn't seem to be working. Different network?
   [Network.MAINNET]: IS_DEV
-    ? 'https://protocol-mainnet.dev.gnosisdev.com/api'
-    : 'https://protocol-mainnet.gnosis.io/api',
+    ? 'https://api.cow.fi/mainnet/api'
+    : 'https://api.cow.fi/mainnet/api',
 };
 
 export default class GnosisProtocolService {
@@ -131,20 +131,19 @@ export default class GnosisProtocolService {
     try {
       const { amount, sellToken, buyToken, kind } = params;
 
-      const { baseToken, quoteToken } = getCanonicalMarket({
-        sellToken,
-        buyToken,
-        kind,
-      });
-      const market = `${toErc20Address(baseToken)}-${toErc20Address(
-        quoteToken
-      )}`;
-
-      const response = await axios.get<PriceInformation>(
-        `${this.baseURL}/markets/${market}/${kind}/${amount}`
+      const response = await axios.post<CowSwapQuoteResponse>(
+        `${this.baseURL}/quote`,
+        {
+          sellToken,
+          buyToken,
+          from: sellToken,
+          kind,
+          [kind === 'sell' ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
+            amount,
+        }
       );
 
-      return response.data;
+      return response.data.quote;
     } catch (e) {
       console.log(`[Gnosis Protocol]: Failed to get price from API`, e);
     }

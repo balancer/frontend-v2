@@ -59,9 +59,21 @@ export type FeeInformation = {
   };
 };
 
-export type PriceInformation = {
-  token: string;
-  amount: string | null;
+export type CowSwapQuoteResponse = {
+  quote: {
+    sellToken: string;
+    buyToken: string;
+    receiver: string;
+    sellAmount: string | null;
+    buyAmount: string | null;
+    validTo: string;
+    appData: string;
+    feeAmount: string | null;
+    kind: string;
+  };
+  from: string;
+  expiration: string;
+  id: number;
 };
 
 export interface Market<T = string> {
