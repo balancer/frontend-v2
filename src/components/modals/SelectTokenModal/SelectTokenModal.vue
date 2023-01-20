@@ -282,7 +282,7 @@ watchEffect(() => {
           v-slot="{ item: token, index }"
           class="overflow-y-scroll list-height"
           :items="tokens"
-          :itemSize="64"
+          :itemSize="70"
           keyField="address"
           :buffer="100"
         >
@@ -293,9 +293,6 @@ watchEffect(() => {
               :balanceLoading="dynamicDataLoading"
               :focussed="index == state.focussedToken"
               tabIndex="0"
-              :class="{
-                'bg-gray-100 dark:bg-gray-800': index == state.focussedToken,
-              }"
             />
           </a>
         </RecycleScroller>
