@@ -350,11 +350,13 @@ export default function useGnosis({
             if (
               priceQuote.status === 'fulfilled' &&
               priceQuote.value &&
-              priceQuote.value.buyAmount != null
+              (exactIn.value
+                ? priceQuote.value.buyAmount != null
+                : priceQuote.value.sellAmount != null)
             ) {
               fulfilledPriceQuotes.push(
                 exactIn.value
-                  ? priceQuote.value.buyAmount
+                  ? priceQuote.value.buyAmount ?? ''
                   : priceQuote.value.sellAmount ?? ''
               );
             }
