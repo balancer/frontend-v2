@@ -2,7 +2,6 @@ import { Network } from '@balancer-labs/sdk';
 import axios from 'axios';
 
 import { networkId } from '@/composables/useNetwork';
-import { IS_DEV } from '@/constants/env';
 
 import OperatorError from './errors/OperatorError';
 import {
@@ -20,10 +19,7 @@ import {
 } from './types';
 
 export const API_URLS = {
-  // ? 'https://barn.api.cow.fi/mainnet/api' // doesn't seem to be working. Different network?
-  [Network.MAINNET]: IS_DEV
-    ? 'https://api.cow.fi/mainnet/api'
-    : 'https://api.cow.fi/mainnet/api',
+  [Network.MAINNET]: 'https://api.cow.fi/mainnet/api',
 };
 
 export default class GnosisProtocolService {
