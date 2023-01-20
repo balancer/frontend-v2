@@ -199,7 +199,7 @@ watchEffect(() => {
         </div>
         <div
           v-if="!state.selectTokenList && !hideTokenLists"
-          class="group flex items-center cursor-pointer"
+          class="group flex items-center mr-2 cursor-pointer"
           @click="toggleSelectTokenList"
         >
           <span class="text-xs text-secondary">{{ $t('tokenLists') }}</span>
