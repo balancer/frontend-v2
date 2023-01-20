@@ -118,7 +118,7 @@ const provider = (props: Props) => {
 
   const queryClient = useQueryClient();
 
-  const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
+  const debounceQueryExit = debounce(queryExit, 1000);
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
     leading: true,
   });
@@ -135,7 +135,7 @@ const provider = (props: Props) => {
       singleAmountOut
     ),
     debounceQueryExit,
-    reactive({ enabled: queriesEnabled })
+    reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
   );
 
   const singleAssetMaxQuery = useQuery<void, Error>(
@@ -145,7 +145,7 @@ const provider = (props: Props) => {
       toRef(singleAmountOut, 'address')
     ),
     debounceGetSingleAssetMax,
-    reactive({ enabled: queriesEnabled })
+    reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
   );
 
   /**
