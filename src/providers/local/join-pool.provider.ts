@@ -72,7 +72,7 @@ const provider = (props: Props) => {
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
 
-  const debounceQueryJoin = debounce(queryJoin, 1000, { leading: true });
+  const debounceQueryJoin = debounce(queryJoin, 1000);
 
   const queryEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
@@ -88,7 +88,7 @@ const provider = (props: Props) => {
       isSingleAssetJoin
     ),
     debounceQueryJoin,
-    reactive({ enabled: queryEnabled })
+    reactive({ enabled: queryEnabled, refetchOnWindowFocus: false })
   );
 
   /**
