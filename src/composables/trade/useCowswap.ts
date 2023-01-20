@@ -33,7 +33,7 @@ import { Goals, trackGoal } from '../useFathom';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
-  process.env.VUE_APP_GNOSIS_APP_DATA ??
+  import.meta.env.VITE_GNOSIS_APP_DATA ??
   '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB';
 
 type State = {

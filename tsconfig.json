@@ -25,13 +25,15 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
     "sourceMap": true,
     "baseUrl": ".",
     "noImplicitAny": false,
     "resolveJsonModule": true,
-    "types": ["node", "webpack-env", "jest"],
+    "types": ["node", "vitest/globals", "vite/client"],
     "paths": {
       "@/*": ["src/*"],
+      "@tests/*": ["tests/*"],
       // Stubbing react types
       // https://github.com/johnsoncodehk/volar/discussions/592#discussioncomment-2163786
       "react": ["src/types/empty-stub.d.ts"],
@@ -41,6 +43,7 @@
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": [
+    "components.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

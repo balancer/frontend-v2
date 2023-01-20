@@ -1,15 +1,16 @@
+import { noop } from 'lodash';
 import { balancerContractsService } from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
 import Vault from './vault';
 
-jest.mock('../balancer-contracts.service');
-jest.mock('./vault');
+vi.mock('../balancer-contracts.service');
+vi.mock('./vault');
 
-jest.mock('ethers', () => {
+vi.mock('ethers', () => {
   return {
-    Contract: jest.fn().mockImplementation(() => {
+    Contract: vi.fn().mockImplementation(() => {
       return {
-        getSwapFeePercentage: jest.fn().mockImplementation(() => {
+        getSwapFeePercentage: vi.fn().mockImplementation(() => {
           return '100000000000000000'; // 10%
         }),
       };
@@ -21,7 +22,7 @@ describe('ProtocolFeesCollector', () => {
   const vault = new Vault(balancerContractsService);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('Instantiates the provider service', () => {
@@ -38,7 +39,7 @@ describe('ProtocolFeesCollector', () => {
     });
 
     it('returns 0 if error thrown', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
+      vi.spyOn(console, 'error').mockImplementationOnce(noop);
       vault.instance.getProtocolFeesCollector.mockImplementation(() => {
         throw new Error('Failed to fetch addresss');
       });

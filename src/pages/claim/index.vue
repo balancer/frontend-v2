@@ -25,6 +25,8 @@ import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
+import { buildNetworkIconURL } from '@/lib/utils/urls';
+import { Network } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -51,21 +53,27 @@ const {
 /**
  * STATE
  */
-const networks = [
+interface NetworkMetadata {
+  id: string;
+  name: string;
+  key: Network;
+}
+
+const networks: NetworkMetadata[] = [
   {
     id: 'ethereum',
     name: 'Ethereum',
-    key: '1',
+    key: Network.MAINNET,
   },
   {
     id: 'polygon',
     name: 'Polygon',
-    key: '137',
+    key: Network.POLYGON,
   },
   {
     id: 'arbitrum',
     name: 'Arbitrum',
-    key: '42161',
+    key: Network.ARBITRUM,
   },
 ];
 
@@ -77,7 +85,9 @@ const loading = computed(
 );
 
 const networkBtns = computed(() => {
-  return networks.filter(network => network.key !== configService.network.key);
+  return networks.filter(
+    network => network.key.toString() !== configService.network.key
+  );
 });
 
 const balRewardsData = computed((): RewardRow[] => {
@@ -327,9 +337,7 @@ onBeforeMount(async () => {
               color="white"
             >
               <img
-                :src="
-                  require(`@/assets/images/icons/networks/${network.id}.svg`)
-                "
+                :src="buildNetworkIconURL(network.id as unknown as  Network)"
                 :alt="network.id"
                 class="mr-2 w-6 h-6 rounded-full shadow-sm"
               />

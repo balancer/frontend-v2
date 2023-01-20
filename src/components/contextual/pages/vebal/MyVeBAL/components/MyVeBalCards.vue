@@ -186,7 +186,7 @@ const cards = computed(() => {
         />
         <div>
           <router-link
-            v-if="card.showPlusIcon"
+            v-if="card.showPlusIcon && card.plusIconTo"
             :to="card.plusIconTo"
             class="flex items-center text-blue-600 dark:text-blue-400"
           >

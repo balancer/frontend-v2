@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { RouterLinkProps } from 'vue-router';
 
-type Props = {
+interface Props extends RouterLinkProps {
   active: boolean;
-};
+}
 
 const props = withDefaults(defineProps<Props>(), {
   active: false,
@@ -17,7 +18,7 @@ const classes = computed(() => ({
 </script>
 
 <template>
-  <router-link :class="['desktop-link-item', classes]">
+  <router-link v-bind="props" :class="['desktop-link-item', classes]">
     <slot />
   </router-link>
 </template>

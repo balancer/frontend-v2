@@ -2,21 +2,20 @@ import { removeBptFrom } from '@/composables/usePool';
 import { PoolToken } from '@/services/pool/types';
 import { BoostedPoolMock, PoolMock } from '@/__mocks__/pool';
 import { ref } from 'vue';
-import { mount } from '@/tests/mount-composable-tester';
 import { useTokenBreakdown } from './useTokenBreakdown';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
-
-jest.mock('@/providers/tokens.provider');
+import { mountComposable } from '@/tests/mount-helpers';
+import * as tokensProvider from '@/providers/tokens.provider';
 
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
 const isDeepPool = ref(true);
 
+vi.mock('@/providers/tokens.provider');
+
 it('Works for a parent token in a deep nested pool', async () => {
   const token = ref(bbaDaiToken);
   const shareOfParentInPool = ref(1);
-  const { result } = mount(() =>
+  const { result } = mountComposable(() =>
     useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
   );
 
@@ -36,7 +35,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
 
   it('for wrapped tokens (aDAi)', async () => {
     const aDaiToken = ref(bbaDaiToken.token?.pool?.tokens?.[0] as PoolToken);
-    const { result } = mount(() =>
+    const { result } = mountComposable(() =>
       useTokenBreakdown(aDaiToken, shareOfParentInPool, isDeepPool)
     );
 
@@ -50,7 +49,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
 
   it('for a non wrapped token (DAI)', async () => {
     const daiToken = ref(bbaDaiToken.token?.pool?.tokens?.[1] as PoolToken);
-    const { result } = mount(() =>
+    const { result } = mountComposable(() =>
       useTokenBreakdown(daiToken, shareOfParentInPool, isDeepPool)
     );
 
@@ -70,7 +69,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
   it('for GRO token', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
-    const { result } = mount(() =>
+    const { result } = mountComposable(() =>
       useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
 
@@ -83,7 +82,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
   it('works for WETH token', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
-    const { result } = mount(() =>
+    const { result } = mountComposable(() =>
       useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
 
@@ -96,7 +95,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
   it('works WETH token', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
-    const { result } = mount(() =>
+    const { result } = mountComposable(() =>
       useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
 
@@ -108,13 +107,13 @@ describe('Given a weighted pool (GRO-WETH)', () => {
 
   it('Uses latestUSDPrice when the token price is not defined (fiat value is zero because priceFor returns zero when token price not found)', () => {
     //@ts-ignore
-    useTokens = () => ({
+    vi.spyOn(tokensProvider, 'useTokens').mockReturnValueOnce({
       priceFor: () => 0,
     });
 
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
-    const { result } = mount(() =>
+    const { result } = mountComposable(() =>
       useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
 

@@ -5,10 +5,10 @@ export default function Web3Service() {
   return {
     txBuilder: {
       contract: {
-        sendTransaction: jest.fn().mockResolvedValue(txResponseMock),
+        sendTransaction: vi.fn().mockResolvedValue(txResponseMock),
       },
     },
-    getUserAddress: jest.fn().mockImplementation(() => userAddress),
+    getUserAddress: vi.fn().mockImplementation(() => userAddress),
   };
 }
 
