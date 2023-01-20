@@ -17,6 +17,7 @@ import {
   CowSwapQuoteResponse,
   PriceQuoteParams,
 } from './types';
+import { zeroAddress } from 'ethereumjs-util';
 
 export const API_URLS = {
   [Network.MAINNET]: 'https://api.cow.fi/mainnet/api',
@@ -125,14 +126,14 @@ export default class GnosisProtocolService {
 
   public async getPriceQuote(params: PriceQuoteParams) {
     try {
-      const { amount, sellToken, buyToken, kind } = params;
+      const { amount, sellToken, buyToken, kind, account } = params;
 
       const response = await axios.post<CowSwapQuoteResponse>(
         `${this.baseURL}/quote`,
         {
           sellToken,
           buyToken,
-          from: sellToken,
+          from: account || zeroAddress(),
           kind,
           [kind === 'sell' ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
             amount,

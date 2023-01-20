@@ -49,6 +49,7 @@ export type PriceQuoteParams = Pick<
   amount: string;
   fromDecimals: number;
   toDecimals: number;
+  account?: string;
 };
 
 export type FeeInformation = {
