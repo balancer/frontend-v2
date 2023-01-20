@@ -8,6 +8,7 @@ import mockSorOutput from './__mocks__/mockSorOutput';
 import { mountComposable } from '@/tests/mount-helpers';
 import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
+import { noop } from 'lodash';
 
 vi.mock('@/services/web3/useWeb3');
 vi.mock('@/composables/queries/useRelayerApprovalQuery');
@@ -48,9 +49,9 @@ vi.mock('@/providers/tokens.provider', () => {
   return {
     useTokens: () => {
       return {
-        injectTokens: vi.fn().mockImplementation(),
-        priceFor: vi.fn().mockImplementation(),
-        useTokens: vi.fn().mockImplementation(),
+        injectTokens: vi.fn(noop),
+        priceFor: vi.fn(noop),
+        useTokens: vi.fn(noop),
         getToken: vi.fn(() => ({ value: mockTokenInfoIn })),
         tokens: mockTokensOutput,
       };

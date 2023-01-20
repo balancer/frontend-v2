@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { mount } from '@/tests/mount-composable-tester';
 
 import useJoinExit from '@/composables/trade/useJoinExit';
+import { noop } from 'lodash';
 
 vi.mock('vue-i18n');
 vi.mock('vuex');
@@ -17,10 +18,10 @@ vi.mock('@/composables/queries/useRelayerApprovalQuery');
 vi.mock('@/providers/tokens.provider', () => ({
   useTokens: () => {
     return {
-      injectTokens: vi.fn().mockImplementation(),
-      priceFor: vi.fn().mockImplementation(),
-      useTokens: vi.fn().mockImplementation(),
-      getToken: vi.fn().mockImplementation(),
+      injectTokens: vi.fn(noop),
+      priceFor: vi.fn(noop),
+      useTokens: vi.fn(noop),
+      getToken: vi.fn(noop),
     };
   },
 }));
@@ -93,13 +94,13 @@ const mockProps = {
 
 describe('useJoinExit', () => {
   beforeEach(() => {
-    vi.spyOn(console, 'log').mockImplementation();
-    vi.spyOn(console, 'time').mockImplementation();
-    vi.spyOn(console, 'timeEnd').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation(noop);
+    vi.spyOn(console, 'time').mockImplementation(noop);
+    vi.spyOn(console, 'timeEnd').mockImplementation(noop);
   });
 
   it('Should load', () => {
-    vi.spyOn(console, 'time').mockImplementation();
+    vi.spyOn(console, 'time').mockImplementation(noop);
     const { result } = mount(() => useJoinExit(mockProps));
     expect(result).toBeTruthy();
   });
