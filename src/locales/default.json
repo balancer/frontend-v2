@@ -59,17 +59,17 @@
   "attribute": "Attribute",
   "approve": "Approve",
   "approved": "Approved",
-  "approvedGnosisRelayer": "Approved Gnosis relayer",
+  "approvedCowswapRelayer": "Approved Cowswap relayer",
   "approvedLidoRelayer": "Approved Lido relayer",
-  "approveGnosisRelayer": "Approve Gnosis relayer",
-  "approveGP": "Approve swapping on Gnosis Protocol",
+  "approveCowswapRelayer": "Approve Cowswap relayer",
+  "approveGP": "Approve swapping on Cowswap Protocol",
   "approveLidoRelayer": "Approve Lido relayer",
   "approveBatchRelayer": "Approve Batch relayer",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
   "approveTokens": "Approve tokens",
   "approving": "Approving",
-  "approvingGnosisRelayer": "Approving Gnosis relayer",
+  "approvingCowswapRelayer": "Approving Cowswap relayer",
   "approvingLidoRelayer": "Approving Lido relayer",
   "apr": "APR",
   "apyvisionPoolInsights": "More insights on APY.vision",
@@ -387,7 +387,7 @@
     "showStake": "Show pools where I stake"
   },
   "getLpTokens": "Get LP tokens",
-  "gnosisErrors": {
+  "cowswapErrors": {
     "lowAmount": {
       "header": "Your swap amount is too low",
       "body": "The fees for this transaction exceed the amount you want to swap."
@@ -404,7 +404,7 @@
       "header": "An error has occurred"
     }
   },
-  "gnosisWarnings": {
+  "cowswapWarnings": {
     "highFees": {
       "body": "You can still proceed with the swap but a high percentage of it will be consumed by swap fees.",
       "header": "The fees on this transaction exceed 20% of the swap amount."
@@ -470,7 +470,8 @@
       },
       "noPoolTokensToJoinWith": {
         "title": "You have no pool tokens to join with",
-        "description": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact. \n\nHowever, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens. "
+        "paragraph1": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact.",
+        "paragraph2": "However, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens."
       }
     },
     "error": {
@@ -779,7 +780,7 @@
   "returnToPool": "Return to pool page",
   "returnToPoolCreation": "Return to pool creation",
   "saveGas": " to save gas.",
-  "searchBy": "Name, symbol or address",
+  "searchBy": "Search by name, symbol or address",
   "searchByName": "Search by Name",
   "seeMore": "See more",
   "seeOnExplorer": "See on explorer",
@@ -1239,6 +1240,10 @@
     "actionLabel": "Dismiss",
     "title": "An error has occurred"
   },
+  "isJoinExitTipDescription": {
+    "withApproval": "This swap will be submitted via the Relayer. This uses a little more gas but gets a better price. Requires a free, one-time Batch Relayer signature.",
+    "withoutApproval": "This swap will be submitted via the Relayer. This uses a little more gas but gets a better price. "
+  },
   "tradeSuccess": "Successfully swapped your tokens",
   "tradeSummary": {
     "exactIn": {
@@ -1257,13 +1262,17 @@
     },
     "gasCosts": "Gas costs",
     "transactionTypesTooltips": {
-      "gnosisRelayerApproval": {
+      "cowswapRelayerApproval": {
         "content": "Your permission is required to use a batch relayer for gas-free, MEV-protected transactions.",
-        "title": "Approve swaps on Gnosis protocol"
+        "title": "Approve swaps on Cowswap protocol"
       },
       "lidoRelayerApproval": {
         "content": "Your permission is required to use the Lido relayer for stETH swaps.",
         "title": "Approve Lido relayer"
+      },
+      "batchRelayerApproval": {
+        "content": "Your permission is required to use the Batch relayer.",
+        "title": "Approve Batch relayer"
       },
       "tokenApproval": {
         "content": "Your permission is required to swap this token on Balancer. Approvals are required once per token, per wallet.",

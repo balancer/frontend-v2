@@ -2,7 +2,7 @@ import { IS_DEV, IS_STAGING } from '@/constants/env';
 
 import { OrderID } from './types';
 
-export default class GnosisExplorerService {
+export default class CowswapExplorerService {
   baseURL: string;
 
   constructor() {
@@ -20,4 +20,4 @@ export default class GnosisExplorerService {
   }
 }
 
-export const gnosisExplorer = new GnosisExplorerService();
+export const cowswapExplorer = new CowswapExplorerService();

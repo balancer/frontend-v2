@@ -43,7 +43,7 @@ export const Goals = {
   WalletScreened: 'ENOWYUGJ',
   ContractTransactionSubmitted: 'Y9NIVW3X',
   RawTransactionSubmitted: 'MVKM6CDX',
-  GnosisSwap: '6OKQIZ6Y',
+  CowswapSwap: '6OKQIZ6Y',
   BalancerSwap: 'YV0NCHEC',
   BalancerSwapMainnet: 'LGKR6VHG',
 };

@@ -10,16 +10,16 @@ import { useStore } from 'vuex';
 
 import { bnum } from '@/lib/utils';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
-import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
-import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
-import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
+import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
+import { cowswapProtocolService } from '@/services/cowswap/cowswapProtocol.service';
+import { signOrder, UnsignedOrder } from '@/services/cowswap/signing';
 import {
   FeeInformation,
   FeeQuoteParams,
   OrderMetaData,
   PriceQuoteParams,
-} from '@/services/gnosis/types';
-import { calculateValidTo, toErc20Address } from '@/services/gnosis/utils';
+} from '@/services/cowswap/types';
+import { calculateValidTo, toErc20Address } from '@/services/cowswap/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Token } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
@@ -52,7 +52,7 @@ const state = reactive<State>({
   submissionError: null,
 });
 
-export type GnosisTransactionDetails = {
+export type CowswapTransactionDetails = {
   tokenIn: Token;
   tokenOut: Token;
   tokenInAddress: string;
@@ -89,17 +89,17 @@ const feeQuoteResolveLast = onlyResolvesLast(getFeeQuote);
 function getPriceQuotes(params: PriceQuoteParams) {
   return Promise.allSettled([
     tryPromiseWithTimeout(
-      gnosisProtocolService.getPriceQuote(params),
+      cowswapProtocolService.getPriceQuote(params),
       PRICE_QUOTE_TIMEOUT
     ),
   ]);
 }
 
 function getFeeQuote(params: FeeQuoteParams) {
-  return gnosisProtocolService.getFeeQuote(params);
+  return cowswapProtocolService.getFeeQuote(params);
 }
 
-export default function useGnosis({
+export default function useCowswap({
   exactIn,
   tokenInAddressInput,
   tokenInAmountInput,
@@ -198,7 +198,7 @@ export default function useGnosis({
         getSigner()
       );
 
-      const orderId = await gnosisProtocolService.sendSignedOrder({
+      const orderId = await cowswapProtocolService.sendSignedOrder({
         order: {
           ...unsignedOrder,
           signature,
@@ -258,7 +258,7 @@ export default function useGnosis({
         successCallback();
       }
       confirming.value = false;
-      trackGoal(Goals.GnosisSwap);
+      trackGoal(Goals.CowswapSwap);
     } catch (e) {
       captureException(e);
       state.submissionError = (e as Error).message;
@@ -418,7 +418,7 @@ export default function useGnosis({
           }
         }
       } catch (e) {
-        console.log('[Gnosis Quotes] Failed to update quotes', e);
+        console.log('[Cowswap Quotes] Failed to update quotes', e);
       }
     }
 

@@ -6,7 +6,7 @@ import sampleTitleTokens from './__mocks__/sample-title-tokens.json';
 
 import { renderComponent } from '@/tests/renderComponent';
 
-// needed to prevent jest teleport error
+// needed to prevent teleport error
 vi.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
   default: {
     template: '<div>-</div>',

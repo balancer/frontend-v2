@@ -8,7 +8,7 @@ import { Vault__factory } from '@balancer-labs/typechain';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { ContractInterface } from '@ethersproject/contracts';
 
-import { calculateValidTo } from '../gnosis/utils';
+import { calculateValidTo } from '../cowswap/utils';
 
 import ConfigService, { configService } from '@/services/config/config.service';
 

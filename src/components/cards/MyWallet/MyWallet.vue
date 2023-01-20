@@ -12,6 +12,7 @@ import useNativeBalance from '@/composables/useNativeBalance';
 import { usePool } from '@/composables/usePool';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import { useTradeState } from '@/composables/trade/useTradeState';
+import { includesAddress } from '@/lib/utils';
 
 type Props = {
   excludedTokens?: string[];
@@ -37,6 +38,7 @@ const { isDeepPool, isPreMintedBptPool } = usePool(toRef(props, 'pool'));
 
 const {
   tokensWithBalance,
+  poolTokenAddresses,
   poolTokensWithBalance,
   poolTokensWithoutBalance,
   notPoolTokensWithBalance,
@@ -59,7 +61,13 @@ const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 function handleAssetClick(tokenAddress) {
   setTokenInAddress(tokenAddress);
+  const isPoolToken = includesAddress(poolTokenAddresses.value, tokenAddress);
+  emit('click:asset', tokenAddress, isPoolToken);
 }
+
+const emit = defineEmits<{
+  (e: 'click:asset', tokenAddress: string, isPoolToken: boolean): void;
+}>();
 </script>
 
 <template>
