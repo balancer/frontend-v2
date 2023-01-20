@@ -10,6 +10,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
 import { TokenInfoMap, TokenList } from '@/types/TokenList';
 import { useMagicKeys } from '@vueuse/core';
+import BalLoadingIcon from '@/components/_global/BalLoadingIcon/BalLoadingIcon.vue';
 
 interface Props {
   open?: boolean;

@@ -3,7 +3,7 @@ import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, isSameAddress } from '@/lib/utils';
+import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
@@ -65,7 +65,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
       throw new Error('Missing amounts to join with.');
 
     const amountIn = amountsIn[0];
-    const tokenIn = tokensIn[amountIn.address];
+    const tokenIn = selectByAddress(tokensIn, amountIn.address);
     if (!tokenIn) throw new Error('Missing critical token metadata.');
     if (!amountIn.value || bnum(amountIn.value).eq(0))
       return { bptOut: '0', priceImpact: 0 };

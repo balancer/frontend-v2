@@ -6,6 +6,7 @@ import blocknative from '@/plugins/blocknative';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideTokens } from '@/providers/tokens.provider';
+import VueVirtualScroller from 'vue3-virtual-scroller';
 
 interface ProviderComponent {
   component: any;
@@ -58,7 +59,7 @@ function getOptions(
   return {
     ...options,
     global: {
-      plugins: [vueQuery, Web3Plugin, blocknative],
+      plugins: [vueQuery, Web3Plugin, blocknative, VueVirtualScroller],
       ...options.global,
     },
   };

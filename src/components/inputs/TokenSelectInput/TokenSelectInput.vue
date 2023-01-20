@@ -74,7 +74,7 @@ function toggleModal(): void {
 
 <template>
   <div>
-    <div
+    <button
       v-if="hasToken && options.length === 0"
       :class="['token-select-input selected group', { selectable: !fixed }]"
       @click="toggleModal"
@@ -99,7 +99,7 @@ function toggleModal(): void {
         size="sm"
         class="ml-2 text-blue-600 group-hover:text-purple-500 dark:text-blue-400 dark:group-hover:text-yellow-500 transition-colors"
       />
-    </div>
+    </button>
     <BalDropdown
       v-else-if="hasToken && fixed && options.length > 0"
       :options="options"
@@ -152,14 +152,14 @@ function toggleModal(): void {
       </template>
     </BalDropdown>
 
-    <div
+    <button
       v-else
       class="token-select-input unselected selectable"
       @click="toggleModal"
     >
       {{ $t('selectToken') }}
       <BalIcon name="chevron-down" size="sm" class="ml-2" />
-    </div>
+    </button>
 
     <teleport to="#modal">
       <SelectTokenModal

@@ -62,7 +62,19 @@ jest.mock('@/composables/staking/useStaking', () => {
     };
   });
 });
+
+jest.mock('@ethersproject/abstract-signer', () => {
+  const ethers = require('@ethersproject/bignumber');
+  const originalModule = jest.requireActual('@ethersproject/abstract-signer');
+  return {
+    __esModule: true,
+    ...originalModule,
+    getGasPrice: jest.fn().mockResolvedValue(ethers.BigNumber.from('20')),
+  };
+});
+
 jest.mock('@balancer-labs/sdk', () => {
+  const ethers = require('@ethersproject/bignumber');
   const originalModule = jest.requireActual('@balancer-labs/sdk');
   return {
     __esModule: true,
@@ -73,6 +85,34 @@ jest.mock('@balancer-labs/sdk', () => {
     BalancerSDK: jest.fn().mockImplementation(() => ({
       swaps: {
         fetchPools: jest.fn().mockResolvedValue(true),
+        findRouteGivenIn: jest.fn().mockResolvedValue({
+          marketSp: '100100000000000000000',
+          returnAmount: ethers.BigNumber.from('1'),
+          returnAmountConsideringFees: ethers.BigNumber.from('1'),
+          returnAmountFromSwaps: ethers.BigNumber.from('1'),
+          swapAmount: ethers.BigNumber.from('1'),
+          swapAmountForSwaps: ethers.BigNumber.from('1'),
+          swaps: [
+            {
+              amount: '20000000000000000',
+              assetInIndex: 0,
+              assetOutIndex: 1,
+              poolId:
+                '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080',
+              returnAmount: '18172264369947643',
+              userData: '0x',
+            },
+          ],
+          tokenAddresses: [
+            '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+            '0xa13a9247ea42d743238089903570127dda72fe44',
+          ],
+          tokenIn: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          tokenInForSwaps: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          tokenOut: '0xa13a9247ea42d743238089903570127dda72fe44',
+          tokenOutFromSwaps: '0xa13a9247ea42d743238089903570127dda72fe44',
+        }),
       },
       pools: {
         generalisedJoin: jest.fn().mockResolvedValue({
@@ -126,12 +166,6 @@ jest.mock('@balancer-labs/sdk', () => {
 });
 
 const handlers = [
-  // rest.get(
-  //   'https://api.coingecko.com/api/v3/simple/price/',
-  //   (req, res, ctx) => {
-  //     return res(ctx.json({ ethereum: { eth: 1.0, usd: 1233.12 } }));
-  //   }
-  // ),
   graphql.query('StakingData', (req, res, ctx) => {
     return res(ctx.data({ gaugeShares: [], liquidityGauges: [] }));
   }),
@@ -153,6 +187,7 @@ const handlers = [
 ];
 
 const DAI = '0xB8096bC53c3cE4c11Ebb0069Da0341d75264B104';
+const USDT = '0x14468FD5E1de5A5a4882fa5f4e2217C5A8dDcadb';
 const TEST_ACCOUNT = '0x8fE3a2A5ae6BaA201C26fC7830EB713F33d6b313';
 
 function addTokenBalancesToCache(overrideBalances: UseBalancesQueryResponse) {
@@ -171,11 +206,11 @@ function addTokenBalancesToCache(overrideBalances: UseBalancesQueryResponse) {
     '0x594920068382f64E4bC06879679bD474118b97b1': '1.0',
     '0xDabD33683bAfDd448968Ab6d6f47C3535c64bf0c': '1.0',
     [DAI]: '1.0',
-    '0x14468FD5E1de5A5a4882fa5f4e2217C5A8dDcadb': '1.0',
+    [USDT]: '1.0',
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': '1.0',
   };
 
-  // Update the initial balances with the token balances
+  // Update the default balances
   Object.keys(overrideBalances).forEach(address => {
     balances[address] = overrideBalances[address];
   });
@@ -211,7 +246,7 @@ function addAllowancesToCache() {
     '0x594920068382f64E4bC06879679bD474118b97b1': '1.0',
     '0xDabD33683bAfDd448968Ab6d6f47C3535c64bf0c': '1.0',
     [DAI]: '1.0',
-    '0x14468FD5E1de5A5a4882fa5f4e2217C5A8dDcadb': '1.0',
+    [USDT]: '1.0',
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': '1.0',
   };
 
@@ -257,13 +292,17 @@ const testingUtils = generateTestingUtils({ providerType: 'MetaMask' });
 function mockWalletConnection() {
   testingUtils.mockChainId(5);
 
-  // testingUtils.mockConnectedWallet(
-  //   [TEST_ACCOUNT],
-  //   { chainId: 5 }
-  // );
-  testingUtils.mockNotConnectedWallet();
+  testingUtils.mockConnectedWallet([TEST_ACCOUNT], { chainId: 5 });
+  // testingUtils.mockNotConnectedWallet();
+
   // Mock the connection request of MetaMask
   testingUtils.mockRequestAccounts([TEST_ACCOUNT], { chainId: 5 });
+
+  // Swap joins need a gas price
+  testingUtils.lowLevel.mockRequest('eth_gasPrice', '100000', {
+    persistent: true,
+  });
+
   // testingUtils.mockAccounts([TEST_ACCOUNT]);
 }
 
@@ -278,7 +317,13 @@ async function clickConnectWallet() {
   await waitForElementToBeRemoved(connectButton);
 }
 
-async function factory(tokenBalances: UseBalancesQueryResponse = {}) {
+async function factory({
+  isSingleAssetJoin,
+  tokenBalances = {},
+}: {
+  tokenBalances?: UseBalancesQueryResponse;
+  isSingleAssetJoin: boolean;
+}) {
   mockWalletConnection();
   addAllowancesToCache();
   addTokenBalancesToCache(tokenBalances);
@@ -293,14 +338,11 @@ async function factory(tokenBalances: UseBalancesQueryResponse = {}) {
       providers: [
         {
           component: JoinPoolProvider,
-          props: { pool, isSingleAssetJoin: false },
+          props: { pool, isSingleAssetJoin },
         },
       ],
     }
   );
-
-  const title = await screen.findByText(/Add liquidity/i);
-  expect(title).toBeVisible();
 
   await clickConnectWallet();
 
@@ -323,72 +365,140 @@ describe('InvestFormV2.vue', () => {
   });
   afterEach(() => {
     server.resetHandlers();
+    // jest.restoreAllMocks();
   });
 
-  it('should show input if user has token balance', async () => {
-    await factory();
+  describe('Join with pool tokens', () => {
+    it('should show input if user has token balance', async () => {
+      await factory({ isSingleAssetJoin: false });
 
-    const BB_A_USDC_input = await screen.findByLabelText(/bb-a-USDC/i);
-    const DAI_input = await screen.findByLabelText('DAI');
+      const inputBbAUsdc = await screen.findByLabelText(/bb-a-USDC/i);
+      const inputDai = await screen.findByLabelText('DAI');
 
-    expect(BB_A_USDC_input).toBeVisible();
-    expect(DAI_input).toBeVisible();
-  });
-
-  it('should be able to set max amount in', async () => {
-    await factory({
-      [DAI]: '1.112',
+      expect(inputBbAUsdc).toBeVisible();
+      expect(inputDai).toBeVisible();
     });
 
-    const DAI_input = await screen.findByLabelText('DAI');
+    it('should be able to set max amount in', async () => {
+      await factory({
+        isSingleAssetJoin: false,
+        tokenBalances: {
+          [DAI]: '1.112',
+        },
+      });
 
-    const DAI_inputContainer = await screen.findByTestId(
-      /token-input-0xB8096bC53c3cE4c11Ebb0069Da0341d75264B104/i
-    );
+      // Find the max button
+      const inputContainerDai = await screen.findByTestId(
+        /token-input-0xB8096bC53c3cE4c11Ebb0069Da0341d75264B104/i
+      );
+      const maxBtnDai = within(inputContainerDai).getByRole('button', {
+        name: /Max/i,
+      });
 
-    // Find the max button
-    const DAImaxBtn = within(DAI_inputContainer).getByRole('button', {
-      name: /Max/i,
+      // Click the max button
+      await fireEvent.click(maxBtnDai);
+
+      // Check the input value
+      const inputDai = await screen.findByLabelText('DAI');
+      expect(inputDai).toHaveValue(1.112);
+
+      // Check the preview button is not disabled
+      const previewBtn = await screen.findByRole('button', {
+        name: /Preview/i,
+      });
+      await waitFor(() => expect(previewBtn).not.toBeDisabled());
     });
 
-    // Click the max button
-    await fireEvent.click(DAImaxBtn);
+    it('should show error if input amount exceeds wallet balance', async () => {
+      await factory({ isSingleAssetJoin: false });
 
-    // Check the input value
-    expect(DAI_input).toHaveValue(1.112);
+      // Find the input
+      const inputBbAUsdc = await screen.findByLabelText(/bb-a-USDC/i);
 
-    // Check the preview button is not disabled
-    const previewBtn = await screen.findByRole('button', { name: /Preview/i });
-    await waitFor(() => expect(previewBtn).not.toBeDisabled());
-  });
+      // Set the input value over the wallet balance
+      await fireEvent.update(inputBbAUsdc, '2');
 
-  it('should show error if input amount exceeds wallet balance', async () => {
-    await factory();
+      // Find the error message
+      await screen.findByText(/Exceeds wallet balance/i);
 
-    const BB_A_USDC_input = await screen.findByLabelText(/bb-a-USDC/i);
-
-    await fireEvent.update(BB_A_USDC_input, '2');
-
-    await screen.findByText(/Exceeds wallet balance/i);
-
-    // Check the preview button is disabled
-    const previewBtn = await screen.findByRole('button', { name: /Preview/i });
-    expect(previewBtn).toBeDisabled();
-  });
-
-  it('should not show token input if user balance is 0', async () => {
-    await factory({
-      [DAI]: '0.0',
+      // Check the preview button is disabled
+      const previewBtn = await screen.findByRole('button', {
+        name: /Preview/i,
+      });
+      expect(previewBtn).toBeDisabled();
     });
 
-    const BB_A_USDC_input = await screen.findByLabelText(/bb-a-USDC/i);
-    const DAI_input = screen.queryByLabelText('DAI');
+    it('should not show token input if user balance is 0', async () => {
+      await factory({
+        isSingleAssetJoin: false,
+        tokenBalances: {
+          [DAI]: '0.0',
+          [USDT]: '0.0',
+        },
+      });
 
-    expect(BB_A_USDC_input).toBeVisible();
-    expect(DAI_input).toBeNull();
+      const inputBbAUsdc = await screen.findByLabelText(/bb-a-USDC/i);
+      const inputDai = screen.queryByLabelText('DAI');
+      const inputUsdt = screen.queryByLabelText('USDT');
+
+      expect(inputBbAUsdc).toBeVisible();
+      expect(inputDai).toBeNull();
+      expect(inputUsdt).toBeNull();
+
+      // Show "No balance" message
+      const missingTokenText = await screen.findByText(
+        /No wallet balance for some pool tokens: DAI and USDT/i
+      );
+      expect(missingTokenText).toBeVisible();
+    });
   });
 
-  it.skip('Check the price impact', async () => {
-    // TODO: Check the price impact
+  describe('Single asset join', () => {
+    it('should be able to set max single amount in', async () => {
+      await factory({
+        isSingleAssetJoin: true,
+        tokenBalances: {
+          [DAI]: '1.112',
+        },
+      });
+
+      // Weth should be the token selected by default
+      const selectTokenBtn = await screen.findByRole('button', {
+        name: /WETH/i,
+      });
+
+      // click the select token button
+      await fireEvent.click(selectTokenBtn);
+      // screen.debug(undefined, 1000000);
+
+      // Find the DAI option
+      const tokenOption = await screen.findByRole('option', { name: /DAI/i });
+
+      // Select the DAI option
+      await fireEvent.click(tokenOption);
+
+      const inputDai = await screen.findByLabelText('DAI');
+
+      const inputContainerDai = await screen.findByTestId(
+        /token-input-0xB8096bC53c3cE4c11Ebb0069Da0341d75264B104/i
+      );
+
+      // Find the max button
+      const maxBtnDai = within(inputContainerDai).getByRole('button', {
+        name: /Max/i,
+      });
+
+      // Click the max button
+      await fireEvent.click(maxBtnDai);
+
+      // Check the input value
+      expect(inputDai).toHaveValue(1.112);
+
+      // Check the preview button is not disabled
+      const previewBtn = await screen.findByRole('button', {
+        name: /Preview/i,
+      });
+      await waitFor(() => expect(previewBtn).not.toBeDisabled());
+    });
   });
 });

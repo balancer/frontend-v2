@@ -9,6 +9,7 @@
           focussed,
       },
     ]"
+    role="option"
   >
     <BalAsset
       :address="token.address"
@@ -52,10 +53,11 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { TokenInfo } from '@/types/TokenList';
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 
 export default {
   name: 'TokenListItem',
-
+  components: { BalAsset },
   props: {
     token: { type: Object as PropType<TokenInfo>, required: true },
     balanceLoading: { type: Boolean, default: true },

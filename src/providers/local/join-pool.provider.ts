@@ -277,6 +277,7 @@ const provider = (props: Props) => {
       priceImpact.value = output.priceImpact;
     } catch (error) {
       captureException(error);
+      console.error({ error });
       throw new Error('Failed to construct join.', { cause: error });
     }
   }
