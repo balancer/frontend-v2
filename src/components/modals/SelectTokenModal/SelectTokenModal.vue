@@ -222,7 +222,7 @@ watchEffect(() => {
       </div>
     </template>
     <template v-if="state.selectTokenList">
-      <div class="flex py-2 px-4">
+      <div class="flex px-4 pt-2 pb-3 mr-2">
         <BalTextInput
           v-model="state.query"
           name="tokenSearchInput"
@@ -260,7 +260,7 @@ watchEffect(() => {
       </div>
     </template>
     <template v-else>
-      <div class="flex py-2 px-4">
+      <div class="flex px-4 pt-2 pb-3 mr-2">
         <BalTextInput
           v-model="state.query"
           name="tokenSearchInput"

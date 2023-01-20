@@ -2,7 +2,7 @@
   <div
     ref="animateRef"
     :class="[
-      `flex items-center py-3 border border-transparent mx-4 px-2 text-base
+      `flex items-center py-3 border border-transparent ml-4 mr-2 px-2 text-base
   leading-5 opacity-0 highlight hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg`,
       {
         'bg-blue-50 dark:bg-blue-900 border-blue-500': focussed,
