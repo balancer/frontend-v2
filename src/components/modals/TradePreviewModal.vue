@@ -1,305 +1,814 @@
+<script setup lang="ts">
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import { formatUnits } from '@ethersproject/units';
+import { mapValues } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
+import { TradeQuote } from '@/composables/trade/types';
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
+import useTokenApproval from '@/composables/approvals/useTokenApproval';
+import { UseTrading } from '@/composables/trade/useTrading';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { useTokens } from '@/providers/tokens.provider';
+import { useUserSettings } from '@/providers/user-settings.provider';
+import { FiatCurrency } from '@/constants/currency';
+import { bnum, bnumZero } from '@/lib/utils';
+import { isStETH } from '@/lib/utils/balancer/lido';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import useWeb3 from '@/services/web3/useWeb3';
+import { TransactionActionInfo } from '@/types/transactions';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+
+const PRICE_UPDATE_THRESHOLD = 0.02;
+
+type Props = {
+  trading: UseTrading;
+  error?: any;
+  warning?: any;
+};
+
+/**
+ * PROPS & EMITS
+ */
+
+const props = defineProps<Props>();
+
+const emit = defineEmits(['trade', 'close']);
+// COMPOSABLES
+const { t } = useI18n();
+const { fNum2, toFiat } = useNumbers();
+const { tokens, balanceFor, approvalRequired } = useTokens();
+const {
+  relayerSignature: batchRelayerSignature,
+  relayerApprovalAction: batchRelayerApprovalAction,
+} = useRelayerApproval(RelayerType.BATCH_V4);
+const { isUnlocked: batchRelayerIsUnlocked } = useRelayerApprovalTx(
+  RelayerType.BATCH_V4
+);
+const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
+const { slippage } = useUserSettings();
+
+// state
+const lastQuote = ref<TradeQuote | null>(
+  props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
+);
+const priceUpdated = ref(false);
+const priceUpdateAccepted = ref(false);
+
+// DATA
+const showSummaryInFiat = ref(false);
+
+// COMPUTED
+const slippageRatePercent = computed(() =>
+  fNum2(slippage.value, FNumFormats.percent)
+);
+
+const addressIn = computed(() => props.trading.tokenIn.value.address);
+
+const tokenInFiatValue = computed(() =>
+  fNum2(
+    toFiat(
+      props.trading.tokenInAmountInput.value,
+      props.trading.tokenIn.value.address
+    ),
+    FNumFormats.fiat
+  )
+);
+
+const tokenOutFiatValue = computed(() =>
+  fNum2(
+    toFiat(
+      props.trading.tokenOutAmountInput.value,
+      props.trading.tokenOut.value.address
+    ),
+    FNumFormats.fiat
+  )
+);
+
+const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
+
+const zeroFee = computed(() =>
+  showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
+);
+
+const exceedsBalance = computed(() => {
+  return (
+    account.value &&
+    bnum(props.trading.tokenInAmountInput.value).isGreaterThan(
+      balanceFor(props.trading.tokenInAddressInput.value)
+    )
+  );
+});
+
+const disableSubmitButton = computed(() => {
+  return !!exceedsBalance.value || !!props.error;
+});
+
+const summary = computed(() => {
+  const summaryItems = {
+    amountBeforeFees: '',
+    tradeFees: '',
+    totalWithoutSlippage: '',
+    totalWithSlippage: '',
+  };
+
+  const exactIn = props.trading.exactIn.value;
+
+  const tokenIn = props.trading.tokenIn.value;
+  const tokenOut = props.trading.tokenOut.value;
+
+  const tokenInAmountInput = props.trading.tokenInAmountInput.value;
+  const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
+
+  if (props.trading.isWrapUnwrapTrade.value) {
+    summaryItems.amountBeforeFees = tokenOutAmountInput;
+    summaryItems.tradeFees = '0';
+    summaryItems.totalWithoutSlippage = tokenOutAmountInput;
+    summaryItems.totalWithSlippage = tokenOutAmountInput;
+  } else {
+    const quote = props.trading.getQuote();
+
+    if (exactIn) {
+      summaryItems.amountBeforeFees = tokenOutAmountInput;
+      summaryItems.tradeFees = formatUnits(
+        quote.feeAmountOutToken,
+        tokenOut.decimals
+      );
+      summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
+        .minus(summaryItems.tradeFees)
+        .toString();
+      summaryItems.totalWithSlippage = formatUnits(
+        quote.minimumOutAmount,
+        tokenOut.decimals
+      );
+    } else {
+      summaryItems.amountBeforeFees = tokenInAmountInput;
+      summaryItems.tradeFees = formatUnits(
+        quote.feeAmountInToken,
+        tokenIn.decimals
+      );
+      summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
+        .plus(summaryItems.tradeFees)
+        .toString();
+      summaryItems.totalWithSlippage = formatUnits(
+        quote.maximumInAmount,
+        tokenIn.decimals
+      );
+    }
+  }
+
+  if (showSummaryInFiat.value) {
+    return mapValues(
+      summaryItems,
+      itemValue =>
+        `${fNum2(
+          toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
+          FNumFormats.fiat
+        )}`
+    );
+  } else {
+    return mapValues(
+      summaryItems,
+      itemValue =>
+        `${fNum2(itemValue, FNumFormats.token)} ${
+          exactIn || props.trading.isWrapUnwrapTrade.value
+            ? tokenOut.symbol
+            : tokenIn.symbol
+        }`
+    );
+  }
+});
+
+const labels = computed(() => {
+  if (props.trading.isWrap.value) {
+    return {
+      modalTitle: t('previewWrap', [props.trading.tokenIn.value.symbol]),
+      confirmTrade: t('confirmWrap', [props.trading.tokenIn.value.symbol]),
+      tradeSummary: {
+        title: t('tradeSummary.wrap.title'),
+        tradeFees: t('tradeSummary.wrap.tradeFees'),
+        totalBeforeFees: t('tradeSummary.wrap.totalBeforeFees'),
+        totalAfterFees: t('tradeSummary.wrap.totalAfterFees'),
+        totalWithSlippage: t('tradeSummary.wrap.totalWithSlippage', [
+          props.trading.tokenIn.value.symbol,
+        ]),
+      },
+    };
+  } else if (props.trading.isUnwrap.value) {
+    return {
+      modalTitle: t('previewUnwrap', [props.trading.tokenOut.value.symbol]),
+      confirmTrade: t('confirmUnwrap', [props.trading.tokenOut.value.symbol]),
+      tradeSummary: {
+        title: t('tradeSummary.unwrap.title'),
+        tradeFees: t('tradeSummary.unwrap.tradeFees'),
+        totalBeforeFees: t('tradeSummary.unwrap.totalBeforeFees'),
+        totalAfterFees: t('tradeSummary.unwrap.totalAfterFees'),
+        totalWithSlippage: t('tradeSummary.unwrap.totalWithSlippage', [
+          props.trading.tokenOut.value.symbol,
+        ]),
+      },
+    };
+  } else if (props.trading.exactIn.value) {
+    return {
+      modalTitle: t('previewTrade'),
+      confirmTrade: t('confirmTrade'),
+      tradeSummary: {
+        title: t('tradeSummary.exactIn.title', [
+          props.trading.tokenIn.value.symbol,
+        ]),
+        tradeFees: t('tradeSummary.exactIn.tradeFees'),
+        totalBeforeFees: t('tradeSummary.exactIn.totalBeforeFees'),
+        totalAfterFees: t('tradeSummary.exactIn.totalAfterFees'),
+        totalWithSlippage: t('tradeSummary.exactIn.totalWithSlippage', [
+          slippageRatePercent.value,
+        ]),
+      },
+    };
+  }
+  // exact out
+  return {
+    modalTitle: t('previewTrade'),
+    confirmTrade: t('confirmTrade'),
+    tradeSummary: {
+      title: t('tradeSummary.exactOut.title', [
+        props.trading.tokenOut.value.symbol,
+      ]),
+      tradeFees: t('tradeSummary.exactOut.tradeFees'),
+      totalBeforeFees: t('tradeSummary.exactOut.totalBeforeFees'),
+      totalAfterFees: t('tradeSummary.exactOut.totalAfterFees'),
+      totalWithSlippage: t('tradeSummary.exactOut.totalWithSlippage', [
+        slippageRatePercent.value,
+      ]),
+    },
+  };
+});
+
+const tokenApproval = useTokenApproval(
+  addressIn,
+  props.trading.tokenInAmountInput,
+  tokens
+);
+
+const cowswapRelayerApproval = useRelayerApprovalTx(
+  RelayerType.COWSWAP,
+  props.trading.isCowswapTrade
+);
+
+const pools = computed<SubgraphPoolBase[]>(() => {
+  return props.trading.sor.pools.value;
+});
+
+const wrapType = computed(() =>
+  getWrapAction(
+    props.trading.tokenIn.value.address,
+    props.trading.tokenOut.value.address
+  )
+);
+
+const isStETHTrade = computed(
+  () =>
+    isStETH(addressIn.value, props.trading.tokenOut.value.address) &&
+    wrapType.value === WrapType.NonWrap
+);
+
+const lidoRelayerApproval = useRelayerApprovalTx(
+  RelayerType.LIDO,
+  isStETHTrade
+);
+
+const requiresTokenApproval = computed(() => {
+  if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
+    return approvalRequired(
+      props.trading.tokenIn.value.address,
+      props.trading.tokenInAmountInput.value,
+      props.trading.tokenOut.value.address
+    );
+  } else if (props.trading.requiresTokenApproval.value) {
+    return !tokenApproval.isUnlockedV2.value;
+  }
+  return false;
+});
+
+const requiresBatchRelayerApproval = computed(
+  () =>
+    props.trading.isJoinExitTrade.value &&
+    !batchRelayerIsUnlocked.value &&
+    !batchRelayerSignature.value
+);
+
+const requiresCowswapRelayerApproval = computed(
+  () =>
+    props.trading.isCowswapTrade.value &&
+    props.trading.requiresTokenApproval.value &&
+    !cowswapRelayerApproval.isUnlocked.value
+);
+
+const requiresLidoRelayerApproval = computed(
+  () =>
+    props.trading.isBalancerTrade.value && !lidoRelayerApproval.isUnlocked.value
+);
+
+const showTokenApprovalStep = computed(
+  () =>
+    requiresTokenApproval.value ||
+    tokenApproval.approved.value ||
+    tokenApproval.approving.value
+);
+
+const showBatchRelayerApprovalStep = computed(
+  () => props.trading.isJoinExitTrade.value && !batchRelayerIsUnlocked.value
+);
+
+const showCowswapRelayerApprovalStep = computed(
+  () =>
+    requiresCowswapRelayerApproval.value ||
+    cowswapRelayerApproval.init.value ||
+    cowswapRelayerApproval.approved.value ||
+    cowswapRelayerApproval.approving.value
+);
+
+const showLidoRelayerApprovalStep = computed(
+  () =>
+    !props.trading.isJoinExitTrade.value &&
+    (requiresLidoRelayerApproval.value ||
+      lidoRelayerApproval.init.value ||
+      lidoRelayerApproval.approved.value ||
+      lidoRelayerApproval.approving.value)
+);
+
+const requiresApproval = computed(
+  () =>
+    requiresBatchRelayerApproval.value ||
+    requiresCowswapRelayerApproval.value ||
+    requiresLidoRelayerApproval.value ||
+    requiresTokenApproval.value
+);
+
+const showPriceUpdateError = computed(
+  () =>
+    !requiresApproval.value && priceUpdated.value && !priceUpdateAccepted.value
+);
+
+const actionStepsLoading = computed(
+  () =>
+    cowswapRelayerApproval.init.value ||
+    cowswapRelayerApproval.approving.value ||
+    lidoRelayerApproval.init.value ||
+    lidoRelayerApproval.approving.value ||
+    tokenApproval.approving.value ||
+    props.trading.isConfirming.value
+);
+
+const actionStepsLoadingLabel = computed(() =>
+  requiresCowswapRelayerApproval.value
+    ? `${t('approvingCowswapRelayer')}...`
+    : requiresLidoRelayerApproval.value
+    ? `${t('approvingLidoRelayer')}...`
+    : requiresBatchRelayerApproval.value
+    ? `${t('approvingBatchRelayer')}...`
+    : requiresTokenApproval.value
+    ? `${t('approving')} ${props.trading.tokenIn.value.symbol}...`
+    : t('confirming')
+);
+
+const actions = computed((): TransactionActionInfo[] => [
+  ...(showCowswapRelayerApprovalStep.value
+    ? [
+        {
+          label: t('approveCowswapRelayer'),
+          loadingLabel: t('approvingCowswapRelayer'),
+          confirmingLabel: t('approveCowswapRelayer'),
+          action: cowswapRelayerApproval.approve,
+          stepTooltip: t(
+            'tradeSummary.transactionTypesTooltips.cowswapRelayerApproval.content'
+          ),
+        },
+      ]
+    : []),
+  ...(showLidoRelayerApprovalStep.value
+    ? [
+        {
+          label: t('approveLidoRelayer'),
+          loadingLabel: t('approvingLidoRelayer'),
+          confirmingLabel: t('approveLidoRelayer'),
+          action: lidoRelayerApproval.approve,
+          stepTooltip: t(
+            'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.content'
+          ),
+        },
+      ]
+    : []),
+  ...(showBatchRelayerApprovalStep.value
+    ? [batchRelayerApprovalAction.value]
+    : []),
+  ...(showTokenApprovalStep.value
+    ? [
+        {
+          label: `${t('approve')} ${props.trading.tokenIn.value.symbol}`,
+          loadingLabel: `${t('approving')} ${
+            props.trading.tokenIn.value.symbol
+          }...`,
+          confirmingLabel: `${t('confirming')} ${
+            props.trading.tokenIn.value.symbol
+          }`,
+          action: approveToken,
+          stepTooltip: t(
+            'tradeSummary.transactionTypesTooltips.tokenApproval.content'
+          ),
+        },
+      ]
+    : []),
+  {
+    label: labels.value.confirmTrade,
+    loadingLabel: `${t('approving')} ${props.trading.tokenIn.value.symbol}...`,
+    confirmingLabel: t('confirming'),
+    action: trade as () => Promise<any>,
+    stepTooltip:
+      props.trading.isCowswapTrade.value && !props.trading.isJoinExitTrade
+        ? t('tradeSummary.transactionTypesTooltips.sign.content')
+        : t('tradeSummary.transactionTypesTooltips.trade.content'),
+  },
+]);
+
+// METHODS
+function trade() {
+  emit('trade');
+}
+
+function onClose() {
+  emit('close');
+}
+
+function cofirmPriceUpdate() {
+  priceUpdated.value = false;
+  priceUpdateAccepted.value = true;
+  lastQuote.value = props.trading.getQuote();
+}
+
+function handlePriceUpdate() {
+  if (lastQuote.value != null) {
+    const newQuote = props.trading.getQuote();
+
+    /**
+     * The bignumber returned via the quotes for some reason throw underflow
+     * errors when attempting to use the gt function with the threshold value.
+     * For that reason, the price difference has to be cast to our bignumber type.
+     */
+    if (props.trading.exactIn.value) {
+      const lastQuoteMin = bnum(lastQuote.value.minimumOutAmount.toString());
+      const newQuoteMin = bnum(newQuote.minimumOutAmount.toString());
+      if (lastQuoteMin.eq(bnumZero)) {
+        if (newQuoteMin.eq(bnumZero)) {
+          priceUpdated.value = false;
+        } else {
+          priceUpdated.value = true;
+        }
+      } else {
+        const priceDiff = lastQuoteMin
+          .minus(newQuoteMin)
+          .abs()
+          .div(lastQuoteMin);
+
+        priceUpdated.value = priceDiff.gt(PRICE_UPDATE_THRESHOLD);
+      }
+    } else {
+      const lastQuoteMax = bnum(lastQuote.value.maximumInAmount.toString());
+      const newQuoteMax = bnum(newQuote.maximumInAmount.toString());
+      if (lastQuoteMax.eq(bnumZero)) {
+        if (newQuoteMax.eq(bnumZero)) {
+          priceUpdated.value = false;
+        } else {
+          priceUpdated.value = true;
+        }
+      } else {
+        const priceDiff = lastQuoteMax
+          .minus(newQuoteMax)
+          .abs()
+          .div(lastQuoteMax);
+
+        priceUpdated.value = priceDiff.gt(PRICE_UPDATE_THRESHOLD);
+      }
+    }
+
+    if (priceUpdated.value) {
+      priceUpdateAccepted.value = false;
+    }
+  }
+}
+
+async function approveToken(): Promise<TransactionResponse> {
+  if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
+    // If we're wrapping a token other than native ETH
+    // we need to approve the underlying on the wrapper
+    return tokenApproval.approveSpender(props.trading.tokenOut.value.address);
+  } else {
+    return tokenApproval.approveV2();
+  }
+}
+
+// WATCHERS
+watch(blockNumber, () => {
+  handlePriceUpdate();
+});
+</script>
+
 <template>
-  <BalModal show :title="$t('previewTradeTransactions')" @close="onClose">
+  <BalModal show @close="onClose">
     <div>
-      <div
-        class="flex items-center p-4 -mx-4 border-t border-b dark:border-gray-800"
-      >
-        <BalAssetSet
-          :addresses="[addressIn, addressOut]"
-          :size="32"
-          :width="55"
-        />
-        <div class="flex flex-col">
-          <div class="font-semibold">
-            {{ fNum2(amountIn, FNumFormats.token) }}
-            {{ symbolIn }} -> {{ fNum2(amountOut, FNumFormats.token) }}
-            {{ symbolOut }}
+      <BalStack horizontal align="center" spacing="xs" class="mb-4">
+        <button class="flex text-blue-500 hover:text-blue-700" @click="onClose">
+          <BalIcon class="flex" name="chevron-left" />
+        </button>
+        <h4>
+          {{ labels.modalTitle }}
+        </h4>
+      </BalStack>
+      <BalCard noPad class="overflow-auto relative mb-6">
+        <template #header>
+          <div class="w-full">
+            <div>
+              <BalAlert
+                v-if="error"
+                class="p-3 mb-2"
+                type="error"
+                size="sm"
+                :title="error.header"
+                :description="error.body"
+                :actionLabel="error.label"
+                block
+              />
+              <BalAlert
+                v-else-if="warning"
+                class="p-3 mb-2"
+                type="warning"
+                size="sm"
+                :title="warning.header"
+                :description="warning.body"
+                block
+              />
+            </div>
+            <div
+              class="p-3 w-full text-sm bg-gray-50 dark:bg-gray-800 rounded-t-lg border-b dark:border-gray-800"
+            >
+              <span>
+                {{ $t('effectivePrice') }}
+                {{
+                  trading.exactIn.value
+                    ? trading.effectivePriceMessage.value.tokenIn
+                    : trading.effectivePriceMessage.value.tokenOut
+                }}
+              </span>
+            </div>
           </div>
-          <div class="text-sm text-secondary">
-            {{ fNum2(valueIn, FNumFormats.fiat) }}
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="mt-6 mb-3 text-sm">
-          Requires {{ totalRequiredTransactions }}
-          {{ requiresApproval ? 'transactions' : 'transaction' }}:
-        </div>
+        </template>
         <div>
-          <div v-if="requiresLidoRelayerApproval" class="mb-3 card-container">
-            <div class="text-green-500 card-step">
-              <BalIcon
-                v-if="isLidoRelayerApproved"
-                name="check"
-                class="text-green-500"
-              />
-              <span v-else class="text-secondary">1</span>
-            </div>
-            <div class="ml-3">
-              <span v-if="isLidoRelayerApproved">{{
-                $t('approvedLidoRelayer')
-              }}</span>
-              <span v-else>{{ $t('approveLidoRelayer') }}</span>
-            </div>
-          </div>
-          <div v-if="requiresTokenApproval" class="card-container">
-            <div class="text-green-500 card-step">
-              <BalIcon
-                v-if="isTokenApproved"
-                name="check"
-                class="text-green-500"
-              />
-              <span v-else class="text-secondary">{{
-                requiresLidoRelayerApproval ? 2 : 1
-              }}</span>
-            </div>
-            <div class="ml-3">
-              <span v-if="isTokenApproved"
-                >{{ $t('approved') }} {{ symbolIn }}</span
-              >
-              <span v-else>{{ $t('approve') }} {{ symbolIn }}</span>
+          <BalAlert
+            v-if="exceedsBalance"
+            class="p-3"
+            type="error"
+            size="sm"
+            :title="`${t('exceedsBalance')} ${fNum2(
+              balanceFor(props.trading.tokenInAddressInput.value),
+              FNumFormats.token
+            )} ${props.trading.tokenIn.value.symbol}`"
+            block
+            square
+          />
+          <div
+            class="relative p-3 border-b border-gray-100 dark:border-gray-900"
+          >
+            <div class="flex items-center">
+              <div class="mr-3">
+                <BalAsset :address="trading.tokenIn.value.address" :size="36" />
+              </div>
+              <div>
+                <div class="font-medium">
+                  {{
+                    fNum2(trading.tokenInAmountInput.value, FNumFormats.token)
+                  }}
+                  {{ trading.tokenIn.value.symbol }}
+                </div>
+                <div class="text-sm text-secondary">
+                  {{ tokenInFiatValue }}
+                </div>
+              </div>
             </div>
           </div>
-          <div class="mt-3 card-container">
-            <div class="card-step text-secondary">
-              {{ totalRequiredTransactions }}
-            </div>
-            <div class="ml-3">
-              {{ $t('swap') }} {{ fNum2(valueIn, FNumFormats.fiat) }}
-              {{ symbolIn }} ->
-              {{ symbolOut }}
+          <div class="arrow-down">
+            <ArrowDownIcon />
+          </div>
+          <div class="p-3">
+            <div class="flex items-center">
+              <div class="mr-3">
+                <BalAsset
+                  :address="trading.tokenOut.value.address"
+                  :size="36"
+                />
+              </div>
+              <div>
+                <div class="font-medium">
+                  {{
+                    fNum2(trading.tokenOutAmountInput.value, FNumFormats.token)
+                  }}
+                  {{ trading.tokenOut.value.symbol }}
+                </div>
+                <div class="text-sm text-secondary">
+                  {{ tokenOutFiatValue }}
+                  <span
+                    v-if="
+                      trading.isBalancerTrade.value ||
+                      trading.isWrapUnwrapTrade.value
+                    "
+                  >
+                    / {{ $t('priceImpact') }}:
+                    {{
+                      fNum2(trading.sor.priceImpact.value, FNumFormats.percent)
+                    }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <BalBtn
-        v-if="requiresLidoRelayerApproval && !isLidoRelayerApproved"
-        class="mt-5"
-        :label="$t('approveLidoRelayer')"
-        :loading="approvingLidoRelayer"
-        :loadingLabel="`${$t('approvingLidoRelayer')}…`"
-        color="gradient"
+      </BalCard>
+      <BalCard noPad shadow="none" class="mb-3">
+        <template #header>
+          <div
+            class="flex justify-between items-center p-3 w-full border-b dark:border-gray-900"
+          >
+            <div class="font-semibold">
+              {{ labels.tradeSummary.title }}
+            </div>
+            <div class="flex text-xs uppercase divide-x dark:divide-gray-500">
+              <div
+                :class="[
+                  'pr-2 cursor-pointer font-medium',
+                  { 'text-blue-600': !showSummaryInFiat },
+                ]"
+                @click="showSummaryInFiat = false"
+              >
+                {{ $t('tokens') }}
+              </div>
+              <div
+                :class="[
+                  'pl-2 cursor-pointer font-medium uppercase',
+                  { 'text-blue-600': showSummaryInFiat },
+                ]"
+                @click="showSummaryInFiat = true"
+              >
+                {{ FiatCurrency.usd }}
+              </div>
+            </div>
+          </div>
+        </template>
+        <div v-if="trading.isCowswapTrade.value" class="p-3 text-sm">
+          <div class="summary-item-row">
+            <div>
+              {{ labels.tradeSummary.totalBeforeFees }}
+            </div>
+            <div v-html="summary.amountBeforeFees" />
+          </div>
+          <div class="summary-item-row">
+            <div>{{ $t('tradeSummary.gasCosts') }}</div>
+            <div class="text-green-400">-{{ zeroFee }}</div>
+          </div>
+          <div class="summary-item-row">
+            <div>{{ labels.tradeSummary.tradeFees }}</div>
+            <div
+              v-html="
+                trading.isWrapUnwrapTrade.value
+                  ? zeroFee
+                  : trading.exactIn.value
+                  ? `-${summary.tradeFees}`
+                  : `+${summary.tradeFees}`
+              "
+            />
+          </div>
+        </div>
+        <template #footer>
+          <div
+            class="p-3 w-full text-sm bg-white dark:bg-gray-800 rounded-b-lg"
+          >
+            <div class="font-medium summary-item-row">
+              <div class="w-64">
+                {{ labels.tradeSummary.totalAfterFees }}
+              </div>
+              <div v-html="summary.totalWithoutSlippage" />
+            </div>
+            <div class="summary-item-row text-secondary">
+              <div class="w-64">
+                {{ labels.tradeSummary.totalWithSlippage }}
+              </div>
+              <div
+                v-html="
+                  trading.isWrapUnwrapTrade.value
+                    ? ''
+                    : summary.totalWithSlippage
+                "
+              />
+            </div>
+          </div>
+        </template>
+      </BalCard>
+      <BalAlert
+        v-if="showPriceUpdateError"
+        class="p-3 mb-4"
+        type="error"
+        size="md"
+        :title="$t('priceUpdatedAlert.title')"
+        :description="
+          $t('priceUpdatedAlert.description', [
+            fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent),
+          ])
+        "
+        :actionLabel="$t('priceUpdatedAlert.actionLabel')"
         block
-        @click.prevent="approveLidoRelayer"
+        @action-click="cofirmPriceUpdate"
       />
       <BalBtn
-        v-else-if="requiresTokenApproval && !isTokenApproved"
-        class="mt-5"
-        :label="`${$t('approve')} ${symbolIn}`"
-        :loading="approvingToken"
-        :loadingLabel="`${$t('approving')} ${symbolIn}…`"
+        v-if="!account"
         color="gradient"
         block
-        @click.prevent="approveToken"
-      />
-      <BalBtn
+        @click.prevent="startConnectWithInjectedProvider"
+      >
+        {{ $t('connectWallet') }}
+      </BalBtn>
+      <BalActionSteps
         v-else
-        class="mt-5"
-        :label="$t('confirmTrade')"
-        :loading="trading"
-        :loadingLabel="$t('confirming')"
-        color="gradient"
+        :actions="actions"
+        :isLoading="actionStepsLoading"
+        :loadingLabel="actionStepsLoadingLabel"
+        :disabled="disableSubmitButton || showPriceUpdateError"
+      />
+      <BalAlert
+        v-if="trading.submissionError.value != null"
+        class="p-3 mt-4"
+        type="error"
+        size="md"
+        :title="$t('tradeSubmissionError.title')"
+        :description="trading.submissionError.value"
         block
-        @click.prevent="trade"
+        :actionLabel="$t('tradeSubmissionError.actionLabel')"
+        @action-click="trading.resetSubmissionError"
+      />
+      <BalAlert
+        v-if="trading.isJoinExitTrade.value"
+        class="p-3 mt-4"
+        type="tip"
+        size="md"
+        :title="''"
+        :description="
+          showBatchRelayerApprovalStep
+            ? $t('isJoinExitTipDescription.withApproval')
+            : $t('isJoinExitTipDescription.withoutApproval')
+        "
+        block
       />
     </div>
+    <TradeRoute
+      v-if="showTradeRoute"
+      :addressIn="trading.tokenIn.value.address"
+      :amountIn="trading.tokenInAmountInput.value"
+      :addressOut="trading.tokenOut.value.address"
+      :amountOut="trading.tokenOutAmountInput.value"
+      :pools="pools"
+      :sorReturn="trading.sor.sorReturn.value"
+      class="mt-3"
+    />
   </BalModal>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, toRefs } from 'vue';
-
-import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
-import useTokenApproval from '@/composables/approvals/useTokenApproval';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { useTokens } from '@/providers/tokens.provider';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { isStETH } from '@/lib/utils/balancer/lido';
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
-import { RelayerType } from '@/composables/approvals/useRelayerApproval';
-
-export default defineComponent({
-  props: {
-    open: {
-      type: Boolean,
-      default: false,
-    },
-    addressIn: {
-      type: String,
-      required: true,
-    },
-    amountIn: {
-      type: String,
-      required: true,
-    },
-    addressOut: {
-      type: String,
-      required: true,
-    },
-    amountOut: {
-      type: String,
-      required: true,
-    },
-    trading: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  emits: ['trade', 'close'],
-  setup(props, { emit }) {
-    const { fNum2, toFiat } = useNumbers();
-
-    const { addressIn, amountIn, addressOut } = toRefs(props);
-
-    const { tokens, getToken, approvalRequired } = useTokens();
-
-    const wrapType = computed(() =>
-      getWrapAction(addressIn.value, addressOut.value)
-    );
-    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
-    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
-
-    const isStETHTrade = computed(
-      () =>
-        isStETH(addressIn.value, addressOut.value) &&
-        wrapType.value === WrapType.NonWrap
-    );
-
-    const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
-
-    const lidoRelayerApproval = useRelayerApprovalTx(
-      RelayerType.LIDO,
-      isStETHTrade
-    );
-
-    const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
-
-    const symbolIn = computed(() => {
-      const token = getToken(addressIn.value);
-      if (!token) {
-        return '';
-      }
-      return token.symbol;
-    });
-
-    const symbolOut = computed(() => {
-      const token = getToken(addressOut.value);
-      if (!token) {
-        return '';
-      }
-      return token.symbol;
-    });
-
-    const isEthTrade = computed(() => addressIn.value === NATIVE_ASSET_ADDRESS);
-
-    const requiresTokenApproval = computed(() =>
-      isUnwrap.value || isEthTrade.value ? false : true
-    );
-
-    const isLidoRelayerApproved = computed(
-      () => lidoRelayerApproval.isUnlocked.value
-    );
-    const requiresLidoRelayerApproval = computed(
-      () =>
-        isStETHTrade.value &&
-        (!isLidoRelayerApproved.value || lidoRelayerApproval.approved.value)
-    );
-
-    const requiresApproval = computed(
-      () => requiresTokenApproval.value || requiresLidoRelayerApproval.value
-    );
-
-    const isTokenApproved = computed(() => {
-      if (tokenApproval.approved.value) {
-        return true;
-      }
-
-      const { isUnlockedV2 } = tokenApproval.allowanceState.value;
-      if (isWrap.value && !isEthTrade.value) {
-        // If we're wrapping a token other than native ETH
-        // we need to approve the underlying on the wrapper
-        return !approvalRequired(
-          addressIn.value,
-          amountIn.value,
-          addressOut.value
-        );
-      }
-      return isUnlockedV2;
-    });
-
-    async function approveLidoRelayer(): Promise<void> {
-      await lidoRelayerApproval.approve();
-    }
-
-    async function approveToken(): Promise<void> {
-      if (isWrap.value && !isEthTrade.value) {
-        // If we're wrapping a token other than native ETH
-        // we need to approve the underlying on the wrapper
-        await tokenApproval.approveSpender(addressOut.value);
-      } else {
-        await tokenApproval.approveV2();
-      }
-    }
-
-    const approvingToken = computed(() => tokenApproval.approving.value);
-
-    const approvingLidoRelayer = computed(
-      () =>
-        lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
-    );
-
-    const totalRequiredTransactions = computed(() => {
-      let txCount = 1; // trade
-
-      if (requiresTokenApproval.value) {
-        txCount++;
-      }
-      if (requiresLidoRelayerApproval.value) {
-        txCount++;
-      }
-      return txCount;
-    });
-
-    function trade() {
-      emit('trade');
-    }
-
-    function onClose() {
-      emit('close');
-    }
-
-    return {
-      // constants
-      FNumFormats,
-      // methods
-      fNum2,
-      onClose,
-      approveLidoRelayer,
-      approveToken,
-      trade,
-      // computed
-      requiresApproval,
-      requiresTokenApproval,
-      requiresLidoRelayerApproval,
-      isTokenApproved,
-      isLidoRelayerApproved,
-      valueIn,
-      symbolIn,
-      symbolOut,
-      approvingLidoRelayer,
-      approvingToken,
-      lidoRelayerApproval,
-      totalRequiredTransactions,
-    };
-  },
-});
-</script>
 <style scoped>
-.card-container {
-  @apply p-3 flex items-center border rounded-lg dark:border-gray-800;
+.arrow-down {
+  @apply absolute right-0 rounded-full border border-gray-100 flex items-center h-8 w-8 justify-center bg-white mr-3
+    dark:border-gray-800 dark:bg-gray-800;
+
+  transform: translateY(-50%);
 }
 
-.card-step {
-  @apply w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700;
+.summary-item-row {
+  @apply flex justify-between mb-1;
+}
+
+.step {
+  @apply rounded-full w-7 h-7 border border-gray-100 dark:border-gray-700 flex items-center
+    justify-center text-purple-500 relative;
+}
+
+.step-seperator {
+  @apply bg-gray-200 dark:bg-gray-700 h-px w-6;
+}
+
+.step-active {
+  @apply border-purple-500 dark:border-purple-500;
+}
+
+.step-approved {
+  @apply border-green-500 dark:border-green-500;
 }
 </style>

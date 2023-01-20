@@ -1,5 +1,5 @@
 <template>
-  <footer>
+  <footer v-once>
     <div
       class="xl:container lg:px-4 xl:mx-auto dark:border-t dark:border-gray-800"
     >
