@@ -341,7 +341,7 @@ export default function useGnosis({
           kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
           fromDecimals: tokenIn.value.decimals,
           toDecimals: tokenOut.value.decimals,
-          account: account.value,
+          account: account.value || AddressZero,
         };
 
         const priceQuotes = await priceQuotesResolveLast(priceQuoteParams);

@@ -17,7 +17,6 @@ import {
   CowSwapQuoteResponse,
   PriceQuoteParams,
 } from './types';
-import { zeroAddress } from 'ethereumjs-util';
 
 export const API_URLS = {
   [Network.MAINNET]: 'https://api.cow.fi/mainnet/api',
@@ -133,7 +132,7 @@ export default class GnosisProtocolService {
         {
           sellToken,
           buyToken,
-          from: account || zeroAddress(),
+          from: account,
           kind,
           [kind === 'sell' ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
             amount,
