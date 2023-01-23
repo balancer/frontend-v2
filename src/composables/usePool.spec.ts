@@ -11,7 +11,7 @@ import {
   removeBptFromPoolTokenTree,
 } from './usePool';
 
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 describe('tokenTreeNodes', () => {
   it('returns all nodes including unwrapped Linear tokens', () => {

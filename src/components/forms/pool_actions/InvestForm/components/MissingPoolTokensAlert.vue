@@ -10,6 +10,7 @@ import { useTokens } from '@/providers/tokens.provider';
 type Props = {
   poolTokensWithoutBalance: string[];
   poolTokensWithBalance: string[];
+  showSingleTokenSuggestion: boolean;
 };
 
 /**
@@ -33,6 +34,15 @@ const tokenSymbolsWithoutBalance = computed(() => {
 const tokenSymbolsWithoutBalanceMsg = computed(() => {
   return formatWordListAsSentence(tokenSymbolsWithoutBalance.value, t);
 });
+
+const description = computed(() => {
+  const singleTokenHint = props.showSingleTokenSuggestion
+    ? ` \n\n${t('investment.warning.noPoolTokensToJoinWith.paragraph2')}`
+    : '';
+  return (
+    t('investment.warning.noPoolTokensToJoinWith.paragraph1') + singleTokenHint
+  );
+});
 </script>
 
 <template>
@@ -41,7 +51,7 @@ const tokenSymbolsWithoutBalanceMsg = computed(() => {
     class="mb-4"
     :type="'warning'"
     :title="t('investment.warning.noPoolTokensToJoinWith.title')"
-    :description="t('investment.warning.noPoolTokensToJoinWith.description')"
+    :description="description"
   ></BalAlert>
   <div v-else-if="tokenSymbolsWithoutBalance.length" class="italic-warning">
     {{ t('investment.warning.noBalanceSomeTokens') }}:

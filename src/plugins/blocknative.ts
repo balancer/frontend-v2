@@ -6,7 +6,7 @@ import { networkId } from '@/composables/useNetwork';
 export const bnSdkSymbol = Symbol();
 
 export const defaultOptions: InitializationOptions = {
-  dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
+  dappId: import.meta.env.VITE_BLOCKNATIVE_DAPP_ID || '',
   networkId: networkId.value,
   onerror: error => {
     console.log(`[Blocknative] encountered an error`, error);

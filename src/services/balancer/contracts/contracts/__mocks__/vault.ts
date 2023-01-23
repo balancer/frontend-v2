@@ -1,11 +1,11 @@
-const Vault = jest.fn().mockImplementation(() => {
+const Vault = vi.fn().mockImplementation(() => {
   return {
     service: {
-      provider: jest.fn(),
+      provider: vi.fn(),
     },
 
     instance: {
-      getProtocolFeesCollector: jest.fn().mockImplementation(() => {
+      getProtocolFeesCollector: vi.fn().mockImplementation(() => {
         return '0x0';
       }),
     },

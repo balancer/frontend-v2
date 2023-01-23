@@ -54,8 +54,8 @@ type SorState = {
   submissionError: string | null;
 };
 
-const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
-const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
+const GAS_PRICE = import.meta.env.VITE_GAS_PRICE || '100000000000';
+const MAX_POOLS = import.meta.env.VITE_MAX_POOLS || '4';
 const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive<SorState>({
@@ -80,7 +80,7 @@ type Props = {
   tokenIn: ComputedRef<TokenInfo>;
   tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
-  isGnosisTrade: ComputedRef<boolean>;
+  isCowswapTrade: ComputedRef<boolean>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;
@@ -100,7 +100,7 @@ export default function useSor({
   tokenIn,
   tokenOut,
   slippageBufferRate,
-  isGnosisTrade,
+  isCowswapTrade,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<SubgraphPoolBase[]>([]);
@@ -270,7 +270,7 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
-    if (isGnosisTrade.value) {
+    if (isCowswapTrade.value) {
       return;
     }
 

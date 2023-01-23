@@ -1,6 +1,7 @@
 import { Pool, PoolType } from '@/services/pool/types';
 
 export const BoostedPoolMock: Pool = {
+  protocolSwapFeeCache: '',
   id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
   address: '0xa13a9247ea42d743238089903570127dda72fe44',
   poolType: PoolType.ComposableStable,

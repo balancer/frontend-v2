@@ -79,6 +79,7 @@ export class GaugeControllerDecorator {
 
     const decoratedGauges = votingGauges.map(gauge => {
       return {
+        id: gauge.address,
         ...gauge,
         ...this.formatVotes(votesDataMap.gauges[gauge.address]),
       };

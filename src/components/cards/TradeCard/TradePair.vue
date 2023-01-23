@@ -155,6 +155,7 @@ onMounted(() => {
       name="tokenIn"
       :excludedTokens="[veBalTokenInfo?.address]"
       :ignoreWalletBalance="tradeLoading"
+      autoFocus
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
       @input="emit('update:exactIn', true)"

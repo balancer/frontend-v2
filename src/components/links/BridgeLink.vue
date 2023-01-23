@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import useNetwork, { getNetworkSlug } from '@/composables/useNetwork';
+import useNetwork from '@/composables/useNetwork';
+import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { configService } from '@/services/config/config.service';
 import { Network } from '@balancer-labs/sdk';
 import { computed } from 'vue';
@@ -20,12 +21,6 @@ const bridgeUrl = computed((): string => {
 const label = computed((): string => {
   return `Bridge assets to ${configService.network.chainName}`;
 });
-
-function networkSrc(network: Network) {
-  return require(`@/assets/images/icons/networks/${getNetworkSlug(
-    network
-  )}.svg`);
-}
 </script>
 
 <template>
@@ -35,7 +30,11 @@ function networkSrc(network: Network) {
     noStyle
     class="flex items-center p-4 text-sm dark:bg-gray-850 rounded-lg border dark:border-0"
   >
-    <img :src="networkSrc(networkId)" :alt="label" class="mr-4 w-6 h-6" />
+    <img
+      :src="buildNetworkIconURL(networkId)"
+      :alt="label"
+      class="mr-4 w-6 h-6"
+    />
     {{ label }}
     <BalIcon
       name="arrow-up-right"

@@ -1,5 +1,5 @@
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { reactive, Ref, ref, watch } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
@@ -208,10 +208,7 @@ export default function usePoolsQuery(
     };
   };
 
-  const queryOptions = reactive({
-    ...options,
-    getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
-  });
+  options.getNextPageParam = (lastPage: PoolsQueryResponse) => lastPage.skip;
 
-  return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, options);
 }

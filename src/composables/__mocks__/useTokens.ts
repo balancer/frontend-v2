@@ -37,14 +37,14 @@ const mockTokens = {
 
 export default function useTokens() {
   return {
-    injectTokens: jest.fn().mockImplementation(),
+    injectTokens: vi.fn(),
     priceFor: () => 2,
-    hasBalance: jest.fn().mockReturnValue(false),
-    balanceFor: jest.fn().mockReturnValue('0'),
-    getToken: jest.fn().mockImplementation(address => {
+    hasBalance: vi.fn().mockReturnValue(false),
+    balanceFor: vi.fn().mockReturnValue('0'),
+    getToken: vi.fn().mockImplementation(address => {
       return mockTokens[address];
     }),
-    getTokens: jest.fn().mockImplementation(addresses => {
+    getTokens: vi.fn().mockImplementation(addresses => {
       return Object.fromEntries(
         addresses.map(address => {
           return [address, mockTokens[address]];

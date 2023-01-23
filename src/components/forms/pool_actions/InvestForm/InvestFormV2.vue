@@ -20,6 +20,7 @@ import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import { useTokens } from '@/providers/tokens.provider';
+import { isEqual } from 'lodash';
 
 /**
  * TYPES
@@ -42,7 +43,8 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
+const { managedPoolWithTradingHalted, isDeepPool, isPreMintedBptPool } =
+  usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -97,13 +99,26 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
-watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
-  // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
-  // only if preview modal is not open
-  if (!showInvestPreview.value) {
-    initializeTokensForm(isSingleAsset);
+watch(
+  [isSingleAssetJoin, poolTokensWithBalance],
+  (
+    [isSingleAsset, newPoolTokensWithBalance],
+    [prevIsSingleAsset, prevPoolTokensWithBalance]
+  ) => {
+    // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
+    // only if preview modal is not open
+    if (!showInvestPreview.value) {
+      const hasTabChanged = prevIsSingleAsset !== isSingleAsset;
+      const hasUserTokensChanged = !isEqual(
+        prevPoolTokensWithBalance,
+        newPoolTokensWithBalance
+      );
+      if (hasUserTokensChanged || hasTabChanged) {
+        initializeTokensForm(isSingleAsset);
+      }
+    }
   }
-});
+);
 </script>
 
 <template>
@@ -139,6 +154,7 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
 
     <MissingPoolTokensAlert
       v-if="!isSingleAssetJoin"
+      :showSingleTokenSuggestion="isDeepPool && isPreMintedBptPool"
       :poolTokensWithBalance="poolTokensWithBalance"
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
