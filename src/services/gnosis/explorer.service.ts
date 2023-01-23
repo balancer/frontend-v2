@@ -7,9 +7,9 @@ export default class GnosisExplorerService {
 
   constructor() {
     if (IS_DEV) {
-      this.baseURL = 'https://protocol-explorer.dev.gnosisdev.com';
+      this.baseURL = 'https://explorer.cow.fi';
     } else if (IS_STAGING) {
-      this.baseURL = 'https://protocol-explorer.staging.gnosisdev.com';
+      this.baseURL = 'https://explorer.cow.fi';
     } else {
       this.baseURL = 'https://explorer.cow.fi';
     }
