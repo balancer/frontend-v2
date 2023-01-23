@@ -85,6 +85,7 @@ onBeforeMount(() => {
           :customBalance="singleAmountOut.max || '0'"
           :balanceLabel="$t('max')"
           :balanceLoading="isLoadingMax"
+          disableNativeAssetBuffer
           :excludedTokens="[veBalTokenInfo?.address, pool.address]"
           :tokenSelectProps="{ ignoreBalances: true, subsetTokens }"
           ignoreWalletBalance
