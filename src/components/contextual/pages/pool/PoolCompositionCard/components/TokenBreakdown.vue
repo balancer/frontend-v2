@@ -87,7 +87,7 @@ const shareOfTokenInPool = computed((): number => {
 <template>
   <div
     :class="[
-      'grid gap-y-4 px-4 w-full',
+      'grid gap-y-4 px-4 w-full items-center',
       isWeighted ? 'grid-cols-4' : 'grid-cols-3',
       nestedPaddingClass,
     ]"

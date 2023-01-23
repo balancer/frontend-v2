@@ -7,6 +7,7 @@ import { useTokenBreakdown } from './useTokenBreakdown';
 import { mountComposable } from '@/tests/mount-helpers';
 import { bnum } from '@/lib/utils';
 import { BigNumber } from 'bignumber.js';
+
 import * as tokensProvider from '@/providers/tokens.provider';
 
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
@@ -14,6 +15,7 @@ const isDeepPool = ref(true);
 
 // Assuming that user owns 15% of the pool
 const userPoolPercentage = ref(new BigNumber(15)) as Ref<BigNumber>;
+
 vi.mock('@/providers/tokens.provider');
 
 it('Works for a parent token in a deep nested pool', async () => {

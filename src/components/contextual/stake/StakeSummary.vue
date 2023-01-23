@@ -24,6 +24,7 @@ const { fNum2 } = useNumbers();
     <BalDataListRow>
       <template #label>
         {{ $t('totalValueTo') }}
+        &nbsp;
         <span class="lowercase">
           {{ action === 'stake' ? $t('stake') : $t('unstake') }}:
         </span>

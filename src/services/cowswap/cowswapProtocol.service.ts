@@ -2,7 +2,6 @@ import { Network } from '@balancer-labs/sdk';
 import axios from 'axios';
 
 import { networkId } from '@/composables/useNetwork';
-import { IS_DEV } from '@/constants/env';
 
 import OperatorError from './errors/OperatorError';
 import {
@@ -21,12 +20,10 @@ import {
 import { getCanonicalMarket, toErc20Address } from './utils';
 
 export const API_URLS = {
-  [Network.MAINNET]: IS_DEV
-    ? 'https://protocol-mainnet.dev.gnosisdev.com/api'
-    : 'https://protocol-mainnet.gnosis.io/api',
+  [Network.MAINNET]: 'https://protocol-mainnet.gnosis.io/api',
 };
 
-export default class GnosisProtocolService {
+export default class CowswapProtocolService {
   baseURL: string;
 
   constructor(apiVersion = 'v1') {
@@ -103,7 +100,7 @@ export default class GnosisProtocolService {
 
       return data;
     } catch (e) {
-      console.log(`[Gnosis Protocol]: Failed to get order ${orderId}`, e);
+      console.log(`[Cowswap Protocol]: Failed to get order ${orderId}`, e);
     }
 
     return null;
@@ -146,11 +143,11 @@ export default class GnosisProtocolService {
 
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Protocol]: Failed to get price from API`, e);
+      console.log(`[Cowswap Protocol]: Failed to get price from API`, e);
     }
 
     return null;
   }
 }
 
-export const gnosisProtocolService = new GnosisProtocolService();
+export const cowswapProtocolService = new CowswapProtocolService();

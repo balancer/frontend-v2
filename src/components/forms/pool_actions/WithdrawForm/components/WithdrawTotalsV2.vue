@@ -16,13 +16,14 @@ const { priceImpact, highPriceImpact, isLoadingQuery } = useExitPool();
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'bg-red-500 text-white divide-red-400 border-none': highPriceImpact.value,
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400 border-none':
+    highPriceImpact.value,
 }));
 </script>
 
 <template>
   <div class="data-table">
-    <div :class="['data-table-row', priceImpactClasses]">
+    <div :class="['data-table-row', priceImpactClasses, 'dark:bg-gray-800']">
       <div class="p-2">
         {{ $t('priceImpact') }}
       </div>
@@ -62,7 +63,6 @@ const priceImpactClasses = computed(() => ({
   @apply flex;
   @apply rounded-lg;
   @apply divide-x dark:divide-gray-900 border dark:border-gray-900;
-  @apply dark:bg-gray-800;
 }
 
 .data-table-number-col {

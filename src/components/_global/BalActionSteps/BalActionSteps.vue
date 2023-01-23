@@ -179,7 +179,7 @@ async function submit(
       return;
     }
 
-    handleTransaction(tx, state);
+    if (tx) handleTransaction(tx, state);
   } catch (error) {
     state.init = false;
     state.confirming = false;

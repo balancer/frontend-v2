@@ -460,6 +460,7 @@ export const tokensProvider = (
     prices,
     balances,
     allowances,
+    balanceQueryLoading,
     dynamicDataLoaded,
     dynamicDataLoading,
     priceQueryError,
