@@ -199,9 +199,14 @@ const provider = (props: Props) => {
 
   const exitHandlerType = computed((): ExitHandler => {
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
-    if (isWeightedPool.value && isSingleAssetExit.value) {
-      if (singleAssetMaxed.value) return ExitHandler.ExactIn;
-      return ExitHandler.ExactOut;
+    if (isWeightedPool.value) {
+      if (isSingleAssetExit.value) {
+        if (singleAssetMaxed.value) {
+          return ExitHandler.ExactIn;
+        } else {
+          return ExitHandler.ExactOut;
+        }
+      } else return ExitHandler.ExactIn;
     }
 
     return ExitHandler.Generalised;
