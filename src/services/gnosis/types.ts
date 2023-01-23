@@ -1,4 +1,4 @@
-import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
+import { OrderKind } from '@cowprotocol/contracts';
 
 export type OrderID = string;
 
@@ -25,23 +25,6 @@ export type OrderMetaData = {
   status: 'pending' | 'fulfilled' | 'expired' | 'cancelled';
 };
 
-export type FeeQuoteParams = Pick<
-  OrderMetaData,
-  | 'sellToken'
-  | 'buyToken'
-  | 'kind'
-  | 'validTo'
-  | 'appData'
-  | 'partiallyFillable'
-> & {
-  from: string;
-  receiver: string;
-  sellTokenBalance: OrderBalance;
-  buyTokenBalance: OrderBalance;
-  sellAmountBeforeFee?: string;
-  buyAmountAfterFee?: string;
-};
-
 export type PriceQuoteParams = Pick<
   OrderMetaData,
   'sellToken' | 'buyToken' | 'kind'
@@ -50,14 +33,6 @@ export type PriceQuoteParams = Pick<
   fromDecimals: number;
   toDecimals: number;
   account: string;
-};
-
-export type FeeInformation = {
-  expiration: string;
-  from: string;
-  quote: FeeQuoteParams & {
-    feeAmount: string;
-  };
 };
 
 export type CowSwapQuoteResponse = {

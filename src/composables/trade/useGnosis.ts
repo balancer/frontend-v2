@@ -3,23 +3,16 @@ import { WeiPerEther as ONE } from '@ethersproject/constants';
 import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
-import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
 import OldBigNumber from 'bignumber.js';
 import { computed, ComputedRef, reactive, Ref, ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 
 import { bnum } from '@/lib/utils';
-import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
-import {
-  FeeInformation,
-  FeeQuoteParams,
-  OrderMetaData,
-  PriceQuoteParams,
-} from '@/services/gnosis/types';
-import { calculateValidTo, toErc20Address } from '@/services/gnosis/utils';
+import { OrderMetaData, PriceQuoteParams } from '@/services/gnosis/types';
+import { calculateValidTo } from '@/services/gnosis/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Token } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
@@ -81,24 +74,6 @@ type Props = {
   slippageBufferRate: ComputedRef<number>;
 };
 
-const PRICE_QUOTE_TIMEOUT = 10000;
-
-const priceQuotesResolveLast = onlyResolvesLast(getPriceQuotes);
-const feeQuoteResolveLast = onlyResolvesLast(getFeeQuote);
-
-function getPriceQuotes(params: PriceQuoteParams) {
-  return Promise.allSettled([
-    tryPromiseWithTimeout(
-      gnosisProtocolService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    ),
-  ]);
-}
-
-function getFeeQuote(params: FeeQuoteParams) {
-  return gnosisProtocolService.getFeeQuote(params);
-}
-
 export default function useGnosis({
   exactIn,
   tokenInAddressInput,
@@ -119,9 +94,9 @@ export default function useGnosis({
   const { balanceFor } = useTokens();
 
   // DATA
-  const feeQuote = ref<FeeInformation | null>(null);
   const updatingQuotes = ref(false);
   const confirming = ref(false);
+  const feeQuote = ref<string | null>(null);
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
@@ -132,7 +107,7 @@ export default function useGnosis({
 
   // METHODS
   function getFeeAmount() {
-    const feeAmountInToken = feeQuote.value?.quote.feeAmount ?? '0';
+    const feeAmountInToken = feeQuote.value ?? '0';
     const feeAmountOutToken = tokenOutAmountScaled.value
       .mul(feeAmountInToken)
       .div(tokenInAmountScaled.value)
@@ -302,131 +277,67 @@ export default function useGnosis({
     updatingQuotes.value = true;
     state.validationError = null;
 
-    let feeQuoteResult: FeeInformation | null = null;
     try {
-      const feeQuoteParams: FeeQuoteParams = {
-        sellToken: toErc20Address(tokenInAddressInput.value),
-        buyToken: toErc20Address(tokenOutAddressInput.value),
-        from: account.value || AddressZero,
-        receiver: account.value || AddressZero,
-        validTo: calculateValidTo(appTransactionDeadline.value),
-        appData: APP_DATA,
-        partiallyFillable: false,
-        sellTokenBalance: OrderBalance.EXTERNAL,
-        buyTokenBalance: OrderBalance.ERC20,
+      const priceQuoteParams: PriceQuoteParams = {
+        sellToken: tokenInAddressInput.value,
+        buyToken: tokenOutAddressInput.value,
+        amount: amountToExchange.toString(),
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
+        fromDecimals: tokenIn.value.decimals,
+        toDecimals: tokenOut.value.decimals,
+        account: account.value || AddressZero,
       };
 
-      if (exactIn.value) {
-        feeQuoteParams.sellAmountBeforeFee = amountToExchange.toString();
-      } else {
-        feeQuoteParams.buyAmountAfterFee = amountToExchange.toString();
-      }
+      const priceQuote = await gnosisProtocolService.getPriceQuote(
+        priceQuoteParams
+      );
 
-      // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-      feeQuoteResult = await feeQuoteResolveLast(feeQuoteParams);
+      if (priceQuote) {
+        feeQuote.value = priceQuote.feeAmount;
+
+        // When user clears the input while fee is fetching we won't be able to get the quote
+        if (
+          (exactIn.value && !tokenInAmountInput.value) ||
+          (!exactIn.value && !tokenOutAmountInput.value)
+        ) {
+          updatingQuotes.value = false;
+          return;
+        }
+
+        if (exactIn.value) {
+          tokenOutAmountInput.value = bnum(
+            formatUnits(priceQuote.buyAmount ?? '0', tokenOut.value.decimals)
+          ).toFixed(6, OldBigNumber.ROUND_DOWN);
+
+          const { feeAmountInToken } = getQuote();
+
+          state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
+            amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+          );
+        } else {
+          tokenInAmountInput.value = bnum(
+            formatUnits(priceQuote.sellAmount ?? '0', tokenIn.value.decimals)
+          ).toFixed(6, OldBigNumber.ROUND_DOWN);
+
+          const { feeAmountOutToken, maximumInAmount } = getQuote();
+
+          state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
+            amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+          );
+
+          if (account.value) {
+            const priceExceedsBalance = bnum(
+              formatUnits(maximumInAmount, tokenIn.value.decimals)
+            ).gt(balanceFor(tokenIn.value.address));
+
+            if (priceExceedsBalance) {
+              state.validationError = ApiErrorCodes.PriceExceedsBalance;
+            }
+          }
+        }
+      }
     } catch (e) {
-      feeQuoteResult = null;
-      state.validationError = (e as Error).message;
-    }
-
-    if (feeQuoteResult != null) {
-      try {
-        let priceQuoteAmount: string | null = null;
-
-        const priceQuoteParams: PriceQuoteParams = {
-          sellToken: tokenInAddressInput.value,
-          buyToken: tokenOutAddressInput.value,
-          amount: amountToExchange.toString(),
-          kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
-          fromDecimals: tokenIn.value.decimals,
-          toDecimals: tokenOut.value.decimals,
-          account: account.value || AddressZero,
-        };
-
-        const priceQuotes = await priceQuotesResolveLast(priceQuoteParams);
-
-        const priceQuoteAmounts = priceQuotes.reduce<string[]>(
-          (fulfilledPriceQuotes, priceQuote) => {
-            if (
-              priceQuote.status === 'fulfilled' &&
-              priceQuote.value &&
-              (exactIn.value
-                ? priceQuote.value.buyAmount != null
-                : priceQuote.value.sellAmount != null)
-            ) {
-              fulfilledPriceQuotes.push(
-                exactIn.value
-                  ? priceQuote.value.buyAmount ?? ''
-                  : priceQuote.value.sellAmount ?? ''
-              );
-            }
-            return fulfilledPriceQuotes;
-          },
-          []
-        );
-
-        if (priceQuoteAmounts.length > 0) {
-          // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
-          priceQuoteAmount = (
-            exactIn.value
-              ? priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).gt(b) ? a : b
-                )
-              : priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).lt(b) ? a : b
-                )
-          ).toString();
-        }
-
-        if (priceQuoteAmount != null) {
-          feeQuote.value = feeQuoteResult;
-
-          // When user clears the input while fee is fetching we won't be able to get the quote
-          // TODO: ideally cancel all pending requests on amount getting changed / cleared
-          if (
-            (exactIn.value && !tokenInAmountInput.value) ||
-            (!exactIn.value && !tokenOutAmountInput.value)
-          ) {
-            updatingQuotes.value = false;
-            return;
-          }
-
-          if (exactIn.value) {
-            tokenOutAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenOut.value.decimals)
-            ).toFixed(6, OldBigNumber.ROUND_DOWN);
-
-            const { feeAmountInToken } = getQuote();
-
-            state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
-            );
-          } else {
-            tokenInAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenIn.value.decimals)
-            ).toFixed(6, OldBigNumber.ROUND_DOWN);
-
-            const { feeAmountOutToken, maximumInAmount } = getQuote();
-
-            state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
-            );
-
-            if (account.value) {
-              const priceExceedsBalance = bnum(
-                formatUnits(maximumInAmount, tokenIn.value.decimals)
-              ).gt(balanceFor(tokenIn.value.address));
-
-              if (priceExceedsBalance) {
-                state.validationError = ApiErrorCodes.PriceExceedsBalance;
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.log('[Gnosis Quotes] Failed to update quotes', e);
-      }
+      console.log('[Gnosis Quotes] Failed to update quotes', e);
     }
 
     updatingQuotes.value = false;

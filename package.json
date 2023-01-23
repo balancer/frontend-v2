@@ -74,7 +74,6 @@
     "@walletconnect/web3-provider": "^1.5.2",
     "animejs": "^3.2.1",
     "autoprefixer": "^9.8.8",
-    "awesome-only-resolves-last-promise": "^1.0.3",
     "axios": "0.21.2",
     "babel-loader": "^8.2.2",
     "babel-plugin-require-context-hook": "^1.0.0",

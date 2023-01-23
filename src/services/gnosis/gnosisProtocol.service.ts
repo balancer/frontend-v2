@@ -10,8 +10,6 @@ import {
   OrderCreation,
 } from './signing';
 import {
-  FeeInformation,
-  FeeQuoteParams,
   OrderID,
   OrderMetaData,
   CowSwapQuoteResponse,
@@ -105,24 +103,6 @@ export default class GnosisProtocolService {
     return null;
   }
 
-  public async getFeeQuote(feeQuoteParams: FeeQuoteParams) {
-    const response = await axios.post<FeeInformation>(
-      `${this.baseURL}/quote`,
-      feeQuoteParams,
-      {
-        validateStatus: () => true,
-      }
-    );
-
-    if (response.status >= 200 && response.status < 300) {
-      return response.data;
-    }
-
-    const errorMessage = OperatorError.getErrorFromStatusCode(response, 'get');
-
-    throw new Error(errorMessage);
-  }
-
   public async getPriceQuote(params: PriceQuoteParams) {
     try {
       const { amount, sellToken, buyToken, kind, account } = params;
@@ -133,6 +113,7 @@ export default class GnosisProtocolService {
           sellToken,
           buyToken,
           from: account,
+          receiver: account,
           kind,
           [kind === 'sell' ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
             amount,

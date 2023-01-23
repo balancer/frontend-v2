@@ -139,6 +139,7 @@ export default function useTrading(
     tokenIn,
     tokenOut,
     slippageBufferRate,
+    isGnosisTrade,
   });
 
   const gnosis = useGnosis({
