@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="preload"
+      as="font"
+      href="./fonts/Inter-Variable.ttf"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      as="font"
+      href="./fonts/tiemposDispMed.woff2"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <!-- Primary Meta Tags -->
+    <title>Balancer</title>
+    <meta name="title" content="Balancer" />
+    <meta
+      name="description"
+      content="Automated portfolio manager and trading platform"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://app.balancer.fi/" />
+    <meta property="og:title" content="Balancer" />
+    <meta
+      property="og:description"
+      content="Automated portfolio manager and trading platform"
+    />
+    <meta
+      property="og:image"
+      content="https://balancer.fi/images/og_image.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://app.balancer.fi/" />
+    <meta property="twitter:title" content="Balancer" />
+    <meta
+      property="twitter:description"
+      content="Automated portfolio manager and trading platform"
+    />
+    <meta
+      property="twitter:image"
+      content="https://balancer.fi/images/og_image.jpg"
+    />
+
+    <!-- Fathom Analytics -->
+    <script
+      src="https://quality-yellow.balancer.fi/script.js"
+      data-spa="hash"
+      data-site="<%= VITE_FATHOM_SITE_ID %>"
+      defer
+    ></script>
+  </head>
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but the Balancer app will not work without JavaScript
+        enabled. Please enable it to continue.</strong
+      >
+    </noscript>
+    <div id="app"></div>
+    <script>
+      window.global = window;
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

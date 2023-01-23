@@ -54,8 +54,8 @@ type SorState = {
   submissionError: string | null;
 };
 
-const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
-const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
+const GAS_PRICE = import.meta.env.VITE_GAS_PRICE || '100000000000';
+const MAX_POOLS = import.meta.env.VITE_MAX_POOLS || '4';
 const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive<SorState>({

@@ -12,7 +12,7 @@ import useNetwork from '../useNetwork';
 /**
  * TYPES
  */
-type QueryResponse = Address[];
+type QueryResponse = Readonly<Address[]>;
 type MulticallerResult = Record<Address, { isKilled: boolean }>;
 
 function callGaugesIsKilledStatus(
@@ -78,7 +78,7 @@ export default function useExpiredGaugesQuery(
         }
       }
     }
-    return expiredGaugeAddresses;
+    return Object.freeze(expiredGaugeAddresses);
   }
 
   /**

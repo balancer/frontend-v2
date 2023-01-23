@@ -1,7 +1,8 @@
-import { App, createApp, h } from 'vue';
+import { App, ComponentPublicInstance, createApp, h } from 'vue';
 
 export interface MountResult<R> {
   result: R;
+  vm: ComponentPublicInstance;
   unmount: () => void;
 }
 
@@ -45,6 +46,7 @@ export function mount<R>(
   return {
     //@ts-ignore
     result: vm.$refs.child.wrapper(),
+    vm,
 
     unmount: () => app.unmount(),
   };

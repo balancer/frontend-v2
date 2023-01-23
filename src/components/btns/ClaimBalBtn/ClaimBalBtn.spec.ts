@@ -1,5 +1,5 @@
 import { getAddress } from '@ethersproject/address';
-import { fireEvent, render } from '@testing-library/vue';
+import { fireEvent } from '@testing-library/vue';
 
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
@@ -7,21 +7,22 @@ import { balancerMinter } from '@/services/balancer/contracts/contracts/balancer
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 
 import ClaimBalBtn from './ClaimBalBtn.vue';
+import { renderComponent } from '@/tests/renderComponent';
 
 ClaimBalBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };
 
-jest.mock('@/providers/tokens.provider');
-jest.mock('@/composables/queries/useGaugesQuery');
-jest.mock('@/composables/queries/useGaugesDecorationQuery');
-jest.mock('@/services/balancer/contracts/contracts/balancer-minter');
+vi.mock('@/providers/tokens.provider');
+vi.mock('@/composables/queries/useGaugesQuery');
+vi.mock('@/composables/queries/useGaugesDecorationQuery');
+vi.mock('@/services/balancer/contracts/contracts/balancer-minter');
 
 const mockGaugeAddress = getAddress(gauge.id);
 
 describe('ClaimBalBtn', () => {
   describe('When using ClaimBalBtn', () => {
     it('should render props', () => {
-      const { getByText } = render(ClaimBalBtn, {
+      const { getByText } = renderComponent(ClaimBalBtn, {
         props: {
           gauges: [gauge],
           label: 'Claim',
@@ -34,7 +35,7 @@ describe('ClaimBalBtn', () => {
 
     describe('Given 1 gauge', () => {
       it('Calls balancerMinter.mint on click', async () => {
-        const { getByText } = render(ClaimBalBtn, {
+        const { getByText } = renderComponent(ClaimBalBtn, {
           props: {
             gauges: [gauge],
             label: 'Claim',
@@ -52,7 +53,7 @@ describe('ClaimBalBtn', () => {
 
     describe('Given multiple gauges', () => {
       it('Calls balancerMinter.mintMany on click', async () => {
-        const { getByText } = render(ClaimBalBtn, {
+        const { getByText } = renderComponent(ClaimBalBtn, {
           props: {
             gauges: [gauge, gauge, gauge],
             label: 'Claim',

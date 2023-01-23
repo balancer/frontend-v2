@@ -5,11 +5,15 @@ export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
 
 const chainIdHandler = (req, res, ctx) => {
   return req.json().then(data => {
+    const MAINNET = '1';
     if (data[0].method === 'eth_chainId') {
-      const MAINNET = '1';
       return res(ctx.json([MAINNET]));
     }
-    console.log('Unhandled post with payload: ', data);
+    if (data[0].method === 'net_version') {
+      return res(ctx.json([MAINNET]));
+    }
+
+    console.warn('Unhandled chain id request with payload: ', data);
   });
 };
 
@@ -61,6 +65,19 @@ export const handlers = [
           ],
         })
       );
+    }
+  ),
+
+  rest.get(
+    'https://api.coingecko.com/api/v3/simple/price*',
+    (req, res, ctx) => {
+      return res(ctx.json({}));
+    }
+  ),
+  rest.get(
+    'https://api.coingecko.com/api/v3/simple/token_price/ethereum',
+    (req, res, ctx) => {
+      return res(ctx.json({}));
     }
   ),
 

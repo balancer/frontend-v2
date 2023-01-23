@@ -13,7 +13,7 @@ import { Provider } from '@ethersproject/providers';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
 
-const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
+const SWAP_COST = import.meta.env.VITE_SWAP_COST || '100000';
 
 export interface SorReturn {
   tokenIn: string;

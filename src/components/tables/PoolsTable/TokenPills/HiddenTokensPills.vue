@@ -5,11 +5,13 @@ type Props = {
   tokens: PoolToken[];
   hasBalance: boolean;
   isSelected: boolean;
+  isPicked: boolean;
 };
 
 withDefaults(defineProps<Props>(), {
   hasBalance: false,
   isSelected: false,
+  isPicked: false,
 });
 </script>
 
@@ -20,6 +22,7 @@ withDefaults(defineProps<Props>(), {
         'pill',
         {
           'pill-selected': isSelected,
+          'pill-picked': isPicked,
         },
       ]"
       :style="{ zIndex: tokens.length }"
@@ -60,6 +63,11 @@ withDefaults(defineProps<Props>(), {
 }
 
 .pill-selected {
+  @apply bg-blue-600 dark:bg-blue-400;
+  @apply text-white dark:text-white;
+}
+
+.pill-picked {
   @apply bg-blue-600 dark:bg-blue-400;
   @apply text-white dark:text-white;
 }

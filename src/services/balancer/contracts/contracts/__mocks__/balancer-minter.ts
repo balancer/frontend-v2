@@ -1,9 +1,9 @@
 import { txResponseMock } from '@/__mocks__/transactions';
 
-const BalancerMinter = jest.fn().mockImplementation(() => {
+const BalancerMinter = vi.fn().mockImplementation(() => {
   return {
-    mint: jest.fn().mockResolvedValue(txResponseMock),
-    mintMany: jest.fn().mockResolvedValue(txResponseMock),
+    mint: vi.fn().mockResolvedValue(txResponseMock),
+    mintMany: vi.fn().mockResolvedValue(txResponseMock),
   };
 });
 

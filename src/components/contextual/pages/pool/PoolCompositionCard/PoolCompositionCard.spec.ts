@@ -1,27 +1,19 @@
-import BalLink from '@/components/_global/BalLink/BalLink.vue';
-import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import PoolCompositionCard from './PoolCompositionCard.vue';
-import { render, screen, within } from '@testing-library/vue';
+import { screen, within } from '@testing-library/vue';
+import { renderComponent } from '@/tests/renderComponent';
 
-jest.mock('@/providers/tokens.provider');
+vi.mock('@/providers/tokens.provider');
 
-function renderComponent() {
-  render(PoolCompositionCard, {
+function renderCard() {
+  renderComponent(PoolCompositionCard, {
     props: { pool: BoostedPoolMock },
-    global: {
-      components: {
-        // TODO: refactor tests to use registerComponents without warnings
-        BalAsset,
-        BalLink,
-      },
-    },
   });
 }
 
 describe('Given a boosted pool with a deep bb-a-DAI linear token, should render correct balance and fiat', () => {
   it('for wrapped tokens (aUSDT)', async () => {
-    renderComponent();
+    renderCard();
     const aUSDT = await screen.findByRole('link', {
       name: /aUSDT/i,
     });
@@ -31,7 +23,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, should render 
   });
 
   it('for a non wrapped token (DAI)', async () => {
-    renderComponent();
+    renderCard();
 
     const dai = await screen.findAllByRole('link', { name: /dai/i });
 

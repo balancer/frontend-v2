@@ -1,7 +1,7 @@
 import { times } from 'lodash';
 import PromiseWorker from 'promise-worker';
 // @ts-ignore
-import ClaimWorker from 'worker-loader!./claim.worker';
+import ClaimWorker from './claim.worker?worker';
 
 class ClaimWorkerPoolService {
   workers: PromiseWorker[];

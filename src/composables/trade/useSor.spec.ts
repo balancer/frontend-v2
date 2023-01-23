@@ -8,29 +8,26 @@ import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-jest.mock('vue-i18n');
-jest.mock('vuex');
-jest.mock('@/composables/useEthereumTxType');
-jest.mock('@/lib/utils/balancer/helpers/sor/sorManager');
-jest.mock('@/locales');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/composables/useEthereumTxType');
+vi.mock('@/lib/utils/balancer/helpers/sor/sorManager');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockNativeAssetAddress = configService.network.nativeAsset.address;
 const mockEthPrice = 3000;
 const mockTokenPrice = 0.2;
 
-jest.mock('@/providers/tokens.provider', () => ({
+vi.mock('@/providers/tokens.provider', () => ({
   useTokens: () => {
     return {
-      injectTokens: jest.fn().mockImplementation(),
-      priceFor: jest.fn().mockImplementation(address => {
+      injectTokens: vi.fn(),
+      priceFor: vi.fn(address => {
         if (address === mockNativeAssetAddress) {
           return mockEthPrice;
         }
         return mockTokenPrice;
       }),
-      useTokens: jest.fn().mockImplementation(),
-      getToken: jest.fn().mockImplementation(),
+      useTokens: vi.fn(),
+      getToken: vi.fn(),
     };
   },
 }));
@@ -59,7 +56,7 @@ const mockProps = {
 
 describe('useSor', () => {
   it('Should load', () => {
-    jest.spyOn(console, 'time').mockImplementation();
+    vi.spyOn(console, 'time');
     const { result } = mountComposable(() => useSor(mockProps));
     expect(result).toBeTruthy();
   });
@@ -74,13 +71,13 @@ describe('setSwapCost', () => {
     '1'
   );
 
-  const mockedSorManager = jest.mocked(sorManager);
+  const mockedSorManager = vi.mocked(sorManager);
 
   beforeEach(() => {
     mockedSorManager.setCostOutputToken.mockClear();
-    jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(console, 'time').mockImplementation();
-    jest.spyOn(console, 'timeEnd').mockImplementation();
+    vi.spyOn(console, 'log');
+    vi.spyOn(console, 'time');
+    vi.spyOn(console, 'timeEnd');
   });
 
   it('Should pass a correct gas price to sorManager', async () => {

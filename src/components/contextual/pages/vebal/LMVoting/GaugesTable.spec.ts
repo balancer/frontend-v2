@@ -1,24 +1,26 @@
-import { render, screen } from '@testing-library/vue';
+import { screen } from '@testing-library/vue';
 
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 
 import GaugesTable from './GaugesTable.vue';
+import { renderComponent } from '@/tests/renderComponent';
 GaugesTable.components = {
   BalAssetSet,
 };
 
-jest.mock('@/composables/queries/useExpiredGaugesQuery', () =>
-  jest.fn().mockImplementation(() => ({
-    data: {
-      value: [],
-    },
-  }))
-);
-
-jest.mock('@/composables/queries/useGraphQuery', () => {
+vi.mock('@/composables/queries/useExpiredGaugesQuery', () => {
   return {
-    __esModule: true,
-    default: jest.fn(() => ({
+    default: () => ({
+      data: {
+        value: [],
+      },
+    }),
+  };
+});
+
+vi.mock('@/composables/queries/useGraphQuery', () => {
+  return {
+    default: () => ({
       data: {
         value: {
           votingEscrowLocks: [
@@ -31,23 +33,28 @@ jest.mock('@/composables/queries/useGraphQuery', () => {
           ],
         },
       },
-    })),
+    }),
     subgraphs: {
       gauge: 'mockgauge',
     },
   };
 });
 
-jest.mock('@/composables/queries/useVeBalLockInfoQuery', () =>
-  jest.fn().mockImplementation(() => ({
-    data: {
-      value: {
-        lockedAmount: '123',
-      },
-    },
-  }))
-);
-jest.mock('@/composables/queries/useGaugeVotesQuery');
+vi.mock('@/composables/queries/useVeBalLockInfoQuery', () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        data: {
+          value: {
+            lockedAmount: '123',
+          },
+        },
+      };
+    }),
+  };
+});
+
+vi.mock('@/composables/queries/useGaugeVotesQuery');
 // Global settings for component render.
 const global = {
   stubs: {
@@ -55,8 +62,8 @@ const global = {
   },
 };
 
-jest.mock('vue-router');
-jest.mock('@/providers/tokens.provider');
+vi.mock('vue-router');
+vi.mock('@/providers/tokens.provider');
 
 const gaugeId = '0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac';
 
@@ -105,7 +112,7 @@ const queryRemoveVotesBtn = () =>
 
 describe('GaugesTable', () => {
   it('should render right tokens for gauge', async () => {
-    render(GaugesTable, {
+    renderComponent(GaugesTable, {
       global,
       props: {
         data: gauges,
@@ -125,7 +132,7 @@ describe('GaugesTable', () => {
   });
 
   it('should render Expired label and disabled Vote btn, if gauge is expired', async () => {
-    render(GaugesTable, {
+    renderComponent(GaugesTable, {
       global,
       props: {
         expiredGauges,
@@ -143,7 +150,7 @@ describe('GaugesTable', () => {
   });
 
   it("should render Expired label and Remove Votes btn if gauge is expired and it has user's votes", async () => {
-    render(GaugesTable, {
+    renderComponent(GaugesTable, {
       global,
       props: {
         expiredGauges,

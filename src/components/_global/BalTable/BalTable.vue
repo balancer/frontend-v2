@@ -8,6 +8,9 @@ import { computed, onMounted, ref, watch, toRef } from 'vue';
 
 import PinHeader from './PinHeader.vue';
 
+// Using imported types in template is not supported, so we use alias type
+type DataProp = Data;
+
 type InitialState = {
   sortDirection: 'asc' | 'desc' | null;
   sortColumn: string | null;
@@ -24,11 +27,11 @@ defineEmits(['loadMore']);
 
 type Props = {
   columns: ColumnDefinition[];
-  data: Data[];
+  data: DataProp[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
-  onRowClick?: (data: Data, inNewTab?: boolean) => void;
+  onRowClick?: (data: DataProp, inNewTab?: boolean) => void;
   sticky?: Sticky;
   square?: boolean;
   isPaginated?: boolean;
@@ -40,7 +43,7 @@ type Props = {
   href?: { getHref: (data: any) => string | null } | null;
   initialState?: InitialState;
   pin?: DataPinState | null;
-  getTableRowClass?: (rowData: Data, rowIndex: number) => string;
+  getTableRowClass?: (rowData: DataProp, rowIndex: number) => string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -301,7 +304,7 @@ watch(
         <PinHeader v-if="pinnedData.length" />
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
-          :key="`tableRow-${index}`"
+          :key="`tableRow-${dataItem.id ?? index}`"
           :class="getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
@@ -312,8 +315,8 @@ watch(
           :isColumnStuck="isColumnStuck"
           pinned
         >
-          <template v-for="(_, name) in $slots" #[name]="slotData">
-            <slot :name="name" v-bind="slotData" />
+          <template v-for="(_, name) in $slots" #[name]>
+            <slot :name="name" v-bind="dataItem" />
           </template>
         </BalTableRow>
         <!-- end pinned rows -->
@@ -321,7 +324,7 @@ watch(
         <!-- begin data rows -->
         <BalTableRow
           v-for="(dataItem, index) in unpinnedData"
-          :key="`tableRow-${index}`"
+          :key="`tableRow-${dataItem.id ?? index}`"
           :class="
             props.getTableRowClass
               ? props.getTableRowClass(dataItem, index)
@@ -335,8 +338,9 @@ watch(
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
         >
-          <template v-for="(_, name) in $slots" #[name]="slotData">
-            <slot :name="name" v-bind="slotData" />
+          <slot :name="'named'" v-bind="dataItem"></slot>
+          <template v-for="(_, name) in $slots" #[name]>
+            <slot :name="name" v-bind="dataItem" />
           </template>
         </BalTableRow>
         <!-- end end data rows -->
@@ -348,7 +352,7 @@ watch(
           :isColumnStuck="isColumnStuck"
         >
           <template v-for="(_, name) in $slots" #[name]="slotData">
-            <slot :name="name" v-bind="slotData" />
+            <slot :name="name" v-bind="(slotData as DataProp)" />
           </template>
         </TotalsRow>
       </table>

@@ -1,7 +1,14 @@
 <template>
   <div
     ref="animateRef"
-    class="flex items-center py-3 px-4 text-base leading-5 opacity-0 highlight"
+    :class="[
+      `flex items-center py-3 border border-transparent ml-4 mr-2 px-2 text-base
+  leading-5 opacity-0 highlight hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg`,
+      {
+        'bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-500':
+          focussed,
+      },
+    ]"
   >
     <BalAsset
       :address="token.address"
@@ -9,7 +16,9 @@
       :size="34"
       class="mr-3"
     />
-    <div class="flex-auto">
+    <div
+      :class="['flex-auto', { 'text-blue-500 dark:text-blue-200': focussed }]"
+    >
       {{ token.symbol }}
       <div class="w-40 md:w-60 text-sm truncate text-gray">
         {{ token.name }}
@@ -19,7 +28,7 @@
       v-if="!hideBalance"
       class="flex flex-col items-end font-medium text-right"
     >
-      <BalLoadingNumber v-if="balanceLoading" type="token" />
+      <BalLoadingBlock v-if="balanceLoading" class="w-14 h-4" />
       <template v-else>
         <template v-if="balance > 0">
           <template v-if="balance >= 0.0001">
@@ -27,22 +36,10 @@
           </template>
           <template v-else> &#60; 0.0001 </template>
         </template>
-        <template v-else>-</template>
-      </template>
-
-      <BalLoadingNumber
-        v-if="balanceLoading"
-        type="fiat"
-        numberWidth="2"
-        numberHeight="4"
-        class="text-sm font-normal"
-      />
-      <div v-else class="text-sm font-normal text-secondary">
-        <template v-if="value > 0">
+        <div v-if="value > 0" class="text-sm font-normal text-secondary">
           {{ fNum2(value, FNumFormats.fiat) }}
-        </template>
-        <template v-else>-</template>
-      </div>
+        </div>
+      </template>
     </span>
   </div>
 </template>
@@ -63,6 +60,7 @@ export default {
     token: { type: Object as PropType<TokenInfo>, required: true },
     balanceLoading: { type: Boolean, default: true },
     hideBalance: { type: Boolean, default: false },
+    focussed: { type: Boolean, default: false },
   },
 
   setup(props) {

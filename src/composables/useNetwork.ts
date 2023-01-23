@@ -22,11 +22,18 @@ const urlNetworkId: Network | null = routeSlug
 const NETWORK_ID =
   urlNetworkId ||
   localStorageNetworkId ||
-  (Number(process.env.VUE_APP_NETWORK) as Network) ||
+  (Number(import.meta.env.VITE_NETWORK) as Network) ||
   Network.MAINNET;
 if (windowAvailable) localStorage.setItem('networkId', NETWORK_ID.toString());
 export const networkSlug = config[NETWORK_ID].slug;
 export const networkConfig = config[NETWORK_ID];
+export const networkLabelMap = {
+  [Network.MAINNET]: 'Ethereum',
+  [Network.POLYGON]: 'Polygon',
+  [Network.ARBITRUM]: 'Arbitrum',
+  [Network.GOERLI]: 'Goerli',
+  [Network.OPTIMISM]: 'Optimism',
+};
 
 /**
  * COMPUTED
@@ -157,5 +164,6 @@ export default function useNetwork() {
     networkSlug,
     getSubdomain,
     handleNetworkSlug,
+    networkLabelMap,
   };
 }
