@@ -59,7 +59,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
 
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
-
+    console.log('gen exit');
     this.lastExitRes = await balancer.pools.generalisedExit(
       this.pool.value.id,
       evmAmountIn.toString(),

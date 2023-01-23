@@ -366,6 +366,7 @@ const provider = (props: Props) => {
       }));
       return output;
     } catch (error) {
+      console.error(error);
       captureException(error);
       throw new Error('Failed to construct exit.', { cause: error });
     }
@@ -405,6 +406,7 @@ const provider = (props: Props) => {
 
       return newMax;
     } catch (error) {
+      console.error(error);
       captureException(error);
       throw new Error('Failed to calculate max.', { cause: error });
     }

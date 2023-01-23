@@ -23,7 +23,7 @@ import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePo
  */
 const { network } = configService;
 const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
-const { isDeepPool } = usePool(pool);
+const { isDeepPool, isWeightedLikePool } = usePool(pool);
 const { activeTab, resetTabs } = useWithdrawPageTabs();
 usePoolTransfersGuard();
 
@@ -72,7 +72,7 @@ onMounted(() => resetTabs());
         </div>
       </template>
       <ExitPoolProvider
-        v-if="isDeepPool"
+        v-if="isDeepPool || isWeightedLikePool"
         :isSingleAssetExit="activeTab === Tab.SingleToken"
         :pool="pool"
       >
