@@ -107,6 +107,7 @@ onMounted(() => {
           :isDeepPool="isDeepPool"
           :userPoolPercentage="userPoolPercentage"
           :showUserShares="showUserShares"
+          :rootPool="pool"
         />
       </div>
     </div>

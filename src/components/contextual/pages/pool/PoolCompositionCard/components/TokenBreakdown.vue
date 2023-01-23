@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PoolToken } from '@/services/pool/types';
+import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
 import { useTokenBreakdown } from './composables/useTokenBreakdown';
@@ -17,6 +17,7 @@ type Props = {
   isDeepPool: boolean;
   userPoolPercentage: BigNumber;
   showUserShares: boolean;
+  rootPool: Pool;
 };
 
 /**
@@ -34,6 +35,7 @@ const {
   isDeepPool,
   userPoolPercentage,
   showUserShares,
+  rootPool,
 } = toRefs(props);
 
 /**
@@ -44,8 +46,8 @@ const { explorerLinks } = useWeb3();
 const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
   token,
   shareOfParentInPool,
-  isDeepPool,
-  userPoolPercentage
+  userPoolPercentage,
+  rootPool
 );
 
 /**
@@ -140,6 +142,7 @@ const shareOfTokenInPool = computed((): number => {
       :isDeepPool="isDeepPool"
       :userPoolPercentage="userPoolPercentage"
       :showUserShares="showUserShares"
+      :rootPool="rootPool"
     />
   </template>
 </template>

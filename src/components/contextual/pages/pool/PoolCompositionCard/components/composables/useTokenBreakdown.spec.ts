@@ -2,7 +2,7 @@ import { removeBptFrom } from '@/composables/usePool';
 import { PoolToken } from '@/services/pool/types';
 import { BoostedPoolMock, PoolMock } from '@/__mocks__/pool';
 
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useTokenBreakdown } from './useTokenBreakdown';
 import { mountComposable } from '@/tests/mount-helpers';
 import { bnum } from '@/lib/utils';
@@ -10,8 +10,8 @@ import { BigNumber } from 'bignumber.js';
 
 import * as tokensProvider from '@/providers/tokens.provider';
 
+const rootPool = ref(BoostedPoolMock);
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
-const isDeepPool = ref(true);
 
 // Assuming that user owns 15% of the pool
 const userPoolPercentage = ref(new BigNumber(15)) as Ref<BigNumber>;
@@ -22,12 +22,7 @@ it('Works for a parent token in a deep nested pool', async () => {
   const token = ref(bbaDaiToken);
   const shareOfParentInPool = ref(1);
   const { result } = mountComposable(() =>
-    useTokenBreakdown(
-      token,
-      shareOfParentInPool,
-      isDeepPool,
-      userPoolPercentage
-    )
+    useTokenBreakdown(token, shareOfParentInPool, userPoolPercentage, rootPool)
   );
 
   // Hides parent token balance and fiat
@@ -52,8 +47,8 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
       useTokenBreakdown(
         aDaiToken,
         shareOfParentInPool,
-        isDeepPool,
-        userPoolPercentage
+        userPoolPercentage,
+        rootPool
       )
     );
 
@@ -73,8 +68,8 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
       useTokenBreakdown(
         daiToken,
         shareOfParentInPool,
-        isDeepPool,
-        userPoolPercentage
+        userPoolPercentage,
+        rootPool
       )
     );
 
@@ -88,8 +83,8 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
 });
 
 describe('Given a weighted pool (GRO-WETH)', () => {
+  const rootPool = ref(PoolMock);
   const shareOfParentInPool = ref(1);
-  const isDeepPool = ref(false);
 
   it('works for GRO token', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
@@ -98,8 +93,8 @@ describe('Given a weighted pool (GRO-WETH)', () => {
       useTokenBreakdown(
         token,
         shareOfParentInPool,
-        isDeepPool,
-        userPoolPercentage
+        userPoolPercentage,
+        rootPool
       )
     );
 
@@ -116,8 +111,8 @@ describe('Given a weighted pool (GRO-WETH)', () => {
       useTokenBreakdown(
         token,
         shareOfParentInPool,
-        isDeepPool,
-        userPoolPercentage
+        userPoolPercentage,
+        rootPool
       )
     );
 
@@ -134,8 +129,8 @@ describe('Given a weighted pool (GRO-WETH)', () => {
       useTokenBreakdown(
         token,
         shareOfParentInPool,
-        isDeepPool,
-        userPoolPercentage
+        userPoolPercentage,
+        rootPool
       )
     );
 
@@ -157,8 +152,8 @@ describe('Given a weighted pool (GRO-WETH)', () => {
       useTokenBreakdown(
         token,
         shareOfParentInPool,
-        isDeepPool,
-        userPoolPercentage
+        userPoolPercentage,
+        rootPool
       )
     );
 
