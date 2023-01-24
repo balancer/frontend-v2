@@ -18,10 +18,10 @@ import { ExactInExitHandler } from './handlers/exact-in-exit.handler';
 import { ExactOutExitHandler } from './handlers/exact-out-exit.handler';
 
 export enum ExitHandler {
-  Swap,
-  Generalised,
-  ExactOut,
-  ExactIn,
+  Swap = 'Swap',
+  Generalised = 'Generalised',
+  ExactOut = 'ExactOut',
+  ExactIn = 'ExactIn',
 }
 
 type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];

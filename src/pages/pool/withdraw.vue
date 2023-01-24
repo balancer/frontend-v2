@@ -63,7 +63,7 @@ onMounted(() => resetTabs());
             <SwapSettingsPopover :context="SwapSettingsContext.invest" />
           </div>
           <BalTabs
-            v-if="isDeepPool"
+            v-if="isDeepPool || isWeightedLikePool"
             v-model="activeTab"
             :tabs="tabs"
             class="p-0 m-0 -mb-px whitespace-nowrap"
