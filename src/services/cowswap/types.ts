@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/contracts';
+import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
 
 export type OrderID = string;
 
@@ -29,10 +29,14 @@ export type PriceQuoteParams = Pick<
   OrderMetaData,
   'sellToken' | 'buyToken' | 'kind'
 > & {
-  amount: string;
   fromDecimals: number;
   toDecimals: number;
-  account: string;
+  from: string;
+  receiver: string;
+  sellAmountBeforeFee?: string | null;
+  buyAmountAfterFee?: string | null;
+  partiallyFillable?: boolean;
+  sellTokenBalance?: OrderBalance;
 };
 
 export type CowSwapQuoteResponse = {

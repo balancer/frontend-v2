@@ -105,19 +105,9 @@ export default class CowswapProtocolService {
 
   public async getPriceQuote(params: PriceQuoteParams) {
     try {
-      const { amount, sellToken, buyToken, kind, account } = params;
-
       const response = await axios.post<CowSwapQuoteResponse>(
         `${this.baseURL}/quote`,
-        {
-          sellToken,
-          buyToken,
-          from: account,
-          receiver: account,
-          kind,
-          [kind === 'sell' ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
-            amount,
-        }
+        params
       );
 
       return response.data.quote;

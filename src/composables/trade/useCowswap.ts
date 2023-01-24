@@ -281,11 +281,15 @@ export default function useCowswap({
       const priceQuoteParams: PriceQuoteParams = {
         sellToken: tokenInAddressInput.value,
         buyToken: tokenOutAddressInput.value,
-        amount: amountToExchange.toString(),
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         fromDecimals: tokenIn.value.decimals,
         toDecimals: tokenOut.value.decimals,
-        account: account.value || AddressZero,
+        from: account.value || AddressZero,
+        receiver: account.value || AddressZero,
+        [exactIn.value ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
+          amountToExchange.toString(),
+        partiallyFillable: false, // Always fill or kill,
+        sellTokenBalance: OrderBalance.EXTERNAL,
       };
 
       const priceQuote = await cowswapProtocolService.getPriceQuote(
