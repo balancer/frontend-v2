@@ -26,7 +26,7 @@ type Props = {
   loadingApr: boolean;
   noInitLiquidity: boolean;
   isStableLikePool: boolean;
-  pool?: Pool;
+  pool: Pool;
   poolApr?: AprBreakdown;
   titleTokens: PoolToken[];
   missingPrices: boolean;
@@ -38,7 +38,6 @@ const props = withDefaults(defineProps<Props>(), {
   loadingPool: true,
   loadingApr: true,
   noInitLiquidity: false,
-  pool: undefined,
   poolApr: undefined,
 });
 
