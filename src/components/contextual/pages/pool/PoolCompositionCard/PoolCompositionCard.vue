@@ -102,7 +102,6 @@ onMounted(() => {
       >
         <TokenBreakdown
           :token="token"
-          :isWeighted="isWeighted"
           :showUserShares="showUserShares"
           :rootPool="pool"
         />

@@ -4,7 +4,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
 import { useTokenBreakdown } from './composables/useTokenBreakdown';
 import { bnum } from '@/lib/utils';
-import { usePool } from '@/composables/usePool';
+import { isWeightedLike, usePool } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -13,7 +13,6 @@ type Props = {
   token: PoolToken;
   shareOfParentInPool?: number;
   parentLevel?: number;
-  isWeighted: boolean;
   showUserShares: boolean;
   rootPool: Pool;
 };
@@ -26,14 +25,14 @@ const props = withDefaults(defineProps<Props>(), {
   shareOfParentInPool: 1,
 });
 
-const { token, shareOfParentInPool, isWeighted, showUserShares, rootPool } =
-  toRefs(props);
+const { token, shareOfParentInPool, showUserShares, rootPool } = toRefs(props);
 
 /**
  * COMPOSABLES
  */
 const { explorerLinks } = useWeb3();
 const { isDeepPool } = usePool(rootPool);
+const isWeighted = isWeightedLike(rootPool.value.poolType);
 
 const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
   token,
@@ -129,7 +128,6 @@ const shareOfTokenInPool = computed((): number => {
       :token="nestedToken"
       :shareOfParentInPool="shareOfTokenInPool"
       :parentLevel="currentLevel"
-      :isWeighted="isWeighted"
       :showUserShares="showUserShares"
       :rootPool="rootPool"
     />
