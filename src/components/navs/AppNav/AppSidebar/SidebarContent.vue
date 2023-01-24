@@ -11,6 +11,11 @@ import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
 import { Goals, trackGoal } from '@/composables/useFathom';
+import TwitterIcon from '@/components/_global/icons/brands/TwitterIcon.vue';
+import DiscordIcon from '@/components/_global/icons/brands/DiscordIcon.vue';
+import MediumIcon from '@/components/_global/icons/brands/MediumIcon.vue';
+import YoutubeIcon from '@/components/_global/icons/brands/YoutubeIcon.vue';
+import GithubIcon from '@/components/_global/icons/brands/GithubIcon.vue';
 
 /**
  * PROPS & EMITS
@@ -62,20 +67,38 @@ const ecosystemLinks = [
   },
 ];
 
-const socialLinks = [
-  { component: 'TwitterIcon', url: 'https://twitter.com/BalancerLabs' },
-  { component: 'DiscordIcon', url: 'https://discord.balancer.fi/' },
-  { component: 'MediumIcon', url: 'https://medium.com/balancer-protocol' },
-  {
-    component: 'YoutubeIcon',
+const socialLinks = {
+  TwitterIcon: {
+    component: TwitterIcon,
+    url: 'https://twitter.com/BalancerLabs',
+  },
+  DiscordIcon: {
+    component: DiscordIcon,
+    url: 'https://discord.balancer.fi/',
+  },
+  MediumIcon: {
+    component: MediumIcon,
+    url: 'https://medium.com/balancer-protocol',
+  },
+
+  YoutubeIcon: {
+    component: YoutubeIcon,
     url: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow',
   },
-  { component: 'GithubIcon', url: 'https://github.com/balancer-labs/' },
-];
+
+  GithubIcon: {
+    url: 'https://github.com/balancer-labs/',
+    component: GithubIcon,
+  },
+};
 
 /**
  * METHODS
  */
+function getSocialComponent(componentName) {
+  return socialLinks[componentName].component;
+}
+
 async function navTo(path: string, goal: string) {
   trackGoal(goal);
   router.push(path);
@@ -136,14 +159,14 @@ watch(blockNumber, async () => {
 
     <div class="grid grid-rows-1 grid-flow-col auto-cols-min gap-2 px-4 mt-4">
       <BalLink
-        v-for="link in socialLinks"
-        :key="link.component"
+        v-for="(link, componentName) in socialLinks"
+        :key="componentName"
         :href="link.url"
         class="social-link"
         noStyle
         external
       >
-        <component :is="link.component" />
+        <component :is="getSocialComponent(componentName)" />
       </BalLink>
       <BalLink
         href="mailto:contact@balancer.finance"
