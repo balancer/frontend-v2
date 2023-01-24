@@ -6,7 +6,7 @@ import Components from 'unplugin-vue-components/vite';
 import { loadEnv, Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
-import nodePolyfills from './src/plugins/node-polyfills.cjs';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import rollupPolyfillNode from 'rollup-plugin-polyfill-node';
