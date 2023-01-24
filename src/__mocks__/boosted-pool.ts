@@ -18,7 +18,8 @@ const defaults: DeepPartial<Pool> = {
   ],
   symbol: 'bb-a-USD',
   name: 'Balancer Aave Boosted StablePool',
-  totalLiquidity: '1000',
+  totalLiquidity: '100',
+  totalShares: '100',
   // Explicitly set mainIndex to undefined so that isSubPool works as expected
   mainIndex: undefined,
   tokens: [
