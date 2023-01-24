@@ -1,6 +1,6 @@
 import { take } from 'lodash';
 import { computed } from 'vue';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress, includesAddress, removeAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
@@ -24,7 +24,7 @@ export default function useMyWalletTokens({
 
   const {
     balances,
-    dynamicDataLoading: isLoadingBalances,
+    balanceQueryLoading: isLoadingBalances,
     nativeAsset,
   } = useTokens();
 

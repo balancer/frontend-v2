@@ -7,7 +7,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
@@ -267,6 +267,7 @@ export default function useInvestMath(
    */
   async function getQueryBptOut() {
     if (!isShallowComposableStablePool.value) return;
+    if (!hasAmounts.value) return;
 
     try {
       loadingData.value = true;

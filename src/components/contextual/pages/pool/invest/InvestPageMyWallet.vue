@@ -5,7 +5,7 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { usePool } from '@/composables/usePool';
 import { isSameAddress, indexOfAddress } from '@/lib/utils';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import useInvestPageTabs, {
   Tab,

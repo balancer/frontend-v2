@@ -48,7 +48,7 @@
         loading
         disabled
         :loadingLabel="
-          trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
+          trading.isCowswapTrade.value ? $t('loadingBestPrice') : $t('loading')
         "
         block
       />
@@ -60,8 +60,8 @@
         block
         @click.prevent="handlePreviewButton"
       />
-      <div
-        v-if="trading.isGnosisSupportedOnNetwork.value"
+      <!-- <div
+        v-if="trading.isCowswapSupportedOnNetwork.value"
         class="flex items-center mt-5 h-8 text-sm"
       >
         <Transition name="fade" mode="out-in">
@@ -132,7 +132,7 @@
             </div>
           </div>
         </Transition>
-      </div>
+      </div> -->
       <TradeRoute
         v-if="alwaysShowRoutes"
         :addressIn="trading.tokenIn.value.address"
@@ -146,7 +146,7 @@
     </div>
   </BalCard>
   <teleport to="#modal">
-    <TradePreviewModalGP
+    <TradePreviewModal
       v-if="modalTradePreviewIsOpen"
       :trading="trading"
       :error="error"
@@ -159,14 +159,13 @@
 
 <script lang="ts">
 import { SubgraphPoolBase } from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
+import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -177,19 +176,19 @@ import useValidation, {
 } from '@/composables/trade/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { TOKENS } from '@/constants/tokens';
 import { lsGet } from '@/lib/utils';
 import { WrapType } from '@/lib/utils/balancer/wrapper';
 import { isRequired } from '@/lib/utils/validations';
-import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
+import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
 import TradePair from './TradePair.vue';
 import TradeRoute from './TradeRoute.vue';
 export default defineComponent({
   components: {
     TradePair,
-    TradePreviewModalGP,
+    TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover,
   },
@@ -237,13 +236,13 @@ export default defineComponent({
       tokenOutAddress,
       tokenOutAmount
     );
-    // COMPUTED
     const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount
     );
+    // COMPUTED
     const isHighPriceImpact = computed(
       () =>
         trading.sor.validationErrors.value.highPriceImpact &&
@@ -252,13 +251,14 @@ export default defineComponent({
     const tradeDisabled = computed(() => {
       const hasMismatchedNetwork = isMismatchedNetwork.value;
       const hasAmountsError = !tokenInAmount.value || !tokenOutAmount.value;
-      const hasGnosisErrors =
-        trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
+      const hasCowswapErrors =
+        trading.isCowswapTrade.value &&
+        trading.cowswap.hasValidationError.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
       return (
         hasAmountsError ||
-        hasGnosisErrors ||
+        hasCowswapErrors ||
         hasBalancerErrors ||
         hasMismatchedNetwork
       );
@@ -272,7 +272,7 @@ export default defineComponent({
       }
       return t('swap');
     });
-    const pools = computed<(Pool | SubgraphPoolBase)[]>(
+    const pools = computed<SubgraphPoolBase[]>(
       // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
       () => {
         return trading.sor.pools.value;
@@ -293,20 +293,20 @@ export default defineComponent({
           };
         }
       }
-      if (trading.isGnosisTrade.value) {
-        if (trading.gnosis.validationError.value != null) {
-          const validationError = trading.gnosis.validationError.value;
+      if (trading.isCowswapTrade.value) {
+        if (trading.cowswap.validationError.value != null) {
+          const validationError = trading.cowswap.validationError.value;
           if (validationError === ApiErrorCodes.SellAmountDoesNotCoverFee) {
             return {
-              header: t('gnosisErrors.lowAmount.header'),
-              body: t('gnosisErrors.lowAmount.body'),
+              header: t('cowswapErrors.lowAmount.header'),
+              body: t('cowswapErrors.lowAmount.body'),
             };
           } else if (validationError === ApiErrorCodes.PriceExceedsBalance) {
             return {
-              header: t('gnosisErrors.lowBalance.header', [
+              header: t('cowswapErrors.lowBalance.header', [
                 trading.tokenIn.value.symbol,
               ]),
-              body: t('gnosisErrors.lowBalance.body', [
+              body: t('cowswapErrors.lowBalance.body', [
                 trading.tokenIn.value.symbol,
                 fNum2(
                   formatUnits(
@@ -320,15 +320,15 @@ export default defineComponent({
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {
             return {
-              header: t('gnosisErrors.noLiquidity.header', [
+              header: t('cowswapErrors.noLiquidity.header', [
                 trading.tokenIn.value.symbol,
               ]),
-              body: t('gnosisErrors.noLiquidity.body'),
+              body: t('cowswapErrors.noLiquidity.body'),
             };
           } else {
             return {
-              header: t('gnosisErrors.genericError.header'),
-              body: trading.gnosis.validationError.value,
+              header: t('cowswapErrors.genericError.header'),
+              body: trading.cowswap.validationError.value,
             };
           }
         }
@@ -344,11 +344,11 @@ export default defineComponent({
       return undefined;
     });
     const warning = computed(() => {
-      if (trading.isGnosisTrade.value) {
-        if (trading.gnosis.warnings.value.highFees) {
+      if (trading.isCowswapTrade.value) {
+        if (trading.cowswap.warnings.value.highFees) {
           return {
-            header: t('gnosisWarnings.highFees.header'),
-            body: t('gnosisWarnings.highFees.body'),
+            header: t('cowswapWarnings.highFees.header'),
+            body: t('cowswapWarnings.highFees.body'),
           };
         }
       }
@@ -362,6 +362,7 @@ export default defineComponent({
         modalTradePreviewIsOpen.value = false;
       });
     }
+
     function handleErrorButtonClick() {
       if (trading.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;

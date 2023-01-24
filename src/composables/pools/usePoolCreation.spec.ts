@@ -1,23 +1,16 @@
-import { mockI18n } from '@/__mocks__/vue-i18n';
-import { mount } from 'vue-composable-tester';
+import { mountComposable } from '@/tests/mount-helpers';
 
 import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 
-// const { updateTokenWeights, getPoolSymbol } = usePoolCreation();
-
 const tokens: Record<string, PoolSeedToken> = {};
 
-mockI18n();
-vi.mock('@/locales');
-vi.mock('@/composables/useTokens');
-vi.mock('@/services/web3/useWeb3');
+vi.mock('@/providers/tokens.provider');
 vi.mock('@/services/balancer/balancer.service');
 vi.mock('@/services/rpc-provider/rpc-provider.service');
 vi.mock('@/composables/queries/usePoolsQuery');
-vi.mock('@/composables/useEthers');
 
 describe('usePoolCreation', () => {
-  const { result: poolCreation } = mount(() => usePoolCreation());
+  const { result: poolCreation } = mountComposable(() => usePoolCreation());
   const { updateTokenWeights, getPoolSymbol, getScaledAmounts } = poolCreation;
 
   beforeEach(() => {

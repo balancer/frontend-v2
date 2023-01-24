@@ -1,11 +1,14 @@
 import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 // import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite';
-import { Plugin, loadEnv } from 'vite';
+import { loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
 import nodePolyfills from 'vite-plugin-node-stdlib-browser';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import { createHtmlPlugin } from 'vite-plugin-html';
 import rollupPolyfillNode from 'rollup-plugin-polyfill-node';
 import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
@@ -13,10 +16,20 @@ import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({ mode }) => {
+  const envConfig = loadEnv(mode, process.cwd());
+
   const plugins = [
     vue(),
-    // Type assertion to avoid TS errors in defineConfig
-    nodePolyfills() as unknown as Plugin,
+    createHtmlPlugin({
+      minify: false,
+      inject: {
+        data: {
+          VITE_FATHOM_SITE_ID: envConfig.VITE_FATHOM_SITE_ID,
+        },
+      },
+    }),
+    // avoid nodePolyfills in vitest:
+    mode === 'test' ? null : nodePolyfills(),
     // AutoImport({
     //   imports: [
     //     'vue',
@@ -32,9 +45,15 @@ export default defineConfig(({ mode }) => {
       extensions: ['vue'],
       dts: true,
     }),
+    VueI18nPlugin({
+      /* options */
+      // locale messages resource pre-compile option
+      include: resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        './src/locales/**'
+      ),
+    }),
   ];
-
-  const envConfig = loadEnv(mode, process.cwd());
 
   if (mode === 'production' && envConfig.VITE_SENTRY_AUTH_TOKEN) {
     /**
@@ -77,7 +96,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      include: ['tailwind.config.js'],
+      include: ['tailwind.config.js', 'color', 'mersenne-twister'],
     },
     server: {
       port: 8080,
@@ -122,10 +141,7 @@ export default defineConfig(({ mode }) => {
         'jest-extended/all',
       ],
       coverage: { reporter: ['text', 'lcov'] }, // lcov reporter is used by IDE coverage extensions
-      include: [
-        'tests/unit/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-        'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      ],
+      include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
   };
 });

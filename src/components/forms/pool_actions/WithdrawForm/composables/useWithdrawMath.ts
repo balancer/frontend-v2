@@ -17,10 +17,10 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, usePool } from '@/composables/usePool';
+import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 // Composables
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
@@ -42,11 +42,12 @@ import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import { setError, WithdrawalError } from './useWithdrawalState';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { SHALLOW_COMPOSABLE_STABLE_BUFFER } from '@/constants/pools';
 
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 /**
  * TYPES
@@ -114,14 +115,14 @@ export default function useWithdrawMath(
     if (isDeep(pool.value)) {
       return pool.value.mainTokens || [];
     }
-    return pool.value.tokensList;
+    return tokensListExclBpt(pool.value);
   });
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
   // The tokens of the pool
   const poolTokens = computed((): TokenInfo[] =>
-    pool.value.tokensList.map(address => getToken(address))
+    tokensListExclBpt(pool.value).map(address => getToken(address))
   );
 
   const tokenOutDecimals = computed(
@@ -206,6 +207,7 @@ export default function useWithdrawMath(
       'send',
       fixedRatioOverride
     );
+
     return receive;
   });
 
@@ -239,6 +241,7 @@ export default function useWithdrawMath(
 
   const fullAmounts = computed(() => {
     if (isProportional.value) return proportionalAmounts.value;
+
     return new Array(tokenCount.value).fill('0').map((_, i) => {
       return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';
     });
@@ -389,7 +392,7 @@ export default function useWithdrawMath(
 
   const fiatAmounts = computed((): string[] =>
     fullAmounts.value.map((amount, i) =>
-      toFiat(amount, withdrawalTokens.value[i].address)
+      toFiat(amount, withdrawalTokens.value[i]?.address)
     )
   );
 
@@ -738,8 +741,15 @@ export default function useWithdrawMath(
   async function getBptOutGuide() {
     if (!isShallowComposableStablePool.value) return;
 
-    const bptIn = pool.value.onchain?.totalSupply || '0';
-    const amountsOut = Object.values(pool.value.onchain?.tokens || []).map(t =>
+    loadingData.value = true;
+
+    // Refetch onchain data for pool.
+    const [_pool] = await new PoolDecorator([cloneDeep(pool.value)]).decorate(
+      allTokens.value
+    );
+
+    const bptIn = _pool.onchain?.totalSupply || '0';
+    const amountsOut = Object.values(_pool.onchain?.tokens || []).map(t =>
       formatUnits(
         parseUnits(t.balance, t.decimals).mul(1000).div(10000),
         t.decimals
@@ -747,7 +757,6 @@ export default function useWithdrawMath(
     );
 
     try {
-      loadingData.value = true;
       const result = await poolExchange.queryExit(
         getSigner(),
         amountsOut,

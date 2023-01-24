@@ -7,7 +7,7 @@ import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.v
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';

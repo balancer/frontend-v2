@@ -4,7 +4,7 @@ import { computed, ref, watchEffect, onMounted } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 
@@ -96,13 +96,11 @@ const rateLabel = computed(() => {
  * METHODS
  */
 function handleInAmountChange(value: string): void {
-  emit('update:exactIn', true);
   emit('update:tokenInAmount', value);
   emit('amountChange');
 }
 
 function handleOutAmountChange(value: string): void {
-  emit('update:exactIn', false);
   emit('update:tokenOutAmount', value);
   emit('amountChange');
 }
@@ -157,8 +155,11 @@ onMounted(() => {
       name="tokenIn"
       :excludedTokens="[veBalTokenInfo?.address]"
       :ignoreWalletBalance="tradeLoading"
+      autoFocus
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
+      @input="emit('update:exactIn', true)"
+      @set-max="emit('update:exactIn', true)"
     />
 
     <div class="flex items-center my-2">
@@ -183,6 +184,7 @@ onMounted(() => {
       :excludedTokens="[veBalTokenInfo?.address]"
       @update:amount="handleOutAmountChange"
       @update:address="handleOutputTokenChange"
+      @input="emit('update:exactIn', false)"
     />
   </div>
 </template>

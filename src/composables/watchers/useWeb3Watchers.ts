@@ -8,7 +8,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
 import useBlocknative from '../useBlocknative';
-import useTokens from '../useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { ReplacementReason } from '../useTransactions';
 
 export default function useWeb3Watchers() {

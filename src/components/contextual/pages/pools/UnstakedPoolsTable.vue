@@ -16,12 +16,19 @@ import StakingProvider from '@/providers/local/staking/staking.provider';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
-/** STATE */
+/**
+ * STATE
+ */
 const showStakeModal = ref(false);
 const stakePool = ref<Pool | undefined>();
 const networkName = configService.network.shortName;
+const hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
 
-/** COMPOSABLES */
+/**
+ * COMPOSABLES
+ */
+// first retrieve all the pools the user has liquidity for
+const { data: userPools, isLoading: isLoadingUserPools } = useUserPoolsQuery();
 const {
   userData: {
     userGaugeShares,
@@ -35,7 +42,9 @@ const {
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
 
-/** COMPUTED */
+/**
+ * COMPUTED
+ */
 // a map of poolId-stakedBPT for the connected user
 const stakedBalanceMap = computed(() => {
   const map: Record<string, string> = {};
@@ -53,9 +62,6 @@ const noPoolsLabel = computed(() => {
 });
 
 const poolsToRenderKey = computed(() => JSON.stringify(poolsToRender.value));
-
-// first retrieve all the pools the user has liquidity for
-const { data: userPools, isLoading: isLoadingUserPools } = useUserPoolsQuery();
 
 const partiallyStakedPools = computed(() => {
   const stakedPoolIds = stakedPools.value?.map(pool => pool.id);
@@ -108,9 +114,9 @@ const poolsToRender = computed(() => {
   return uniqBy([...nonMigratableUserPools, ...stakablePools], pool => pool.id);
 });
 
-const hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
-
-/** METHODS */
+/**
+ * METHODS
+ */
 function handleStake(pool: Pool) {
   setPoolAddress(pool.address);
   showStakeModal.value = true;

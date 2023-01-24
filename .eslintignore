@@ -1,3 +1,4 @@
+// Run DEBUG=eslint:cli-engine npm run lint to discover eslint bottlenecks
 node_modules/
 dist/
 tokenlists.json

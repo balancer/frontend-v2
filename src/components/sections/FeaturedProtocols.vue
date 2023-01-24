@@ -16,7 +16,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="featured-protocols">
+  <div v-once class="featured-protocols">
     <h3 class="mb-4">
       {{ $t('featuredProtocols.title') }}
     </h3>

@@ -7,7 +7,7 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress, shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -59,7 +59,6 @@ const { userNetworkConfig, account } = useWeb3();
  */
 onBeforeMount(() => {
   sortSeedTokens();
-
   poolName.value = poolName.value || getPoolSymbol();
   poolSymbol.value = poolSymbol.value || getPoolSymbol();
 });

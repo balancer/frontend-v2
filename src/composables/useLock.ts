@@ -9,7 +9,7 @@ import { TokenInfo } from '@/types/TokenList';
 import usePoolQuery from './queries/usePoolQuery';
 import useVeBalLockInfoQuery from './queries/useVeBalLockInfoQuery';
 import { isL2 } from './useNetwork';
-import useTokens from './useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from './useVeBAL';
 
 export function useLock() {

@@ -20,7 +20,7 @@ import useTransactions from '../useTransactions';
 import { parseUnits } from '@ethersproject/units';
 import useTime, { dateTimeLabelFor } from '../useTime';
 import { TokenInfo } from '@/types/TokenList';
-import { fiatValueOf } from '../usePool';
+import { fiatValueOf, tokensListExclBpt } from '../usePool';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useSlippage from '../useSlippage';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
@@ -349,7 +349,7 @@ export function usePoolMigration(
       bptIn,
       minBptOut,
       staked,
-      [...fromPool.tokensList],
+      [...tokensListExclBpt(fromPool)],
       _signature
     );
   }

@@ -4,7 +4,7 @@ import numeral from 'numeral';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
-import useTokens from './useTokens';
+import { useTokens } from '@/providers/tokens.provider';
 
 interface Options {
   format?: string;
@@ -177,6 +177,17 @@ export function numF(
   }
 
   return formattedNumber + postfixSymbol;
+}
+
+/**
+ * Convert number in basis points scale to percentage decimal.
+ * e.g. 500 bps = 0.05 (5%)
+ *
+ * @param {number | string} bspValue - Value in basis points.
+ * @returns percent value in decimals.
+ */
+export function bspToDec(bspValue: number | string): number {
+  return bnum(bspValue).div(10_000).toNumber();
 }
 
 export default function useNumbers() {

@@ -26,6 +26,7 @@ import {
   TransactionActionState,
 } from '@/types/transactions';
 import signature from '@/assets/images/icons/signature.svg';
+import { captureException } from '@sentry/core';
 
 /**
  * TYPES
@@ -178,12 +179,13 @@ async function submit(
       return;
     }
 
-    handleTransaction(tx, state);
+    if (tx) handleTransaction(tx, state);
   } catch (error) {
     state.init = false;
     state.confirming = false;
     state.error = parseError(error);
     console.error(error);
+    captureException(error);
   }
 }
 

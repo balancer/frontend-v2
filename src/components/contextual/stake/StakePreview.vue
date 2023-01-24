@@ -12,14 +12,15 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
-import useTokens from '@/composables/useTokens';
+import { useTokens } from '@/providers/tokens.provider';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { bnum } from '@/lib/utils';
 import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
-import { usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import StakeSummary from './StakeSummary.vue';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
@@ -103,7 +104,9 @@ watch(
 );
 
 /* COMPUTED */
-const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
+const assetRowWidth = computed(
+  () => (tokensListExclBpt(props.pool).length * 32) / 1.5
+);
 
 const isStakeAndZero = computed(
   () =>
@@ -146,21 +149,27 @@ async function handleSuccess({ receipt }) {
 }
 
 async function txWithNotification(action: () => Promise<TransactionResponse>) {
-  const tx = await action();
-  addTransaction({
-    id: tx.hash,
-    type: 'tx',
-    action: props.action,
-    summary: t(`transactionSummary.${props.action}`, {
-      pool: poolWeightsLabel(props.pool),
-      amount: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
-    }),
-    details: {
-      total: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
-      pool: props.pool,
-    },
-  });
-  return tx;
+  try {
+    const tx = await action();
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: props.action,
+      summary: t(`transactionSummary.${props.action}`, {
+        pool: poolWeightsLabel(props.pool),
+        amount: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+      }),
+      details: {
+        total: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+        pool: props.pool,
+      },
+    });
+    return tx;
+  } catch (error) {
+    throw new Error(`Failed create ${props.action} transaction`, {
+      cause: error,
+    });
+  }
 }
 
 async function loadApprovalsForGauge() {
@@ -191,7 +200,9 @@ function handleClose() {
       </BalCircle>
       <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
     </BalStack>
-    <BalCard shadow="none" noPad class="py-2 px-4">
+    <div
+      class="py-2 px-4 rounded-lg border dark:border-gray-700 divide-y dark:divide-gray-700"
+    >
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(currentShares) }} {{ $t('lpTokens') }}</h5>
@@ -200,56 +211,17 @@ function handleClose() {
           </span>
         </BalStack>
         <BalAssetSet
-          :addresses="pool.tokensList"
+          :addresses="tokensListExclBpt(pool)"
           :width="assetRowWidth"
           :size="32"
         />
       </BalStack>
-    </BalCard>
-    <BalCard shadow="none" noPad>
-      <div class="p-2 border-b dark:border-gray-900">
-        <h6 class="text-sm">
-          {{ $t('summary') }}
-        </h6>
-      </div>
-      <BalStack vertical spacing="xs" class="p-3">
-        <BalStack horizontal justify="between">
-          <span class="text-sm">
-            {{ $t('totalValueTo') }}
-            <span class="lowercase">
-              {{ action === 'stake' ? $t('stake') : $t('unstake') }}:
-            </span>
-          </span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">
-              ~{{ fNum2(fiatValueOfModifiedShares, FNumFormats.fiat) }}
-            </span>
-            <BalTooltip
-              :text="
-                action === 'stake'
-                  ? $t('staking.stakeValueTooltip')
-                  : $t('staking.unstakeValueTooltip')
-              "
-              width="40"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack>
-        <BalStack horizontal justify="between">
-          <span class="text-sm">{{ $t('staking.newTotalShare') }}:</span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">
-              ~{{ fNum2(totalUserPoolSharePct, FNumFormats.percent) }}
-            </span>
-            <BalTooltip
-              :text="$t('staking.totalShareTooltip')"
-              width="40"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack>
-      </BalStack>
-    </BalCard>
+    </div>
+    <StakeSummary
+      :action="action"
+      :fiatValue="fiatValueOfModifiedShares"
+      :sharePercentage="totalUserPoolSharePct"
+    />
     <BalActionSteps
       v-if="!isActionConfirmed"
       :actions="stakeActions"

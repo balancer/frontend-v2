@@ -4,15 +4,15 @@ import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
-import { includesAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
 import { usePool } from '@/composables/usePool';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
+import { useTradeState } from '@/composables/trade/useTradeState';
+import { includesAddress } from '@/lib/utils';
 
 type Props = {
   excludedTokens?: string[];
@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { setTokenInAddress } = useTradeState();
 
 const networkName = configService.network.name;
 const { t } = useI18n();
@@ -59,12 +60,13 @@ const noTokensMessage = computed(() => {
 const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 function handleAssetClick(tokenAddress) {
+  setTokenInAddress(tokenAddress);
   const isPoolToken = includesAddress(poolTokenAddresses.value, tokenAddress);
   emit('click:asset', tokenAddress, isPoolToken);
 }
 
 const emit = defineEmits<{
-  (e: 'click:asset', tokenAddress: Address, isPoolToken: boolean): void;
+  (e: 'click:asset', tokenAddress: string, isPoolToken: boolean): void;
 }>();
 </script>
 
@@ -179,7 +181,7 @@ const emit = defineEmits<{
             {{ noTokensMessage }}.
           </p>
         </div>
-        <div v-else class="flex mt-4 lg:mt-0 w-full font-medium">
+        <div v-else class="flex mt-4 w-full font-medium">
           <BalLink @click="startConnectWithInjectedProvider">
             {{ t('connectYourWallet') }}
           </BalLink>
