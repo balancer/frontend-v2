@@ -11,6 +11,8 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended',
     'plugin:prettier-vue/recommended',
+    // https://github.com/antfu/unplugin-auto-import#eslint
+    './.eslintrc-auto-import.json',
   ],
 
   plugins: ['simple-import-sort', 'tailwindcss'],
