@@ -2,27 +2,51 @@ import { removeBptFrom } from '@/composables/usePool';
 import { PoolToken } from '@/services/pool/types';
 import { BoostedPoolMock, PoolMock } from '@/__mocks__/pool';
 
-import { Ref, ref } from 'vue';
-import { useTokenBreakdown } from './useTokenBreakdown';
-import { mountComposable } from '@/tests/mount-helpers';
 import { bnum } from '@/lib/utils';
-import { BigNumber } from 'bignumber.js';
+import { mountComposable } from '@/tests/mount-helpers';
+import { ref } from 'vue';
+import { useTokenBreakdown } from './useTokenBreakdown';
 
 import * as tokensProvider from '@/providers/tokens.provider';
 
+const stakedShares = '5';
+const bptBalance = '10';
+
+vi.mock('@/composables/staking/useStaking', () => {
+  return {
+    default: () => {
+      return {
+        userData: {
+          stakedSharesForProvidedPool: ref(stakedShares),
+        },
+      };
+    },
+  };
+});
+
+vi.mock('@/providers/tokens.provider', () => {
+  return {
+    useTokens() {
+      return {
+        balanceFor: () => bptBalance,
+        priceFor: () => 2,
+      };
+    },
+  };
+});
+
 const rootPool = ref(BoostedPoolMock);
+// Values used to calculate userPoolPercentage (15)
+rootPool.value.totalLiquidity = '100';
+rootPool.value.totalShares = '100';
+
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
-
-// Assuming that user owns 15% of the pool
-const userPoolPercentage = ref(new BigNumber(15)) as Ref<BigNumber>;
-
-vi.mock('@/providers/tokens.provider');
 
 it('Works for a parent token in a deep nested pool', async () => {
   const token = ref(bbaDaiToken);
   const shareOfParentInPool = ref(1);
   const { result } = mountComposable(() =>
-    useTokenBreakdown(token, shareOfParentInPool, userPoolPercentage, rootPool)
+    useTokenBreakdown(token, shareOfParentInPool, rootPool)
   );
 
   // Hides parent token balance and fiat
@@ -44,12 +68,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
   it('for wrapped tokens (aDAi)', async () => {
     const aDaiToken = ref(bbaDaiToken.token?.pool?.tokens?.[0] as PoolToken);
     const { result } = mountComposable(() =>
-      useTokenBreakdown(
-        aDaiToken,
-        shareOfParentInPool,
-        userPoolPercentage,
-        rootPool
-      )
+      useTokenBreakdown(aDaiToken, shareOfParentInPool, rootPool)
     );
 
     expect(result.balanceLabel.value).toEqual('24,104');
@@ -65,12 +84,7 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
   it('for a non wrapped token (DAI)', async () => {
     const daiToken = ref(bbaDaiToken.token?.pool?.tokens?.[1] as PoolToken);
     const { result } = mountComposable(() =>
-      useTokenBreakdown(
-        daiToken,
-        shareOfParentInPool,
-        userPoolPercentage,
-        rootPool
-      )
+      useTokenBreakdown(daiToken, shareOfParentInPool, rootPool)
     );
 
     expect(result.balanceLabel.value).toEqual('17,695');
@@ -90,12 +104,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
     const { result } = mountComposable(() =>
-      useTokenBreakdown(
-        token,
-        shareOfParentInPool,
-        userPoolPercentage,
-        rootPool
-      )
+      useTokenBreakdown(token, shareOfParentInPool, rootPool)
     );
 
     expect(result.balanceLabel.value).toEqual('408,785');
@@ -108,12 +117,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
     const { result } = mountComposable(() =>
-      useTokenBreakdown(
-        token,
-        shareOfParentInPool,
-        userPoolPercentage,
-        rootPool
-      )
+      useTokenBreakdown(token, shareOfParentInPool, rootPool)
     );
 
     expect(result.balanceLabel.value).toEqual('95.0941');
@@ -126,12 +130,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
     const { result } = mountComposable(() =>
-      useTokenBreakdown(
-        token,
-        shareOfParentInPool,
-        userPoolPercentage,
-        rootPool
-      )
+      useTokenBreakdown(token, shareOfParentInPool, rootPool)
     );
 
     expect(result.balanceLabel.value).toEqual('95.0941');
@@ -149,12 +148,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
     const { result } = mountComposable(() =>
-      useTokenBreakdown(
-        token,
-        shareOfParentInPool,
-        userPoolPercentage,
-        rootPool
-      )
+      useTokenBreakdown(token, shareOfParentInPool, rootPool)
     );
 
     expect(result.balanceLabel.value).toEqual('408,785');

@@ -3,17 +3,17 @@ import { bnum } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isNumber } from '@/lib/utils/numbers';
-import { BigNumber } from 'bignumber.js';
 import { usePool } from '@/composables/usePool';
+import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 
 export function useTokenBreakdown(
   token: Ref<PoolToken>,
   shareOfParentInPool: Ref<number>,
-  userPoolPercentage: Ref<BigNumber>,
   rootPool: Ref<Pool>
 ) {
   const { fNum2, toFiat } = useNumbers();
   const { isDeepPool } = usePool(rootPool);
+  const { userPoolPercentage } = useUserPoolPercentage(rootPool.value);
 
   // To get the balance of this token in the current pool we need to know the
   // share of it's parent in this pool. e.g. If the token is DAI which is nested

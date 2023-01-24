@@ -4,7 +4,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
 import { useTokenBreakdown } from './composables/useTokenBreakdown';
 import { bnum } from '@/lib/utils';
-import { BigNumber } from 'bignumber.js';
+import { usePool } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -14,8 +14,6 @@ type Props = {
   shareOfParentInPool?: number;
   parentLevel?: number;
   isWeighted: boolean;
-  isDeepPool: boolean;
-  userPoolPercentage: BigNumber;
   showUserShares: boolean;
   rootPool: Pool;
 };
@@ -28,25 +26,18 @@ const props = withDefaults(defineProps<Props>(), {
   shareOfParentInPool: 1,
 });
 
-const {
-  token,
-  shareOfParentInPool,
-  isWeighted,
-  isDeepPool,
-  userPoolPercentage,
-  showUserShares,
-  rootPool,
-} = toRefs(props);
+const { token, shareOfParentInPool, isWeighted, showUserShares, rootPool } =
+  toRefs(props);
 
 /**
  * COMPOSABLES
  */
 const { explorerLinks } = useWeb3();
+const { isDeepPool } = usePool(rootPool);
 
 const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
   token,
   shareOfParentInPool,
-  userPoolPercentage,
   rootPool
 );
 
@@ -139,8 +130,6 @@ const shareOfTokenInPool = computed((): number => {
       :shareOfParentInPool="shareOfTokenInPool"
       :parentLevel="currentLevel"
       :isWeighted="isWeighted"
-      :isDeepPool="isDeepPool"
-      :userPoolPercentage="userPoolPercentage"
       :showUserShares="showUserShares"
       :rootPool="rootPool"
     />

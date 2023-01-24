@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
-import { removeBptFrom, usePool } from '@/composables/usePool';
+import { removeBptFrom } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
 import { computed, onMounted, ref, toRefs } from 'vue';
 
 import { isWeightedLike } from '@/composables/usePool';
-import TokenBreakdown from './components/TokenBreakdown.vue';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import { useI18n } from 'vue-i18n';
+import TokenBreakdown from './components/TokenBreakdown.vue';
 
 /**
  * TYPES
@@ -26,7 +26,6 @@ const isWeighted = isWeightedLike(pool.value.poolType);
 /**
  * COMPOSABLES
  */
-const { isDeepPool } = usePool(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
 const { userPoolPercentage, userPoolPercentageLabel } = useUserPoolPercentage(
   pool.value
@@ -104,8 +103,6 @@ onMounted(() => {
         <TokenBreakdown
           :token="token"
           :isWeighted="isWeighted"
-          :isDeepPool="isDeepPool"
-          :userPoolPercentage="userPoolPercentage"
           :showUserShares="showUserShares"
           :rootPool="pool"
         />
