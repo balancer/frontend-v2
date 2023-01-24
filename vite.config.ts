@@ -3,10 +3,10 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 // import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite';
-import { loadEnv } from 'vite';
+import { loadEnv, Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
-import nodePolyfills from 'vite-plugin-node-stdlib-browser';
+import nodePolyfills from './src/plugins/node-polyfills.cjs';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import rollupPolyfillNode from 'rollup-plugin-polyfill-node';
@@ -28,8 +28,8 @@ export default defineConfig(({ mode }) => {
         },
       },
     }),
-    // avoid nodePolyfills in vitest:
-    mode === 'test' ? null : nodePolyfills(),
+    //cast to Plugin to avoid TS errors in defineConfig
+    nodePolyfills() as Plugin,
     // AutoImport({
     //   imports: [
     //     'vue',
