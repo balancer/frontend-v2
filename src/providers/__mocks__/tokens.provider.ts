@@ -1,5 +1,7 @@
-import { TokensResponse } from '../tokens.provider';
+import { TokenInfoMap } from '@/types/TokenList';
 import { mock } from 'vitest-mock-extended';
+import { computed } from 'vue';
+import { TokensResponse } from '../tokens.provider';
 
 const mockTokens = {
   '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2': {
@@ -55,6 +57,9 @@ mockTokensProvider.getTokens.mockImplementation(addresses => {
 mockTokensProvider.getToken.mockImplementation(address => {
   return mockTokens[address];
 });
+mockTokensProvider.balancerTokenListTokens = computed(() =>
+  mock<TokenInfoMap>()
+);
 
 export function tokensProvider(): TokensResponse {
   return mockTokensProvider;
