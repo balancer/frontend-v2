@@ -31,7 +31,7 @@ const emit = defineEmits(['close', 'success']);
 /**
  * COMPOSABLES
  */
-const { balanceFor, getToken } = useTokens();
+const { balanceFor, getToken, refetchBalances } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
@@ -128,7 +128,7 @@ onBeforeMount(async () => {
 async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
-  await refetchAllPoolStakingData();
+  await Promise.all([refetchBalances.value(), refetchAllPoolStakingData()]);
   emit('success');
 }
 

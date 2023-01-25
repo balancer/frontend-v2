@@ -34,7 +34,6 @@ const {
   isStakablePool,
   isLoading: isLoadingStakingData,
   isRefetchingStakedShares,
-  refetchStakedShares,
   stakedShares,
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
@@ -73,10 +72,6 @@ function showUnstakePreview() {
 
 function handlePreviewClose() {
   isStakePreviewVisible.value = false;
-}
-
-async function handleActionSuccess() {
-  await refetchStakedShares.value();
 }
 </script>
 
@@ -205,7 +200,6 @@ async function handleActionSuccess() {
       :pool="pool"
       :action="stakeAction"
       @close="handlePreviewClose"
-      @success="handleActionSuccess"
     />
   </div>
 </template>
