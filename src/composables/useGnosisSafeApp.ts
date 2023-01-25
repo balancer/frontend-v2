@@ -31,7 +31,7 @@ export default function useGnosisSafeApp() {
     // If we're running as a Safe App we want to automatically
     // connect to the provided safe.
     isGnosisSafeApp.value = await checkIfGnosisSafeApp();
-    if (!isGnosisSafeApp.value) {
+    if (isGnosisSafeApp.value) {
       await connectWallet('gnosis');
       if (chainId.value !== networkId.value) {
         window.location.href = `/#/${getNetworkSlug(chainId.value)}`;
