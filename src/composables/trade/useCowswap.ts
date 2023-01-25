@@ -97,7 +97,7 @@ export default function useCowswap({
   const updatingQuotes = ref(false);
   const confirming = ref(false);
   const feeQuote = ref<string | null>(null);
-  const quoteFetchingIdx = ref<number>(0);
+  const latestQuoteIdx = ref<number>(0);
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
@@ -277,8 +277,8 @@ export default function useCowswap({
     }
     updatingQuotes.value = true;
     state.validationError = null;
-    quoteFetchingIdx.value += 1;
-    const currentQuoteFetchingIdx = quoteFetchingIdx.value;
+    latestQuoteIdx.value += 1;
+    const currentQuoteIdx = latestQuoteIdx.value;
 
     try {
       const priceQuoteParams: PriceQuoteParams = {
@@ -309,7 +309,7 @@ export default function useCowswap({
       }
 
       // If there are multiple requests in flight, only use the last one
-      if (priceQuote && currentQuoteFetchingIdx === quoteFetchingIdx.value) {
+      if (priceQuote && currentQuoteIdx === latestQuoteIdx.value) {
         feeQuote.value = priceQuote.feeAmount;
 
         if (exactIn.value) {
