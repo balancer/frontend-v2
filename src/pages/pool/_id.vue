@@ -200,6 +200,7 @@ watch(poolQuery.error, () => {
         class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
       >
         <PoolPageHeader
+          v-if="pool"
           :loadingPool="loadingPool"
           :loadingApr="loadingApr"
           :pool="pool"
