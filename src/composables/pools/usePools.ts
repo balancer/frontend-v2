@@ -12,6 +12,10 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
    * COMPOSABLES
    */
   const poolsQuery = usePoolsQuery(filterTokens);
+  console.log('filter', filterTokens.value);
+  setTimeout(() => {
+    filterTokens.value = ['1234'];
+  }, 5000);
   const { injectTokens } = useTokens();
 
   /**
@@ -36,6 +40,7 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
    */
   function loadMorePools() {
     poolsQuery.fetchNextPage.value();
+    // filterTokens.value = ['1234'];
   }
 
   /**

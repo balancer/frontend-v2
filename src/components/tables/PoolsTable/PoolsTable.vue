@@ -72,8 +72,14 @@ const props = withDefaults(defineProps<Props>(), {
   skeletonClass: 'h-64',
 });
 
-const emit = defineEmits(['loadMore', 'triggerStake']);
-
+const emit = defineEmits<{
+  (e: 'loadMore'): void;
+  (e: 'triggerStake'): void;
+  (
+    e: 'onColumnSort',
+    value: { columnId: string; currentSortDirection: string }
+  ): void;
+}>();
 /**
  * COMPOSABLES
  */
@@ -276,6 +282,7 @@ function iconAddresses(pool: PoolWithShares) {
         sortColumn: sortColumn,
         sortDirection: 'desc',
       }"
+      @on-column-sort="emit('onColumnSort', $event)"
       @load-more="emit('loadMore')"
     >
       <template #iconColumnHeader>

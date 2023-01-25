@@ -23,7 +23,13 @@ type DataPinState = {
   pinnedData: string[];
 };
 
-defineEmits(['loadMore']);
+const emit = defineEmits<{
+  (e: 'loadMore'): void;
+  (
+    e: 'onColumnSort',
+    value: { columnId: string; currentSortDirection: string }
+  ): void;
+}>();
 
 type Props = {
   columns: ColumnDefinition[];
@@ -105,7 +111,12 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
       currentSortDirection.value = null;
     }
   }
-
+  if (columnId && currentSortDirection.value) {
+    emit('onColumnSort', {
+      columnId,
+      currentSortDirection: currentSortDirection.value,
+    });
+  }
   const sortedData = sortBy(
     (props.data as any).value || props.data,
     column.sortKey

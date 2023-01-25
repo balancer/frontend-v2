@@ -32,6 +32,10 @@ const isPaginated = computed(() => pools.value.length >= 10);
 function navigateToCreatePool() {
   router.push({ name: 'create-pool', params: { networkSlug } });
 }
+
+function onColumnSort(value) {
+  console.log(value);
+}
 </script>
 
 <template>
@@ -89,6 +93,7 @@ function navigateToCreatePool() {
           :isLoadingMore="poolsIsFetchingNextPage"
           :isPaginated="isPaginated"
           skeletonClass="pools-table-loading-height"
+          @on-column-sort="onColumnSort"
           @load-more="loadMorePools"
         />
         <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
