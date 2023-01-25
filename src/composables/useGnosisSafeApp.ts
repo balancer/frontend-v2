@@ -5,6 +5,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import useNetwork from '@/composables/useNetwork';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import useWeb3 from '@/services/web3/useWeb3';
+import { hardRedirectTo } from '@/plugins/router/nav-guards';
 
 export const isGnosisSafeApp = ref(false);
 
@@ -32,14 +33,15 @@ export default function useGnosisSafeApp() {
     // connect to the provided safe.
     isGnosisSafeApp.value = await checkIfGnosisSafeApp();
     console.log('isGnosisSafeApp.value', isGnosisSafeApp.value);
-    if (isGnosisSafeApp.value) {
+    if (!isGnosisSafeApp.value) {
       await connectWallet('gnosis');
       console.log('chainId.value', chainId.value);
       console.log('networkId.value', networkId.value);
       if (chainId.value !== networkId.value) {
         console.log(`/#/${getNetworkSlug(chainId.value)}`);
         console.log(window.location.href);
-        window.location.href = `/#/${getNetworkSlug(chainId.value)}`;
+        hardRedirectTo(`/#/${getNetworkSlug(chainId.value)}`);
+        // window.location.href = `/#/${getNetworkSlug(chainId.value)}`;
         console.log(window.location.href);
       }
       // Disable darkmode by default
