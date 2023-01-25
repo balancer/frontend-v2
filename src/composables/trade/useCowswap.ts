@@ -97,6 +97,7 @@ export default function useCowswap({
   const updatingQuotes = ref(false);
   const confirming = ref(false);
   const feeQuote = ref<string | null>(null);
+  const quoteFetchingIdx = ref<number>(0);
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
@@ -276,6 +277,8 @@ export default function useCowswap({
     }
     updatingQuotes.value = true;
     state.validationError = null;
+    quoteFetchingIdx.value += 1;
+    const currentQuoteFetchingIdx = quoteFetchingIdx.value;
 
     try {
       const priceQuoteParams: PriceQuoteParams = {
@@ -296,7 +299,7 @@ export default function useCowswap({
         priceQuoteParams
       );
 
-      if (priceQuote) {
+      if (priceQuote && currentQuoteFetchingIdx === quoteFetchingIdx.value) {
         feeQuote.value = priceQuote.feeAmount;
 
         // When user clears the input while fee is fetching we won't be able to get the quote
