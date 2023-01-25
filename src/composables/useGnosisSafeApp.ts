@@ -33,13 +33,14 @@ export default function useGnosisSafeApp() {
     isGnosisSafeApp.value = await checkIfGnosisSafeApp();
     console.log('isGnosisSafeApp.value', isGnosisSafeApp.value);
     if (isGnosisSafeApp.value) {
-      window.location.href = `https://app.balancer.fi/#/arbitrum`;
       await connectWallet('gnosis');
       console.log('chainId.value', chainId.value);
       console.log('networkId.value', networkId.value);
       if (chainId.value !== networkId.value) {
         console.log(`/#/${getNetworkSlug(chainId.value)}`);
+        console.log(window.location.href);
         window.location.href = `/#/${getNetworkSlug(chainId.value)}`;
+        console.log(window.location.href);
       }
       // Disable darkmode by default
       if (darkMode) toggleDarkMode();
