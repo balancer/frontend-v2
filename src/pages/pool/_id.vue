@@ -309,4 +309,8 @@ watch(poolQuery.error, () => {
 .staking-incentives :deep(.active-section) {
   @apply border-transparent;
 }
+
+.header-loading-block {
+  height: 6.75rem;
+}
 </style>

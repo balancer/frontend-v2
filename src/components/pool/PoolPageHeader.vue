@@ -288,8 +288,4 @@ const hasMetadata = computed((): boolean => !!poolMetadata.value);
 
   font-variation-settings: 'wght' 700;
 }
-
-.header-loading-block {
-  height: 6.75rem;
-}
 </style>
