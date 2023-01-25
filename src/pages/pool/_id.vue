@@ -199,19 +199,24 @@ watch(poolQuery.error, () => {
       <div
         class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
       >
-        <PoolPageHeader
-          v-if="pool"
-          :loadingPool="loadingPool"
-          :loadingApr="loadingApr"
-          :pool="pool"
-          :poolApr="poolApr"
-          :isStableLikePool="isStableLikePool"
-          :noInitLiquidity="noInitLiquidity"
-          :titleTokens="titleTokens"
-          :missingPrices="missingPrices"
-          :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
-          :isComposableStableLikePool="isComposableStableLikePool"
-        />
+        <div class="col-span-2 px-4 lg:px-0">
+          <BalLoadingBlock
+            v-if="loadingPool || !pool"
+            class="header-loading-block"
+          />
+          <PoolPageHeader
+            v-else
+            :loadingApr="loadingApr"
+            :pool="pool"
+            :poolApr="poolApr"
+            :isStableLikePool="isStableLikePool"
+            :noInitLiquidity="noInitLiquidity"
+            :titleTokens="titleTokens"
+            :missingPrices="missingPrices"
+            :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
+            :isComposableStableLikePool="isComposableStableLikePool"
+          />
+        </div>
         <div class="hidden lg:block" />
         <div class="order-2 lg:order-1 col-span-2">
           <div class="grid grid-cols-1 gap-y-8">
@@ -303,5 +308,9 @@ watch(poolQuery.error, () => {
 
 .staking-incentives :deep(.active-section) {
   @apply border-transparent;
+}
+
+.header-loading-block {
+  height: 6.75rem;
 }
 </style>
