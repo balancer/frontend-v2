@@ -55,7 +55,7 @@ const _tokenOutAddress = ref<string>('');
 
 const isInRate = ref<boolean>(true);
 
-let typingTimeout = ref<typeof setTimeout | undefined>(undefined);
+const typingTimeout = ref<any>(undefined);
 
 /**
  * COMPUTED
