@@ -31,9 +31,13 @@ export default function useGnosisSafeApp() {
     // If we're running as a Safe App we want to automatically
     // connect to the provided safe.
     isGnosisSafeApp.value = await checkIfGnosisSafeApp();
+    console.log('isGnosisSafeApp.value', isGnosisSafeApp.value);
     if (isGnosisSafeApp.value) {
       await connectWallet('gnosis');
+      console.log('chainId.value', chainId.value);
+      console.log('networkId.value', networkId.value);
       if (chainId.value !== networkId.value) {
+        console.log(`/#/${getNetworkSlug(chainId.value)}`);
         window.location.href = `/#/${getNetworkSlug(chainId.value)}`;
       }
       // Disable darkmode by default
