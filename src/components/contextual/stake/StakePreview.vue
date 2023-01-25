@@ -6,11 +6,8 @@ import {
 import { getAddress } from '@ethersproject/address';
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useQueryClient } from 'vue-query';
-
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
@@ -21,6 +18,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
 import { tokensListExclBpt, usePool } from '@/composables/usePool';
 import StakeSummary from './StakeSummary.vue';
+import usePoolStaking from '@/providers/local/pool-staking.provider';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
@@ -36,26 +34,17 @@ const emit = defineEmits(['close', 'success']);
 const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
-const queryClient = useQueryClient();
 const { addTransaction } = useTransactions();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 
-const {
-  userData: {
-    stakedSharesForProvidedPool,
-    refetchStakedShares,
-    refetchUserStakingData,
-    refetchHasNonPrefGauge,
-  },
-  stakeBPT,
-  unstakeBPT,
-} = useStaking();
+const { stake, unstake, stakedShares, refetchAllPoolStakingData } =
+  usePoolStaking();
 
 // Staked or unstaked shares depending on action type.
 const currentShares =
   props.action === 'stake'
     ? balanceFor(getAddress(props.pool.address))
-    : stakedSharesForProvidedPool.value;
+    : stakedShares.value;
 
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -66,7 +55,7 @@ const stakeAction = {
   label: t('stake'),
   loadingLabel: t('staking.staking'),
   confirmingLabel: t('confirming'),
-  action: () => txWithNotification(stakeBPT),
+  action: () => txWithNotification(stake),
   stepTooltip: t('staking.stakeTooltip'),
 };
 
@@ -74,7 +63,7 @@ const unstakeAction = {
   label: t('unstake'),
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
-  action: () => txWithNotification(unstakeBPT),
+  action: () => txWithNotification(unstake),
   stepTooltip:
     props.action === 'restake'
       ? t('staking.restakeTooltip')
@@ -122,9 +111,7 @@ const fiatValueOfModifiedShares = ref(
 
 const totalUserPoolSharePct = ref(
   bnum(
-    bnum(stakedSharesForProvidedPool.value).plus(
-      balanceFor(getAddress(props.pool.address))
-    )
+    bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
   )
     .div(props.pool.totalShares)
     .toString()
@@ -141,10 +128,7 @@ onBeforeMount(async () => {
 async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
-  await refetchStakedShares.value();
-  await refetchUserStakingData.value();
-  await refetchHasNonPrefGauge.value();
-  await queryClient.refetchQueries(['staking']);
+  await refetchAllPoolStakingData();
   emit('success');
 }
 

@@ -10,7 +10,6 @@ import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import useStaking from '@/composables/staking/useStaking';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
@@ -18,7 +17,6 @@ import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalAct
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import useNetwork from '@/composables/useNetwork';
-import { POOLS } from '@/constants/pools';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
@@ -31,6 +29,7 @@ import { InvestMathResponse } from '../../../composables/useInvestMath';
 import { Goals, trackGoal } from '@/composables/useFathom';
 import { bnum } from '@/lib/utils';
 import { useTokens } from '@/providers/tokens.provider';
+import usePoolStaking from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES
@@ -78,7 +77,7 @@ const { getSigner, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
-const { isPoolEligibleForStaking } = useStaking();
+const { isStakablePool } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const { refetchBalances } = useTokens();
 
@@ -123,13 +122,6 @@ const transactionInProgress = computed(
     investmentState.confirming ||
     investmentState.confirmed
 );
-
-const isStakablePool = computed((): boolean => {
-  return (
-    POOLS.Stakable.AllowList.includes(props.pool.id) &&
-    isPoolEligibleForStaking.value
-  );
-});
 
 const normalizedBptOut = computed((): string => {
   return formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18);
