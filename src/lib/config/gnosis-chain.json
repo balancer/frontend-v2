@@ -20,7 +20,7 @@
       "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gnosis-chain-v2"
     ],
     "aave": "",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-v2",
+    "gauge": "",
     "blocks": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gnosis-chain-v2"
   },
   "supportsEIP1559": true,
