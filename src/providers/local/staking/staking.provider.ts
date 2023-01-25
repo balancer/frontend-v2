@@ -1,26 +1,18 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
-import { fromUnixTime, isAfter } from 'date-fns';
 import { parseUnits } from '@ethersproject/units';
-import {
-  computed,
-  defineComponent,
-  h,
-  InjectionKey,
-  provide,
-  reactive,
-  Ref,
-  ref,
-} from 'vue';
+import { fromUnixTime, isAfter } from 'date-fns';
+import { computed, InjectionKey, provide, reactive, Ref, ref } from 'vue';
 
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
-import { useTokens } from '@/providers/tokens.provider';
-import useWeb3 from '@/services/web3/useWeb3';
 import symbolKeys from '@/constants/symbol.keys';
+import { useTokens } from '@/providers/tokens.provider';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { configService } from '@/services/config/config.service';
+import useWeb3 from '@/services/web3/useWeb3';
 
+import { safeInject } from '@/providers/inject';
 import useUserStakingData, {
   UserStakingDataResponse,
 } from './userUserStakingData';
@@ -74,75 +66,52 @@ export async function getGaugeAddress(poolAddress: string): Promise<string> {
   }
 }
 
-/**
- * SETUP
- */
-export const StakingProviderSymbol: InjectionKey<StakingProvider> = Symbol(
-  symbolKeys.Providers.App
-);
+export function stakingProvider() {
+  /**
+   * STATE
+   */
+  // The pool address will be set after initialization with setPoolAddress method.
+  const poolAddress = ref<string>('');
+  /**
+   * COMPOSABLES
+   */
+  const { balanceFor } = useTokens();
+  const { account } = useWeb3();
+  const {
+    userGaugeShares,
+    userLiquidityGauges,
+    stakedSharesForProvidedPool,
+    isLoadingUserStakingData,
+    isLoadingStakedPools,
+    isLoadingStakedShares,
+    isUserStakeDataIdle,
+    isStakedSharesIdle,
+    isRefetchingStakedShares,
+    refetchStakedShares,
+    isStakedPoolsQueryEnabled,
+    isLoadingUserPools,
+    isUserPoolsIdle,
+    stakedSharesMap,
+    refetchUserStakingData,
+    stakedPools,
+    totalStakedFiatValue,
+    poolBoosts,
+    isLoadingBoosts,
+    poolGaugeAddresses,
+    hasNonPrefGaugeBalances,
+    refetchHasNonPrefGauge,
+    getStakedShares,
+    getBoostFor,
+  } = useUserStakingData(poolAddress);
 
-export default defineComponent({
-  props: {
-    poolAddress: {
-      type: String,
-      default: '',
-    },
-  },
-  setup(props) {
-    /**
-     * STATE
-     */
-    // this provider can be initialised with a poolAddress
-    // or the pool address can be set after initialisation.
-    // it makes some of the tailored data for a specific pool
-    // available for consumption
-    const _poolAddress = ref();
-    const poolAddress = computed(() => {
-      return _poolAddress.value || props.poolAddress;
-    });
+  const isPoolAddressRegistered = computed(
+    () => !!poolAddress.value && poolAddress.value != ''
+  );
 
-    /**
-     * COMPOSABLES
-     */
-    const { balanceFor } = useTokens();
-    const { account } = useWeb3();
-    const {
-      userGaugeShares,
-      userLiquidityGauges,
-      stakedSharesForProvidedPool,
-      isLoadingUserStakingData,
-      isLoadingStakedPools,
-      isLoadingStakedShares,
-      isUserStakeDataIdle,
-      isStakedSharesIdle,
-      isRefetchingStakedShares,
-      refetchStakedShares,
-      isStakedPoolsQueryEnabled,
-      isLoadingUserPools,
-      isUserPoolsIdle,
-      stakedSharesMap,
-      refetchUserStakingData,
-      stakedPools,
-      totalStakedFiatValue,
-      poolBoosts,
-      isLoadingBoosts,
-      poolGaugeAddresses,
-      hasNonPrefGaugeBalances,
-      refetchHasNonPrefGauge,
-      getStakedShares,
-      getBoostFor,
-    } = useUserStakingData(poolAddress);
-
-    const isPoolAddressRegistered = computed(
-      () => !!poolAddress.value && poolAddress.value != ''
-    );
-
-    // this query is responsible for checking if the given pool
-    // is eligible for staking rewards or not
-    const {
-      data: poolEligibilityResponse,
-      isLoading: isLoadingPoolEligibility,
-    } = useGraphQuery<{ liquidityGauges: TLiquidityGauge[] }>(
+  // this query is responsible for checking if the given pool
+  // is eligible for staking rewards or not
+  const { data: poolEligibilityResponse, isLoading: isLoadingPoolEligibility } =
+    useGraphQuery<{ liquidityGauges: TLiquidityGauge[] }>(
       subgraphs.gauge,
       ['pool', 'eligibility', { poolAddress: poolAddress.value }],
       () => ({
@@ -161,103 +130,111 @@ export default defineComponent({
       })
     );
 
-    const isPoolEligibleForStaking = computed(
-      () =>
-        (poolEligibilityResponse.value?.liquidityGauges || [])[0]?.id !==
-        undefined
+  const isPoolEligibleForStaking = computed(
+    () =>
+      (poolEligibilityResponse.value?.liquidityGauges || [])[0]?.id !==
+      undefined
+  );
+
+  /**
+   * METHODS
+   */
+  async function stakeBPT() {
+    if (!poolAddress.value) {
+      throw new Error(
+        `Attempted to call stake, however useStaking was initialised without a pool address.`
+      );
+    }
+    if (!poolGaugeAddresses.value?.preferentialGauge?.id) {
+      throw new Error(`No preferential gauge found for this pool.`);
+    }
+    const gauge = new LiquidityGauge(
+      poolGaugeAddresses.value.preferentialGauge.id
+    );
+    const tx = await gauge.stake(
+      parseUnits(balanceFor(getAddress(poolAddress.value)), 18)
+    );
+    return tx;
+  }
+
+  async function unstakeBPT() {
+    if (!poolAddress.value) {
+      throw new Error(
+        `Attempted to call unstake, however useStaking was initialised without a pool address.`
+      );
+    }
+    const gaugesWithBalance = await Promise.all(
+      poolGaugeAddresses.value.gauges.map(async gauge => {
+        const gaugeInstance = new LiquidityGauge(gauge.id);
+        const balance = await gaugeInstance.balance(account.value);
+        return { ...gauge, balance: balance?.toString() };
+      })
     );
 
-    /**
-     * METHODS
-     */
-    async function stakeBPT() {
-      if (!poolAddress.value) {
-        throw new Error(
-          `Attempted to call stake, however useStaking was initialised without a pool address.`
-        );
-      }
-      if (!poolGaugeAddresses.value?.preferentialGauge?.id) {
-        throw new Error(`No preferential gauge found for this pool.`);
-      }
-      const gauge = new LiquidityGauge(
-        poolGaugeAddresses.value.preferentialGauge.id
+    const gaugeWithBalance = gaugesWithBalance.find(
+      gauge => gauge.balance !== '0'
+    );
+    if (!gaugeWithBalance) {
+      throw new Error(
+        `Attempted to call unstake, however user doesn't have any balance for any gauges.`
       );
-      const tx = await gauge.stake(
-        parseUnits(balanceFor(getAddress(poolAddress.value)), 18)
-      );
-      return tx;
     }
 
-    async function unstakeBPT() {
-      if (!poolAddress.value) {
-        throw new Error(
-          `Attempted to call unstake, however useStaking was initialised without a pool address.`
-        );
-      }
-      const gaugesWithBalance = await Promise.all(
-        poolGaugeAddresses.value.gauges.map(async gauge => {
-          const gaugeInstance = new LiquidityGauge(gauge.id);
-          const balance = await gaugeInstance.balance(account.value);
-          return { ...gauge, balance: balance?.toString() };
-        })
-      );
+    const gauge = new LiquidityGauge(gaugeWithBalance.id);
+    const balance = await gauge.balance(account.value);
+    const tx = await gauge.unstake(balance);
+    return tx;
+  }
 
-      const gaugeWithBalance = gaugesWithBalance.find(
-        gauge => gauge.balance !== '0'
-      );
-      if (!gaugeWithBalance) {
-        throw new Error(
-          `Attempted to call unstake, however user doesn't have any balance for any gauges.`
-        );
-      }
+  function setPoolAddress(address: string) {
+    poolAddress.value = address;
+  }
 
-      const gauge = new LiquidityGauge(gaugeWithBalance.id);
-      const balance = await gauge.balance(account.value);
-      const tx = await gauge.unstake(balance);
-      return tx;
-    }
+  return {
+    isLoadingPoolEligibility,
+    isPoolEligibleForStaking,
+    hideAprInfo: true,
+    userData: {
+      userGaugeShares,
+      userLiquidityGauges,
+      stakedSharesForProvidedPool,
+      isLoadingUserStakingData,
+      isLoadingStakedPools,
+      isLoadingStakedShares,
+      isUserStakeDataIdle,
+      isStakedSharesIdle,
+      isRefetchingStakedShares,
+      refetchStakedShares,
+      isStakedPoolsQueryEnabled,
+      isLoadingUserPools,
+      isUserPoolsIdle,
+      stakedSharesMap,
+      refetchUserStakingData,
+      stakedPools,
+      totalStakedFiatValue,
+      isLoadingBoosts,
+      poolBoosts,
+      poolGaugeAddresses,
+      refetchHasNonPrefGauge,
+      hasNonPrefGaugeBalances,
+      getStakedShares,
+      getBoostFor,
+    },
+    stakeBPT,
+    unstakeBPT,
+    setPoolAddress,
+  };
+}
 
-    function setPoolAddress(address: string) {
-      _poolAddress.value = address;
-    }
+type StakingProviderResponse = ReturnType<typeof stakingProvider>;
 
-    provide(StakingProviderSymbol, {
-      isLoadingPoolEligibility,
-      isPoolEligibleForStaking,
-      hideAprInfo: true,
-      userData: {
-        userGaugeShares,
-        userLiquidityGauges,
-        stakedSharesForProvidedPool,
-        isLoadingUserStakingData,
-        isLoadingStakedPools,
-        isLoadingStakedShares,
-        isUserStakeDataIdle,
-        isStakedSharesIdle,
-        isRefetchingStakedShares,
-        refetchStakedShares,
-        isStakedPoolsQueryEnabled,
-        isLoadingUserPools,
-        isUserPoolsIdle,
-        stakedSharesMap,
-        refetchUserStakingData,
-        stakedPools,
-        totalStakedFiatValue,
-        isLoadingBoosts,
-        poolBoosts,
-        poolGaugeAddresses,
-        refetchHasNonPrefGauge,
-        hasNonPrefGaugeBalances,
-        getStakedShares,
-        getBoostFor,
-      },
-      stakeBPT,
-      unstakeBPT,
-      setPoolAddress,
-    });
-  },
+export const StakingProviderSymbol: InjectionKey<StakingProviderResponse> =
+  Symbol(symbolKeys.Providers.Staking);
 
-  render() {
-    return h('div', this.$slots?.default ? this.$slots.default() : []);
-  },
-});
+export function provideStaking() {
+  return provide(StakingProviderSymbol, stakingProvider());
+}
+
+export const useStaking = (): StakingProviderResponse => {
+  return safeInject(StakingProviderSymbol);
+};

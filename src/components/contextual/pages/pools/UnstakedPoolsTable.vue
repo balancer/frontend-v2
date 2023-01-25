@@ -5,14 +5,12 @@ import { useI18n } from 'vue-i18n';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
-import useStaking from '@/composables/staking/useStaking';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { Pool, PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { getAddressFromPoolId } from '@/lib/utils';
-import StakingProvider from '@/providers/local/staking/staking.provider';
+import { useStaking } from '@/providers/local/staking/staking.provider';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
@@ -155,16 +153,12 @@ function handleModalClose() {
         @trigger-stake="handleStake"
       />
     </BalStack>
-    <StakingProvider
+    <StakePreviewModal
       v-if="stakePool"
-      :poolAddress="getAddressFromPoolId(stakePool.id)"
-    >
-      <StakePreviewModal
-        :pool="stakePool"
-        :isVisible="showStakeModal"
-        action="stake"
-        @close="handleModalClose"
-      />
-    </StakingProvider>
+      :pool="stakePool"
+      :isVisible="showStakeModal"
+      action="stake"
+      @close="handleModalClose"
+    />
   </div>
 </template>
