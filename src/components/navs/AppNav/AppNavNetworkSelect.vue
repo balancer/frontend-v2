@@ -9,6 +9,7 @@ import useNetwork from '@/composables/useNetwork';
 import useNotifications from '@/composables/useNotifications';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { hardRedirectTo } from '@/plugins/router/nav-guards';
 
 export interface NetworkOption {
@@ -117,10 +118,6 @@ watch(chainId, (newChainId, oldChainId) => {
 });
 
 // METHODS
-function iconSrc(network: NetworkOption): string {
-  return require(`@/assets/images/icons/networks/${network.id}.svg`);
-}
-
 function getNetworkChangeUrl(network: NetworkOption): string {
   const routes = ['pool', 'create-pool', 'invest', 'withdraw', 'migrate-pool'];
   if (routes.includes(router.currentRoute.value.name?.toString() ?? '')) {
@@ -147,7 +144,7 @@ function isActive(network: NetworkOption): boolean {
       <BalBtn color="white" :size="upToLargeBreakpoint ? 'md' : 'sm'">
         <template v-if="activeNetwork">
           <img
-            :src="iconSrc(activeNetwork)"
+            :src="buildNetworkIconURL(activeNetwork.id)"
             :alt="activeNetwork.name"
             class="w-6 h-6 rounded-full"
           />
@@ -172,7 +169,7 @@ function isActive(network: NetworkOption): boolean {
       >
         <div class="flex items-center">
           <img
-            :src="iconSrc(network)"
+            :src="buildNetworkIconURL(network.id)"
             :alt="network.name"
             class="mr-2 w-6 h-6 rounded-full"
           />

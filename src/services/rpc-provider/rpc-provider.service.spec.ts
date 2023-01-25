@@ -1,35 +1,40 @@
-import {
-  JsonRpcBatchProvider,
-  JsonRpcProvider,
-  WebSocketProvider,
-} from '@ethersproject/providers';
+import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
 
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
+import { StaticJsonRpcBatchProvider } from './static-json-rpc-batch-provider';
 
-jest.mock('@ethersproject/providers', () => {
+vi.mock('@ethersproject/providers', () => {
   return {
-    JsonRpcProvider: jest.fn().mockImplementation(() => {
+    JsonRpcProvider: vi.fn().mockImplementation(() => {
       return {};
     }),
-    JsonRpcBatchProvider: jest.fn().mockImplementation(() => {
-      return {};
-    }),
-    WebSocketProvider: jest.fn().mockImplementation(() => {
+    WebSocketProvider: vi.fn().mockImplementation(() => {
       return {
-        once: jest.fn().mockImplementation(),
+        once: vi.fn(),
       };
     }),
   };
 });
 
+vi.mock('./static-json-rpc-batch-provider', () => {
+  return {
+    StaticJsonRpcBatchProvider: vi.fn().mockImplementation(() => {
+      return {};
+    }),
+  };
+});
+
 describe('RPC provider service', () => {
-  const MockedJsonRpcProvider = jest.mocked(JsonRpcProvider, true);
-  const MockedJsonRpcBatchProvider = jest.mocked(JsonRpcBatchProvider, true);
-  const MockedWebSocketProvider = jest.mocked(WebSocketProvider, true);
+  const MockedJsonRpcProvider = vi.mocked(JsonRpcProvider, true);
+  const MockedStaticJsonRpcBatchProvider = vi.mocked(
+    StaticJsonRpcBatchProvider,
+    true
+  );
+  const MockedWebSocketProvider = vi.mocked(WebSocketProvider, true);
 
   beforeEach(() => {
     MockedJsonRpcProvider.mockClear();
-    MockedJsonRpcBatchProvider.mockClear();
+    MockedStaticJsonRpcBatchProvider.mockClear();
     MockedWebSocketProvider.mockClear();
   });
 
@@ -41,7 +46,7 @@ describe('RPC provider service', () => {
   it('Calls the JsonProvider constructor', () => {
     new RpcProviderService();
     // Expect 2 calls since logging provider is also a JSON provider
-    expect(JsonRpcBatchProvider).toHaveBeenCalledTimes(1);
+    expect(MockedStaticJsonRpcBatchProvider).toHaveBeenCalledTimes(1);
   });
 
   it('Calls the WebSocketProvider', () => {

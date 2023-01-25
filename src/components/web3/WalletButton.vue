@@ -1,10 +1,7 @@
 <template>
   <button class="wallet-connect-btn" @click="handleClick">
     <div class="flex items-center" style="width: 70%">
-      <img
-        :src="require(`@/assets/images/connectors/${wallet}.svg`)"
-        class="mr-4 w-10 h-10"
-      />
+      <img :src="buildConnectorIconURL(wallet)" class="mr-4 w-10 h-10" />
       <h5 class="text-base text-gray-700 dark:text-white">
         <span class="capitalize">{{ WalletNameMap[wallet] }}</span>
       </h5>
@@ -17,6 +14,7 @@ import { defineComponent, PropType } from 'vue';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { Wallet, WalletNameMap } from '@/services/web3/web3.plugin';
+import { buildConnectorIconURL } from '@/lib/utils/urls';
 export default defineComponent({
   props: {
     wallet: {
@@ -33,6 +31,7 @@ export default defineComponent({
     return {
       WalletNameMap,
       handleClick,
+      buildConnectorIconURL,
     };
   },
 });

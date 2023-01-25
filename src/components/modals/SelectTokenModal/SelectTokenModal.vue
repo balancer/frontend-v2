@@ -199,7 +199,7 @@ watchEffect(() => {
         </div>
         <div
           v-if="!state.selectTokenList && !hideTokenLists"
-          class="group flex items-center cursor-pointer"
+          class="group flex items-center mr-2 cursor-pointer"
           @click="toggleSelectTokenList"
         >
           <span class="text-xs text-secondary">{{ $t('tokenLists') }}</span>
@@ -222,7 +222,7 @@ watchEffect(() => {
       </div>
     </template>
     <template v-if="state.selectTokenList">
-      <div class="flex py-2 px-4">
+      <div class="flex px-4 pt-2 pb-3 mr-2">
         <BalTextInput
           v-model="state.query"
           name="tokenSearchInput"
@@ -260,7 +260,7 @@ watchEffect(() => {
       </div>
     </template>
     <template v-else>
-      <div class="flex py-2 px-4">
+      <div class="flex px-4 pt-2 pb-3 mr-2">
         <BalTextInput
           v-model="state.query"
           name="tokenSearchInput"
@@ -282,7 +282,7 @@ watchEffect(() => {
           v-slot="{ item: token, index }"
           class="overflow-y-scroll list-height"
           :items="tokens"
-          :itemSize="64"
+          :itemSize="70"
           keyField="address"
           :buffer="100"
         >
@@ -293,9 +293,6 @@ watchEffect(() => {
               :balanceLoading="dynamicDataLoading"
               :focussed="index == state.focussedToken"
               tabIndex="0"
-              :class="{
-                'bg-gray-100 dark:bg-gray-800': index == state.focussedToken,
-              }"
             />
           </a>
         </RecycleScroller>

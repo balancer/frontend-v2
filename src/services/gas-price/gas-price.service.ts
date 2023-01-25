@@ -14,7 +14,7 @@ import ArbitrumProvider from './providers/arbitrum.provider';
 import GnosisProvider from './providers/gnosis.provider';
 
 const USE_BLOCKNATIVE_GAS_PLATFORM =
-  process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
+  import.meta.env.VITE_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 export const GAS_LIMIT_BUFFER = 0.1;
 
 export class GasPriceService {

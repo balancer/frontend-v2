@@ -1,4 +1,4 @@
-import { mockDeep } from 'jest-mock-extended';
+import { mockDeep } from 'vitest-mock-extended';
 import useNetwork from '@/composables/useNetwork';
 
 type UseJoinExitReturnType = ReturnType<typeof useNetwork>;

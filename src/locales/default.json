@@ -59,17 +59,17 @@
   "attribute": "Attribute",
   "approve": "Approve",
   "approved": "Approved",
-  "approvedGnosisRelayer": "Approved Gnosis relayer",
+  "approvedCowswapRelayer": "Approved Cowswap relayer",
   "approvedLidoRelayer": "Approved Lido relayer",
-  "approveGnosisRelayer": "Approve Gnosis relayer",
-  "approveGP": "Approve swapping on Gnosis Protocol",
+  "approveCowswapRelayer": "Approve Cowswap relayer",
+  "approveGP": "Approve swapping on Cowswap Protocol",
   "approveLidoRelayer": "Approve Lido relayer",
   "approveBatchRelayer": "Approve Batch relayer",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
   "approveTokens": "Approve tokens",
   "approving": "Approving",
-  "approvingGnosisRelayer": "Approving Gnosis relayer",
+  "approvingCowswapRelayer": "Approving Cowswap relayer",
   "approvingLidoRelayer": "Approving Lido relayer",
   "apr": "APR",
   "apyvisionPoolInsights": "More insights on APY.vision",
@@ -112,7 +112,7 @@
       "claim": "Claim anytime"
     },
     "tips": {
-      "addLiquidity": "To earn liquidity mining incentives, add liquidity to eligible pools across Ethereum Mainnet and supported Layer 2's like Polygon and Arbitrum (see the table onthe veBAL page). Note: You'll earn swap fees with or without staking but you don't need to claim these as they are automatically added to your position.",
+      "addLiquidity": "To earn liquidity mining incentives, add liquidity to eligible pools across Ethereum Mainnet and supported Layer 2's like Polygon and Arbitrum (see the table on the veBAL page). Note: You'll earn swap fees with or without staking but you don't need to claim these as they are automatically added to your position.",
       "stake": "If you've provided liquidity in an eligible pool, you'll have an option to stake your Liquidity Provider (LP) tokens from that pool. Stake them to receive liquidity mining incentives in addition to any swap fees.",
       "boost": "Get veBAL to boost your liquidity mining incentives by up to 2.5x (on Ethereum Mainnet only). The more veBAL you hold, the larger your boost. veBAL holders also earn protocol fees and can vote to direct future pool emissions. Note, there is no additional boost from holding veBAL on Layer 2 pools like Polygon and Arbitrum.",
       "claim": "Token earnings from liquidity mining accumulate every block and can be claimed at any time. Some pools offer multiple token incentives (not just BAL). Additionally, veBAL holders also get a share of protocol revenue, in both bb-a-USD and BAL."
@@ -162,7 +162,7 @@
     "addTokenPrice": "Add token price(s) ->",
     "alternativeFeeManagement": "Alternative fee management options",
     "arbTitle": "You could lose up to {0} ({1})",
-    "arbReason": "Based on pricing information from CoinGecko, you’re vulnerable to losing funds to arbitraguers since the amounts you’re adding to the pool are not in proportion to the pool weights specified.",
+    "arbReason": "Based on pricing information from CoinGecko, you’re vulnerable to losing funds to arbitrageurs since the amounts you’re adding to the pool are not in proportion to the pool weights specified.",
     "bestFeeOption": "0.30% is best for most weighted pools with established tokens. Go higher for more exotic tokens.",
     "chooseTokenWeights": "Choose tokens & weights",
     "customAddressOption": "Allow dynamic fees from an address I choose",
@@ -185,7 +185,7 @@
     "previewPool": "Preview new {0} pool",
     "recommendedLiquidity": "It’s recommended to provide new pools with at least $20,000 in initial funds",
     "recoveredState": "We've recovered your previous choices",
-    "recoveredStateInfo": "Your previously left before creating this pool. Your choices have been saved so you can continue from before.",
+    "recoveredStateInfo": "You previously left before creating this pool. Your choices have been saved so you can continue from before.",
     "similarPoolsExist": "Similar pools exist",
     "setAnAddress": "Set an address to control fees",
     "setPoolFees": "Set pool fees",
@@ -195,7 +195,7 @@
     "totalWeightAlert": "The total weighting of all tokens must equal exactly 100% before you can proceed.",
     "totalWeightAlertTitle": "The total weight must be 100%",
     "unknownTokenPriceAlert": "We couldn't find prices for one or more tokens you have chosen ({0}).",
-    "unknownTokenPriceWarning": "Our pricing partner, CoinGecko, does not recognize {0}. This leaves you vulnerable to losing money to arbitraguers, if you don’t add pool assets in proportion to their target weights. To be warned of potential losses, enter the current price of this asset.",
+    "unknownTokenPriceWarning": "Our pricing partner, CoinGecko, does not recognize {0}. This leaves you vulnerable to losing money to arbitrageurs, if you don’t add pool assets in proportion to their target weights. To be warned of potential losses, enter the current price of this asset.",
     "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}.",
     "zeroWeightTitle": "You’ve included a token with zero weight",
     "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%."
@@ -281,7 +281,7 @@
       "riskWarnings": {
         "title": "Some risks - you may lose funds in the pool if:",
         "risks": {
-          "loseUSDPeg": "Any of the tokens in this pool permanently loses it's target peg of 1 USD.",
+          "loseUSDPeg": "Any of the tokens in this pool permanently loses its target peg of 1 USD.",
           "aaveStableExploit": "Problems arise on Aave. This is because, most of the stablecoins will be invested into Aave aTokens to earn you additional yield."
         }
       },
@@ -387,7 +387,7 @@
     "showStake": "Show pools where I stake"
   },
   "getLpTokens": "Get LP tokens",
-  "gnosisErrors": {
+  "cowswapErrors": {
     "lowAmount": {
       "header": "Your swap amount is too low",
       "body": "The fees for this transaction exceed the amount you want to swap."
@@ -404,7 +404,7 @@
       "header": "An error has occurred"
     }
   },
-  "gnosisWarnings": {
+  "cowswapWarnings": {
     "highFees": {
       "body": "You can still proceed with the swap but a high percentage of it will be consumed by swap fees.",
       "header": "The fees on this transaction exceed 20% of the swap amount."
@@ -551,7 +551,7 @@
   "modals": {
     "veBalRedirectModal": {
       "title": "Proceed to mainnet",
-      "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by adding liquidty to eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
+      "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by adding liquidity to eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
     }
   },
   "month": "month",
@@ -1201,7 +1201,7 @@
   "tokensLowerCase": "tokens",
   "tokensParen": "Token(s)",
   "tokenPrices": "Token prices",
-  "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowlege before continuing.",
+  "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowledge before continuing.",
   "tokenWarningTitle": "You have added a custom token",
   "tooltips": {
     "addLiquidity": {
@@ -1262,9 +1262,9 @@
     },
     "gasCosts": "Gas costs",
     "transactionTypesTooltips": {
-      "gnosisRelayerApproval": {
+      "cowswapRelayerApproval": {
         "content": "Your permission is required to use a batch relayer for gas-free, MEV-protected transactions.",
-        "title": "Approve swaps on Gnosis protocol"
+        "title": "Approve swaps on Cowswap protocol"
       },
       "lidoRelayerApproval": {
         "content": "Your permission is required to use the Lido relayer for stETH swaps.",

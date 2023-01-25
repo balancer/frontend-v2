@@ -24,7 +24,7 @@ export default function useMyWalletTokens({
 
   const {
     balances,
-    dynamicDataLoading: isLoadingBalances,
+    balanceQueryLoading: isLoadingBalances,
     nativeAsset,
   } = useTokens();
 

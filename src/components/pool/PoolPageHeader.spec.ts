@@ -1,44 +1,35 @@
-import { render, screen } from '@testing-library/vue';
+import { screen } from '@testing-library/vue';
 
 import PoolPageHeader from './PoolPageHeader.vue';
-import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
-import BalStack from '@/components/_global/BalStack/BalStack.vue';
-import BalLink from '@/components/_global/BalLink/BalLink.vue';
-import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
-import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
-
 import samplePool from './__mocks__/sample-pool.json';
 import sampleTitleTokens from './__mocks__/sample-title-tokens.json';
 
-import i18n from '@/locales/default.json';
+import { renderComponent } from '@/tests/renderComponent';
 
-PoolPageHeader.components = {
-  BalAlert,
-  BalStack,
-  BalLink,
-  BalIcon,
-  BalAsset,
-};
-
-// needed to prevent jest teleport error
-jest.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
-  template: '<div>-</div>',
+// needed to prevent teleport error
+vi.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
+  default: {
+    template: '<div>-</div>',
+  },
 }));
 
-jest.mock('@/providers/tokens.provider');
-jest.mock('@/composables/staking/useStaking', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      userData: {
-        hasNonPrefGaugeBalances: false,
-      },
-    };
-  });
+vi.mock('@/providers/tokens.provider');
+
+vi.mock('@/composables/staking/useStaking', () => {
+  return {
+    default: () => {
+      return {
+        userData: {
+          hasNonPrefGaugeBalances: false,
+        },
+      };
+    },
+  };
 });
 
 describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {
-    render(PoolPageHeader, {
+    renderComponent(PoolPageHeader, {
       props: {
         loadingPool: true,
         loadingApr: true,
@@ -63,14 +54,14 @@ describe('PoolPageHeader', () => {
         isComposableStableLikePool: false,
       },
     });
-    const weightedPoolProvidersWarning = await screen.queryByText(
-      i18n['hasNonApprovedRateProviders']
+    const weightedPoolProvidersWarning = screen.queryByText(
+      'One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.'
     );
     expect(weightedPoolProvidersWarning).not.toBeTruthy();
   });
 
   it('should render weighted pool price provider warning', async () => {
-    render(PoolPageHeader, {
+    renderComponent(PoolPageHeader, {
       props: {
         loadingPool: true,
         loadingApr: true,
@@ -85,7 +76,7 @@ describe('PoolPageHeader', () => {
       },
     });
     const weightedPoolProvidersWarning = await screen.findByText(
-      i18n['hasNonApprovedRateProviders']
+      'One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.'
     );
     expect(weightedPoolProvidersWarning).toBeVisible();
   });

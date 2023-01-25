@@ -6,7 +6,7 @@ import { ref } from 'vue';
 export default function useWeb3Mock() {
   return {
     isWalletReady: ref(true),
-    getProvider: jest.fn().mockImplementation(),
+    getProvider: vi.fn(),
     appNetworkConfig: {
       nativeAsset: {
         address: configService.network.nativeAsset.address,

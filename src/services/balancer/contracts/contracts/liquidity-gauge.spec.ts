@@ -2,8 +2,8 @@ import GaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response
 
 import { LiquidityGauge } from './liquidity-gauge';
 
-jest.mock('@/services/web3/web3.service');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/web3/web3.service');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 describe('Balancer', () => {
   it('Instantiates the class', () => {

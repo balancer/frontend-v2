@@ -38,7 +38,7 @@ export default class BlocknativeProvider {
         'https://api.blocknative.com/gasprices/blockprices',
         {
           headers: {
-            Authorization: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID,
+            Authorization: import.meta.env.VITE_BLOCKNATIVE_DAPP_ID,
           },
         }
       );

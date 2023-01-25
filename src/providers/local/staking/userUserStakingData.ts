@@ -256,10 +256,12 @@ export default function useUserStakingData(
   /** QUERY */
   const stakedPoolIds = computed(() => {
     if (isLoadingUserStakingData.value || !userGaugeShares.value) return [];
+
     return userGaugeShares.value.map(share => {
       return share.gauge.poolId;
     });
   });
+
   const isStakedPoolsQueryEnabled = computed(
     () => stakedPoolIds.value.length > 0
   );

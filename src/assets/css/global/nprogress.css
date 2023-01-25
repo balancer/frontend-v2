@@ -1,4 +1,4 @@
-@import url('~nprogress/nprogress.css');
+@import url('nprogress/nprogress.css');
 
 /* nprogress overrides */
 #nprogress .bar {

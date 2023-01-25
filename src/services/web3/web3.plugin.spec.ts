@@ -1,10 +1,10 @@
 import { SANCTIONED_ADDRESS } from '@/tests/msw/handlers';
 import { isBlockedAddress } from './web3.plugin';
 
-describe('Given that VUE_APP_WALLET_SCREENING is false', () => {
+describe('Given that VITE_WALLET_SCREENING is false', () => {
   beforeAll(() => {
     //@ts-ignore
-    process.env.VUE_APP_WALLET_SCREENING = false;
+    import.meta.env.VITE_WALLET_SCREENING = false;
   });
 
   it('skips sanctioned address check', async () => {
@@ -13,10 +13,10 @@ describe('Given that VUE_APP_WALLET_SCREENING is false', () => {
   });
 });
 
-describe('Given that VUE_APP_WALLET_SCREENING is true', () => {
+describe('Given that VITE_WALLET_SCREENING is true', () => {
   beforeAll(() => {
     //@ts-ignore
-    process.env.VUE_APP_WALLET_SCREENING = true;
+    import.meta.env.VITE_WALLET_SCREENING = true;
   });
 
   it('detects sanctioned address', async () => {

@@ -1,5 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
-import { fireEvent, render } from '@testing-library/vue';
+import { fireEvent } from '@testing-library/vue';
 
 import { txResponseMock } from '@/__mocks__/transactions';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
@@ -7,17 +7,18 @@ import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-dist
 
 import ClaimProtocolRewardsBtn from './ClaimProtocolRewardsBtn.vue';
 import TxActionBtn from './TxActionBtn/TxActionBtn.vue';
+import { renderComponent } from '@/tests/renderComponent';
 
 ClaimProtocolRewardsBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };
 
-jest.mock('@/services/balancer/contracts/contracts/fee-distributor');
-jest.mock('@/providers/tokens.provider');
-jest.mock('@/composables/queries/useProtocolRewardsQuery');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/balancer/contracts/contracts/fee-distributor');
+vi.mock('@/providers/tokens.provider');
+vi.mock('@/composables/queries/useProtocolRewardsQuery');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
-const mockClaimBalance = jest.fn().mockResolvedValue(txResponseMock);
-const mockClaimBalances = jest.fn().mockResolvedValue(txResponseMock);
+const mockClaimBalance = vi.fn().mockResolvedValue(txResponseMock);
+const mockClaimBalances = vi.fn().mockResolvedValue(txResponseMock);
 
 describe('ClaimProtocolRewardsBtn', () => {
   beforeAll(() => {
@@ -40,7 +41,7 @@ describe('ClaimProtocolRewardsBtn', () => {
   });
 
   it('should render props', () => {
-    const { getByText } = render(ClaimProtocolRewardsBtn, {
+    const { getByText } = renderComponent(ClaimProtocolRewardsBtn, {
       props: {
         fiatValue: '1000',
       },
@@ -50,7 +51,7 @@ describe('ClaimProtocolRewardsBtn', () => {
   });
 
   it('Calls FeeDistributor.claimBalances on click: Claim all', async () => {
-    const { getByText } = render(ClaimProtocolRewardsBtn, {
+    const { getByText } = renderComponent(ClaimProtocolRewardsBtn, {
       props: {
         fiatValue: '1000',
       },
@@ -64,7 +65,7 @@ describe('ClaimProtocolRewardsBtn', () => {
   });
 
   it('Calls FeeDistributor.claimBalance on click: Claim', async () => {
-    const { getByText } = render(ClaimProtocolRewardsBtn, {
+    const { getByText } = renderComponent(ClaimProtocolRewardsBtn, {
       props: {
         tokenAddress: '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2',
         fiatValue: '1000',
