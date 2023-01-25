@@ -28,10 +28,10 @@ import {
 } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
-import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
-import StakingProvider from '@/providers/local/staking/staking.provider';
+import { includesAddress } from '@/lib/utils';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 import { PoolToken } from '@/services/pool/types';
+import { PoolStakingProvider } from '@/providers/local/pool-staking.provider';
 
 /**
  * STATE
@@ -195,7 +195,7 @@ watch(poolQuery.error, () => {
 
 <template>
   <div class="xl:container lg:px-4 pt-8 xl:mx-auto">
-    <StakingProvider :poolAddress="getAddressFromPoolId(poolId)">
+    <PoolStakingProvider :poolId="poolId">
       <div
         class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
       >
@@ -285,7 +285,7 @@ watch(poolQuery.error, () => {
           </BalStack>
         </div>
       </div>
-    </StakingProvider>
+    </PoolStakingProvider>
   </div>
 </template>
 
