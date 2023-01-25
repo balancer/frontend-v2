@@ -13,6 +13,13 @@ vi.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
   },
 }));
 
+vi.mock('@ethersproject/address', () => {
+  return {
+    includesAddress: vi.fn(),
+    getAddress: vi.fn(),
+  };
+});
+
 vi.mock('@/providers/tokens.provider');
 
 vi.mock('@/composables/staking/useStaking', () => {
@@ -31,7 +38,6 @@ describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {
       props: {
-        loadingPool: true,
         loadingApr: true,
         noInitLiquidity: false,
         pool: {
@@ -63,7 +69,6 @@ describe('PoolPageHeader', () => {
   it('should render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {
       props: {
-        loadingPool: true,
         loadingApr: true,
         noInitLiquidity: false,
         pool: samplePool,
