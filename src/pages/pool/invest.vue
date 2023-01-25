@@ -6,13 +6,20 @@ import useInvestPageTabs, { Tab } from '@/composables/pools/useInvestPageTabs';
 import { usePool } from '@/composables/usePool';
 import { useIntervalFn } from '@vueuse/core';
 import { oneMinInMs } from '@/composables/useTime';
+import { PoolStakingProvider } from '@/providers/local/pool-staking.provider';
+import { useRoute } from 'vue-router';
 
 /**
  * STATE
  */
+const route = useRoute();
+const poolId = (route.params.id as string).toLowerCase();
+
+/**
+ * COMPOSABLES
+ */
 const { pool, poolQuery } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
-
 const { activeTab } = useInvestPageTabs();
 
 // Instead of refetching pool data on every block, we refetch every minute to prevent
@@ -23,13 +30,15 @@ useIntervalFn(poolQuery.refetch.value, oneMinInMs);
 </script>
 
 <template>
-  <JoinPoolProvider
-    v-if="pool && isDeepPool"
-    :pool="pool"
-    :isSingleAssetJoin="activeTab === Tab.SingleToken"
-  >
-    <InvestPage></InvestPage>
-  </JoinPoolProvider>
-  <InvestPage v-else></InvestPage>
+  <PoolStakingProvider :poolId="poolId">
+    <JoinPoolProvider
+      v-if="pool && isDeepPool"
+      :pool="pool"
+      :isSingleAssetJoin="activeTab === Tab.SingleToken"
+    >
+      <InvestPage></InvestPage>
+    </JoinPoolProvider>
+    <InvestPage v-else></InvestPage>
+  </PoolStakingProvider>
 </template>
 

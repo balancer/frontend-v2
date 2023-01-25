@@ -23,7 +23,6 @@ import {
   isSameAddress,
 } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 // Types
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -229,7 +228,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 });
 </script>
 
-  <template>
+<template>
   <div>
     <BalAlert
       v-if="forceProportionalInputs"
@@ -307,23 +306,21 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       />
     </div>
 
-    <StakingProvider :poolAddress="pool.address">
-      <teleport to="#modal">
-        <InvestPreviewModal
-          v-if="showInvestPreview"
-          :pool="pool"
-          :math="investMath"
-          :tokenAddresses="tokenAddresses"
-          @close="showInvestPreview = false"
-          @show-stake-modal="showStakeModal = true"
-        />
-        <StakePreviewModal
-          :pool="pool"
-          :isVisible="showStakeModal"
-          action="stake"
-          @close="showStakeModal = false"
-        />
-      </teleport>
-    </StakingProvider>
+    <teleport to="#modal">
+      <InvestPreviewModal
+        v-if="showInvestPreview"
+        :pool="pool"
+        :math="investMath"
+        :tokenAddresses="tokenAddresses"
+        @close="showInvestPreview = false"
+        @show-stake-modal="showStakeModal = true"
+      />
+      <StakePreviewModal
+        :pool="pool"
+        :isVisible="showStakeModal"
+        action="stake"
+        @close="showStakeModal = false"
+      />
+    </teleport>
   </div>
 </template>

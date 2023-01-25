@@ -8,7 +8,6 @@ import { usePool } from '@/composables/usePool';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
@@ -209,24 +208,23 @@ watch(
       />
     </div>
 
-    <StakingProvider :poolAddress="pool.address">
-      <teleport to="#modal">
-        <InvestPreviewModalV2
-          v-if="showInvestPreview"
-          :pool="pool"
-          @close="showInvestPreview = false"
-          @show-stake-modal="showStakeModal = true"
-        />
-        <StakePreviewModal
-          :pool="pool"
-          :isVisible="showStakeModal"
-          action="stake"
-          @close="showStakeModal = false"
-        />
-      </teleport>
-    </StakingProvider>
+    <teleport to="#modal">
+      <InvestPreviewModalV2
+        v-if="showInvestPreview"
+        :pool="pool"
+        @close="showInvestPreview = false"
+        @show-stake-modal="showStakeModal = true"
+      />
+      <StakePreviewModal
+        :pool="pool"
+        :isVisible="showStakeModal"
+        action="stake"
+        @close="showStakeModal = false"
+      />
+    </teleport>
   </div>
 </template>
+
 <style scoped>
 .high-price-impact:has(.bal-checkbox-error) {
   @apply border-red-500 bg-red-50 dark:bg-red-500 bg-opacity-50 dark:bg-opacity-5 transition-colors;
