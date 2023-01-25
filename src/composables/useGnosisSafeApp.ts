@@ -33,7 +33,7 @@ export default function useGnosisSafeApp() {
     // connect to the provided safe.
     isGnosisSafeApp.value = await checkIfGnosisSafeApp();
     console.log('isGnosisSafeApp.value', isGnosisSafeApp.value);
-    if (!isGnosisSafeApp.value) {
+    if (isGnosisSafeApp.value) {
       await connectWallet('gnosis');
       console.log('chainId.value', chainId.value);
       console.log('networkId.value', networkId.value);
