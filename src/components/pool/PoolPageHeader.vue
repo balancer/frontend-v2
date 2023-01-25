@@ -22,11 +22,10 @@ import usePoolStaking from '@/providers/local/pool-staking.provider';
  * TYPES
  */
 type Props = {
-  loadingPool: boolean;
   loadingApr: boolean;
   noInitLiquidity: boolean;
   isStableLikePool: boolean;
-  pool?: Pool;
+  pool: Pool;
   poolApr?: AprBreakdown;
   titleTokens: PoolToken[];
   missingPrices: boolean;
@@ -35,10 +34,8 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  loadingPool: true,
   loadingApr: true,
   noInitLiquidity: false,
-  pool: undefined,
   poolApr: undefined,
 });
 
@@ -108,7 +105,6 @@ const poolFeeLabel = computed(() => {
 const hasCustomToken = computed(() => {
   const knownTokens = Object.keys(balancerTokenListTokens.value);
   return (
-    !!props.pool &&
     !props.isLiquidityBootstrappingPool &&
     !props.isComposableStableLikePool &&
     props.pool.tokensList.some(
@@ -129,172 +125,165 @@ const hasMetadata = computed((): boolean => !!poolMetadata.value);
 </script>
 
 <template>
-  <div class="col-span-2 px-4 lg:px-0">
-    <BalLoadingBlock v-if="loadingPool || !pool" class="header-loading-block" />
-    <div v-else class="flex flex-col">
-      <div class="flex flex-wrap items-center -mt-2">
-        <div v-if="hasMetadata">
-          <h3 class="pool-title">
-            {{ poolMetadata.name }}
-          </h3>
-          <h5 class="text-sm">
-            {{ poolTypeLabel }}
-          </h5>
-        </div>
-        <h3 v-else class="pool-title">
-          {{ poolTypeLabel }}
+  <div class="flex flex-col">
+    <div class="flex flex-wrap items-center -mt-2">
+      <div v-if="hasMetadata">
+        <h3 class="pool-title">
+          {{ poolMetadata.name }}
         </h3>
+        <h5 class="text-sm">
+          {{ poolTypeLabel }}
+        </h5>
       </div>
-      <div class="flex">
-        <div
-          v-for="({ address, symbol, weight }, i) in titleTokens"
-          :key="i"
-          class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
-        >
-          <BalAsset :address="address" />
-          <span class="ml-2">
-            {{ symbol }}
-          </span>
-          <span
-            v-if="!isStableLikePool"
-            class="mt-px ml-1 text-xs font-medium text-gray-400"
-          >
-            {{
-              fNum2(weight || '0', {
-                style: 'percent',
-                maximumFractionDigits: 0,
-              })
-            }}
-          </span>
-        </div>
-        <BalChipNew v-if="pool?.isNew" class="mt-2 mr-2" />
-        <APRTooltip
-          v-if="!loadingApr"
-          :pool="pool"
-          :poolApr="poolApr"
-          class="mt-1 -ml-1"
-        />
-        <BalLink
-          :href="explorer.addressLink(pool?.address || '')"
-          external
-          noStyle
-          class="flex items-center"
-        >
-          <BalIcon
-            name="arrow-up-right"
-            size="sm"
-            class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
-          />
-        </BalLink>
-      </div>
-      <div class="flex items-center mt-2">
-        <div class="mr-1 text-sm text-secondary" v-html="poolFeeLabel" />
-        <BalTooltip>
-          <template #activator>
-            <BalLink
-              v-if="feesManagedByGauntlet"
-              :href="EXTERNAL_LINKS.Gauntlet.Home"
-              external
-            >
-              <GauntletIcon />
-            </BalLink>
-            <BalIcon
-              v-else
-              name="info"
-              size="xs"
-              class="text-gray-400 dark:text-gray-500"
-            />
-          </template>
-          <span>
-            {{ swapFeeToolTip }}
-          </span>
-        </BalTooltip>
-      </div>
+      <h3 v-else class="pool-title">
+        {{ poolTypeLabel }}
+      </h3>
     </div>
-
-    <BalAlert
-      v-if="hasNonApprovedRateProviders"
-      type="warning"
-      :title="$t('hasNonApprovedRateProviders')"
-      class="mt-2"
-      block
-    />
-    <BalAlert
-      v-if="!loadingPool && missingPrices"
-      type="warning"
-      :title="$t('noPriceInfo')"
-      class="mt-2"
-      block
-    />
-    <BalAlert
-      v-if="!loadingPool && hasCustomToken"
-      type="error"
-      :title="$t('highRiskPool')"
-      class="mt-2"
-      block
-    />
-    <BalAlert
-      v-if="hasNonPrefGaugeBalance && !isAffected"
-      :title="$t('staking.restakeGauge')"
-      :type="'warning'"
-      class="mt-2"
-    >
-      <BalStack spacing="sm">
-        <span>{{ $t('staking.restakeGaugeDescription') }}</span>
-        <div>
-          <BalBtn
-            :color="'gradient'"
-            class="p-2"
-            :size="'sm'"
-            @click="isRestakePreviewVisible = true"
-          >
-            {{ $t('restake') }}
-          </BalBtn>
-        </div>
-      </BalStack>
-    </BalAlert>
-    <template v-if="!loadingPool && isAffected">
-      <BalAlert
-        v-for="(warning, i) in warnings"
-        :key="`warning-${i}`"
-        type="error"
-        class="mt-2"
-        block
+    <div class="flex">
+      <div
+        v-for="({ address, symbol, weight }, i) in titleTokens"
+        :key="i"
+        class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
       >
-        <template #title>
-          <div v-html="warning.title" />
+        <BalAsset :address="address" />
+        <span class="ml-2">
+          {{ symbol }}
+        </span>
+        <span
+          v-if="!isStableLikePool"
+          class="mt-px ml-1 text-xs font-medium text-gray-400"
+        >
+          {{
+            fNum2(weight || '0', {
+              style: 'percent',
+              maximumFractionDigits: 0,
+            })
+          }}
+        </span>
+      </div>
+      <BalChipNew v-if="pool?.isNew" class="mt-2 mr-2" />
+      <APRTooltip
+        v-if="!loadingApr"
+        :pool="pool"
+        :poolApr="poolApr"
+        class="mt-1 -ml-1"
+      />
+      <BalLink
+        :href="explorer.addressLink(pool?.address || '')"
+        external
+        noStyle
+        class="flex items-center"
+      >
+        <BalIcon
+          name="arrow-up-right"
+          size="sm"
+          class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+        />
+      </BalLink>
+    </div>
+    <div class="flex items-center mt-2">
+      <div class="mr-1 text-sm text-secondary" v-html="poolFeeLabel" />
+      <BalTooltip>
+        <template #activator>
+          <BalLink
+            v-if="feesManagedByGauntlet"
+            :href="EXTERNAL_LINKS.Gauntlet.Home"
+            external
+          >
+            <GauntletIcon />
+          </BalLink>
+          <BalIcon
+            v-else
+            name="info"
+            size="xs"
+            class="text-gray-400 dark:text-gray-500"
+          />
         </template>
-        <template #description>
-          <div v-html="warning.description" />
-        </template>
-      </BalAlert>
-    </template>
+        <span>
+          {{ swapFeeToolTip }}
+        </span>
+      </BalTooltip>
+    </div>
+  </div>
+
+  <BalAlert
+    v-if="hasNonApprovedRateProviders"
+    type="warning"
+    :title="$t('hasNonApprovedRateProviders')"
+    class="mt-2"
+    block
+  />
+  <BalAlert
+    v-if="missingPrices"
+    type="warning"
+    :title="$t('noPriceInfo')"
+    class="mt-2"
+    block
+  />
+  <BalAlert
+    v-if="hasCustomToken"
+    type="error"
+    :title="$t('highRiskPool')"
+    class="mt-2"
+    block
+  />
+  <BalAlert
+    v-if="hasNonPrefGaugeBalance && !isAffected"
+    :title="$t('staking.restakeGauge')"
+    :type="'warning'"
+    class="mt-2"
+  >
+    <BalStack spacing="sm">
+      <span>{{ $t('staking.restakeGaugeDescription') }}</span>
+      <div>
+        <BalBtn
+          :color="'gradient'"
+          class="p-2"
+          :size="'sm'"
+          @click="isRestakePreviewVisible = true"
+        >
+          {{ $t('restake') }}
+        </BalBtn>
+      </div>
+    </BalStack>
+  </BalAlert>
+  <template v-if="isAffected">
     <BalAlert
-      v-if="noInitLiquidity"
-      type="warning"
-      :title="$t('noInitLiquidity')"
-      :description="$t('noInitLiquidityDetail')"
+      v-for="(warning, i) in warnings"
+      :key="`warning-${i}`"
+      type="error"
       class="mt-2"
       block
-    />
-    <StakePreviewModal
-      v-if="!!pool"
-      :isVisible="isRestakePreviewVisible"
-      :pool="pool"
-      :action="'restake'"
-      @close="isRestakePreviewVisible = false"
-      @success="isRestakePreviewVisible = false"
-    />
-  </div>
+    >
+      <template #title>
+        <div v-html="warning.title" />
+      </template>
+      <template #description>
+        <div v-html="warning.description" />
+      </template>
+    </BalAlert>
+  </template>
+  <BalAlert
+    v-if="noInitLiquidity"
+    type="warning"
+    :title="$t('noInitLiquidity')"
+    :description="$t('noInitLiquidityDetail')"
+    class="mt-2"
+    block
+  />
+  <StakePreviewModal
+    v-if="!!pool"
+    :isVisible="isRestakePreviewVisible"
+    :pool="pool"
+    :action="'restake'"
+    @close="isRestakePreviewVisible = false"
+    @success="isRestakePreviewVisible = false"
+  />
 </template>
 <style scoped>
 .pool-title {
   @apply mr-4 capitalize mt-2;
 
   font-variation-settings: 'wght' 700;
-}
-
-.header-loading-block {
-  height: 6.75rem;
 }
 </style>
