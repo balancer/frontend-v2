@@ -299,17 +299,18 @@ export default function useCowswap({
         priceQuoteParams
       );
 
+      // When user clears the input while fee is fetching we won't be able to get the quote
+      if (
+        (exactIn.value && !tokenInAmountInput.value) ||
+        (!exactIn.value && !tokenOutAmountInput.value)
+      ) {
+        updatingQuotes.value = false;
+        return;
+      }
+
+      // If there are multiple requests in flight, only use the last one
       if (priceQuote && currentQuoteFetchingIdx === quoteFetchingIdx.value) {
         feeQuote.value = priceQuote.feeAmount;
-
-        // When user clears the input while fee is fetching we won't be able to get the quote
-        if (
-          (exactIn.value && !tokenInAmountInput.value) ||
-          (!exactIn.value && !tokenOutAmountInput.value)
-        ) {
-          updatingQuotes.value = false;
-          return;
-        }
 
         if (exactIn.value) {
           tokenOutAmountInput.value = bnum(
