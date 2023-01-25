@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import HomePageHero from '@/components/heros/HomePageHero.vue';
@@ -19,8 +19,14 @@ const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } =
-  usePools(selectedTokens);
+const sortDirection = ref('');
+const poolsSortField = ref('');
+
+const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
+  selectedTokens,
+  sortDirection,
+  poolsSortField
+);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
 
@@ -33,8 +39,13 @@ function navigateToCreatePool() {
   router.push({ name: 'create-pool', params: { networkSlug } });
 }
 
-function onColumnSort(value) {
-  console.log(value);
+function onColumnSort(payload: {
+  columnId: string;
+  currentSortDirection: string;
+}) {
+  sortDirection.value = payload.currentSortDirection;
+  poolsSortField.value = payload.columnId;
+  console.log(payload);
 }
 </script>
 

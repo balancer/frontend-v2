@@ -39,7 +39,9 @@ type FilterOptions = {
 export default function usePoolsQuery(
   filterTokens: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
-  filterOptions?: FilterOptions
+  filterOptions?: FilterOptions,
+  sortDirection?: Ref<string> | undefined,
+  poolsSortField?: Ref<string> | undefined
 ) {
   /**
    * COMPOSABLES
@@ -127,8 +129,8 @@ export default function usePoolsQuery(
 
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
-      orderBy: 'totalLiquidity',
-      orderDirection: 'desc',
+      orderBy: 'volume',
+      orderDirection: sortDirection?.value || 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
         poolType: { not_in: POOLS.ExcludedPoolTypes },
@@ -171,7 +173,7 @@ export default function usePoolsQuery(
    *  need to change to filter for those tokens
    */
   watch(
-    filterTokens,
+    [filterTokens, sortDirection, poolsSortField],
     () => {
       poolsRepository = initializePoolsRepository();
     },

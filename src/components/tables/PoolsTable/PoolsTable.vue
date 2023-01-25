@@ -151,7 +151,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     name: t('volume24h', [t('hourAbbrev')]),
     accessor: pool => pool?.volumeSnapshot || '0',
     align: 'right',
-    id: 'poolVolume',
+    id: 'volume',
     Cell: 'volumeCell',
     sortKey: pool => {
       const volume = Number(pool?.volumeSnapshot);
@@ -177,7 +177,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     Cell: 'aprCell',
     accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
-    id: 'poolApr',
+    id: 'apr',
     sortKey: pool => {
       let apr = 0;
 
