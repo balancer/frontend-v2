@@ -64,7 +64,7 @@ const {
 const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
   useMyWalletTokens({
     pool: props.pool,
-    includeNativeAsset: true,
+    includeNativeAsset: false,
   });
 
 /**

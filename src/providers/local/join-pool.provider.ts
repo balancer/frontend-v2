@@ -10,7 +10,10 @@ import {
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, removeAddress } from '@/lib/utils';
-import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
+import {
+  JoinHandler,
+  JoinPoolService,
+} from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -207,6 +210,16 @@ const provider = (props: Props) => {
     (): string | undefined => queryJoinQuery.error.value?.message
   );
 
+  const joinHandlerType = computed((): JoinHandler => {
+    if (isDeepPool.value) {
+      if (isSingleAssetJoin.value) {
+        return JoinHandler.Swap;
+      }
+      return JoinHandler.Generalised;
+    }
+    return JoinHandler.ExactIn;
+  });
+
   /**
    * METHODS
    */
@@ -262,7 +275,7 @@ const provider = (props: Props) => {
     }
 
     try {
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      joinPoolService.setJoinHandler(joinHandlerType.value);
 
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
@@ -289,7 +302,7 @@ const provider = (props: Props) => {
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      joinPoolService.setJoinHandler(joinHandlerType.value);
 
       return joinPoolService.join({
         amountsIn: amountsInWithValue.value,
@@ -312,9 +325,9 @@ const provider = (props: Props) => {
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
   // setJoinHandler on the joinPoolService to update the join handler.
-  watch(isSingleAssetJoin, newVal => {
+  watch(isSingleAssetJoin, () => {
     resetQueryJoinState();
-    joinPoolService.setJoinHandler(newVal);
+    joinPoolService.setJoinHandler(joinHandlerType.value);
   });
 
   /**

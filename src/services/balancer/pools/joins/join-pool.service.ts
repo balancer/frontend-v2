@@ -1,16 +1,28 @@
 import { getBalancer } from '@/dependencies/balancer-sdk';
-import { isDeep, isWeightedLike } from '@/composables/usePool';
-import { gasPriceService } from '@/services/gas-price/gas-price.service';
+import {
+  GasPriceService,
+  gasPriceService,
+} from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { SwapJoinHandler } from './handlers/swap-join.handler';
+import { ExactInJoinHandler } from './handlers/exact-in-join.handler';
 import {
   JoinParams,
   JoinPoolHandler,
   QueryOutput,
 } from './handlers/join-pool.handler';
 import { GeneralisedJoinHandler } from './handlers/generalised-join.handler';
+import { BalancerSDK } from '@balancer-labs/sdk';
+
+export enum JoinHandler {
+  Swap = 'Swap',
+  Generalised = 'Generalised',
+  ExactIn = 'ExactIn',
+}
+
+type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];
 
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
@@ -33,7 +45,7 @@ export class JoinPoolService {
     public readonly sdk = getBalancer(),
     public readonly gasPriceServ = gasPriceService
   ) {
-    this.joinHandler = this.setJoinHandler();
+    this.joinHandler = this.setJoinHandler(JoinHandler.Generalised);
   }
 
   /**
@@ -42,19 +54,21 @@ export class JoinPoolService {
    * @param {boolean} [swapJoin=false] - Flag to ensure SwapJoinHandler is used for joining.
    * @returns {JoinPoolHandler} The JoinPoolHandler class to be used.
    */
-  setJoinHandler(swapJoin = false): JoinPoolHandler {
+  setJoinHandler(type: JoinHandler): JoinPoolHandler {
     const { pool, sdk, gasPriceServ } = this;
+    const handlerParams: HandlerParams = [pool, sdk, gasPriceServ];
 
-    if (swapJoin) {
-      return (this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ));
-    } else if (isDeep(pool.value) || isWeightedLike(pool.value.poolType)) {
-      return (this.joinHandler = new GeneralisedJoinHandler(
-        pool,
-        sdk,
-        gasPriceServ
-      ));
-    } else {
-      throw new Error(`Pool type not handled: ${pool.value.poolType}`);
+    switch (type) {
+      case JoinHandler.Swap:
+        return (this.joinHandler = new SwapJoinHandler(...handlerParams));
+      case JoinHandler.Generalised:
+        return (this.joinHandler = new GeneralisedJoinHandler(
+          ...handlerParams
+        ));
+      case JoinHandler.ExactIn:
+        return (this.joinHandler = new ExactInJoinHandler(...handlerParams));
+      default:
+        throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
   }
 
