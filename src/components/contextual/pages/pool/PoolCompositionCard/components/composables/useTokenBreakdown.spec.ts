@@ -154,4 +154,15 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     expect(result.balanceLabel.value).toEqual('408,785');
     expect(result.fiatLabel.value).toEqual('$437,400'); // balance x latestUSDPrice = 408,785 x 1.07 = $437,400
   });
+
+  it('calculates token percentage', () => {
+    rootPool.value.totalLiquidity = '1900';
+    const wethToken = removeBptFrom(PoolMock).tokens[1];
+    const token = ref(wethToken);
+    const { result } = mountComposable(() =>
+      useTokenBreakdown(token, shareOfParentInPool, rootPool)
+    );
+
+    expect(result.tokenPercentageLabel.value).toEqual('10.01%');
+  });
 });

@@ -93,11 +93,18 @@ export function useTokenBreakdown(
     return fNum2(token.value.weight, FNumFormats.percent);
   });
 
+  const tokenPercentageLabel = computed(() => {
+    const tokenPercentage =
+      Number(fiatValue.value) / Number(rootPool.value.totalLiquidity);
+    return fNum2(tokenPercentage, FNumFormats.percent);
+  });
+
   return {
     balanceLabel,
     userBalanceLabel,
     fiatLabel,
     userFiatLabel,
     tokenWeightLabel,
+    tokenPercentageLabel,
   };
 }

@@ -34,11 +34,8 @@ const { explorerLinks } = useWeb3();
 const { isDeepPool } = usePool(rootPool);
 const isWeighted = isWeightedLike(rootPool.value.poolType);
 
-const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
-  token,
-  shareOfParentInPool,
-  rootPool
-);
+const { balanceLabel, fiatLabel, tokenWeightLabel, tokenPercentageLabel } =
+  useTokenBreakdown(token, shareOfParentInPool, rootPool);
 
 /**
  * COMPUTED
