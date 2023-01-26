@@ -126,7 +126,7 @@ const shareOfTokenInPool = computed((): number => {
       {{ showUserShares ? userFiatLabel : fiatLabel }}
     </div>
     <div class="justify-self-end">
-      {{ showUserShares ? userTokenPercentageLabel : tokenPercentageLabel }}
+      {{ tokenPercentageLabel }}
     </div>
   </div>
 

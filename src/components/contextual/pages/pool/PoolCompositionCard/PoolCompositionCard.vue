@@ -112,7 +112,7 @@ onMounted(() => {
         />
       </div>
     </div>
-    <div v-if="userHasShares" class="m-3">
+    <div v-if="userHasShares" class="m-3 text-sm text-secondary">
       {{ $t('poolComposition.userShares', [userPoolPercentageLabel]) }}
     </div>
   </BalCard>

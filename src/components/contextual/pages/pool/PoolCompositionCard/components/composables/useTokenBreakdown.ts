@@ -103,13 +103,6 @@ export function useTokenBreakdown(
     return fNum2(tokenPercentage, FNumFormats.percent);
   });
 
-  const userTokenPercentageLabel = computed(() => {
-    const userTokenPercentage =
-      Number(userFiat.value) / Number(rootPool.value.totalLiquidity);
-    if (userTokenPercentage === 0) return '';
-    return fNum2(userTokenPercentage, FNumFormats.percent);
-  });
-
   return {
     balanceLabel,
     userBalanceLabel,
@@ -117,6 +110,5 @@ export function useTokenBreakdown(
     userFiatLabel,
     tokenWeightLabel,
     tokenPercentageLabel,
-    userTokenPercentageLabel,
   };
 }
