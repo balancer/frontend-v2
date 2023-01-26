@@ -53,7 +53,6 @@ declare module '@vue/runtime-core' {
     BalToggle: typeof import('./src/components/_global/BalToggle/BalToggle.vue')['default']
     BalTooltip: typeof import('./src/components/_global/BalTooltip/BalTooltip.vue')['default']
     BalVerticalSteps: typeof import('./src/components/_global/BalVerticalSteps/BalVerticalSteps.vue')['default']
-    CenteredAccordion: typeof import('./src/components/_global/BalAccordion/CenteredAccordion.vue')['default']
     CheckIcon: typeof import('./src/components/_global/icons/CheckIcon.vue')['default']
     CompositionIcon: typeof import('./src/components/_global/icons/CompositionIcon.vue')['default']
     DiscordIcon: typeof import('./src/components/_global/icons/brands/DiscordIcon.vue')['default']
