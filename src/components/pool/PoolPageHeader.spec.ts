@@ -22,18 +22,6 @@ vi.mock('@ethersproject/address', () => {
 
 vi.mock('@/providers/tokens.provider');
 
-vi.mock('@/composables/staking/useStaking', () => {
-  return {
-    default: () => {
-      return {
-        userData: {
-          hasNonPrefGaugeBalances: false,
-        },
-      };
-    },
-  };
-});
-
 describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {

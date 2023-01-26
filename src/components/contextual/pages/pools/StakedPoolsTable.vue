@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import useStaking from '@/composables/staking/useStaking';
+import { useStaking } from '@/providers/local/staking/staking.provider';
 import { isL2 } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';

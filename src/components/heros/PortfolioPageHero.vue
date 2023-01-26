@@ -3,8 +3,8 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import AppHero from '@/components/heros/AppHero.vue';
+import { useStaking } from '@/providers/local/staking/staking.provider';
 import useUserPools from '@/composables/pools/useUserPools';
-import useStaking from '@/composables/staking/useStaking';
 import { useLock } from '@/composables/useLock';
 import useNetwork, { isL2 } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
