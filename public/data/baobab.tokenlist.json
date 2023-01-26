@@ -1,0 +1,53 @@
+{
+  "name": "Balancer",
+  "timestamp": "2023-01-20T00:00:00.000Z",
+  "logoURI": "https://raw.githubusercontent.com/balancer-labs/pebbles/master/images/pebbles-pad.256w.png",
+  "keywords": ["balancer", "listed"],
+  "version": {
+    "major": 1,
+    "minor": 24,
+    "patch": 0
+  },
+  "tokens": [
+    {
+      "address": "0x4A79C8d130082A15CBE5cF1e7D07232e526DCe0D",
+      "chainId": 1001,
+      "name": "testKDAI",
+      "symbol": "tKDAI",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f.png"
+    },
+    {
+      "address": "0x86443DB7Fb8c6481849eACF278cfc699BD92F478",
+      "chainId": 1001,
+      "name": "testMistral",
+      "symbol": "tMSTR",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f.png"
+    },
+    {
+      "address": "0x5413E7AFCADCB63A30Dad567f46dd146Cc427801",
+      "chainId": 1001,
+      "name": "testUSDC",
+      "symbol": "tUSDC",
+      "decimals": 6,
+      "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f.png"
+    },
+    {
+      "address": "0x968FC3A1e120a2A6f26B50A7bB28962E7d5B716D",
+      "chainId": 1001,
+      "name": "testUSDT",
+      "symbol": "tUSDT",
+      "decimals": 6,
+      "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f.png"
+    },
+    {
+      "address": "0xb5f97411fcf2598acb2d5da076e10b452843a5f2",
+      "chainId": 1001,
+      "name": "Mistral-oUSDC-KDAI-wp",
+      "symbol": "Mistral-oUSDC-KDAI-wp",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f.png"
+    }
+  ]
+}
