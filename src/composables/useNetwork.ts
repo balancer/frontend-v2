@@ -167,6 +167,7 @@ export default function useNetwork() {
     networkId,
     networkConfig,
     networkSlug,
+    getNetworkSlug,
     getSubdomain,
     handleNetworkSlug,
     networkLabelMap,
