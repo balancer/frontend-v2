@@ -36,9 +36,10 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, data } = this.lastJoinRes;
+    const { to, data, value } = this.lastJoinRes;
 
-    return txBuilder.raw.sendTransaction({ to, data });
+    // value property must be passed if joining with native asset
+    return txBuilder.raw.sendTransaction({ to, data, value });
   }
 
   async queryJoin({
@@ -80,6 +81,7 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     if (!this.lastJoinRes) {
       throw new Error('Failed to fetch expected output.');
     }
+
     // TODO: Use expectedBPTOut once SDK supports it
     const { minBPTOut } = this.lastJoinRes;
     if (bnum(minBPTOut).eq(0)) throw new Error('Not enough liquidity.');
