@@ -106,7 +106,6 @@ export function useTokenBreakdown(
   const userTokenPercentageLabel = computed(() => {
     const userTokenPercentage =
       Number(userFiat.value) / Number(rootPool.value.totalLiquidity);
-    console.log({ userTokenPercentage });
     if (userTokenPercentage === 0) return '';
     return fNum2(userTokenPercentage, FNumFormats.percent);
   });
