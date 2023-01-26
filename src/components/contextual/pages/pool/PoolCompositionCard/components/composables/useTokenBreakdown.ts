@@ -49,6 +49,7 @@ export function useTokenBreakdown(
   });
 
   const balanceLabel = computed(() => formatBalanceValue(balanceValue.value));
+
   const userBalanceLabel = computed(() => {
     if (balanceValue.value === '') return '';
     return formatBalanceValue(applyUserPoolPercentageTo(balanceValue.value));
@@ -83,9 +84,11 @@ export function useTokenBreakdown(
 
   const fiatLabel = computed(() => formatFiatValue(fiatValue.value));
 
+  const userFiat = computed(() => applyUserPoolPercentageTo(fiatValue.value));
+
   const userFiatLabel = computed(() => {
     if (fiatValue.value === '') return '';
-    return formatFiatValue(applyUserPoolPercentageTo(fiatValue.value));
+    return formatFiatValue(userFiat.value);
   });
 
   const tokenWeightLabel = computed(() => {
@@ -96,7 +99,16 @@ export function useTokenBreakdown(
   const tokenPercentageLabel = computed(() => {
     const tokenPercentage =
       Number(fiatValue.value) / Number(rootPool.value.totalLiquidity);
+    if (tokenPercentage === 0) return '';
     return fNum2(tokenPercentage, FNumFormats.percent);
+  });
+
+  const userTokenPercentageLabel = computed(() => {
+    const userTokenPercentage =
+      Number(userFiat.value) / Number(rootPool.value.totalLiquidity);
+    console.log({ userTokenPercentage });
+    if (userTokenPercentage === 0) return '';
+    return fNum2(userTokenPercentage, FNumFormats.percent);
   });
 
   return {
@@ -106,5 +118,6 @@ export function useTokenBreakdown(
     userFiatLabel,
     tokenWeightLabel,
     tokenPercentageLabel,
+    userTokenPercentageLabel,
   };
 }

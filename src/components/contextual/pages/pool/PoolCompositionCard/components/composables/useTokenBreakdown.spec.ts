@@ -163,6 +163,17 @@ describe('Given a weighted pool (GRO-WETH)', () => {
       useTokenBreakdown(token, shareOfParentInPool, rootPool)
     );
 
-    expect(result.tokenPercentageLabel.value).toEqual('10.01%');
+    expect(result.tokenPercentageLabel.value).toEqual('10.01%'); // (token balance / totalLiquidity) * 100
+  });
+
+  it('calculates user token percentage', () => {
+    rootPool.value.totalLiquidity = '1900';
+    const wethToken = removeBptFrom(PoolMock).tokens[1];
+    const token = ref(wethToken);
+    const { result } = mountComposable(() =>
+      useTokenBreakdown(token, shareOfParentInPool, rootPool)
+    );
+
+    expect(result.userTokenPercentageLabel.value).toEqual('0.08%'); // (user token balance / totalLiquidity) * 100
   });
 });

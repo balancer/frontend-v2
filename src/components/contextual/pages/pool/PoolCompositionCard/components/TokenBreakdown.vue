@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { bnum } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
 import { useTokenBreakdown } from './composables/useTokenBreakdown';
-import { bnum } from '@/lib/utils';
+
 import { isWeightedLike, usePool } from '@/composables/usePool';
 
 /**
@@ -22,6 +23,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   parentLevel: 0,
+  // Root pool has share 1 as default
   shareOfParentInPool: 1,
 });
 
@@ -34,8 +36,15 @@ const { explorerLinks } = useWeb3();
 const { isDeepPool } = usePool(rootPool);
 const isWeighted = isWeightedLike(rootPool.value.poolType);
 
-const { balanceLabel, fiatLabel, tokenWeightLabel, tokenPercentageLabel } =
-  useTokenBreakdown(token, shareOfParentInPool, rootPool);
+const {
+  balanceLabel,
+  userBalanceLabel,
+  fiatLabel,
+  userFiatLabel,
+  tokenWeightLabel,
+  tokenPercentageLabel,
+  userTokenPercentageLabel,
+} = useTokenBreakdown(token, shareOfParentInPool, rootPool);
 
 /**
  * COMPUTED
@@ -76,8 +85,8 @@ const shareOfTokenInPool = computed((): number => {
 <template>
   <div
     :class="[
-      'grid gap-y-4 px-4 w-full items-center',
-      isWeighted ? 'grid-cols-4' : 'grid-cols-3',
+      'grid gap-y-4 px-4 w-full',
+      isWeighted ? 'grid-cols-5' : 'grid-cols-4',
       nestedPaddingClass,
     ]"
   >
@@ -111,10 +120,13 @@ const shareOfTokenInPool = computed((): number => {
       {{ tokenWeightLabel }}
     </div>
     <div class="justify-self-end">
-      {{ balanceLabel }}
+      {{ showUserShares ? userBalanceLabel : balanceLabel }}
     </div>
     <div class="justify-self-end">
-      {{ fiatLabel }}
+      {{ showUserShares ? userFiatLabel : fiatLabel }}
+    </div>
+    <div class="justify-self-end">
+      {{ showUserShares ? userTokenPercentageLabel : tokenPercentageLabel }}
     </div>
   </div>
 

@@ -79,7 +79,7 @@ onMounted(() => {
     <template #header>
       <div
         class="grid p-4 w-full text-base font-semibold border-b dark:border-gray-900"
-        :class="[isWeighted ? 'grid-cols-4' : 'grid-cols-3']"
+        :class="[isWeighted ? 'grid-cols-5' : 'grid-cols-4']"
       >
         <div>{{ $t('token') }}</div>
         <div v-if="isWeighted" class="justify-self-end">
@@ -90,6 +90,9 @@ onMounted(() => {
         </div>
         <div class="justify-self-end">
           {{ $t('value') }}
+        </div>
+        <div class="justify-self-end">
+          {{ $t('poolComposition.token%') }}
         </div>
       </div>
     </template>
