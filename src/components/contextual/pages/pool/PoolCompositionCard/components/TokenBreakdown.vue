@@ -43,7 +43,6 @@ const {
   userFiatLabel,
   tokenWeightLabel,
   tokenPercentageLabel,
-  userTokenPercentageLabel,
 } = useTokenBreakdown(token, shareOfParentInPool, rootPool);
 
 /**
