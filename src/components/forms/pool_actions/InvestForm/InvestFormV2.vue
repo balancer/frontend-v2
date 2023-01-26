@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum, forChange, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -47,7 +47,7 @@ const { managedPoolWithSwappingHalted, isDeepPool, isPreMintedBptPool } =
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
-const { wrappedNativeAsset } = useTokens();
+const { wrappedNativeAsset, nativeAsset } = useTokens();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
@@ -86,6 +86,14 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
     await forChange(isLoadingBalances, false);
     addTokensIn(poolTokensWithBalance.value);
   }
+}
+
+// Toggle between native and wrapped native asset
+function tokenOptions(address: string): string[] {
+  return isSameAddress(address, wrappedNativeAsset.value.address) ||
+    isSameAddress(address, nativeAsset.address)
+    ? [wrappedNativeAsset.value.address, nativeAsset.address]
+    : [];
 }
 
 /**
@@ -149,6 +157,7 @@ watch(
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+      :options="tokenOptions(amountIn.address)"
     />
 
     <MissingPoolTokensAlert
