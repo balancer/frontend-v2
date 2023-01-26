@@ -97,7 +97,7 @@ export default defineComponent({
     const contentClasses = computed(() => {
       return {
         'p-4': !props.noPad && !props.noContentPad,
-        'flex-grow': props.growContent,
+        grow: props.growContent,
       };
     });
 

@@ -74,9 +74,9 @@ export default defineComponent({
         case 'tip':
           return 'bg-blue-50 dark:bg-blue-500 dark:bg-opacity-10 border-blue-200 dark:border-blue-500 text-black dark:text-white';
         case 'warning':
-          return 'bg-orange-50 dark:bg-orange-600 dark:bg-opacity-10 border-orange-200 dark:border-orange-700 text-black dark:text-white';
+          return 'bg-orange-50 dark:bg-orange-600/10 border-orange-200 dark:border-orange-700 text-black dark:text-white';
         case 'error':
-          return 'bg-red-50 dark:bg-red-500 dark:bg-opacity-10 border-red-200 dark:border-red-900 text-black dark:text-white';
+          return 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-900 text-black dark:text-white';
         default:
           return 'bg-gray-100 dark:bg-gray-500 dark:border-0 border-gray-200 text-black dark:text-white';
       }
@@ -141,11 +141,11 @@ export default defineComponent({
         case 'tip':
           return 'text-blue-700 dark:text-blue-400';
         case 'warning':
-          return 'text-orange-500 dark:text-white bg-orange-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-orange-500 dark:text-white bg-orange-500/10 dark:bg-white/10';
         case 'error':
-          return 'text-red-500 dark:text-white bg-red-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-red-500 dark:text-white bg-red-500/10 dark:bg-white/10';
         default:
-          return 'text-secondary dark:text-white bg-black dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-secondary dark:text-white bg-black/10 dark:bg-white/10';
       }
     });
 
