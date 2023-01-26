@@ -229,7 +229,7 @@ function handleVoteSuccess() {
       <div class="flex mb-3 lg:mb-0">
         <BalTextInput
           v-model="tokenFilter"
-          class="mr-5 filter-input"
+          class="mr-5"
           name="tokenSearch"
           type="text"
           :placeholder="$t('filterByToken')"
@@ -277,9 +277,3 @@ function handleVoteSuccess() {
     />
   </teleport>
 </template>
-
-<style scoped>
-.filter-input {
-  flex: 1 1 100%;
-}
-</style>

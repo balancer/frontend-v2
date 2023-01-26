@@ -63,6 +63,9 @@ module.exports = {
       ...defaultTheme.screens,
     },
     extend: {
+      flex: {
+        0: '0 0 auto',
+      },
       height: {
         112: '28rem',
       },
