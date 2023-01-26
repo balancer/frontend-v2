@@ -55,6 +55,8 @@ const activeTab = ref(tabs[0].value);
  */
 const showUserShares = computed(() => activeTab.value === MY_POOL_SHARE);
 const userHasShares = computed(() => userPoolPercentage.value.gt(0));
+// Hide my pool share tab when user does not have shares
+if (!userHasShares.value) tabs.splice(1, 1);
 
 /**
  * LIFECYCLE
