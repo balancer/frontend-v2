@@ -112,8 +112,8 @@ onMounted(() => {
         />
       </div>
     </div>
-    <div v-if="userHasShares" class="m-3 text-sm text-secondary">
-      {{ $t('poolComposition.userShares', [userPoolPercentageLabel]) }}
-    </div>
   </BalCard>
+  <div v-if="userHasShares" class="m-3 text-sm text-secondarygit pu">
+    {{ $t('poolComposition.userShares', [userPoolPercentageLabel]) }}
+  </div>
 </template>
