@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import useStaking from '@/composables/staking/useStaking';
-import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { fiatValueOf, usePool } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
@@ -79,11 +78,6 @@ function navigateToPoolMigration(pool: Pool) {
 
 <template>
   <BalCard shadow="2xl" noPad class="rounded-xl">
-    <pre>
-    DEBUG FIATVALUE!!
-        {{ fiatValue }}
-        {{ useUserPoolPercentage(pool) }}
-    </pre>
     <template #header>
       <div class="card-header">
         <h5>
