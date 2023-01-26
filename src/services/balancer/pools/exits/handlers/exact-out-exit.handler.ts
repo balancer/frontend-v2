@@ -1,12 +1,7 @@
-<<<<<<< HEAD
 import { getBalancer } from '@/dependencies/balancer-sdk';
-import { indexOfAddress, selectByAddress } from '@/lib/utils';
-=======
 import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
-import { balancer } from '@/lib/balancer.sdk';
 import { indexOfAddress, isSameAddress, selectByAddress } from '@/lib/utils';
->>>>>>> 25bb487c0 (Single asset exit for Weighted pools)
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';

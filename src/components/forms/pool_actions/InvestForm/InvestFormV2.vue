@@ -42,8 +42,12 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { managedPoolWithSwappingHalted, isDeepPool, isPreMintedBptPool } =
-  usePool(toRef(props, 'pool'));
+const {
+  managedPoolWithSwappingHalted,
+  isDeepPool,
+  isPreMintedBptPool,
+  isWethPool,
+} = usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -89,7 +93,10 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
 }
 
 // Toggle between native and wrapped native asset
+// if pool is WETH pool and form is multi-asset form
 function tokenOptions(address: string): string[] {
+  if (!isWethPool.value) return [];
+  if (isSingleAssetJoin.value) return [];
   return isSameAddress(address, wrappedNativeAsset.value.address) ||
     isSameAddress(address, nativeAsset.address)
     ? [wrappedNativeAsset.value.address, nativeAsset.address]

@@ -65,7 +65,9 @@ export default function useMyWalletTokens({
 
     const tokensList = pool?.tokensList || [];
     if (isWethPool.value) {
-      return [nativeAsset.address, ...tokensList];
+      return includeNativeAsset
+        ? [nativeAsset.address, ...tokensList]
+        : tokensList;
     }
     return tokensList;
   });
