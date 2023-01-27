@@ -243,6 +243,7 @@ export class StakingRewardsService {
    * calcUserBoost
    *
    * Pure function for calculating a user's boost for a given gauge.
+   * See: https://www.notion.so/veBAL-Boost-7a2ae8b6c8ff470f9dbe5b6bab4ff989#3037cbd3f619457681d63627db92541a
    *
    * @param {string} userGaugeBalance - User's balance in gauge.
    * @param {string} gaugeTotalSupply - The gauge's total supply.
