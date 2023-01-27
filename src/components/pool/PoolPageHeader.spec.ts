@@ -34,6 +34,8 @@ vi.mock('@/composables/staking/useStaking', () => {
   };
 });
 
+vi.mock('@/services/web3/useWeb3');
+
 describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {
