@@ -86,7 +86,7 @@ watch(popoverOpened, () => {
   >
     <div
       ref="activatorWrapper"
-      class="group bal-popover-activator"
+      class="group flex flex-col h-full bal-popover-activator"
       @click="trigger === 'click' && togglePopover()"
       @mouseenter="trigger === 'hover' && showPopover()"
       @mouseleave="trigger === 'hover' && hidePopover()"

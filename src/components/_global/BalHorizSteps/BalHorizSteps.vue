@@ -78,7 +78,7 @@ function stateClasses(state: StepState): string {
             />
             <template v-else-if="step.state === stepState.Pending">
               <span
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               >
                 {{ i + 1 }}
               </span>
