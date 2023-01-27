@@ -80,6 +80,7 @@ type Props = {
   tokenIn: ComputedRef<TokenInfo>;
   tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
+  isCowswapTrade: ComputedRef<boolean>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;
@@ -99,6 +100,7 @@ export default function useSor({
   tokenIn,
   tokenOut,
   slippageBufferRate,
+  isCowswapTrade,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<SubgraphPoolBase[]>([]);
@@ -268,6 +270,10 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
+    if (isCowswapTrade.value) {
+      return;
+    }
+
     const amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;

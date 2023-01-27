@@ -10,17 +10,14 @@ import {
   OrderCreation,
 } from './signing';
 import {
-  FeeInformation,
-  FeeQuoteParams,
   OrderID,
   OrderMetaData,
-  PriceInformation,
+  CowSwapQuoteResponse,
   PriceQuoteParams,
 } from './types';
-import { getCanonicalMarket, toErc20Address } from './utils';
 
 export const API_URLS = {
-  [Network.MAINNET]: 'https://protocol-mainnet.gnosis.io/api',
+  [Network.MAINNET]: 'https://api.cow.fi/mainnet/api',
 };
 
 export default class CowswapProtocolService {
@@ -100,50 +97,22 @@ export default class CowswapProtocolService {
 
       return data;
     } catch (e) {
-      console.log(`[Cowswap Protocol]: Failed to get order ${orderId}`, e);
+      console.log(`[CoWswap Protocol]: Failed to get order ${orderId}`, e);
     }
 
     return null;
   }
 
-  public async getFeeQuote(feeQuoteParams: FeeQuoteParams) {
-    const response = await axios.post<FeeInformation>(
-      `${this.baseURL}/quote`,
-      feeQuoteParams,
-      {
-        validateStatus: () => true,
-      }
-    );
-
-    if (response.status >= 200 && response.status < 300) {
-      return response.data;
-    }
-
-    const errorMessage = OperatorError.getErrorFromStatusCode(response, 'get');
-
-    throw new Error(errorMessage);
-  }
-
   public async getPriceQuote(params: PriceQuoteParams) {
     try {
-      const { amount, sellToken, buyToken, kind } = params;
-
-      const { baseToken, quoteToken } = getCanonicalMarket({
-        sellToken,
-        buyToken,
-        kind,
-      });
-      const market = `${toErc20Address(baseToken)}-${toErc20Address(
-        quoteToken
-      )}`;
-
-      const response = await axios.get<PriceInformation>(
-        `${this.baseURL}/markets/${market}/${kind}/${amount}`
+      const response = await axios.post<CowSwapQuoteResponse>(
+        `${this.baseURL}/quote`,
+        params
       );
 
-      return response.data;
+      return response.data.quote;
     } catch (e) {
-      console.log(`[Cowswap Protocol]: Failed to get price from API`, e);
+      console.log(`[CoWswap Protocol]: Failed to get price from API`, e);
     }
 
     return null;
