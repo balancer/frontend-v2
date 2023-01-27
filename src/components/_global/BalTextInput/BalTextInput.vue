@@ -172,7 +172,7 @@ onMounted(() => {
 }
 
 .input {
-  @apply flex-grow bg-transparent overflow-hidden w-full;
+  @apply grow bg-transparent overflow-hidden w-full;
 }
 
 .label {
