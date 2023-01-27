@@ -90,7 +90,7 @@ const provider = (props: Props) => {
   // Is it possible to stake this pool's BPT?
   const isStakablePool = computed(
     (): boolean =>
-      (poolGauges.value?.liquidityGauges || [])[0]?.id !== undefined &&
+      poolGauges.value?.liquidityGauges?.[0]?.id !== undefined &&
       POOLS.Stakable.AllowList.includes(props.poolId)
   );
 
