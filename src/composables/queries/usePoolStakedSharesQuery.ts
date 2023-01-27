@@ -21,7 +21,7 @@ type QueryResponse = string;
  * We want users to receive instant feedback that their staked balances are updated
  */
 export default function usePoolStakedSharesQuery(
-  poolGauges: Ref<undefined> | Ref<PoolGauges>,
+  poolGauges: Ref<PoolGauges | undefined>,
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
