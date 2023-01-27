@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, forChange, isSameAddress } from '@/lib/utils';
+import { bnum, forChange, includesAddress, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -69,6 +69,7 @@ const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
   useMyWalletTokens({
     pool: props.pool,
     includeNativeAsset: false,
+    excludedTokens: [props.pool.address],
   });
 
 /**
@@ -87,13 +88,24 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
   if (isSingleAssetJoin) {
     addTokensIn([wrappedNativeAsset.value.address]);
   } else {
+    // Wait for balances to load and only add tokens with balance
     await forChange(isLoadingBalances, false);
-    addTokensIn(poolTokensWithBalance.value);
+    const tokensToAdd = poolTokensWithBalance.value;
+
+    // If WETH pool but user doesn't have any WETH balance, include ETH to pool tokens
+    if (
+      includesAddress(
+        poolTokensWithoutBalance.value,
+        wrappedNativeAsset.value.address
+      )
+    ) {
+      tokensToAdd.push(nativeAsset.address);
+    }
+    addTokensIn(tokensToAdd);
   }
 }
 
-// Toggle between native and wrapped native asset
-// if pool is WETH pool and form is multi-asset form
+// Toggle between native and wrapped native asset if pool is WETH pool and form is multi-asset form
 function tokenOptions(address: string): string[] {
   if (!isWethPool.value) return [];
   if (isSingleAssetJoin.value) return [];
