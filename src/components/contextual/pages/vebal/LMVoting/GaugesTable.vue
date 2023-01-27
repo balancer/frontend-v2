@@ -280,7 +280,10 @@ function getPickedTokens(tokens: PoolToken[]) {
                 "
               />
               <IconLimit
-                v-else-if="gauge.relativeWeightCap !== 'null'"
+                v-else-if="
+                  gauge.relativeWeightCap !== 'null' &&
+                  gauge.relativeWeightCap !== '1'
+                "
                 size="sm"
                 :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
                 :tooltip="

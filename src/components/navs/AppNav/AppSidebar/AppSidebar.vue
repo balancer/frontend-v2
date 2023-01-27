@@ -47,7 +47,7 @@ watch(showSidebar, () => {
 .sidebar-overlay {
   z-index: 999999999;
 
-  @apply fixed top-0 left-0 h-screen w-full bg-black bg-opacity-80 cursor-pointer flex;
+  @apply fixed top-0 left-0 h-screen w-full bg-black/80 cursor-pointer flex;
 
   backdrop-filter: blur(5px);
 }
@@ -59,7 +59,7 @@ watch(showSidebar, () => {
 }
 
 .app-sidebar_empty {
-  @apply flex-grow;
+  @apply grow;
 }
 
 .overlay-enter-active,
@@ -94,7 +94,7 @@ watch(showSidebar, () => {
 
   content: '';
   z-index: -1;
-  background: rgb(150 150 150 / 20%);
+  background: rgb(150 150 150 20%);
   backdrop-filter: blur(4px);
 }
 </style>
