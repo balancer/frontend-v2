@@ -106,8 +106,7 @@ const provider = (props: Props) => {
 
   // Does the user have a balance in a non-preferential gauge
   const hasNonPrefGaugeBalance = computed((): boolean => {
-    if (!userGaugeShares.value) return false;
-    if (!preferentialGaugeAddress.value) return false;
+    if (!userGaugeShares.value || !preferentialGaugeAddress.value) return false;
 
     const _preferentialGaugeAddress = preferentialGaugeAddress.value;
 
