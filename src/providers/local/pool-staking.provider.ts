@@ -161,7 +161,7 @@ const provider = (props: Props) => {
       throw new Error('Unable to unstake, no pool gauges');
 
     const gaugesWithBalance = await Promise.all(
-      poolGauges.value?.pool?.gauges.map(async gauge => {
+      poolGauges.value.pool.gauges.map(async gauge => {
         const gaugeInstance = new LiquidityGauge(gauge.id);
         const balance = await gaugeInstance.balance(account.value);
         return { ...gauge, balance: balance?.toString() };
