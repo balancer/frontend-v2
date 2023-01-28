@@ -26,7 +26,16 @@ usePoolTransfersGuard();
  * COMPOSABLES
  */
 const { pool, poolQuery } = usePoolTransfers();
-const { isDeepPool, isWeightedLikePool } = usePool(pool);
+const { isDeepPool, isWeightedLikePool, isMetaStablePool, isStablePool } =
+  usePool(pool);
+
+const supportsJoinPoolProvider = computed(
+  () =>
+    isWeightedLikePool.value ||
+    isDeepPool.value ||
+    isMetaStablePool.value ||
+    isStablePool.value
+);
 
 const { activeTab } = useInvestPageTabs();
 
@@ -39,7 +48,7 @@ useIntervalFn(poolQuery.refetch, oneMinInMs);
 
 <template>
   <JoinPoolProvider
-    v-if="pool && (isWeightedLikePool || isDeepPool)"
+    v-if="pool && supportsJoinPoolProvider"
     :pool="pool"
     :isSingleAssetJoin="activeTab === Tab.SingleToken"
   >

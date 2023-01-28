@@ -7,7 +7,6 @@ import {
   isPreMintedBptType,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePool,
 } from '@/composables/usePool';
 import useRelayerApproval, {
   RelayerType,
@@ -197,19 +196,21 @@ const provider = (props: Props) => {
       isPreMintedBptType(pool.value.poolType)
   );
 
+  const shouldUseGeneralisedExit = computed(
+    (): boolean => !isSingleAssetExit.value && isDeep(pool.value)
+  );
+
   const exitHandlerType = computed((): ExitHandler => {
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
-    if (isWeightedPool.value) {
-      if (isSingleAssetExit.value) {
-        if (singleAssetMaxed.value) {
-          return ExitHandler.ExactIn;
-        } else {
-          return ExitHandler.ExactOut;
-        }
-      } else return ExitHandler.ExactIn;
+    if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
+    if (isSingleAssetExit.value) {
+      if (singleAssetMaxed.value) {
+        return ExitHandler.ExactIn;
+      } else {
+        return ExitHandler.ExactOut;
+      }
     }
-
-    return ExitHandler.Generalised;
+    return ExitHandler.ExactIn;
   });
 
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.

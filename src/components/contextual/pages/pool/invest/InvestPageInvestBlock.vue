@@ -17,7 +17,13 @@ import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { activeTab, resetTabs } = useInvestPageTabs();
-const { isDeepPool, isPreMintedBptPool, isWeightedLikePool } = usePool(pool);
+const {
+  isDeepPool,
+  isPreMintedBptPool,
+  isWeightedLikePool,
+  isMetaStablePool,
+  isStablePool,
+} = usePool(pool);
 
 /**
  * COMPUTED
@@ -32,8 +38,12 @@ const isLoading = computed(
     loadingPool.value || !transfersAllowed.value || isLoadingSor.value
 );
 
-const poolSupportsGeneralizedJoin = computed(
-  (): boolean => isWeightedLikePool.value || isDeepPool.value
+const supportsJoinPoolProvider = computed(
+  () =>
+    isWeightedLikePool.value ||
+    isDeepPool.value ||
+    isMetaStablePool.value ||
+    isStablePool.value
 );
 
 /**
@@ -63,7 +73,7 @@ onMounted(() => resetTabs());
         />
       </div>
     </template>
-    <template v-if="poolSupportsGeneralizedJoin">
+    <template v-if="supportsJoinPoolProvider">
       <InvestFormV2 :pool="pool" />
     </template>
     <template v-else>

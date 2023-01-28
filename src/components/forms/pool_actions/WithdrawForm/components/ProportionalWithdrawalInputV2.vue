@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import { computed, onBeforeMount, reactive, watch } from 'vue';
 import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
-import useWeb3 from '@/services/web3/useWeb3';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import useExitPool from '@/composables/pools/useExitPool';
 import { useI18n } from 'vue-i18n';
@@ -35,7 +34,6 @@ const slider = reactive({
  * COMPOSABLES
  */
 
-const { isWalletReady } = useWeb3();
 const {
   bptIn,
   bptInValid,
@@ -95,7 +93,7 @@ function getPoolToken(address: string): PoolToken | undefined {
 /**
  * WATCHERS
  */
-watch(isWalletReady, () => {
+watch(bptBalance, () => {
   bptIn.value = bptBalance.value;
 });
 

@@ -23,7 +23,7 @@ import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePo
  */
 const { network } = configService;
 const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
-const { isDeepPool, isWeightedLikePool } = usePool(pool);
+const { isDeepPool, isWeightedLikePool, isStablePool } = usePool(pool);
 const { activeTab, resetTabs } = useWithdrawPageTabs();
 usePoolTransfersGuard();
 
@@ -46,6 +46,10 @@ const isLoading = computed(
     loadingPool.value || !transfersAllowed.value || isLoadingSor.value
 );
 
+const supportsExitPoolProvider = computed(
+  () => isWeightedLikePool.value || isDeepPool.value || isStablePool.value
+);
+
 onMounted(() => resetTabs());
 </script>
 
@@ -63,7 +67,7 @@ onMounted(() => resetTabs());
             <SwapSettingsPopover :context="SwapSettingsContext.invest" />
           </div>
           <BalTabs
-            v-if="isDeepPool || isWeightedLikePool"
+            v-if="supportsExitPoolProvider"
             v-model="activeTab"
             :tabs="tabs"
             class="p-0 m-0 -mb-px whitespace-nowrap"
@@ -72,7 +76,7 @@ onMounted(() => resetTabs());
         </div>
       </template>
       <ExitPoolProvider
-        v-if="isDeepPool || isWeightedLikePool"
+        v-if="supportsExitPoolProvider"
         :isSingleAssetExit="activeTab === Tab.SingleToken"
         :pool="pool"
       >
