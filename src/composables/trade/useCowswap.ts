@@ -3,23 +3,16 @@ import { WeiPerEther as ONE } from '@ethersproject/constants';
 import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
-import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
 import OldBigNumber from 'bignumber.js';
 import { computed, ComputedRef, reactive, Ref, ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 
 import { bnum } from '@/lib/utils';
-import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
 import { cowswapProtocolService } from '@/services/cowswap/cowswapProtocol.service';
 import { signOrder, UnsignedOrder } from '@/services/cowswap/signing';
-import {
-  FeeInformation,
-  FeeQuoteParams,
-  OrderMetaData,
-  PriceQuoteParams,
-} from '@/services/cowswap/types';
-import { calculateValidTo, toErc20Address } from '@/services/cowswap/utils';
+import { OrderMetaData, PriceQuoteParams } from '@/services/cowswap/types';
+import { calculateValidTo } from '@/services/cowswap/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Token } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
@@ -81,24 +74,6 @@ type Props = {
   slippageBufferRate: ComputedRef<number>;
 };
 
-const PRICE_QUOTE_TIMEOUT = 10000;
-
-const priceQuotesResolveLast = onlyResolvesLast(getPriceQuotes);
-const feeQuoteResolveLast = onlyResolvesLast(getFeeQuote);
-
-function getPriceQuotes(params: PriceQuoteParams) {
-  return Promise.allSettled([
-    tryPromiseWithTimeout(
-      cowswapProtocolService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    ),
-  ]);
-}
-
-function getFeeQuote(params: FeeQuoteParams) {
-  return cowswapProtocolService.getFeeQuote(params);
-}
-
 export default function useCowswap({
   exactIn,
   tokenInAddressInput,
@@ -119,9 +94,10 @@ export default function useCowswap({
   const { balanceFor } = useTokens();
 
   // DATA
-  const feeQuote = ref<FeeInformation | null>(null);
   const updatingQuotes = ref(false);
   const confirming = ref(false);
+  const feeQuote = ref<string | null>(null);
+  const latestQuoteIdx = ref<number>(0);
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
@@ -132,7 +108,7 @@ export default function useCowswap({
 
   // METHODS
   function getFeeAmount() {
-    const feeAmountInToken = feeQuote.value?.quote.feeAmount ?? '0';
+    const feeAmountInToken = feeQuote.value ?? '0';
     const feeAmountOutToken = tokenOutAmountScaled.value
       .mul(feeAmountInToken)
       .div(tokenInAmountScaled.value)
@@ -301,125 +277,75 @@ export default function useCowswap({
     }
     updatingQuotes.value = true;
     state.validationError = null;
+    latestQuoteIdx.value += 1;
+    const currentQuoteIdx = latestQuoteIdx.value;
 
-    let feeQuoteResult: FeeInformation | null = null;
     try {
-      const feeQuoteParams: FeeQuoteParams = {
-        sellToken: toErc20Address(tokenInAddressInput.value),
-        buyToken: toErc20Address(tokenOutAddressInput.value),
+      const priceQuoteParams: PriceQuoteParams = {
+        sellToken: tokenInAddressInput.value,
+        buyToken: tokenOutAddressInput.value,
+        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
+        fromDecimals: tokenIn.value.decimals,
+        toDecimals: tokenOut.value.decimals,
         from: account.value || AddressZero,
         receiver: account.value || AddressZero,
-        validTo: calculateValidTo(appTransactionDeadline.value),
-        appData: APP_DATA,
-        partiallyFillable: false,
+        [exactIn.value ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
+          amountToExchange.toString(),
+        partiallyFillable: false, // Always fill or kill,
         sellTokenBalance: OrderBalance.EXTERNAL,
-        buyTokenBalance: OrderBalance.ERC20,
-        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
       };
 
-      if (exactIn.value) {
-        feeQuoteParams.sellAmountBeforeFee = amountToExchange.toString();
-      } else {
-        feeQuoteParams.buyAmountAfterFee = amountToExchange.toString();
+      const priceQuote = await cowswapProtocolService.getPriceQuote(
+        priceQuoteParams
+      );
+
+      // When user clears the input while fee is fetching we won't be able to get the quote
+      if (
+        (exactIn.value && !tokenInAmountInput.value) ||
+        (!exactIn.value && !tokenOutAmountInput.value)
+      ) {
+        updatingQuotes.value = false;
+        return;
       }
 
-      // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-      feeQuoteResult = await feeQuoteResolveLast(feeQuoteParams);
+      // If there are multiple requests in flight, only use the last one
+      if (priceQuote && currentQuoteIdx === latestQuoteIdx.value) {
+        feeQuote.value = priceQuote.feeAmount;
+
+        if (exactIn.value) {
+          tokenOutAmountInput.value = bnum(
+            formatUnits(priceQuote.buyAmount ?? '0', tokenOut.value.decimals)
+          ).toFixed(6, OldBigNumber.ROUND_DOWN);
+
+          const { feeAmountInToken } = getQuote();
+
+          state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
+            amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+          );
+        } else {
+          tokenInAmountInput.value = bnum(
+            formatUnits(priceQuote.sellAmount ?? '0', tokenIn.value.decimals)
+          ).toFixed(6, OldBigNumber.ROUND_DOWN);
+
+          const { feeAmountOutToken, maximumInAmount } = getQuote();
+
+          state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
+            amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+          );
+
+          if (account.value) {
+            const priceExceedsBalance = bnum(
+              formatUnits(maximumInAmount, tokenIn.value.decimals)
+            ).gt(balanceFor(tokenIn.value.address));
+
+            if (priceExceedsBalance) {
+              state.validationError = ApiErrorCodes.PriceExceedsBalance;
+            }
+          }
+        }
+      }
     } catch (e) {
-      feeQuoteResult = null;
-      state.validationError = (e as Error).message;
-    }
-
-    if (feeQuoteResult != null) {
-      try {
-        let priceQuoteAmount: string | null = null;
-
-        const priceQuoteParams: PriceQuoteParams = {
-          sellToken: tokenInAddressInput.value,
-          buyToken: tokenOutAddressInput.value,
-          amount: amountToExchange.toString(),
-          kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
-          fromDecimals: tokenIn.value.decimals,
-          toDecimals: tokenOut.value.decimals,
-        };
-
-        const priceQuotes = await priceQuotesResolveLast(priceQuoteParams);
-
-        const priceQuoteAmounts = priceQuotes.reduce<string[]>(
-          (fulfilledPriceQuotes, priceQuote) => {
-            if (
-              priceQuote.status === 'fulfilled' &&
-              priceQuote.value &&
-              priceQuote.value.amount != null
-            ) {
-              fulfilledPriceQuotes.push(priceQuote.value.amount);
-            }
-            return fulfilledPriceQuotes;
-          },
-          []
-        );
-
-        if (priceQuoteAmounts.length > 0) {
-          // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
-          priceQuoteAmount = (
-            exactIn.value
-              ? priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).gt(b) ? a : b
-                )
-              : priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).lt(b) ? a : b
-                )
-          ).toString();
-        }
-
-        if (priceQuoteAmount != null) {
-          feeQuote.value = feeQuoteResult;
-
-          // When user clears the input while fee is fetching we won't be able to get the quote
-          // TODO: ideally cancel all pending requests on amount getting changed / cleared
-          if (
-            (exactIn.value && !tokenInAmountInput.value) ||
-            (!exactIn.value && !tokenOutAmountInput.value)
-          ) {
-            updatingQuotes.value = false;
-            return;
-          }
-
-          if (exactIn.value) {
-            tokenOutAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenOut.value.decimals)
-            ).toFixed(6, OldBigNumber.ROUND_DOWN);
-
-            const { feeAmountInToken } = getQuote();
-
-            state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
-            );
-          } else {
-            tokenInAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenIn.value.decimals)
-            ).toFixed(6, OldBigNumber.ROUND_DOWN);
-
-            const { feeAmountOutToken, maximumInAmount } = getQuote();
-
-            state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
-            );
-
-            if (account.value) {
-              const priceExceedsBalance = bnum(
-                formatUnits(maximumInAmount, tokenIn.value.decimals)
-              ).gt(balanceFor(tokenIn.value.address));
-
-              if (priceExceedsBalance) {
-                state.validationError = ApiErrorCodes.PriceExceedsBalance;
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.log('[Cowswap Quotes] Failed to update quotes', e);
-      }
+      console.log('[CoWswap Quotes] Failed to update quotes', e);
     }
 
     updatingQuotes.value = false;

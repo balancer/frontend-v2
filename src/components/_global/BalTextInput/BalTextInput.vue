@@ -172,7 +172,7 @@ onMounted(() => {
 }
 
 .input {
-  @apply grow bg-transparent overflow-hidden;
+  @apply grow bg-transparent overflow-hidden w-full;
 }
 
 .label {

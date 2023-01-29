@@ -55,6 +55,8 @@ const _tokenOutAddress = ref<string>('');
 
 const isInRate = ref<boolean>(true);
 
+const typingTimeout = ref<any>(undefined);
+
 /**
  * COMPUTED
  */
@@ -95,14 +97,27 @@ const rateLabel = computed(() => {
 /**
  * METHODS
  */
+function preventUpdatesOnTyping(callback: () => void) {
+  if (typingTimeout.value) {
+    clearTimeout(typingTimeout.value);
+  }
+  typingTimeout.value = setTimeout(() => {
+    callback();
+  }, 300);
+}
+
 function handleInAmountChange(value: string): void {
   emit('update:tokenInAmount', value);
-  emit('amountChange');
+  preventUpdatesOnTyping(() => {
+    emit('amountChange');
+  });
 }
 
 function handleOutAmountChange(value: string): void {
   emit('update:tokenOutAmount', value);
-  emit('amountChange');
+  preventUpdatesOnTyping(() => {
+    emit('amountChange');
+  });
 }
 
 function handleTokenSwitch(): void {
