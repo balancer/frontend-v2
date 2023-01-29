@@ -6,18 +6,19 @@ import { Interface } from '@ethersproject/abi';
 import vaultAbi from '../abi/Vault.json';
 // A Swap can be a single or multiple paths
 export class Swap {
-    static async fromPaths(fromPaths, swapKind) {
+    static async fromPaths(fromPaths, swapKind, swapAmount) {
         const paths = [];
         for (const path of fromPaths) {
             const inputAmount = path.inputAmount;
             const outputAmount = path.outputAmount;
             paths.push({ path, inputAmount, outputAmount });
         }
-        return new Swap({ paths, swapKind });
+        return new Swap({ paths, swapKind, swapAmount });
     }
-    constructor({ paths, swapKind, }) {
+    constructor({ paths, swapKind, swapAmount, }) {
         this.paths = paths;
         this.swapKind = swapKind;
+        this.isNativeSwap = swapAmount.token.isNative;
         this.isBatchSwap = paths.length > 1 || paths[0].path.pools.length > 2 ? true : false;
         this.assets = [
             ...new Set(paths
@@ -54,6 +55,10 @@ export class Swap {
                     });
                 });
             });
+        }
+        if (this.isNativeSwap) {
+            const idx = this.assets.findIndex(a => a === swapAmount.token.wrapped);
+            this.assets[idx] = swapAmount.token.address;
         }
         this.swaps = swaps;
     }

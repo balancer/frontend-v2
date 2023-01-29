@@ -29,25 +29,25 @@ export class Router {
             });
             let valueArr;
             if (swapKind === SwapKind.GivenIn) {
-                valueArr = quotePaths.map(item => {
+                (valueArr = quotePaths.map(item => {
                     return {
                         item,
-                        value: Number((item.outputAmount).amount),
+                        value: Number(item.outputAmount.amount),
                     };
-                }),
+                })),
                     valueArr.sort((a, b) => b.value - a.value);
             }
             else {
-                valueArr = quotePaths.map(item => {
+                (valueArr = quotePaths.map(item => {
                     return {
                         item,
-                        value: Number((item.inputAmount).amount),
+                        value: Number(item.inputAmount.amount),
                     };
-                }),
+                })),
                     valueArr.sort((a, b) => a.value - b.value);
             }
             const orderedQuotePaths = valueArr.map(item => item.item);
-            const swap = await Swap.fromPaths(orderedQuotePaths.slice(0, 1), swapKind);
+            const swap = await Swap.fromPaths(orderedQuotePaths.slice(0, 1), swapKind, swapAmount);
             return swap;
         };
         this.pathGraph = new PathGraph();

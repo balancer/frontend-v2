@@ -4,6 +4,8 @@ export declare class Token {
     readonly decimals: number;
     readonly symbol?: string;
     readonly name?: string;
-    constructor(chainId: number, address: string, decimals: number, symbol?: string, name?: string);
+    readonly wrapped: string;
+    readonly isNative: boolean;
+    constructor(chainId: number, address: string, decimals: number, symbol?: string, name?: string, wrapped?: string);
     isEqual(token: Token): boolean;
 }
