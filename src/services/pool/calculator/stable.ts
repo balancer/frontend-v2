@@ -212,9 +212,9 @@ export default class Stable {
     // that requires balances be scaled by the token decimals and not 18
     // scaledBalances already use priceRate
     const balances = this.scaledBalances.map((balance, i) => {
-      const normalizedBalance = formatUnits(balance.toString(), 18);
+      const normalizedBalance = formatUnits(balance.toFixed(), 18);
       const denormBalance = parseUnits(
-        normalizedBalance,
+        Number(normalizedBalance).toFixed(this.calc.poolTokenDecimals[i]),
         this.calc.poolTokenDecimals[i]
       );
       return denormBalance;
