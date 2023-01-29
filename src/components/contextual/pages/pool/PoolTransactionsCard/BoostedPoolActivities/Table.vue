@@ -278,7 +278,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
             <div class="token-item">
               <BalAsset
                 :address="action.tokenAmounts[0].address"
-                class="flex-shrink-0 mr-2"
+                class="mr-2 shrink-0"
               />
               <span class="font-numeric">{{
                 fNum2(action.tokenAmounts[0].amount, FNumFormats.token)
@@ -288,7 +288,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
             <div class="token-item">
               <BalAsset
                 :address="action.tokenAmounts[1].address"
-                class="flex-shrink-0 mr-2"
+                class="mr-2 shrink-0"
               />
               <span class="font-numeric">{{
                 fNum2(action.tokenAmounts[1].amount, FNumFormats.token)
@@ -303,7 +303,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
               >
                 <BalAsset
                   :address="tokenAmount.address"
-                  class="flex-shrink-0 mr-2"
+                  class="mr-2 shrink-0"
                 />
                 <span class="font-numeric">{{
                   fNum2(tokenAmount.amount, FNumFormats.token)

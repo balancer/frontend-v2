@@ -52,6 +52,7 @@ const mockProps = {
   tokenIn: computedMockTokenInfo,
   tokenOut: computedMockTokenInfo,
   slippageBufferRate: computed(() => 1),
+  isCowswapTrade: computed(() => false),
 };
 
 describe('useSor', () => {

@@ -261,7 +261,7 @@ async function handleTransaction(
         >
           <div
             :class="{
-              'flex flex-grow justify-between items-center':
+              'flex grow justify-between items-center':
                 currentAction.isSignAction,
             }"
           >
