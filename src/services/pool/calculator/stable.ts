@@ -214,7 +214,7 @@ export default class Stable {
     const balances = this.scaledBalances.map((balance, i) => {
       const normalizedBalance = formatUnits(balance.toFixed(), 18);
       const denormBalance = parseUnits(
-        normalizedBalance,
+        Number(normalizedBalance).toFixed(this.calc.poolTokenDecimals[i]),
         this.calc.poolTokenDecimals[i]
       );
       return denormBalance;
