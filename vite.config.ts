@@ -96,7 +96,12 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      include: ['tailwind.config.js', 'color', 'mersenne-twister'],
+      include: [
+        'tailwind.config.js',
+        'color',
+        'mersenne-twister',
+        'graphql-request',
+      ],
     },
     server: {
       port: 8080,
@@ -128,7 +133,7 @@ export default defineConfig(({ mode }) => {
       commonjsOptions: {
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
-        include: ['tailwind.config.js', 'node_modules/**'],
+        include: ['.yalc/**', 'tailwind.config.js', 'node_modules/**'],
         transformMixedEsModules: true, // Enable @walletconnect/web3-provider which has some code in CommonJS
       },
     },

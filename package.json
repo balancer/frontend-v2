@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
+    "@balancer/sdk": "file:.yalc/@balancer/sdk",
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/sdk": "^0.1.47",
     "@balancer-labs/typechain": "^1.0.0",
@@ -149,8 +150,5 @@
     "*.{css,vue}": "stylelint --fix"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2",
-  "dependencies": {
-    "@balancer/sdk": "file:.yalc/@balancer/sdk"
-  }
+  "repository": "balancer-labs/frontend-v2"
 }
