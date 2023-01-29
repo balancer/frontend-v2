@@ -239,8 +239,7 @@ export default class Stable {
       );
       const scaledBalance = this.scaleInput(
         normalizedBalance,
-        this.calc.pool.value.tokens[i].priceRate,
-        this.calc.pool.value.tokens[i]?.decimals || 18
+        this.calc.pool.value.tokens[i].priceRate
       );
       return bnum(scaledBalance.toString());
     });
