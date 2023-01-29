@@ -30,7 +30,7 @@
         </div>
       </div>
       <BalCloseIcon
-        class="absolute top-3 right-2 flex-shrink-0 text-black dark:text-white cursor-pointer"
+        class="absolute top-3 right-2 text-black dark:text-white cursor-pointer shrink-0"
         @click="closeNotification()"
       />
     </div>
