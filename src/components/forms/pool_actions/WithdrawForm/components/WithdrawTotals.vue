@@ -78,7 +78,7 @@ const priceImpactClasses = computed(() => ({
 }
 
 .data-table-number-col {
-  @apply p-2 flex flex-grow items-center justify-between;
+  @apply p-2 flex grow items-center justify-between;
 }
 
 .total-row {

@@ -65,9 +65,9 @@ function updateNetwork(network: number) {
 </script>
 
 <template>
-  <BalPopover noPad>
+  <BalPopover noPad class="flex-0">
     <template #activator>
-      <BalBtn class="h-11" color="white" size="sm">
+      <BalBtn class="flex-1 h-full" color="white" size="sm">
         <BalIcon
           name="filter"
           size="lg"

@@ -167,7 +167,7 @@ const swapRows = computed<SwapRow[]>(() =>
         <div class="py-2 px-6">
           <div class="flex items-center">
             <BalAsset
-              class="flex-shrink-0 mr-2"
+              class="mr-2 shrink-0"
               :address="action.userAddress"
               :iconURI="action.ensAvatar"
               :size="30"
@@ -188,14 +188,14 @@ const swapRows = computed<SwapRow[]>(() =>
       <template #detailsCell="action">
         <div class="flex flex-wrap items-center py-4 px-6 -mt-1">
           <div class="token-item">
-            <BalAsset :address="action.tokenIn" class="flex-shrink-0 mr-2" />
+            <BalAsset :address="action.tokenIn" class="mr-2 shrink-0" />
             <span class="font-numeric">{{
               fNum2(action.tokenAmountIn, FNumFormats.token)
             }}</span>
           </div>
           <BalIcon name="arrow-right" class="mx-1" />
           <div class="token-item">
-            <BalAsset :address="action.tokenOut" class="flex-shrink-0 mr-2" />
+            <BalAsset :address="action.tokenOut" class="mr-2 shrink-0" />
             <span class="font-numeric">{{
               fNum2(action.tokenAmountOut, FNumFormats.token)
             }}</span>
