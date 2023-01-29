@@ -1,0 +1,13 @@
+import { Params } from './';
+export declare function _calcWrappedOutPerMainIn(mainIn: bigint, mainBalance: bigint, params: Params): bigint;
+export declare function _calcBptOutPerMainIn(mainIn: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcMainOutPerWrappedIn(wrappedIn: bigint, mainBalance: bigint, params: Params): bigint;
+export declare function _calcBptOutPerWrappedIn(wrappedIn: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcMainOutPerBptIn(bptIn: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcWrappedOutPerBptIn(bptIn: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcMainInPerWrappedOut(wrappedOut: bigint, mainBalance: bigint, params: Params): bigint;
+export declare function _calcMainInPerBptOut(bptOut: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcWrappedInPerMainOut(mainOut: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcWrappedInPerBptOut(bptOut: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcBptInPerWrappedOut(wrappedOut: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;
+export declare function _calcBptInPerMainOut(mainOut: bigint, mainBalance: bigint, wrappedBalance: bigint, bptSupply: bigint, params: Params): bigint;

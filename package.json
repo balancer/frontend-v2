@@ -144,10 +144,13 @@
     "worker-loader": "^3.0.8"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 1",
+    "!(.yalc/**/*)*.{js,ts,vue}": "eslint --cache --fix --max-warnings 1",
     "*.{md,json,yaml,html}": "prettier --write",
     "*.{css,vue}": "stylelint --fix"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2"
+  "repository": "balancer-labs/frontend-v2",
+  "dependencies": {
+    "@balancer/sdk": "file:.yalc/@balancer/sdk"
+  }
 }

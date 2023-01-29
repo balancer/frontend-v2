@@ -1,0 +1,28 @@
+import { Path, PathWithAmount } from './path';
+import { TokenAmount } from './';
+import { SwapKind, BatchSwapStep } from '../types';
+import { BaseProvider } from '@ethersproject/providers';
+export declare class Swap {
+    static fromPaths(fromPaths: PathWithAmount[], swapKind: SwapKind): Promise<Swap>;
+    protected constructor({ paths, swapKind, }: {
+        paths: {
+            path: Path;
+            inputAmount: TokenAmount;
+            outputAmount: TokenAmount;
+        }[];
+        swapKind: SwapKind;
+    });
+    readonly isBatchSwap: boolean;
+    readonly paths: {
+        path: Path;
+        inputAmount: TokenAmount;
+        outputAmount: TokenAmount;
+    }[];
+    readonly assets: string[];
+    readonly swapKind: SwapKind;
+    swaps: BatchSwapStep[];
+    get inputAmount(): TokenAmount;
+    get outputAmount(): TokenAmount;
+    query(provider: BaseProvider, block?: number): Promise<TokenAmount>;
+    callData(): string;
+}

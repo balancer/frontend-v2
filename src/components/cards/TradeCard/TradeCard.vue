@@ -134,11 +134,20 @@
         </Transition>
       </div>
       <TradeRoute
-        v-if="alwaysShowRoutes"
+        v-if="trading.sor.newSorReturn.value"
         :addressIn="trading.tokenIn.value.address"
         :amountIn="trading.tokenInAmountInput.value"
         :addressOut="trading.tokenOut.value.address"
         :amountOut="trading.tokenOutAmountInput.value"
+        :pools="newPools"
+        :swapInfo="trading.sor.newSorReturn.value"
+        class="mt-4"
+      />
+      <TradeRouteOld
+        :addressIn="trading.tokenIn.value.address"
+        :amountIn="trading.tokenInAmountInput.value"
+        :addressOut="trading.tokenOut.value.address"
+        :amountOut="trading.sor.sorReturn.value.returnAmount.toString()"
         :pools="pools"
         :sorReturn="trading.sor.sorReturn.value"
         class="mt-4"
@@ -158,6 +167,7 @@
 </template>
 
 <script lang="ts">
+import { BasePool } from '@balancer/sdk';
 import { SubgraphPoolBase } from '@balancer-labs/sdk';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
@@ -185,11 +195,13 @@ import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
 import TradePair from './TradePair.vue';
 import TradeRoute from './TradeRoute.vue';
+import TradeRouteOld from './TradeRouteOld.vue';
 export default defineComponent({
   components: {
     TradePair,
     TradePreviewModal,
     TradeRoute,
+    TradeRouteOld,
     TradeSettingsPopover,
   },
   setup() {
@@ -272,6 +284,12 @@ export default defineComponent({
       }
       return t('swap');
     });
+    const newPools = computed<BasePool[]>(
+      // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
+      () => {
+        return trading.sor.newPools.value;
+      }
+    );
     const pools = computed<SubgraphPoolBase[]>(
       // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
       () => {
@@ -424,6 +442,7 @@ export default defineComponent({
       exactIn,
       trading,
       // computed
+      newPools,
       pools,
       title,
       error,

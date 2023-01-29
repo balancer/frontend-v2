@@ -14,7 +14,6 @@ import {
   SwapTypes,
 } from '@balancer-labs/sdk';
 
-import useWeb3 from '@/services/web3/useWeb3';
 import { networkId } from '../useNetwork';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
@@ -42,7 +41,6 @@ export default function useTrading(
   const store = useStore();
   const { fNum2 } = useNumbers();
   const { getToken, tokens } = useTokens();
-  const { blockNumber } = useWeb3();
   const { slippage } = useUserSettings();
 
   // COMPUTED
@@ -329,19 +327,19 @@ export default function useTrading(
     }
   });
 
-  watch(blockNumber, () => {
-    if (isCowswapTrade.value) {
-      if (!cowswap.hasValidationError.value) {
-        cowswap.handleAmountChange();
-      }
-    } else if (isJoinExitTrade.value) {
-      if (!joinExit.hasValidationError.value) {
-        joinExit.handleAmountChange();
-      }
-    } else if (isBalancerTrade.value) {
-      sor.updateTradeAmounts();
-    }
-  });
+  //   watch(blockNumber, () => {
+  //     if (isCowswapTrade.value) {
+  //       if (!cowswap.hasValidationError.value) {
+  //         cowswap.handleAmountChange();
+  //       }
+  //     } else if (isJoinExitTrade.value) {
+  //       if (!joinExit.hasValidationError.value) {
+  //         joinExit.handleAmountChange();
+  //       }
+  //     } else if (isBalancerTrade.value) {
+  //       sor.updateTradeAmounts();
+  //     }
+  //   });
 
   watch(slippageBufferRate, () => {
     handleAmountChange();

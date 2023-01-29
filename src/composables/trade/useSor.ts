@@ -1,10 +1,15 @@
-import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
-import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sdk';
 import {
-  AddressZero,
-  WeiPerEther as ONE,
-  Zero,
-} from '@ethersproject/constants';
+  BasePool,
+  SmartOrderRouter,
+  SubgraphPoolProvider,
+  SwapInfo,
+  SwapKind,
+  Token,
+  TokenAmount,
+} from '@balancer/sdk';
+import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import {
@@ -18,14 +23,12 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { balancer } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
 import {
   SorManager,
   SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { convertStEthWrap, isStEthAddress } from '@/lib/utils/balancer/lido';
+import { convertStEthWrap } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
@@ -103,7 +106,10 @@ export default function useSor({
   isCowswapTrade,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
+  let smartOrderRouter: SmartOrderRouter | undefined = undefined;
   const pools = ref<SubgraphPoolBase[]>([]);
+  const newPools = ref<BasePool[]>([]);
+  const newSorReturn = ref<SwapInfo>();
   const sorReturn = ref<SorReturn>({
     hasSwaps: false,
     tokenIn: '',
@@ -168,16 +174,27 @@ export default function useSor({
       configService.network.addresses.weth
     );
 
+    const subgraphPoolDataService = new SubgraphPoolProvider(
+      configService.network.subgraph
+    );
+
+    smartOrderRouter = new SmartOrderRouter({
+      chainId: configService.network.chainId,
+      provider: rpcProviderService.jsonProvider,
+      poolDataProviders: subgraphPoolDataService,
+    });
+
     fetchPools();
   }
 
   async function fetchPools(): Promise<void> {
-    if (!sorManager) {
+    if (!sorManager || !smartOrderRouter) {
       return;
     }
 
     console.time('[SOR] fetchPools');
     await sorManager.fetchPools();
+    newPools.value = await smartOrderRouter.fetchPools();
     console.timeEnd('[SOR] fetchPools');
     poolsLoading.value = false;
     // Updates any swaps with up to date pools/balances
@@ -189,76 +206,6 @@ export default function useSor({
   function trackSwapEvent() {
     trackGoal(Goals.BalancerSwap);
     if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
-  }
-
-  async function updateTradeAmounts(): Promise<void> {
-    if (!sorManager) {
-      return;
-    }
-    if (sorReturn.value.hasSwaps && !confirming.value) {
-      const { result } = sorReturn.value;
-
-      const swapType: SwapType = exactIn.value
-        ? SwapType.SwapExactIn
-        : SwapType.SwapExactOut;
-
-      const deltas = await balancer.swaps.queryBatchSwap({
-        kind: swapType,
-        swaps: result.swaps,
-        assets: result.tokenAddresses,
-      });
-
-      if (result !== sorReturn.value.result) {
-        // sorReturn was updated while we were querying, abort to not show stale data.
-        return;
-      }
-
-      if (deltas.length >= 2) {
-        const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
-        const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
-
-        let tokenInAddress =
-          tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
-            ? AddressZero
-            : tokenInAddressInput.value;
-        let tokenOutAddress =
-          tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS
-            ? AddressZero
-            : tokenOutAddressInput.value;
-
-        // If the token in/out is stETH then finding the token position
-        // below doesn't work because result.tokenAddresses only includes
-        // wstETH. This is a crude hack to replace token in/out address
-        // with wstETH so the index mapping works.
-        if (isStEthAddress(tokenInAddressInput.value))
-          tokenInAddress = configService.network.addresses.wstETH;
-        if (isStEthAddress(tokenOutAddressInput.value))
-          tokenOutAddress = configService.network.addresses.wstETH;
-
-        const tokenInPosition = result.tokenAddresses.indexOf(
-          tokenInAddress.toLowerCase()
-        );
-        const tokenOutPosition = result.tokenAddresses.indexOf(
-          tokenOutAddress.toLowerCase()
-        );
-
-        const tokenInAmount = BigNumber.from(deltas[tokenInPosition]).abs();
-
-        const tokenOutAmount = BigNumber.from(deltas[tokenOutPosition]).abs();
-
-        if (swapType === SwapType.SwapExactOut) {
-          tokenInAmountInput.value = tokenInAmount.gt(0)
-            ? formatAmount(formatUnits(tokenInAmount, tokenInDecimals))
-            : '';
-        }
-
-        if (swapType === SwapType.SwapExactIn) {
-          tokenOutAmountInput.value = tokenOutAmount.gt(0)
-            ? formatAmount(formatUnits(tokenOutAmount, tokenOutDecimals))
-            : '';
-        }
-      }
-    }
   }
 
   function resetInputAmounts(amount: string): void {
@@ -296,6 +243,17 @@ export default function useSor({
     const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
     const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
+    const tokenIn: Token = new Token(
+      configService.network.chainId,
+      tokenInAddress,
+      tokenInDecimals
+    );
+    const tokenOut: Token = new Token(
+      configService.network.chainId,
+      tokenOutAddress,
+      tokenOutDecimals
+    );
+
     if (wrapType.value !== WrapType.NonWrap) {
       const wrapper =
         wrapType.value === WrapType.Wrap ? tokenOutAddress : tokenInAddress;
@@ -331,6 +289,12 @@ export default function useSor({
       return;
     }
 
+    if (!smartOrderRouter) {
+      if (exactIn.value) tokenOutAmountInput.value = '';
+      else tokenInAmountInput.value = '';
+      return;
+    }
+
     if (exactIn.value) {
       await setSwapCost(
         tokenOutAddressInput.value,
@@ -351,11 +315,22 @@ export default function useSor({
         tokenInAmountScaled
       );
 
+      const tokenInAmount = TokenAmount.fromHumanAmount(tokenIn, amount);
+
+      const swapInfo: SwapInfo = await smartOrderRouter.getSwapsWithPools(
+        tokenIn,
+        tokenOut,
+        SwapKind.GivenIn,
+        tokenInAmount,
+        newPools.value
+      );
+
+      newSorReturn.value = swapInfo;
       sorReturn.value = swapReturn; // TO DO - is it needed?
       let tokenOutAmount = swapReturn.returnAmount;
 
       tokenOutAmountInput.value = tokenOutAmount.gt(0)
-        ? formatAmount(formatUnits(tokenOutAmount, tokenOutDecimals))
+        ? formatAmount(swapInfo.quote.toSignificant())
         : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -708,8 +683,10 @@ export default function useSor({
   return {
     ...toRefs(state),
     sorManager,
+    newSorReturn,
     sorReturn,
     pools,
+    newPools,
     initSor,
     handleAmountChange,
     exactIn,
@@ -722,7 +699,6 @@ export default function useSor({
     getQuote,
     resetState,
     confirming,
-    updateTradeAmounts,
     resetInputAmounts,
     // For Tests
     setSwapCost,

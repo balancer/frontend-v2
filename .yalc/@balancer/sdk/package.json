@@ -1,0 +1,32 @@
+{
+    "name": "@balancer/sdk",
+    "license": "MIT",
+    "publishConfig": {
+        "access": "public"
+    },
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "lint": "eslint . --ext .js,.ts --max-warnings 0"
+    },
+    "dependencies": {
+        "@ethersproject/abi": "^5.7.0",
+        "@ethersproject/address": "^5.7.0",
+        "@ethersproject/providers": "^5.7.0",
+        "@ethersproject/solidity": "^5.7.0",
+        "@ethersproject/units": "^5.7.0",
+        "async-retry": "^1.3.3",
+        "await-timeout": "^1.1.1",
+        "decimal.js-light": "^2.5.1",
+        "graphql-request": "^5.0.0",
+        "lodash.set": "^4.3.2",
+        "node-fetch": "^2.6.8"
+    },
+    "yalcSig": "a058115b0eecf08a38cf514660ce8592"
+}

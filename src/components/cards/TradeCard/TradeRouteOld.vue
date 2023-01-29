@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BasePool, Swap, SwapInfo, SwapKind } from '@balancer/sdk';
+import { SubgraphPoolBase, SwapV2 } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
@@ -7,7 +7,9 @@ import { computed, ref } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { isSameAddress } from '@/lib/utils';
+import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import useWeb3 from '@/services/web3/useWeb3';
 import { networkSlug } from '@/composables/useNetwork';
 
@@ -16,8 +18,8 @@ interface Props {
   amountIn: string;
   addressOut: string;
   amountOut: string;
-  pools: BasePool[];
-  swapInfo: SwapInfo;
+  pools: SubgraphPoolBase[];
+  sorReturn: SorReturn;
 }
 
 interface Route {
@@ -73,46 +75,69 @@ const output = computed(() => {
 });
 
 const routes = computed<Route[]>((): Route[] => {
-  const { swapInfo } = props;
+  const { sorReturn } = props;
 
-  const pools = props.pools as BasePool[];
-  const swap = swapInfo.swap;
+  if (!sorReturn.hasSwaps) {
+    return [];
+  }
 
-  return getV2Routes(swap, pools);
+  const pools = props.pools as SubgraphPoolBase[];
+  const swaps = sorReturn.result.swaps;
+  const addresses = sorReturn.result.tokenAddresses;
+  const addressIn = props.addressIn as string;
+  const addressOut = props.addressOut as string;
+
+  return getV2Routes(addressIn, addressOut, pools, swaps, addresses);
 });
 // TODO: Fix types
-function getV2Routes(swap: Swap, pools: BasePool[]): Route[] {
+function getV2Routes(
+  addressIn: string,
+  addressOut: string,
+  pools: SubgraphPoolBase[],
+  swaps: SwapV2[],
+  addresses: string[]
+): Route[] {
+  // ) {
   const { addresses: constants } = appNetworkConfig;
 
-  const swaps = swap.swaps;
-  const addresses = swap.assets;
+  addressIn =
+    addressIn === NATIVE_ASSET_ADDRESS ? constants.weth : getAddress(addressIn);
+  addressOut =
+    addressOut === NATIVE_ASSET_ADDRESS
+      ? constants.weth
+      : getAddress(addressOut);
 
-  const addressIn = getAddress(swap.inputAmount.token.address);
-  const addressOut = getAddress(swap.outputAmount.token.address);
+  if (
+    !pools.length ||
+    !swaps.length ||
+    !addresses.length ||
+    addresses.length === 1
+  ) {
+    return [];
+  }
 
   // To get total amount we can use all swaps because multihops have a value of 0
-  const totalSwapAmount =
-    swap.swapKind === SwapKind.GivenIn
-      ? new BigNumber(swap.inputAmount.amount.toString())
-      : new BigNumber(swap.outputAmount.amount.toString());
+  const totalSwapAmount = swaps.reduce((total, rawHops) => {
+    return total.plus(rawHops.amount || '0');
+  }, new BigNumber(0));
 
   // Contains direct and multihops
   const routes: Route[] = [];
   // Contains every token > token hop
   const allHops: Hop[] = [];
   for (let i = 0; i < swaps.length; i++) {
-    const swapStep = swap.swaps[i];
-    const rawPool = pools.find(pool => pool.id === swapStep.poolId);
+    const swap = swaps[i];
+    const rawPool = pools.find(pool => pool.id === swap.poolId);
 
     if (rawPool) {
       const tokenIn =
-        addresses[swapStep.assetInIndex] === AddressZero
+        addresses[swap.assetInIndex] === AddressZero
           ? constants.weth
-          : getAddress(addresses[swapStep.assetInIndex]);
+          : getAddress(addresses[swap.assetInIndex]);
       const tokenOut =
-        addresses[swapStep.assetOutIndex] === AddressZero
+        addresses[swap.assetOutIndex] === AddressZero
           ? constants.weth
-          : getAddress(addresses[swapStep.assetOutIndex]);
+          : getAddress(addresses[swap.assetOutIndex]);
 
       const isDirectSwap =
         tokenIn === addressIn && tokenOut === addressOut ? true : false;
@@ -123,8 +148,9 @@ function getV2Routes(swap: Swap, pools: BasePool[]): Route[] {
         tokens: rawPool.tokens
           .map(token => {
             return {
-              address: getAddress(token.token.address),
-              share: 0,
+              address: getAddress(token.address),
+              share:
+                parseFloat(token.weight || '') || 1 / rawPool.tokens.length,
             };
           })
           .sort((a, b) => {
@@ -152,7 +178,7 @@ function getV2Routes(swap: Swap, pools: BasePool[]): Route[] {
         pool,
         tokenIn,
         tokenOut,
-        amount: new BigNumber(swapStep.amount || '0'),
+        amount: new BigNumber(swap.amount || '0'),
       };
 
       allHops.push(hop);
@@ -167,7 +193,7 @@ function getV2Routes(swap: Swap, pools: BasePool[]): Route[] {
         routes.push(route);
       } else {
         // Only multihops that have a previous partner in sequence are pushed to routes
-        if (tokenOut === addressOut && swapStep.amount === '0') {
+        if (tokenOut === addressOut && swap.amount === '0') {
           // TokenOut with amount of 0 for multihop means it's a swapExactIn and previous swap is partner of hop
           const swapAmount = new BigNumber(allHops[i - 1].amount);
           const share = swapAmount.div(totalSwapAmount).toNumber();
@@ -176,7 +202,7 @@ function getV2Routes(swap: Swap, pools: BasePool[]): Route[] {
             hops: [allHops[i - 1], hop],
           } as Route;
           routes.push(route);
-        } else if (tokenIn === addressIn && swapStep.amount === '0') {
+        } else if (tokenIn === addressIn && swap.amount === '0') {
           // TokenIn with amount of 0 for multihop means it's a swapExactOut and previous swap is partner of hop
           const swapAmount = new BigNumber(allHops[i - 1].amount);
           const share = swapAmount.div(totalSwapAmount).toNumber();
@@ -205,7 +231,7 @@ function formatShare(share: number): string {
       @click="toggleVisibility"
     >
       <div class="mr-2">
-        {{ $t('swapRoute') }}
+        {{ `Old ` + $t('swapRoute') }}
       </div>
       <BalIcon v-if="visible" name="chevron-up" size="sm" />
       <BalIcon v-else name="chevron-down" size="sm" />
