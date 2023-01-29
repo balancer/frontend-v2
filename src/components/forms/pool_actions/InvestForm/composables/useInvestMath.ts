@@ -131,6 +131,7 @@ export default function useInvestMath(
           .toNumber() || 0
       );
     } catch (error) {
+      console.error(error);
       return 1;
     }
   });
