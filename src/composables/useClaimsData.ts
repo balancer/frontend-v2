@@ -56,6 +56,7 @@ export function useClaimsData() {
       pools: {
         __args: {
           where: { id_in: gaugePoolIds.value },
+          first: 1000,
         },
         id: true,
         address: true,
