@@ -20,6 +20,7 @@ import { BatchSwap } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { captureException } from '@sentry/browser';
 
 export type InvestMathResponse = ReturnType<typeof useInvestMath>;
 
@@ -131,6 +132,7 @@ export default function useInvestMath(
           .toNumber() || 0
       );
     } catch (error) {
+      captureException(error);
       console.error(error);
       return 1;
     }
