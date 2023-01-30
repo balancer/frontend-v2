@@ -87,8 +87,6 @@ export default function usePoolQuery(
       pool.address,
     ]);
 
-    console.log('poolQuery');
-
     return pool;
   };
 
