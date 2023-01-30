@@ -26,7 +26,7 @@ export class OnChainPoolDataEnricher {
         }
         const { poolIds, config } = this.getPoolDataQueryParams(rawPools, syncedToBlockNumber);
         console.time('jsonRpcFetch');
-        const { balances, amps, linearWrappedTokenRates, totalSupplies, weights } = await this.fetchOnChainPoolData({ poolIds, config });
+        const { balances, amps, linearWrappedTokenRates, totalSupplies, weights } = await this.fetchOnChainPoolData({ poolIds, config, options });
         console.timeEnd('jsonRpcFetch');
         return poolIds.map((poolId, i) => ({
             id: poolIds[i],
@@ -107,13 +107,14 @@ export class OnChainPoolDataEnricher {
             },
         };
     }
-    async fetchOnChainPoolData({ poolIds, config, }) {
+    async fetchOnChainPoolData({ poolIds, config, options, }) {
         return jsonRpcFetch({
             rpcUrl: this.rpcUrl,
             to: this.sorQueriesAddress,
             contractInterface: this.sorQueriesInterface,
             functionFragment: 'getPoolData',
             values: [poolIds, config],
+            options,
         });
     }
     isStablePoolType(poolType) {

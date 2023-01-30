@@ -1,16 +1,17 @@
 export class Token {
-    constructor(chainId, address, decimals, symbol, name, wrapped) {
+    constructor(chainId, address, decimals, symbol, name, wrapped, isNative) {
         this.chainId = chainId;
         this.address = address.toLowerCase();
         this.decimals = decimals;
         this.symbol = symbol;
         this.name = name;
-        this.isNative =
-            this.address === '0x0000000000000000000000000000000000000000' ? true : false;
+        this.isNative = isNative || false;
         if (wrapped) {
             this.wrapped = wrapped.toLowerCase();
         }
         else {
+            if (this.isNative)
+                throw new Error('Native assets must have a wrapped address');
             this.wrapped = address.toLowerCase();
         }
     }

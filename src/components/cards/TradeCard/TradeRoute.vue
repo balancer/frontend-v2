@@ -87,8 +87,8 @@ function getV2Routes(swap: Swap, pools: BasePool[]): Route[] {
   const swaps = swap.swaps;
   const addresses = swap.assets;
 
-  const addressIn = getAddress(swap.inputAmount.token.address);
-  const addressOut = getAddress(swap.outputAmount.token.address);
+  const addressIn = getAddress(swap.inputAmount.token.wrapped);
+  const addressOut = getAddress(swap.outputAmount.token.wrapped);
 
   // To get total amount we can use all swaps because multihops have a value of 0
   const totalSwapAmount =

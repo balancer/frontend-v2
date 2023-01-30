@@ -94,7 +94,6 @@ export class SubgraphPoolProvider {
             pool.totalShares !== '0.000000000001');
         const poolsWithAmpUpdates = new Set(ampUpdates.map(update => update.poolId.id));
         const poolsWithWeightUpdates = new Set(weightUpdates.map(update => update.poolId.id));
-        console.log('syncedToBlockNumber', syncedToBlockNumber);
         return {
             pools: filtered.map(pool => ({
                 ...pool,

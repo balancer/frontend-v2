@@ -53,14 +53,16 @@ export class StablePool {
             const tOutIndex = tokensNoBpt.findIndex(t => t.token.address === tokenOut.address);
             if (tInIndex < 0 || tOutIndex < 0)
                 throw new Error('Pool does not contain the tokens provided');
-            if (swapAmount.amount > this.tokens[tInIndex].amount)
+            if (swapAmount.amount > tokensNoBpt[tInIndex].amount)
                 throw new Error('Swap amount exceeds the pool limit');
-            const amountWithFee = this.subtractSwapFeeAmount(swapAmount);
-            const amountWithRate = amountWithFee.mulFixed(this.tokens[tInIndex].rate);
+            const amountInWithFee = this.subtractSwapFeeAmount(swapAmount);
+            const amountInWithRate = amountInWithFee.mulFixed(tokensNoBpt[tInIndex].rate);
             const balancesNoBpt = tokensNoBpt.map(t => t.scale18);
             const invariant = _calculateInvariant(this.amp, balancesNoBpt);
-            const tokenOutScale18 = _calcOutGivenIn(this.amp, balancesNoBpt, tInIndex, tOutIndex, amountWithRate.scale18, invariant);
-            return TokenAmount.fromScale18Amount(tokenOut, tokenOutScale18);
+            const tokenOutScale18 = _calcOutGivenIn(this.amp, balancesNoBpt, tInIndex, tOutIndex, amountInWithRate.scale18, invariant);
+            const amountOut = TokenAmount.fromScale18Amount(tokenOut, tokenOutScale18);
+            const amountOutWithRate = amountOut.divDownFixed(tokensNoBpt[tOutIndex].rate);
+            return amountOutWithRate;
         }
     }
     swapGivenOut(tokenIn, tokenOut, swapAmount) {

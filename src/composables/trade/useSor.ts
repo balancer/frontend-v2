@@ -243,11 +243,26 @@ export default function useSor({
     const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
     const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
-    const tokenIn: Token = new Token(
-      configService.network.chainId,
-      tokenInAddress,
-      tokenInDecimals
-    );
+    let tokenIn: Token;
+
+    if (tokenInAddress === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') {
+      tokenIn = new Token(
+        configService.network.chainId,
+        tokenInAddress,
+        tokenInDecimals,
+        'ETH',
+        'Ether',
+        '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+        true
+      );
+    } else {
+      tokenIn = new Token(
+        configService.network.chainId,
+        tokenInAddress,
+        tokenInDecimals
+      );
+    }
+
     const tokenOut: Token = new Token(
       configService.network.chainId,
       tokenOutAddress,
@@ -289,7 +304,7 @@ export default function useSor({
       return;
     }
 
-    if (!smartOrderRouter) {
+    if (!smartOrderRouter || newPools.value.length === 0) {
       if (exactIn.value) tokenOutAmountInput.value = '';
       else tokenInAmountInput.value = '';
       return;

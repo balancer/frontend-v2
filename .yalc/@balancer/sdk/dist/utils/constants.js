@@ -16,7 +16,7 @@ export const SUBGRAPH_URLS = {
     [ChainId.ARBITRUM_ONE]: `https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2`,
 };
 export const NATIVE_ASSETS = {
-    [ChainId.MAINNET]: new Token(ChainId.MAINNET, ZERO_ADDRESS, 18, 'ETH', 'Ether', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+    [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', 18, 'ETH', 'Ether', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', true),
     [ChainId.GOERLI]: new Token(ChainId.GOERLI, ZERO_ADDRESS, 18, 'ETH', 'Ether'),
     [ChainId.POLYGON]: new Token(ChainId.POLYGON, ZERO_ADDRESS, 18, 'MATIC', 'Matic'),
 };

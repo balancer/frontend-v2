@@ -1,7 +1,15 @@
 import fetch from 'node-fetch';
 import { ZERO_ADDRESS } from './constants';
-export async function jsonRpcFetch({ rpcUrl, from = ZERO_ADDRESS, to, contractInterface, functionFragment, values, }) {
+import { hexlify } from '@ethersproject/bytes';
+export async function jsonRpcFetch({ rpcUrl, from = ZERO_ADDRESS, to, contractInterface, functionFragment, values, options, }) {
     const data = contractInterface.encodeFunctionData(functionFragment, values);
+    let block;
+    if (options?.block) {
+        block = hexlify(options.block);
+    }
+    else {
+        block = 'latest';
+    }
     const rawResponse = await fetch(rpcUrl, {
         method: 'POST',
         headers: {
@@ -12,7 +20,7 @@ export async function jsonRpcFetch({ rpcUrl, from = ZERO_ADDRESS, to, contractIn
             jsonrpc: '2.0',
             id: 2,
             method: 'eth_call',
-            params: [{ from, to, data }, 'latest'],
+            params: [{ from, to, data }, block],
         }),
     });
     const content = await rawResponse.json();

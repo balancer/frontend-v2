@@ -16,7 +16,7 @@ export class PathWithAmount extends Path {
         super(tokens, pools);
         this.swapAmount = swapAmount;
         //call to super ensures this array access is safe
-        if (tokens[0].isEqual(swapAmount.token)) {
+        if (tokens[0].address === swapAmount.token.wrapped) {
             this.swapKind = SwapKind.GivenIn;
         }
         else {

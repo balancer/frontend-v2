@@ -6,6 +6,6 @@ export declare class Token {
     readonly name?: string;
     readonly wrapped: string;
     readonly isNative: boolean;
-    constructor(chainId: number, address: string, decimals: number, symbol?: string, name?: string, wrapped?: string);
+    constructor(chainId: number, address: string, decimals: number, symbol?: string, name?: string, wrapped?: string, isNative?: boolean);
     isEqual(token: Token): boolean;
 }
