@@ -45,7 +45,6 @@ function onColumnSort(payload: {
 }) {
   sortDirection.value = payload.currentSortDirection;
   poolsSortField.value = payload.columnId;
-  console.log(payload);
 }
 </script>
 

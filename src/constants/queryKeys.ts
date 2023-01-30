@@ -16,9 +16,22 @@ const QUERY_KEYS = {
     All: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
+      sortDirection: Ref<string> | undefined,
+      poolsSortField: Ref<string> | undefined,
       poolIds: Ref<string[]> | undefined,
       poolAddresses: Ref<string[]> | undefined
-    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
+    ) => [
+      POOLS_ROOT_KEY,
+      'all',
+      {
+        networkId,
+        tokens,
+        sortDirection,
+        poolsSortField,
+        poolIds,
+        poolAddresses,
+      },
+    ],
     User: (
       networkId: Ref<Network>,
       account: Ref<string>,

@@ -126,10 +126,11 @@ export default function usePoolsQuery(
     const tokenListFormatted = filterTokens.value.map(address =>
       address.toLowerCase()
     );
-
+    console.log('sortDirection', sortDirection?.value);
+    console.log('poolsSortField?.value', poolsSortField?.value);
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
-      orderBy: 'volume',
+      orderBy: poolsSortField?.value || 'totalLiquidity',
       orderDirection: sortDirection?.value || 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
@@ -173,7 +174,7 @@ export default function usePoolsQuery(
    *  need to change to filter for those tokens
    */
   watch(
-    [filterTokens, sortDirection, poolsSortField],
+    () => [filterTokens, sortDirection, poolsSortField],
     () => {
       poolsRepository = initializePoolsRepository();
     },
@@ -186,6 +187,8 @@ export default function usePoolsQuery(
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     filterTokens,
+    sortDirection,
+    poolsSortField,
     filterOptions?.poolIds,
     filterOptions?.poolAddresses
   );

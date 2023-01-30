@@ -23,7 +23,8 @@ export type ColumnDefinition<T = Data> = {
   hidden?: boolean;
   // Accessor for sorting purposes
   sortKey?: string | ((row: T) => unknown);
-
+  // if table is sorted by graphql requst
+  isSortedByRequest?: boolean;
   width?: number;
 
   totalsCell?: string;

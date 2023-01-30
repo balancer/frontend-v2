@@ -22,10 +22,7 @@ export default function usePools(
     sortDirection,
     poolsSortField
   );
-  console.log('filter', filterTokens.value);
-  setTimeout(() => {
-    filterTokens.value = ['1234'];
-  }, 5000);
+
   const { injectTokens } = useTokens();
 
   /**
@@ -33,6 +30,7 @@ export default function usePools(
    */
   const pools = computed<Pool[]>(() => {
     const paginatedPools = poolsQuery.data.value;
+
     return paginatedPools
       ? flatten(paginatedPools.pages.map(page => page.pools))
       : [];
@@ -50,7 +48,6 @@ export default function usePools(
    */
   function loadMorePools() {
     poolsQuery.fetchNextPage.value();
-    // filterTokens.value = ['1234'];
   }
 
   /**
@@ -66,6 +63,13 @@ export default function usePools(
     );
     await injectTokens(tokens);
   });
+
+  watch(
+    () => [sortDirection.value, poolsSortField.value],
+    () => {
+      poolsQuery.refetch.value();
+    }
+  );
 
   return {
     pools,
