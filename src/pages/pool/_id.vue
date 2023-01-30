@@ -25,6 +25,7 @@ import {
   removeBptFrom,
   usePool,
   tokensListExclBpt,
+  tokenTreeLeafs,
 } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
@@ -150,11 +151,7 @@ const noInitLiquidity = computed(
 const missingPrices = computed(() => {
   if (pool.value) {
     const tokensWithPrice = Object.keys(prices.value);
-
-    const tokens =
-      isComposableStableLikePool.value && pool.value.mainTokens
-        ? pool.value.mainTokens
-        : tokensListExclBpt(pool.value);
+    const tokens = tokenTreeLeafs(pool.value.tokens);
 
     return !tokens.every(token => includesAddress(tokensWithPrice, token));
   }
