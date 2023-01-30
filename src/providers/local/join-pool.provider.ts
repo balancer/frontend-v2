@@ -1,5 +1,12 @@
 import useNumbers from '@/composables/useNumbers';
-import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
+import {
+  fiatValueOf,
+  isDeep,
+  isMetaStable,
+  isStable,
+  isWeightedLike,
+  tokenTreeNodes,
+} from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { useTxState } from '@/composables/useTxState';
 import { useUserSettings } from '../user-settings.provider';
@@ -9,7 +16,7 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, removeAddress } from '@/lib/utils';
+import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
 import {
   JoinHandler,
   JoinPoolService,
@@ -56,6 +63,16 @@ type Props = {
   pool: Pool;
   isSingleAssetJoin: boolean;
 };
+
+export function getSupportsJoinPoolProvider(pool: Pool | undefined): boolean {
+  if (!pool) return false;
+  return (
+    isWeightedLike(pool.poolType) ||
+    isDeep(pool) ||
+    isMetaStable(pool.poolType) ||
+    isStable(pool.poolType)
+  );
+}
 
 /**
  * JoinPoolProvider
@@ -105,7 +122,14 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { getTokens, prices, injectTokens, priceFor } = useTokens();
+  const {
+    getTokens,
+    prices,
+    injectTokens,
+    priceFor,
+    nativeAsset,
+    wrappedNativeAsset,
+  } = useTokens();
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -319,6 +343,27 @@ const provider = (props: Props) => {
   }
 
   /**
+   * Swap the native token address to wrapped token address
+   * or vice versa
+   */
+  function setJoinWithNativeAsset(joinWithNativeAsset: boolean): void {
+    const newAddress = joinWithNativeAsset
+      ? nativeAsset.address
+      : wrappedNativeAsset.value.address;
+
+    const prevAddress = joinWithNativeAsset
+      ? wrappedNativeAsset.value.address
+      : nativeAsset.address;
+
+    const amountIn = amountsIn.value.find(item =>
+      isSameAddress(prevAddress, item.address)
+    );
+    if (amountIn) {
+      amountIn.address = newAddress;
+    }
+  }
+
+  /**
    * WATCHERS
    */
 
@@ -369,6 +414,7 @@ const provider = (props: Props) => {
 
     // Methods
     setAmountsIn,
+    setJoinWithNativeAsset,
     addTokensIn,
     resetAmounts,
     join,

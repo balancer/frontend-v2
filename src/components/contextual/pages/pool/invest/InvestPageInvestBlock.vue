@@ -10,6 +10,7 @@ import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
 import useInvestPageTabs, { tabs } from '@/composables/pools/useInvestPageTabs';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { getSupportsJoinPoolProvider } from '@/providers/local/join-pool.provider';
 
 /**
  * COMPOSABLES
@@ -17,13 +18,7 @@ import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { activeTab, resetTabs } = useInvestPageTabs();
-const {
-  isDeepPool,
-  isPreMintedBptPool,
-  isWeightedLikePool,
-  isMetaStablePool,
-  isStablePool,
-} = usePool(pool);
+const { isDeepPool, isPreMintedBptPool } = usePool(pool);
 
 /**
  * COMPUTED
@@ -38,12 +33,12 @@ const isLoading = computed(
     loadingPool.value || !transfersAllowed.value || isLoadingSor.value
 );
 
-const supportsJoinPoolProvider = computed(
-  () =>
-    isWeightedLikePool.value ||
-    isDeepPool.value ||
-    isMetaStablePool.value ||
-    isStablePool.value
+const supportsJoinPoolProvider = computed(() =>
+  getSupportsJoinPoolProvider(pool.value)
+);
+
+const supportsSwapJoins = computed(
+  () => isDeepPool.value && isPreMintedBptPool.value
 );
 
 /**
@@ -65,7 +60,7 @@ onMounted(() => resetTabs());
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
         <BalTabs
-          v-if="isDeepPool && isPreMintedBptPool"
+          v-if="supportsSwapJoins"
           v-model="activeTab"
           :tabs="tabs"
           class="p-0 m-0 -mb-px whitespace-nowrap"
