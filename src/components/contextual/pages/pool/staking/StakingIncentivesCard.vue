@@ -9,8 +9,8 @@ import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
-import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
-import { StakeAction } from '@/components/contextual/stake/StakePreview.vue';
+import StakePreviewModal from './StakePreviewModal.vue';
+import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
 import usePoolStaking from '@/providers/local/pool-staking.provider';
 
 type Props = {
