@@ -29,7 +29,7 @@ import { InvestMathResponse } from '../../../composables/useInvestMath';
 import { Goals, trackGoal } from '@/composables/useFathom';
 import { bnum } from '@/lib/utils';
 import { useTokens } from '@/providers/tokens.provider';
-import usePoolStaking from '@/providers/local/pool-staking.provider';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES

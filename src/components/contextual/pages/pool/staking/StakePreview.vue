@@ -18,7 +18,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
 import { tokensListExclBpt, usePool } from '@/composables/usePool';
 import StakeSummary from './StakeSummary.vue';
-import usePoolStaking from '@/providers/local/pool-staking.provider';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {

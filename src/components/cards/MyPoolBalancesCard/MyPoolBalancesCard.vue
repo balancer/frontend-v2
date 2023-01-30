@@ -11,7 +11,7 @@ import { Pool } from '@/services/pool/types';
 
 // Components
 import AssetRow from './components/AssetRow.vue';
-import usePoolStaking from '@/providers/local/pool-staking.provider';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES

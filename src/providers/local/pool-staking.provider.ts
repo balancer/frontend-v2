@@ -3,14 +3,7 @@ import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import usePoolStakedSharesQuery from '@/composables/queries/usePoolStakedSharesQuery';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
-import {
-  computed,
-  defineComponent,
-  h,
-  inject,
-  InjectionKey,
-  provide,
-} from 'vue';
+import { computed, inject, InjectionKey, provide } from 'vue';
 import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
 import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
@@ -22,24 +15,15 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { POOLS } from '@/constants/pools';
 
 /**
- * TYPES
- */
-type Props = {
-  poolId: string;
-};
-
-/**
  * PoolStakingProvider
  *
  * Fetches data and provides functionality for a specific pool's gauge.
  */
-const provider = (props: Props) => {
+const provider = (poolId: string) => {
   /**
    * STATE
    */
-  const poolAddress = computed((): string =>
-    getAddressFromPoolId(props.poolId)
-  );
+  const poolAddress = computed((): string => getAddressFromPoolId(poolId));
 
   /**
    * COMPOSABLES
@@ -91,7 +75,7 @@ const provider = (props: Props) => {
   const isStakablePool = computed(
     (): boolean =>
       poolGauges.value?.liquidityGauges?.[0]?.id !== undefined &&
-      POOLS.Stakable.AllowList.includes(props.poolId)
+      POOLS.Stakable.AllowList.includes(poolId)
   );
 
   // User's staked shares for pool (onchain data).
@@ -101,7 +85,7 @@ const provider = (props: Props) => {
   const boost = computed((): string => {
     if (!boostsMap.value) return '1';
 
-    return boostsMap[props.poolId];
+    return boostsMap[poolId];
   });
 
   // Does the user have a balance in a non-preferential gauge
@@ -203,29 +187,11 @@ export const PoolStakingProviderSymbol: InjectionKey<Response> = Symbol(
   symbolKeys.Providers.PoolStaking
 );
 
-/**
- * <PoolStakingProvider /> component.
- */
-export const PoolStakingProvider = defineComponent({
-  name: 'PoolStakingProvider',
+export function providePoolStaking(poolId: string) {
+  provide(PoolStakingProviderSymbol, provider(poolId));
+}
 
-  props: {
-    poolId: {
-      type: String,
-      required: true,
-    },
-  },
-
-  setup(props) {
-    provide(PoolStakingProviderSymbol, provider(props));
-  },
-
-  render() {
-    return h('div', this.$slots?.default ? this.$slots.default() : []);
-  },
-});
-
-export default function usePoolStaking(): Response {
+export function usePoolStaking(): Response {
   const defaultResponse = {} as Response;
   return inject(PoolStakingProviderSymbol, defaultResponse);
 }

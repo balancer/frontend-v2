@@ -12,7 +12,7 @@ import PoolStats from './components/PoolStats.vue';
 import { PoolMigrationInfo } from './types';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { RelayerType } from '@/composables/approvals/useRelayerApproval';
-import { PoolStakingProvider } from '@/providers/local/pool-staking.provider';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -66,6 +66,11 @@ const fromPoolTokenInfo = computed(() =>
 const toPoolTokenInfo = computed(() =>
   toPool.value != null ? getToken(toPool.value.address) : null
 );
+
+/**
+ * PROVIDERS
+ */
+if (fromPool.value) providePoolStaking(fromPool.value.id);
 </script>
 
 <template>
@@ -84,7 +89,7 @@ const toPoolTokenInfo = computed(() =>
       "
       class="h-96"
     />
-    <PoolStakingProvider v-else :poolId="fromPool!.id">
+    <template v-else>
       <PoolsInfo
         :fromPool="fromPool"
         :toPool="toPool"
@@ -92,7 +97,7 @@ const toPoolTokenInfo = computed(() =>
         :toPoolTokenInfo="toPoolTokenInfo"
         :poolMigrationInfo="poolMigrationInfo"
       />
-    </PoolStakingProvider>
+    </template>
 
     <template #gutterRight>
       <BalLoadingBlock v-if="isLoadingPools || !toPool" class="h-64" />

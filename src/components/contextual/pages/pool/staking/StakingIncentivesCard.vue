@@ -11,7 +11,7 @@ import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from './StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
-import usePoolStaking from '@/providers/local/pool-staking.provider';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 type Props = {
   pool: Pool;

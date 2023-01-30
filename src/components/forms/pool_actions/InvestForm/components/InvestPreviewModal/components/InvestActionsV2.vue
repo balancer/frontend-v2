@@ -18,7 +18,7 @@ import { Pool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import usePoolStaking from '@/providers/local/pool-staking.provider';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES

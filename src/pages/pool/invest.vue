@@ -6,7 +6,7 @@ import useInvestPageTabs, { Tab } from '@/composables/pools/useInvestPageTabs';
 import { usePool } from '@/composables/usePool';
 import { useIntervalFn } from '@vueuse/core';
 import { oneMinInMs } from '@/composables/useTime';
-import { PoolStakingProvider } from '@/providers/local/pool-staking.provider';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useRoute } from 'vue-router';
 
 /**
@@ -14,6 +14,11 @@ import { useRoute } from 'vue-router';
  */
 const route = useRoute();
 const poolId = (route.params.id as string).toLowerCase();
+
+/**
+ * PROVIDERS
+ */
+providePoolStaking(poolId);
 
 /**
  * COMPOSABLES
@@ -30,15 +35,13 @@ useIntervalFn(poolQuery.refetch.value, oneMinInMs);
 </script>
 
 <template>
-  <PoolStakingProvider :poolId="poolId">
-    <JoinPoolProvider
-      v-if="pool && isDeepPool"
-      :pool="pool"
-      :isSingleAssetJoin="activeTab === Tab.SingleToken"
-    >
-      <InvestPage></InvestPage>
-    </JoinPoolProvider>
-    <InvestPage v-else></InvestPage>
-  </PoolStakingProvider>
+  <JoinPoolProvider
+    v-if="pool && isDeepPool"
+    :pool="pool"
+    :isSingleAssetJoin="activeTab === Tab.SingleToken"
+  >
+    <InvestPage></InvestPage>
+  </JoinPoolProvider>
+  <InvestPage v-else></InvestPage>
 </template>
 
