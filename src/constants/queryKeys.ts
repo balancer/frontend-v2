@@ -26,11 +26,7 @@ const QUERY_KEYS = {
       account: Ref<string>,
       gaugeAddresses: Ref<string[]>
     ) => [POOLS_ROOT_KEY, 'user', { networkId, account, gaugeAddresses }],
-    Current: (id: string, gaugeAddresses: Ref<string[]>) => [
-      POOLS_ROOT_KEY,
-      'current',
-      { id, gaugeAddresses },
-    ],
+    Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }],
     APR: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'apr',
