@@ -6,13 +6,6 @@ import sampleTitleTokens from './__mocks__/sample-title-tokens.json';
 
 import { renderComponent } from '@/tests/renderComponent';
 
-// needed to prevent teleport error
-vi.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
-  default: {
-    template: '<div>-</div>',
-  },
-}));
-
 vi.mock('@ethersproject/address', () => {
   return {
     includesAddress: vi.fn(),
@@ -39,6 +32,11 @@ vi.mock('@/services/web3/useWeb3');
 describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {
+      global: {
+        stubs: {
+          StakePreviewModal: true,
+        },
+      },
       props: {
         loadingApr: true,
         noInitLiquidity: false,
@@ -70,6 +68,11 @@ describe('PoolPageHeader', () => {
 
   it('should render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {
+      global: {
+        stubs: {
+          StakePreviewModal: true,
+        },
+      },
       props: {
         loadingApr: true,
         noInitLiquidity: false,
