@@ -132,7 +132,7 @@ This app is powered by [vite](https://vitejs.dev/), which:
 - Runs a development dev server with [esbuild](https://esbuild.github.io/).
 - Builds production bundle with [Rollup](https://rollupjs.org/guide/en/).
 
-Both tools above rely on native ES modules but our app also depends on libraries like [ethers.js](https://docs.ethers.io/) which use Node.js built-in modules (like Buffer, stream or crypto) that require browser polyfills. Thats why our `vite.config.ts` uses [vite-plugin-node-stdlib-browser](https://github.com/sodatea/vite-plugin-node-stdlib-browser) and [rollup-plugin-polyfill-node](https://www.npmjs.com/package/rollup-plugin-polyfill-node).
+Both tools above rely on native ES modules but our app also depends on libraries like [ethers.js](https://docs.ethers.io/) which use Node.js built-in modules (like Buffer, stream or crypto) that require browser polyfills. Thats why our `vite.config.ts` uses `node-pollyfills` and [rollup-plugin-polyfill-node](https://www.npmjs.com/package/rollup-plugin-polyfill-node).
 
 ### unplugin-vue magic 🪄
 

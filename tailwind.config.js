@@ -1,26 +1,23 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
-  purge: {
-    content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-    options: {
-      safelist: [
-        /^shadow/,
-        /^bg/,
-        /^ring/,
-        /^text/,
-        /^border/,
-        /^from/,
-        /^to/,
-        /^dark:/,
-        /^hover:/,
-        'dark',
-        /^dark:/,
-        /^mr/,
-        /^w/,
-      ],
+  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+
+  safelist: [
+    { pattern: /^shadow/ },
+    // https://tailwindcss.com/docs/content-configuration#safelisting-classes
+    // https://github.com/tailwindlabs/tailwindcss/discussions/10079
+    {
+      pattern: /(bg|border)-[^/]+$/,
+      variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
     },
-  },
-  darkMode: 'class', // false or 'media' or 'class'
+    { pattern: /^text/ },
+    { pattern: /^from/ },
+    { pattern: /^to/ },
+    { pattern: /^mr/ },
+    { pattern: /^w/ },
+  ],
+  darkMode: 'class',
   theme: {
     fontFamily: {
       body: [
@@ -63,6 +60,9 @@ module.exports = {
       ...defaultTheme.screens,
     },
     extend: {
+      flex: {
+        0: '0 0 auto',
+      },
       height: {
         112: '28rem',
       },
@@ -168,15 +168,6 @@ module.exports = {
           900: '#78350f',
         },
       },
-    },
-  },
-  variants: {
-    extend: {
-      margin: ['first'],
-      borderRadius: ['first', 'last'],
-      zIndex: ['hover'],
-      borderWidth: ['dark', 'last'],
-      ringColor: ['dark', 'group-hover'],
     },
   },
   plugins: [],
