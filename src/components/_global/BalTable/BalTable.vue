@@ -103,12 +103,13 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
   currentSortColumn.value = columnId;
 
   if (updateDirection) {
-    if (currentSortDirection.value === null) {
+    if (
+      currentSortDirection.value === null ||
+      currentSortDirection.value === 'asc'
+    ) {
       currentSortDirection.value = 'desc';
-    } else if (currentSortDirection.value === 'desc') {
-      currentSortDirection.value = 'asc';
     } else {
-      currentSortDirection.value = null;
+      currentSortDirection.value = 'asc';
     }
   }
   if (columnId && currentSortDirection.value) {

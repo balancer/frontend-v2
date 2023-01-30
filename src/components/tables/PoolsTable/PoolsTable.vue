@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'loadMore'): void;
-  (e: 'triggerStake'): void;
+  (e: 'triggerStake', value: Pool): void;
   (
     e: 'onColumnSort',
     value: { columnId: string; currentSortDirection: string }
