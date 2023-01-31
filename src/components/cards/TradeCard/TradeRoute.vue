@@ -280,7 +280,7 @@ function formatShare(share: number): string {
             name="triangle"
             size="xxs"
             :filled="true"
-            class="transform rotate-180 text-secondary"
+            class="rotate-180 text-secondary"
           />
           <BalIcon
             name="triangle"
@@ -311,7 +311,7 @@ function formatShare(share: number): string {
                   name="triangle"
                   size="xxs"
                   :filled="true"
-                  class="transform rotate-90 text-secondary"
+                  class="rotate-90 text-secondary"
                 />
               </div>
               <div class="flex">
