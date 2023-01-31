@@ -102,7 +102,7 @@ export default function useJoinExit({
   const { fNum2 } = useNumbers();
 
   const hasValidationError = computed(
-    () => state.validationErrors.highPriceImpact != null
+    () => state.validationErrors.highPriceImpact != false
   );
 
   function resetState() {
