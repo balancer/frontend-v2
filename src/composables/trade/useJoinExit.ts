@@ -164,7 +164,7 @@ export default function useJoinExit({
     const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
     const returnAmount = swapInfo.value?.returnAmount || BigNumber.from('0');
-    const hasReturnAmount = swapInfo.value?.returnAmount.gt(0);
+    const hasReturnAmount = returnAmount.gt(0);
 
     if (exactIn.value && hasReturnAmount) {
       tokenOutAmountInput.value = bnum(
