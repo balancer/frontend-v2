@@ -697,7 +697,7 @@ export default function useSor({
     isWrap = true
   ): Promise<BigNumber> {
     if (
-      isSameAddress(address, appNetworkConfig.addresses.wstETH) &&
+      isSameAddress(address, appNetworkConfig.addresses.stETH) &&
       isMainnet.value
     ) {
       return convertStEthWrap({ amount, isWrap });
