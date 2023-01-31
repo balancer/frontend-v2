@@ -149,5 +149,8 @@
     "*.{css,vue}": "stylelint --fix"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2"
+  "repository": "balancer-labs/frontend-v2",
+  "dependencies": {
+    "buffer": "^6.0.3"
+  }
 }
