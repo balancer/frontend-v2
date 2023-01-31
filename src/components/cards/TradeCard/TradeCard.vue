@@ -171,9 +171,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useTrading from '@/composables/trade/useTrading';
-import useValidation, {
-  TradeValidation,
-} from '@/composables/trade/useValidation';
+import useValidation from '@/composables/trade/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
