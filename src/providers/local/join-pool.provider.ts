@@ -1,6 +1,7 @@
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
+  isComposableStableLike,
   isDeep,
   isMetaStable,
   isStable,
@@ -49,6 +50,7 @@ import { useQuery } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
+import NewPoolCalculator from '@/services/pool/calculator/new-calculator.sevice';
 
 /**
  * TYPES
@@ -115,11 +117,6 @@ const provider = (props: Props) => {
   );
 
   /**
-   * SERVICES
-   */
-  const joinPoolService = new JoinPoolService(pool);
-
-  /**
    * COMPOSABLES
    */
   const {
@@ -129,6 +126,7 @@ const provider = (props: Props) => {
     priceFor,
     nativeAsset,
     wrappedNativeAsset,
+    balances,
   } = useTokens();
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
@@ -243,6 +241,33 @@ const provider = (props: Props) => {
     }
     return JoinHandler.ExactIn;
   });
+
+  const useNativeAsset = computed((): boolean => {
+    return amountsIn.value.some(amountIn =>
+      isSameAddress(amountIn.address, nativeAsset.address)
+    );
+  });
+
+  const supportsPropotionalOptimization = computed(
+    (): boolean => !isComposableStableLike(pool.value.poolType)
+  );
+
+  const optimized = computed((): boolean => {
+    // const max = poolCalculator.propMax();
+    // return amountsIn.value.every((item, i) => item.value === max[i].value);
+    return false;
+  });
+
+  /**
+   * SERVICES
+   */
+  const joinPoolService = new JoinPoolService(pool);
+  const poolCalculator = new NewPoolCalculator(
+    pool,
+    tokensIn,
+    balances,
+    useNativeAsset
+  );
 
   /**
    * METHODS
@@ -363,6 +388,12 @@ const provider = (props: Props) => {
     }
   }
 
+  function optimizeAmounts() {
+    const max = poolCalculator.propMax();
+    console.log({ max });
+    setAmountsIn(max);
+  }
+
   /**
    * WATCHERS
    */
@@ -411,6 +442,8 @@ const provider = (props: Props) => {
     txInProgress,
     approvalActions,
     missingPricesIn,
+    supportsPropotionalOptimization,
+    optimized,
 
     // Methods
     setAmountsIn,
@@ -419,6 +452,7 @@ const provider = (props: Props) => {
     resetAmounts,
     join,
     resetTxState,
+    optimizeAmounts,
 
     // queries
     queryJoinQuery,

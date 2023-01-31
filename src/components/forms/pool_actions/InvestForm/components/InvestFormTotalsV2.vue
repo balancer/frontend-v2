@@ -3,12 +3,28 @@ import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useJoinPool from '@/composables/pools/useJoinPool';
+import useWeb3 from '@/services/web3/useWeb3';
+import { useTokens } from '@/providers/tokens.provider';
+import { bnum } from '@/lib/utils';
+
+const emit = defineEmits<{
+  (e: 'optimize'): void;
+}>();
 
 /**
  * COMPOSABLES
  */
-const { highPriceImpact, isLoadingQuery, priceImpact } = useJoinPool();
 const { fNum } = useNumbers();
+const {
+  highPriceImpact,
+  isLoadingQuery,
+  priceImpact,
+  optimized,
+  amountsIn,
+  supportsPropotionalOptimization,
+} = useJoinPool();
+const { isWalletReady } = useWeb3();
+const { balanceFor } = useTokens();
 
 /**
  * COMPUTED
@@ -17,6 +33,17 @@ const priceImpactClasses = computed(() => ({
   'dark:bg-gray-800': !highPriceImpact.value,
   'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value,
 }));
+
+const optimizeBtnClasses = computed(() => ({
+  'text-gradient': !highPriceImpact.value,
+  'text-red-500 px-2 py-1 bg-white rounded-lg': highPriceImpact.value,
+}));
+
+const hasAllTokens = computed((): boolean => {
+  const balances = amountsIn.value.map(token => balanceFor(token.address));
+  const hasBalanceForAllTokens = balances.every(balance => bnum(balance).gt(0));
+  return hasBalanceForAllTokens;
+});
 </script>
 
 <template>
@@ -48,6 +75,23 @@ const priceImpactClasses = computed(() => ({
               />
             </template>
           </BalTooltip>
+        </div>
+        <div
+          v-if="
+            isWalletReady && hasAllTokens && supportsPropotionalOptimization
+          "
+          class="text-sm font-semibold"
+        >
+          <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
+            {{ $t('optimized') }}
+          </span>
+          <button
+            v-else
+            :class="['cursor-pointer', optimizeBtnClasses]"
+            @click="emit('optimize')"
+          >
+            {{ $t('optimize') }}
+          </button>
         </div>
       </div>
     </div>
