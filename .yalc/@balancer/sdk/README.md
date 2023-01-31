@@ -1,3 +1,9 @@
 # SDK
 
-WIP upgrade of the SDK. Includes several optimisations and similar classes to uniswap's sdk as requested by integrators.
+WIP upgrade of the SDK
+
+## Testing
+
+Testing requires access to an archive node for onchain quote comparisons. This can be done using Infura.
+
+`npm run test`

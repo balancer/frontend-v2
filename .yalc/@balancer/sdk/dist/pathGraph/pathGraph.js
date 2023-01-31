@@ -49,7 +49,7 @@ export class PathGraph {
             tokenOut: tokenOut.wrapped,
             config,
             tokenPath: [tokenIn.wrapped],
-        });
+        }).sort((a, b) => (a.length < b.length ? -1 : 1));
         const paths = [];
         const selectedPathIds = [];
         let seenPoolAddresses = [];

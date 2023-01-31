@@ -140,6 +140,7 @@
         :addressOut="trading.tokenOut.value.address"
         :amountOut="trading.tokenOutAmountInput.value"
         :pools="newPools"
+        :onchainQuote="trading.sor.onchainQuote.value.toString()"
         :swapInfo="trading.sor.newSorReturn.value"
         class="mt-4"
       />
@@ -147,7 +148,7 @@
         :addressIn="trading.tokenIn.value.address"
         :amountIn="trading.tokenInAmountInput.value"
         :addressOut="trading.tokenOut.value.address"
-        :amountOut="trading.sor.sorReturn.value.returnAmount.toString()"
+        :amountOut="returnAmount"
         :pools="pools"
         :sorReturn="trading.sor.sorReturn.value"
         class="mt-4"
@@ -283,6 +284,15 @@ export default defineComponent({
         return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
       }
       return t('swap');
+    });
+    const returnAmount = computed(() => {
+      return fNum2(
+        formatUnits(
+          trading.sor.sorReturn.value.returnAmount,
+          trading.sor.sorReturn.value.returnDecimals
+        ),
+        FNumFormats.token
+      );
     });
     const newPools = computed<BasePool[]>(
       // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
@@ -442,6 +452,7 @@ export default defineComponent({
       exactIn,
       trading,
       // computed
+      returnAmount,
       newPools,
       pools,
       title,

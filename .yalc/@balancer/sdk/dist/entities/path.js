@@ -62,5 +62,24 @@ export class PathWithAmount extends Path {
             return this.swapAmount;
         }
     }
+    print() {
+        // TODO: cleanup
+        const printPath = [];
+        if (this.swapKind === SwapKind.GivenIn) {
+            const amounts = new Array(this.tokens.length);
+            amounts[0] = this.swapAmount;
+            for (let i = 0; i < this.pools.length; i++) {
+                const pool = this.pools[i];
+                const outputAmount = pool.swapGivenIn(this.tokens[i], this.tokens[i + 1], amounts[i]);
+                amounts[i + 1] = outputAmount;
+                printPath.push({
+                    pool: pool.id,
+                    input: amounts[i].amount.toString() + ' ' + this.tokens[i].symbol,
+                    output: outputAmount.amount.toString() + ' ' + this.tokens[i + 1].symbol,
+                });
+            }
+            console.table(printPath);
+        }
+    }
 }
 //# sourceMappingURL=path.js.map

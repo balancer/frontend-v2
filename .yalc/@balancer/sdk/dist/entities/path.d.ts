@@ -14,4 +14,5 @@ export declare class PathWithAmount extends Path {
     constructor(tokens: Token[], pools: BasePool[], swapAmount: TokenAmount);
     private calcOutputAmount;
     private calcInputAmount;
+    print(): void;
 }

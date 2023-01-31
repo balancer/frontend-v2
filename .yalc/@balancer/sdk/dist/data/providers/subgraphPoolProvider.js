@@ -120,6 +120,8 @@ export class SubgraphPoolProvider {
                     balance
                     weight
                     priceRate
+                    name
+                    symbol
                     decimals
                 }
                 tokensList

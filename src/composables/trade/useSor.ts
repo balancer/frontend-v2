@@ -130,6 +130,7 @@ export default function useSor({
       returnAmountFromSwaps: Zero,
     },
   });
+  const onchainQuote = ref('');
   const trading = ref(false);
   const confirming = ref(false);
   const priceImpact = ref(0);
@@ -341,6 +342,9 @@ export default function useSor({
       );
 
       newSorReturn.value = swapInfo;
+      onchainQuote.value = (
+        await swapInfo.swap.query(provider.value)
+      ).toSignificant(4);
       sorReturn.value = swapReturn; // TO DO - is it needed?
       let tokenOutAmount = swapReturn.returnAmount;
 
@@ -699,6 +703,7 @@ export default function useSor({
     ...toRefs(state),
     sorManager,
     newSorReturn,
+    onchainQuote,
     sorReturn,
     pools,
     newPools,

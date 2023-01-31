@@ -16,6 +16,7 @@ interface Props {
   amountIn: string;
   addressOut: string;
   amountOut: string;
+  onchainQuote: string;
   pools: BasePool[];
   swapInfo: SwapInfo;
 }
@@ -228,9 +229,8 @@ function formatShare(share: number): string {
               </div>
             </div>
             <div class="flex flex-col items-end">
-              <div class="font-semibold">
-                {{ output.amount }}
-              </div>
+              <div class="font-semibold">Onchain: {{ props.onchainQuote }}</div>
+              <div class="font-semibold">SOR: {{ output.amount }}</div>
               <div>
                 {{ output.symbol }}
               </div>

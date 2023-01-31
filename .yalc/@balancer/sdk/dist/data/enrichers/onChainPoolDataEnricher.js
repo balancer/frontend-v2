@@ -59,7 +59,9 @@ export class OnChainPoolDataEnricher {
                 totalShares: data?.totalSupply
                     ? formatFixed(data.totalSupply, 18)
                     : pool.totalShares,
-                amp: data?.amp ? formatFixed(data.amp, 3).split('.')[0] : pool.amp,
+                amp: data?.amp
+                    ? formatFixed(data.amp, 3).split('.')[0]
+                    : pool.amp,
             };
         });
     }
@@ -79,12 +81,6 @@ export class OnChainPoolDataEnricher {
                     : TotalSupplyType.TOTAL_SUPPLY);
             if (this.isLinearPoolType(pool.poolType)) {
                 linearPoolIdxs.push(i);
-            }
-            if (pool.hasActiveWeightUpdate) {
-                weightedPoolIdxs.push(i);
-            }
-            if (pool.hasActiveAmpUpdate) {
-                ampPoolIdxs.push(i);
             }
         }
         return {
