@@ -245,17 +245,28 @@ export default function useSor({
           tokenOutAddress.toLowerCase()
         );
 
-        const tokenInAmount = BigNumber.from(deltas[tokenInPosition]).abs();
-
-        const tokenOutAmount = BigNumber.from(deltas[tokenOutPosition]).abs();
+        let tokenInAmount = BigNumber.from(deltas[tokenInPosition]).abs();
+        let tokenOutAmount = BigNumber.from(deltas[tokenOutPosition]).abs();
 
         if (swapType === SwapType.SwapExactOut) {
+          tokenInAmount = await mutateAmount({
+            amount: tokenInAmount,
+            address: tokenInAddressInput.value,
+            isTokenIn: true,
+          });
+
           tokenInAmountInput.value = tokenInAmount.gt(0)
             ? formatAmount(formatUnits(tokenInAmount, tokenInDecimals))
             : '';
         }
 
         if (swapType === SwapType.SwapExactIn) {
+          tokenOutAmount = await mutateAmount({
+            amount: tokenOutAmount,
+            address: tokenOutAddressInput.value,
+            isTokenIn: false,
+          });
+
           tokenOutAmountInput.value = tokenOutAmount.gt(0)
             ? formatAmount(formatUnits(tokenOutAmount, tokenOutDecimals))
             : '';
@@ -355,7 +366,7 @@ export default function useSor({
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
-      let tokenOutAmount = swapReturn.returnAmount;
+      const tokenOutAmount = swapReturn.returnAmount;
 
       tokenOutAmountInput.value = tokenOutAmount.gt(0)
         ? formatAmount(formatUnits(tokenOutAmount, tokenOutDecimals))
@@ -365,11 +376,6 @@ export default function useSor({
         priceImpact.value = 0;
         state.validationErrors.noSwaps = true;
       } else {
-        tokenOutAmount = await adjustedPiAmount(
-          tokenOutAmount,
-          tokenOutAddress
-        );
-
         const priceImpactCalc = calcPriceImpact(
           tokenOutDecimals,
           tokenOutAmount,
@@ -401,7 +407,7 @@ export default function useSor({
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
 
-      let tokenInAmount = swapReturn.returnAmount;
+      const tokenInAmount = swapReturn.returnAmount;
       tokenInAmountInput.value = tokenInAmount.gt(0)
         ? formatAmount(formatUnits(tokenInAmount, tokenInDecimals))
         : '';
@@ -410,8 +416,6 @@ export default function useSor({
         priceImpact.value = 0;
         state.validationErrors.noSwaps = true;
       } else {
-        tokenInAmount = await adjustedPiAmount(tokenInAmount, tokenOutAddress);
-
         const priceImpactCalc = calcPriceImpact(
           tokenInDecimals,
           tokenInAmount,
@@ -692,20 +696,33 @@ export default function useSor({
   }
 
   /**
-   * Under certain circumstance we need to adjust an amount
-   * for the price impact calc due to background wrapping taking place
-   * e.g. when trading weth to wstEth.
+   * mutateAmount
+   *
+   * Handles any conditions where the token in or out needs to be mutated for
+   * display purposes. The only case we have so far is if the token in or out
+   * is stETH, the actual return amount from the SOR is wstETH. So we need to
+   * convert the wstETH amount to stETH using the exchange rate.
+   *
+   * @param {BigNumber} amount - Amount to parse (could be tokenIn or tokenOut amount).
+   * @param {string} address - Token address for amount.
+   * @param {boolean} isTokenIn - Is the token amount/address the tokenIn.
+   * @returns {BigNumber} A new amount if conditions are met or the same amount
+   * as passed in.
    */
-  async function adjustedPiAmount(
-    amount: BigNumber,
-    address: string,
-    isWrap = true
-  ): Promise<BigNumber> {
+  async function mutateAmount({
+    amount,
+    address,
+    isTokenIn,
+  }: {
+    amount: BigNumber;
+    address: string;
+    isTokenIn: boolean;
+  }): Promise<BigNumber> {
     if (
       isSameAddress(address, appNetworkConfig.addresses.stETH) &&
       isMainnet.value
     ) {
-      return convertStEthWrap({ amount, isWrap });
+      return convertStEthWrap({ amount, isWrap: isTokenIn });
     }
     return amount;
   }
