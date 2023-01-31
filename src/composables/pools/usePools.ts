@@ -64,13 +64,6 @@ export default function usePools(
     await injectTokens(tokens);
   });
 
-  watch(
-    () => [sortDirection.value, poolsSortField.value],
-    () => {
-      poolsQuery.refetch.value();
-    }
-  );
-
   return {
     pools,
     isLoading,

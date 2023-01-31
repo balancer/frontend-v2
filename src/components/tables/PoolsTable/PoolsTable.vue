@@ -63,7 +63,7 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  sortColumn: 'poolValue',
+  sortColumn: 'totalLiquidity',
   hiddenColumns: () => [],
   showBoost: false,
   columnStates: () => ({}),
@@ -138,7 +138,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
         maximumFractionDigits: 0,
       }),
     align: 'right',
-    id: 'poolValue',
+    id: 'totalLiquidity',
     sortKey: pool => {
       const apr = Number(pool.totalLiquidity);
       if (apr === Infinity || isNaN(apr)) return 0;
@@ -278,6 +278,7 @@ function iconAddresses(pool: PoolWithShares) {
       :square="upToLargeBreakpoint"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
+      isOnlyDeskSort
       :initialState="{
         sortColumn: sortColumn,
         sortDirection: 'desc',
