@@ -13,7 +13,7 @@
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-prune-v2",
-  "balancerApi": "",
+  "balancerApi": "https://api.balancer.fi",
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [
