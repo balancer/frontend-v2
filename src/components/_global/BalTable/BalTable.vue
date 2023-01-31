@@ -50,6 +50,7 @@ type Props = {
   initialState?: InitialState;
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: DataProp, rowIndex: number) => string;
+  isOnlyDeskSort: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -66,6 +67,7 @@ const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
   getTableRowClass: () => '',
+  isOnlyDeskSort: false,
 });
 
 const stickyHeaderRef = ref();
@@ -103,14 +105,7 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
   currentSortColumn.value = columnId;
 
   if (updateDirection) {
-    if (
-      currentSortDirection.value === null ||
-      currentSortDirection.value === 'asc'
-    ) {
-      currentSortDirection.value = 'desc';
-    } else {
-      currentSortDirection.value = 'asc';
-    }
+    setCurrenSortDirection();
   }
   if (columnId && currentSortDirection.value) {
     emit('onColumnSort', {
@@ -118,6 +113,7 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
       currentSortDirection: currentSortDirection.value,
     });
   }
+
   const sortedData = sortBy(
     (props.data as any).value || props.data,
     column.sortKey
@@ -125,12 +121,29 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
   if (currentSortDirection.value === 'asc') {
     tableData.value = sortedData;
     return;
-  } else if (currentSortDirection.value === 'desc') {
+  }
+  if (currentSortDirection.value === 'desc') {
     tableData.value = sortedData.reverse();
     return;
   }
   tableData.value = props.data;
 };
+
+function setCurrenSortDirection(): void {
+  if (props.isOnlyDeskSort) {
+    currentSortDirection.value = 'desc';
+    return;
+  }
+  if (currentSortDirection.value === null) {
+    currentSortDirection.value = 'desc';
+    return;
+  }
+  if (currentSortDirection.value === 'desc') {
+    currentSortDirection.value = 'asc';
+    return;
+  }
+  currentSortDirection.value = null;
+}
 
 function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
   switch (align) {
