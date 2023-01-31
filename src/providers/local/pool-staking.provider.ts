@@ -4,7 +4,6 @@ import usePoolStakedSharesQuery from '@/composables/queries/usePoolStakedSharesQ
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
 import { computed, inject, InjectionKey, provide } from 'vue';
-import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
 import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { getAddress } from '@ethersproject/address';
@@ -13,6 +12,7 @@ import { useTokens } from '../tokens.provider';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { POOLS } from '@/constants/pools';
+import { useUserData } from '../user-data.provider';
 
 /**
  * PoolStakingProvider
@@ -30,6 +30,10 @@ const provider = (poolId: string) => {
    */
   const { balanceFor } = useTokens();
   const { account } = useWeb3();
+  const { userGaugeSharesQuery, userBoostsQuery } = useUserData();
+  const { data: userGaugeShares, refetch: refetchUserGaugeShares } =
+    userGaugeSharesQuery;
+  const { data: boostsMap, refetch: refetchUserBoosts } = userBoostsQuery;
 
   /**
    * QUERIES
@@ -45,15 +49,6 @@ const provider = (poolId: string) => {
     isRefetching: isRefetchingStakedShares,
     refetch: refetchStakedShares,
   } = poolStakedSharesQuery;
-
-  // Fetches user's gaugeShare for pool, to be used in boost calculation.
-  const userGaugeSharesQuery = useUserGaugeSharesQuery(poolAddress);
-  const { data: userGaugeShares, refetch: refetchUserGaugeShares } =
-    userGaugeSharesQuery;
-
-  // Fetches user's boost value for this pool.
-  const userBoostsQuery = useUserBoostsQuery(userGaugeShares);
-  const { data: boostsMap, refetch: refetchUserBoosts } = userBoostsQuery;
 
   /**
    * COMPUTED

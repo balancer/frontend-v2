@@ -7,11 +7,21 @@ import App from './App.vue';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideTokens } from '@/providers/tokens.provider';
+import { provideUserData } from '@/providers/user-data.provider';
+import useWeb3 from './services/web3/useWeb3';
 
-//
+/**
+ * COMPOSABLES
+ */
+const { account } = useWeb3();
+
+/**
+ * GLOBAL PROVIDERS
+ */
 const userSettings = provideUserSettings();
 const tokenLists = provideTokenLists();
 provideTokens(userSettings, tokenLists);
+provideUserData(account);
 </script>
 
 <template>

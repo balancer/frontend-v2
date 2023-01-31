@@ -7,5 +7,7 @@ export default {
     JoinPool: 'provider.joinPool',
     ExitPool: 'provider.exitPool',
     PoolStaking: 'provider.poolStaking',
+    UserStaking: 'provider.userStaking',
+    UserData: 'provider.userData',
   },
 };

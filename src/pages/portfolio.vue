@@ -5,9 +5,16 @@ import VeBalPoolTable from '@/components/contextual/pages/pools/VeBalPoolTable.v
 import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import { useLock } from '@/composables/useLock';
 import StakingProvider from '@/providers/local/staking/staking.provider';
+import { provideUserStaking } from '@/providers/local/user-staking.provider';
 
-// COMPOSABLES
+/**
+ * PROVIDERS
+ */
+provideUserStaking();
 
+/**
+ * COMPOSABLES
+ */
 const { lockPool, lock } = useLock();
 </script>
 

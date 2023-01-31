@@ -7,19 +7,20 @@ import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { useUserStaking } from '@/providers/local/user-staking.provider';
 
 /**
  * COMPOSABLES
  */
 const {
   userData: {
-    stakedPools,
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isLoadingUserPools,
     poolBoosts,
   },
 } = useStaking();
+const { stakedPools, poolBoostsMap } = useUserStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
 const networkName = configService.network.shortName;
