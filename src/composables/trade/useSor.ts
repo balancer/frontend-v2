@@ -50,6 +50,7 @@ import { captureException } from '@sentry/browser';
 type SorState = {
   validationErrors: {
     highPriceImpact: boolean;
+    noSwaps: boolean;
   };
   submissionError: string | null;
 };
@@ -61,6 +62,7 @@ const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive<SorState>({
   validationErrors: {
     highPriceImpact: false,
+    noSwaps: false,
   },
   submissionError: null,
 });
@@ -155,6 +157,7 @@ export default function useSor({
 
   function resetState() {
     state.validationErrors.highPriceImpact = false;
+    state.validationErrors.noSwaps = false;
 
     state.submissionError = null;
   }
@@ -360,6 +363,7 @@ export default function useSor({
 
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
+        state.validationErrors.noSwaps = true;
       } else {
         tokenOutAmount = await adjustedPiAmount(
           tokenOutAmount,
@@ -404,6 +408,7 @@ export default function useSor({
 
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
+        state.validationErrors.noSwaps = true;
       } else {
         tokenInAmount = await adjustedPiAmount(tokenInAmount, tokenOutAddress);
 

@@ -286,7 +286,7 @@ export default defineComponent({
         };
       }
       if (trading.isBalancerTrade.value && !trading.isLoading.value) {
-        if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
+        if (trading.sor.validationErrors.value.noSwaps) {
           return {
             header: t('insufficientLiquidity'),
             body: t('insufficientLiquidityDetailed'),
