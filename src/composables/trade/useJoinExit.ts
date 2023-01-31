@@ -298,11 +298,10 @@ export default function useJoinExit({
       unknownAssets.push(tokenOutAddressInput.value);
     }
     await injectTokens(unknownAssets);
-    await handleAmountChange();
   });
 
-  watch(pools, () => {
-    handleAmountChange();
+  watch(pools, async () => {
+    await getSwapInfo();
   });
 
   return {
