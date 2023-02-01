@@ -23,6 +23,8 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
   const { userPoolPercentage } = useUserPoolPercentage(rootPool);
   const isDeepPool = computed(() => isDeep(rootPool.value));
   let tokensData: TokensData = {};
+  // Sum of every token's fiat value.
+  // Used to increase token percentage accuracy as pool.totalLiquidity is not completely in sync with balance * coingecko-price calculations).
   let totalFiat = 0;
 
   // Recalculates recursive tokensData whenever the pool is re-fetched
