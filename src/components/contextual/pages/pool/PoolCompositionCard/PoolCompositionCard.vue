@@ -8,6 +8,7 @@ import { isWeightedLike } from '@/composables/usePool';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import { useI18n } from 'vue-i18n';
 import TokenBreakdown from './components/TokenBreakdown.vue';
+import { useTokenBreakdown } from './components/composables/useTokenBreakdown2';
 
 /**
  * TYPES
@@ -27,10 +28,11 @@ const isWeighted = isWeightedLike(pool.value.poolType);
  * COMPOSABLES
  */
 const { upToLargeBreakpoint } = useBreakpoints();
-const { userPoolPercentage, userPoolPercentageLabel } = useUserPoolPercentage(
-  pool.value
-);
+const { userPoolPercentage, userPoolPercentageLabel } =
+  useUserPoolPercentage(pool);
 const { t } = useI18n();
+const rootPool = computed(() => removeBptFrom(pool.value));
+const { data: tokenData } = useTokenBreakdown(rootPool);
 
 /**
  * STATE
@@ -101,7 +103,7 @@ onMounted(() => {
 
     <div class="grid gap-y-4 py-4">
       <div
-        v-for="token in removeBptFrom(pool).tokens"
+        v-for="token in rootPool.tokens"
         :key="token.address"
         class="grid gap-y-4"
       >
@@ -109,6 +111,7 @@ onMounted(() => {
           :token="token"
           :showUserShares="showUserShares"
           :rootPool="pool"
+          :tokensData="tokenData"
         />
       </div>
     </div>

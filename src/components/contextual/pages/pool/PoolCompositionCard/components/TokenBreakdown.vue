@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { bnum } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
-import { useTokenBreakdown } from './composables/useTokenBreakdown';
+import { TokensData } from './composables/useTokenBreakdown2';
 
 import { isWeightedLike, usePool } from '@/composables/usePool';
 
@@ -12,10 +11,10 @@ import { isWeightedLike, usePool } from '@/composables/usePool';
  */
 type Props = {
   token: PoolToken;
-  shareOfParentInPool?: number;
   parentLevel?: number;
   showUserShares: boolean;
   rootPool: Pool;
+  tokensData: TokensData;
 };
 
 /**
@@ -23,11 +22,10 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   parentLevel: 0,
-  // Root pool has share 1 as default
-  shareOfParentInPool: 1,
 });
 
-const { token, shareOfParentInPool, showUserShares, rootPool } = toRefs(props);
+const { token, showUserShares, rootPool } = toRefs(props);
+const tokenData = computed(() => props.tokensData[token.value.address]);
 
 /**
  * COMPOSABLES
@@ -35,15 +33,6 @@ const { token, shareOfParentInPool, showUserShares, rootPool } = toRefs(props);
 const { explorerLinks } = useWeb3();
 const { isDeepPool } = usePool(rootPool);
 const isWeighted = isWeightedLike(rootPool.value.poolType);
-
-const {
-  balanceLabel,
-  userBalanceLabel,
-  fiatLabel,
-  userFiatLabel,
-  tokenWeightLabel,
-  tokenPercentageLabel,
-} = useTokenBreakdown(token, shareOfParentInPool, rootPool);
 
 /**
  * COMPUTED
@@ -65,20 +54,6 @@ const nestedPaddingClass = computed(() => {
       return 'pl-4';
   }
 });
-
-const isLeaf = computed((): boolean => !token.value.token?.pool);
-
-// If this token is a pool, this is the share of that pool in it's parent.
-// e.g. The share of bb-a-DAI in bb-a-USD, since bb-a-DAI can be used in
-// multiple pools.
-const shareOfTokenInPool = computed((): number => {
-  if (isLeaf.value) return 1;
-
-  return bnum(token.value?.balance || '0')
-    .div(token.value.token?.pool?.totalShares || 1)
-    .times(props.shareOfParentInPool)
-    .toNumber();
-});
 </script>
 
 <template>
@@ -95,13 +70,10 @@ const shareOfTokenInPool = computed((): number => {
       noStyle
       class="group flex items-center"
     >
-      <!-- #Todo: Remove flex-shrink-0 once Tailwind 3 is live -->
       <BalAsset
         :address="token.address"
         :class="
-          isDeepPool && currentLevel > 1
-            ? 'nested-token'
-            : 'flex-shrink-0 mr-2 shrink-0 z-10'
+          isDeepPool && currentLevel > 1 ? 'nested-token' : 'mr-2 shrink-0 z-10'
         "
         :size="isDeepPool && currentLevel > 1 ? 28 : 36"
       />
@@ -116,16 +88,16 @@ const shareOfTokenInPool = computed((): number => {
       />
     </BalLink>
     <div v-if="isWeighted" class="justify-self-end">
-      {{ tokenWeightLabel }}
+      {{ tokenData.tokenWeightLabel }}
     </div>
     <div class="justify-self-end">
-      {{ showUserShares ? userBalanceLabel : balanceLabel }}
+      {{ showUserShares ? tokenData.userBalanceLabel : tokenData.balanceLabel }}
     </div>
     <div class="justify-self-end">
-      {{ showUserShares ? userFiatLabel : fiatLabel }}
+      {{ showUserShares ? tokenData.userFiatLabel : tokenData.fiatLabel }}
     </div>
     <div class="justify-self-end">
-      {{ tokenPercentageLabel }}
+      {{ tokenData.getTokenPercentageLabel() }}
     </div>
   </div>
 
@@ -134,10 +106,10 @@ const shareOfTokenInPool = computed((): number => {
       v-for="nestedToken in token.token?.pool?.tokens"
       :key="nestedToken.address"
       :token="nestedToken"
-      :shareOfParentInPool="shareOfTokenInPool"
       :parentLevel="currentLevel"
       :showUserShares="showUserShares"
       :rootPool="rootPool"
+      :tokensData="tokensData"
     />
   </template>
 </template>

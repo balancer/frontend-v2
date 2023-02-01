@@ -1,114 +1,137 @@
-import { computed, Ref } from 'vue';
-import { bnum } from '@/lib/utils';
-import { Pool, PoolToken } from '@/services/pool/types';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isNumber } from '@/lib/utils/numbers';
-import { usePool } from '@/composables/usePool';
+import { isDeep } from '@/composables/usePool';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
+import { bnum } from '@/lib/utils';
+import { isNumber } from '@/lib/utils/numbers';
+import { Pool, PoolToken } from '@/services/pool/types';
+import { computed, Ref } from 'vue';
 
-export function useTokenBreakdown(
-  token: Ref<PoolToken>,
-  shareOfParentInPool: Ref<number>,
-  rootPool: Ref<Pool>
-) {
+export interface TokenData {
+  balanceLabel: string | number;
+  userBalanceLabel: string | number;
+  fiatLabel: string;
+  userFiatLabel: string;
+  tokenWeightLabel: string;
+  getTokenPercentageLabel: () => string;
+}
+
+export type TokensData = Record<string, TokenData>;
+
+export function useTokenBreakdown(rootPool: Ref<Pool>) {
   const { fNum2, toFiat } = useNumbers();
-  const { isDeepPool } = usePool(rootPool);
-  const { userPoolPercentage } = useUserPoolPercentage(rootPool.value);
 
-  // To get the balance of this token in the current pool we need to know the
-  // share of it's parent in this pool. e.g. If the token is DAI which is nested
-  // in bb-a-DAI, we need to know what share of bb-a-DAI is contained in the
-  // current pool. Then we can use this share and multiply it by the total
-  // balance of this token.
-  const balance = computed(() => {
-    return bnum(token.value.balance)
-      .times(shareOfParentInPool.value)
-      .toString();
-  });
+  const { userPoolPercentage } = useUserPoolPercentage(rootPool);
+  const isDeepPool = computed(() => isDeep(rootPool.value));
+  let tokensData: TokensData = {};
+  let totalFiat = 0;
 
-  const isParentTokenInDeepPool = computed(() => {
-    const hasNestedTokens = token.value?.token?.pool?.tokens;
-    return hasNestedTokens && isDeepPool.value;
-  });
+  // Recalculates recursive tokensData whenever the pool is re-fetched
+  const data = computed(() => calculateAllTokensData(rootPool));
 
-  const applyUserPoolPercentageTo = (value: string): number =>
-    (Number(value) * Number(userPoolPercentage.value)) / 100;
+  return { data };
 
-  const balanceValue = computed(() => {
-    if (isParentTokenInDeepPool.value) return '';
-
-    if (token.value.priceRate && isDeepPool.value) {
-      const equivMainTokenBalance = bnum(balance.value)
-        .times(token.value.priceRate)
-        .toString();
-
-      return equivMainTokenBalance;
-    }
-
-    return token.value.balance;
-  });
-
-  const balanceLabel = computed(() => formatBalanceValue(balanceValue.value));
-
-  const userBalanceLabel = computed(() => {
-    if (balanceValue.value === '') return '';
-    return formatBalanceValue(applyUserPoolPercentageTo(balanceValue.value));
-  });
-
-  function formatBalanceValue(value: string | number) {
-    if (!isNumber(value)) return value;
-    return fNum2(value, FNumFormats.token);
+  function calculateAllTokensData(pool: Ref<Pool>) {
+    tokensData = {};
+    pool.value.tokens.forEach(token => {
+      const rootTokenShare = 1;
+      calculateTokenData(token, rootTokenShare);
+    });
+    return tokensData;
   }
 
-  const fiatValue = computed(() => {
-    if (isParentTokenInDeepPool.value) return '';
+  function calculateTokenData(token: PoolToken, shareOfParentInPool: number) {
+    // To get the balance of this token in the current pool we need to know the
+    // share of it's parent in this pool. e.g. If the token is DAI which is nested
+    // in bb-a-DAI, we need to know what share of bb-a-DAI is contained in the
+    // current pool. Then we can use this share and multiply it by the total
+    // balance of this token.
+    const balance = bnum(token.balance).times(shareOfParentInPool).toString();
 
-    let value = toFiat(balance.value, token.value.address);
+    const hasNestedTokens = token?.token?.pool?.tokens;
+    const isParentTokenInDeepPool = hasNestedTokens && isDeepPool;
 
-    if (value === '0' && token.value.token?.latestUSDPrice) {
-      // Attempt to use latest USD price from subgraph.
-      value = bnum(balance.value)
-        .times(token.value.token.latestUSDPrice)
-        .toString();
+    const fiatValue = calculateFiatValue();
+    if (isNumber(fiatValue)) totalFiat += Number(fiatValue);
+    const balanceValue = calculateBalanceValue();
+
+    const userFiat = applyUserPoolPercentageTo(fiatValue);
+    const userFiatLabel = fiatValue === '' ? '' : formatFiatValue(userFiat);
+
+    const userBalanceLabel =
+      balanceValue === ''
+        ? ''
+        : formatBalanceValue(applyUserPoolPercentageTo(balanceValue));
+
+    const tokenWeightLabel = !token?.weight
+      ? ''
+      : fNum2(token.weight, FNumFormats.percent);
+
+    function getTokenPercentageLabel() {
+      const tokenPercentage = Number(fiatValue) / Number(totalFiat);
+      return tokenPercentage === 0
+        ? ''
+        : fNum2(tokenPercentage, FNumFormats.percent);
     }
-    if (fiatValue.value === '0') return '-';
-    return value;
-  });
 
-  function formatFiatValue(value: string | number): string {
-    value = value.toString();
-    if (!isNumber(value)) return value;
+    tokensData[token.address] = {
+      balanceLabel: formatBalanceValue(calculateBalanceValue()),
+      fiatLabel: formatFiatValue(fiatValue),
+      userFiatLabel,
+      userBalanceLabel: userBalanceLabel,
+      tokenWeightLabel,
+      getTokenPercentageLabel,
+    };
 
-    return fNum2(value, FNumFormats.fiat);
+    const isLeaf = !token.token?.pool;
+    if (isLeaf || !isDeepPool.value) return;
+
+    const shareOfTokenInPool = bnum(token?.balance || '0')
+      .div(token.token?.pool?.totalShares || 1)
+      .times(shareOfParentInPool)
+      .toNumber();
+
+    // Recursively calculate data for next token level
+    token.token?.pool?.tokens?.forEach(token =>
+      calculateTokenData(token, shareOfTokenInPool)
+    );
+
+    function calculateBalanceValue() {
+      if (isParentTokenInDeepPool) return '';
+      if (token.priceRate && isDeepPool) {
+        const equivMainTokenBalance = bnum(balance)
+          .times(token.priceRate)
+          .toString();
+
+        return equivMainTokenBalance;
+      }
+      return token.balance;
+    }
+
+    function formatBalanceValue(value: string | number) {
+      if (!isNumber(value)) return value;
+      return fNum2(value, FNumFormats.token);
+    }
+
+    function calculateFiatValue() {
+      if (isParentTokenInDeepPool) return '';
+
+      let value = toFiat(balance, token.address);
+
+      if (value === '0' && token.token?.latestUSDPrice) {
+        // Attempt to use latest USD price from subgraph.
+        value = bnum(balance).times(token.token.latestUSDPrice).toString();
+      }
+      return value;
+    }
+
+    function formatFiatValue(value: string | number): string {
+      value = value.toString();
+      if (!isNumber(value)) return value;
+      return fNum2(value, FNumFormats.fiat);
+    }
+
+    function applyUserPoolPercentageTo(value: string): number {
+      return (Number(value) * Number(userPoolPercentage.value)) / 100;
+    }
   }
-
-  const fiatLabel = computed(() => formatFiatValue(fiatValue.value));
-
-  const userFiat = computed(() => applyUserPoolPercentageTo(fiatValue.value));
-
-  const userFiatLabel = computed(() => {
-    if (fiatValue.value === '') return '';
-    return formatFiatValue(userFiat.value);
-  });
-
-  const tokenWeightLabel = computed(() => {
-    if (!token.value || !token.value.weight) return '';
-    return fNum2(token.value.weight, FNumFormats.percent);
-  });
-
-  const tokenPercentageLabel = computed(() => {
-    const tokenPercentage =
-      Number(fiatValue.value) / Number(rootPool.value.totalLiquidity);
-    if (tokenPercentage === 0) return '';
-    return fNum2(tokenPercentage, FNumFormats.percent);
-  });
-
-  return {
-    balanceLabel,
-    userBalanceLabel,
-    fiatLabel,
-    userFiatLabel,
-    tokenWeightLabel,
-    tokenPercentageLabel,
-  };
 }
