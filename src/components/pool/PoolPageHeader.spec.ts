@@ -4,7 +4,7 @@ import PoolPageHeader from './PoolPageHeader.vue';
 import samplePool from './__mocks__/sample-pool.json';
 import sampleTitleTokens from './__mocks__/sample-title-tokens.json';
 
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
 
 vi.mock('@ethersproject/address', () => {
   return {

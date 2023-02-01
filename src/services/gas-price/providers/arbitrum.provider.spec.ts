@@ -1,4 +1,4 @@
-import { server } from '@/tests/msw/server';
+import { server } from '@tests/msw/server';
 import { rest } from 'msw';
 import ArbitrumProvider from './arbitrum.provider';
 

@@ -4,7 +4,7 @@ import { BoostedPoolMock, PoolMock } from '@/__mocks__/pool';
 import { ref } from 'vue';
 import { useTokenBreakdown } from './useTokenBreakdown';
 import { bnum } from '@/lib/utils';
-import { mountComposable } from '@/tests/mount-helpers';
+import { mountComposable } from '@tests/mount-helpers';
 import * as tokensProvider from '@/providers/tokens.provider';
 
 const bbaDaiToken = removeBptFrom(BoostedPoolMock).tokens[2];
