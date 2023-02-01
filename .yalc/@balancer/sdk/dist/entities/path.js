@@ -78,8 +78,22 @@ export class PathWithAmount extends Path {
                     output: outputAmount.amount.toString() + ' ' + this.tokens[i + 1].symbol,
                 });
             }
-            console.table(printPath);
         }
+        else {
+            const amounts = new Array(this.tokens.length);
+            amounts[amounts.length - 1] = this.swapAmount;
+            for (let i = this.pools.length; i >= 1; i--) {
+                const pool = this.pools[i - 1];
+                const inputAmount = pool.swapGivenOut(this.tokens[i - 1], this.tokens[i], amounts[i]);
+                amounts[i - 1] = inputAmount;
+                printPath.push({
+                    pool: pool.id,
+                    input: inputAmount.amount.toString() + ' ' + this.tokens[i - 1].symbol,
+                    output: amounts[i].amount.toString() + ' ' + this.tokens[i].symbol,
+                });
+            }
+        }
+        console.table(printPath);
     }
 }
 //# sourceMappingURL=path.js.map

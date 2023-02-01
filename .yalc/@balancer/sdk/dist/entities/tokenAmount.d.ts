@@ -8,7 +8,7 @@ export declare class TokenAmount {
     readonly scale18: bigint;
     static fromRawAmount(token: Token, rawAmount: BigintIsh): TokenAmount;
     static fromHumanAmount(token: Token, humanAmount: string): TokenAmount;
-    static fromScale18Amount(token: Token, scale18Amount: BigintIsh): TokenAmount;
+    static fromScale18Amount(token: Token, scale18Amount: BigintIsh, divUp?: boolean): TokenAmount;
     protected constructor(token: Token, amount: BigintIsh);
     add(other: TokenAmount): TokenAmount;
     sub(other: TokenAmount): TokenAmount;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import { BasePool } from '@balancer/sdk';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -259,8 +259,8 @@ const cowswapRelayerApproval = useRelayerApprovalTx(
   props.trading.isCowswapTrade
 );
 
-const pools = computed<SubgraphPoolBase[]>(() => {
-  return props.trading.sor.pools.value;
+const pools = computed<BasePool[]>(() => {
+  return props.trading.sor.newPools.value;
 });
 
 const wrapType = computed(() =>
@@ -777,7 +777,8 @@ watch(blockNumber, () => {
       :addressOut="trading.tokenOut.value.address"
       :amountOut="trading.tokenOutAmountInput.value"
       :pools="pools"
-      :sorReturn="trading.sor.sorReturn.value"
+      :onchainQuote="trading.sor.onchainQuote.value.toString()"
+      :swapInfo="trading.sor.newSorReturn.value"
       class="mt-3"
     />
   </BalModal>

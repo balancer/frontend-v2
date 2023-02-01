@@ -1,6 +1,7 @@
 import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sdk';
 import {
   BasePool,
+  OnChainPoolDataEnricher,
   SmartOrderRouter,
   SubgraphPoolProvider,
   SwapInfo,
@@ -36,6 +37,7 @@ import {
   wrap,
   WrapType,
 } from '@/lib/utils/balancer/wrapper';
+import template from '@/lib/utils/template';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -179,10 +181,27 @@ export default function useSor({
       configService.network.subgraph
     );
 
+    const rpcUrl = template(
+      configService.getNetworkConfig(configService.network.key).rpc,
+      {
+        INFURA_KEY: configService.env.INFURA_PROJECT_ID,
+        ALCHEMY_KEY: configService.env.ALCHEMY_KEY,
+      }
+    );
+
+    const SOR_QUERIES = '0x40f7218fa50ead995c4343eB0bB46dD414F9da7A';
+
+    const onChainPoolDataEnricher = new OnChainPoolDataEnricher(
+      configService.network.addresses.vault,
+      SOR_QUERIES,
+      rpcUrl
+    );
+
     smartOrderRouter = new SmartOrderRouter({
       chainId: configService.network.chainId,
       provider: rpcProviderService.jsonProvider,
       poolDataProviders: subgraphPoolDataService,
+      poolDataEnrichers: onChainPoolDataEnricher,
     });
 
     fetchPools();
@@ -389,11 +408,25 @@ export default function useSor({
         tokenOutAmountScaled
       );
 
+      const tokenOutAmount = TokenAmount.fromHumanAmount(tokenOut, amount);
+
+      const swapInfo: SwapInfo = await smartOrderRouter.getSwapsWithPools(
+        tokenIn,
+        tokenOut,
+        SwapKind.GivenOut,
+        tokenOutAmount,
+        newPools.value
+      );
+
+      newSorReturn.value = swapInfo;
+      onchainQuote.value = (
+        await swapInfo.swap.query(provider.value)
+      ).toSignificant(4);
       sorReturn.value = swapReturn; // TO DO - is it needed?
 
       let tokenInAmount = swapReturn.returnAmount;
       tokenInAmountInput.value = tokenInAmount.gt(0)
-        ? formatAmount(formatUnits(tokenInAmount, tokenInDecimals))
+        ? formatAmount(swapInfo.quote.toSignificant())
         : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -570,7 +603,7 @@ export default function useSor({
         tokenOutDecimals
       );
       const minAmount = getMinOut(tokenOutAmount);
-      const sr: SorReturn = sorReturn.value as SorReturn;
+      const sr: SwapInfo = newSorReturn.value as SwapInfo;
 
       try {
         const tx = await swapIn(sr, tokenInAmountScaled, minAmount);
@@ -591,7 +624,7 @@ export default function useSor({
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
-      const sr: SorReturn = sorReturn.value as SorReturn;
+      const sr: SwapInfo = newSorReturn.value as SwapInfo;
       const tokenOutAmountScaled = parseFixed(
         tokenOutAmountInput.value,
         tokenOutDecimals

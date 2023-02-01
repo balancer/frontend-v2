@@ -1,4 +1,4 @@
-import { PoolType } from '../../../types';
+import { PoolType, SwapKind } from '../../../types';
 import { Token, TokenAmount, BigintIsh } from '../../';
 import { BasePool } from '../';
 import { RawComposableStablePool } from '../../../data/types';
@@ -22,4 +22,5 @@ export declare class StablePool implements BasePool {
     swapGivenOut(tokenIn: Token, tokenOut: Token, swapAmount: TokenAmount): TokenAmount;
     subtractSwapFeeAmount(amount: TokenAmount): TokenAmount;
     addSwapFeeAmount(amount: TokenAmount): TokenAmount;
+    getLimitAmountSwap(tokenIn: Token, tokenOut: Token, swapKind: SwapKind): bigint;
 }

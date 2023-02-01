@@ -15,6 +15,7 @@ export declare class PathGraph {
         tokenOut: Token;
         pathConfig?: Partial<PathGraphTraversalConfig>;
     }): Path[];
+    private sortAndFilterPaths;
     private buildPoolAddressMap;
     private addAllTokensAsGraphNodes;
     private addTokenPairsAsGraphEdges;
@@ -43,4 +44,5 @@ export declare class PathGraph {
     private isValidPath;
     private getIdForPath;
     private filterVolatilePools;
+    private getLimitAmountSwapForPath;
 }

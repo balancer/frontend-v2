@@ -1,8 +1,8 @@
+import { SwapInfo } from '@balancer/sdk';
 import { BatchSwapStep, SwapType, SwapV2 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 
-import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import {
   swapService,
   SwapToken,
@@ -10,12 +10,12 @@ import {
 } from '@/services/swap/swap.service';
 
 export async function swapIn(
-  sorReturn: SorReturn,
+  swapInfo: SwapInfo,
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
 ): Promise<TransactionResponse> {
-  const tokenInAddress = sorReturn.result.tokenIn;
-  const tokenOutAddress = sorReturn.result.tokenOut;
+  const tokenInAddress = swapInfo.swap.inputAmount.token.address;
+  const tokenOutAddress = swapInfo.swap.outputAmount.token.address;
 
   const tokenIn: SwapToken = {
     address: tokenInAddress,
@@ -32,18 +32,18 @@ export async function swapIn(
   return swapService.batchSwapV2(
     tokenIn,
     tokenOut,
-    sorReturn.result.swaps,
-    sorReturn.result.tokenAddresses
+    swapInfo.swap.swaps,
+    swapInfo.swap.assets
   );
 }
 
 export async function swapOut(
-  sorReturn: SorReturn,
+  swapInfo: SwapInfo,
   tokenInAmountMax: BigNumber,
   tokenOutAmount: BigNumber
 ): Promise<TransactionResponse> {
-  const tokenInAddress = sorReturn.result.tokenIn;
-  const tokenOutAddress = sorReturn.result.tokenOut;
+  const tokenInAddress = swapInfo.swap.inputAmount.token.address;
+  const tokenOutAddress = swapInfo.swap.outputAmount.token.address;
 
   const tokenIn: SwapToken = {
     address: tokenInAddress,
@@ -60,8 +60,8 @@ export async function swapOut(
   return swapService.batchSwapV2(
     tokenIn,
     tokenOut,
-    sorReturn.result.swaps,
-    sorReturn.result.tokenAddresses
+    swapInfo.swap.swaps,
+    swapInfo.swap.assets
   );
 }
 

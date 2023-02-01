@@ -221,6 +221,12 @@ function formatShare(share: number): string {
         <div>
           <div class="flex justify-between text-xs">
             <div>
+              <div
+                v-if="props.swapInfo.swap.swapKind === SwapKind.GivenOut"
+                class="font-semibold"
+              >
+                Onchain: {{ props.onchainQuote }}
+              </div>
               <div class="font-semibold">
                 {{ input.amount }}
               </div>
@@ -229,8 +235,13 @@ function formatShare(share: number): string {
               </div>
             </div>
             <div class="flex flex-col items-end">
-              <div class="font-semibold">Onchain: {{ props.onchainQuote }}</div>
-              <div class="font-semibold">SOR: {{ output.amount }}</div>
+              <div
+                v-if="props.swapInfo.swap.swapKind === SwapKind.GivenIn"
+                class="font-semibold"
+              >
+                Onchain: {{ props.onchainQuote }}
+              </div>
+              <div class="font-semibold">{{ output.amount }}</div>
               <div>
                 {{ output.symbol }}
               </div>

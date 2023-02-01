@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch from 'isomorphic-fetch';
 import { ZERO_ADDRESS } from './constants';
 import { hexlify } from '@ethersproject/bytes';
 export async function jsonRpcFetch({ rpcUrl, from = ZERO_ADDRESS, to, contractInterface, functionFragment, values, options, }) {

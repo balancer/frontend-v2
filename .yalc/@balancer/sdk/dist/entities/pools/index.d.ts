@@ -1,4 +1,4 @@
-import { PoolType } from '../../types';
+import { PoolType, SwapKind } from '../../types';
 import { Token, TokenAmount } from '../';
 import { RawPool } from '../../data/types';
 export interface BasePool {
@@ -10,6 +10,7 @@ export interface BasePool {
     getNormalizedLiquidity(tokenIn: Token, tokenOut: Token): bigint;
     swapGivenIn(tokenIn: Token, tokenOut: Token, swapAmount: TokenAmount): TokenAmount;
     swapGivenOut(tokenIn: Token, tokenOut: Token, swapAmount: TokenAmount): TokenAmount;
+    getLimitAmountSwap(tokenIn: Token, tokenOut: Token, swapKind: SwapKind): bigint;
 }
 export interface BasePoolFactory {
     isPoolForFactory(pool: RawPool): boolean;

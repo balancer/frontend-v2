@@ -9,9 +9,11 @@ export class TokenAmount {
         const rawAmount = parseUnits(humanAmount, token.decimals).toString();
         return new TokenAmount(token, rawAmount);
     }
-    static fromScale18Amount(token, scale18Amount) {
+    static fromScale18Amount(token, scale18Amount, divUp) {
         const scalar = BigInt(10) ** BigInt(18 - token.decimals);
-        const rawAmount = BigInt(scale18Amount) / scalar;
+        const rawAmount = divUp
+            ? 1n + (BigInt(scale18Amount) - 1n) / scalar
+            : BigInt(scale18Amount) / scalar;
         return new TokenAmount(token, rawAmount);
     }
     constructor(token, amount) {

@@ -1,4 +1,5 @@
-import { PoolType } from '../types';
+import { TokenAmount } from '../entities';
+import { PoolType, SwapKind } from '../types';
 const DEFAULT_MAX_PATHS_PER_TOKEN_PAIR = 2;
 export class PathGraph {
     constructor() {
@@ -52,7 +53,6 @@ export class PathGraph {
         }).sort((a, b) => (a.length < b.length ? -1 : 1));
         const paths = [];
         const selectedPathIds = [];
-        let seenPoolAddresses = [];
         while (paths.length < config.approxPathsToReturn) {
             // the tokenPairIndex refers to the nth most liquid path for a token
             // pair x -> y. maxPathsPerTokenPair is provided as a config on graph init
@@ -62,37 +62,14 @@ export class PathGraph {
                         tokenPath: tokenPaths[i],
                         tokenPairIndex: idx,
                     });
-                    if (this.isValidPath({ path, seenPoolAddresses, selectedPathIds, config })) {
-                        seenPoolAddresses = [
-                            ...seenPoolAddresses,
-                            ...path.map(segment => segment.pool.address),
-                        ];
+                    if (this.isValidPath({ path, seenPoolAddresses: [], selectedPathIds, config })) {
                         selectedPathIds.push(this.getIdForPath(path));
                         paths.push(path);
                     }
                 }
             }
-            // the assumption we make here is that if we are going to re-use a pool,
-            // the outcome will most likely be better if we reuse stable pools over
-            // volatile pools. If there are stable pools in the seen list, we remove
-            // them and rerun the traversal.
-            if (paths.length < config.approxPathsToReturn && seenPoolAddresses.length > 0) {
-                const volatilePoolAddresses = this.filterVolatilePools(seenPoolAddresses);
-                if (volatilePoolAddresses.length > 0 &&
-                    volatilePoolAddresses.length < seenPoolAddresses.length) {
-                    seenPoolAddresses = volatilePoolAddresses;
-                }
-                else {
-                    seenPoolAddresses = [];
-                }
-            }
-            else {
-                // we have either found enough paths, or found no new paths for
-                // for an entire iteration
-                break;
-            }
         }
-        return paths.map(path => {
+        return this.sortAndFilterPaths(paths).map(path => {
             const pathTokens = [...path.map(segment => segment.tokenOut)];
             pathTokens.unshift(path[0].tokenIn);
             return {
@@ -100,6 +77,38 @@ export class PathGraph {
                 pools: path.map(segment => segment.pool),
             };
         });
+    }
+    sortAndFilterPaths(paths) {
+        const pathsWithLimits = paths
+            .map(path => {
+            let limit = 0n;
+            try {
+                limit = this.getLimitAmountSwapForPath(path, SwapKind.GivenIn);
+            }
+            catch {
+                // TODO: remove this once bpt swaps are implemented on the stable pool
+            }
+            return { path, limit };
+        })
+            .sort((a, b) => (a.limit < b.limit ? 1 : -1));
+        const filtered = [];
+        let seenPools = [];
+        // Remove any paths with duplicate pools. since the paths are now sorted by limit,
+        // selecting the first path will always be the optimal.
+        for (const { path } of pathsWithLimits) {
+            let isValid = true;
+            for (const segment of path) {
+                if (seenPools.includes(segment.pool.id)) {
+                    isValid = false;
+                    break;
+                }
+            }
+            if (isValid) {
+                filtered.push(path);
+                seenPools = [...seenPools, ...path.map(segment => segment.pool.id)];
+            }
+        }
+        return filtered;
     }
     buildPoolAddressMap(pools) {
         for (const pool of pools) {
@@ -291,6 +300,21 @@ export class PathGraph {
             }
         }
         return filtered;
+    }
+    getLimitAmountSwapForPath(path, swapKind) {
+        let limit = path[path.length - 1].pool.getLimitAmountSwap(path[path.length - 1].tokenIn, path[path.length - 1].tokenOut, swapKind);
+        for (let i = path.length - 2; i >= 0; i--) {
+            const poolLimitExactIn = path[i].pool.getLimitAmountSwap(path[i].tokenIn, path[i].tokenOut, SwapKind.GivenIn);
+            const poolLimitExactOut = path[i].pool.getLimitAmountSwap(path[i].tokenIn, path[i].tokenOut, SwapKind.GivenOut);
+            if (poolLimitExactOut <= limit) {
+                limit = poolLimitExactIn;
+            }
+            else {
+                const pulledLimit = path[i].pool.swapGivenOut(path[i].tokenIn, path[i].tokenOut, TokenAmount.fromRawAmount(path[i].tokenOut, limit)).amount;
+                limit = pulledLimit > poolLimitExactIn ? poolLimitExactIn : pulledLimit;
+            }
+        }
+        return limit;
     }
 }
 //# sourceMappingURL=pathGraph.js.map

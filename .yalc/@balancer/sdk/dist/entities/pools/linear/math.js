@@ -67,7 +67,7 @@ export function _calcMainInPerBptOut(bptOut, mainBalance, wrappedBalance, bptSup
     const newMainBalance = _fromNominal(afterNominalMain, params);
     return newMainBalance - mainBalance;
 }
-export function _calcWrappedInPerMainOut(mainOut, mainBalance, wrappedBalance, bptSupply, params) {
+export function _calcWrappedInPerMainOut(mainOut, mainBalance, params) {
     const previousNominalMain = _toNominal(mainBalance, params);
     const afterNominalMain = _toNominal(mainBalance - mainOut, params);
     const deltaNominalMain = previousNominalMain - afterNominalMain;

@@ -39,7 +39,7 @@ export function _calcOutGivenIn(amplificationParameter, balances, tokenIndexIn, 
     return balances[tokenIndexOut] - finalBalanceOut - 1n;
 }
 export function _calcInGivenOut(amplificationParameter, balances, tokenIndexIn, tokenIndexOut, tokenAmountOut, invariant) {
-    balances[tokenIndexIn] = balances[tokenIndexIn] - tokenAmountOut;
+    balances[tokenIndexOut] = balances[tokenIndexOut] - tokenAmountOut;
     const finalBalanceIn = _getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, invariant, tokenIndexIn);
     balances[tokenIndexOut] = balances[tokenIndexOut] - tokenAmountOut;
     return finalBalanceIn - balances[tokenIndexIn] + 1n;
@@ -55,7 +55,7 @@ export function _getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationP
     sum = sum - balances[tokenIndex];
     const inv2 = invariant * invariant;
     const c = (inv2 / (ampTimesTotal * P_D)) * AMP_PRECISION * balances[tokenIndex];
-    const b = sum + ((invariant / ampTimesTotal) * AMP_PRECISION);
+    const b = sum + (invariant / ampTimesTotal) * AMP_PRECISION;
     let prevTokenBalance = 0n;
     let tokenBalance = (inv2 + c) / (invariant + b);
     for (let i = 0; i < 255; i++) {

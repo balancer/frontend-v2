@@ -69,7 +69,7 @@ export class WeightedPool {
         if (swapAmount.amount > this.getLimitAmountSwap(tokenIn, tokenOut, SwapKind.GivenOut))
             throw new Error('Swap amount exceeds the pool limit');
         const tokenInScale18 = _calcInGivenOut(tIn.scale18, tIn.weight, tOut.scale18, tOut.weight, swapAmount.scale18, this.poolTypeVersion);
-        const tokenInAmount = TokenAmount.fromScale18Amount(tokenIn, tokenInScale18);
+        const tokenInAmount = TokenAmount.fromScale18Amount(tokenIn, tokenInScale18, true);
         const amountWithFee = this.addSwapFeeAmount(tokenInAmount);
         return amountWithFee;
     }

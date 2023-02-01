@@ -1,4 +1,4 @@
-import { PoolType } from '../../../types';
+import { PoolType, SwapKind } from '../../../types';
 import { BigintIsh, Token, TokenAmount } from '../../';
 import { BasePool } from '../../pools';
 import { RawLinearPool } from '../../../data/types';
@@ -34,6 +34,7 @@ export declare class LinearPool implements BasePool {
     getNormalizedLiquidity(tokenIn: Token, tokenOut: Token): bigint;
     swapGivenIn(tokenIn: Token, tokenOut: Token, swapAmount: TokenAmount): TokenAmount;
     swapGivenOut(tokenIn: Token, tokenOut: Token, swapAmount: TokenAmount): TokenAmount;
+    getLimitAmountSwap(tokenIn: Token, tokenOut: Token, swapKind: SwapKind): bigint;
     private _exactMainTokenInForWrappedOut;
     private _exactMainTokenInForBptOut;
     private _exactWrappedTokenInForMainOut;

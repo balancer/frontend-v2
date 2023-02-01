@@ -26,8 +26,7 @@
         "await-timeout": "^1.1.1",
         "decimal.js-light": "^2.5.1",
         "graphql-request": "^5.0.0",
-        "lodash.set": "^4.3.2",
-        "node-fetch": "^2.6.8"
+        "isomorphic-fetch": "^3.0.0"
     },
-    "yalcSig": "8add80edc1bdfe28975df7bafdb70dd4"
+    "yalcSig": "755323bb8000f5d14e8ea9e958246c4c"
 }
