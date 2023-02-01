@@ -3,20 +3,7 @@ import { useUserPoolPercentage } from './useUserPoolPercentage';
 import { aPool } from '@tests/unit/builders/pool.builders';
 import { mountComposable } from '@tests/mount-helpers';
 
-const stakedShares = '5';
 const bptBalance = '10';
-
-vi.mock('@/composables/staking/useStaking', () => {
-  return {
-    default: () => {
-      return {
-        userData: {
-          stakedSharesForProvidedPool: ref(stakedShares),
-        },
-      };
-    },
-  };
-});
 
 vi.mock('@/providers/tokens.provider', () => {
   return {

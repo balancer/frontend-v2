@@ -1,26 +1,13 @@
 import { removeBptFrom } from '@/composables/usePool';
-import { BoostedPoolMock } from '@/__mocks__/pool';
-import { ref } from 'vue';
-import { useTokenBreakdown } from './useTokenBreakdown';
-import { mountComposable } from '@tests/mount-helpers';
 import * as tokensProvider from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
+import { BoostedPoolMock } from '@/__mocks__/pool';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
+import { mountComposable } from '@tests/mount-helpers';
+import { ref } from 'vue';
+import { useTokenBreakdown } from './useTokenBreakdown';
 
-const stakedShares = '5';
 const bptBalance = '10';
-
-vi.mock('@/composables/staking/useStaking', () => {
-  return {
-    default: () => {
-      return {
-        userData: {
-          stakedSharesForProvidedPool: ref(stakedShares),
-        },
-      };
-    },
-  };
-});
 
 vi.mock('@/providers/tokens.provider', () => {
   return {

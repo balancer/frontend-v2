@@ -32,9 +32,7 @@ import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 import { PoolToken } from '@/services/pool/types';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
-import { getAddressFromPoolId } from '@/lib/utils';
 
 /**
  * STATE
@@ -253,13 +251,7 @@ watch(poolQuery.error, () => {
               v-text="$t('poolComposition.title')"
             />
             <BalLoadingBlock v-if="loadingPool" class="h-64" />
-
-            <StakingProvider
-              v-else-if="pool"
-              :poolAddress="getAddressFromPoolId(poolId)"
-            >
-              <PoolCompositionCard :pool="pool" />
-            </StakingProvider>
+            <PoolCompositionCard v-else-if="pool" :pool="pool" />
           </div>
 
           <div ref="intersectionSentinel" />

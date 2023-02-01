@@ -1,21 +1,9 @@
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import { fireEvent, screen, within } from '@testing-library/vue';
 import { renderComponent } from '@tests/renderComponent';
-import { ref } from 'vue';
 import PoolCompositionCard from './PoolCompositionCard.vue';
 
 vi.mock('@/providers/tokens.provider');
-vi.mock('@/composables/staking/useStaking', () => {
-  return {
-    default: () => {
-      return {
-        userData: {
-          stakedSharesForProvidedPool: ref(1000),
-        },
-      };
-    },
-  };
-});
 
 function renderCard() {
   renderComponent(PoolCompositionCard, {

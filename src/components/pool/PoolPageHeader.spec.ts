@@ -15,18 +15,6 @@ vi.mock('@ethersproject/address', () => {
 
 vi.mock('@/providers/tokens.provider');
 
-vi.mock('@/composables/staking/useStaking', () => {
-  return {
-    default: () => {
-      return {
-        userData: {
-          hasNonPrefGaugeBalances: false,
-        },
-      };
-    },
-  };
-});
-
 vi.mock('@/services/web3/useWeb3');
 
 describe('PoolPageHeader', () => {
