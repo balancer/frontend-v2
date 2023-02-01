@@ -164,13 +164,14 @@ export default function useJoinExit({
     const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
     const returnAmount = swapInfo.value?.returnAmount || BigNumber.from('0');
-    const hasReturnAmount = returnAmount.gt(0);
 
-    if (exactIn.value && hasReturnAmount) {
+    if (returnAmount.isZero()) return;
+
+    if (exactIn.value) {
       tokenOutAmountInput.value = bnum(
         formatUnits(returnAmount, tokenOutDecimals)
       ).toFixed(6, OldBigNumber.ROUND_DOWN);
-    } else if (hasReturnAmount) {
+    } else {
       tokenInAmountInput.value = bnum(
         formatUnits(returnAmount, tokenInDecimals)
       ).toFixed(6, OldBigNumber.ROUND_DOWN);

@@ -245,17 +245,28 @@ export default function useSor({
           tokenOutAddress.toLowerCase()
         );
 
-        const tokenInAmount = BigNumber.from(deltas[tokenInPosition]).abs();
-
-        const tokenOutAmount = BigNumber.from(deltas[tokenOutPosition]).abs();
+        let tokenInAmount = BigNumber.from(deltas[tokenInPosition]).abs();
+        let tokenOutAmount = BigNumber.from(deltas[tokenOutPosition]).abs();
 
         if (swapType === SwapType.SwapExactOut) {
+          tokenInAmount = await mutateAmount({
+            amount: tokenInAmount,
+            address: tokenInAddressInput.value,
+            isInputToken: false,
+          });
+
           tokenInAmountInput.value = tokenInAmount.gt(0)
             ? formatAmount(formatUnits(tokenInAmount, tokenInDecimals))
             : '';
         }
 
         if (swapType === SwapType.SwapExactIn) {
+          tokenOutAmount = await mutateAmount({
+            amount: tokenOutAmount,
+            address: tokenOutAddressInput.value,
+            isInputToken: false,
+          });
+
           tokenOutAmountInput.value = tokenOutAmount.gt(0)
             ? formatAmount(formatUnits(tokenOutAmount, tokenOutDecimals))
             : '';
@@ -341,7 +352,7 @@ export default function useSor({
         sorManager
       );
 
-      const tokenInAmountScaled = parseUnits(amount, tokenInDecimals);
+      let tokenInAmountScaled = parseUnits(amount, tokenInDecimals);
 
       console.log('[SOR Manager] swapExactIn');
 
@@ -354,7 +365,7 @@ export default function useSor({
         tokenInAmountScaled
       );
 
-      sorReturn.value = swapReturn; // TO DO - is it needed?
+      sorReturn.value = swapReturn;
       let tokenOutAmount = swapReturn.returnAmount;
 
       tokenOutAmountInput.value = tokenOutAmount.gt(0)
@@ -365,11 +376,18 @@ export default function useSor({
         priceImpact.value = 0;
         state.validationErrors.noSwaps = true;
       } else {
-        tokenOutAmount = await adjustedPiAmount(
-          tokenOutAmount,
-          tokenOutAddress
-        );
-
+        // If either in/out address is stETH we should mutate the value for the
+        // priceImpact calculation.
+        tokenInAmountScaled = await mutateAmount({
+          amount: tokenInAmountScaled,
+          address: tokenInAddress,
+          isInputToken: true,
+        });
+        tokenOutAmount = await mutateAmount({
+          amount: tokenOutAmount,
+          address: tokenOutAddress,
+          isInputToken: false,
+        });
         const priceImpactCalc = calcPriceImpact(
           tokenOutDecimals,
           tokenOutAmount,
@@ -386,7 +404,7 @@ export default function useSor({
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
       await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
 
-      const tokenOutAmountScaled = parseUnits(amount, tokenOutDecimals);
+      let tokenOutAmountScaled = parseUnits(amount, tokenOutDecimals);
 
       console.log('[SOR Manager] swapExactOut');
 
@@ -410,8 +428,18 @@ export default function useSor({
         priceImpact.value = 0;
         state.validationErrors.noSwaps = true;
       } else {
-        tokenInAmount = await adjustedPiAmount(tokenInAmount, tokenOutAddress);
-
+        // If either in/out address is stETH we should mutate the value for the
+        // priceImpact calculation.
+        tokenOutAmountScaled = await mutateAmount({
+          amount: tokenOutAmountScaled,
+          address: tokenOutAddress,
+          isInputToken: true,
+        });
+        tokenInAmount = await mutateAmount({
+          amount: tokenInAmount,
+          address: tokenInAddress,
+          isInputToken: false,
+        });
         const priceImpactCalc = calcPriceImpact(
           tokenInDecimals,
           tokenInAmount,
@@ -692,20 +720,33 @@ export default function useSor({
   }
 
   /**
-   * Under certain circumstance we need to adjust an amount
-   * for the price impact calc due to background wrapping taking place
-   * e.g. when trading weth to wstEth.
+   * mutateAmount
+   *
+   * Handles any conditions where the token in or out needs to be mutated for
+   * display purposes. The only case we have so far is if the token in or out
+   * is stETH, the actual return amount from the SOR is wstETH. So we need to
+   * convert the wstETH amount to stETH using the exchange rate.
+   *
+   * @param {BigNumber} amount - Amount to parse (could be tokenIn or tokenOut amount).
+   * @param {string} address - Token address for amount.
+   * @param {boolean} isInputToken - Is this the token being specified?
+   * @returns {BigNumber} A new amount if conditions are met or the same amount
+   * as passed in.
    */
-  async function adjustedPiAmount(
-    amount: BigNumber,
-    address: string,
-    isWrap = true
-  ): Promise<BigNumber> {
+  async function mutateAmount({
+    amount,
+    address,
+    isInputToken,
+  }: {
+    amount: BigNumber;
+    address: string;
+    isInputToken: boolean;
+  }): Promise<BigNumber> {
     if (
       isSameAddress(address, appNetworkConfig.addresses.stETH) &&
       isMainnet.value
     ) {
-      return convertStEthWrap({ amount, isWrap });
+      return convertStEthWrap({ amount, isWrap: isInputToken });
     }
     return amount;
   }
