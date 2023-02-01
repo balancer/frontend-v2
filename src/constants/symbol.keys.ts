@@ -9,5 +9,6 @@ export default {
     PoolStaking: 'provider.poolStaking',
     UserStaking: 'provider.userStaking',
     UserData: 'provider.userData',
+    UserPools: 'provider.userPools',
   },
 };

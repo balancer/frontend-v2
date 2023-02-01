@@ -49,8 +49,11 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
+  showActions?: boolean;
   columnStates?: Record<string, string>;
   skeletonClass?: string;
+  shares?: Record<string, string>;
+  boosts?: Record<string, string>;
 };
 
 /**
@@ -66,6 +69,7 @@ const props = withDefaults(defineProps<Props>(), {
   sortColumn: 'poolValue',
   hiddenColumns: () => [],
   showBoost: false,
+  showActions: false,
   columnStates: () => ({}),
   data: () => [],
   selectedTokens: () => [],
@@ -112,7 +116,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(pool.shares, {
+      fNum2(sharesFor(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -120,7 +124,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     align: 'right',
     id: 'myBalance',
     hidden: !props.showPoolShares,
-    sortKey: pool => Number(pool.shares),
+    sortKey: pool => Number(sharesFor(pool)),
     width: 160,
     cellClassName: 'font-numeric',
   },
@@ -157,12 +161,11 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   },
   {
     name: t('myBoost'),
-    accessor: pool =>
-      pool?.boost ? `${bnum(pool?.boost).toFixed(3)}x` : 'N/A',
+    accessor: pool => `${bnum(boostFor(pool)).toFixed(3)}x`,
     align: 'right',
     id: 'myBoost',
     hidden: !props.showBoost,
-    sortKey: pool => Number(pool?.boost || '0'),
+    sortKey: pool => Number(boostFor(pool)),
     width: 150,
     cellClassName: 'font-numeric',
   },
@@ -205,6 +208,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     accessor: 'actions',
     align: 'center',
     id: 'actions',
+    hidden: !props.showActions,
     width: 150,
   },
 ]);
@@ -234,6 +238,15 @@ function navigateToPoolMigration(pool: Pool) {
     },
     query: { returnRoute: 'home' },
   });
+}
+
+// Get user's BPT for given pool from shares map.
+function sharesFor(pool: Pool): string {
+  return props?.shares?.[pool.id] || '0';
+}
+
+function boostFor(pool: Pool): string {
+  return props?.boosts?.[pool.id] || '1';
 }
 
 function aprLabelFor(pool: Pool): string {

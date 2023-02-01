@@ -6,7 +6,8 @@ import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { fiatValueOf } from '@/composables/usePool';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
-import { computed, inject, InjectionKey, provide, reactive, ref } from 'vue';
+import { computed, InjectionKey, provide, reactive, ref } from 'vue';
+import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 
 const provider = () => {
@@ -60,13 +61,15 @@ const provider = () => {
   );
 
   // Total fiat value of staked shares.
-  const totalStakedValue = computed((): number => {
-    return Object.keys(stakedBptMap.value || {}).reduce((acc, poolId) => {
-      const pool = stakedPools.value.find(pool => pool.id === poolId);
-      if (!pool) return acc;
-      const bpt = stakedBptMap?.value?.[poolId] || '0';
-      return acc + Number(fiatValueOf(pool, bpt));
-    }, 0);
+  const totalStakedValue = computed((): string => {
+    return Object.keys(stakedBptMap.value || {})
+      .reduce((acc, poolId) => {
+        const pool = stakedPools.value.find(pool => pool.id === poolId);
+        if (!pool) return acc;
+        const bpt = stakedBptMap?.value?.[poolId] || '0';
+        return acc + Number(fiatValueOf(pool, bpt));
+      }, 0)
+      .toString();
   });
 
   // Is loading any user staking data?
@@ -89,16 +92,16 @@ const provider = () => {
 /**
  * Provide setup: response type + symbol.
  */
-export type Response = ReturnType<typeof provider>;
-export const UserStakingProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.UserStaking
-);
+export type UserStakingResponse = ReturnType<typeof provider>;
+export const UserStakingProviderSymbol: InjectionKey<UserStakingResponse> =
+  Symbol(symbolKeys.Providers.UserStaking);
 
-export function provideUserStaking() {
-  provide(UserStakingProviderSymbol, provider());
+export function provideUserStaking(): UserStakingResponse {
+  const _provider = provider();
+  provide(UserStakingProviderSymbol, _provider);
+  return _provider;
 }
 
-export function useUserStaking(): Response {
-  const defaultResponse = {} as Response;
-  return inject(UserStakingProviderSymbol, defaultResponse);
+export function useUserStaking(): UserStakingResponse {
+  return safeInject(UserStakingProviderSymbol);
 }

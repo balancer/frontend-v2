@@ -4,13 +4,14 @@ import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPool
 import VeBalPoolTable from '@/components/contextual/pages/pools/VeBalPoolTable.vue';
 import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import { useLock } from '@/composables/useLock';
-import StakingProvider from '@/providers/local/staking/staking.provider';
+import { providerUserPools } from '@/providers/local/user-pools.provider';
 import { provideUserStaking } from '@/providers/local/user-staking.provider';
 
 /**
  * PROVIDERS
  */
-provideUserStaking();
+const userStaking = provideUserStaking();
+providerUserPools(userStaking);
 
 /**
  * COMPOSABLES
@@ -19,25 +20,23 @@ const { lockPool, lock } = useLock();
 </script>
 
 <template>
-  <StakingProvider>
-    <PortfolioPageHero />
-    <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
-      <BalStack vertical>
-        <div class="px-4 xl:px-0">
-          <BalStack horizontal justify="between" align="center">
-            <h3>{{ $t('myLiquidityInBalancerPools') }}</h3>
-          </BalStack>
-        </div>
-        <BalStack vertical spacing="2xl">
-          <UnstakedPoolsTable />
-          <StakedPoolsTable />
-          <VeBalPoolTable
-            v-if="lockPool && Number(lock?.lockedAmount) > 0"
-            :lock="lock"
-            :lockPool="lockPool"
-          />
+  <PortfolioPageHero />
+  <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
+    <BalStack vertical>
+      <div class="px-4 xl:px-0">
+        <BalStack horizontal justify="between" align="center">
+          <h3>{{ $t('myLiquidityInBalancerPools') }}</h3>
         </BalStack>
+      </div>
+      <BalStack vertical spacing="2xl">
+        <UnstakedPoolsTable />
+        <StakedPoolsTable />
+        <VeBalPoolTable
+          v-if="lockPool && Number(lock?.lockedAmount) > 0"
+          :lock="lock"
+          :lockPool="lockPool"
+        />
       </BalStack>
-    </div>
-  </StakingProvider>
+    </BalStack>
+  </div>
 </template>

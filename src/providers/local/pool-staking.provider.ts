@@ -83,16 +83,36 @@ const provider = (poolId: string) => {
     return boostsMap[poolId];
   });
 
+  // Addresses of all pool gauges.
+  const gaugeAddresses = computed(
+    (): string[] => poolGauges.value?.pool.gauges.map(gauge => gauge.id) || []
+  );
+
+  // Map of user gauge addresses -> balance.
+  const userGaugeSharesMap = computed((): Record<string, string> => {
+    if (!userGaugeShares.value) return {};
+
+    return userGaugeShares.value.reduce((acc, share) => {
+      acc[share.gauge.id] = share.balance;
+      return acc;
+    }, {} as Record<string, string>);
+  });
+
   // Does the user have a balance in a non-preferential gauge
   const hasNonPrefGaugeBalance = computed((): boolean => {
-    if (!userGaugeShares.value || !preferentialGaugeAddress.value) return false;
+    if (
+      !poolGauges.value ||
+      !userGaugeShares.value ||
+      !preferentialGaugeAddress.value
+    )
+      return false;
 
     const _preferentialGaugeAddress = preferentialGaugeAddress.value;
 
-    return userGaugeShares.value.some(
-      gauge =>
-        !isSameAddress(gauge.gauge.id, _preferentialGaugeAddress) &&
-        bnum(gauge.balance).gt(0)
+    return gaugeAddresses.value.some(
+      gaugeAddress =>
+        !isSameAddress(gaugeAddress, _preferentialGaugeAddress) &&
+        bnum(userGaugeSharesMap.value[gaugeAddress] || '0').gt(0)
     );
   });
 
