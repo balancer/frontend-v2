@@ -252,7 +252,7 @@ export default function useSor({
           tokenInAmount = await mutateAmount({
             amount: tokenInAmount,
             address: tokenInAddressInput.value,
-            isTokenIn: true,
+            isInputToken: false,
           });
 
           tokenInAmountInput.value = tokenInAmount.gt(0)
@@ -264,7 +264,7 @@ export default function useSor({
           tokenOutAmount = await mutateAmount({
             amount: tokenOutAmount,
             address: tokenOutAddressInput.value,
-            isTokenIn: false,
+            isInputToken: false,
           });
 
           tokenOutAmountInput.value = tokenOutAmount.gt(0)
@@ -352,7 +352,7 @@ export default function useSor({
         sorManager
       );
 
-      const tokenInAmountScaled = parseUnits(amount, tokenInDecimals);
+      let tokenInAmountScaled = parseUnits(amount, tokenInDecimals);
 
       console.log('[SOR Manager] swapExactIn');
 
@@ -365,8 +365,8 @@ export default function useSor({
         tokenInAmountScaled
       );
 
-      sorReturn.value = swapReturn; // TO DO - is it needed?
-      const tokenOutAmount = swapReturn.returnAmount;
+      sorReturn.value = swapReturn;
+      let tokenOutAmount = swapReturn.returnAmount;
 
       tokenOutAmountInput.value = tokenOutAmount.gt(0)
         ? formatAmount(formatUnits(tokenOutAmount, tokenOutDecimals))
@@ -376,6 +376,18 @@ export default function useSor({
         priceImpact.value = 0;
         state.validationErrors.noSwaps = true;
       } else {
+        // If either in/out address is stETH we should mutate the value for the
+        // priceImpact calculation.
+        tokenInAmountScaled = await mutateAmount({
+          amount: tokenInAmountScaled,
+          address: tokenInAddress,
+          isInputToken: true,
+        });
+        tokenOutAmount = await mutateAmount({
+          amount: tokenOutAmount,
+          address: tokenOutAddress,
+          isInputToken: false,
+        });
         const priceImpactCalc = calcPriceImpact(
           tokenOutDecimals,
           tokenOutAmount,
@@ -392,7 +404,7 @@ export default function useSor({
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
       await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
 
-      const tokenOutAmountScaled = parseUnits(amount, tokenOutDecimals);
+      let tokenOutAmountScaled = parseUnits(amount, tokenOutDecimals);
 
       console.log('[SOR Manager] swapExactOut');
 
@@ -407,7 +419,7 @@ export default function useSor({
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
 
-      const tokenInAmount = swapReturn.returnAmount;
+      let tokenInAmount = swapReturn.returnAmount;
       tokenInAmountInput.value = tokenInAmount.gt(0)
         ? formatAmount(formatUnits(tokenInAmount, tokenInDecimals))
         : '';
@@ -416,6 +428,18 @@ export default function useSor({
         priceImpact.value = 0;
         state.validationErrors.noSwaps = true;
       } else {
+        // If either in/out address is stETH we should mutate the value for the
+        // priceImpact calculation.
+        tokenOutAmountScaled = await mutateAmount({
+          amount: tokenOutAmountScaled,
+          address: tokenOutAddress,
+          isInputToken: true,
+        });
+        tokenInAmount = await mutateAmount({
+          amount: tokenInAmount,
+          address: tokenInAddress,
+          isInputToken: false,
+        });
         const priceImpactCalc = calcPriceImpact(
           tokenInDecimals,
           tokenInAmount,
@@ -705,24 +729,24 @@ export default function useSor({
    *
    * @param {BigNumber} amount - Amount to parse (could be tokenIn or tokenOut amount).
    * @param {string} address - Token address for amount.
-   * @param {boolean} isTokenIn - Is the token amount/address the tokenIn.
+   * @param {boolean} isInputToken - Is this the token being specified?
    * @returns {BigNumber} A new amount if conditions are met or the same amount
    * as passed in.
    */
   async function mutateAmount({
     amount,
     address,
-    isTokenIn,
+    isInputToken,
   }: {
     amount: BigNumber;
     address: string;
-    isTokenIn: boolean;
+    isInputToken: boolean;
   }): Promise<BigNumber> {
     if (
       isSameAddress(address, appNetworkConfig.addresses.stETH) &&
       isMainnet.value
     ) {
-      return convertStEthWrap({ amount, isWrap: isTokenIn });
+      return convertStEthWrap({ amount, isWrap: isInputToken });
     }
     return amount;
   }
