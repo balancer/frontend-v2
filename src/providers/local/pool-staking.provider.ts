@@ -1,19 +1,19 @@
 import usePoolGaugesQuery from '@/composables/queries/usePoolGaugesQuery';
-import usePoolStakedSharesQuery from '@/composables/queries/usePoolStakedSharesQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
-import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
-import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
-import { POOLS } from '@/constants/pools';
+import usePoolStakedSharesQuery from '@/composables/queries/usePoolStakedSharesQuery';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
-import { safeInject } from '@/providers/inject';
+import { computed, InjectionKey, provide } from 'vue';
+import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
+import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import useWeb3 from '@/services/web3/useWeb3';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { parseUnits } from '@ethersproject/units';
-import { computed, InjectionKey, provide } from 'vue';
 import { useTokens } from '../tokens.provider';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import useWeb3 from '@/services/web3/useWeb3';
+import { POOLS } from '@/constants/pools';
+import { safeInject } from '../inject';
 
 /**
  * PoolStakingProvider
