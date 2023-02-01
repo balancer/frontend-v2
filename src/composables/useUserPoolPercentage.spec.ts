@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useUserPoolPercentage } from './useUserPoolPercentage';
 import { aPool } from '@tests/unit/builders/pool.builders';
-import { mountComposable } from '@/tests/mount-helpers';
+import { mountComposable } from '@tests/mount-helpers';
 
 const stakedShares = '5';
 const bptBalance = '10';
