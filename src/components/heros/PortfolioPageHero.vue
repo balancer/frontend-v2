@@ -19,8 +19,8 @@ import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
 const router = useRouter();
 const { fNum2 } = useNumbers();
 const { isWalletReady, isWalletConnecting } = useWeb3();
-const { totalInvestedAmount, isLoadingUserPools } = useUserPools();
-const { lockFiatValue, isLoadingLock } = useLock();
+const { totalInvestedValue, isLoadingUserPools } = useUserPools();
+const { totalLockedValue, isLoadingLock } = useLock();
 const { networkSlug } = useNetwork();
 const {
   userData: {
@@ -49,14 +49,14 @@ const isStakingLoading = computed(() => {
 
 const totalInvestedLabel = computed((): string => {
   const value = bnum(totalInvestedAmount.value || '0')
-    .plus(lockFiatValue.value)
+    .plus(totalLockedValue.value)
     .plus(totalStakedFiatValue.value)
     .toString();
   return fNum2(value, FNumFormats.fiat);
 });
 
 const totalVeBalLabel = computed((): string =>
-  fNum2(lockFiatValue.value, FNumFormats.fiat)
+  fNum2(totalLockedValue.value, FNumFormats.fiat)
 );
 
 const isLoadingLockAndStaking = computed(
@@ -95,8 +95,8 @@ const isLoadingTotalValue = computed(
           class="group flex items-center px-3 h-8 text-sm font-medium text-yellow-500 hover:text-white focus:text-white rounded-tr rounded-bl border border-yellow-500 transition-colors cursor-pointer vebal-banner"
           @click="router.push({ name: 'vebal', params: { networkSlug } })"
         >
-          <span v-if="lockFiatValue === '0'"
-            >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
+          <span v-if="totalLockedValue === '0'"
+            >{{ totalLockedValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
           >
           <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
         </div>

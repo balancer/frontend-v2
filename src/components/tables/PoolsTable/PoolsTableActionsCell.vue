@@ -4,13 +4,13 @@ import { computed, toRef } from 'vue';
 import { isVeBalPool, usePool } from '@/composables/usePool';
 import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
-import { PoolWithShares } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: PoolWithShares;
+  pool: Pool;
   poolsType?: 'unstaked' | 'staked';
 };
 
@@ -22,8 +22,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'click:stake', value: PoolWithShares): void;
-  (e: 'click:migrate', value: PoolWithShares): void;
+  (e: 'click:stake', value: Pool): void;
+  (e: 'click:migrate', value: Pool): void;
 }>();
 /**
  * COMPOSABLES

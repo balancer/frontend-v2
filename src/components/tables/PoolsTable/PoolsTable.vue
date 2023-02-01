@@ -25,7 +25,7 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { Pool, PoolWithShares } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
@@ -38,7 +38,7 @@ import TokensBlack from '@/assets/images/icons/tokens_black.svg';
  * TYPES
  */
 type Props = {
-  data?: Pool[] | PoolWithShares[];
+  data?: Pool[];
   poolsType?: 'unstaked' | 'staked';
   isLoading?: boolean;
   isLoadingMore?: boolean;
@@ -92,7 +92,7 @@ const wideCompositionWidth = computed(() =>
 /**
  * DATA
  */
-const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
+const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -216,7 +216,7 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
+function handleRowClick(pool: Pool, inNewTab?: boolean) {
   trackGoal(Goals.ClickPoolsTableRow);
   const route = router.resolve({
     name: 'pool',
@@ -225,7 +225,7 @@ function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
   inNewTab ? window.open(route.href) : router.push(route);
 }
 
-function navigateToPoolMigration(pool: PoolWithShares) {
+function navigateToPoolMigration(pool: Pool) {
   router.push({
     name: 'migrate-pool',
     params: {
@@ -236,7 +236,7 @@ function navigateToPoolMigration(pool: PoolWithShares) {
   });
 }
 
-function aprLabelFor(pool: PoolWithShares): string {
+function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
@@ -247,7 +247,7 @@ function lockedUntil(lockEndDate?: number) {
   return lockEndDate ? format(lockEndDate, PRETTY_DATE_FORMAT) : '—';
 }
 
-function iconAddresses(pool: PoolWithShares) {
+function iconAddresses(pool: Pool) {
   return POOLS.Metadata[pool.id]?.hasIcon
     ? [pool.address]
     : orderedTokenAddresses(pool);

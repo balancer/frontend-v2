@@ -118,6 +118,7 @@ const QUERY_KEYS = {
         account: Ref<string>
       ) => ['user', 'pool', 'stakedShares', { poolGauges, account }],
     },
+    Pools: (account: Ref<string>) => ['user', 'pools', { account }],
     Gauges: (account: Ref<string>, poolAddress: Ref<string> | undefined) => [
       'user',
       'gauges',

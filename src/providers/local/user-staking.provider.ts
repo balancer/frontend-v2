@@ -3,6 +3,7 @@
  */
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
+import { fiatValueOf } from '@/composables/usePool';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
 import { computed, inject, InjectionKey, provide, reactive, ref } from 'vue';
@@ -58,6 +59,16 @@ const provider = () => {
     (): Pool[] => _stakedPools.value?.pages[0].pools || []
   );
 
+  // Total fiat value of staked shares.
+  const totalStakedValue = computed((): number => {
+    return Object.keys(stakedBptMap.value || {}).reduce((acc, poolId) => {
+      const pool = stakedPools.value.find(pool => pool.id === poolId);
+      if (!pool) return acc;
+      const bpt = stakedBptMap?.value?.[poolId] || '0';
+      return acc + Number(fiatValueOf(pool, bpt));
+    }, 0);
+  });
+
   // Is loading any user staking data?
   const isLoading = computed(
     (): boolean =>
@@ -70,6 +81,7 @@ const provider = () => {
     stakedPools,
     poolBoostsMap,
     stakedBptMap,
+    totalStakedValue,
     isLoading,
   };
 };
