@@ -23,12 +23,6 @@ export default function usePropMaxJoin(
    */
   const { balances } = useTokens();
 
-  console.log({
-    pool,
-    tokensIn,
-    useNativeAsset,
-  });
-
   /**
    * COMPUTED
    */
@@ -56,18 +50,23 @@ export default function usePropMaxJoin(
       config.network.addresses.weth
     );
 
-    // For native asset's pool token balance, we use the WETH balance
+    // Set pool native asset balance to be the same as its WETH balance
     const balancesMap = {
-      [getAddress(config.network.nativeAsset.address)]: parseUnits(
+      [config.network.nativeAsset.address]: parseUnits(
         weth?.balance || '0',
         weth?.decimals || 18
       ),
     };
-    Object.keys(poolTokens.value).forEach(t => {
-      balancesMap[getAddress(t)] = parseUnits(
-        poolTokens.value[t].balance,
-        poolTokens.value[t].decimals || 18
-      );
+
+    Object.keys(poolTokens.value).forEach(item => {
+      const address = getAddress(item);
+      const poolToken = selectByAddress(poolTokens.value, address);
+      if (poolToken) {
+        balancesMap[address] = parseUnits(
+          poolToken.balance,
+          poolToken.decimals || 18
+        );
+      }
     });
 
     return balancesMap;
@@ -81,8 +80,14 @@ export default function usePropMaxJoin(
     return getAddress(tokenAddresses.value[index]);
   }
 
-  function ratioOf(address: string) {
-    return poolTokenBalances.value[address];
+  function ratioOf(address: string): BigNumber {
+    const poolBalance = selectByAddress(poolTokenBalances.value, address);
+    if (!poolBalance) {
+      throw new Error(
+        `Balance for token: ${address} was not found in pool token balances`
+      );
+    }
+    return poolBalance;
   }
 
   /**
@@ -92,20 +97,11 @@ export default function usePropMaxJoin(
    * @param {string} fixedAmount - The fixed amount in/out.
    * @param {number} index - The pool token index for the fixedAmount.
    */
-  function propAmountsGiven(
-    fixedAmount: string,
-    index: number,
-    // type: 'send',
-    fixedRatioOverride?: {
-      bps: number;
-      value: string;
-      buffer: number;
-    }
-  ): AmountIn[] {
+  function propAmountsGiven(fixedAmount: string, index: number): AmountIn[] {
     if (fixedAmount.trim() === '') return [];
 
     const fixedTokenAddress = tokenOf(index);
-    const fixedToken = tokensIn.value[fixedTokenAddress];
+    const fixedToken = selectByAddress(tokensIn.value, fixedTokenAddress);
     const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals);
     const fixedRatio = ratioOf(fixedTokenAddress);
     const amounts: AmountIn[] = tokenAddresses.value.map(token => {
@@ -121,17 +117,7 @@ export default function usePropMaxJoin(
     Object.values(tokensIn.value).forEach((token, i) => {
       const ratio = ratioOf(token.address);
       if (i !== index) {
-        let amount;
-        if (fixedRatioOverride) {
-          amount = fixedDenormAmount
-            .sub(fixedRatioOverride.buffer)
-            .mul(fixedRatioOverride.bps)
-            .div(10000)
-            .mul(ratio)
-            .div(fixedRatioOverride.value);
-        } else {
-          amount = fixedDenormAmount.mul(ratio).div(fixedRatio);
-        }
+        const amount = fixedDenormAmount.mul(ratio).div(fixedRatio);
         amounts[i].value = formatUnits(amount, token?.decimals);
       }
     });
@@ -140,7 +126,6 @@ export default function usePropMaxJoin(
   }
 
   function getPropMax(): AmountIn[] {
-    // if (!tokenAddresses.value.length) return [];
     let maxAmounts: AmountIn[] = tokenAddresses.value.map(address => {
       return {
         address,
@@ -151,13 +136,16 @@ export default function usePropMaxJoin(
 
     tokenAddresses.value.forEach((token, tokenIndex) => {
       let hasBalance = true;
-      let balance;
+      let balance: string;
       if (isSameAddress(token, config.network.nativeAsset.address)) {
-        balance = bnum(balances.value[getAddress(token)])
-          .minus(config.network.nativeAsset.minTransactionBuffer)
-          .toString();
+        const _balance = selectByAddress(balances.value, token);
+        balance = _balance
+          ? bnum(_balance)
+              .minus(config.network.nativeAsset.minTransactionBuffer)
+              .toString()
+          : '0';
       } else {
-        balance = balances.value[getAddress(token)] || '0';
+        balance = selectByAddress(balances.value, token) || '0';
       }
       const amounts: AmountIn[] = propAmountsGiven(balance, tokenIndex);
 
@@ -178,7 +166,7 @@ export default function usePropMaxJoin(
         }
       }
     });
-    console.log({ maxAmounts });
+
     return maxAmounts;
   }
 
