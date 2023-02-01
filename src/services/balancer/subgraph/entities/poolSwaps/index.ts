@@ -24,7 +24,7 @@ export default class PoolSwaps {
     return await this.serialize(swaps);
   }
 
-  public async traderDecoration(swaps: PoolSwap[]): Promise<PoolSwap[]> {
+  public async swaperDecoration(swaps: PoolSwap[]): Promise<PoolSwap[]> {
     const ensData = await Promise.all(
       swaps.map(async (poolSwap: PoolSwap) => {
         const ensName = await web3Service.getEnsName(poolSwap.userAddress.id);
@@ -49,7 +49,7 @@ export default class PoolSwaps {
   }
 
   async serialize(swaps: PoolSwap[]) {
-    const processedSwaps = await this.traderDecoration(swaps);
+    const processedSwaps = await this.swaperDecoration(swaps);
 
     return processedSwaps.map(swap => ({
       ...swap,

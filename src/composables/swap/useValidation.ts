@@ -5,7 +5,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import { useTokens } from '@/providers/tokens.provider';
 
-export enum TradeValidation {
+export enum SwapValidation {
   VALID,
   NO_ACCOUNT,
   EMPTY,
@@ -52,14 +52,14 @@ export default function useValidation(
   );
 
   const validationStatus = computed(() => {
-    if (noAmounts.value || missingToken.value) return TradeValidation.EMPTY;
+    if (noAmounts.value || missingToken.value) return SwapValidation.EMPTY;
 
     if (isWalletReady.value && exceedsBalance.value)
-      return TradeValidation.NO_BALANCE;
+      return SwapValidation.NO_BALANCE;
 
-    if (probablyNotEnoughLiquidity.value) return TradeValidation.NO_LIQUIDITY;
+    if (probablyNotEnoughLiquidity.value) return SwapValidation.NO_LIQUIDITY;
 
-    return TradeValidation.VALID;
+    return SwapValidation.VALID;
   });
 
   function isValidTokenAmount(tokenAmount: string) {

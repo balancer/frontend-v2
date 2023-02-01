@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import OldBigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
 
-import useSor from '@/composables/trade/useSor';
+import useSor from '@/composables/swap/useSor';
 import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
@@ -52,7 +52,7 @@ const mockProps = {
   tokenIn: computedMockTokenInfo,
   tokenOut: computedMockTokenInfo,
   slippageBufferRate: computed(() => 1),
-  isCowswapTrade: computed(() => false),
+  isCowswapSwap: computed(() => false),
 };
 
 describe('useSor', () => {

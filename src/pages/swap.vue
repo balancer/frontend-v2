@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
-import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
+import SwapCard from '@/components/cards/SwapCard/SwapCard.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -59,7 +59,7 @@ onMounted(() => {
         <MyWallet />
       </template>
 
-      <TradeCard />
+      <SwapCard />
       <div class="p-4 sm:p-0 lg:p-0 mt-8">
         <BalAccordion
           v-if="upToLargeBreakpoint"

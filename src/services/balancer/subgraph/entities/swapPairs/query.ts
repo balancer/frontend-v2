@@ -23,7 +23,7 @@ const defaultAttrs = {
 };
 
 export default (args = {}, attrs = {}) => ({
-  tradePairSnapshots: {
+  swapPairSnapshots: {
     __args: merge({}, defaultArgs, args),
     ...merge({}, defaultAttrs, attrs),
   },

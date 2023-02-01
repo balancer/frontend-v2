@@ -23,15 +23,15 @@ import useCowswap from './useCowswap';
 import useSor from './useSor';
 import useJoinExit from './useJoinExit';
 
-export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'cowswap' | 'joinExit';
+export type SwapRoute = 'wrapUnwrap' | 'balancer' | 'cowswap' | 'joinExit';
 
-export type UseTrading = ReturnType<typeof useTrading>;
+export type UseSwapping = ReturnType<typeof useSwapping>;
 
-export const tradeGasless = ref<boolean>(
-  lsGet<boolean>(LS_KEYS.Trade.Gasless, true)
+export const swapGasless = ref<boolean>(
+  lsGet<boolean>(LS_KEYS.Swap.Gasless, true)
 );
 
-export default function useTrading(
+export default function useSwapping(
   exactIn: Ref<boolean>,
   tokenInAddressInput: Ref<string>,
   tokenInAmountInput: Ref<string>,
@@ -58,7 +58,7 @@ export default function useTrading(
 
   const tokenOut = computed(() => getToken(tokenOutAddressInput.value));
 
-  const isEthTrade = computed(
+  const isEthSwap = computed(
     () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
   );
 
@@ -71,7 +71,7 @@ export default function useTrading(
   );
 
   const requiresTokenApproval = computed(() => {
-    if (wrapType.value === WrapType.Unwrap || isEthTrade.value) {
+    if (wrapType.value === WrapType.Unwrap || isEthSwap.value) {
       return false;
     }
     return true;
@@ -103,14 +103,14 @@ export default function useTrading(
     COW_SUPPORTED_NETWORKS.includes(networkId.value)
   );
 
-  const tradeRoute = computed<TradeRoute>(() => {
+  const swapRoute = computed<SwapRoute>(() => {
     if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
-    } else if (isEthTrade.value) {
+    } else if (isEthSwap.value) {
       return 'balancer';
     }
 
-    if (tradeGasless.value && isCowswapSupportedOnNetwork.value) {
+    if (swapGasless.value && isCowswapSupportedOnNetwork.value) {
       return 'cowswap';
     } else {
       const swapInfoAvailable =
@@ -132,24 +132,24 @@ export default function useTrading(
             joinExit.swapInfo.value?.tokenAddresses ?? []
           )
         : false;
-      // Currently joinExit trade is only suitable for ExactIn and non-eth swaps
+      // Currently joinExit swap is only suitable for ExactIn and non-eth swaps
       return joinExitSwapPresent ? 'joinExit' : 'balancer';
     }
   });
 
-  const isCowswapTrade = computed(() => tradeRoute.value === 'cowswap');
+  const isCowswapSwap = computed(() => swapRoute.value === 'cowswap');
 
-  const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
+  const isBalancerSwap = computed(() => swapRoute.value === 'balancer');
 
-  const isJoinExitTrade = computed(() => tradeRoute.value === 'joinExit');
+  const isJoinExitSwap = computed(() => swapRoute.value === 'joinExit');
 
-  const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
+  const isWrapUnwrapSwap = computed(() => swapRoute.value === 'wrapUnwrap');
 
-  const isGaslessTradingDisabled = computed(
-    () => isEthTrade.value || isWrapUnwrapTrade.value
+  const isGaslessSwappingDisabled = computed(
+    () => isEthSwap.value || isWrapUnwrapSwap.value
   );
 
-  const hasTradeQuote = computed(
+  const hasSwapQuote = computed(
     () =>
       parseFloat(tokenInAmountInput.value) > 0 &&
       parseFloat(tokenOutAmountInput.value) > 0
@@ -170,7 +170,7 @@ export default function useTrading(
     tokenIn,
     tokenOut,
     slippageBufferRate,
-    isCowswapTrade,
+    isCowswapSwap,
   });
 
   const cowswap = useCowswap({
@@ -201,11 +201,11 @@ export default function useTrading(
   });
 
   const isLoading = computed(() => {
-    if (hasTradeQuote.value || isWrapUnwrapTrade.value) {
+    if (hasSwapQuote.value || isWrapUnwrapSwap.value) {
       return false;
     }
 
-    if (isCowswapTrade.value) {
+    if (isCowswapSwap.value) {
       return cowswap.updatingQuotes.value;
     }
 
@@ -227,17 +227,17 @@ export default function useTrading(
   );
 
   // METHODS
-  function trade(successCallback?: () => void) {
-    if (isCowswapTrade.value) {
-      return cowswap.trade(() => {
+  function swap(successCallback?: () => void) {
+    if (isCowswapSwap.value) {
+      return cowswap.swap(() => {
         if (successCallback) {
           successCallback();
         }
 
         cowswap.resetState();
       });
-    } else if (isJoinExitTrade.value) {
-      return joinExit.trade(() => {
+    } else if (isJoinExitSwap.value) {
+      return joinExit.swap(() => {
         if (successCallback) {
           successCallback();
         }
@@ -245,8 +245,8 @@ export default function useTrading(
         joinExit.resetState();
       });
     } else {
-      // handles both Balancer and Wrap/Unwrap trades
-      return sor.trade(() => {
+      // handles both Balancer and Wrap/Unwrap swaps
+      return sor.swap(() => {
         if (successCallback) {
           successCallback();
         }
@@ -262,23 +262,23 @@ export default function useTrading(
     joinExit.submissionError.value = null;
   }
 
-  function setTradeGasless(flag: boolean) {
-    tradeGasless.value = flag;
+  function setSwapGasless(flag: boolean) {
+    swapGasless.value = flag;
 
-    lsSet(LS_KEYS.Trade.Gasless, tradeGasless.value);
+    lsSet(LS_KEYS.Swap.Gasless, swapGasless.value);
   }
 
-  function toggleTradeGasless() {
-    setTradeGasless(!tradeGasless.value);
+  function toggleSwapGasless() {
+    setSwapGasless(!swapGasless.value);
 
     handleAmountChange();
   }
 
   function getQuote() {
-    if (isCowswapTrade.value) {
+    if (isCowswapSwap.value) {
       return cowswap.getQuote();
     }
-    if (isJoinExitTrade.value) {
+    if (isJoinExitSwap.value) {
       return joinExit.getQuote();
     }
     return sor.getQuote();
@@ -295,11 +295,11 @@ export default function useTrading(
       tokenInAmountInput.value = '';
     }
 
-    if (isCowswapTrade.value) {
+    if (isCowswapSwap.value) {
       cowswap.resetState(false);
       cowswap.handleAmountChange();
     } else {
-      if (!isJoinExitTrade.value) {
+      if (!isJoinExitSwap.value) {
         sor.resetState();
         sor.handleAmountChange();
       }
@@ -310,13 +310,13 @@ export default function useTrading(
 
   // WATCHERS
   watch(tokenInAddressInput, async () => {
-    store.commit('trade/setInputAsset', tokenInAddressInput.value);
+    store.commit('swap/setInputAsset', tokenInAddressInput.value);
 
     handleAmountChange();
   });
 
   watch(tokenOutAddressInput, () => {
-    store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
+    store.commit('swap/setOutputAsset', tokenOutAddressInput.value);
 
     handleAmountChange();
   });
@@ -325,21 +325,21 @@ export default function useTrading(
     const gaslessDisabled = window.location.href.includes('gasless=false');
 
     if (gaslessDisabled) {
-      setTradeGasless(false);
+      setSwapGasless(false);
     }
   });
 
   watch(blockNumber, () => {
-    if (isCowswapTrade.value) {
+    if (isCowswapSwap.value) {
       if (!cowswap.hasValidationError.value) {
         cowswap.handleAmountChange();
       }
-    } else if (isJoinExitTrade.value) {
+    } else if (isJoinExitSwap.value) {
       if (!joinExit.hasValidationError.value) {
         joinExit.handleAmountChange();
       }
-    } else if (isBalancerTrade.value) {
-      sor.updateTradeAmounts();
+    } else if (isBalancerSwap.value) {
+      sor.updateSwapAmounts();
     }
   });
 
@@ -351,7 +351,7 @@ export default function useTrading(
     // computed
     isWrap,
     isUnwrap,
-    isEthTrade,
+    isEthSwap,
     tokenIn,
     tokenOut,
     tokenInAmountScaled,
@@ -359,17 +359,17 @@ export default function useTrading(
     tokens,
     requiresTokenApproval,
     effectivePriceMessage,
-    tradeRoute,
+    swapRoute,
     exactIn,
     isLoading,
     cowswap,
     sor,
     joinExit,
-    isCowswapTrade,
-    isBalancerTrade,
-    isJoinExitTrade,
+    isCowswapSwap,
+    isBalancerSwap,
+    isJoinExitSwap,
     wrapType,
-    isWrapUnwrapTrade,
+    isWrapUnwrapSwap,
     tokenInAddressInput,
     tokenInAmountInput,
     tokenOutAddressInput,
@@ -378,14 +378,14 @@ export default function useTrading(
     isConfirming,
     submissionError,
     resetSubmissionError,
-    tradeGasless,
-    toggleTradeGasless,
-    isGaslessTradingDisabled,
+    swapGasless,
+    toggleSwapGasless,
+    isGaslessSwappingDisabled,
     isCowswapSupportedOnNetwork,
     resetAmounts,
     // methods
     getQuote,
-    trade,
+    swap,
     handleAmountChange,
   };
 }
