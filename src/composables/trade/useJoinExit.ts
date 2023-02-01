@@ -102,7 +102,7 @@ export default function useJoinExit({
   const { fNum2 } = useNumbers();
 
   const hasValidationError = computed(
-    () => state.validationErrors.highPriceImpact != null
+    () => state.validationErrors.highPriceImpact != false
   );
 
   function resetState() {
@@ -299,7 +299,6 @@ export default function useJoinExit({
       unknownAssets.push(tokenOutAddressInput.value);
     }
     await injectTokens(unknownAssets);
-    await handleAmountChange();
   });
 
   watch(pools, () => {
