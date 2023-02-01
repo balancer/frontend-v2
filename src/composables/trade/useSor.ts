@@ -177,9 +177,12 @@ export default function useSor({
       configService.network.addresses.weth
     );
 
+    console.log(`rpc ${configService.network.rpc}`);
     const subgraphPoolDataService = new SubgraphPoolProvider(
       configService.network.subgraph
     );
+
+    const SOR_QUERIES = '0x40f7218fa50ead995c4343eB0bB46dD414F9da7A';
 
     const rpcUrl = template(
       configService.getNetworkConfig(configService.network.key).rpc,
@@ -188,8 +191,6 @@ export default function useSor({
         ALCHEMY_KEY: configService.env.ALCHEMY_KEY,
       }
     );
-
-    const SOR_QUERIES = '0x40f7218fa50ead995c4343eB0bB46dD414F9da7A';
 
     const onChainPoolDataEnricher = new OnChainPoolDataEnricher(
       configService.network.addresses.vault,
@@ -362,7 +363,7 @@ export default function useSor({
 
       newSorReturn.value = swapInfo;
       onchainQuote.value = (
-        await swapInfo.swap.query(provider.value)
+        await swapInfo.swap.query(rpcProviderService.jsonProvider)
       ).toSignificant(4);
       sorReturn.value = swapReturn; // TO DO - is it needed?
       let tokenOutAmount = swapReturn.returnAmount;
