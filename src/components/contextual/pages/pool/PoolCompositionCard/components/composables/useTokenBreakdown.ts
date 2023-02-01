@@ -28,9 +28,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
   let totalFiat = 0;
 
   // Recalculates recursive tokensData whenever the pool is re-fetched
-  const data = computed(() => calculateAllTokensData(rootPool));
-
-  return { data };
+  return computed(() => calculateAllTokensData(rootPool));
 
   function calculateAllTokensData(pool: Ref<Pool>) {
     tokensData = {};

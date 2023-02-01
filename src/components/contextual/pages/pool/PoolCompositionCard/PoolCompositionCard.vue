@@ -8,7 +8,7 @@ import { isWeightedLike } from '@/composables/usePool';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import { useI18n } from 'vue-i18n';
 import TokenBreakdown from './components/TokenBreakdown.vue';
-import { useTokenBreakdown } from './components/composables/useTokenBreakdown2';
+import { useTokenBreakdown } from './components/composables/useTokenBreakdown';
 
 /**
  * TYPES
@@ -32,7 +32,7 @@ const { userPoolPercentage, userPoolPercentageLabel } =
   useUserPoolPercentage(pool);
 const { t } = useI18n();
 const rootPool = computed(() => removeBptFrom(pool.value));
-const { data: tokenData } = useTokenBreakdown(rootPool);
+const tokenData = useTokenBreakdown(rootPool);
 
 /**
  * STATE

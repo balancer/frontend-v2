@@ -52,7 +52,7 @@ function mountTokenBreakdown(pool: Pool) {
   const { result } = mountComposable(() =>
     useTokenBreakdown(ref(removeBptFrom(pool)))
   );
-  return result.data;
+  return result;
 }
 
 it('Works for a parent token in a deep nested pool', async () => {
@@ -161,7 +161,7 @@ test('recalculates data when pool changes', async () => {
 
   const { result } = mountComposable(() => useTokenBreakdown(rootPool));
 
-  let wethData = result.data.value[wethAddress];
+  let wethData = result.value[wethAddress];
 
   expect(wethData.getTokenPercentageLabel()).toBe('55.56%');
   expect(wethData.balanceLabel).toBe('50,000');
@@ -169,7 +169,7 @@ test('recalculates data when pool changes', async () => {
   // Refetch pool with different balance
   rootPool.value = removeBptFrom(aWeightedPool());
 
-  wethData = result.data.value[wethAddress];
+  wethData = result.value[wethAddress];
 
   expect(wethData.balanceLabel).toBe('95.0941');
   expect(wethData.getTokenPercentageLabel()).toBe('0.02%');

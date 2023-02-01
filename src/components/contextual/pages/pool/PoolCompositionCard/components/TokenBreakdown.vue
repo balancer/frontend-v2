@@ -2,7 +2,7 @@
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
-import { TokensData } from './composables/useTokenBreakdown2';
+import { TokensData } from './composables/useTokenBreakdown';
 
 import { isWeightedLike, usePool } from '@/composables/usePool';
 
