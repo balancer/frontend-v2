@@ -1,6 +1,6 @@
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { computed, ref } from 'vue';
-import { mount } from '@/tests/mount-composable-tester';
+import { mount } from '@tests/mount-composable-tester';
 
 import useJoinExit from '@/composables/trade/useJoinExit';
 import { noop } from 'lodash';

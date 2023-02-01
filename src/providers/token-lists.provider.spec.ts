@@ -1,4 +1,4 @@
-import { mountComposable } from '@/tests/mount-helpers';
+import { mountComposable } from '@tests/mount-helpers';
 import { TokenList, TokenListMap } from '@/types/TokenList';
 import { useTokenLists } from '@/providers/token-lists.provider';
 
