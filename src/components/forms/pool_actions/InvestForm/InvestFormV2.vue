@@ -63,7 +63,7 @@ const {
   queryError,
   setAmountsIn,
   addTokensIn,
-  optimizeAmounts,
+  setPropMax,
 } = useJoinPool();
 
 const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
@@ -187,7 +187,7 @@ watch(
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
 
-    <InvestFormTotalsV2 @optimize="optimizeAmounts" />
+    <InvestFormTotalsV2 @optimize="setPropMax" />
 
     <div
       v-if="highPriceImpact"
