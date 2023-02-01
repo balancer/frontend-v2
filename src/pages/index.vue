@@ -19,8 +19,8 @@ const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-const sortDirection = ref('');
-const poolsSortField = ref('');
+const sortDirection = ref('desc');
+const poolsSortField = ref('totalLiquidity');
 
 const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
   selectedTokens,

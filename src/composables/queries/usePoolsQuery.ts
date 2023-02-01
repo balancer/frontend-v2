@@ -48,7 +48,7 @@ export default function usePoolsQuery(
    */
   const { injectTokens, tokens: tokenMeta, dynamicDataLoading } = useTokens();
   const { networkId } = useNetwork();
-
+  const skip = ref(0);
   let poolsRepository = initializePoolsRepository();
 
   /**
@@ -126,8 +126,6 @@ export default function usePoolsQuery(
     const tokenListFormatted = filterTokens.value.map(address =>
       address.toLowerCase()
     );
-    console.log('sortDirection', sortDirection?.value);
-    console.log('poolsSortField?.value', poolsSortField?.value);
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
       orderBy: poolsSortField?.value || 'totalLiquidity',
@@ -196,21 +194,29 @@ export default function usePoolsQuery(
   /**
    * QUERY FUNCTION
    */
+  // const savedFetchOptions = ref(0);
   const queryFn = async ({ pageParam = 0 }) => {
     const fetchOptions = getFetchOptions(pageParam);
+    try {
+      console.log('fetchOptions', fetchOptions);
+      const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
-    const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      skip.value = poolsRepository.currentProvider?.skip
+        ? poolsRepository.currentProvider.skip
+        : 0;
 
-    const skip = poolsRepository.currentProvider?.skip
-      ? poolsRepository.currentProvider.skip
-      : 0;
+      poolsStoreService.setPools(pools);
 
-    poolsStoreService.setPools(pools);
-
-    return {
-      pools,
-      skip,
-    };
+      return {
+        pools,
+        skip: skip.value,
+      };
+    } catch (e) {
+      if (poolsStoreService.pools.value) {
+        return { pools: poolsStoreService.pools.value, skip: skip.value };
+      }
+      throw e;
+    }
   };
 
   options.getNextPageParam = (lastPage: PoolsQueryResponse) => lastPage.skip;
