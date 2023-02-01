@@ -302,7 +302,7 @@ export default function useJoinExit({
   });
 
   watch(pools, async () => {
-    await getSwapInfo();
+    await handleAmountChange();
   });
 
   return {
