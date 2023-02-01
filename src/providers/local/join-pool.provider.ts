@@ -50,7 +50,7 @@ import { useQuery } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
-import NewPoolCalculator from '@/services/pool/calculator/new-calculator.sevice';
+import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
 
 /**
  * TYPES
@@ -117,6 +117,11 @@ const provider = (props: Props) => {
   );
 
   /**
+   * SERVICES
+   */
+  const joinPoolService = new JoinPoolService(pool);
+
+  /**
    * COMPOSABLES
    */
   const {
@@ -126,7 +131,6 @@ const provider = (props: Props) => {
     priceFor,
     nativeAsset,
     wrappedNativeAsset,
-    balances,
   } = useTokens();
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
@@ -253,21 +257,12 @@ const provider = (props: Props) => {
   );
 
   const optimized = computed((): boolean => {
-    // const max = getPropMax();
-    // return amountsIn.value.every((item, i) => item.value === max[i].value);
-    return false;
+    const max = getPropMax();
+    if (!max.length) return false;
+    return amountsIn.value.every((item, i) => item.value === max[i].value);
   });
 
-  /**
-   * SERVICES
-   */
-  const joinPoolService = new JoinPoolService(pool);
-  const poolCalculator = new NewPoolCalculator(
-    pool,
-    tokensIn,
-    balances,
-    useNativeAsset
-  );
+  const { getPropMax } = usePropMaxJoin(pool.value, tokensIn, useNativeAsset);
 
   /**
    * METHODS
@@ -386,10 +381,6 @@ const provider = (props: Props) => {
     if (amountIn) {
       amountIn.address = newAddress;
     }
-  }
-
-  function getPropMax(): AmountIn[] {
-    return poolCalculator.propMax();
   }
 
   function setPropMax() {
