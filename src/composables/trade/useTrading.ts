@@ -288,23 +288,22 @@ export default function useTrading(
     sor.resetInputAmounts('');
   }
 
-  function handleAmountChange() {
+  async function handleAmountChange() {
     if (exactIn.value) {
       tokenOutAmountInput.value = '';
     } else {
       tokenInAmountInput.value = '';
     }
 
+    cowswap.resetState(false);
+    sor.resetState();
+    joinExit.resetState();
+
     if (isCowswapTrade.value) {
-      cowswap.resetState(false);
       cowswap.handleAmountChange();
     } else {
-      if (!isJoinExitTrade.value) {
-        sor.resetState();
-        sor.handleAmountChange();
-      }
-      joinExit.resetState();
-      joinExit.handleAmountChange();
+      await sor.handleAmountChange();
+      await joinExit.handleAmountChange();
     }
   }
 

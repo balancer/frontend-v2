@@ -1,10 +1,8 @@
 import { removeBptFrom } from '@/composables/usePool';
 import { BoostedPoolMock } from '@/__mocks__/pool';
-
-import { mountComposable } from '@/tests/mount-helpers';
 import { ref } from 'vue';
 import { useTokenBreakdown } from './useTokenBreakdown';
-
+import { mountComposable } from '@tests/mount-helpers';
 import * as tokensProvider from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';

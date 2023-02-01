@@ -11,7 +11,7 @@ import { Pool } from '@/services/pool/types';
 
 // Components
 import AssetRow from './components/AssetRow.vue';
-import useStaking from '@/composables/staking/useStaking';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES
@@ -33,9 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { tokens, balances, balanceFor } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isDeepPool } = usePool(toRef(props, 'pool'));
-const {
-  userData: { stakedSharesForProvidedPool },
-} = useStaking();
+const { stakedShares } = usePoolStaking();
 
 /**
  * SERVICES
@@ -55,7 +53,7 @@ const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
-    bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
+    bnum(bptBalance.value).plus(stakedShares.value).toString(),
     0,
     'send'
   );

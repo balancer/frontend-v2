@@ -1,6 +1,6 @@
-import { parseFixed } from '@ethersproject/bignumber';
+import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { computed, ref } from 'vue';
-import { mount } from '@/tests/mount-composable-tester';
+import { mount } from '@tests/mount-composable-tester';
 
 import useJoinExit from '@/composables/trade/useJoinExit';
 import { noop } from 'lodash';
@@ -37,7 +37,7 @@ vi.mock('@/composables/approvals/useRelayerApproval', () => ({
   },
 }));
 
-const mockAmount = 10;
+const mockAmount = BigNumber.from(10);
 vi.mock('@/lib/balancer.sdk', () => {
   return {
     balancer: {

@@ -1,8 +1,8 @@
 import { BoostedPoolMock } from '@/__mocks__/pool';
-import PoolCompositionCard from './PoolCompositionCard.vue';
 import { fireEvent, screen, within } from '@testing-library/vue';
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
 import { ref } from 'vue';
+import PoolCompositionCard from './PoolCompositionCard.vue';
 
 vi.mock('@/providers/tokens.provider');
 vi.mock('@/composables/staking/useStaking', () => {

@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 
 import { AnyPool } from '@/services/pool/types';
-
 import StakePreview, { StakeAction } from './StakePreview.vue';
 
 type Props = {

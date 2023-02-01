@@ -5,7 +5,7 @@ import { SwapInfo } from '@balancer-labs/sdk';
 
 import * as useSor from '@/composables/trade/useSor';
 import mockSorOutput from './__mocks__/mockSorOutput';
-import { mountComposable } from '@/tests/mount-helpers';
+import { mountComposable } from '@tests/mount-helpers';
 import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { noop } from 'lodash';

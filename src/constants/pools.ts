@@ -217,7 +217,9 @@ const POOLS_MAINNET: Pools = {
       '0x9c6d47ff73e0f5e51be5fd53236e3f595c5793f200020000000000000000042c', // cbeth/wsteth stable
       '0xff4ce5aaab5a627bf82f4a571ab1ce94aa365ea6000200000000000000000426', // dola/usdc stable
       '0x384f67aa430376efc4f8987eabf7f3f84eb9ea5d00020000000000000000043d', // dola/cusd stable
-      '0x8a34b5ad76f528bfec06c80d85ef3b53da7fc30000020000000000000000043e', //ankrETH/weth stable
+      '0x8a34b5ad76f528bfec06c80d85ef3b53da7fc30000020000000000000000043e', // ankrETH/weth stable
+      '0x961764651931941f23cea5bab246607dc19ef224000200000000000000000444', // tetubal
+      '0xb08885e6026bab4333a80024ec25a1a3e1ff2b8a000200000000000000000445', // rETH (stafi ETH)/weth
     ],
   },
   Investment: {
