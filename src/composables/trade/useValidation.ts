@@ -39,25 +39,11 @@ export default function useValidation(
       bnum(balances.value[tokenInAddress.value]).lt(tokenInAmount.value)
   );
 
-  /**
-   * Not definitive. Only probably true if no other exceptions,
-   * i.e. valid inputs, wallet connected, enough balance, etc.
-   */
-  const probablyNotEnoughLiquidity = computed(
-    () =>
-      bnum(tokenOutAmount.value).eq(0) ||
-      tokenOutAmount.value.trim() === '' ||
-      bnum(tokenInAmount.value).eq(0) ||
-      tokenInAmount.value.trim() === ''
-  );
-
   const validationStatus = computed(() => {
     if (noAmounts.value || missingToken.value) return TradeValidation.EMPTY;
 
     if (isWalletReady.value && exceedsBalance.value)
       return TradeValidation.NO_BALANCE;
-
-    if (probablyNotEnoughLiquidity.value) return TradeValidation.NO_LIQUIDITY;
 
     return TradeValidation.VALID;
   });
