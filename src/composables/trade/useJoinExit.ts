@@ -301,8 +301,8 @@ export default function useJoinExit({
     await injectTokens(unknownAssets);
   });
 
-  watch(pools, async () => {
-    await handleAmountChange();
+  watch(pools, () => {
+    handleAmountChange();
   });
 
   return {
