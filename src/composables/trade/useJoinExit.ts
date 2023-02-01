@@ -102,7 +102,7 @@ export default function useJoinExit({
   const { fNum2 } = useNumbers();
 
   const hasValidationError = computed(
-    () => state.validationErrors.highPriceImpact != null
+    () => state.validationErrors.highPriceImpact != false
   );
 
   function resetState() {
@@ -163,13 +163,17 @@ export default function useJoinExit({
     const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
     const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
+    const returnAmount = swapInfo.value?.returnAmount || BigNumber.from('0');
+
+    if (returnAmount.isZero()) return;
+
     if (exactIn.value) {
       tokenOutAmountInput.value = bnum(
-        formatUnits(swapInfo.value?.returnAmount ?? '0', tokenOutDecimals)
+        formatUnits(returnAmount, tokenOutDecimals)
       ).toFixed(6, OldBigNumber.ROUND_DOWN);
     } else {
       tokenInAmountInput.value = bnum(
-        formatUnits(swapInfo.value?.returnAmount ?? '0', tokenInDecimals)
+        formatUnits(returnAmount, tokenInDecimals)
       ).toFixed(6, OldBigNumber.ROUND_DOWN);
     }
   }
@@ -295,7 +299,6 @@ export default function useJoinExit({
       unknownAssets.push(tokenOutAddressInput.value);
     }
     await injectTokens(unknownAssets);
-    await handleAmountChange();
   });
 
   watch(pools, () => {
