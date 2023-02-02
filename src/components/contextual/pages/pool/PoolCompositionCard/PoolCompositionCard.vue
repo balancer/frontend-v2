@@ -54,12 +54,12 @@ const activeTab = ref(TOTAL_COMPOSITION);
 /**
  * COMPUTED
  */
-const showUserShares = computed(() => activeTab.value === MY_POOL_SHARE);
 const userHasShares = computed(() => userPoolPercentage.value.gt(0));
 // Hide my pool share tab when user does not have shares
 const tabs = computed(() =>
   userHasShares.value ? [compositionTab, mySharesTab] : [compositionTab]
 );
+const showUserShares = computed(() => activeTab.value === MY_POOL_SHARE);
 
 /**
  * LIFECYCLE
@@ -78,7 +78,7 @@ onMounted(async () => {
     class="flex justify-start items-center mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
   >
     <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px">
-      <PercentagePill v-if="userHasShares">
+      <PercentagePill v-if="userHasShares" :isActive="showUserShares">
         {{ userPoolPercentageLabel }}
       </PercentagePill>
     </BalTabs>
