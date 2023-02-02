@@ -7,7 +7,7 @@ import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-dist
 
 import ClaimProtocolRewardsBtn from './ClaimProtocolRewardsBtn.vue';
 import TxActionBtn from './TxActionBtn/TxActionBtn.vue';
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
 
 ClaimProtocolRewardsBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };
