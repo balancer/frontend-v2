@@ -31,6 +31,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
   return computed(() => calculateAllTokensData(rootPool));
 
   function calculateAllTokensData(pool: Ref<Pool>) {
+    totalFiat = 0;
     tokensData = {};
     pool.value.tokens.forEach(token => {
       const rootTokenShare = 1;
