@@ -58,7 +58,6 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
 
-    // TODO: update flow to use simulation type VaultModel + Static (see SDK example for more details)
     this.lastJoinRes = await balancer.pools.generalisedJoin(
       poolId,
       tokenAddresses,
@@ -67,7 +66,7 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
       wrapLeafTokens,
       slippage,
       signer,
-      SimulationType.Tenderly, // choosing Tenderly will keep currrent behavior
+      SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
       relayerSignature
     );
 
