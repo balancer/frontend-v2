@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
-import useStaking from '@/composables/staking/useStaking';
 import useNumbers from '@/composables/useNumbers';
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
@@ -16,6 +15,7 @@ import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue'
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { fiatValueOf } from '@/composables/usePool';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -37,14 +37,10 @@ const { t } = useI18n();
 const { fromPool, toPool } = toRefs(props);
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
-
-const {
-  userData: { stakedSharesForProvidedPool },
-} = useStaking();
+const { stakedShares } = usePoolStaking();
 
 const fiatValueOfStakedShares = computed(() => {
-  const stakedShares = (stakedSharesForProvidedPool.value || 0).toString();
-  return fiatValueOf(props.fromPool, stakedShares);
+  return fiatValueOf(props.fromPool, stakedShares.value);
 });
 
 const fiatValueOfUnstakedShares = computed(() => {
@@ -209,7 +205,7 @@ const isUnstakedMigrationEnabled = computed(() => {
       :unstakedPoolValue="fiatValueOfUnstakedShares"
       :isStakedMigrationEnabled="isStakedMigrationEnabled"
       :isUnstakedMigrationEnabled="isUnstakedMigrationEnabled"
-      :stakedBptBalance="stakedSharesForProvidedPool"
+      :stakedBptBalance="stakedShares"
       :unstakedBptBalance="unstakedBptBalance"
       :fromPool="fromPool"
       :toPool="toPool"

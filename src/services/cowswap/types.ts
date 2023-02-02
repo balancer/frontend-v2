@@ -25,43 +25,35 @@ export type OrderMetaData = {
   status: 'pending' | 'fulfilled' | 'expired' | 'cancelled';
 };
 
-export type FeeQuoteParams = Pick<
-  OrderMetaData,
-  | 'sellToken'
-  | 'buyToken'
-  | 'kind'
-  | 'validTo'
-  | 'appData'
-  | 'partiallyFillable'
-> & {
-  from: string;
-  receiver: string;
-  sellTokenBalance: OrderBalance;
-  buyTokenBalance: OrderBalance;
-  sellAmountBeforeFee?: string;
-  buyAmountAfterFee?: string;
-};
-
 export type PriceQuoteParams = Pick<
   OrderMetaData,
   'sellToken' | 'buyToken' | 'kind'
 > & {
-  amount: string;
   fromDecimals: number;
   toDecimals: number;
-};
-
-export type FeeInformation = {
-  expiration: string;
   from: string;
-  quote: FeeQuoteParams & {
-    feeAmount: string;
-  };
+  receiver: string;
+  sellAmountBeforeFee?: string | null;
+  buyAmountAfterFee?: string | null;
+  partiallyFillable?: boolean;
+  sellTokenBalance?: OrderBalance;
 };
 
-export type PriceInformation = {
-  token: string;
-  amount: string | null;
+export type CowSwapQuoteResponse = {
+  quote: {
+    sellToken: string;
+    buyToken: string;
+    receiver: string;
+    sellAmount: string | null;
+    buyAmount: string | null;
+    validTo: string;
+    appData: string;
+    feeAmount: string | null;
+    kind: string;
+  };
+  from: string;
+  expiration: string;
+  id: number;
 };
 
 export interface Market<T = string> {

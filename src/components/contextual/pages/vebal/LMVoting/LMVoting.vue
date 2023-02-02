@@ -162,7 +162,7 @@ function handleVoteSuccess() {
       class="mx-4 xl:mx-0 mb-7"
     ></ResubmitVotesAlert>
     <div class="flex flex-wrap justify-between items-end px-4 lg:px-0">
-      <div class="flex gap-2 xs:gap-3">
+      <div class="flex gap-2 xs:gap-3 mb-3 lg:mb-0">
         <BalCard shadow="none" class="p-0 md:w-48 min-w-max">
           <div class="flex items-center">
             <p class="inline mr-1 text-sm text-secondary">

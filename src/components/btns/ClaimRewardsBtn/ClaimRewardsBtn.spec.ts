@@ -4,7 +4,7 @@ import { txResponseMock } from '@/__mocks__/transactions';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
 
 const mockClaimRewards = vi.fn().mockResolvedValue(txResponseMock);
 vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {

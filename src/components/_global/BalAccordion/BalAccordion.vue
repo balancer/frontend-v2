@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import anime from 'animejs';
-import { takeRight } from 'lodash';
 import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from 'vue';
 
 type Section = {
@@ -33,7 +31,6 @@ const activeSectionElement = ref<HTMLElement>();
 const accordionHeightSetterElement = ref<HTMLElement>();
 const wrapperElement = ref<HTMLElement>();
 const handleBarElement = ref<HTMLElement>();
-const arrowElement = ref<HTMLElement>();
 const handleBarElements = ref<(Element | ComponentPublicInstance)[]>([]);
 
 const minimisedWrapperHeight = ref(0);
@@ -41,8 +38,6 @@ const isContentVisible = ref(false);
 const height = ref();
 const handleBarHeight = ref(0);
 const totalHeight = ref(0);
-
-const easing = 'spring(0.2, 150, 18, 0)';
 
 async function toggleSection(section: string, collapse = true) {
   const _section = props.sections.find(s => s.id === section);
@@ -64,67 +59,7 @@ async function toggleSection(section: string, collapse = true) {
     isContentVisible.value = false;
   }
 
-  handleBarElements.value.forEach(handleBar => {
-    anime({
-      targets: handleBar,
-      translateY: `0px`,
-      easing,
-    });
-  });
-
-  const activeSectionIndex = props.sections.findIndex(
-    s => s.id === activeSection.value
-  );
-  const handleBarsToTransform = takeRight(
-    handleBarElements.value,
-    handleBarElements.value.length - (activeSectionIndex + 1)
-  );
-
-  // unfortunately this does introduce reflow (animating height of total)
-  // but it way better than having to animate the height of 2 sections
-  // the one minimising + the one maximising
-  const heightToAnimate = collapseCurrentSection
-    ? minimisedWrapperHeight.value
-    : minimisedWrapperHeight.value + height.value;
-  await nextTick();
-  anime({
-    targets: wrapperElement.value,
-    height: `${heightToAnimate}px`,
-    easing,
-  });
-
-  handleBarsToTransform.forEach(handleBar => {
-    const y = collapseCurrentSection ? 0 : height.value;
-    anime({
-      targets: handleBar,
-      translateY: `${y}px`,
-      easing,
-    });
-  });
-
-  // animate the arrow
-  anime({
-    targets: arrowElement.value,
-    rotate: '90deg',
-  });
-
-  setTimeout(async () => {
-    isContentVisible.value = true;
-    await nextTick();
-    if (activeSectionElement.value) {
-      anime.set(activeSectionElement.value, {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        right: '0',
-        opacity: 0,
-      });
-      anime({
-        targets: activeSectionElement.value,
-        opacity: 1,
-      });
-    }
-  }, 300);
+  isContentVisible.value = true;
 }
 
 // all of this happens without the user seeing any feedback
@@ -211,7 +146,14 @@ watch(
           @click="toggleSection(section.id)"
         >
           <h6>{{ section.title }}</h6>
-          <BalIcon class="text-blue-400" name="chevron-down" />
+          <BalIcon
+            class="text-blue-400"
+            :class="[
+              activeSection === section.id ? '-rotate-180' : 'rotate-0',
+              'transform transition-all',
+            ]"
+            name="chevron-down"
+          />
         </button>
         <div
           v-if="activeSection === section.id"

@@ -8,7 +8,9 @@ import { isL2 } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
-/** COMPOSABLES */
+/**
+ * COMPOSABLES
+ */
 const {
   userData: {
     stakedPools,
@@ -22,8 +24,10 @@ const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
 const networkName = configService.network.shortName;
 
-/** COMPUTED */
-const isLoading = computed(() => {
+/**
+ * COMPUTED
+ */
+const isLoading = computed((): boolean => {
   return (
     isLoadingUserStakingData.value ||
     isLoadingStakedPools.value ||

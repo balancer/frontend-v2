@@ -4,14 +4,14 @@ import { computed, ref } from 'vue';
 
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
-import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
-import { StakeAction } from '@/components/contextual/stake/StakePreview.vue';
+import StakePreviewModal from './StakePreviewModal.vue';
+import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 type Props = {
   pool: Pool;
@@ -31,17 +31,12 @@ const stakeAction = ref<StakeAction>('stake');
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
 const {
-  userData: {
-    refetchStakedShares,
-    isLoadingStakedShares,
-    isRefetchingStakedShares,
-    stakedSharesForProvidedPool,
-    hasNonPrefGaugeBalances,
-    isLoadingBoosts,
-  },
-  isPoolEligibleForStaking,
-  isLoadingPoolEligibility,
-} = useStaking();
+  isStakablePool,
+  isLoading: isLoadingStakingData,
+  isRefetchingStakedShares,
+  stakedShares,
+  hasNonPrefGaugeBalance,
+} = usePoolStaking();
 
 /**
  * COMPUTED
@@ -49,7 +44,7 @@ const {
 const fiatValueOfStakedShares = computed(() => {
   return bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
-    .times((stakedSharesForProvidedPool.value || 0).toString())
+    .times((stakedShares.value || 0).toString())
     .toString();
 });
 
@@ -78,31 +73,23 @@ function showUnstakePreview() {
 function handlePreviewClose() {
   isStakePreviewVisible.value = false;
 }
-
-async function handleActionSuccess() {
-  await refetchStakedShares();
-}
 </script>
 
 <template>
   <div>
-    <AnimatePresence
-      :isVisible="
-        !isLoadingStakedShares && !isLoadingPoolEligibility && !isLoadingBoosts
-      "
-    >
+    <AnimatePresence :isVisible="!isLoadingStakingData">
       <div class="relative">
         <BalAccordion
-          :class="['shadow-2xl', { handle: isPoolEligibleForStaking }]"
+          :class="['shadow-2xl', { handle: isStakablePool }]"
           :sections="[
             {
               title: $t('staking.stakingIncentives'),
               id: 'staking-incentives',
               handle: 'staking-handle',
-              isDisabled: !isPoolEligibleForStaking,
+              isDisabled: !isStakablePool,
             },
           ]"
-          :reCalcKey="hasNonPrefGaugeBalances ? 0 : 1"
+          :reCalcKey="hasNonPrefGaugeBalance ? 0 : 1"
         >
           <template #staking-handle>
             <button
@@ -114,22 +101,18 @@ async function handleActionSuccess() {
                     :class="[
                       'flex items-center p-1 text-white rounded-full',
                       {
-                        'bg-green-500': isPoolEligibleForStaking,
-                        'bg-gray-400': !isPoolEligibleForStaking,
+                        'bg-green-500': isStakablePool,
+                        'bg-gray-400': !isStakablePool,
                       },
                     ]"
                   >
-                    <BalIcon
-                      v-if="isPoolEligibleForStaking"
-                      size="sm"
-                      name="check"
-                    />
+                    <BalIcon v-if="isStakablePool" size="sm" name="check" />
                     <BalIcon v-else size="sm" name="x" />
                   </div>
                   <h6>{{ $t('staking.stakingIncentives') }}</h6>
                 </BalStack>
                 <BalStack
-                  v-if="isPoolEligibleForStaking"
+                  v-if="isStakablePool"
                   horizontal
                   spacing="sm"
                   align="center"
@@ -180,7 +163,7 @@ async function handleActionSuccess() {
                     size="sm"
                     :disabled="
                       fiatValueOfUnstakedShares === '0' ||
-                      hasNonPrefGaugeBalances
+                      hasNonPrefGaugeBalance
                     "
                     @click="showStakePreview"
                   >
@@ -197,7 +180,7 @@ async function handleActionSuccess() {
                   </BalBtn>
                 </BalStack>
                 <BalAlert
-                  v-if="hasNonPrefGaugeBalances"
+                  v-if="hasNonPrefGaugeBalance"
                   :title="$t('staking.restakeGauge')"
                   class="mt-2"
                 >
@@ -209,12 +192,7 @@ async function handleActionSuccess() {
         </BalAccordion>
       </div>
     </AnimatePresence>
-    <AnimatePresence
-      :isVisible="
-        isLoadingStakedShares || isLoadingPoolEligibility || isLoadingBoosts
-      "
-      unmountInstantly
-    >
+    <AnimatePresence :isVisible="isLoadingStakingData" unmountInstantly>
       <BalLoadingBlock class="h-12" />
     </AnimatePresence>
     <StakePreviewModal
@@ -222,7 +200,6 @@ async function handleActionSuccess() {
       :pool="pool"
       :action="stakeAction"
       @close="handlePreviewClose"
-      @success="handleActionSuccess"
     />
   </div>
 </template>

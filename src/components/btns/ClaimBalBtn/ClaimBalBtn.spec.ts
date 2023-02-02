@@ -5,7 +5,7 @@ import { balancerMinter } from '@/services/balancer/contracts/contracts/balancer
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 
 import ClaimBalBtn from './ClaimBalBtn.vue';
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
 
 vi.mock('@/providers/tokens.provider');
 vi.mock('@/composables/queries/useGaugesQuery');

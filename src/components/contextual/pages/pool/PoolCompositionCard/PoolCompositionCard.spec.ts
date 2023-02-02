@@ -1,7 +1,7 @@
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import PoolCompositionCard from './PoolCompositionCard.vue';
 import { screen, within } from '@testing-library/vue';
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
 
 vi.mock('@/providers/tokens.provider');
 

@@ -16,7 +16,7 @@ import {
 import { networkId } from '@/composables/useNetwork';
 import { WalletError } from '@/types';
 
-import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
+import { COW_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal
@@ -88,9 +88,9 @@ export function getSigningSchemeLibValue(
 async function _signOrder(params: SignOrderParams): Promise<Signature> {
   const { signer, order, signingScheme } = params;
 
-  const domain = domainGp(networkId.value, GP_SETTLEMENT_CONTRACT_ADDRESS);
+  const domain = domainGp(networkId.value, COW_SETTLEMENT_CONTRACT_ADDRESS);
 
-  console.log('[Gnosis Signing] signOrder', {
+  console.log('[Cowswap Signing] signOrder', {
     domain,
     order,
     signer,
@@ -109,9 +109,9 @@ async function _signOrderCancellation(
 ): Promise<Signature> {
   const { signer, signingScheme, orderId } = params;
 
-  const domain = domainGp(networkId.value, GP_SETTLEMENT_CONTRACT_ADDRESS);
+  const domain = domainGp(networkId.value, COW_SETTLEMENT_CONTRACT_ADDRESS);
 
-  console.log('[Gnosis Signing] signOrderCancellation', {
+  console.log('[Cowswap Signing] signOrderCancellation', {
     domain,
     orderId,
     signer,

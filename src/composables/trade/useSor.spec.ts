@@ -1,4 +1,4 @@
-import { mountComposable } from '@/tests/mount-helpers';
+import { mountComposable } from '@tests/mount-helpers';
 import { BigNumber } from '@ethersproject/bignumber';
 import OldBigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
@@ -52,6 +52,7 @@ const mockProps = {
   tokenIn: computedMockTokenInfo,
   tokenOut: computedMockTokenInfo,
   slippageBufferRate: computed(() => 1),
+  isCowswapTrade: computed(() => false),
 };
 
 describe('useSor', () => {

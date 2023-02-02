@@ -6,6 +6,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
 import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
@@ -23,7 +24,7 @@ export default function useRelayerApprovalQuery(
   /**
    * COMPOSABLES
    */
-  const { getProvider, account, isWalletReady } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
 
   /**
@@ -36,7 +37,7 @@ export default function useRelayerApprovalQuery(
       new Contract(
         configService.network.addresses.vault,
         Vault__factory.abi,
-        getProvider()
+        rpcProviderService.jsonProvider
       )
   );
 

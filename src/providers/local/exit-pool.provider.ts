@@ -4,8 +4,10 @@ import {
   fiatValueOf,
   flatTokenTree,
   isDeep,
+  isPreMintedBptType,
   tokenTreeLeafs,
   tokenTreeNodes,
+  usePool,
 } from '@/composables/usePool';
 import useRelayerApproval, {
   RelayerType,
@@ -20,8 +22,17 @@ import {
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
-import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
+import {
+  bnSum,
+  bnum,
+  isSameAddress,
+  removeAddress,
+  selectByAddress,
+} from '@/lib/utils';
+import {
+  ExitHandler,
+  ExitPoolService,
+} from '@/services/balancer/pools/exits/exit-pool.service';
 import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -104,7 +115,9 @@ const provider = (props: Props) => {
     RelayerType.BATCH_V4
   );
 
-  const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
+  const { isWeightedPool } = usePool(pool);
+
+  const debounceQueryExit = debounce(queryExit, 1000);
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
     leading: true,
   });
@@ -124,7 +137,7 @@ const provider = (props: Props) => {
       singleAmountOut
     ),
     debounceQueryExit,
-    reactive({ enabled: queriesEnabled })
+    reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
   );
 
   const singleAssetMaxQuery = useQuery<
@@ -137,7 +150,7 @@ const provider = (props: Props) => {
       toRef(singleAmountOut, 'address')
     ),
     debounceGetSingleAssetMax,
-    reactive({ enabled: queriesEnabled })
+    reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
   );
 
   /**
@@ -176,6 +189,23 @@ const provider = (props: Props) => {
   const approvalActions = computed((): TransactionActionInfo[] =>
     shouldSignRelayer.value ? [relayerApprovalAction.value] : []
   );
+
+  const shouldUseSwapExit = computed(
+    (): boolean =>
+      isSingleAssetExit.value &&
+      isDeep(pool.value) &&
+      isPreMintedBptType(pool.value.poolType)
+  );
+
+  const exitHandlerType = computed((): ExitHandler => {
+    if (shouldUseSwapExit.value) return ExitHandler.Swap;
+    if (isWeightedPool.value && isSingleAssetExit.value) {
+      if (singleAssetMaxed.value) return ExitHandler.ExactIn;
+      return ExitHandler.ExactOut;
+    }
+
+    return ExitHandler.Generalised;
+  });
 
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
   const exitTokenAddresses = computed((): string[] => {
@@ -314,7 +344,7 @@ const provider = (props: Props) => {
     // Proportional exit, and BPT in is 0 or less
     if (!isSingleAssetExit.value && !hasBptIn.value) return null;
 
-    exitPoolService.setExitHandler(isSingleAssetExit.value);
+    exitPoolService.setExitHandler(exitHandlerType.value);
 
     try {
       const output = await exitPoolService.queryExit({
@@ -348,7 +378,14 @@ const provider = (props: Props) => {
     if (!hasFetchedPoolsForSor.value) return null;
     if (!isSingleAssetExit.value) return null;
 
-    exitPoolService.setExitHandler(isSingleAssetExit.value);
+    // If the user has not BPT, there is no maximum amount out.
+    if (!hasBpt.value) return;
+
+    const singleAssetMaxedExitHandler = shouldUseSwapExit.value
+      ? ExitHandler.Swap
+      : ExitHandler.ExactIn;
+
+    exitPoolService.setExitHandler(singleAssetMaxedExitHandler);
     singleAmountOut.max = '';
 
     try {
@@ -363,8 +400,8 @@ const provider = (props: Props) => {
         relayerSignature: '',
       });
 
-      singleAmountOut.max = output.amountsOut[singleAmountOut.address];
-      return output;
+      singleAmountOut.max =
+        selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
     } catch (error) {
       captureException(error);
       throw new Error('Failed to calculate max.', { cause: error });
@@ -376,6 +413,9 @@ const provider = (props: Props) => {
    */
   async function exit(): Promise<TransactionResponse> {
     try {
+      txError.value = '';
+      exitPoolService.setExitHandler(exitHandlerType.value);
+
       return exitPoolService.exit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
@@ -407,7 +447,7 @@ const provider = (props: Props) => {
    */
   watch(isSingleAssetExit, _isSingleAssetExit => {
     bptIn.value = '';
-    exitPoolService.setExitHandler(_isSingleAssetExit);
+    exitPoolService.setExitHandler(exitHandlerType.value);
     if (!_isSingleAssetExit) {
       setInitialPropAmountsOut();
     }
@@ -421,7 +461,7 @@ const provider = (props: Props) => {
     // refactoted probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
 
-    exitPoolService.setExitHandler(isSingleAssetExit.value);
+    exitPoolService.setExitHandler(exitHandlerType.value);
 
     if (!props.isSingleAssetExit) {
       setInitialPropAmountsOut();

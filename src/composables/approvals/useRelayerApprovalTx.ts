@@ -41,7 +41,7 @@ export default function useRelayerApprovalTx(
    */
   const isUnlocked = computed(
     () =>
-      approved.value || (!isEnabled.value ? true : !!relayerApproval.data.value)
+      approved.value || (isEnabled.value ? !!relayerApproval.data.value : true)
   );
 
   const loading = computed(

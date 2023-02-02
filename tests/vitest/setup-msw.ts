@@ -1,4 +1,4 @@
-import { server } from '@/tests/msw/server';
+import { server } from '@tests/msw/server';
 
 // MSW SETUP
 // Establish API mocking before all tests.

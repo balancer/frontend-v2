@@ -5,7 +5,12 @@ import { txResponseMock } from '@/__mocks__/transactions';
 import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 
 import ClaimProtocolRewardsBtn from './ClaimProtocolRewardsBtn.vue';
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
+
+vi.mock('@/services/balancer/contracts/contracts/fee-distributor');
+vi.mock('@/providers/tokens.provider');
+vi.mock('@/composables/queries/useProtocolRewardsQuery');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 vi.mock('@/services/balancer/contracts/contracts/fee-distributor');
 vi.mock('@/providers/tokens.provider');

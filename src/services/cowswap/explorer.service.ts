@@ -2,14 +2,14 @@ import { IS_DEV, IS_STAGING } from '@/constants/env';
 
 import { OrderID } from './types';
 
-export default class GnosisExplorerService {
+export default class CowswapExplorerService {
   baseURL: string;
 
   constructor() {
     if (IS_DEV) {
-      this.baseURL = 'https://protocol-explorer.dev.gnosisdev.com';
+      this.baseURL = 'https://explorer.cow.fi';
     } else if (IS_STAGING) {
-      this.baseURL = 'https://protocol-explorer.staging.gnosisdev.com';
+      this.baseURL = 'https://explorer.cow.fi';
     } else {
       this.baseURL = 'https://explorer.cow.fi';
     }
@@ -20,4 +20,4 @@ export default class GnosisExplorerService {
   }
 }
 
-export const gnosisExplorer = new GnosisExplorerService();
+export const cowswapExplorer = new CowswapExplorerService();

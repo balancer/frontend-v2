@@ -2,13 +2,12 @@
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
-import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
@@ -20,6 +19,7 @@ import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import { useTokens } from '@/providers/tokens.provider';
+import { isEqual } from 'lodash';
 
 /**
  * TYPES
@@ -42,7 +42,8 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
+const { managedPoolWithTradingHalted, isDeepPool, isPreMintedBptPool } =
+  usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -97,13 +98,26 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
-watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
-  // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
-  // only if preview modal is not open
-  if (!showInvestPreview.value) {
-    initializeTokensForm(isSingleAsset);
+watch(
+  [isSingleAssetJoin, poolTokensWithBalance],
+  (
+    [isSingleAsset, newPoolTokensWithBalance],
+    [prevIsSingleAsset, prevPoolTokensWithBalance]
+  ) => {
+    // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
+    // only if preview modal is not open
+    if (!showInvestPreview.value) {
+      const hasTabChanged = prevIsSingleAsset !== isSingleAsset;
+      const hasUserTokensChanged = !isEqual(
+        prevPoolTokensWithBalance,
+        newPoolTokensWithBalance
+      );
+      if (hasUserTokensChanged || hasTabChanged) {
+        initializeTokensForm(isSingleAsset);
+      }
+    }
   }
-});
+);
 </script>
 
 <template>
@@ -139,6 +153,7 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
 
     <MissingPoolTokensAlert
       v-if="!isSingleAssetJoin"
+      :showSingleTokenSuggestion="isDeepPool && isPreMintedBptPool"
       :poolTokensWithBalance="poolTokensWithBalance"
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
@@ -193,24 +208,23 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
       />
     </div>
 
-    <StakingProvider :poolAddress="pool.address">
-      <teleport to="#modal">
-        <InvestPreviewModalV2
-          v-if="showInvestPreview"
-          :pool="pool"
-          @close="showInvestPreview = false"
-          @show-stake-modal="showStakeModal = true"
-        />
-        <StakePreviewModal
-          :pool="pool"
-          :isVisible="showStakeModal"
-          action="stake"
-          @close="showStakeModal = false"
-        />
-      </teleport>
-    </StakingProvider>
+    <teleport to="#modal">
+      <InvestPreviewModalV2
+        v-if="showInvestPreview"
+        :pool="pool"
+        @close="showInvestPreview = false"
+        @show-stake-modal="showStakeModal = true"
+      />
+      <StakePreviewModal
+        :pool="pool"
+        :isVisible="showStakeModal"
+        action="stake"
+        @close="showStakeModal = false"
+      />
+    </teleport>
   </div>
 </template>
+
 <style scoped>
 .high-price-impact:has(.bal-checkbox-error) {
   @apply border-red-500 bg-red-50 dark:bg-red-500 bg-opacity-50 dark:bg-opacity-5 transition-colors;

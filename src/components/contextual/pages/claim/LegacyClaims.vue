@@ -174,6 +174,13 @@ async function claimAvailableRewards() {
 
 <template>
   <div v-if="userClaims != null" class="mt-4 w-full sm:w-3/4 md:w-1/2">
+    <BalAlert
+      title="Under maintenance"
+      description="Legacy claims are temporarily disabled whilst under maintenance. Please try again later."
+      type="warning"
+      class="mb-4"
+      block
+    />
     <div v-if="isAirdrop" class="mb-1 text-sm text-gray-600">
       {{ $t('liquidityMiningPopover.airdropExplainer', ['Polygon']) }}
     </div>
@@ -225,7 +232,7 @@ async function claimAvailableRewards() {
         class="mb-6"
         :loading="isClaiming"
         :loadingLabel="$t('claiming')"
-        :disabled="!hasClaimableTokens"
+        :disabled="true"
         @click="claimAvailableRewards"
       >
         {{ $t('claimAll') }}

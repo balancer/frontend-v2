@@ -179,7 +179,7 @@ async function submit(
       return;
     }
 
-    handleTransaction(tx, state);
+    if (tx) handleTransaction(tx, state);
   } catch (error) {
     state.init = false;
     state.confirming = false;
@@ -261,7 +261,7 @@ async function handleTransaction(
         >
           <div
             :class="{
-              'flex flex-grow justify-between items-center':
+              'flex grow justify-between items-center':
                 currentAction.isSignAction,
             }"
           >
