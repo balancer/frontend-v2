@@ -19,7 +19,7 @@ import {
 import { useI18n } from 'vue-i18n';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
 import {
   SorManager,
@@ -205,7 +205,7 @@ export default function useSor({
         ? SwapType.SwapExactIn
         : SwapType.SwapExactOut;
 
-      const deltas = await balancer.swaps.queryBatchSwap({
+      const deltas = await getBalancer().swaps.queryBatchSwap({
         kind: swapType,
         swaps: result.swaps,
         assets: result.tokenAddresses,

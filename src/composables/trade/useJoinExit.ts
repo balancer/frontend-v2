@@ -22,7 +22,7 @@ import {
   watch,
 } from 'vue';
 
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -119,7 +119,7 @@ export default function useJoinExit({
 
   async function getSwapInfo(): Promise<void> {
     swapInfoLoading.value = true;
-    swapInfo.value = await balancer.sor.getSwaps(
+    swapInfo.value = await getBalancer().sor.getSwaps(
       tokenInAddressInput.value,
       tokenOutAddressInput.value,
       exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
@@ -179,6 +179,7 @@ export default function useJoinExit({
   }
 
   async function trade(successCallback?: () => void) {
+    const balancer = getBalancer();
     try {
       confirming.value = true;
       state.submissionError = null;

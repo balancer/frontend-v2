@@ -1,4 +1,3 @@
-import { TokenInfoMap } from '@/types/TokenList';
 import { mock } from 'vitest-mock-extended';
 import { computed } from 'vue';
 import { TokensResponse } from '../tokens.provider';
@@ -54,12 +53,10 @@ mockTokensProvider.getTokens.mockImplementation(addresses => {
     })
   );
 });
+mockTokensProvider.balancerTokenListTokens = computed(() => ({}));
 mockTokensProvider.getToken.mockImplementation(address => {
   return mockTokens[address];
 });
-mockTokensProvider.balancerTokenListTokens = computed(() =>
-  mock<TokenInfoMap>()
-);
 
 export function tokensProvider(): TokensResponse {
   return mockTokensProvider;

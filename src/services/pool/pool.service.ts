@@ -15,7 +15,7 @@ import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import { Pool as SDKPool } from '@balancer-labs/sdk';
 import { captureException } from '@sentry/browser';
 
@@ -45,7 +45,7 @@ export default class PoolService {
     let totalLiquidity = this.pool.totalLiquidity;
 
     try {
-      const sdkTotalLiquidity = await balancer.pools.liquidity(
+      const sdkTotalLiquidity = await getBalancer().pools.liquidity(
         this.pool as unknown as SDKPool
       );
       // if totalLiquidity can be computed from coingecko prices, use that

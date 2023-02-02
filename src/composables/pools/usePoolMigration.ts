@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
@@ -296,7 +296,7 @@ export function usePoolMigration(
   function migrateBoostedPool(bptIn: string, staked: boolean, minBptOut = '0') {
     const { signerAddress, _signature, _tokens } = migrationData.value;
 
-    return balancer.zaps.migrations.bbaUsd(
+    return getBalancer().zaps.migrations.bbaUsd(
       signerAddress,
       bptIn,
       minBptOut,
@@ -309,7 +309,7 @@ export function usePoolMigration(
   function migrateStabal3(bptIn: string, staked: boolean, minBptOut = '0') {
     const { signerAddress, _signature } = migrationData.value;
 
-    return balancer.zaps.migrations.stabal3(
+    return getBalancer().zaps.migrations.stabal3(
       signerAddress,
       bptIn,
       minBptOut,
