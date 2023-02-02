@@ -660,8 +660,7 @@
     "tabs": {
       "totalComposition": "Total composition",
       "myPoolShare": "My pool share"
-    },
-    "userShares": "You own {0} of the pool"
+    }
   },
   "poolCreated": "Pool created!",
   "poolName": "Pool name",

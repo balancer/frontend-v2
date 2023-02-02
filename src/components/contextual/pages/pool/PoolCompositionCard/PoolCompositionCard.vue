@@ -73,6 +73,12 @@ onMounted(() => {
     class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
   >
     <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px" />
+    <div
+      v-if="userHasShares"
+      class="flex items-start p-1 mb-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-gray-700 rounded pill"
+    >
+      {{ userPoolPercentageLabel }}
+    </div>
   </div>
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
@@ -116,7 +122,4 @@ onMounted(() => {
       </div>
     </div>
   </BalCard>
-  <div v-if="userHasShares" class="m-3 text-sm text-secondarygit pu">
-    {{ $t('poolComposition.userShares', [userPoolPercentageLabel]) }}
-  </div>
 </template>
