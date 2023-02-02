@@ -42,10 +42,7 @@
         />
       </div>
     </div>
-    <div
-      v-if="isGassless && context === TradeSettingsContext.trade"
-      class="mt-6"
-    >
+    <div v-if="isGassless && context === SwapSettingsContext.swap" class="mt-6">
       <div class="flex items-baseline">
         <span class="mb-2 font-medium" v-text="$t('transactionDeadline')" />
         <BalTooltip>
@@ -86,13 +83,13 @@ import useNumbers from '@/composables/useNumbers';
 import { ethereumTxTypeOptions } from '@/constants/options';
 import useWeb3 from '@/services/web3/useWeb3';
 
-export enum TradeSettingsContext {
-  trade,
+export enum SwapSettingsContext {
+  swap,
   invest,
 }
 
 export default defineComponent({
-  name: 'TradeSettingsPopover',
+  name: 'SwapSettingsPopover',
 
   components: {
     AppSlippageForm,
@@ -100,7 +97,7 @@ export default defineComponent({
 
   props: {
     context: {
-      type: [String, Number] as PropType<TradeSettingsContext>,
+      type: [String, Number] as PropType<SwapSettingsContext>,
       required: true,
     },
     isGassless: { type: Boolean, default: false },
@@ -108,7 +105,7 @@ export default defineComponent({
 
   setup(props) {
     // DATA
-    const { context }: { context: Ref<TradeSettingsContext> } = toRefs(props);
+    const { context }: { context: Ref<SwapSettingsContext> } = toRefs(props);
 
     // COMPOSABLES
     const store = useStore();
@@ -127,9 +124,9 @@ export default defineComponent({
       store.commit('app/setTransactionDeadline', transactionDeadline);
 
     function onActivatorClick(): void {
-      if (context.value === TradeSettingsContext.trade) {
+      if (context.value === SwapSettingsContext.swap) {
         trackGoal(Goals.ClickSwapSettings);
-      } else if (context.value === TradeSettingsContext.invest) {
+      } else if (context.value === SwapSettingsContext.invest) {
         trackGoal(Goals.ClickJoinPoolSettings);
       }
     }
@@ -137,7 +134,7 @@ export default defineComponent({
     return {
       Goals,
       // types,
-      TradeSettingsContext,
+      SwapSettingsContext,
       // computed
       appTransactionDeadline,
       isEIP1559SupportedNetwork,
@@ -155,11 +152,11 @@ export default defineComponent({
 </script>
 
 <style>
-.trade-settings-option:hover {
+.swap-settings-option:hover {
   @apply text-blue-500 border-blue-500;
 }
 
-.trade-settings-option.active {
+.swap-settings-option.active {
   @apply text-blue-500 border-blue-500;
 }
 </style>

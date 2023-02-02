@@ -1,9 +1,9 @@
 import { QueryBuilder } from '@/types/subgraph';
 
 import Service from '../../balancer-subgraph.service';
-import tradePairSnapshotQueryBuilder from './query';
+import swapPairSnapshotQueryBuilder from './query';
 
-export type TradePairSnapshot = {
+export type SwapPairSnapshot = {
   timestamp: number;
   totalSwapFee: string;
   totalSwapVolume: string;
@@ -19,21 +19,21 @@ export type TradePairSnapshot = {
   };
 };
 
-export default class TradePairSnapshots {
+export default class SwapPairSnapshots {
   service: Service;
   query: QueryBuilder;
 
   constructor(
     service: Service,
-    query: QueryBuilder = tradePairSnapshotQueryBuilder
+    query: QueryBuilder = swapPairSnapshotQueryBuilder
   ) {
     this.service = service;
     this.query = query;
   }
 
-  public async get(args = {}, attrs = {}): Promise<TradePairSnapshot[]> {
+  public async get(args = {}, attrs = {}): Promise<SwapPairSnapshot[]> {
     const query = this.query(args, attrs);
     const data = await this.service.client.get(query);
-    return data.tradePairSnapshots;
+    return data.swapPairSnapshots;
   }
 }
