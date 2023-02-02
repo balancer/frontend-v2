@@ -6,7 +6,7 @@ import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolSnapshots from './entities/poolSnapshots';
 import PoolSwaps from './entities/poolSwaps';
-import SwapPairSnapshots from './entities/swapPairs';
+import TradePairSnapshots from './entities/swapPairs';
 
 export default class BalancerSubgraphService {
   pools: Pools;
@@ -14,7 +14,7 @@ export default class BalancerSubgraphService {
   poolActivities: PoolActivities;
   poolSwaps: PoolSwaps;
   poolSnapshots: PoolSnapshots;
-  swapPairSnapshots: SwapPairSnapshots;
+  tradePairSnapshots: TradePairSnapshots;
 
   constructor(
     readonly client = balancerSubgraphClient,
@@ -26,7 +26,7 @@ export default class BalancerSubgraphService {
     this.poolActivities = new PoolActivities(this);
     this.poolSwaps = new PoolSwaps(this);
     this.poolSnapshots = new PoolSnapshots(this);
-    this.swapPairSnapshots = new SwapPairSnapshots(this);
+    this.tradePairSnapshots = new TradePairSnapshots(this);
   }
 }
 

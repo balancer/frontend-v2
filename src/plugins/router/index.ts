@@ -93,6 +93,11 @@ const routes: RouteRecordRaw[] = [
     component: SwapPage,
   },
   {
+    path: '/:networkSlug/trade/:assetIn?/:assetOut?',
+    name: 'trade',
+    component: SwapPage,
+  },
+  {
     path: '/:networkSlug/swap/:assetIn?/:assetOut?',
     redirect: to => {
       return `/swap${to.path.split('/swap')[1]}`;
