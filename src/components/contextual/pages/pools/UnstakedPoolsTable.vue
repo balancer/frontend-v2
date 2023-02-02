@@ -7,6 +7,7 @@ import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useUserPools } from '@/providers/local/user-pools.provider';
+import StakePreviewModal from '../pool/staking/StakePreviewModal.vue';
 
 /**
  * STATE
@@ -24,6 +25,7 @@ const { t } = useI18n();
 const {
   unstakedPools,
   userPoolShares,
+  refetchAllUserPools,
   isLoading: isLoadingPools,
 } = useUserPools();
 
@@ -47,14 +49,17 @@ const _unstakedPools = computed((): Pool[] => {
  * METHODS
  */
 function handleStake(pool: Pool) {
-  // setPoolAddress(pool.address);
   showStakeModal.value = true;
   stakePool.value = pool;
 }
 
-// function handleModalClose() {
-//   showStakeModal.value = false;
-// }
+function handleModalClose() {
+  showStakeModal.value = false;
+}
+
+function handleStakeSuccess() {
+  refetchAllUserPools();
+}
 </script>
 
 <template>
@@ -76,16 +81,13 @@ function handleStake(pool: Pool) {
         @trigger-stake="handleStake"
       />
     </BalStack>
-    <!-- <StakingProvider
+    <StakePreviewModal
       v-if="stakePool"
-      :poolAddress="getAddressFromPoolId(stakePool.id)"
-    >
-      <StakePreviewModal
-        :pool="stakePool"
-        :isVisible="showStakeModal"
-        action="stake"
-        @close="handleModalClose"
-      />
-    </StakingProvider> -->
+      :pool="stakePool"
+      :isVisible="showStakeModal"
+      action="stake"
+      @close="handleModalClose"
+      @success="handleStakeSuccess"
+    />
   </div>
 </template>

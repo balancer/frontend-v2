@@ -3,14 +3,16 @@
  *
  * Fetch any user data that needs to be generally accessible here.
  */
+import useStakedSharesQuery from '@/composables/queries/useStakedSharesQuery';
 import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
 import useUserPoolSharesQuery from '@/composables/queries/useUserPoolSharesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import symbolKeys from '@/constants/symbol.keys';
-import { inject, InjectionKey, provide, Ref } from 'vue';
+import { InjectionKey, provide } from 'vue';
+import { safeInject } from './inject';
 
-const provider = (account: Ref<string>) => {
+const provider = () => {
   /**
    * COMPOSABLES
    */
@@ -21,6 +23,9 @@ const provider = (account: Ref<string>) => {
   const userGaugeSharesQuery = useUserGaugeSharesQuery();
   const { data: userGaugeShares } = userGaugeSharesQuery;
 
+  // Fetch all user's staked share balances via onchain multicall.
+  const stakedSharesQuery = useStakedSharesQuery(userGaugeShares);
+
   // Fetches map of boost values for user's staked shares.
   const userBoostsQuery = useUserBoostsQuery(userGaugeShares);
 
@@ -29,6 +34,7 @@ const provider = (account: Ref<string>) => {
   return {
     userPoolSharesQuery,
     userGaugeSharesQuery,
+    stakedSharesQuery,
     userBoostsQuery,
     lockQuery,
   };
@@ -37,16 +43,15 @@ const provider = (account: Ref<string>) => {
 /**
  * Provide setup: response type + symbol.
  */
-export type Response = ReturnType<typeof provider>;
-export const UserDataProviderSymbol: InjectionKey<Response> = Symbol(
+export type UserDataResponse = ReturnType<typeof provider>;
+export const UserDataProviderSymbol: InjectionKey<UserDataResponse> = Symbol(
   symbolKeys.Providers.UserData
 );
 
-export function provideUserData(account: Ref<string>) {
-  provide(UserDataProviderSymbol, provider(account));
+export function provideUserData() {
+  provide(UserDataProviderSymbol, provider());
 }
 
-export function useUserData(): Response {
-  const defaultResponse = {} as Response;
-  return inject(UserDataProviderSymbol, defaultResponse);
+export function useUserData(): UserDataResponse {
+  return safeInject(UserDataProviderSymbol);
 }

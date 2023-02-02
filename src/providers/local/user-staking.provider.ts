@@ -14,29 +14,21 @@ const provider = () => {
   /**
    * COMPOSABLES
    */
-  const { userGaugeSharesQuery, userBoostsQuery } = useUserData();
+  const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
+    useUserData();
 
   /**
    * COMPUTED
    */
   const { data: userGaugeShares } = userGaugeSharesQuery;
   const { data: poolBoostsMap } = userBoostsQuery;
+  const { data: stakedShares } = stakedSharesQuery;
 
   // Array of all the pools a user has staked BPT for.
   const stakedPoolIds = computed((): string[] => {
     if (!userGaugeShares.value) return [];
 
     return userGaugeShares.value.map(gaugeShare => gaugeShare.gauge.poolId);
-  });
-
-  // Map of poolID -> staked BPT balance.
-  const stakedBptMap = computed((): Record<string, string> => {
-    return Object.fromEntries(
-      (userGaugeShares.value || []).map(gaugeShare => [
-        gaugeShare.gauge.poolId,
-        gaugeShare.balance,
-      ])
-    );
   });
 
   const isPoolsQueryEnabled = computed(
@@ -53,7 +45,7 @@ const provider = () => {
       pageSize: 999,
     }
   );
-  const { data: _stakedPools } = stakedPoolsQuery;
+  const { data: _stakedPools, refetch: refetchStakedPools } = stakedPoolsQuery;
 
   // Pool records for all the pools where a user has staked BPT.
   const stakedPools = computed(
@@ -62,11 +54,11 @@ const provider = () => {
 
   // Total fiat value of staked shares.
   const totalStakedValue = computed((): string => {
-    return Object.keys(stakedBptMap.value || {})
+    return Object.keys(stakedShares.value || {})
       .reduce((acc, poolId) => {
         const pool = stakedPools.value.find(pool => pool.id === poolId);
         if (!pool) return acc;
-        const bpt = stakedBptMap?.value?.[poolId] || '0';
+        const bpt = stakedShares?.value?.[poolId] || '0';
         return acc + Number(fiatValueOf(pool, bpt));
       }, 0)
       .toString();
@@ -76,16 +68,29 @@ const provider = () => {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(userGaugeSharesQuery) ||
+      isQueryLoading(stakedSharesQuery) ||
       isQueryLoading(userBoostsQuery) ||
       isQueryLoading(stakedPoolsQuery)
   );
 
+  /**
+   * Gets a user's staked BPT balance for a given pool.
+   *
+   * @param {string} poolId - The pool to get the staked balance for.
+   * @returns The staked balance.
+   */
+  function stakedSharesFor(poolId: string): string {
+    return stakedShares?.value?.[poolId] || '0';
+  }
+
   return {
     stakedPools,
+    stakedShares,
     poolBoostsMap,
-    stakedBptMap,
     totalStakedValue,
     isLoading,
+    refetchStakedPools,
+    stakedSharesFor,
   };
 };
 

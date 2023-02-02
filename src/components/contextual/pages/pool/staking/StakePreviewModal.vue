@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { AnyPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import StakePreview, { StakeAction } from './StakePreview.vue';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 type Props = {
   isVisible: boolean;
-  pool: AnyPool;
+  pool: Pool;
   action: StakeAction;
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits(['close', 'success']);
 
 const showFireworks = ref(false);
+
+providePoolStaking(props.pool.id);
 
 /**
  * METHODS

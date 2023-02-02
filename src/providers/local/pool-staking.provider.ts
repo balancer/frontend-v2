@@ -1,10 +1,8 @@
 import usePoolGaugesQuery from '@/composables/queries/usePoolGaugesQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
-import usePoolStakedSharesQuery from '@/composables/queries/usePoolStakedSharesQuery';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
 import { computed, inject, InjectionKey, provide } from 'vue';
-import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { getAddress } from '@ethersproject/address';
 import { parseUnits } from '@ethersproject/units';
@@ -30,10 +28,16 @@ const provider = (poolId: string) => {
    */
   const { balanceFor } = useTokens();
   const { account } = useWeb3();
-  const { userGaugeSharesQuery, userBoostsQuery } = useUserData();
+  const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
+    useUserData();
   const { data: userGaugeShares, refetch: refetchUserGaugeShares } =
     userGaugeSharesQuery;
   const { data: boostsMap, refetch: refetchUserBoosts } = userBoostsQuery;
+  const {
+    data: _stakedShares,
+    refetch: refetchStakedShares,
+    isRefetching: isRefetchingStakedShares,
+  } = stakedSharesQuery;
 
   /**
    * QUERIES
@@ -42,21 +46,13 @@ const provider = (poolId: string) => {
   const poolGaugesQuery = usePoolGaugesQuery(poolAddress);
   const { data: poolGauges, refetch: refetchPoolGauges } = poolGaugesQuery;
 
-  // Fetches the user's total staked shares for this pool using onchain calls.
-  const poolStakedSharesQuery = usePoolStakedSharesQuery(poolGauges);
-  const {
-    data: _stakedShares,
-    isRefetching: isRefetchingStakedShares,
-    refetch: refetchStakedShares,
-  } = poolStakedSharesQuery;
-
   /**
    * COMPUTED
    */
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(poolGaugesQuery) ||
-      isQueryLoading(poolStakedSharesQuery) ||
+      isQueryLoading(stakedSharesQuery) ||
       isQueryLoading(userGaugeSharesQuery) ||
       isQueryLoading(userBoostsQuery)
   );
@@ -74,7 +70,9 @@ const provider = (poolId: string) => {
   );
 
   // User's staked shares for pool (onchain data).
-  const stakedShares = computed((): string => _stakedShares.value || '0');
+  const stakedShares = computed(
+    (): string => _stakedShares?.value?.[poolId] || '0'
+  );
 
   // User's boost value for this pool
   const boost = computed((): string => {

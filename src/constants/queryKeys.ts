@@ -5,7 +5,6 @@ import { Ref } from 'vue';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { NativeAsset, TokenInfo } from '@/types/TokenList';
-import { PoolGauges } from '@/composables/queries/usePoolGaugesQuery';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
@@ -114,9 +113,9 @@ const QUERY_KEYS = {
   User: {
     Pool: {
       StakedShares: (
-        poolGauges: Ref<undefined> | Ref<PoolGauges>,
+        userGaugeShares: Ref<undefined> | Ref<GaugeShare[]>,
         account: Ref<string>
-      ) => ['user', 'pool', 'stakedShares', { poolGauges, account }],
+      ) => ['user', 'pool', 'stakedShares', { userGaugeShares, account }],
     },
     Pools: (account: Ref<string>) => ['user', 'pools', { account }],
     Gauges: (account: Ref<string>, poolAddress: Ref<string> | undefined) => [

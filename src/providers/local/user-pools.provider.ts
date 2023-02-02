@@ -18,6 +18,7 @@ export const provider = (userStaking: UserStakingResponse) => {
   const {
     stakedPools,
     totalStakedValue,
+    refetchStakedPools,
     isLoading: isStakedDataLoading,
   } = userStaking;
 
@@ -44,7 +45,8 @@ export const provider = (userStaking: UserStakingResponse) => {
       pageSize: 999,
     }
   );
-  const { data: _unstakedPools } = unstakedPoolsQuery;
+  const { data: _unstakedPools, refetch: refetchUnstakedPools } =
+    unstakedPoolsQuery;
 
   // Pool records for all the pools where a user has staked BPT.
   const unstakedPools = computed(
@@ -83,12 +85,18 @@ export const provider = (userStaking: UserStakingResponse) => {
       (isVeBalSupported.value && isQueryLoading(lockQuery))
   );
 
+  function refetchAllUserPools() {
+    refetchUnstakedPools.value();
+    refetchStakedPools.value();
+  }
+
   return {
     stakedPools,
     unstakedPools,
     userPoolShares,
     totalFiatValue,
     isLoading,
+    refetchAllUserPools,
   };
 };
 

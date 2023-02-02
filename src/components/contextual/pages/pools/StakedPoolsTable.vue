@@ -10,7 +10,7 @@ import { useUserStaking } from '@/providers/local/user-staking.provider';
 /**
  * COMPOSABLES
  */
-const { stakedPools, poolBoostsMap, stakedBptMap, isLoading } =
+const { stakedPools, poolBoostsMap, stakedShares, isLoading } =
   useUserStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
@@ -44,7 +44,7 @@ const poolsToRenderKey = computed(() => JSON.stringify(stakedPools.value));
       <PoolsTable
         :key="poolsToRenderKey"
         :data="stakedPools"
-        :shares="stakedBptMap"
+        :shares="stakedShares"
         :boosts="poolBoostsMap"
         poolsType="staked"
         :noPoolsLabel="noPoolsLabel"
