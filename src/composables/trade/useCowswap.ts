@@ -109,10 +109,12 @@ export default function useCowswap({
   // METHODS
   function getFeeAmount() {
     const feeAmountInToken = feeQuote.value ?? '0';
-    const feeAmountOutToken = tokenOutAmountScaled.value
-      .mul(feeAmountInToken)
-      .div(tokenInAmountScaled.value)
-      .toString();
+    const feeAmountOutToken = tokenInAmountScaled.value.isZero()
+      ? '0'
+      : tokenOutAmountScaled.value
+          .mul(feeAmountInToken)
+          .div(tokenInAmountScaled.value)
+          .toString();
 
     return {
       feeAmountInToken,
@@ -289,10 +291,9 @@ export default function useCowswap({
         toDecimals: tokenOut.value.decimals,
         from: account.value || AddressZero,
         receiver: account.value || AddressZero,
-        [exactIn.value ? 'sellAmountBeforeFee' : 'buyAmountAfterFee']:
+        [exactIn.value ? 'sellAmountAfterFee' : 'buyAmountAfterFee']:
           amountToExchange.toString(),
         partiallyFillable: false, // Always fill or kill,
-        sellTokenBalance: OrderBalance.EXTERNAL,
       };
 
       const priceQuote = await cowswapProtocolService.getPriceQuote(
