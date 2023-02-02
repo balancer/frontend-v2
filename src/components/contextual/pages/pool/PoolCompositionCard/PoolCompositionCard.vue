@@ -2,7 +2,7 @@
 import useBreakpoints from '@/composables/useBreakpoints';
 import { removeBptFrom } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
-import { computed, onMounted, ref, toRefs } from 'vue';
+import { computed, nextTick, onMounted, ref, toRefs } from 'vue';
 
 import { isWeightedLike } from '@/composables/usePool';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
@@ -41,17 +41,15 @@ const tokenData = useTokenBreakdown(rootPool);
 const TOTAL_COMPOSITION = 'TOTAL_COMPOSITION';
 const MY_POOL_SHARE = 'MY_POOL_SHARE';
 
-const tabs = [
-  {
-    value: TOTAL_COMPOSITION,
-    label: t('poolComposition.tabs.totalComposition'),
-  },
-  {
-    value: MY_POOL_SHARE,
-    label: t('poolComposition.tabs.myPoolShare'),
-  },
-];
-const activeTab = ref(tabs[0].value);
+const compositionTab = {
+  value: TOTAL_COMPOSITION,
+  label: t('poolComposition.tabs.totalComposition'),
+};
+const mySharesTab = {
+  value: MY_POOL_SHARE,
+  label: t('poolComposition.tabs.myPoolShare'),
+};
+const activeTab = ref(TOTAL_COMPOSITION);
 
 /**
  * COMPUTED
@@ -59,24 +57,31 @@ const activeTab = ref(tabs[0].value);
 const showUserShares = computed(() => activeTab.value === MY_POOL_SHARE);
 const userHasShares = computed(() => userPoolPercentage.value.gt(0));
 // Hide my pool share tab when user does not have shares
-if (!userHasShares.value) tabs.splice(1, 1);
+const tabs = computed(() =>
+  userHasShares.value ? [compositionTab, mySharesTab] : [compositionTab]
+);
 
 /**
  * LIFECYCLE
  */
-onMounted(() => {
-  if (userHasShares.value) activeTab.value = MY_POOL_SHARE;
+onMounted(async () => {
+  await nextTick();
+
+  if (userHasShares.value) {
+    activeTab.value = MY_POOL_SHARE;
+  }
 });
 </script>
 
 <template>
   <div
-    class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
+    class="flex justify-start items-center mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
   >
-    <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px" />
-    <PercentagePill v-if="userHasShares">
-      {{ userPoolPercentageLabel }}
-    </PercentagePill>
+    <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px">
+      <PercentagePill v-if="userHasShares">
+        {{ userPoolPercentageLabel }}
+      </PercentagePill>
+    </BalTabs>
   </div>
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
