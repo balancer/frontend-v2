@@ -9,6 +9,7 @@ import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import { useI18n } from 'vue-i18n';
 import TokenBreakdown from './components/TokenBreakdown.vue';
 import { useTokenBreakdown } from './components/composables/useTokenBreakdown';
+import PercentagePill from './components/PercentagePill.vue';
 
 /**
  * TYPES
@@ -73,12 +74,9 @@ onMounted(() => {
     class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
   >
     <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px" />
-    <div
-      v-if="userHasShares"
-      class="flex items-start p-1 mb-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-gray-700 rounded pill"
-    >
+    <PercentagePill v-if="userHasShares">
       {{ userPoolPercentageLabel }}
-    </div>
+    </PercentagePill>
   </div>
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
