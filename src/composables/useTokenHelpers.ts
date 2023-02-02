@@ -23,10 +23,7 @@ export function useTokenHelpers() {
    * COMPUTED
    */
   const balToken = computed((): TokenInfo => getToken(balAddress));
-  console.log({
-    wra: wrappedNativeAsset.value.address,
-    nat: nativeAsset.address,
-  });
+
   /**
    * METHODS
    */

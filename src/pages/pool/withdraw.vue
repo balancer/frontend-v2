@@ -23,12 +23,8 @@ import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePo
  */
 const { network } = configService;
 const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
-const {
-  isDeepPool,
-  isWeightedLikePool,
-  isStablePool,
-  // isMetaStablePool
-} = usePool(pool);
+const { isDeepPool, isWeightedLikePool, isStablePool, isMetaStablePool } =
+  usePool(pool);
 const { activeTab, resetTabs } = useWithdrawPageTabs();
 usePoolTransfersGuard();
 
@@ -52,8 +48,11 @@ const isLoading = computed(
 );
 
 const supportsExitPoolProvider = computed(
-  () => isWeightedLikePool.value || isDeepPool.value || isStablePool.value
-  // || isMetaStablePool.value // TODO: Fix a bug in SDK where amounts out are always 0
+  () =>
+    isWeightedLikePool.value ||
+    isDeepPool.value ||
+    isStablePool.value ||
+    isMetaStablePool.value // TODO: Fix a bug in SDK where amounts out are always 0
 );
 
 onMounted(() => resetTabs());

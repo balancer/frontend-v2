@@ -1,7 +1,12 @@
 import { getBalancer } from '@/dependencies/balancer-sdk';
 import { POOLS } from '@/constants/pools';
-import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
-import { indexOfAddress, isSameAddress, selectByAddress } from '@/lib/utils';
+import { TOKENS } from '@/constants/tokens';
+import {
+  formatAddressForSor,
+  indexOfAddress,
+  isSameAddress,
+  selectByAddress,
+} from '@/lib/utils';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
@@ -46,7 +51,7 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     if (!tokenOut)
       throw new Error('Could not find exit token in pool tokens list.');
 
-    const tokenOutAddress = this.formatAddressForSor(tokenOut.address);
+    const tokenOutAddress = formatAddressForSor(tokenOut.address);
     const nativeAssetExit = isSameAddress(tokenOutAddress, POOLS.ZeroAddress);
 
     const poolTokensList = nativeAssetExit
@@ -95,12 +100,6 @@ export class ExactOutExitHandler implements ExitPoolHandler {
       }
       return address;
     });
-  }
-
-  private formatAddressForSor(address: string): string {
-    return isSameAddress(address, NATIVE_ASSET_ADDRESS)
-      ? POOLS.ZeroAddress
-      : address;
   }
 
   private getFullAmounts(

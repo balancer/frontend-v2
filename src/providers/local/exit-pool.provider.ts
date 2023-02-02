@@ -352,13 +352,8 @@ const provider = (props: Props) => {
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
-<<<<<<< HEAD
-=======
-    // Invalidate previous query in order to prevent stale data
-    queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
-
     console.log({ exitHandlerType: exitHandlerType.value });
->>>>>>> 25bb487c0 (Single asset exit for Weighted pools)
+
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,

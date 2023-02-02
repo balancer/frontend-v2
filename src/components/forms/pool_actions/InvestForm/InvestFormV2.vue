@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, forChange, includesAddress, isSameAddress } from '@/lib/utils';
+import { bnum, forChange, includesAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -51,7 +51,7 @@ const {
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
-const { wrappedNativeAsset, nativeAsset } = useTokens();
+const { wrappedNativeAsset, nativeAsset, isWethOrEth } = useTokens();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
@@ -110,8 +110,7 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
 function tokenOptions(address: string): string[] {
   if (!isWethPool.value) return [];
   if (isSingleAssetJoin.value) return [];
-  return isSameAddress(address, wrappedNativeAsset.value.address) ||
-    isSameAddress(address, nativeAsset.address)
+  return isWethOrEth(address)
     ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
 }

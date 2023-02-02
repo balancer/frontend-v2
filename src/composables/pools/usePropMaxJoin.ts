@@ -9,8 +9,6 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { useTokens } from '@/providers/tokens.provider';
 
-// TODO: Don't get by index, get by address
-
 export default function usePropMaxJoin(
   pool: Pool,
   tokensIn: Ref<TokenInfoMap>,

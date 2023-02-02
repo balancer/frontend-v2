@@ -257,9 +257,11 @@ const provider = (props: Props) => {
   );
 
   const optimized = computed((): boolean => {
-    const max = getPropMax();
-    if (!max.length) return false;
-    return amountsIn.value.every((item, i) => item.value === max[i].value);
+    if (!supportsPropotionalOptimization.value) return false;
+    const propMaxAmountsIn = getPropMax();
+    return amountsIn.value.every(
+      (item, i) => item.value === propMaxAmountsIn[i].value
+    );
   });
 
   const { getPropMax } = usePropMaxJoin(pool.value, tokensIn, useNativeAsset);
@@ -384,9 +386,8 @@ const provider = (props: Props) => {
   }
 
   function setPropMax() {
-    const max = getPropMax();
-    console.log({ max });
-    setAmountsIn(max);
+    const propMaxAmountsIn = getPropMax();
+    setAmountsIn(propMaxAmountsIn);
   }
 
   /**

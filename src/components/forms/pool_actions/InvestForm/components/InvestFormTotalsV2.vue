@@ -40,6 +40,7 @@ const optimizeBtnClasses = computed(() => ({
 }));
 
 const hasAllTokens = computed((): boolean => {
+  // TODO: Get balances from pool tokens, not amountsIn
   const balances = amountsIn.value.map(token => balanceFor(token.address));
   const hasBalanceForAllTokens = balances.every(balance => bnum(balance).gt(0));
   return hasBalanceForAllTokens;

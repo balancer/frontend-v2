@@ -11,12 +11,16 @@ import {
   QueryOutput,
 } from './exit-pool.handler';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { indexOfAddress, isSameAddress, selectByAddress } from '@/lib/utils';
+import {
+  formatAddressForSor,
+  indexOfAddress,
+  isSameAddress,
+  selectByAddress,
+} from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { TokenInfo } from '@/types/TokenList';
 import { flatTokenTree } from '@/composables/usePool';
 import { getAddress } from '@ethersproject/address';
-import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 /**
@@ -56,7 +60,7 @@ export class ExactInExitHandler implements ExitPoolHandler {
 
     const isSingleTokenExit = amountsOut.length === 1;
     const evmBptIn = parseFixed(bptIn, 18).toString();
-    const tokenOutAddressForSor = this.formatAddressForSor(tokenOut.address);
+    const tokenOutAddressForSor = formatAddressForSor(tokenOut.address);
     const singleTokenMaxOutAddress = isSingleTokenExit
       ? tokenOutAddressForSor
       : undefined;
@@ -65,19 +69,12 @@ export class ExactInExitHandler implements ExitPoolHandler {
       NATIVE_ASSET_ADDRESS
     );
 
-    // console.log({ singleTokenMaxOutAddress });
-    // console.log({
-    //   exiter,
-    //   evmBptIn,
-    //   slippage,
-    //   shouldUnwrapNativeAsset,
-    //   singleTokenMaxOutAddress: singleTokenMaxOutAddress?.toLowerCase(),
-    // });
     this.lastExitRes = await sdkPool.buildExitExactBPTIn(
       exiter,
       evmBptIn,
       slippage,
       shouldUnwrapNativeAsset,
+      // TODO: singleTokenMaxOutAddress address format. SDK fix?
       singleTokenMaxOutAddress?.toLowerCase()
     );
 
@@ -116,12 +113,6 @@ export class ExactInExitHandler implements ExitPoolHandler {
         priceImpact,
       };
     }
-  }
-
-  private formatAddressForSor(address: string): string {
-    return isSameAddress(address, NATIVE_ASSET_ADDRESS)
-      ? POOLS.ZeroAddress
-      : address;
   }
 
   private getSingleAmountOut(

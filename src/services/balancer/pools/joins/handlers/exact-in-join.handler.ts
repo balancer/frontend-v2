@@ -9,15 +9,15 @@ import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import {
   bnum,
   findByAddress,
+  formatAddressForSor,
   isSameAddress,
   selectByAddress,
 } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
-import { POOLS } from '@/constants/pools';
 
 /**
- * Handles generalized joins for deep pools using SDK functions.
+ * Handles joins with pool tokens using SDK functions.
  */
 export class ExactInJoinHandler implements JoinPoolHandler {
   private lastJoinRes?: ReturnType<PoolWithMethods['buildJoin']>;
@@ -49,7 +49,7 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     slippageBsp,
   }: JoinParams): Promise<QueryOutput> {
     const addressesIn = amountsIn.map(({ address }) => address);
-    const tokensList: string[] = this.swapWrappedNativeAssetAddresssToNative(
+    const tokensList: string[] = this.swapEthAddressToWeth(
       addressesIn,
       this.pool.value.tokensList
     );
@@ -68,7 +68,7 @@ export class ExactInJoinHandler implements JoinPoolHandler {
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     const tokensListForSor = tokensList.map(address =>
-      this.formatAddressForSor(address)
+      formatAddressForSor(address)
     );
 
     this.lastJoinRes = await sdkPool.buildJoin(
@@ -84,7 +84,8 @@ export class ExactInJoinHandler implements JoinPoolHandler {
 
     // TODO: Use expectedBPTOut once SDK supports it
     const { minBPTOut } = this.lastJoinRes;
-    if (bnum(minBPTOut).eq(0)) throw new Error('Not enough liquidity.');
+    if (bnum(minBPTOut).eq(0))
+      throw new Error('Failed to fetch expected output.');
 
     const bptOut = formatFixed(
       minBPTOut,
@@ -96,16 +97,6 @@ export class ExactInJoinHandler implements JoinPoolHandler {
       minBPTOut,
       true
     );
-    console.log({
-      lastJoinRes: this.lastJoinRes,
-      evmPriceImpact,
-      bptOut,
-      tokensList,
-      evmAmountsIn,
-      signerAddress,
-      tokensListForSor,
-      slippage,
-    });
 
     const priceImpact = Number(formatFixed(evmPriceImpact, 18));
 
@@ -115,15 +106,9 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     };
   }
 
-  private formatAddressForSor(address: string): string {
-    return isSameAddress(address, NATIVE_ASSET_ADDRESS)
-      ? POOLS.ZeroAddress
-      : address;
-  }
-
   // If tokenAddressesIn contains NATIVE_ASSET_ADDRESS, replace it with the wrapped native asset address
   // while keeping the original poolTokens order
-  private swapWrappedNativeAssetAddresssToNative(
+  private swapEthAddressToWeth(
     tokenAddressesIn: string[],
     poolTokens: string[]
   ): string[] {

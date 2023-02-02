@@ -5,6 +5,8 @@ import { Ref } from 'vue';
 import { Path } from 'vue-i18n';
 
 import pkg from '@/../package.json';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { POOLS } from '@/constants/pools';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -179,6 +181,13 @@ export function findByAddress<T>(
 
 export function removeAddress(address: string, addresses: string[]): string[] {
   return addresses.filter(a => !isSameAddress(a, address));
+}
+
+// If given address is the native asset address, return the zero address
+export function formatAddressForSor(address: string): string {
+  return isSameAddress(address, NATIVE_ASSET_ADDRESS)
+    ? POOLS.ZeroAddress
+    : address;
 }
 
 /**

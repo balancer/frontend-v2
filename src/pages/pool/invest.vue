@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
+import {
+  getSupportsJoinPoolProvider,
+  JoinPoolProvider,
+} from '@/providers/local/join-pool.provider';
 import InvestPage from '@/components/contextual/pages/pool/invest/InvestPage.vue';
 import useInvestPageTabs, { Tab } from '@/composables/pools/useInvestPageTabs';
-import { usePool } from '@/composables/usePool';
 import { useIntervalFn } from '@vueuse/core';
 import { oneMinInMs } from '@/composables/useTime';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
@@ -26,15 +28,9 @@ usePoolTransfersGuard();
  * COMPOSABLES
  */
 const { pool, poolQuery } = usePoolTransfers();
-const { isDeepPool, isWeightedLikePool, isMetaStablePool, isStablePool } =
-  usePool(pool);
 
-const supportsJoinPoolProvider = computed(
-  () =>
-    isWeightedLikePool.value ||
-    isDeepPool.value ||
-    isMetaStablePool.value ||
-    isStablePool.value
+const supportsJoinPoolProvider = computed(() =>
+  getSupportsJoinPoolProvider(pool.value)
 );
 
 const { activeTab } = useInvestPageTabs();
