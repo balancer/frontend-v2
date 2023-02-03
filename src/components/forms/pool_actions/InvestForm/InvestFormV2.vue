@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
-
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, forChange, includesAddress } from '@/lib/utils';
+import { bnum, forChange, removeAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -69,7 +68,7 @@ const {
 const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
   useMyWalletTokens({
     pool: props.pool,
-    includeNativeAsset: false,
+
     excludedTokens: [props.pool.address],
   });
 
@@ -91,18 +90,20 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
   } else {
     // Wait for balances to load and only add tokens with balance
     await forChange(isLoadingBalances, false);
-    const tokensToAdd = poolTokensWithBalance.value;
 
-    // If WETH pool but user doesn't have any WETH balance, include ETH to pool tokens
-    if (
-      includesAddress(
-        poolTokensWithoutBalance.value,
-        wrappedNativeAsset.value.address
-      )
-    ) {
-      tokensToAdd.push(nativeAsset.address);
+    // If user has balance for both WETH and ETH, add only WETH and other pool tokens with balance
+    // because ETH and WETH share the same input field
+    const hasEthAndWethBalance: boolean =
+      poolTokensWithBalance.value.filter(isWethOrEth).length === 2;
+    if (hasEthAndWethBalance) {
+      const ethRemoved = removeAddress(
+        nativeAsset.address,
+        poolTokensWithBalance.value
+      );
+      addTokensIn(ethRemoved);
+    } else {
+      addTokensIn(poolTokensWithBalance.value);
     }
-    addTokensIn(tokensToAdd);
   }
 }
 
@@ -186,7 +187,7 @@ watch(
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
 
-    <InvestFormTotalsV2 @optimize="setPropMax" />
+    <InvestFormTotalsV2 v-if="pool" :pool="pool" @optimize="setPropMax" />
 
     <div
       v-if="highPriceImpact"

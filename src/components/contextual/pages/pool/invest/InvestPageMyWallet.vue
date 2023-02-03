@@ -132,7 +132,6 @@ function handleMyWalletTokenClick(address: string, isPoolToken: boolean) {
   />
   <MyWallet
     v-else
-    includeNativeAsset
     :excludedTokens="excludedTokens"
     :pool="pool"
     @click:asset="handleMyWalletTokenClick"

@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useTokens } from '@/providers/tokens.provider';
-import { bnum } from '@/lib/utils';
+import useMyWalletTokens from '@/composables/useMyWalletTokens';
+import { Pool } from '@/services/pool/types';
+import { isWeth } from '@/composables/usePool';
+
+type Props = {
+  pool: Pool;
+};
 
 const emit = defineEmits<{
   (e: 'optimize'): void;
 }>();
+
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
@@ -20,11 +27,14 @@ const {
   isLoadingQuery,
   priceImpact,
   optimized,
-  amountsIn,
   supportsPropotionalOptimization,
 } = useJoinPool();
 const { isWalletReady } = useWeb3();
-const { balanceFor } = useTokens();
+const { isWethOrEth } = useTokens();
+const { poolTokensWithoutBalance, poolTokensWithBalance } = useMyWalletTokens({
+  pool: props.pool,
+  excludedTokens: [props.pool.address],
+});
 
 /**
  * COMPUTED
@@ -40,10 +50,18 @@ const optimizeBtnClasses = computed(() => ({
 }));
 
 const hasAllTokens = computed((): boolean => {
-  // TODO: Get balances from pool tokens, not amountsIn
-  const balances = amountsIn.value.map(token => balanceFor(token.address));
-  const hasBalanceForAllTokens = balances.every(balance => bnum(balance).gt(0));
-  return hasBalanceForAllTokens;
+  const hasBalanceForAll =
+    poolTokensWithoutBalance.value.filter(address => !isWethOrEth(address))
+      .length === 0;
+
+  // If the pool is WETH, user might have balance for just one of theem
+  if (isWeth(props.pool)) {
+    const hasWethOrEthBalance = poolTokensWithBalance.value.some(address =>
+      isWethOrEth(address)
+    );
+    return hasBalanceForAll && hasWethOrEthBalance;
+  }
+  return hasBalanceForAll;
 });
 </script>
 

@@ -4,21 +4,19 @@ import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress, includesAddress, removeAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
-import { AnyPool } from '@/services/pool/types';
 import { tokenTreeNodes, usePool } from '@/composables/usePool';
+import { Pool } from '@/services/pool/types';
 
 type Props = {
   excludedTokens?: string[];
   // If pool prop is provided, Tokens are grouped into:
   // 'Pool tokens in wallet' or 'Other tokens in wallet'
-  pool?: AnyPool;
-  includeNativeAsset?: boolean;
+  pool?: Pool;
 };
 
 export default function useMyWalletTokens({
   excludedTokens = [],
   pool,
-  includeNativeAsset = false,
 }: Props) {
   const { appNetworkConfig } = useWeb3();
 
@@ -41,12 +39,8 @@ export default function useMyWalletTokens({
   const tokensWithBalance = computed((): string[] => {
     return take(
       Object.keys(balances.value).filter(tokenAddress => {
-        const _includeNativeAsset = includeNativeAsset
-          ? true
-          : !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address);
         return (
           Number(balances.value[tokenAddress]) > 0 &&
-          _includeNativeAsset &&
           !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL) &&
           !isExcludedToken(tokenAddress)
         );
@@ -64,12 +58,9 @@ export default function useMyWalletTokens({
     }
 
     const tokensList = pool?.tokensList || [];
-    if (isWethPool.value) {
-      return includeNativeAsset
-        ? [nativeAsset.address, ...tokensList]
-        : tokensList;
-    }
-    return tokensList;
+
+    // for WETH pools, add native asset to pool tokens
+    return isWethPool.value ? [nativeAsset.address, ...tokensList] : tokensList;
   });
 
   const poolTokensWithBalance = computed((): string[] => {
