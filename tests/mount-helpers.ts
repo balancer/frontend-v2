@@ -1,11 +1,25 @@
-import { tokensProvider } from '@/providers/tokens.provider';
+import {
+  PoolStakingProviderResponse,
+  PoolStakingProviderSymbol,
+} from '@/providers/local/pool-staking.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
-import { TokensProviderSymbol } from '@/providers/tokens.provider';
+import {
+  tokensProvider,
+  TokensProviderSymbol,
+} from '@/providers/tokens.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
-import { Ref, provide } from 'vue';
+import { computed, provide, Ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
 import { mount, MountResult } from './mount-composable-tester';
 import { registerTestPlugins } from './registerTestPlugins';
+
+export const defaultStakedShares = '5';
+
+function provideFakePoolStaking() {
+  provide(PoolStakingProviderSymbol, {
+    stakedShares: computed(() => defaultStakedShares),
+  } as PoolStakingProviderResponse);
+}
 
 export function mountComposable<R>(
   callback: () => R,
@@ -16,6 +30,7 @@ export function mountComposable<R>(
       provideUserSettings();
       provideTokenLists();
       provide('store', {});
+      provideFakePoolStaking();
       extraProviders?.();
     },
     configApp: app => registerTestPlugins(app),

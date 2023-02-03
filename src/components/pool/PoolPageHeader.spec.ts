@@ -7,18 +7,7 @@ import sampleTitleTokens from './__mocks__/sample-title-tokens.json';
 import { renderComponent } from '@tests/renderComponent';
 
 vi.mock('@/providers/tokens.provider');
-
-vi.mock('@/composables/staking/useStaking', () => {
-  return {
-    default: () => {
-      return {
-        userData: {
-          hasNonPrefGaugeBalances: false,
-        },
-      };
-    },
-  };
-});
+vi.mock('@/services/web3/useWeb3');
 
 describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {
