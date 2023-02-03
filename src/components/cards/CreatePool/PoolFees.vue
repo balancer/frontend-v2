@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { isAddress } from '@ethersproject/address';
-import { computed, nextTick, ref } from 'vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers from '@/composables/useNumbers';

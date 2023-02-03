@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect, onMounted } from 'vue';
-
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
