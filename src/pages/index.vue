@@ -19,12 +19,10 @@ const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-const sortDirection = ref('desc');
 const poolsSortField = ref('totalLiquidity');
 
 const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
   selectedTokens,
-  sortDirection,
   poolsSortField
 );
 const { upToMediumBreakpoint } = useBreakpoints();
@@ -39,12 +37,8 @@ function navigateToCreatePool() {
   router.push({ name: 'create-pool', params: { networkSlug } });
 }
 
-function onColumnSort(payload: {
-  columnId: string;
-  currentSortDirection: string;
-}) {
-  sortDirection.value = payload.currentSortDirection;
-  poolsSortField.value = payload.columnId;
+function onColumnSort(columnId: string) {
+  poolsSortField.value = columnId;
 }
 </script>
 

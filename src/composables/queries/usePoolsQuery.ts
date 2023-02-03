@@ -40,7 +40,6 @@ export default function usePoolsQuery(
   filterTokens: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
   filterOptions?: FilterOptions,
-  sortDirection?: Ref<string> | undefined,
   poolsSortField?: Ref<string> | undefined
 ) {
   /**
@@ -48,7 +47,6 @@ export default function usePoolsQuery(
    */
   const { injectTokens, tokens: tokenMeta, dynamicDataLoading } = useTokens();
   const { networkId } = useNetwork();
-  const skip = ref(0);
   let poolsRepository = initializePoolsRepository();
 
   /**
@@ -129,7 +127,7 @@ export default function usePoolsQuery(
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
       orderBy: poolsSortField?.value || 'totalLiquidity',
-      orderDirection: sortDirection?.value || 'desc',
+      orderDirection: 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
         poolType: { not_in: POOLS.ExcludedPoolTypes },
@@ -172,7 +170,7 @@ export default function usePoolsQuery(
    *  need to change to filter for those tokens
    */
   watch(
-    () => [filterTokens, sortDirection, poolsSortField],
+    () => [filterTokens, poolsSortField],
     () => {
       poolsRepository = initializePoolsRepository();
     },
@@ -185,7 +183,6 @@ export default function usePoolsQuery(
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     filterTokens,
-    sortDirection,
     poolsSortField,
     filterOptions?.poolIds,
     filterOptions?.poolAddresses
@@ -196,10 +193,11 @@ export default function usePoolsQuery(
    */
   const queryFn = async ({ pageParam = 0 }) => {
     const fetchOptions = getFetchOptions(pageParam);
+    let skip = 0;
     try {
       const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
-      skip.value = poolsRepository.currentProvider?.skip
+      skip = poolsRepository.currentProvider?.skip
         ? poolsRepository.currentProvider.skip
         : 0;
 
@@ -207,11 +205,11 @@ export default function usePoolsQuery(
 
       return {
         pools,
-        skip: skip.value,
+        skip,
       };
     } catch (e) {
       if (poolsStoreService.pools.value) {
-        return { pools: poolsStoreService.pools.value, skip: skip.value };
+        return { pools: poolsStoreService.pools.value, skip };
       }
       throw e;
     }

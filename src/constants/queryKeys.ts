@@ -16,7 +16,6 @@ const QUERY_KEYS = {
     All: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      sortDirection: Ref<string> | undefined,
       poolsSortField: Ref<string> | undefined,
       poolIds: Ref<string[]> | undefined,
       poolAddresses: Ref<string[]> | undefined
@@ -26,7 +25,6 @@ const QUERY_KEYS = {
       {
         networkId,
         tokens,
-        sortDirection,
         poolsSortField,
         poolIds,
         poolAddresses,

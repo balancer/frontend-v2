@@ -9,7 +9,6 @@ import { tokenTreeLeafs } from '../usePool';
 
 export default function usePools(
   filterTokens: Ref<string[]> = ref([]),
-  sortDirection: Ref<string>,
   poolsSortField: Ref<string>
 ) {
   /**
@@ -19,7 +18,6 @@ export default function usePools(
     filterTokens,
     undefined,
     undefined,
-    sortDirection,
     poolsSortField
   );
 

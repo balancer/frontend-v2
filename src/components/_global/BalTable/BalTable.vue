@@ -25,10 +25,7 @@ type DataPinState = {
 
 const emit = defineEmits<{
   (e: 'loadMore'): void;
-  (
-    e: 'onColumnSort',
-    value: { columnId: string; currentSortDirection: string }
-  ): void;
+  (e: 'onColumnSort', value: string): void;
 }>();
 
 type Props = {
@@ -108,10 +105,7 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
     setCurrenSortDirection();
   }
   if (columnId && currentSortDirection.value) {
-    emit('onColumnSort', {
-      columnId,
-      currentSortDirection: currentSortDirection.value,
-    });
+    emit('onColumnSort', columnId);
   }
 
   const sortedData = sortBy(
