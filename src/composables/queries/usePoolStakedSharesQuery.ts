@@ -48,7 +48,7 @@ export default function usePoolStakedSharesQuery(
    */
   const queryFn = async () => {
     try {
-      if (!poolGauges.value) return '0';
+      if (!poolGauges?.value?.pool) return '0';
 
       const balancePromises = poolGauges.value.pool.gauges.map(gauge => {
         const liquidityGauge = new LiquidityGauge(gauge.id);

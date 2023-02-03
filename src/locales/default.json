@@ -654,7 +654,14 @@
   "pool": "Pool",
   "pools": "Pools",
   "poolBalance": "Pool balance",
-  "poolComposition": "Pool composition",
+  "poolComposition": {
+    "title": "Pool composition",
+    "token%": "Token %",
+    "tabs": {
+      "totalComposition": "Total composition",
+      "myPoolShare": "My pool share"
+    }
+  },
   "poolCreated": "Pool created!",
   "poolName": "Pool name",
   "poolPercent": "Pool %",
