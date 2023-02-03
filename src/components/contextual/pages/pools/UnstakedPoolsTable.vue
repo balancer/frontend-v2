@@ -8,6 +8,7 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useUserPools } from '@/providers/local/user-pools.provider';
 import StakePreviewModal from '../pool/staking/StakePreviewModal.vue';
+import { sleep } from '@/lib/utils';
 
 /**
  * STATE
@@ -54,11 +55,13 @@ function handleStake(pool: Pool) {
 }
 
 function handleModalClose() {
+  refetchAllUserPools();
   showStakeModal.value = false;
 }
 
-function handleStakeSuccess() {
-  refetchAllUserPools();
+async function handleStakeSuccess() {
+  await sleep(3000);
+  await refetchAllUserPools();
 }
 </script>
 

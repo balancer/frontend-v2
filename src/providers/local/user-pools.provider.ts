@@ -23,7 +23,8 @@ export const provider = (userStaking: UserStakingResponse) => {
   } = userStaking;
 
   const { userPoolSharesQuery, lockQuery } = useUserData();
-  const { data: userPoolShares } = userPoolSharesQuery;
+  const { data: userPoolShares, refetch: refetchUserPoolShares } =
+    userPoolSharesQuery;
 
   const { totalLockedValue } = useLock();
 
@@ -45,8 +46,7 @@ export const provider = (userStaking: UserStakingResponse) => {
       pageSize: 999,
     }
   );
-  const { data: _unstakedPools, refetch: refetchUnstakedPools } =
-    unstakedPoolsQuery;
+  const { data: _unstakedPools } = unstakedPoolsQuery;
 
   // Pool records for all the pools where a user has staked BPT.
   const unstakedPools = computed(
@@ -85,9 +85,11 @@ export const provider = (userStaking: UserStakingResponse) => {
       (isVeBalSupported.value && isQueryLoading(lockQuery))
   );
 
-  function refetchAllUserPools() {
-    refetchUnstakedPools.value();
-    refetchStakedPools.value();
+  async function refetchAllUserPools() {
+    await Promise.all([
+      refetchUserPoolShares.value(),
+      refetchStakedPools.value(),
+    ]);
   }
 
   return {
