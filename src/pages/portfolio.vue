@@ -20,23 +20,25 @@ const { lockPool, lock } = useLock();
 </script>
 
 <template>
-  <PortfolioPageHero />
-  <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
-    <BalStack vertical>
-      <div class="px-4 xl:px-0">
-        <BalStack horizontal justify="between" align="center">
-          <h3>{{ $t('myLiquidityInBalancerPools') }}</h3>
+  <div>
+    <PortfolioPageHero />
+    <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
+      <BalStack vertical>
+        <div class="px-4 xl:px-0">
+          <BalStack horizontal justify="between" align="center">
+            <h3>{{ $t('myLiquidityInBalancerPools') }}</h3>
+          </BalStack>
+        </div>
+        <BalStack vertical spacing="2xl">
+          <UnstakedPoolsTable />
+          <StakedPoolsTable />
+          <VeBalPoolTable
+            v-if="lockPool && Number(lock?.lockedAmount) > 0"
+            :lock="lock"
+            :lockPool="lockPool"
+          />
         </BalStack>
-      </div>
-      <BalStack vertical spacing="2xl">
-        <UnstakedPoolsTable />
-        <StakedPoolsTable />
-        <VeBalPoolTable
-          v-if="lockPool && Number(lock?.lockedAmount) > 0"
-          :lock="lock"
-          :lockPool="lockPool"
-        />
       </BalStack>
-    </BalStack>
+    </div>
   </div>
 </template>

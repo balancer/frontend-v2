@@ -36,6 +36,12 @@ const lockPools = computed<PoolWithShares[]>(() => {
   return [];
 });
 
+const poolShares = computed(
+  (): Record<string, string> => ({
+    [props.lockPool.id]: totalLockedValue.value,
+  })
+);
+
 const poolsToRenderKey = computed(() => JSON.stringify(lockPools.value));
 
 const hiddenColumns = ['poolVolume', 'migrate', 'actions', 'myBoost'];
@@ -50,6 +56,7 @@ const hiddenColumns = ['poolVolume', 'migrate', 'actions', 'myBoost'];
       <PoolsTable
         :key="poolsToRenderKey"
         :data="lockPools"
+        :shares="poolShares"
         :hiddenColumns="hiddenColumns"
         sortColumn="myBalance"
         showPoolShares

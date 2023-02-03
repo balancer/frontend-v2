@@ -4,7 +4,7 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
-import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
@@ -16,7 +16,7 @@ import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import { fiatValueOf, tokensListExclBpt } from '@/composables/usePool';
 import StakeSummary from './StakeSummary.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
@@ -35,7 +35,6 @@ const { balanceFor, getToken, refetchBalances } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
-const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 
 const { stake, unstake, stakedShares, refetchAllPoolStakingData } =
   usePoolStaking();
@@ -102,13 +101,6 @@ const isStakeAndZero = computed(
     props.action === 'stake' && (currentShares === '0' || currentShares === '')
 );
 
-const fiatValueOfModifiedShares = ref(
-  bnum(props.pool.totalLiquidity)
-    .div(props.pool.totalShares)
-    .times(currentShares)
-    .toString()
-);
-
 const totalUserPoolSharePct = ref(
   bnum(
     bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
@@ -140,11 +132,11 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
       type: 'tx',
       action: props.action,
       summary: t(`transactionSummary.${props.action}`, {
-        pool: poolWeightsLabel(props.pool),
-        amount: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+        pool: props.pool.symbol,
+        amount: fNum2(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
       }),
       details: {
-        total: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+        total: fNum2(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
         pool: props.pool,
       },
     });
@@ -203,7 +195,7 @@ function handleClose() {
     </div>
     <StakeSummary
       :action="action"
-      :fiatValue="fiatValueOfModifiedShares"
+      :fiatValue="fiatValueOf(pool, currentShares)"
       :sharePercentage="totalUserPoolSharePct"
     />
     <BalActionSteps
