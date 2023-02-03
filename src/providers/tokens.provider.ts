@@ -3,6 +3,7 @@ import { compact, pick } from 'lodash';
 import {
   computed,
   InjectionKey,
+  nextTick,
   onBeforeMount,
   provide,
   reactive,
@@ -18,6 +19,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
 import {
   bnum,
+  forChange,
   getAddressFromPoolId,
   includesAddress,
   isSameAddress,
@@ -259,6 +261,10 @@ export const tokensProvider = (
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
+
+    // Wait for balances/allowances/prices to be fetched for newly injected tokens.
+    await nextTick();
+    await forChange(dynamicDataLoading, false);
   }
 
   /**

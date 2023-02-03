@@ -6,13 +6,25 @@ import useInvestPageTabs, { Tab } from '@/composables/pools/useInvestPageTabs';
 import { usePool } from '@/composables/usePool';
 import { useIntervalFn } from '@vueuse/core';
 import { oneMinInMs } from '@/composables/useTime';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+import { useRoute } from 'vue-router';
 
 /**
  * STATE
  */
+const route = useRoute();
+const poolId = (route.params.id as string).toLowerCase();
+
+/**
+ * PROVIDERS
+ */
+providePoolStaking(poolId);
+
+/**
+ * COMPOSABLES
+ */
 const { pool, poolQuery } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
-
 const { activeTab } = useInvestPageTabs();
 
 // Instead of refetching pool data on every block, we refetch every minute to prevent

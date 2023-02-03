@@ -237,7 +237,7 @@ describe('remove preminted tokens given a SubPool', () => {
 });
 
 describe('findTokenInTree should', () => {
-  test('find tokens including preminted by default', () => {
+  test('find tokens excluding BPT (includePreMintedBpt is the default behavior)', () => {
     const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
     const bbaDaiToken = findTokenInTree(BoostedPoolMock, bbaDaiAddress);
     const bbaDaiNestedTokens = bbaDaiToken?.token?.pool?.tokens;
@@ -247,7 +247,7 @@ describe('findTokenInTree should', () => {
     ]);
   });
 
-  test('find tokens when excluding preminted', () => {
+  test('find tokens when including preminted BPT', () => {
     const bbAUsdtAddress = '0x2f4eb100552ef93840d5adc30560e5513dfffacb';
     const bbaUsdtToken = findTokenInTree(BoostedPoolMock, bbAUsdtAddress, {
       includePreMintedBpt: true,

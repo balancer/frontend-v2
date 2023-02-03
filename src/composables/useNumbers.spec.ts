@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { mountComposable } from '@/tests/mount-helpers';
+import { mountComposable } from '@tests/mount-helpers';
 import useNumbers, { bspToDec, FNumFormats } from './useNumbers';
 
 vi.mock('@/providers/tokens.provider');
