@@ -194,11 +194,9 @@ export default function usePoolsQuery(
   /**
    * QUERY FUNCTION
    */
-  // const savedFetchOptions = ref(0);
   const queryFn = async ({ pageParam = 0 }) => {
     const fetchOptions = getFetchOptions(pageParam);
     try {
-      console.log('fetchOptions', fetchOptions);
       const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
       skip.value = poolsRepository.currentProvider?.skip
