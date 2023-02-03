@@ -108,7 +108,11 @@ const QUERY_KEYS = {
     },
   },
   Pool: {
-    Gauges: (poolAddress: Ref<string>) => ['pool', 'gauges', { poolAddress }],
+    Gauges: (poolAddress: Ref<string | undefined>) => [
+      'pool',
+      'gauges',
+      { poolAddress },
+    ],
   },
   User: {
     Pool: {

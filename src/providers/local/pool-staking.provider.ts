@@ -2,7 +2,7 @@ import usePoolGaugesQuery from '@/composables/queries/usePoolGaugesQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
-import { computed, inject, InjectionKey, provide } from 'vue';
+import { computed, inject, InjectionKey, provide, ref } from 'vue';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { getAddress } from '@ethersproject/address';
 import { parseUnits } from '@ethersproject/units';
@@ -17,11 +17,14 @@ import { useUserData } from '../user-data.provider';
  *
  * Fetches data and provides functionality for a specific pool's gauge.
  */
-const provider = (poolId: string) => {
+const provider = (_poolId?: string) => {
   /**
    * STATE
    */
-  const poolAddress = computed((): string => getAddressFromPoolId(poolId));
+  const poolId = ref(_poolId);
+  const poolAddress = computed((): string | undefined =>
+    poolId.value ? getAddressFromPoolId(poolId.value) : undefined
+  );
 
   /**
    * COMPOSABLES
@@ -65,20 +68,23 @@ const provider = (poolId: string) => {
   // Is it possible to stake this pool's BPT?
   const isStakablePool = computed(
     (): boolean =>
+      !!poolId.value &&
       poolGauges.value?.liquidityGauges?.[0]?.id !== undefined &&
-      POOLS.Stakable.AllowList.includes(poolId)
+      POOLS.Stakable.AllowList.includes(poolId.value)
   );
 
   // User's staked shares for pool (onchain data).
-  const stakedShares = computed(
-    (): string => _stakedShares?.value?.[poolId] || '0'
-  );
+  const stakedShares = computed((): string => {
+    if (!poolId.value) return '0';
+
+    return _stakedShares?.value?.[poolId.value] || '0';
+  });
 
   // User's boost value for this pool
   const boost = computed((): string => {
-    if (!boostsMap.value) return '1';
+    if (!boostsMap.value || !poolId.value) return '1';
 
-    return boostsMap[poolId];
+    return boostsMap[poolId.value];
   });
 
   // Addresses of all pool gauges.
@@ -117,6 +123,17 @@ const provider = (poolId: string) => {
   /**
    * METHODS
    */
+
+  /**
+   * Set current pool ID for this provider.
+   *
+   * @param {string} id - The pool ID to get staking data for.
+   */
+  function setCurrentPool(id: string) {
+    console.log('setCurrentPool', id);
+    poolId.value = id;
+  }
+
   async function refetchAllPoolStakingData() {
     return Promise.all([
       refetchPoolGauges.value(),
@@ -133,10 +150,12 @@ const provider = (poolId: string) => {
    * this pool.
    */
   async function stake(): Promise<TransactionResponse> {
+    if (!poolAddress.value) throw new Error('No pool to stake.');
     if (!preferentialGaugeAddress.value) {
       throw new Error(`No preferential gauge found for this pool.`);
     }
 
+    console.log('poolAddress.value', poolAddress.value);
     const gauge = new LiquidityGauge(preferentialGaugeAddress.value);
     // User's current full BPT balance for this pool.
     const userBptBalance = parseUnits(
@@ -186,6 +205,7 @@ const provider = (poolId: string) => {
     hasNonPrefGaugeBalance,
     isRefetchingStakedShares,
     refetchStakedShares,
+    setCurrentPool,
     refetchAllPoolStakingData,
     stake,
     unstake,
@@ -200,7 +220,7 @@ export const PoolStakingProviderSymbol: InjectionKey<Response> = Symbol(
   symbolKeys.Providers.PoolStaking
 );
 
-export function providePoolStaking(poolId: string) {
+export function providePoolStaking(poolId?: string) {
   provide(PoolStakingProviderSymbol, provider(poolId));
 }
 

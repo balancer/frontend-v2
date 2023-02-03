@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import { isMigratablePool } from '@/composables/usePool';
@@ -9,6 +9,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { useUserPools } from '@/providers/local/user-pools.provider';
 import StakePreviewModal from '../pool/staking/StakePreviewModal.vue';
 import { sleep } from '@/lib/utils';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * STATE
@@ -17,6 +18,11 @@ const showStakeModal = ref(false);
 const stakePool = ref<Pool | undefined>();
 const networkName = configService.network.shortName;
 const hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
+
+/**
+ * PROVIDERS
+ */
+providePoolStaking();
 
 /**
  * COMPOSABLES
@@ -63,6 +69,10 @@ async function handleStakeSuccess() {
   await sleep(3000);
   await refetchAllUserPools();
 }
+
+onMounted(() => {
+  refetchAllUserPools();
+});
 </script>
 
 <template>
