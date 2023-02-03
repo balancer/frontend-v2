@@ -200,11 +200,11 @@ watch(
       anime({
         opacity: [0, 1],
         targets: '.bal-table-row',
-        delay: anime.stagger(100),
+        delay: anime.stagger(60),
         translateZ: 0,
-        translateY: [20, 0],
+        translateY: [24, 0],
         easing: 'easeOutQuart',
-        duration: 300,
+        duration: 1500,
       });
     }
   }
@@ -283,7 +283,7 @@ watch(
         </thead>
       </table>
     </div>
-    <div ref="bodyRef" class="overflow-auto">
+    <div ref="bodyRef" class="overflow-x-auto overflow-y-hidden">
       <BalLoadingBlock
         v-if="isLoading"
         :class="[skeletonClass, 'min-w-full']"
