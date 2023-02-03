@@ -48,6 +48,7 @@ export function usePoolMigration(
   relayerApproval: Ref<boolean | undefined>,
   currentActionIndex: Ref<number>
 ) {
+  const balancer = getBalancer();
   /**
    * COMPOSABLES
    */

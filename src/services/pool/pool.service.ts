@@ -55,7 +55,7 @@ export default class PoolService {
       }
     } catch (error) {
       captureException(error);
-      console.error(`Failed to calc liqudity for: ${this.pool.id}`, error);
+      console.error(`Failed to calc liquidity for: ${this.pool.id}`, error);
     }
 
     return (this.pool.totalLiquidity = totalLiquidity);
@@ -68,7 +68,7 @@ export default class PoolService {
     let apr = this.pool.apr;
 
     try {
-      const sdkApr = await balancer.pools.apr(this.pool);
+      const sdkApr = await getBalancer().pools.apr(this.pool);
       if (sdkApr) apr = sdkApr;
     } catch (error) {
       captureException(error);
