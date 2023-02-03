@@ -4,9 +4,10 @@ import BalTableRow from './BalTableRow.vue';
 import TotalsRow from './TotalsRow.vue';
 import { Sticky, Data, ColumnDefinition } from './types';
 import { sortBy, sumBy } from 'lodash';
-import { computed, onMounted, ref, watch, toRef } from 'vue';
+import { computed, onMounted, ref, watch, toRef, nextTick } from 'vue';
 
 import PinHeader from './PinHeader.vue';
+import anime from 'animejs';
 
 // Using imported types in template is not supported, so we use alias type
 type DataProp = Data;
@@ -190,6 +191,24 @@ watch(
     tableData.value = newData;
   }
 );
+
+watch(
+  () => props.isLoading,
+  async isLoading => {
+    if (!isLoading) {
+      await nextTick();
+      anime({
+        opacity: [0, 1],
+        targets: '.bal-table-row',
+        delay: anime.stagger(100),
+        translateZ: 0,
+        translateY: [20, 0],
+        easing: 'easeOutQuart',
+        duration: 300,
+      });
+    }
+  }
+);
 </script>
 
 <template>
@@ -325,11 +344,12 @@ watch(
         <BalTableRow
           v-for="(dataItem, index) in unpinnedData"
           :key="`tableRow-${dataItem.id ?? index}`"
-          :class="
+          :class="[
+            'bal-table-row',
             props.getTableRowClass
               ? props.getTableRowClass(dataItem, index)
-              : undefined
-          "
+              : undefined,
+          ]"
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
@@ -343,6 +363,7 @@ watch(
             <slot :name="name" v-bind="dataItem" />
           </template>
         </BalTableRow>
+
         <!-- end end data rows -->
         <TotalsRow
           v-if="!isLoading && tableData.length && shouldRenderTotals"
