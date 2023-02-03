@@ -1,4 +1,4 @@
-import { computed, InjectionKey, provide, reactive, ref } from 'vue';
+import { computed, InjectionKey, provide, reactive, ref, watch } from 'vue';
 import { UserStakingResponse } from '@/providers/local/user-staking.provider';
 import { useUserData } from '@/providers/user-data.provider';
 import { Pool } from '@/services/pool/types';
@@ -10,6 +10,7 @@ import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { fiatValueOf } from '@/composables/usePool';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { isVeBalSupported } from '@/composables/useVeBAL';
+import { useTokens } from '../tokens.provider';
 
 /**
  * Provides user pools data. Primarily for the portfolio page.
@@ -27,6 +28,7 @@ export const provider = (userStaking: UserStakingResponse) => {
     userPoolSharesQuery;
 
   const { totalLockedValue } = useLock();
+  const { injectTokens } = useTokens();
 
   const unstakedPoolIds = computed((): string[] =>
     Object.keys(userPoolShares.value || {})
@@ -91,6 +93,10 @@ export const provider = (userStaking: UserStakingResponse) => {
       refetchStakedPools.value(),
     ]);
   }
+
+  watch(userPools, newUserPools => {
+    injectTokens(newUserPools.map(pool => pool.address));
+  });
 
   return {
     stakedPools,

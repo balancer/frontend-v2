@@ -49,6 +49,13 @@ function handleSuccess() {
 onMounted(() => {
   setCurrentPool(props.pool.id);
 });
+
+watch(
+  () => props.pool,
+  newPool => {
+    setCurrentPool(newPool.id);
+  }
+);
 </script>
 
 <template>

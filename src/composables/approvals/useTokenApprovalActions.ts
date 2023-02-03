@@ -20,7 +20,8 @@ type ApprovalActionOptions = {
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
-  amounts: Ref<string[]>
+  amounts: Ref<string[]>,
+  forStaking = false
 ) {
   /**
    * COMPOSABLES
@@ -40,8 +41,38 @@ export default function useTokenApprovalActions(
     getTokenApprovalActions();
 
   /**
+   * COMPUTED
+   */
+
+  /**
    * METHODS
    */
+  function actionLabel(address: string, symbol: string): string {
+    if (forStaking) {
+      return t('transactionSummary.approveForStaking', [symbol]);
+    }
+
+    return t(
+      address === appNetworkConfig.addresses.veBAL
+        ? 'transactionSummary.approveForLocking'
+        : 'transactionSummary.approveForInvesting',
+      [symbol]
+    );
+  }
+
+  function actionTooltip(address: string, symbol: string): string {
+    if (forStaking) {
+      return t('transactionSummary.tooltips.approveForStaking', [symbol]);
+    }
+
+    return t(
+      address === appNetworkConfig.addresses.veBAL
+        ? 'transactionSummary.tooltips.approveForLocking'
+        : 'transactionSummary.tooltips.approveForInvesting',
+      [symbol]
+    );
+  }
+
   async function getTokenApprovalActionsForSpender(
     spender: string,
     amount: string = MaxUint256.toString()
@@ -67,15 +98,10 @@ export default function useTokenApprovalActions(
       const token = getToken(address);
       const state = stateMap[address];
       return {
-        label: t(
-          spender === appNetworkConfig.addresses.veBAL
-            ? 'transactionSummary.approveForLocking'
-            : 'transactionSummary.approveForInvesting',
-          [token.symbol]
-        ),
+        label: actionLabel(spender, token.symbol),
         loadingLabel: t('investment.preview.loadingLabel.approval'),
         confirmingLabel: t('confirming'),
-        stepTooltip: t('investment.preview.tooltips.approval', [token.symbol]),
+        stepTooltip: actionTooltip(spender, token.symbol),
         action: () => {
           return approveToken(token.address, { spender, state, amount });
         },

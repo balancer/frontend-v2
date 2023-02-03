@@ -36,8 +36,13 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 
-const { stake, unstake, stakedShares, refetchAllPoolStakingData } =
-  usePoolStaking();
+const {
+  stake,
+  unstake,
+  stakedShares,
+  refetchAllPoolStakingData,
+  isLoading: isLoadingPoolStaking,
+} = usePoolStaking();
 
 // Staked or unstaked shares depending on action type.
 const currentShares =
@@ -47,7 +52,8 @@ const currentShares =
 
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  ref([currentShares])
+  ref([currentShares]),
+  true
 );
 
 const stakeAction = {
@@ -90,6 +96,10 @@ watch(
   },
   { immediate: true }
 );
+
+watch(isLoadingPoolStaking, _isLoading => {
+  console.log('pool staking', _isLoading, stakedShares.value);
+});
 
 /* COMPUTED */
 const assetRowWidth = computed(
@@ -183,7 +193,7 @@ function handleClose() {
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(currentShares) }} {{ $t('lpTokens') }}</h5>
           <span class="text-secondary">
-            {{ getToken(pool.address).symbol }}
+            {{ getToken(pool.address)?.symbol }}
           </span>
         </BalStack>
         <BalAssetSet

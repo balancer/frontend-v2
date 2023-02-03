@@ -18,6 +18,7 @@ import useNumbers from '@/composables/useNumbers';
 import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
+  fiatValueOf,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
@@ -116,7 +117,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(sharesFor(pool), {
+      fNum2(balanceValue(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -124,7 +125,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     align: 'right',
     id: 'myBalance',
     hidden: !props.showPoolShares,
-    sortKey: pool => Number(sharesFor(pool)),
+    sortKey: pool => Number(balanceValue(pool)),
     width: 160,
     cellClassName: 'font-numeric',
   },
@@ -240,9 +241,9 @@ function navigateToPoolMigration(pool: Pool) {
   });
 }
 
-// Get user's BPT for given pool from shares map.
-function sharesFor(pool: Pool): string {
-  return props?.shares?.[pool.id] || '0';
+function balanceValue(pool: Pool): string {
+  const bpt = props?.shares?.[pool.id] || '0';
+  return fiatValueOf(pool, bpt);
 }
 
 function boostFor(pool: Pool): string {
