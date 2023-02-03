@@ -12,7 +12,6 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
 
-import useJoinPool from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 
@@ -20,6 +19,7 @@ import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { isEqual } from 'lodash';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 
 /**
  * TYPES

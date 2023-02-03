@@ -4,13 +4,14 @@ import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { getBalancer } from '@/dependencies/balancer-sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-const balancer = getBalancer();
-type JoinResponse = Awaited<ReturnType<typeof balancer.pools.generalisedJoin>>;
+//TODO: there is another place where we need this type
+type JoinResponse = Awaited<
+  ReturnType<BalancerSDK['pools']['generalisedJoin']>
+>;
 
 /**
  * Handles generalized joins for deep pools using SDK functions.

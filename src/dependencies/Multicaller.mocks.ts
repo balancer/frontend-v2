@@ -22,7 +22,7 @@ function buildOnchainMetadataMock(metadict: TokenInfoMap) {
 
 class MulticallerMock extends Multicaller {
   //@ts-ignore
-  execute(metadict) {
+  execute(metadict: TokenInfoMap) {
     return Promise.resolve(buildOnchainMetadataMock(metadict));
   }
 }

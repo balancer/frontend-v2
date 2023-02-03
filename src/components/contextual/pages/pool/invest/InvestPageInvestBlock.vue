@@ -10,6 +10,7 @@ import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
 import useInvestPageTabs, { tabs } from '@/composables/pools/useInvestPageTabs';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { provideJoinPool } from '@/providers/local/join-pool.provider';
 
 /**
  * COMPOSABLES
@@ -18,6 +19,12 @@ const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { activeTab, resetTabs } = useInvestPageTabs();
 const { isDeepPool, isPreMintedBptPool } = usePool(pool);
+
+/**
+ * PROVIDERS
+ */
+//TODO: Do we need isSingleAssetJoin as parameter??
+provideJoinPool(pool);
 
 /**
  * COMPUTED

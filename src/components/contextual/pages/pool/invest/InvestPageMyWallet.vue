@@ -6,11 +6,11 @@ import { usePool } from '@/composables/usePool';
 import { isSameAddress, indexOfAddress } from '@/lib/utils';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import useJoinPool from '@/composables/pools/useJoinPool';
 import useInvestPageTabs, {
   Tab,
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 
 /**
  * COMPOSABLES
