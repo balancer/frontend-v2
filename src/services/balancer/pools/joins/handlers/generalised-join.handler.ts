@@ -60,7 +60,7 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
 
-    this.lastJoinRes = await balancer.pools.generalisedJoin(
+    this.lastJoinRes = await this.sdk.pools.generalisedJoin(
       poolId,
       tokenAddresses,
       evmAmountsIn,

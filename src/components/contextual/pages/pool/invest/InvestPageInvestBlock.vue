@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
@@ -8,9 +8,12 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { usePool } from '@/composables/usePool';
 import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
-import useInvestPageTabs, { tabs } from '@/composables/pools/useInvestPageTabs';
+import useInvestPageTabs, {
+  Tab,
+  tabs,
+} from '@/composables/pools/useInvestPageTabs';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { provideJoinPool } from '@/providers/local/join-pool.provider';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 
 /**
  * COMPOSABLES
@@ -23,8 +26,6 @@ const { isDeepPool, isPreMintedBptPool } = usePool(pool);
 /**
  * PROVIDERS
  */
-//TODO: Do we need isSingleAssetJoin as parameter??
-provideJoinPool(pool);
 
 /**
  * COMPUTED
@@ -38,6 +39,12 @@ const isLoading = computed(
   (): boolean =>
     loadingPool.value || !transfersAllowed.value || isLoadingSor.value
 );
+
+const { setIsSingleAssetJoin } = useJoinPool();
+
+watch(activeTab, value => {
+  setIsSingleAssetJoin(value === Tab.SingleToken);
+});
 
 /**
  * CALLBACKS

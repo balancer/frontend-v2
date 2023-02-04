@@ -1,17 +1,34 @@
 <script setup lang="ts">
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import useBreakpoints from '@/composables/useBreakpoints';
 import InvestPageMyWallet from './InvestPageMyWallet.vue';
 import InvestPageAccordion from './InvestPageAccordion.vue';
 import InvestPageInvestBlock from './InvestPageInvestBlock.vue';
+import { Pool } from '@balancer-labs/sdk';
+import { computed } from 'vue';
+import { provideJoinPool } from '@/providers/local/join-pool.provider';
+
+type Props = {
+  pool: Pool;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
+
+/**
+ * COMPUTED
+ */
+const pool = computed(() => props.pool);
 
 /**
  * COMPOSABLES
  */
-const { pool } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
+
+provideJoinPool(pool);
 </script>
 
 <template>

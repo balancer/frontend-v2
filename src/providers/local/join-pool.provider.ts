@@ -51,10 +51,7 @@ export type AmountIn = {
  *
  * Handles pool joining state and transaction execution.
  */
-export const joinPoolProvider = (
-  pool: Ref<Pool | undefined>,
-  isSingleAssetJoin: Ref<boolean>
-) => {
+export const joinPoolProvider = (pool: Ref<Pool>) => {
   /**
    * STATE
    */
@@ -64,6 +61,7 @@ export const joinPoolProvider = (
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
+  const isSingleAssetJoin = ref<boolean>(false);
 
   const debounceQueryJoin = debounce(queryJoin, 1000);
 
@@ -296,6 +294,10 @@ export const joinPoolProvider = (
     }
   }
 
+  function setIsSingleAssetJoin(value: boolean) {
+    isSingleAssetJoin.value = value;
+  }
+
   /**
    * WATCHERS
    */
@@ -351,6 +353,7 @@ export const joinPoolProvider = (
     resetAmounts,
     join,
     resetTxState,
+    setIsSingleAssetJoin,
 
     // queries
     queryJoinQuery,
@@ -361,11 +364,9 @@ export type JoinPoolProviderResponse = ReturnType<typeof joinPoolProvider>;
 export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
   Symbol(symbolKeys.Providers.JoinPool);
 
-export function provideJoinPool(
-  pool: Ref<Pool | undefined>,
-  isSingleAssetJoin: Ref<boolean> = ref(false)
-) {
-  const joinPoolResponse = joinPoolProvider(pool, isSingleAssetJoin);
+export function provideJoinPool(pool: Ref<Pool>) {
+  // TODO: Make sure joinPoolProvider is suported for other than deep pools too
+  const joinPoolResponse = isDeep(pool.value) ? joinPoolProvider(pool) : {};
   provide(JoinPoolProviderSymbol, joinPoolResponse);
   return joinPoolResponse;
 }
