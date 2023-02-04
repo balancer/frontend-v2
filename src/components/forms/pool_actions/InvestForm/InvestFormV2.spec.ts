@@ -8,7 +8,7 @@ import {
 import InvestFormV2 from './InvestFormV2.vue';
 import pool from '@/__mocks__/goerli-boosted-pool';
 import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
-import { server } from '@/tests/msw/server';
+import { server } from '@tests/msw/server';
 import { graphql, rest } from 'msw';
 import { generateTestingUtils } from 'eth-testing';
 
@@ -18,18 +18,18 @@ import { ref, computed, reactive } from 'vue';
 import { queryClient } from '@/plugins/vueQuery';
 
 import { Multicaller, multicall } from '@/lib/utils/balancer/contract';
-import renderComponent from '@/tests/renderComponent';
+import renderComponent from '@tests/renderComponent2';
 import { QueryResponse as UseBalancesQueryResponse } from '@/composables/queries/useBalancesQuery';
 import { configService } from '@/services/config/config.service';
 import { QueryResponse as UseAllowancesQueryResponse } from '@/composables/queries/useAllowancesQuery';
 
-jest.unmock('@/services/web3/useWeb3');
-jest.unmock('@/providers/tokens.provider');
-// jest.mock('@ethersproject/providers');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.unmock('@/services/web3/useWeb3');
+vi.unmock('@/providers/tokens.provider');
+// vi.mock('@ethersproject/providers');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 // Mocking injecting veBAL token metadata
-jest.mock('@/lib/utils/balancer/contract');
+vi.mock('@/lib/utils/balancer/contract');
 
 // @ts-expect-error
 multicall.mockImplementation(async () => {
@@ -39,7 +39,7 @@ multicall.mockImplementation(async () => {
 // @ts-expect-error
 Multicaller.mockImplementation(() => {
   return {
-    call: jest.fn(),
+    call: vi.fn(),
     execute: () => {
       return {
         '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': {
@@ -55,37 +55,39 @@ Multicaller.mockImplementation(() => {
     },
   };
 });
-jest.mock('@/composables/staking/useStaking', () => {
-  return jest.fn().mockImplementation(() => {
+vi.mock('@/composables/staking/useStaking', () => {
+  return vi.fn().mockImplementation(() => {
     return {
       isPoolEligibleForStaking: true,
     };
   });
 });
 
-jest.mock('@ethersproject/abstract-signer', () => {
+vi.mock('@ethersproject/abstract-signer', async () => {
   const ethers = require('@ethersproject/bignumber');
-  const originalModule = jest.requireActual('@ethersproject/abstract-signer');
+  const originalModule = await vi.importActual(
+    '@ethersproject/abstract-signer'
+  );
   return {
     __esModule: true,
     ...originalModule,
-    getGasPrice: jest.fn().mockResolvedValue(ethers.BigNumber.from('20')),
+    getGasPrice: vi.fn().mockResolvedValue(ethers.BigNumber.from('20')),
   };
 });
 
-jest.mock('@balancer-labs/sdk', () => {
+vi.mock('@balancer-labs/sdk', async () => {
   const ethers = require('@ethersproject/bignumber');
-  const originalModule = jest.requireActual('@balancer-labs/sdk');
+  const originalModule = await vi.importActual('@balancer-labs/sdk');
   return {
     __esModule: true,
     ...originalModule,
-    PoolsSubgraphRepository: jest.fn().mockImplementation(() => ({
-      fetch: jest.fn().mockResolvedValue([]),
+    PoolsSubgraphRepository: vi.fn().mockImplementation(() => ({
+      fetch: vi.fn().mockResolvedValue([]),
     })),
-    BalancerSDK: jest.fn().mockImplementation(() => ({
+    BalancerSDK: vi.fn().mockImplementation(() => ({
       swaps: {
-        fetchPools: jest.fn().mockResolvedValue(true),
-        findRouteGivenIn: jest.fn().mockResolvedValue({
+        fetchPools: vi.fn().mockResolvedValue(true),
+        findRouteGivenIn: vi.fn().mockResolvedValue({
           marketSp: '100100000000000000000',
           returnAmount: ethers.BigNumber.from('1'),
           returnAmountConsideringFees: ethers.BigNumber.from('1'),
@@ -115,7 +117,7 @@ jest.mock('@balancer-labs/sdk', () => {
         }),
       },
       pools: {
-        generalisedJoin: jest.fn().mockResolvedValue({
+        generalisedJoin: vi.fn().mockResolvedValue({
           callData: '0xac9650d8000000000000000000',
           expectedOut: '21625108427627685',
           minOut: '21408857343351409',
@@ -365,7 +367,7 @@ describe('InvestFormV2.vue', () => {
   });
   afterEach(() => {
     server.resetHandlers();
-    // jest.restoreAllMocks();
+    // vi.restoreAllMocks();
   });
 
   describe('Join with pool tokens', () => {

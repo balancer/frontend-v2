@@ -2,22 +2,22 @@ import { screen, within } from '@testing-library/vue';
 import InvestPreviewModalV2 from './InvestPreviewModalV2.vue';
 import pool from '@/__mocks__/goerli-boosted-pool';
 import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
-import { server } from '@/tests/msw/server';
+import { server } from '@tests/msw/server';
 import { rest } from 'msw';
 
 import { QueryClient } from 'vue-query';
 
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import renderComponent from '@/tests/renderComponent';
+import renderComponent from '@tests/renderComponent2';
 
-jest.unmock('@/services/web3/useWeb3');
-jest.mock('@ethersproject/providers');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.unmock('@/services/web3/useWeb3');
+vi.mock('@ethersproject/providers');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 // Mocking injecting veBAL token metadata
-jest.mock('@/lib/utils/balancer/contract');
-jest.mock('@/composables/staking/useStaking', () => {
-  return jest.fn().mockImplementation(() => {
+vi.mock('@/lib/utils/balancer/contract');
+vi.mock('@/composables/staking/useStaking', () => {
+  return vi.fn().mockImplementation(() => {
     return {
       isPoolEligibleForStaking: true,
     };
@@ -25,12 +25,12 @@ jest.mock('@/composables/staking/useStaking', () => {
 });
 
 // Mock token price data
-jest.mock('@/lib/balancer.sdk', () => {
+vi.mock('@/lib/balancer.sdk', () => {
   return {
     hasFetchedPoolsForSor: {
       value: true,
     },
-    fetchPoolsForSor: jest.fn(),
+    fetchPoolsForSor: vi.fn(),
     balancer: {
       data: {
         tokenPrices: {
@@ -76,8 +76,8 @@ jest.mock('@/lib/balancer.sdk', () => {
 // @ts-expect-error
 Multicaller.mockImplementation(() => {
   return {
-    call: jest.fn(),
-    execute: jest.fn().mockResolvedValue({
+    call: vi.fn(),
+    execute: vi.fn().mockResolvedValue({
       '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': {
         address: '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
         chainId: 5,
@@ -157,9 +157,9 @@ describe('InvestPreviewModalV2.vue', () => {
           isLoadingQuery: false,
           txInProgress: false,
           queryJoinQuery: {
-            refetch: jest.fn(),
+            refetch: vi.fn(),
           },
-          resetAmounts: jest.fn(),
+          resetAmounts: vi.fn(),
         },
       },
       {
@@ -171,7 +171,9 @@ describe('InvestPreviewModalV2.vue', () => {
         ],
       }
     );
-
+    setTimeout(() => {
+      screen.debug(undefined, 1000000);
+    }, 5000);
     const tokensInWrapper = await screen.findByTestId('tokens-in');
     const tokensOutWrapper = await screen.findByTestId('tokens-out');
 

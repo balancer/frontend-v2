@@ -4,6 +4,9 @@
 import '@testing-library/jest-dom';
 import './setup-msw';
 import './mockMatchMedia';
+import fetch from 'cross-fetch';
+
+global.fetch = fetch;
 
 vi.mock('@/services/web3/useWeb3');
 vi.mock('@/composables/useEthers');

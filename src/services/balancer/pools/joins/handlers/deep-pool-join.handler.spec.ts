@@ -32,16 +32,16 @@ const joinParams = {
   slippageBsp: 100,
 };
 
-jest.mock('@/lib/balancer.sdk.ts', () => {
+vi.mock('@/lib/balancer.sdk.ts', () => {
   return {
     network: 5,
     balancer: {
       pools: {
-        generalisedJoin: jest.fn().mockResolvedValue({
+        generalisedJoin: vi.fn().mockResolvedValue({
           callData: '0xac9650d800000000000',
-          expectedOut,
+          expectedOut: '990000000000000000',
           minOut: '5000000000',
-          priceImpact,
+          priceImpact: '23149074398013786',
           to: '0x28A224d9d398a1eBB7BA69BCA515898966Bb1B6b',
         }),
       },

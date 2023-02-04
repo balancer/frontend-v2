@@ -7,7 +7,6 @@ import mockSigner from './__tests__/mockSigner';
 import mockGasPriceService from './__tests__/mockGasPriceService';
 
 const returnAmountHex = '0x013fbe85edc90000';
-const marketSp = '1.000';
 const returnAmount = BigNumber.from(returnAmountHex);
 const returnAmountScaled = formatFixed(returnAmount, pool.onchain?.decimals);
 const priceImpact = 10.11111111111111;
@@ -32,20 +31,20 @@ const joinParams = {
   signer: mockSigner,
   slippageBsp: 100,
 };
-jest.mock('@/services/web3/web3.service.ts');
+vi.mock('@/services/web3/web3.service.ts');
 
-jest.mock('@/lib/balancer.sdk.ts', () => {
+vi.mock('@/lib/balancer.sdk.ts', () => {
   return {
     network: 5,
     hasFetchedPoolsForSor: true,
-    fetchPoolsForSor: jest.fn().mockResolvedValue(true),
+    fetchPoolsForSor: vi.fn().mockResolvedValue(true),
     balancer: {
       swaps: {
-        findRouteGivenIn: jest.fn().mockResolvedValue({
-          marketSp,
-          returnAmount: returnAmountHex,
+        findRouteGivenIn: vi.fn().mockResolvedValue({
+          marketSp: '1.000',
+          returnAmount: '0x013fbe85edc90000',
         }),
-        buildSwap: jest.fn().mockReturnValue({
+        buildSwap: vi.fn().mockReturnValue({
           attributes: {
             kind: 0,
             swaps: [

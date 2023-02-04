@@ -7,7 +7,7 @@ export class GaugesSubgraphClient {
 
   public async get(query) {
     try {
-      return subgraphRequest(this.url, query);
+      return subgraphRequest({ url: this.url, query });
     } catch (error) {
       console.error('GaugesSubgraphClient request failed', error);
       throw error;

@@ -3,6 +3,7 @@ import { TokenList, TokenListMap } from '@/types/TokenList';
 import { useTokenLists } from '@/providers/token-lists.provider';
 
 function firstTokenListSymbols(tokenList: TokenListMap) {
+  console.log({ tokenList });
   return Object.values(tokenList)[0].tokens.map(t => t.symbol);
 }
 

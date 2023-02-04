@@ -2,23 +2,23 @@ import { screen } from '@testing-library/vue';
 import InvestFormTotalsV2 from './InvestFormTotalsV2.vue';
 
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import renderComponent from '@/tests/renderComponent';
+import renderComponent from '@tests/renderComponent2';
 
-jest.mock('@ethersproject/providers');
-// jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/lib/balancer.sdk.ts', () => {
+vi.mock('@ethersproject/providers');
+// vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/lib/balancer.sdk.ts', () => {
   return {
     network: 5,
   };
 });
 
 // Mocking injecting veBAL token metadata
-jest.mock('@/lib/utils/balancer/contract');
+vi.mock('@/lib/utils/balancer/contract');
 // @ts-expect-error
 Multicaller.mockImplementation(() => {
   return {
-    call: jest.fn(),
-    execute: jest.fn().mockResolvedValue({
+    call: vi.fn(),
+    execute: vi.fn().mockResolvedValue({
       '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF': {
         address: '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
         chainId: 5,

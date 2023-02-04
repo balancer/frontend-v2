@@ -1,12 +1,10 @@
 import { defineComponent, h } from 'vue';
-import vueQuery from '@/plugins/vueQuery';
 import { render, RenderOptions } from '@testing-library/vue';
-import Web3Plugin from '@/services/web3/web3.plugin';
-import blocknative from '@/plugins/blocknative';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideTokens } from '@/providers/tokens.provider';
-import VueVirtualScroller from 'vue3-virtual-scroller';
+import { registerTestPlugins } from './registerTestPlugins';
+import { RouterLinkStub } from '@vue/test-utils';
 
 interface ProviderComponent {
   component: any;
@@ -16,6 +14,12 @@ interface ProviderComponent {
 interface AdditionalContext {
   providers: ProviderComponent[];
 }
+
+const DefaultTestPlugins = {
+  install(app) {
+    registerTestPlugins(app);
+  },
+};
 
 const GlobalProvidersComponent = defineComponent({
   setup(props, { slots }) {
@@ -59,7 +63,13 @@ function getOptions(
   return {
     ...options,
     global: {
-      plugins: [vueQuery, Web3Plugin, blocknative, VueVirtualScroller],
+      stubs: {
+        RouterLink: RouterLinkStub,
+        Jazzicon: true,
+        BalIcon: true,
+        LightBulbIcon: true,
+      },
+      plugins: [DefaultTestPlugins],
       ...options.global,
     },
   };
