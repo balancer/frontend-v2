@@ -44,7 +44,7 @@ import useNumbers, { FNumFormats } from '../useNumbers';
 import { isMainnet } from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
-import { TradeQuote } from './types';
+import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
 
 type SorState = {
@@ -82,7 +82,7 @@ type Props = {
   tokenIn: ComputedRef<TokenInfo>;
   tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
-  isCowswapTrade: ComputedRef<boolean>;
+  isCowswapSwap: ComputedRef<boolean>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;
@@ -102,7 +102,7 @@ export default function useSor({
   tokenIn,
   tokenOut,
   slippageBufferRate,
-  isCowswapTrade,
+  isCowswapSwap,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<SubgraphPoolBase[]>([]);
@@ -126,7 +126,7 @@ export default function useSor({
       returnAmountFromSwaps: Zero,
     },
   });
-  const trading = ref(false);
+  const swapping = ref(false);
   const confirming = ref(false);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
@@ -194,7 +194,7 @@ export default function useSor({
     if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
   }
 
-  async function updateTradeAmounts(): Promise<void> {
+  async function updateSwapAmounts(): Promise<void> {
     if (!sorManager) {
       return;
     }
@@ -284,16 +284,16 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
-    if (isCowswapTrade.value) {
+    if (isCowswapSwap.value) {
       return;
     }
 
     const amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
-    // Avoid using SOR if querying a zero value or (un)wrapping trade
-    const zeroValueTrade = amount === '' || amount === '0';
-    if (zeroValueTrade) {
+    // Avoid using SOR if querying a zero value or (un)wrapping swap
+    const zeroValueSwap = amount === '' || amount === '0';
+    if (zeroValueSwap) {
       resetInputAmounts(amount);
       return;
     }
@@ -520,27 +520,24 @@ export default function useSor({
       },
     });
 
-    const tradeUSDValue =
+    const swapUSDValue =
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value) || '0';
 
     txListener(tx, {
       onTxConfirmed: () => {
-        trackGoal(
-          Goals.Swapped,
-          bnum(tradeUSDValue).times(100).toNumber() || 0
-        );
-        trading.value = false;
+        trackGoal(Goals.Swapped, bnum(swapUSDValue).times(100).toNumber() || 0);
+        swapping.value = false;
         latestTxHash.value = tx.hash;
       },
       onTxFailed: () => {
-        trading.value = false;
+        swapping.value = false;
       },
     });
   }
 
-  async function trade(successCallback?: () => void) {
+  async function swap(successCallback?: () => void) {
     trackGoal(Goals.ClickSwap);
-    trading.value = true;
+    swapping.value = true;
     confirming.value = true;
     state.submissionError = null;
 
@@ -573,7 +570,7 @@ export default function useSor({
         console.log(e);
         captureException(e);
         state.submissionError = (e as Error).message;
-        trading.value = false;
+        swapping.value = false;
         confirming.value = false;
       }
       return;
@@ -597,7 +594,7 @@ export default function useSor({
         console.log(e);
         captureException(e);
         state.submissionError = (e as Error).message;
-        trading.value = false;
+        swapping.value = false;
         confirming.value = false;
       }
       return;
@@ -615,7 +612,7 @@ export default function useSor({
         const tx = await swapIn(sr, tokenInAmountScaled, minAmount);
         console.log('Swap in tx', tx);
 
-        txHandler(tx, 'trade');
+        txHandler(tx, 'swap');
 
         if (successCallback != null) {
           successCallback();
@@ -625,7 +622,7 @@ export default function useSor({
         console.log(e);
         captureException(e);
         state.submissionError = (e as Error).message;
-        trading.value = false;
+        swapping.value = false;
         confirming.value = false;
       }
     } else {
@@ -640,7 +637,7 @@ export default function useSor({
         const tx = await swapOut(sr, tokenInAmountMax, tokenOutAmountScaled);
         console.log('Swap out tx', tx);
 
-        txHandler(tx, 'trade');
+        txHandler(tx, 'swap');
 
         if (successCallback != null) {
           successCallback();
@@ -650,7 +647,7 @@ export default function useSor({
         console.log(e);
         captureException(e);
         state.submissionError = (e as Error).message;
-        trading.value = false;
+        swapping.value = false;
         confirming.value = false;
       }
     }
@@ -690,7 +687,7 @@ export default function useSor({
       .div(parseFixed(String(1 + slippageBufferRate.value), 18));
   }
 
-  function getQuote(): TradeQuote {
+  function getQuote(): SwapQuote {
     const maximumInAmount =
       tokenInAmountScaled != null ? getMaxIn(tokenInAmountScaled.value) : Zero;
 
@@ -759,8 +756,8 @@ export default function useSor({
     initSor,
     handleAmountChange,
     exactIn,
-    trade,
-    trading,
+    swap,
+    swapping,
     priceImpact,
     latestTxHash,
     fetchPools,
@@ -768,7 +765,7 @@ export default function useSor({
     getQuote,
     resetState,
     confirming,
-    updateTradeAmounts,
+    updateSwapAmounts,
     resetInputAmounts,
     // For Tests
     setSwapCost,

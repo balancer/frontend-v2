@@ -26,7 +26,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'trade', params: { networkSlug } }"
+                :to="{ name: 'swap', params: { networkSlug } }"
               >
                 {{ $t('swap') }}
               </router-link>
