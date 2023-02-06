@@ -47,7 +47,7 @@ type Props = {
   initialState?: InitialState;
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: DataProp, rowIndex: number) => string;
-  isOnlyDeskSort: boolean;
+  isOnlyDeskSort?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -239,7 +239,10 @@ watch(
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              column.sortKey ? 'cursor-pointer' : '',
+              column.sortKey &&
+              !(props.isOnlyDeskSort && currentSortColumn === column.id)
+                ? 'cursor-pointer'
+                : '',
               column.sortKey && currentSortColumn !== column.id
                 ? 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors'
                 : '',
