@@ -23,8 +23,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-
 export default defineComponent({
   emits: ['toggle'],
   setup(_props, { emit }) {

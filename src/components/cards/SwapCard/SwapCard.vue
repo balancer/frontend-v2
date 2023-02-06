@@ -161,7 +161,6 @@
 import { SubgraphPoolBase } from '@balancer-labs/sdk';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';

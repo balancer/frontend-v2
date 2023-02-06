@@ -1,7 +1,7 @@
 import vue from '@vitejs/plugin-vue';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-// import AutoImport from 'unplugin-auto-import/vite'
+import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { loadEnv, Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
@@ -30,16 +30,13 @@ export default defineConfig(({ mode }) => {
     }),
     //cast to Plugin to avoid TS errors in defineConfig
     nodePolyfills() as Plugin,
-    // AutoImport({
-    //   imports: [
-    //     'vue',
-    //     'vue-router',
-    //   ],
-    //   dts: 'src/auto-imports.d.ts',
-    //   eslintrc: {
-    //     enabled: true,
-    //   },
-    // }),
+    AutoImport({
+      imports: ['vue', 'vue-router'],
+      types: ['vue'],
+      eslintrc: {
+        enabled: true,
+      },
+    }),
     Components({
       dirs: ['src/components/_global/**'],
       extensions: ['vue'],
