@@ -65,6 +65,12 @@ module.exports = {
             message:
               "Please import from '@ethersproject/*' instead to avoid vite rollup build issues",
           },
+          {
+            group: ['*/lib/balancer.sdk'],
+            importNames: ['balancer'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
         ],
       },
     ],

@@ -17,6 +17,9 @@ import initSentry from '@/plugins/sentry';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 import Root from './Root.vue';
+import { initDependencies } from './dependencies';
+
+initDependencies();
 
 echarts.use([
   TooltipComponent,

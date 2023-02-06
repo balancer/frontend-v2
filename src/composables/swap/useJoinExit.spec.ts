@@ -1,7 +1,8 @@
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
-import { computed, ref } from 'vue';
 import { mount } from '@tests/mount-composable-tester';
+import { computed, ref } from 'vue';
 
+import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
 
@@ -36,6 +37,8 @@ vi.mock('@/composables/approvals/useRelayerApproval', () => ({
     BATCH_V4: 'BATCH_V4',
   },
 }));
+
+initBalancerWithDefaultMocks();
 
 const mockAmount = BigNumber.from(10);
 vi.mock('@/lib/balancer.sdk', () => {
