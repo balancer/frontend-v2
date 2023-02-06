@@ -37,7 +37,7 @@ const allTokenLists = ref({});
 const tokensListPromise =
   import.meta.env.MODE === 'test'
     ? // Only use this file in testing mode (vitest)
-      import('@/tests/tokenlists/tokens-5.json')
+      import('@tests/tokenlists/tokens-5.json')
     : // Use generated file in development/production mode
       import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`);
 

@@ -14,7 +14,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { getAddressFromPoolId } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 
-import StakePreviewModal from '../../stake/StakePreviewModal.vue';
+import StakePreviewModal from '@/components/contextual/pages/portfolio/staking/StakePreviewModal.vue';
 
 /**
  * STATE

@@ -1,4 +1,4 @@
-import { mount } from '@/tests/mount-composable-tester';
+import { mount } from '@tests/mount-composable-tester';
 
 import useVotingGauges from './useVotingGauges';
 

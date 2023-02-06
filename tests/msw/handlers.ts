@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import gaugesResponse from '../../services/balancer/gauges/__mocks__/gauges-response.schema.json';
+import gaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
 
 export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
 

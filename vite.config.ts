@@ -136,7 +136,7 @@ export default defineConfig(({ mode }) => {
       globals: true,
       environment: 'happy-dom',
       setupFiles: [
-        'tests/unit/vitest/setup-vitest.ts',
+        'tests/vitest/setup-vitest.ts',
         // https://github.com/jest-community/jest-extended/tree/main/examples/typescript/all
         'jest-extended/all',
       ],
