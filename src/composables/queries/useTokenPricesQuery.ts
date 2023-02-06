@@ -5,7 +5,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 import useNetwork from '../useNetwork';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 
 /**
  * TYPES
@@ -37,6 +37,7 @@ export default function useTokenPricesQuery(
     return prices;
   }
 
+  const balancer = getBalancer();
   const queryFn = async () => {
     const priceData = await Promise.all(
       addresses.value.map(a => balancer.data.tokenPrices.find(a))

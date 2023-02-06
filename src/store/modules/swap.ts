@@ -2,12 +2,12 @@ import { networkId } from '@/composables/useNetwork';
 import initialTokens from '@/constants/initialTokens.json';
 import { lsGet, lsSet } from '@/lib/utils';
 
-export interface TradeState {
+export interface SwapState {
   inputAsset: string;
   outputAsset: string;
 }
 
-const state: TradeState = {
+const state: SwapState = {
   inputAsset: '',
   outputAsset: '',
 };
@@ -17,14 +17,14 @@ const actions = {
     commit(
       'setInputAsset',
       lsGet(
-        `trade.inputAsset.${networkId.value}`,
+        `swap.inputAsset.${networkId.value}`,
         initialTokens[networkId.value].input
       )
     );
     commit(
       'setOutputAsset',
       lsGet(
-        `trade.outputAsset.${networkId.value}`,
+        `swap.outputAsset.${networkId.value}`,
         initialTokens[networkId.value].output
       )
     );
@@ -32,14 +32,14 @@ const actions = {
 };
 
 const mutations = {
-  setInputAsset(state: TradeState, asset: string): void {
+  setInputAsset(state: SwapState, asset: string): void {
     state.inputAsset = asset;
-    lsSet(`trade.inputAsset.${networkId.value}`, asset);
+    lsSet(`swap.inputAsset.${networkId.value}`, asset);
   },
 
-  setOutputAsset(state: TradeState, asset: string): void {
+  setOutputAsset(state: SwapState, asset: string): void {
     state.outputAsset = asset;
-    lsSet(`trade.outputAsset.${networkId.value}`, asset);
+    lsSet(`swap.outputAsset.${networkId.value}`, asset);
   },
 };
 

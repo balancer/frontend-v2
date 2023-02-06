@@ -3,7 +3,7 @@ import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import usePoolStakedSharesQuery from '@/composables/queries/usePoolStakedSharesQuery';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
-import { computed, inject, InjectionKey, provide } from 'vue';
+import { computed, InjectionKey, provide } from 'vue';
 import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
 import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
@@ -13,6 +13,7 @@ import { useTokens } from '../tokens.provider';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { POOLS } from '@/constants/pools';
+import { safeInject } from '../inject';
 
 /**
  * PoolStakingProvider
@@ -29,7 +30,7 @@ const provider = (poolId: string) => {
    * COMPOSABLES
    */
   const { balanceFor } = useTokens();
-  const { account } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
 
   /**
    * QUERIES
@@ -61,9 +62,10 @@ const provider = (poolId: string) => {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(poolGaugesQuery) ||
-      isQueryLoading(poolStakedSharesQuery) ||
-      isQueryLoading(userGaugeSharesQuery) ||
-      isQueryLoading(userBoostsQuery)
+      (isWalletReady.value &&
+        (isQueryLoading(poolStakedSharesQuery) ||
+          isQueryLoading(userGaugeSharesQuery) ||
+          isQueryLoading(userBoostsQuery)))
   );
 
   const preferentialGaugeAddress = computed(
@@ -182,16 +184,14 @@ const provider = (poolId: string) => {
 /**
  * Provide setup: response type + symbol.
  */
-export type Response = ReturnType<typeof provider>;
-export const PoolStakingProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.PoolStaking
-);
+export type PoolStakingProviderResponse = ReturnType<typeof provider>;
+export const PoolStakingProviderSymbol: InjectionKey<PoolStakingProviderResponse> =
+  Symbol(symbolKeys.Providers.PoolStaking);
 
 export function providePoolStaking(poolId: string) {
   provide(PoolStakingProviderSymbol, provider(poolId));
 }
 
-export function usePoolStaking(): Response {
-  const defaultResponse = {} as Response;
-  return inject(PoolStakingProviderSymbol, defaultResponse);
+export function usePoolStaking(): PoolStakingProviderResponse {
+  return safeInject(PoolStakingProviderSymbol);
 }

@@ -1,19 +1,11 @@
 <script setup lang="ts">
 import { format, fromUnixTime } from 'date-fns';
-import {
-  Dictionary,
-  mapKeys,
-  mapValues,
-  maxBy,
-  minBy,
-  pickBy,
-  toPairs,
-} from 'lodash';
+import { Dictionary, mapKeys, mapValues, pickBy, toPairs } from 'lodash';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuery } from '@tanstack/vue-query';
 
-import { useTradeState } from '@/composables/trade/useTradeState';
+import { useSwapState } from '@/composables/swap/useSwapState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTailwind from '@/composables/useTailwind';
 import { useTokens } from '@/providers/tokens.provider';
@@ -113,23 +105,14 @@ const chartTimespans = [
   },
 ];
 
-type Props = {
-  isModal?: boolean;
-  onCloseModal?: () => void;
-  toggleModal: () => void;
-};
-
-const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { t } = useI18n();
 const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
-const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
+const { tokenInAddress, tokenOutAddress, initialized } = useSwapState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId, appNetworkConfig } = useWeb3();
 
-const chartHeight = ref(
-  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100
-);
+const chartHeight = ref(upToLargeBreakpoint ? 75 : 100);
 const activeTimespan = ref(chartTimespans[0]);
 
 const inputSym = computed(() => {
@@ -139,14 +122,6 @@ const inputSym = computed(() => {
 const outputSym = computed(() => {
   if (tokenOutAddress.value === '') return 'Unknown';
   return getToken(tokenOutAddress.value)?.symbol;
-});
-
-const dataMin = computed(() => {
-  return (minBy(priceData.value || [], v => v[1]) || [])[1] || 0;
-});
-
-const dataMax = computed(() => {
-  return (maxBy(priceData.value || [], v => v[1]) || [])[1] || 0;
 });
 
 const {
@@ -179,10 +154,6 @@ const {
     refetchOnWindowFocus: false,
   })
 );
-
-const toggle = () => {
-  props.toggleModal();
-};
 
 const equivalentTokenPairs = [
   [appNetworkConfig.addresses.weth, appNetworkConfig.nativeAsset.address],
@@ -244,22 +215,8 @@ const chartGrid = computed(() => {
 </script>
 
 <template>
-  <div
-    :class="[
-      '',
-      {
-        'h-40 lg:h-56': !isModal,
-        'h-full lg:h-full': isModal,
-      },
-    ]"
-  >
-    <BalLoadingBlock
-      v-if="isLoadingPriceData"
-      :class="{
-        'h-56': !isModal,
-        'h-112': isModal,
-      }"
-    />
+  <div class="h-40 lg:h-56">
+    <BalLoadingBlock v-if="isLoadingPriceData" class="h-56" />
     <BalCard
       v-else
       :square="upToLargeBreakpoint"
@@ -267,17 +224,9 @@ const chartGrid = computed(() => {
       hFull
       growContent
       noPad
-      :noBorder="upToLargeBreakpoint || isModal"
+      :noBorder="upToLargeBreakpoint"
     >
       <div class="relative p-4 h-full bg-transparent">
-        <button
-          v-if="!failedToLoadPriceData && !isLoadingPriceData"
-          class="flex justify-center items-center p-2 m-4 rounded-full shadow-lg maximise"
-          @click="toggle"
-        >
-          <BalIcon v-if="!isModal" name="maximize-2" class="text-secondary" />
-          <BalIcon v-if="isModal" name="x" class="text-secondary" />
-        </button>
         <div v-if="!failedToLoadPriceData && !isLoadingPriceData" class="flex">
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
           <BalTooltip class="ml-2" :text="$t('coingeckoPricingTooltip')">
@@ -306,10 +255,7 @@ const chartGrid = computed(() => {
           v-if="!failedToLoadPriceData && !isLoadingPriceData"
           class="flex-col"
         >
-          <BalBlankSlate
-            v-if="chartData.length === 0"
-            :class="['mt-4', isModal ? 'h-96' : 'h-40']"
-          >
+          <BalBlankSlate v-if="chartData.length === 0" class="mt-4 h-40">
             <BalIcon name="bar-chart" />
             {{ chartBlankText }}
           </BalBlankSlate>
@@ -323,63 +269,15 @@ const chartGrid = computed(() => {
               :axisLabelFormatter="{
                 yAxis: { maximumSignificantDigits: 6, fixedFormat: true },
               }"
-              :wrapperClass="[
-                'flex flex-row lg:flex-col',
-                {
-                  'flex-row': !isModal,
-                  'flex-col': isModal,
-                },
-              ]"
-              :showTooltip="!upToLargeBreakpoint || isModal"
+              wrapperClass="flex flex-row lg:flex-col flex-row"
+              :showTooltip="!upToLargeBreakpoint"
               chartType="line"
               hideYAxis
               hideXAxis
               showHeader
               useMinMax
             />
-            <div
-              v-if="isModal"
-              :class="[
-                'w-full flex justify-between mt-6',
-                {
-                  'flex-col': isModal,
-                },
-              ]"
-            >
-              <div>
-                <button
-                  v-for="timespan in chartTimespans"
-                  :key="timespan.value"
-                  :class="[
-                    'py-1 px-2 text-sm rounded-lg mr-2',
-                    {
-                      'text-white': activeTimespan.value === timespan.value,
-                      'text-secondary': activeTimespan.value !== timespan.value,
-                      'bg-green-400':
-                        !isNegativeTrend &&
-                        activeTimespan.value === timespan.value,
-                      'bg-red-400':
-                        isNegativeTrend &&
-                        activeTimespan.value === timespan.value,
-                      'hover:bg-red-200': isNegativeTrend,
-                      'hover:bg-green-200': !isNegativeTrend,
-                    },
-                  ]"
-                  @click="activeTimespan = timespan"
-                >
-                  {{ timespan.option }}
-                </button>
-              </div>
-              <div :class="{ 'mt-4': isModal }">
-                <span class="mr-4 text-sm text-gray-500"
-                  >Low: {{ dataMin.toPrecision(6) }}</span
-                >
-                <span class="text-sm text-gray-500"
-                  >High: {{ dataMax.toPrecision(6) }}</span
-                >
-              </div>
-            </div>
-            <div v-else class="-mt-2 lg:mt-2">
+            <div class="-mt-2 lg:mt-2">
               <span class="flex justify-end w-full text-sm text-gray-500">{{
                 activeTimespan.option
               }}</span>

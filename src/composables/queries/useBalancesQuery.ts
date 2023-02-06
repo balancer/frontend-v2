@@ -3,7 +3,8 @@ import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { tokenService } from '@/services/token/token.service';
+import TokenService from '@/services/token/token.service';
+
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -43,7 +44,7 @@ export default function useBalancesQuery(
 
   const queryFn = async () => {
     console.log('Fetching', tokenAddresses.value.length, 'balances');
-    return await tokenService.balances.get(account.value, tokens.value);
+    return await new TokenService().balances.get(account.value, tokens.value);
   };
 
   const queryOptions = reactive({
