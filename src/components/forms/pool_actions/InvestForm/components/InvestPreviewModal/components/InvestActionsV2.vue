@@ -8,18 +8,17 @@ import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import useStaking from '@/composables/staking/useStaking';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
-import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES
@@ -46,7 +45,7 @@ const { fNum2 } = useNumbers();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
-const { isPoolEligibleForStaking } = useStaking();
+const { isStakablePool } = usePoolStaking();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
   rektPriceImpact,
@@ -85,13 +84,6 @@ const actions = computed((): TransactionActionInfo[] => [
     stepTooltip: t('investmentTooltip'),
   },
 ]);
-
-const isStakablePool = computed((): boolean => {
-  return (
-    POOLS.Stakable.AllowList.includes(props.pool.id) &&
-    isPoolEligibleForStaking.value
-  );
-});
 
 /**
  * METHODS

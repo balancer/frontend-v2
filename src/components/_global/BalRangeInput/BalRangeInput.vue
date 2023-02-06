@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import 'vue-slider-component/theme/antd.css';
 
-import { computed } from 'vue';
 import VueSlider, { DefineComponent as TVueSlider } from 'vue-slider-component';
 
 // Note that we are explicitly importing from 'tailwind.config.js' which is a vite alias (see vite.config.ts)

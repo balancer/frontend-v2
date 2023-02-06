@@ -5,7 +5,7 @@ import { usePool } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
 
 import InvestmentTransactions from './InvestmentTransactions/InvestmentTransactions.vue';
-import TradeTransactions from './TradeTransactions/TradeTransactions.vue';
+import SwapTransactions from './SwapTransactions/SwapTransactions.vue';
 
 /**
  * TYPES
@@ -31,7 +31,7 @@ const { isDeepPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 <template>
   <InvestmentTransactions :pool="pool" :loading="loading" />
 
-  <TradeTransactions
+  <SwapTransactions
     v-if="!isStablePhantomPool && !isDeepPool"
     :pool="pool"
     :loading="loading"

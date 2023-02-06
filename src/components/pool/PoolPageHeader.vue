@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
-import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import { usePool } from '@/composables/usePool';
@@ -16,7 +16,7 @@ import { includesAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
-import useStaking from '@/composables/staking/useStaking';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES
@@ -50,9 +50,7 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { balancerTokenListTokens } = useTokens();
-const {
-  userData: { hasNonPrefGaugeBalances },
-} = useStaking();
+const { hasNonPrefGaugeBalance } = usePoolStaking();
 
 /**
  * STATE
@@ -230,7 +228,7 @@ const hasMetadata = computed((): boolean => !!poolMetadata.value);
     block
   />
   <BalAlert
-    v-if="hasNonPrefGaugeBalances && !isAffected"
+    v-if="hasNonPrefGaugeBalance && !isAffected"
     :title="$t('staking.restakeGauge')"
     :type="'warning'"
     class="mt-2"

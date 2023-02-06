@@ -2,13 +2,12 @@
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
-import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
@@ -43,7 +42,7 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { managedPoolWithTradingHalted, isDeepPool, isPreMintedBptPool } =
+const { managedPoolWithSwappingHalted, isDeepPool, isPreMintedBptPool } =
   usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -72,7 +71,7 @@ const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
  * COMPUTED
  */
 const forceProportionalInputs = computed(
-  (): boolean => managedPoolWithTradingHalted.value
+  (): boolean => managedPoolWithSwappingHalted.value
 );
 
 const poolHasLowLiquidity = computed((): boolean =>
@@ -126,9 +125,9 @@ watch(
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
-      :title="$t('investment.warning.managedPoolTradingHalted.title')"
+      :title="$t('investment.warning.managedPoolSwappingHalted.title')"
       :description="
-        $t('investment.warning.managedPoolTradingHalted.description')
+        $t('investment.warning.managedPoolSwappingHalted.description')
       "
       class="mb-5"
     />
@@ -209,24 +208,23 @@ watch(
       />
     </div>
 
-    <StakingProvider :poolAddress="pool.address">
-      <teleport to="#modal">
-        <InvestPreviewModalV2
-          v-if="showInvestPreview"
-          :pool="pool"
-          @close="showInvestPreview = false"
-          @show-stake-modal="showStakeModal = true"
-        />
-        <StakePreviewModal
-          :pool="pool"
-          :isVisible="showStakeModal"
-          action="stake"
-          @close="showStakeModal = false"
-        />
-      </teleport>
-    </StakingProvider>
+    <teleport to="#modal">
+      <InvestPreviewModalV2
+        v-if="showInvestPreview"
+        :pool="pool"
+        @close="showInvestPreview = false"
+        @show-stake-modal="showStakeModal = true"
+      />
+      <StakePreviewModal
+        :pool="pool"
+        :isVisible="showStakeModal"
+        action="stake"
+        @close="showStakeModal = false"
+      />
+    </teleport>
   </div>
 </template>
+
 <style scoped>
 .high-price-impact:has(.bal-checkbox-error) {
   @apply border-red-500 bg-red-50 dark:bg-red-500 bg-opacity-50 dark:bg-opacity-5 transition-colors;

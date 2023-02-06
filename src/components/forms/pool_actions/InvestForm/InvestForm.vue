@@ -4,7 +4,7 @@ import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
-import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
@@ -23,7 +23,6 @@ import {
   isSameAddress,
 } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 // Types
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -93,7 +92,7 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } =
+const { managedPoolWithSwappingHalted, isWethPool, isStableLikePool } =
   usePool(pool);
 
 /**
@@ -110,7 +109,7 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 );
 
 const forceProportionalInputs = computed(
-  (): boolean => managedPoolWithTradingHalted.value
+  (): boolean => managedPoolWithSwappingHalted.value
 );
 
 const poolHasLowLiquidity = computed((): boolean =>
@@ -229,14 +228,14 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 });
 </script>
 
-  <template>
+<template>
   <div>
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
-      :title="$t('investment.warning.managedPoolTradingHalted.title')"
+      :title="$t('investment.warning.managedPoolSwappingHalted.title')"
       :description="
-        $t('investment.warning.managedPoolTradingHalted.description')
+        $t('investment.warning.managedPoolSwappingHalted.description')
       "
       class="mb-4"
     />
@@ -307,23 +306,21 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       />
     </div>
 
-    <StakingProvider :poolAddress="pool.address">
-      <teleport to="#modal">
-        <InvestPreviewModal
-          v-if="showInvestPreview"
-          :pool="pool"
-          :math="investMath"
-          :tokenAddresses="tokenAddresses"
-          @close="showInvestPreview = false"
-          @show-stake-modal="showStakeModal = true"
-        />
-        <StakePreviewModal
-          :pool="pool"
-          :isVisible="showStakeModal"
-          action="stake"
-          @close="showStakeModal = false"
-        />
-      </teleport>
-    </StakingProvider>
+    <teleport to="#modal">
+      <InvestPreviewModal
+        v-if="showInvestPreview"
+        :pool="pool"
+        :math="investMath"
+        :tokenAddresses="tokenAddresses"
+        @close="showInvestPreview = false"
+        @show-stake-modal="showStakeModal = true"
+      />
+      <StakePreviewModal
+        :pool="pool"
+        :isVisible="showStakeModal"
+        action="stake"
+        @close="showStakeModal = false"
+      />
+    </teleport>
   </div>
 </template>

@@ -1,4 +1,4 @@
-import { server } from '@/tests/msw/server';
+import { server } from '@tests/msw/server';
 import { rest } from 'msw';
 import BlocknativeProvider from './blocknative.provider';
 
