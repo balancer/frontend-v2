@@ -1,8 +1,9 @@
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
-import { computed, ref } from 'vue';
 import { mount } from '@tests/mount-composable-tester';
+import { computed, ref } from 'vue';
 
-import useJoinExit from '@/composables/trade/useJoinExit';
+import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
+import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
 
 vi.mock('vue-i18n');
@@ -36,6 +37,8 @@ vi.mock('@/composables/approvals/useRelayerApproval', () => ({
     BATCH_V4: 'BATCH_V4',
   },
 }));
+
+initBalancerWithDefaultMocks();
 
 const mockAmount = BigNumber.from(10);
 vi.mock('@/lib/balancer.sdk', () => {
@@ -105,7 +108,7 @@ describe('useJoinExit', () => {
     expect(result).toBeTruthy();
   });
 
-  it('Should return an available joinExit trade', async () => {
+  it('Should return an available joinExit swap', async () => {
     const { result: joinExit } = mount(() => useJoinExit(mockProps));
     await joinExit.handleAmountChange();
     expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(

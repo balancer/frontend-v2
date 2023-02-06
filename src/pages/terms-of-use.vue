@@ -248,7 +248,7 @@
         <li>
           Losses while digital assets are being supplied to the Balancer
           Protocol and losses due to the fluctuation of prices of tokens in a
-          trading pair or liquidity pool. Prices of digital currencies, tokens
+          swapping pair or liquidity pool. Prices of digital currencies, tokens
           and/or other digital assets fluctuate day by day or even minute by
           minute. The value of your available balance could surge or drop
           suddenly. Please note that there is a possibility that the price of
@@ -598,7 +598,7 @@
         obtained) due to occurrences such as emergency situations and force
         majeure events, Balancer is under no obligation to take any corrective
         action or measure and shall no under circumstances be liable for any
-        lost profits or other trading losses.
+        lost profits or other swapping losses.
       </p>
     </div>
     <div>

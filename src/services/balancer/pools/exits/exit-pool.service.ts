@@ -1,4 +1,4 @@
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import {
   GasPriceService,
   gasPriceService,
@@ -44,7 +44,7 @@ export class ExitPoolService {
    */
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk = balancer,
+    public readonly sdk = getBalancer(),
     public readonly gasPriceServ = gasPriceService
   ) {
     this.exitHandler = this.setExitHandler(ExitHandler.Generalised);

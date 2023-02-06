@@ -32,8 +32,8 @@ function isActive(page: string): boolean {
       {{ $t('pool') }}
     </DesktopLinkItem>
     <DesktopLinkItem
-      :to="{ name: 'trade', params: { networkSlug } }"
-      :active="isActive('trade')"
+      :to="{ name: 'swap', params: { networkSlug } }"
+      :active="isActive('swap')"
       @click="trackGoal(Goals.ClickNavSwap)"
     >
       {{ $t('swap') }}

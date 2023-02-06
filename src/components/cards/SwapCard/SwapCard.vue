@@ -1,27 +1,27 @@
 <template>
-  <BalCard class="relative card-container" :shadow="tradeCardShadow" noBorder>
+  <BalCard class="relative card-container" :shadow="swapCardShadow" noBorder>
     <template #header>
       <div class="flex justify-between items-center w-full">
         <h4>{{ title }}</h4>
-        <TradeSettingsPopover
-          :context="TradeSettingsContext.trade"
-          :isGasless="trading.tradeGasless.value"
+        <SwapSettingsPopover
+          :context="SwapSettingsContext.swap"
+          :isGasless="swapping.swapGasless.value"
         />
       </div>
     </template>
     <div>
-      <TradePair
+      <SwapPair
         v-model:tokenInAmount="tokenInAmount"
         v-model:tokenInAddress="tokenInAddress"
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
-        :tradeLoading="
-          trading.isBalancerTrade.value ? trading.isLoading.value : false
+        :swapLoading="
+          swapping.isBalancerSwap.value ? swapping.isLoading.value : false
         "
-        :effectivePriceMessage="trading.effectivePriceMessage"
+        :effectivePriceMessage="swapping.effectivePriceMessage"
         class="mb-4"
-        @amount-change="trading.handleAmountChange"
+        @amount-change="swapping.handleAmountChange"
       />
       <BalAlert
         v-if="error"
@@ -44,79 +44,79 @@
         block
       />
       <BalBtn
-        v-if="trading.isLoading.value"
+        v-if="swapping.isLoading.value"
         loading
         disabled
         :loadingLabel="
-          trading.isCowswapTrade.value ? $t('loadingBestPrice') : $t('loading')
+          swapping.isCowswapSwap.value ? $t('loadingBestPrice') : $t('loading')
         "
         block
       />
       <BalBtn
         v-else
         :label="$t('preview')"
-        :disabled="tradeDisabled"
+        :disabled="swapDisabled"
         color="gradient"
         block
         @click.prevent="handlePreviewButton"
       />
       <div
-        v-if="trading.isCowswapSupportedOnNetwork.value"
+        v-if="swapping.isCowswapSupportedOnNetwork.value"
         class="flex items-center mt-5 h-8 text-sm"
       >
         <Transition name="fade" mode="out-in">
           <div
-            v-if="trading.isGaslessTradingDisabled.value"
+            v-if="swapping.isGaslessSwappingDisabled.value"
             class="text-secondary"
           >
             <div class="flex gap-2 items-center">
               <span class="text-lg">⛽</span>
               <Transition name="fade" mode="out-in">
-                <p v-if="trading.isWrap.value">
-                  {{ $t('tradeToggle.wrapEth') }}
+                <p v-if="swapping.isWrap.value">
+                  {{ $t('swapToggle.wrapEth') }}
                 </p>
-                <p v-else-if="trading.isUnwrap.value">
-                  {{ $t('tradeToggle.unwrapEth') }}
+                <p v-else-if="swapping.isUnwrap.value">
+                  {{ $t('swapToggle.unwrapEth') }}
                 </p>
                 <p v-else>
-                  {{ $t('tradeToggle.fromEth') }}
+                  {{ $t('swapToggle.fromEth') }}
                 </p>
               </Transition>
             </div>
           </div>
 
           <div v-else>
-            <div class="flex items-center trade-gasless">
+            <div class="flex items-center swap-gasless">
               <BalTooltip
                 width="64"
-                :disabled="!trading.isGaslessTradingDisabled.value"
+                :disabled="!swapping.isGaslessSwappingDisabled.value"
               >
                 <template #activator>
                   <BalToggle
-                    name="tradeGasless"
-                    :checked="trading.tradeGasless.value"
-                    :disabled="trading.isGaslessTradingDisabled.value"
-                    @toggle="trading.toggleTradeGasless"
+                    name="swapGasless"
+                    :checked="swapping.swapGasless.value"
+                    :disabled="swapping.isGaslessSwappingDisabled.value"
+                    @toggle="swapping.toggleSwapGasless"
                   />
                 </template>
                 <div
                   v-text="
-                    trading.isWrapUnwrapTrade.value
-                      ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
-                      : $t('tradeGaslessToggle.disabledTooltip.eth')
+                    swapping.isWrapUnwrapSwap.value
+                      ? $t('swapGaslessToggle.disabledTooltip.wrapUnwrap')
+                      : $t('swapGaslessToggle.disabledTooltip.eth')
                   "
                 />
               </BalTooltip>
               <Transition name="fade" mode="out-in">
                 <span
-                  v-if="trading.tradeGasless.value"
+                  v-if="swapping.swapGasless.value"
                   class="pl-2 text-sm text-gray-600 dark:text-gray-400"
-                  >{{ $t('tradeToggle.tradeGasless') }}</span
+                  >{{ $t('swapToggle.swapGasless') }}</span
                 >
                 <span
                   v-else
                   class="pl-2 text-sm text-gray-600 dark:text-gray-400"
-                  >{{ $t('tradeToggle.tradeWithGas') }}</span
+                  >{{ $t('swapToggle.swapWithGas') }}</span
                 >
               </Transition>
               <BalTooltip width="64">
@@ -127,31 +127,31 @@
                     class="flex ml-1 text-gray-400"
                   />
                 </template>
-                <div v-html="$t('tradeGaslessToggle.tooltip')" />
+                <div v-html="$t('swapGaslessToggle.tooltip')" />
               </BalTooltip>
             </div>
           </div>
         </Transition>
       </div>
-      <TradeRoute
+      <SwapRoute
         v-if="alwaysShowRoutes"
-        :addressIn="trading.tokenIn.value.address"
-        :amountIn="trading.tokenInAmountInput.value"
-        :addressOut="trading.tokenOut.value.address"
-        :amountOut="trading.tokenOutAmountInput.value"
+        :addressIn="swapping.tokenIn.value.address"
+        :amountIn="swapping.tokenInAmountInput.value"
+        :addressOut="swapping.tokenOut.value.address"
+        :amountOut="swapping.tokenOutAmountInput.value"
         :pools="pools"
-        :sorReturn="trading.sor.sorReturn.value"
+        :sorReturn="swapping.sor.sorReturn.value"
         class="mt-4"
       />
     </div>
   </BalCard>
   <teleport to="#modal">
-    <TradePreviewModal
-      v-if="modalTradePreviewIsOpen"
-      :trading="trading"
+    <SwapPreviewModal
+      v-if="modalSwapPreviewIsOpen"
+      :swapping="swapping"
       :error="error"
       :warning="warning"
-      @trade="trade"
+      @swap="swap"
       @close="handlePreviewModalClose"
     />
   </teleport>
@@ -164,13 +164,13 @@ import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
-import TradeSettingsPopover, {
-  TradeSettingsContext,
-} from '@/components/popovers/TradeSettingsPopover.vue';
-import { useTradeState } from '@/composables/trade/useTradeState';
-import useTrading from '@/composables/trade/useTrading';
-import useValidation from '@/composables/trade/useValidation';
+import SwapPreviewModal from '@/components/modals/SwapPreviewModal.vue';
+import SwapSettingsPopover, {
+  SwapSettingsContext,
+} from '@/components/popovers/SwapSettingsPopover.vue';
+import { useSwapState } from '@/composables/swap/useSwapState';
+import useSwapping from '@/composables/swap/useSwapping';
+import useValidation from '@/composables/swap/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
@@ -180,14 +180,14 @@ import { WrapType } from '@/lib/utils/balancer/wrapper';
 import { isRequired } from '@/lib/utils/validations';
 import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
-import TradePair from './TradePair.vue';
-import TradeRoute from './TradeRoute.vue';
+import SwapPair from './SwapPair.vue';
+import SwapRoute from './SwapRoute.vue';
 export default defineComponent({
   components: {
-    TradePair,
-    TradePreviewModal,
-    TradeRoute,
-    TradeSettingsPopover,
+    SwapPair,
+    SwapPreviewModal,
+    SwapRoute,
+    SwapSettingsPopover,
   },
   setup() {
     // COMPOSABLES
@@ -208,15 +208,15 @@ export default defineComponent({
       setTokenInAmount,
       setTokenOutAmount,
       setInitialized,
-    } = useTradeState();
+    } = useSwapState();
     // DATA
     const exactIn = ref(true);
-    const modalTradePreviewIsOpen = ref(false);
+    const modalSwapPreviewIsOpen = ref(false);
     const dismissedErrors = ref({
       highPriceImpact: false,
     });
     const alwaysShowRoutes = lsGet('alwaysShowRoutes', false);
-    const tradeCardShadow = computed(() => {
+    const swapCardShadow = computed(() => {
       switch (bp.value) {
         case 'xs':
           return 'none';
@@ -226,7 +226,7 @@ export default defineComponent({
           return 'xl';
       }
     });
-    const trading = useTrading(
+    const swapping = useSwapping(
       exactIn,
       tokenInAddress,
       tokenInAmount,
@@ -242,17 +242,17 @@ export default defineComponent({
     // COMPUTED
     const isHighPriceImpact = computed(
       () =>
-        trading.sor.validationErrors.value.highPriceImpact &&
+        swapping.sor.validationErrors.value.highPriceImpact &&
         !dismissedErrors.value.highPriceImpact
     );
-    const tradeDisabled = computed(() => {
+    const swapDisabled = computed(() => {
       const hasMismatchedNetwork = isMismatchedNetwork.value;
       const hasAmountsError = !tokenInAmount.value || !tokenOutAmount.value;
       const hasCowswapErrors =
-        trading.isCowswapTrade.value &&
-        trading.cowswap.hasValidationError.value;
+        swapping.isCowswapSwap.value &&
+        swapping.cowswap.hasValidationError.value;
       const hasBalancerErrors =
-        trading.isBalancerTrade.value && isHighPriceImpact.value;
+        swapping.isBalancerSwap.value && isHighPriceImpact.value;
       return (
         hasAmountsError ||
         hasCowswapErrors ||
@@ -261,18 +261,18 @@ export default defineComponent({
       );
     });
     const title = computed(() => {
-      if (trading.wrapType.value === WrapType.Wrap) {
-        return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
+      if (swapping.wrapType.value === WrapType.Wrap) {
+        return `${t('wrap')} ${swapping.tokenIn.value.symbol}`;
       }
-      if (trading.wrapType.value === WrapType.Unwrap) {
-        return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
+      if (swapping.wrapType.value === WrapType.Unwrap) {
+        return `${t('unwrap')} ${swapping.tokenOut.value.symbol}`;
       }
       return t('swap');
     });
     const pools = computed<SubgraphPoolBase[]>(
       // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
       () => {
-        return trading.sor.pools.value;
+        return swapping.sor.pools.value;
       }
     );
     const error = computed(() => {
@@ -282,17 +282,17 @@ export default defineComponent({
           body: t('networkMismatch', [appNetworkConfig.name]),
         };
       }
-      if (trading.isBalancerTrade.value && !trading.isLoading.value) {
-        if (trading.sor.validationErrors.value.noSwaps) {
+      if (swapping.isBalancerSwap.value && !swapping.isLoading.value) {
+        if (swapping.sor.validationErrors.value.noSwaps) {
           return {
             header: t('insufficientLiquidity'),
             body: t('insufficientLiquidityDetailed'),
           };
         }
       }
-      if (trading.isCowswapTrade.value) {
-        if (trading.cowswap.validationError.value != null) {
-          const validationError = trading.cowswap.validationError.value;
+      if (swapping.isCowswapSwap.value) {
+        if (swapping.cowswap.validationError.value != null) {
+          const validationError = swapping.cowswap.validationError.value;
           if (validationError === ApiErrorCodes.SellAmountDoesNotCoverFee) {
             return {
               header: t('cowswapErrors.lowAmount.header'),
@@ -301,35 +301,35 @@ export default defineComponent({
           } else if (validationError === ApiErrorCodes.PriceExceedsBalance) {
             return {
               header: t('cowswapErrors.lowBalance.header', [
-                trading.tokenIn.value.symbol,
+                swapping.tokenIn.value.symbol,
               ]),
               body: t('cowswapErrors.lowBalance.body', [
-                trading.tokenIn.value.symbol,
+                swapping.tokenIn.value.symbol,
                 fNum2(
                   formatUnits(
-                    trading.getQuote().maximumInAmount,
-                    trading.tokenIn.value.decimals
+                    swapping.getQuote().maximumInAmount,
+                    swapping.tokenIn.value.decimals
                   ),
                   FNumFormats.token
                 ),
-                fNum2(trading.slippageBufferRate.value, FNumFormats.percent),
+                fNum2(swapping.slippageBufferRate.value, FNumFormats.percent),
               ]),
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {
             return {
               header: t('cowswapErrors.noLiquidity.header', [
-                trading.tokenIn.value.symbol,
+                swapping.tokenIn.value.symbol,
               ]),
               body: t('cowswapErrors.noLiquidity.body'),
             };
           } else {
             return {
               header: t('cowswapErrors.genericError.header'),
-              body: trading.cowswap.validationError.value,
+              body: swapping.cowswap.validationError.value,
             };
           }
         }
-      } else if (trading.isBalancerTrade.value) {
+      } else if (swapping.isBalancerSwap.value) {
         if (isHighPriceImpact.value) {
           return {
             header: t('highPriceImpact'),
@@ -341,8 +341,8 @@ export default defineComponent({
       return undefined;
     });
     const warning = computed(() => {
-      if (trading.isCowswapTrade.value) {
-        if (trading.cowswap.warnings.value.highFees) {
+      if (swapping.isCowswapSwap.value) {
+        if (swapping.cowswap.warnings.value.highFees) {
           return {
             header: t('cowswapWarnings.highFees.header'),
             body: t('cowswapWarnings.highFees.body'),
@@ -353,15 +353,15 @@ export default defineComponent({
     });
 
     // METHODS
-    function trade() {
-      trading.trade(() => {
-        trading.resetAmounts();
-        modalTradePreviewIsOpen.value = false;
+    function swap() {
+      swapping.swap(() => {
+        swapping.resetAmounts();
+        modalSwapPreviewIsOpen.value = false;
       });
     }
 
     function handleErrorButtonClick() {
-      if (trading.sor.validationErrors.value.highPriceImpact) {
+      if (swapping.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;
       }
     }
@@ -378,8 +378,8 @@ export default defineComponent({
       } else if (isAddress(assetOut)) {
         assetOut = getAddress(assetOut);
       }
-      setTokenInAddress(assetIn || store.state.trade.inputAsset);
-      setTokenOutAddress(assetOut || store.state.trade.outputAsset);
+      setTokenInAddress(assetIn || store.state.swap.inputAsset);
+      setTokenOutAddress(assetOut || store.state.swap.outputAsset);
 
       let assetInAmount = router.currentRoute.value.query?.inAmount as string;
       let assetOutAmount = router.currentRoute.value.query?.outAmount as string;
@@ -394,12 +394,12 @@ export default defineComponent({
       tokenInAddress.value = appNetworkConfig.addresses.weth;
     }
     function handlePreviewButton() {
-      trading.resetSubmissionError();
-      modalTradePreviewIsOpen.value = true;
+      swapping.resetSubmissionError();
+      modalSwapPreviewIsOpen.value = true;
     }
     function handlePreviewModalClose() {
-      trading.resetSubmissionError();
-      modalTradePreviewIsOpen.value = false;
+      swapping.resetSubmissionError();
+      modalSwapPreviewIsOpen.value = false;
     }
     // INIT
     onBeforeMount(() => {
@@ -410,16 +410,16 @@ export default defineComponent({
       // constants
       TOKENS,
       // context
-      TradeSettingsContext,
+      SwapSettingsContext,
       // data
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      modalTradePreviewIsOpen,
+      modalSwapPreviewIsOpen,
       alwaysShowRoutes,
       exactIn,
-      trading,
+      swapping,
       // computed
       pools,
       title,
@@ -427,12 +427,12 @@ export default defineComponent({
       warning,
       errorMessage,
       isRequired,
-      tradeDisabled,
-      tradeCardShadow,
+      swapDisabled,
+      swapCardShadow,
       handlePreviewButton,
       handlePreviewModalClose,
       // methods
-      trade,
+      swap,
       switchToWETH,
       handleErrorButtonClick,
     };
@@ -440,12 +440,12 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-/* This is needed because the trade settings popover overflows */
+/* This is needed because the swap settings popover overflows */
 .card-container {
   overflow: unset;
 }
 
-.trade-gasless :deep(.bal-toggle) {
+.swap-gasless :deep(.bal-toggle) {
   width: 3rem;
 }
 
