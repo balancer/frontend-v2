@@ -2,7 +2,7 @@ import usePoolGaugesQuery from '@/composables/queries/usePoolGaugesQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
-import { computed, inject, InjectionKey, provide, ref } from 'vue';
+import { computed, InjectionKey, provide } from 'vue';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { getAddress } from '@ethersproject/address';
 import { parseUnits } from '@ethersproject/units';
@@ -10,6 +10,7 @@ import { useTokens } from '../tokens.provider';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { POOLS } from '@/constants/pools';
+import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 
 /**
@@ -30,7 +31,11 @@ const provider = (_poolId?: string) => {
    * COMPOSABLES
    */
   const { balanceFor } = useTokens();
-  const { account } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
+
+  const poolGaugesQuery = usePoolGaugesQuery(poolAddress);
+  const { data: poolGauges, refetch: refetchPoolGauges } = poolGaugesQuery;
+
   const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
     useUserData();
   const { data: userGaugeShares, refetch: refetchUserGaugeShares } =
@@ -43,21 +48,15 @@ const provider = (_poolId?: string) => {
   } = stakedSharesQuery;
 
   /**
-   * QUERIES
-   */
-  // Fetches all gauges for this pool (incl. preferential gauge).
-  const poolGaugesQuery = usePoolGaugesQuery(poolAddress);
-  const { data: poolGauges, refetch: refetchPoolGauges } = poolGaugesQuery;
-
-  /**
    * COMPUTED
    */
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(poolGaugesQuery) ||
-      isQueryLoading(stakedSharesQuery) ||
-      isQueryLoading(userGaugeSharesQuery) ||
-      isQueryLoading(userBoostsQuery)
+      (isWalletReady.value &&
+        (isQueryLoading(stakedSharesQuery) ||
+          isQueryLoading(userGaugeSharesQuery) ||
+          isQueryLoading(userBoostsQuery)))
   );
 
   const preferentialGaugeAddress = computed(
@@ -215,16 +214,14 @@ const provider = (_poolId?: string) => {
 /**
  * Provide setup: response type + symbol.
  */
-export type Response = ReturnType<typeof provider>;
-export const PoolStakingProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.PoolStaking
-);
+export type PoolStakingProviderResponse = ReturnType<typeof provider>;
+export const PoolStakingProviderSymbol: InjectionKey<PoolStakingProviderResponse> =
+  Symbol(symbolKeys.Providers.PoolStaking);
 
 export function providePoolStaking(poolId?: string) {
   provide(PoolStakingProviderSymbol, provider(poolId));
 }
 
-export function usePoolStaking(): Response {
-  const defaultResponse = {} as Response;
-  return inject(PoolStakingProviderSymbol, defaultResponse);
+export function usePoolStaking(): PoolStakingProviderResponse {
+  return safeInject(PoolStakingProviderSymbol);
 }

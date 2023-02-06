@@ -33,6 +33,7 @@ import { includesAddress } from '@/lib/utils';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * STATE
@@ -51,6 +52,7 @@ providePoolStaking(poolId);
 const { t } = useI18n();
 
 const { prices } = useTokens();
+const { isWalletReady } = useWeb3();
 const { addAlert, removeAlert } = useAlerts();
 const _isVeBalPool = isVeBalPool(poolId);
 
@@ -246,7 +248,10 @@ watch(poolQuery.error, () => {
             />
           </div>
           <div class="mb-4">
-            <h4 class="px-4 lg:px-0 mb-4" v-text="$t('poolComposition')" />
+            <h4
+              class="px-4 lg:px-0 mb-4"
+              v-text="$t('poolComposition.title')"
+            />
             <BalLoadingBlock v-if="loadingPool" class="h-64" />
             <PoolCompositionCard v-else-if="pool" :pool="pool" />
           </div>
@@ -277,7 +282,7 @@ watch(poolQuery.error, () => {
 
           <BalLoadingBlock v-if="loadingPool" class="h-40 pool-actions-card" />
           <StakingIncentivesCard
-            v-if="isStakablePool && !loadingPool && pool"
+            v-if="isStakablePool && !loadingPool && pool && isWalletReady"
             :pool="pool"
             class="staking-incentives"
           />

@@ -1,4 +1,4 @@
-import { computed, Ref } from 'vue';
+import { Ref } from 'vue';
 
 export default function useInputStyles(
   props,

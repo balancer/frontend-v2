@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-
 type PopoverTrigger = 'click' | 'hover';
 
 type Props = {

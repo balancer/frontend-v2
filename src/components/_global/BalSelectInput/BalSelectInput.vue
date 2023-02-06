@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { PropType } from 'vue';
 
 import { RuleFunction, Rules } from '@/types';
 

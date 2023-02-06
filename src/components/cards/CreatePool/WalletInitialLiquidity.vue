@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { sumBy } from 'lodash';
-import { computed } from 'vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';

@@ -9,7 +9,7 @@ import { Pool } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
 import { AprBreakdown } from '@balancer-labs/sdk';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 
 export default function usePoolAprQuery(
   id: string,
@@ -60,7 +60,7 @@ export default function usePoolAprQuery(
 
     _pool.chainId = networkId.value;
 
-    const apr = await balancer.pools.apr(_pool);
+    const apr = await getBalancer().pools.apr(_pool);
 
     return apr;
   };

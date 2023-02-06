@@ -93,7 +93,7 @@ export default function useTokenApproval(
       id: tx.hash,
       type: 'tx',
       action: 'approve',
-      summary: t('transactionSummary.approveForTrading', [
+      summary: t('transactionSummary.approveForSwapping', [
         tokens.value[tokenInAddress.value]?.symbol,
       ]),
       details: {

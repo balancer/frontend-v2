@@ -208,34 +208,29 @@ export class StakingRewardsService {
    * Fetches data required to calculate boosts
    * 1. vebal total supply.
    * 2. Given user's vebal balance.
-   * 3. Given gauges working supplies.
    *
    * @param {string} userAddress - Account to fetch data for.
    * @param {string[]} gaugeAddresses - Gauge's to fetch data for.
    * @returns Set of data described in description above.
    */
-  async getBoostDeps(userAddress: string, gaugeAddresses: string[]) {
+  async getBoostDeps(userAddress: string) {
     const veBalProxy = new VeBALProxy(
       configService.network.addresses.veDelegationProxy
     );
 
-    const getVebalInfo =
-      balancerContractsService.veBAL.getLockInfo(userAddress);
+    const getVebalInfo = await balancerContractsService.veBAL.getLockInfo(
+      userAddress
+    );
     // need to use veBAL balance from the proxy as the balance from the proxy takes
     // into account the amount of delegated veBAL as well
     const getVeBALBalance = veBalProxy.getAdjustedBalance(userAddress);
-    const getWorkingSupplies = this.getWorkingSupplyForGauges(gaugeAddresses);
 
-    const [
-      { totalSupply: veBALTotalSupply },
-      userVeBALBalance,
-      workingSupplies,
-    ] = await Promise.all([getVebalInfo, getVeBALBalance, getWorkingSupplies]);
+    const [{ totalSupply: veBALTotalSupply }, userVeBALBalance] =
+      await Promise.all([getVebalInfo, getVeBALBalance]);
 
     return {
       veBALTotalSupply,
       userVeBALBalance,
-      workingSupplies,
     };
   }
 
@@ -247,7 +242,6 @@ export class StakingRewardsService {
    *
    * @param {string} userGaugeBalance - User's balance in gauge.
    * @param {string} gaugeTotalSupply - The gauge's total supply.
-   * @param {string} gaugeWorkingSupply - The gauge's working supply.
    * @param {string} userVeBALBalance - User's veBAL balance.
    * @param {string} veBALTotalSupply - veBAL total supply.
    * @returns User's boost value for given gauge.
@@ -255,42 +249,28 @@ export class StakingRewardsService {
   calcUserBoost({
     userGaugeBalance,
     gaugeTotalSupply,
-    gaugeWorkingSupply,
     userVeBALBalance,
     veBALTotalSupply,
   }: {
     userGaugeBalance: string;
     gaugeTotalSupply: string;
-    gaugeWorkingSupply: string;
     userVeBALBalance: string;
     veBALTotalSupply: string;
   }): string {
     const _userGaugeBalance = bnum(userGaugeBalance);
-    const _gaugeWorkingSupply = bnum(gaugeWorkingSupply);
-    const adjustedGaugeBalance = bnum(0.4)
-      .times(_userGaugeBalance)
-      .plus(
-        bnum(0.6).times(
-          bnum(userVeBALBalance).div(veBALTotalSupply).times(gaugeTotalSupply)
-        )
-      );
-
-    // choose the minimum of either gauge balance or the adjusted gauge balance
-    const workingBalance = _userGaugeBalance.lt(adjustedGaugeBalance)
-      ? _userGaugeBalance
-      : adjustedGaugeBalance;
-
-    const zeroBoostWorkingBalance = bnum(0.4).times(_userGaugeBalance);
-    const zeroBoostWorkingSupply = _gaugeWorkingSupply
-      .minus(workingBalance)
-      .plus(zeroBoostWorkingBalance);
-
-    const boostedFraction = workingBalance.div(_gaugeWorkingSupply);
-    const unboostedFraction = zeroBoostWorkingBalance.div(
-      zeroBoostWorkingSupply
+    const _gaugeTotalSupply = bnum(gaugeTotalSupply);
+    const _userVeBALBalance = bnum(userVeBALBalance);
+    const _veBALTotalSupply = bnum(veBALTotalSupply);
+    const boost = bnum(1).plus(
+      bnum(1.5)
+        .times(_userVeBALBalance)
+        .div(_veBALTotalSupply)
+        .times(_gaugeTotalSupply)
+        .div(_userGaugeBalance)
     );
+    const minBoost = bnum(2.5).lt(boost) ? 2.5 : boost;
 
-    return boostedFraction.div(unboostedFraction).toString();
+    return minBoost.toString();
   }
 
   /**
@@ -310,19 +290,14 @@ export class StakingRewardsService {
     userAddress: string;
     gaugeShares: UserGaugeShare[] | GaugeShare[];
   }): Promise<UserBoosts> {
-    const gaugeAddresses = gaugeShares.map(gaugeShare => gaugeShare.gauge.id);
-
-    const { veBALTotalSupply, userVeBALBalance, workingSupplies } =
-      await this.getBoostDeps(userAddress, gaugeAddresses);
+    const { veBALTotalSupply, userVeBALBalance } = await this.getBoostDeps(
+      userAddress
+    );
 
     const boosts = gaugeShares.map(gaugeShare => {
-      const _gaugeAddress = getAddress(gaugeShare.gauge.id);
-      const gaugeWorkingSupply = workingSupplies[_gaugeAddress];
-
       const boost = this.calcUserBoost({
         userGaugeBalance: gaugeShare.balance,
         gaugeTotalSupply: gaugeShare.gauge.totalSupply,
-        gaugeWorkingSupply,
         userVeBALBalance,
         veBALTotalSupply,
       });

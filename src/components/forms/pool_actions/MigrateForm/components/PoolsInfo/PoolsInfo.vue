@@ -2,9 +2,9 @@
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import TradeSettingsPopover, {
-  TradeSettingsContext,
-} from '@/components/popovers/TradeSettingsPopover.vue';
+import SwapSettingsPopover, {
+  SwapSettingsContext,
+} from '@/components/popovers/SwapSettingsPopover.vue';
 import useNumbers from '@/composables/useNumbers';
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
@@ -148,7 +148,7 @@ const isUnstakedMigrationEnabled = computed(() => {
           <h4>
             {{ t(`migratePool.${poolMigrationInfo.type}.migrateToPool.title`) }}
           </h4>
-          <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+          <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
       </div>
     </template>

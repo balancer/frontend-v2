@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
