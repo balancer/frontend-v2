@@ -242,14 +242,28 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
-    return numF(absMaxApr(aprs, boost), FNumFormats.bp);
-  } else if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
-    const minAPR = numF(aprs.min, FNumFormats.bp);
-    const maxAPR = numF(aprs.max, FNumFormats.bp);
+    return formatBigAprPercent(numF(absMaxApr(aprs, boost), FNumFormats.bp));
+  }
+  if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
+    const minAPR = formatBigAprPercent(numF(aprs.min, FNumFormats.bp));
+    const maxAPR = formatBigAprPercent(numF(aprs.max, FNumFormats.bp));
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(aprs.min, FNumFormats.bp);
+  return formatBigAprPercent(numF(aprs.min, FNumFormats.bp));
+}
+
+/**
+ * @summary Returns processed APR percent, when apr > 1000.
+ * @example formatBigAprPercent('1337.23%');  // => '1,337%'
+ */
+export function formatBigAprPercent(apr: string): string {
+  const _apr = Number(apr.replace('%', ''));
+
+  if (_apr >= 1000) {
+    return `${_apr.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}%`;
+  }
+  return apr;
 }
 
 /**
