@@ -38,7 +38,7 @@ const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
   <div v-if="isMainnetWstETHPool" class="flex items-center mb-4">
     <router-link
       :to="{
-        name: 'trade',
+        name: 'swap',
         params: {
           networkSlug,
           assetIn: stETH.address,

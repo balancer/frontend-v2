@@ -18,7 +18,7 @@ export interface UserSettingsState {
  * SETUP
  */
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
-const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
+const lsSlippage = lsGet(LS_KEYS.App.SwapSlippage, '0.01');
 
 /**
  * STATE
@@ -45,7 +45,7 @@ function setCurrency(newCurrency: FiatCurrency): void {
 }
 
 function setSlippage(newSlippage: string): void {
-  lsSet(LS_KEYS.App.TradeSlippage, newSlippage);
+  lsSet(LS_KEYS.App.SwapSlippage, newSlippage);
   state.slippage = newSlippage;
 }
 

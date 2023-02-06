@@ -5,7 +5,7 @@ import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
 
-import { useTradeState } from '@/composables/trade/useTradeState';
+import { useSwapState } from '@/composables/swap/useSwapState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTailwind from '@/composables/useTailwind';
 import { useTokens } from '@/providers/tokens.provider';
@@ -108,7 +108,7 @@ const chartTimespans = [
 const { upToLargeBreakpoint } = useBreakpoints();
 const { t } = useI18n();
 const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
-const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
+const { tokenInAddress, tokenOutAddress, initialized } = useSwapState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId, appNetworkConfig } = useWeb3();
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import WithdrawFormV2 from '@/components/forms/pool_actions/WithdrawForm/WithdrawFormV2.vue';
-import TradeSettingsPopover, {
-  TradeSettingsContext,
-} from '@/components/popovers/TradeSettingsPopover.vue';
+import SwapSettingsPopover, {
+  SwapSettingsContext,
+} from '@/components/popovers/SwapSettingsPopover.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { ExitPoolProvider } from '@/providers/local/exit-pool.provider';
 import { configService } from '@/services/config/config.service';
@@ -58,7 +58,7 @@ onMounted(() => resetTabs());
           </div>
           <div class="flex justify-between items-center">
             <h4>{{ $t('withdrawFromPool') }}</h4>
-            <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+            <SwapSettingsPopover :context="SwapSettingsContext.invest" />
           </div>
           <BalTabs
             v-if="isDeepPool"

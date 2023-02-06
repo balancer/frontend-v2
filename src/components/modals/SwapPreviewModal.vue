@@ -5,14 +5,14 @@ import { mapValues } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
-import { TradeQuote } from '@/composables/trade/types';
+import SwapRoute from '@/components/cards/SwapCard/SwapRoute.vue';
+import { SwapQuote } from '@/composables/swap/types';
 import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useTokenApproval from '@/composables/approvals/useTokenApproval';
-import { UseTrading } from '@/composables/trade/useTrading';
+import { UseSwapping } from '@/composables/swap/useSwapping';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { useUserSettings } from '@/providers/user-settings.provider';
@@ -27,7 +27,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
 type Props = {
-  trading: UseTrading;
+  swapping: UseSwapping;
   error?: any;
   warning?: any;
 };
@@ -38,7 +38,7 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const emit = defineEmits(['trade', 'close']);
+const emit = defineEmits(['swap', 'close']);
 // COMPOSABLES
 const { t } = useI18n();
 const { fNum2, toFiat } = useNumbers();
@@ -54,8 +54,8 @@ const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
 const { slippage } = useUserSettings();
 
 // state
-const lastQuote = ref<TradeQuote | null>(
-  props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
+const lastQuote = ref<SwapQuote | null>(
+  props.swapping.isWrapUnwrapSwap.value ? null : props.swapping.getQuote()
 );
 const priceUpdated = ref(false);
 const priceUpdateAccepted = ref(false);
@@ -68,13 +68,13 @@ const slippageRatePercent = computed(() =>
   fNum2(slippage.value, FNumFormats.percent)
 );
 
-const addressIn = computed(() => props.trading.tokenIn.value.address);
+const addressIn = computed(() => props.swapping.tokenIn.value.address);
 
 const tokenInFiatValue = computed(() =>
   fNum2(
     toFiat(
-      props.trading.tokenInAmountInput.value,
-      props.trading.tokenIn.value.address
+      props.swapping.tokenInAmountInput.value,
+      props.swapping.tokenIn.value.address
     ),
     FNumFormats.fiat
   )
@@ -83,14 +83,14 @@ const tokenInFiatValue = computed(() =>
 const tokenOutFiatValue = computed(() =>
   fNum2(
     toFiat(
-      props.trading.tokenOutAmountInput.value,
-      props.trading.tokenOut.value.address
+      props.swapping.tokenOutAmountInput.value,
+      props.swapping.tokenOut.value.address
     ),
     FNumFormats.fiat
   )
 );
 
-const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
+const showSwapRoute = computed(() => props.swapping.isBalancerSwap.value);
 
 const zeroFee = computed(() =>
   showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
@@ -99,8 +99,8 @@ const zeroFee = computed(() =>
 const exceedsBalance = computed(() => {
   return (
     account.value &&
-    bnum(props.trading.tokenInAmountInput.value).isGreaterThan(
-      balanceFor(props.trading.tokenInAddressInput.value)
+    bnum(props.swapping.tokenInAmountInput.value).isGreaterThan(
+      balanceFor(props.swapping.tokenInAddressInput.value)
     )
   );
 });
@@ -112,35 +112,35 @@ const disableSubmitButton = computed(() => {
 const summary = computed(() => {
   const summaryItems = {
     amountBeforeFees: '',
-    tradeFees: '',
+    swapFees: '',
     totalWithoutSlippage: '',
     totalWithSlippage: '',
   };
 
-  const exactIn = props.trading.exactIn.value;
+  const exactIn = props.swapping.exactIn.value;
 
-  const tokenIn = props.trading.tokenIn.value;
-  const tokenOut = props.trading.tokenOut.value;
+  const tokenIn = props.swapping.tokenIn.value;
+  const tokenOut = props.swapping.tokenOut.value;
 
-  const tokenInAmountInput = props.trading.tokenInAmountInput.value;
-  const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
+  const tokenInAmountInput = props.swapping.tokenInAmountInput.value;
+  const tokenOutAmountInput = props.swapping.tokenOutAmountInput.value;
 
-  if (props.trading.isWrapUnwrapTrade.value) {
+  if (props.swapping.isWrapUnwrapSwap.value) {
     summaryItems.amountBeforeFees = tokenOutAmountInput;
-    summaryItems.tradeFees = '0';
+    summaryItems.swapFees = '0';
     summaryItems.totalWithoutSlippage = tokenOutAmountInput;
     summaryItems.totalWithSlippage = tokenOutAmountInput;
   } else {
-    const quote = props.trading.getQuote();
+    const quote = props.swapping.getQuote();
 
     if (exactIn) {
       summaryItems.amountBeforeFees = tokenOutAmountInput;
-      summaryItems.tradeFees = formatUnits(
+      summaryItems.swapFees = formatUnits(
         quote.feeAmountOutToken,
         tokenOut.decimals
       );
       summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-        .minus(summaryItems.tradeFees)
+        .minus(summaryItems.swapFees)
         .toString();
       summaryItems.totalWithSlippage = formatUnits(
         quote.minimumOutAmount,
@@ -148,12 +148,12 @@ const summary = computed(() => {
       );
     } else {
       summaryItems.amountBeforeFees = tokenInAmountInput;
-      summaryItems.tradeFees = formatUnits(
+      summaryItems.swapFees = formatUnits(
         quote.feeAmountInToken,
         tokenIn.decimals
       );
       summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-        .plus(summaryItems.tradeFees)
+        .plus(summaryItems.swapFees)
         .toString();
       summaryItems.totalWithSlippage = formatUnits(
         quote.maximumInAmount,
@@ -176,7 +176,7 @@ const summary = computed(() => {
       summaryItems,
       itemValue =>
         `${fNum2(itemValue, FNumFormats.token)} ${
-          exactIn || props.trading.isWrapUnwrapTrade.value
+          exactIn || props.swapping.isWrapUnwrapSwap.value
             ? tokenOut.symbol
             : tokenIn.symbol
         }`
@@ -185,46 +185,46 @@ const summary = computed(() => {
 });
 
 const labels = computed(() => {
-  if (props.trading.isWrap.value) {
+  if (props.swapping.isWrap.value) {
     return {
-      modalTitle: t('previewWrap', [props.trading.tokenIn.value.symbol]),
-      confirmTrade: t('confirmWrap', [props.trading.tokenIn.value.symbol]),
-      tradeSummary: {
-        title: t('tradeSummary.wrap.title'),
-        tradeFees: t('tradeSummary.wrap.tradeFees'),
-        totalBeforeFees: t('tradeSummary.wrap.totalBeforeFees'),
-        totalAfterFees: t('tradeSummary.wrap.totalAfterFees'),
-        totalWithSlippage: t('tradeSummary.wrap.totalWithSlippage', [
-          props.trading.tokenIn.value.symbol,
+      modalTitle: t('previewWrap', [props.swapping.tokenIn.value.symbol]),
+      confirmSwap: t('confirmWrap', [props.swapping.tokenIn.value.symbol]),
+      swapSummary: {
+        title: t('swapSummary.wrap.title'),
+        swapFees: t('swapSummary.wrap.swapFees'),
+        totalBeforeFees: t('swapSummary.wrap.totalBeforeFees'),
+        totalAfterFees: t('swapSummary.wrap.totalAfterFees'),
+        totalWithSlippage: t('swapSummary.wrap.totalWithSlippage', [
+          props.swapping.tokenIn.value.symbol,
         ]),
       },
     };
-  } else if (props.trading.isUnwrap.value) {
+  } else if (props.swapping.isUnwrap.value) {
     return {
-      modalTitle: t('previewUnwrap', [props.trading.tokenOut.value.symbol]),
-      confirmTrade: t('confirmUnwrap', [props.trading.tokenOut.value.symbol]),
-      tradeSummary: {
-        title: t('tradeSummary.unwrap.title'),
-        tradeFees: t('tradeSummary.unwrap.tradeFees'),
-        totalBeforeFees: t('tradeSummary.unwrap.totalBeforeFees'),
-        totalAfterFees: t('tradeSummary.unwrap.totalAfterFees'),
-        totalWithSlippage: t('tradeSummary.unwrap.totalWithSlippage', [
-          props.trading.tokenOut.value.symbol,
+      modalTitle: t('previewUnwrap', [props.swapping.tokenOut.value.symbol]),
+      confirmSwap: t('confirmUnwrap', [props.swapping.tokenOut.value.symbol]),
+      swapSummary: {
+        title: t('swapSummary.unwrap.title'),
+        swapFees: t('swapSummary.unwrap.swapFees'),
+        totalBeforeFees: t('swapSummary.unwrap.totalBeforeFees'),
+        totalAfterFees: t('swapSummary.unwrap.totalAfterFees'),
+        totalWithSlippage: t('swapSummary.unwrap.totalWithSlippage', [
+          props.swapping.tokenOut.value.symbol,
         ]),
       },
     };
-  } else if (props.trading.exactIn.value) {
+  } else if (props.swapping.exactIn.value) {
     return {
-      modalTitle: t('previewTrade'),
-      confirmTrade: t('confirmTrade'),
-      tradeSummary: {
-        title: t('tradeSummary.exactIn.title', [
-          props.trading.tokenIn.value.symbol,
+      modalTitle: t('previewSwap'),
+      confirmSwap: t('confirmSwap'),
+      swapSummary: {
+        title: t('swapSummary.exactIn.title', [
+          props.swapping.tokenIn.value.symbol,
         ]),
-        tradeFees: t('tradeSummary.exactIn.tradeFees'),
-        totalBeforeFees: t('tradeSummary.exactIn.totalBeforeFees'),
-        totalAfterFees: t('tradeSummary.exactIn.totalAfterFees'),
-        totalWithSlippage: t('tradeSummary.exactIn.totalWithSlippage', [
+        swapFees: t('swapSummary.exactIn.swapFees'),
+        totalBeforeFees: t('swapSummary.exactIn.totalBeforeFees'),
+        totalAfterFees: t('swapSummary.exactIn.totalAfterFees'),
+        totalWithSlippage: t('swapSummary.exactIn.totalWithSlippage', [
           slippageRatePercent.value,
         ]),
       },
@@ -232,16 +232,16 @@ const labels = computed(() => {
   }
   // exact out
   return {
-    modalTitle: t('previewTrade'),
-    confirmTrade: t('confirmTrade'),
-    tradeSummary: {
-      title: t('tradeSummary.exactOut.title', [
-        props.trading.tokenOut.value.symbol,
+    modalTitle: t('previewSwap'),
+    confirmSwap: t('confirmSwap'),
+    swapSummary: {
+      title: t('swapSummary.exactOut.title', [
+        props.swapping.tokenOut.value.symbol,
       ]),
-      tradeFees: t('tradeSummary.exactOut.tradeFees'),
-      totalBeforeFees: t('tradeSummary.exactOut.totalBeforeFees'),
-      totalAfterFees: t('tradeSummary.exactOut.totalAfterFees'),
-      totalWithSlippage: t('tradeSummary.exactOut.totalWithSlippage', [
+      swapFees: t('swapSummary.exactOut.swapFees'),
+      totalBeforeFees: t('swapSummary.exactOut.totalBeforeFees'),
+      totalAfterFees: t('swapSummary.exactOut.totalAfterFees'),
+      totalWithSlippage: t('swapSummary.exactOut.totalWithSlippage', [
         slippageRatePercent.value,
       ]),
     },
@@ -250,45 +250,42 @@ const labels = computed(() => {
 
 const tokenApproval = useTokenApproval(
   addressIn,
-  props.trading.tokenInAmountInput,
+  props.swapping.tokenInAmountInput,
   tokens
 );
 
 const cowswapRelayerApproval = useRelayerApprovalTx(
   RelayerType.COWSWAP,
-  props.trading.isCowswapTrade
+  props.swapping.isCowswapSwap
 );
 
 const pools = computed<SubgraphPoolBase[]>(() => {
-  return props.trading.sor.pools.value;
+  return props.swapping.sor.pools.value;
 });
 
 const wrapType = computed(() =>
   getWrapAction(
-    props.trading.tokenIn.value.address,
-    props.trading.tokenOut.value.address
+    props.swapping.tokenIn.value.address,
+    props.swapping.tokenOut.value.address
   )
 );
 
-const isStETHTrade = computed(
+const isStETHSwap = computed(
   () =>
-    isStETH(addressIn.value, props.trading.tokenOut.value.address) &&
+    isStETH(addressIn.value, props.swapping.tokenOut.value.address) &&
     wrapType.value === WrapType.NonWrap
 );
 
-const lidoRelayerApproval = useRelayerApprovalTx(
-  RelayerType.LIDO,
-  isStETHTrade
-);
+const lidoRelayerApproval = useRelayerApprovalTx(RelayerType.LIDO, isStETHSwap);
 
 const requiresTokenApproval = computed(() => {
-  if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
+  if (props.swapping.isWrap.value && !props.swapping.isEthSwap.value) {
     return approvalRequired(
-      props.trading.tokenIn.value.address,
-      props.trading.tokenInAmountInput.value,
-      props.trading.tokenOut.value.address
+      props.swapping.tokenIn.value.address,
+      props.swapping.tokenInAmountInput.value,
+      props.swapping.tokenOut.value.address
     );
-  } else if (props.trading.requiresTokenApproval.value) {
+  } else if (props.swapping.requiresTokenApproval.value) {
     return !tokenApproval.isUnlockedV2.value;
   }
   return false;
@@ -296,21 +293,21 @@ const requiresTokenApproval = computed(() => {
 
 const requiresBatchRelayerApproval = computed(
   () =>
-    props.trading.isJoinExitTrade.value &&
+    props.swapping.isJoinExitSwap.value &&
     !batchRelayerIsUnlocked.value &&
     !batchRelayerSignature.value
 );
 
 const requiresCowswapRelayerApproval = computed(
   () =>
-    props.trading.isCowswapTrade.value &&
-    props.trading.requiresTokenApproval.value &&
+    props.swapping.isCowswapSwap.value &&
+    props.swapping.requiresTokenApproval.value &&
     !cowswapRelayerApproval.isUnlocked.value
 );
 
 const requiresLidoRelayerApproval = computed(
   () =>
-    props.trading.isBalancerTrade.value && !lidoRelayerApproval.isUnlocked.value
+    props.swapping.isBalancerSwap.value && !lidoRelayerApproval.isUnlocked.value
 );
 
 const showTokenApprovalStep = computed(
@@ -321,7 +318,7 @@ const showTokenApprovalStep = computed(
 );
 
 const showBatchRelayerApprovalStep = computed(
-  () => props.trading.isJoinExitTrade.value && !batchRelayerIsUnlocked.value
+  () => props.swapping.isJoinExitSwap.value && !batchRelayerIsUnlocked.value
 );
 
 const showCowswapRelayerApprovalStep = computed(
@@ -334,7 +331,7 @@ const showCowswapRelayerApprovalStep = computed(
 
 const showLidoRelayerApprovalStep = computed(
   () =>
-    !props.trading.isJoinExitTrade.value &&
+    !props.swapping.isJoinExitSwap.value &&
     (requiresLidoRelayerApproval.value ||
       lidoRelayerApproval.init.value ||
       lidoRelayerApproval.approved.value ||
@@ -361,7 +358,7 @@ const actionStepsLoading = computed(
     lidoRelayerApproval.init.value ||
     lidoRelayerApproval.approving.value ||
     tokenApproval.approving.value ||
-    props.trading.isConfirming.value
+    props.swapping.isConfirming.value
 );
 
 const actionStepsLoadingLabel = computed(() =>
@@ -372,7 +369,7 @@ const actionStepsLoadingLabel = computed(() =>
     : requiresBatchRelayerApproval.value
     ? `${t('approvingBatchRelayer')}...`
     : requiresTokenApproval.value
-    ? `${t('approving')} ${props.trading.tokenIn.value.symbol}...`
+    ? `${t('approving')} ${props.swapping.tokenIn.value.symbol}...`
     : t('confirming')
 );
 
@@ -385,7 +382,7 @@ const actions = computed((): TransactionActionInfo[] => [
           confirmingLabel: t('approveCowswapRelayer'),
           action: cowswapRelayerApproval.approve,
           stepTooltip: t(
-            'tradeSummary.transactionTypesTooltips.cowswapRelayerApproval.content'
+            'swapSummary.transactionTypesTooltips.cowswapRelayerApproval.content'
           ),
         },
       ]
@@ -398,7 +395,7 @@ const actions = computed((): TransactionActionInfo[] => [
           confirmingLabel: t('approveLidoRelayer'),
           action: lidoRelayerApproval.approve,
           stepTooltip: t(
-            'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.content'
+            'swapSummary.transactionTypesTooltips.lidoRelayerApproval.content'
           ),
         },
       ]
@@ -409,35 +406,35 @@ const actions = computed((): TransactionActionInfo[] => [
   ...(showTokenApprovalStep.value
     ? [
         {
-          label: `${t('approve')} ${props.trading.tokenIn.value.symbol}`,
+          label: `${t('approve')} ${props.swapping.tokenIn.value.symbol}`,
           loadingLabel: `${t('approving')} ${
-            props.trading.tokenIn.value.symbol
+            props.swapping.tokenIn.value.symbol
           }...`,
           confirmingLabel: `${t('confirming')} ${
-            props.trading.tokenIn.value.symbol
+            props.swapping.tokenIn.value.symbol
           }`,
           action: approveToken,
           stepTooltip: t(
-            'tradeSummary.transactionTypesTooltips.tokenApproval.content'
+            'swapSummary.transactionTypesTooltips.tokenApproval.content'
           ),
         },
       ]
     : []),
   {
-    label: labels.value.confirmTrade,
-    loadingLabel: `${t('approving')} ${props.trading.tokenIn.value.symbol}...`,
+    label: labels.value.confirmSwap,
+    loadingLabel: `${t('approving')} ${props.swapping.tokenIn.value.symbol}...`,
     confirmingLabel: t('confirming'),
-    action: trade as () => Promise<any>,
+    action: swap as () => Promise<any>,
     stepTooltip:
-      props.trading.isCowswapTrade.value && !props.trading.isJoinExitTrade
-        ? t('tradeSummary.transactionTypesTooltips.sign.content')
-        : t('tradeSummary.transactionTypesTooltips.trade.content'),
+      props.swapping.isCowswapSwap.value && !props.swapping.isJoinExitSwap
+        ? t('swapSummary.transactionTypesTooltips.sign.content')
+        : t('swapSummary.transactionTypesTooltips.swap.content'),
   },
 ]);
 
 // METHODS
-function trade() {
-  emit('trade');
+function swap() {
+  emit('swap');
 }
 
 function onClose() {
@@ -447,19 +444,19 @@ function onClose() {
 function cofirmPriceUpdate() {
   priceUpdated.value = false;
   priceUpdateAccepted.value = true;
-  lastQuote.value = props.trading.getQuote();
+  lastQuote.value = props.swapping.getQuote();
 }
 
 function handlePriceUpdate() {
   if (lastQuote.value != null) {
-    const newQuote = props.trading.getQuote();
+    const newQuote = props.swapping.getQuote();
 
     /**
      * The bignumber returned via the quotes for some reason throw underflow
      * errors when attempting to use the gt function with the threshold value.
      * For that reason, the price difference has to be cast to our bignumber type.
      */
-    if (props.trading.exactIn.value) {
+    if (props.swapping.exactIn.value) {
       const lastQuoteMin = bnum(lastQuote.value.minimumOutAmount.toString());
       const newQuoteMin = bnum(newQuote.minimumOutAmount.toString());
       if (lastQuoteMin.eq(bnumZero)) {
@@ -502,10 +499,10 @@ function handlePriceUpdate() {
 }
 
 async function approveToken(): Promise<TransactionResponse> {
-  if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
+  if (props.swapping.isWrap.value && !props.swapping.isEthSwap.value) {
     // If we're wrapping a token other than native ETH
     // we need to approve the underlying on the wrapper
-    return tokenApproval.approveSpender(props.trading.tokenOut.value.address);
+    return tokenApproval.approveSpender(props.swapping.tokenOut.value.address);
   } else {
     return tokenApproval.approveV2();
   }
@@ -558,9 +555,9 @@ watch(blockNumber, () => {
               <span>
                 {{ $t('effectivePrice') }}
                 {{
-                  trading.exactIn.value
-                    ? trading.effectivePriceMessage.value.tokenIn
-                    : trading.effectivePriceMessage.value.tokenOut
+                  swapping.exactIn.value
+                    ? swapping.effectivePriceMessage.value.tokenIn
+                    : swapping.effectivePriceMessage.value.tokenOut
                 }}
               </span>
             </div>
@@ -573,9 +570,9 @@ watch(blockNumber, () => {
             type="error"
             size="sm"
             :title="`${t('exceedsBalance')} ${fNum2(
-              balanceFor(props.trading.tokenInAddressInput.value),
+              balanceFor(props.swapping.tokenInAddressInput.value),
               FNumFormats.token
-            )} ${props.trading.tokenIn.value.symbol}`"
+            )} ${props.swapping.tokenIn.value.symbol}`"
             block
             square
           />
@@ -584,14 +581,17 @@ watch(blockNumber, () => {
           >
             <div class="flex items-center">
               <div class="mr-3">
-                <BalAsset :address="trading.tokenIn.value.address" :size="36" />
+                <BalAsset
+                  :address="swapping.tokenIn.value.address"
+                  :size="36"
+                />
               </div>
               <div>
                 <div class="font-medium">
                   {{
-                    fNum2(trading.tokenInAmountInput.value, FNumFormats.token)
+                    fNum2(swapping.tokenInAmountInput.value, FNumFormats.token)
                   }}
-                  {{ trading.tokenIn.value.symbol }}
+                  {{ swapping.tokenIn.value.symbol }}
                 </div>
                 <div class="text-sm text-secondary">
                   {{ tokenInFiatValue }}
@@ -606,28 +606,28 @@ watch(blockNumber, () => {
             <div class="flex items-center">
               <div class="mr-3">
                 <BalAsset
-                  :address="trading.tokenOut.value.address"
+                  :address="swapping.tokenOut.value.address"
                   :size="36"
                 />
               </div>
               <div>
                 <div class="font-medium">
                   {{
-                    fNum2(trading.tokenOutAmountInput.value, FNumFormats.token)
+                    fNum2(swapping.tokenOutAmountInput.value, FNumFormats.token)
                   }}
-                  {{ trading.tokenOut.value.symbol }}
+                  {{ swapping.tokenOut.value.symbol }}
                 </div>
                 <div class="text-sm text-secondary">
                   {{ tokenOutFiatValue }}
                   <span
                     v-if="
-                      trading.isBalancerTrade.value ||
-                      trading.isWrapUnwrapTrade.value
+                      swapping.isBalancerSwap.value ||
+                      swapping.isWrapUnwrapSwap.value
                     "
                   >
                     / {{ $t('priceImpact') }}:
                     {{
-                      fNum2(trading.sor.priceImpact.value, FNumFormats.percent)
+                      fNum2(swapping.sor.priceImpact.value, FNumFormats.percent)
                     }}
                   </span>
                 </div>
@@ -642,7 +642,7 @@ watch(blockNumber, () => {
             class="flex justify-between items-center p-3 w-full border-b dark:border-gray-900"
           >
             <div class="font-semibold">
-              {{ labels.tradeSummary.title }}
+              {{ labels.swapSummary.title }}
             </div>
             <div class="flex text-xs uppercase divide-x dark:divide-gray-500">
               <div
@@ -666,26 +666,26 @@ watch(blockNumber, () => {
             </div>
           </div>
         </template>
-        <div v-if="trading.isCowswapTrade.value" class="p-3 text-sm">
+        <div v-if="swapping.isCowswapSwap.value" class="p-3 text-sm">
           <div class="summary-item-row">
             <div>
-              {{ labels.tradeSummary.totalBeforeFees }}
+              {{ labels.swapSummary.totalBeforeFees }}
             </div>
             <div v-html="summary.amountBeforeFees" />
           </div>
           <div class="summary-item-row">
-            <div>{{ $t('tradeSummary.gasCosts') }}</div>
+            <div>{{ $t('swapSummary.gasCosts') }}</div>
             <div class="text-green-400">-{{ zeroFee }}</div>
           </div>
           <div class="summary-item-row">
-            <div>{{ labels.tradeSummary.tradeFees }}</div>
+            <div>{{ labels.swapSummary.swapFees }}</div>
             <div
               v-html="
-                trading.isWrapUnwrapTrade.value
+                swapping.isWrapUnwrapSwap.value
                   ? zeroFee
-                  : trading.exactIn.value
-                  ? `-${summary.tradeFees}`
-                  : `+${summary.tradeFees}`
+                  : swapping.exactIn.value
+                  ? `-${summary.swapFees}`
+                  : `+${summary.swapFees}`
               "
             />
           </div>
@@ -696,17 +696,17 @@ watch(blockNumber, () => {
           >
             <div class="font-medium summary-item-row">
               <div class="w-64">
-                {{ labels.tradeSummary.totalAfterFees }}
+                {{ labels.swapSummary.totalAfterFees }}
               </div>
               <div v-html="summary.totalWithoutSlippage" />
             </div>
             <div class="summary-item-row text-secondary">
               <div class="w-64">
-                {{ labels.tradeSummary.totalWithSlippage }}
+                {{ labels.swapSummary.totalWithSlippage }}
               </div>
               <div
                 v-html="
-                  trading.isWrapUnwrapTrade.value
+                  swapping.isWrapUnwrapSwap.value
                     ? ''
                     : summary.totalWithSlippage
                 "
@@ -746,18 +746,18 @@ watch(blockNumber, () => {
         :disabled="disableSubmitButton || showPriceUpdateError"
       />
       <BalAlert
-        v-if="trading.submissionError.value != null"
+        v-if="swapping.submissionError.value != null"
         class="p-3 mt-4"
         type="error"
         size="md"
-        :title="$t('tradeSubmissionError.title')"
-        :description="trading.submissionError.value"
+        :title="$t('swapSubmissionError.title')"
+        :description="swapping.submissionError.value"
         block
-        :actionLabel="$t('tradeSubmissionError.actionLabel')"
-        @action-click="trading.resetSubmissionError"
+        :actionLabel="$t('swapSubmissionError.actionLabel')"
+        @action-click="swapping.resetSubmissionError"
       />
       <BalAlert
-        v-if="trading.isJoinExitTrade.value"
+        v-if="swapping.isJoinExitSwap.value"
         class="p-3 mt-4"
         type="tip"
         size="md"
@@ -770,14 +770,14 @@ watch(blockNumber, () => {
         block
       />
     </div>
-    <TradeRoute
-      v-if="showTradeRoute"
-      :addressIn="trading.tokenIn.value.address"
-      :amountIn="trading.tokenInAmountInput.value"
-      :addressOut="trading.tokenOut.value.address"
-      :amountOut="trading.tokenOutAmountInput.value"
+    <SwapRoute
+      v-if="showSwapRoute"
+      :addressIn="swapping.tokenIn.value.address"
+      :amountIn="swapping.tokenInAmountInput.value"
+      :addressOut="swapping.tokenOut.value.address"
+      :amountOut="swapping.tokenOutAmountInput.value"
       :pools="pools"
-      :sorReturn="trading.sor.sorReturn.value"
+      :sorReturn="swapping.sor.sorReturn.value"
       class="mt-3"
     />
   </BalModal>

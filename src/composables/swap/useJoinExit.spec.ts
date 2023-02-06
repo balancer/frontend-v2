@@ -2,7 +2,7 @@ import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { computed, ref } from 'vue';
 import { mount } from '@tests/mount-composable-tester';
 
-import useJoinExit from '@/composables/trade/useJoinExit';
+import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
 
 vi.mock('vue-i18n');
@@ -105,7 +105,7 @@ describe('useJoinExit', () => {
     expect(result).toBeTruthy();
   });
 
-  it('Should return an available joinExit trade', async () => {
+  it('Should return an available joinExit swap', async () => {
     const { result: joinExit } = mount(() => useJoinExit(mockProps));
     await joinExit.handleAmountChange();
     expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(
