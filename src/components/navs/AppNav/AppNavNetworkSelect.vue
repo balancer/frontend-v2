@@ -135,7 +135,11 @@ function isActive(network: NetworkOption): boolean {
 <template>
   <BalPopover noPad>
     <template #activator>
-      <BalBtn color="white" :size="upToLargeBreakpoint ? 'md' : 'sm'">
+      <BalBtn
+        :aria-label="$t('networkSelection')"
+        color="white"
+        :size="upToLargeBreakpoint ? 'md' : 'sm'"
+      >
         <template v-if="activeNetwork">
           <img
             :src="buildNetworkIconURL(activeNetwork.id)"
@@ -149,7 +153,7 @@ function isActive(network: NetworkOption): boolean {
         </template>
       </BalBtn>
     </template>
-    <div class="flex overflow-hidden flex-col w-44 rounded-lg">
+    <div role="menu" class="flex overflow-hidden flex-col w-44 rounded-lg">
       <div
         class="py-2 px-3 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
       >

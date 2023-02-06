@@ -30,8 +30,7 @@
     "tailwind:view": "tailwind-config-viewer -o",
     "generate:tokenlists": "NODE_ENV=development npx vite-node --options.deps.inline=@ethersproject/basex --options.deps.inline=@ethersproject/signing-key --options.deps.inline=@balancer-labs/sdk ./src/lib/scripts/tokenlists.generator.ts",
     "generate:voting-gauges": "NODE_ENV=development npx vite-node --options.deps.inline=date-fns --options.deps.inline=@ethersproject/basex --options.deps.inline=@ethersproject/signing-key --options.deps.inline=@balancer-labs/sdk ./src/lib/scripts/voting-gauge.generator.ts",
-    "typecheck": "vue-tsc --noEmit",
-    "synpress:start": "SECRET_WORDS=\"test test test test test test test test test test test junk\" NETWORK_NAME=mainnet npx synpress run -ne -cf synpress.json"
+    "typecheck": "vue-tsc --noEmit"
   },
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
@@ -57,7 +56,6 @@
     "@popperjs/core": "^2.9.2",
     "@sentry/browser": "^7.17.4",
     "@sentry/tracing": "^7.17.4",
-    "@synthetixio/synpress": "^1.2.0",
     "@testing-library/cypress": "^8.0.3",
     "@testing-library/dom": "^8.17.1",
     "@testing-library/vue": "^6.4.2",

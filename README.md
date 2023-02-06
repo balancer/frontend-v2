@@ -125,9 +125,11 @@ The frontend can easily be deployed to any static host. Use the buttons below to
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer-labs/frontend-v2)
 
-## E2e Testing
+### E2E Testing
 
 E2E tests are pulled from [frontend-e2e](https://github.com/balancer-labs/frontend-e2e) repository.
+
+[Adding new tests and fixing tests](https://github.com/balancer-labs/frontend-e2e#adding-new-tests-and-fixing-tests)
 
 ## Vite setup
 
