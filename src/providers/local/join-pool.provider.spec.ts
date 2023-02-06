@@ -12,9 +12,7 @@ initBalancerWithDefaultMocks();
 vi.mock('@/providers/tokens.provider');
 
 async function mountJoinPoolProvider(pool: Pool) {
-  const { result } = mountComposable(() =>
-    joinPoolProvider(ref(pool), ref(false))
-  );
+  const { result } = mountComposable(() => joinPoolProvider(ref(pool)));
 
   await waitForExpect(() => {
     expect(result.isLoadingQuery.value).toBeTrue();
