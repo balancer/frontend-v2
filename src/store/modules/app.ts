@@ -11,14 +11,14 @@ export interface AppState {
 const state: AppState = {
   modalOpen: false,
   locale: lsGet(LS_KEYS.App.Locale, 'en-US'),
-  transactionDeadline: lsGet(LS_KEYS.App.TradeDeadline, 100), // minutes
+  transactionDeadline: lsGet(LS_KEYS.App.SwapDeadline, 100), // minutes
 };
 
 const actions = {
   init: async ({ dispatch }) => {
     try {
-      // Fetch initial trade tokens
-      dispatch('trade/init', null, { root: true });
+      // Fetch initial swap tokens
+      dispatch('swap/init', null, { root: true });
     } catch (error) {
       console.error('Failed to initialize app', error);
     }
@@ -41,7 +41,7 @@ const mutations = {
     transactionDeadline: AppState['transactionDeadline']
   ) {
     state.transactionDeadline = transactionDeadline;
-    lsSet(LS_KEYS.App.TradeDeadline, state.transactionDeadline);
+    lsSet(LS_KEYS.App.SwapDeadline, state.transactionDeadline);
   },
 };
 

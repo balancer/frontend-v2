@@ -11,7 +11,7 @@ import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
 import { usePool } from '@/composables/usePool';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
-import { useTradeState } from '@/composables/trade/useTradeState';
+import { useSwapState } from '@/composables/swap/useSwapState';
 import { includesAddress } from '@/lib/utils';
 
 type Props = {
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { setTokenInAddress } = useTradeState();
+const { setTokenInAddress } = useSwapState();
 
 const networkName = configService.network.name;
 const { t } = useI18n();

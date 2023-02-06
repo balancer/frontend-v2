@@ -134,7 +134,7 @@ export default class JoinParams {
     if ((this.pool.value?.onchain?.totalSupply || '0') === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
-      // Managed Pools can only be joined proportionally if trading is halted
+      // Managed Pools can only be joined proportionally if swapping is halted
       // This code assumes the UI has disabled non-proportional "exact in for BPT out"
       // joins in this case
       if (this.isManagedPool && !this.isSwapEnabled) {

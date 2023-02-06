@@ -1,9 +1,9 @@
 import { provide, ref } from 'vue';
 
-import useTrading from '@/composables/trade/useTrading';
+import useSwapping from '@/composables/swap/useSwapping';
 import { SwapInfo } from '@balancer-labs/sdk';
 
-import * as useSor from '@/composables/trade/useSor';
+import * as useSor from '@/composables/swap/useSor';
 import mockSorOutput from './__mocks__/mockSorOutput';
 import { mountComposable } from '@tests/mount-helpers';
 import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
@@ -169,10 +169,10 @@ const mockProps = {
   tokenOutAmountInput: ref('0'),
 };
 
-describe('useTrading', () => {
+describe('useSwapping', () => {
   it('Should load', () => {
     const { result } = mountComposable(() =>
-      useTrading(
+      useSwapping(
         mockProps.exactIn,
         mockProps.tokenInAddressInput,
         mockProps.tokenInAmountInput,
@@ -183,7 +183,7 @@ describe('useTrading', () => {
     expect(result).toBeTruthy();
   });
 
-  it('Should confirm joinExit trade is available', async () => {
+  it('Should confirm joinExit swap is available', async () => {
     const userSettingsResponse = {
       slippage: {
         value: '0.01',
@@ -191,7 +191,7 @@ describe('useTrading', () => {
     };
 
     const callbackUnderTest = () =>
-      useTrading(
+      useSwapping(
         mockProps.exactIn,
         mockProps.tokenInAddressInput,
         mockProps.tokenInAmountInput,
@@ -205,6 +205,6 @@ describe('useTrading', () => {
     await vm.$nextTick();
     result.joinExit.handleAmountChange();
     await vm.$nextTick();
-    expect(result.isJoinExitTrade.value).toBe(true);
+    expect(result.isJoinExitSwap.value).toBe(true);
   });
 });

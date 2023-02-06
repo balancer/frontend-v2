@@ -7,7 +7,7 @@ import {
 
 import {
   isStableLike,
-  isTradingHaltable,
+  isSwappingHaltable,
   isWeightedLike,
   isComposableStableLike,
   isComposableStable,
@@ -77,7 +77,7 @@ export class PoolMulticaller {
           abi: PoolTypeABIs,
         });
 
-        if (isTradingHaltable(pool.poolType)) {
+        if (isSwappingHaltable(pool.poolType)) {
           multicaller.call({
             key: `${pool.id}.swapEnabled`,
             address: pool.address,
