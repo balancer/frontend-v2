@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { getAddress } from '@ethersproject/address';
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
