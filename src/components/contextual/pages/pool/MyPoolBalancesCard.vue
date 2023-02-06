@@ -3,7 +3,6 @@ import { computed, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
-import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { fiatValueOf, usePool } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
@@ -13,6 +12,7 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import PoolActionsCard from './PoolActionsCard.vue';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES
@@ -34,9 +34,7 @@ const { balanceFor } = useTokens();
 const { fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { isMigratablePool } = usePool(toRef(props, 'pool'));
-const {
-  userData: { stakedSharesForProvidedPool },
-} = useStaking();
+const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
 
@@ -44,17 +42,14 @@ const router = useRouter();
  * COMPUTED
  */
 const bptBalance = computed((): string =>
-  bnum(balanceFor(props.pool.address))
-    .plus(stakedSharesForProvidedPool.value)
-    .toString()
+  bnum(balanceFor(props.pool.address)).plus(stakedShares.value).toString()
 );
 
 const fiatValue = computed(() => fiatValueOf(props.pool, bptBalance.value));
 
 const showMigrateButton = computed(
   () =>
-    (bnum(bptBalance.value).gt(0) ||
-      bnum(stakedSharesForProvidedPool.value).gt(0)) &&
+    (bnum(bptBalance.value).gt(0) || bnum(stakedShares.value).gt(0)) &&
     isMigratablePool(props.pool)
 );
 

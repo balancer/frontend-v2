@@ -3,6 +3,7 @@ import { compact, pick } from 'lodash';
 import {
   computed,
   InjectionKey,
+  nextTick,
   onBeforeMount,
   provide,
   reactive,
@@ -18,6 +19,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
 import {
   bnum,
+  forChange,
   getAddressFromPoolId,
   includesAddress,
   isSameAddress,
@@ -146,6 +148,7 @@ export const tokensProvider = (
     data: priceData,
     isSuccess: priceQuerySuccess,
     isLoading: priceQueryLoading,
+    isRefetching: priceQueryRefetching,
     isError: priceQueryError,
     refetch: refetchPrices,
   } = useTokenPricesQuery(
@@ -162,6 +165,7 @@ export const tokensProvider = (
     data: balanceData,
     isSuccess: balanceQuerySuccess,
     isLoading: balanceQueryLoading,
+    isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
   } = useBalancesQuery(tokens, { keepPreviousData: true });
@@ -170,6 +174,7 @@ export const tokensProvider = (
     data: allowanceData,
     isSuccess: allowanceQuerySuccess,
     isLoading: allowanceQueryLoading,
+    isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
   } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
@@ -195,8 +200,11 @@ export const tokensProvider = (
   const dynamicDataLoading = computed(
     () =>
       priceQueryLoading.value ||
+      priceQueryRefetching.value ||
       balanceQueryLoading.value ||
-      allowanceQueryLoading.value
+      balanceQueryRefetching.value ||
+      allowanceQueryLoading.value ||
+      allowanceQueryRefetching.value
   );
 
   /**
@@ -259,6 +267,10 @@ export const tokensProvider = (
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
+
+    // Wait for balances/allowances/prices to be fetched for newly injected tokens.
+    await nextTick();
+    await forChange(dynamicDataLoading, false);
   }
 
   /**

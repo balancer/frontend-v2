@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.87.5",
+  "version": "1.88.0",
   "engines": {
     "node": "=16",
     "npm": ">=8"
@@ -126,7 +126,7 @@
     "vite-plugin-html": "^3.2.0",
     "vite-plugin-node-polyfills": "^0.7.0",
     "vite-plugin-sentry": "^1.1.6",
-    "vitest": "^0.28.1",
+    "vitest": "^0.28.3",
     "vitest-mock-extended": "^1.0.8",
     "vue": "3.2.45",
     "vue-echarts": "^6.0.0",
@@ -144,7 +144,7 @@
     "worker-loader": "^3.0.8"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 1",
+    "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 0",
     "*.{md,json,yaml,html}": "prettier --write",
     "*.{css,vue}": "stylelint --fix"
   },
