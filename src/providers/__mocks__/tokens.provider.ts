@@ -46,7 +46,7 @@ export function useTokens() {
 
 export const mockTokensProvider = mock<TokensResponse>();
 mockTokensProvider.priceFor.mockReturnValue(2);
-mockTokensProvider.balanceFor.mockReturnValue('0');
+mockTokensProvider.balanceFor.mockReturnValue('10');
 mockTokensProvider.getTokens.mockImplementation(addresses => {
   return Object.fromEntries(
     addresses.map(address => {

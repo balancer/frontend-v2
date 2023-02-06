@@ -361,7 +361,7 @@
   "featuredProtocol": "Featured ecosystem protocol",
   "featuredProtocols": {
     "title": "Featured ecosystem protocols",
-    "Copper": "Fjord Foundry (formerly Copper)  offers an intuitive UI for creating, managing & tracking Balancer Liquidity Bootstrapping Pools (LBPs) on a transparent and user-friendly platform.",
+    "Copper": "Fjord (formerly known as Copper Launch) is a community platform that connects inspired projects with passionate supporters via the power of Liquidity Bootstrapping Pools (LBPs).",
     "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
     "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
     "Tracer": "Mycelium (formerly TracerDAO) is an open-source protocol for derivative markets. It utilizes Balancer for aggregated liquidity and creating a market for leveraged tokens."
@@ -654,7 +654,14 @@
   "pool": "Pool",
   "pools": "Pools",
   "poolBalance": "Pool balance",
-  "poolComposition": "Pool composition",
+  "poolComposition": {
+    "title": "Pool composition",
+    "token%": "Token %",
+    "tabs": {
+      "totalComposition": "Total composition",
+      "myPoolShare": "My pool share"
+    }
+  },
   "poolCreated": "Pool created!",
   "poolName": "Pool name",
   "poolPercent": "Pool %",
