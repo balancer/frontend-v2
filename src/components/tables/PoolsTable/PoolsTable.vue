@@ -18,6 +18,7 @@ import useNumbers from '@/composables/useNumbers';
 import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
+  isLiquidityBootstrapping,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
@@ -306,7 +307,12 @@ function iconAddresses(pool: PoolWithShares) {
               :selectedTokens="selectedTokens"
             />
           </div>
-          <BalChipNew v-if="pool?.isNew" class="mt-1" />
+          <BalChip
+            v-if="isLiquidityBootstrapping(pool.poolType)"
+            label="LBP"
+            color="orange-500"
+          />
+          <BalChipNew v-else-if="pool?.isNew" class="mt-1" />
           <PoolWarningTooltip :pool="pool" />
         </div>
       </template>
