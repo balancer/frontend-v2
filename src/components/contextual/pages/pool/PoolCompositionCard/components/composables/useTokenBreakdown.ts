@@ -49,7 +49,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
     const balance = bnum(token.balance).times(shareOfParentInPool).toString();
 
     const hasNestedTokens = token?.token?.pool?.tokens;
-    const isParentTokenInDeepPool = hasNestedTokens && isDeepPool;
+    const isParentTokenInDeepPool = hasNestedTokens && isDeepPool.value;
 
     const fiatValue = calculateFiatValue();
     if (isNumber(fiatValue)) totalFiat += Number(fiatValue);
