@@ -82,10 +82,12 @@ export default function useWeb3() {
   const canLoadProfile = computed(
     () => account.value !== '' && userNetworkConfig.value !== null
   );
+
   const isMismatchedNetwork = computed(() => {
+    if (!isWalletReady.value) return false;
     return (
       isWalletReady.value &&
-      userNetworkConfig.value?.key !== appNetworkConfig.key
+      userNetworkConfig.value?.chainId !== appNetworkConfig.chainId
     );
   });
   const isUnsupportedNetwork = computed(() => {

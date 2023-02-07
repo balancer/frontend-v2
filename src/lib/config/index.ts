@@ -7,7 +7,9 @@ import homestead from './homestead.json';
 import optimism from './optimism.json';
 import polygon from './polygon.json';
 import test from './test.json';
+import fork from './forked-mainnet.json';
 
+export const FORKED_MAINNET_ID = 31337;
 export interface Config {
   key: string;
   chainId: Network | 12345 | 17;
@@ -97,6 +99,7 @@ const config: Record<Network | number, Config> = {
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,
   12345: test,
+  [FORKED_MAINNET_ID]: fork,
   // @ts-ignore
   17: docker,
 };

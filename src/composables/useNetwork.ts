@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 
-import config from '@/lib/config';
+import config, { FORKED_MAINNET_ID } from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 import { Network } from '@balancer-labs/sdk';
 import { RouteParamsRaw } from 'vue-router';
@@ -39,7 +39,7 @@ export const networkLabelMap = {
  * COMPUTED
  */
 
-export const networkId = ref<Network>(NETWORK_ID);
+export const networkId = ref<Network | 31337>(NETWORK_ID);
 
 export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
@@ -63,6 +63,8 @@ export function networkFor(key: string | number): Network {
       return Network.POLYGON;
     case '42161':
       return Network.ARBITRUM;
+    case '31337':
+      return FORKED_MAINNET_ID;
     default:
       throw new Error('Network not supported');
   }

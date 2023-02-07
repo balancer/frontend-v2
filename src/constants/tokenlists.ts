@@ -62,4 +62,16 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [],
   },
+  '31337': {
+    Balancer: {
+      Default:
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
+      Vetted:
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json',
+    },
+    External: [
+      'ipns://tokens.uniswap.org',
+      'https://www.gemini.com/uniswap/manifest.json',
+    ],
+  },
 };

@@ -1,3 +1,4 @@
+import { FORKED_MAINNET_ID } from '@/lib/config';
 import { Network } from '@balancer-labs/sdk';
 import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,31 +14,34 @@ export enum PoolWarning {
   RenBTCWarning = 'renBTCWarning',
 }
 
+const mainnetPoolIssues = {
+  [PoolWarning.PoolProtocolFeeVulnWarning]: [
+    '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
+  ],
+  [PoolWarning.PoolOwnerVulnWarningGovernanceMigrate]: [
+    '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+  ],
+  [PoolWarning.PoolOwnerVulnWarningGovernanceWithdraw]: [
+    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
+  ],
+  [PoolWarning.PoolOwnerVulnWarningGovernance]: [
+    '0x9f19a375709baf0e8e35c2c5c65aca676c4c719100000000000000000000006e',
+  ],
+  [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
+    '0xe7b1d394f3b40abeaa0b64a545dbcf89da1ecb3f00010000000000000000009a',
+    '0x3b40d7d5ae25df2561944dd68b252016c4c7b2800001000000000000000000c2',
+    '0xccf5575570fac94cec733a58ff91bb3d073085c70002000000000000000000af',
+  ],
+  [PoolWarning.RenBTCWarning]: [
+    '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
+    '0xad6a8c18b62eb914604ec1eec7fbcf132799fe090001000000000000000003f6',
+  ],
+};
+
 const POOL_ISSUES = {
   [Network.GOERLI]: {},
-  [Network.MAINNET]: {
-    [PoolWarning.PoolProtocolFeeVulnWarning]: [
-      '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
-    ],
-    [PoolWarning.PoolOwnerVulnWarningGovernanceMigrate]: [
-      '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
-    ],
-    [PoolWarning.PoolOwnerVulnWarningGovernanceWithdraw]: [
-      '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
-    ],
-    [PoolWarning.PoolOwnerVulnWarningGovernance]: [
-      '0x9f19a375709baf0e8e35c2c5c65aca676c4c719100000000000000000000006e',
-    ],
-    [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
-      '0xe7b1d394f3b40abeaa0b64a545dbcf89da1ecb3f00010000000000000000009a',
-      '0x3b40d7d5ae25df2561944dd68b252016c4c7b2800001000000000000000000c2',
-      '0xccf5575570fac94cec733a58ff91bb3d073085c70002000000000000000000af',
-    ],
-    [PoolWarning.RenBTCWarning]: [
-      '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
-      '0xad6a8c18b62eb914604ec1eec7fbcf132799fe090001000000000000000003f6',
-    ],
-  },
+  [Network.MAINNET]: mainnetPoolIssues,
+  [FORKED_MAINNET_ID]: mainnetPoolIssues,
   [Network.POLYGON]: {
     [PoolWarning.PoolProtocolFeeVulnWarning]: [
       '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',

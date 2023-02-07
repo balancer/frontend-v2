@@ -1,5 +1,8 @@
 import TokenListService from '@/services/token-list/token-list.service';
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
+import { FORKED_MAINNET_ID } from '../config';
+import { TokenListMap } from '@/types/TokenList';
+import forkedTokenlist from './forked-mainnet-tokenslist.json';
 
 const fs = require('fs');
 const path = require('path');
@@ -15,10 +18,18 @@ if (process.env.NODE_ENV === 'development') {
 async function generate() {
   Object.keys(TOKEN_LIST_MAP).forEach(async networkId => {
     console.log(`Generating tokenlist for network ${networkId}...`);
+    let tokenlists: TokenListMap;
+    if (networkId === FORKED_MAINNET_ID.toString()) {
+      tokenlists = forkedTokenlist;
+      fs.writeFileSync(
+        `./src/assets/data/tokenlists/tokens-${networkId}.json`,
+        JSON.stringify(tokenlists)
+      );
+    }
     const tokenListService = new TokenListService(networkId);
     // check if any uris are avaialble
     if (tokenListService.uris.All.find(uri => !!uri)) {
-      const tokenlists = await tokenListService.getAll();
+      tokenlists = await tokenListService.getAll();
       fs.writeFileSync(
         `./src/assets/data/tokenlists/tokens-${networkId}.json`,
         JSON.stringify(tokenlists)

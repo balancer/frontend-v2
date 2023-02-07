@@ -152,3 +152,30 @@ Analyze and visualize the bundle dependencies by adding these env vars to your `
 VITE_BUILD_ANALIZE=true
 VITE_BUILD_VISUALIZE=true
 ```
+
+### Local forked Mainnet
+
+For local development purposes you may want to use a test node with a forked mainnet state.
+
+1. Get an RPC URL from [Alchemy](https://www.alchemy.com/) or [Infura](https://infura.io/).
+
+2. Start a local node with the forked mainnet state:
+
+   Hardhat:
+
+   ```
+   npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/xxx --fork-block-number 16575169
+   ```
+
+   Alternatively with anvil:
+
+   ```
+   anvil -f https://eth-mainnet.g.alchemy.com/v2/xxx --fork-block-number 16575169
+   ```
+
+3. Add a new network in Metamask settings:
+
+   - RPC URL: http://localhost:8545
+   - Chain ID: 1
+
+4. Open the URL in browser: `http://localhost:8080/#/fork/`
