@@ -111,15 +111,14 @@ export default class WeightedPoolService {
     const receipt = await provider.getTransactionReceipt(createHash);
     if (!receipt) return null;
 
-    const isV2Factory = !!configService.network.addresses.weightedPoolFactoryV2;
-    const weightedPoolFactoryAddress = isV2Factory
-      ? configService.network.addresses.weightedPoolFactoryV2
-      : configService.network.addresses.weightedPoolFactory;
     const weightedPoolFactoryInterface =
       WeightedPoolFactory__factory.createInterface();
 
     const poolCreationEvent = receipt.logs
-      .filter(log => log.address === weightedPoolFactoryAddress)
+      .filter(
+        log =>
+          log.address === configService.network.addresses.weightedPoolFactory
+      )
       .map(log => {
         try {
           return weightedPoolFactoryInterface.parseLog(log);
