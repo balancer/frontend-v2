@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import { isMigratablePool } from '@/composables/usePool';
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -47,11 +46,6 @@ const noPoolsLabel = computed(() => {
 
 const poolsToRenderKey = computed(() => JSON.stringify(unstakedPools.value));
 
-// Remove migratable pools from the unstaked pools array.
-const _unstakedPools = computed((): Pool[] => {
-  return unstakedPools.value.filter(pool => !isMigratablePool(pool));
-});
-
 /**
  * METHODS
  */
@@ -84,7 +78,7 @@ onMounted(() => {
       <PoolsTable
         :key="poolsToRenderKey"
         :isLoading="isLoadingPools"
-        :data="_unstakedPools"
+        :data="unstakedPools"
         :shares="userPoolShares"
         :noPoolsLabel="noPoolsLabel"
         sortColumn="myBalance"

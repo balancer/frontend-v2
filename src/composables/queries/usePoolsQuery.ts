@@ -17,7 +17,6 @@ import {
 } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
-import { forChange } from '@/lib/utils';
 import { tokenTreeLeafs } from '../usePool';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
@@ -66,7 +65,18 @@ export default function usePoolsQuery(
   function initializeDecoratedAPIRepository() {
     return {
       fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
-        return balancerAPIService.pools.get(getQueryArgs(options));
+        const pools = await balancerAPIService.pools.get(getQueryArgs(options));
+
+        const tokens = flatten(
+          pools.map(pool => [
+            ...pool.tokensList,
+            ...tokenTreeLeafs(pool.tokens),
+            pool.address,
+          ])
+        );
+        injectTokens(tokens);
+
+        return pools;
       },
       get skip(): number {
         return balancerAPIService.pools.skip;
