@@ -25,6 +25,12 @@ import WeightedPoolFactoryV2Abi from '@/lib/abi/WeightedPoolFactoryV2.json';
 
 type Address = string;
 
+export enum FactoryVersion {
+  V1 = 'V1',
+  V2 = 'V2',
+  V3 = 'V3',
+}
+
 export interface CreatePoolReturn {
   id: string;
   address: Address;
@@ -40,6 +46,12 @@ export interface JoinPoolRequest {
 }
 
 export default class WeightedPoolService {
+  version: FactoryVersion;
+
+  constructor(public readonly _version: FactoryVersion) {
+    this.version = _version;
+  }
+
   public async create(
     provider: Web3Provider,
     name: string,
@@ -50,13 +62,10 @@ export default class WeightedPoolService {
   ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
-    const isV2Factory = !!configService.network.addresses.weightedPoolFactoryV2;
-    const weightedPoolFactoryAddress = isV2Factory
-      ? configService.network.addresses.weightedPoolFactoryV2
-      : configService.network.addresses.weightedPoolFactory;
-    const weightedPoolFactoryAbi = isV2Factory
-      ? WeightedPoolFactoryV2Abi
-      : WeightedPoolFactory__factory.abi;
+    const weightedPoolFactoryAbi =
+      this.version === FactoryVersion.V2
+        ? WeightedPoolFactoryV2Abi
+        : WeightedPoolFactory__factory.abi;
 
     const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
@@ -66,28 +75,29 @@ export default class WeightedPoolService {
     const swapFeeScaled = scale(new BigNumber(swapFee), 18);
     const rateProviders = Array(tokenAddresses.length).fill(POOLS.ZeroAddress);
 
-    const params = isV2Factory
-      ? [
-          name,
-          symbol,
-          tokenAddresses,
-          seedTokens,
-          rateProviders,
-          swapFeeScaled.toString(),
-          owner,
-        ]
-      : [
-          name,
-          symbol,
-          tokenAddresses,
-          seedTokens,
-          swapFeeScaled.toString(),
-          owner,
-        ];
+    const params =
+      this.version === FactoryVersion.V2
+        ? [
+            name,
+            symbol,
+            tokenAddresses,
+            seedTokens,
+            rateProviders,
+            swapFeeScaled.toString(),
+            owner,
+          ]
+        : [
+            name,
+            symbol,
+            tokenAddresses,
+            seedTokens,
+            swapFeeScaled.toString(),
+            owner,
+          ];
 
     const txBuilder = new TransactionBuilder(provider.getSigner());
     return await txBuilder.contract.sendTransaction({
-      contractAddress: weightedPoolFactoryAddress ?? '',
+      contractAddress: configService.network.addresses.weightedPoolFactory,
       abi: weightedPoolFactoryAbi,
       action: 'create',
       params,
