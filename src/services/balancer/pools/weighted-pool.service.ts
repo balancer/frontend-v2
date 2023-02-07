@@ -46,11 +46,7 @@ export interface JoinPoolRequest {
 }
 
 export default class WeightedPoolService {
-  version: FactoryVersion;
-
-  constructor(public readonly _version: FactoryVersion) {
-    this.version = _version;
-  }
+  constructor(public readonly version: FactoryVersion) {}
 
   public async create(
     provider: Web3Provider,
