@@ -6,12 +6,29 @@ import { isL2 } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useUserStaking } from '@/providers/local/user-staking.provider';
+import { Pool } from '@/services/pool/types';
+import { useUserPools } from '@/providers/local/user-pools.provider';
+import { sleep } from '@/lib/utils';
+import StakePreviewModal from '../pool/staking/StakePreviewModal.vue';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+
+/**
+ * STATE
+ */
+const showUnstakeModal = ref(false);
+const poolToUnstake = ref<Pool | undefined>();
+
+/**
+ * PROVIDERS
+ */
+providePoolStaking();
 
 /**
  * COMPOSABLES
  */
 const { stakedPools, poolBoostsMap, stakedShares, isLoading } =
   useUserStaking();
+const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
 const networkName = configService.network.shortName;
@@ -33,6 +50,28 @@ const hiddenColumns = computed(() => {
 });
 
 const poolsToRenderKey = computed(() => JSON.stringify(stakedPools.value));
+
+/**
+ * METHODS
+ */
+function handleUnstake(pool: Pool) {
+  showUnstakeModal.value = true;
+  poolToUnstake.value = pool;
+}
+
+function handleModalClose() {
+  refetchAllUserPools();
+  showUnstakeModal.value = false;
+}
+
+async function handleStakeSuccess() {
+  await sleep(3000);
+  await refetchAllUserPools();
+}
+
+onMounted(() => {
+  refetchAllUserPools();
+});
 </script>
 
 <template>
@@ -54,7 +93,16 @@ const poolsToRenderKey = computed(() => JSON.stringify(stakedPools.value));
         showPoolShares
         showActions
         :showBoost="!isL2"
+        @trigger-unstake="handleUnstake"
       />
     </BalStack>
+    <StakePreviewModal
+      v-if="poolToUnstake"
+      :pool="poolToUnstake"
+      :isVisible="showUnstakeModal"
+      action="unstake"
+      @close="handleModalClose"
+      @success="handleStakeSuccess"
+    />
   </div>
 </template>

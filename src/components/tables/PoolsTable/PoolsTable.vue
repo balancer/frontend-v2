@@ -77,7 +77,7 @@ const props = withDefaults(defineProps<Props>(), {
   skeletonClass: 'h-64',
 });
 
-const emit = defineEmits(['loadMore', 'triggerStake']);
+const emit = defineEmits(['loadMore', 'triggerStake', 'triggerUnstake']);
 
 /**
  * COMPOSABLES
@@ -369,6 +369,7 @@ function iconAddresses(pool: Pool) {
           :pool="pool"
           :poolsType="poolsType"
           @click:stake="pool => emit('triggerStake', pool)"
+          @click:unstake="pool => emit('triggerUnstake', pool)"
           @click:migrate="pool => navigateToPoolMigration(pool)"
         />
       </template>

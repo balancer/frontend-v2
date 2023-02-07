@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'click:stake', value: Pool): void;
+  (e: 'click:unstake', value: Pool): void;
   (e: 'click:migrate', value: Pool): void;
 }>();
 /**
@@ -54,6 +55,14 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       @click.prevent.stop="emit('click:stake', pool)"
     >
       {{ $t('stake') }}
+    </BalBtn>
+    <BalBtn
+      v-else-if="poolsType === 'staked'"
+      color="gradient"
+      size="sm"
+      @click.prevent.stop="emit('click:unstake', pool)"
+    >
+      {{ $t('unstake') }}
     </BalBtn>
     <BalBtn
       v-else-if="showVeBalLock"
