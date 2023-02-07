@@ -25,7 +25,7 @@
   },
   "supportsEIP1559": true,
   "supportsElementPools": true,
-  "blockTime": 12,
+  "blockTime": 5,
   "nativeAsset": {
     "name": "xDAI",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
