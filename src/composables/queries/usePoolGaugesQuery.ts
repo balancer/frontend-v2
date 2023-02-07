@@ -5,6 +5,7 @@ import { useQuery } from 'vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
+import { isStakingSupported } from '../staking/useStaking';
 
 /**
  * TYPES
@@ -85,7 +86,7 @@ export default function usePoolGaugesQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: true,
+    enabled: isStakingSupported,
     refetchOnWindowFocus: false,
     ...options,
   });

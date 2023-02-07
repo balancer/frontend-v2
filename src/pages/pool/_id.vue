@@ -34,6 +34,7 @@ import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQ
 import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
+import { isStakingSupported } from '@/composables/staking/useStaking';
 
 /**
  * STATE
@@ -282,7 +283,13 @@ watch(poolQuery.error, () => {
 
           <BalLoadingBlock v-if="loadingPool" class="h-40 pool-actions-card" />
           <StakingIncentivesCard
-            v-if="isStakablePool && !loadingPool && pool && isWalletReady"
+            v-if="
+              isStakingSupported &&
+              isStakablePool &&
+              !loadingPool &&
+              pool &&
+              isWalletReady
+            "
             :pool="pool"
             class="staking-incentives"
           />
