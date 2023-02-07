@@ -22,7 +22,7 @@ import {
   watch,
 } from 'vue';
 
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -33,7 +33,7 @@ import useRelayerApproval, {
 } from '@/composables/approvals/useRelayerApproval';
 import { configService } from '@/services/config/config.service';
 
-import { TradeQuote } from './types';
+import { SwapQuote } from './types';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useEthers from '../useEthers';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
@@ -84,7 +84,7 @@ export default function useJoinExit({
   pools,
 }: Props) {
   const swapInfo = ref<SwapInfo | null>(null);
-  const trading = ref(false);
+  const swapping = ref(false);
   const confirming = ref(false);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
@@ -119,7 +119,7 @@ export default function useJoinExit({
 
   async function getSwapInfo(): Promise<void> {
     swapInfoLoading.value = true;
-    swapInfo.value = await balancer.sor.getSwaps(
+    swapInfo.value = await getBalancer().sor.getSwaps(
       tokenInAddressInput.value,
       tokenOutAddressInput.value,
       exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
@@ -178,7 +178,8 @@ export default function useJoinExit({
     }
   }
 
-  async function trade(successCallback?: () => void) {
+  async function swap(successCallback?: () => void) {
+    const balancer = getBalancer();
     try {
       confirming.value = true;
       state.submissionError = null;
@@ -218,7 +219,7 @@ export default function useJoinExit({
       addTransaction({
         id: tx.hash,
         type: 'tx',
-        action: 'trade',
+        action: 'swap',
         summary: `${tokenInAmountFormatted} ${tokenIn.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut.value.symbol}`,
         details: {
           tokenIn: tokenIn.value,
@@ -251,7 +252,7 @@ export default function useJoinExit({
       console.log(e);
       captureException(e);
       state.submissionError = (e as Error).message;
-      trading.value = false;
+      swapping.value = false;
       confirming.value = false;
     }
   }
@@ -268,7 +269,7 @@ export default function useJoinExit({
       .div(parseFixed(String(1 + slippageBufferRate.value), 18));
   }
 
-  function getQuote(): TradeQuote {
+  function getQuote(): SwapQuote {
     const maximumInAmount =
       tokenInAmountScaled != null ? getMaxIn(tokenInAmountScaled.value) : Zero;
 
@@ -311,9 +312,9 @@ export default function useJoinExit({
     hasValidationError,
     handleAmountChange,
     exactIn,
-    trade,
+    swap,
     swapInfo,
-    trading,
+    swapping,
     priceImpact,
     latestTxHash,
     getQuote,

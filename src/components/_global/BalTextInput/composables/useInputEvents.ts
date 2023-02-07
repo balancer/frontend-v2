@@ -1,4 +1,3 @@
-import { ref } from 'vue';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 /**
  * HELPERS

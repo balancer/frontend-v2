@@ -37,9 +37,9 @@ const PrivacyPolicyPage = () =>
   );
 const TermsOfUsePage = () =>
   import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
-const TradePage = () =>
+const SwapPage = () =>
   import(
-    /* webpackChunkName: "TradePage" */ /* webpackPrefetch: true */ '@/pages/trade.vue'
+    /* webpackChunkName: "SwapPage" */ /* webpackPrefetch: true */ '@/pages/swap.vue'
   );
 const UnlockVeBalPage = () =>
   import(/* webpackChunkName: "UnlockVeBalPage" */ '@/pages/unlock-vebal.vue');
@@ -88,14 +88,19 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'ContentLayout' },
   },
   {
+    path: '/:networkSlug/swap/:assetIn?/:assetOut?',
+    name: 'swap',
+    component: SwapPage,
+  },
+  {
     path: '/:networkSlug/trade/:assetIn?/:assetOut?',
     name: 'trade',
-    component: TradePage,
+    component: SwapPage,
   },
   {
     path: '/:networkSlug/swap/:assetIn?/:assetOut?',
     redirect: to => {
-      return `/trade${to.path.split('/swap')[1]}`;
+      return `/swap${to.path.split('/swap')[1]}`;
     },
   },
   {

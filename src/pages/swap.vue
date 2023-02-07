@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
-import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
+import SwapCard from '@/components/cards/SwapCard/SwapCard.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import BridgeLink from '@/components/links/BridgeLink.vue';
 import { isL2 } from '@/composables/useNetwork';
-
-/**
- * STATE
- */
-const showPriceGraphModal = ref(false);
 
 /**
  * COMPOSABLES
@@ -33,17 +28,6 @@ const sections = computed(() => {
 });
 
 /**
- * METHODS
- */
-function onPriceGraphModalClose() {
-  showPriceGraphModal.value = false;
-}
-
-function togglePairPriceGraphModal() {
-  showPriceGraphModal.value = !showPriceGraphModal.value;
-}
-
-/**
  * CALLBACKS
  */
 onMounted(() => {
@@ -59,7 +43,7 @@ onMounted(() => {
         <MyWallet />
       </template>
 
-      <TradeCard />
+      <SwapCard />
       <div class="p-4 sm:p-0 lg:p-0 mt-8">
         <BalAccordion
           v-if="upToLargeBreakpoint"
@@ -70,7 +54,7 @@ onMounted(() => {
             <MyWallet />
           </template>
           <template #price-chart>
-            <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+            <PairPriceGraph />
           </template>
           <template v-if="isL2" #bridge>
             <BridgeLink />
@@ -79,22 +63,10 @@ onMounted(() => {
       </div>
 
       <template #gutterRight>
-        <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+        <PairPriceGraph />
         <BridgeLink v-if="isL2" class="mt-4" />
       </template>
     </Col3Layout>
-
-    <teleport to="#modal">
-      <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
-        <div class="graph-modal">
-          <PairPriceGraph
-            :toggleModal="togglePairPriceGraphModal"
-            isModal
-            :onCloseModal="onPriceGraphModalClose"
-          />
-        </div>
-      </BalModal>
-    </teleport>
   </div>
 </template>
 

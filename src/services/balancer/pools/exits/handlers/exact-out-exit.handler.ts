@@ -1,4 +1,4 @@
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import { indexOfAddress, selectByAddress } from '@/lib/utils';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
@@ -37,7 +37,7 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     const { signer, tokenInfo, slippageBsp, amountsOut } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await balancer.pools.find(this.pool.value.id);
+    const sdkPool = await getBalancer().pools.find(this.pool.value.id);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);

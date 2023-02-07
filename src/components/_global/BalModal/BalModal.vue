@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-
 import BalCard from '../BalCard/BalCard.vue';
 
 /**
