@@ -11,8 +11,7 @@ import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
-import { bnum } from '@/lib/utils';
-import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
+import { bnum, trackLoading } from '@/lib/utils';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
@@ -42,6 +41,7 @@ const {
   unstake,
   stakedShares,
   refetchAllPoolStakingData,
+  preferentialGaugeAddress,
   isLoading: isLoadingPoolStaking,
 } = usePoolStaking();
 
@@ -160,11 +160,12 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
 }
 
 async function loadApprovalsForGauge() {
-  isLoadingApprovalsForGauge.value = true;
-  const gaugeAddress = await getGaugeAddress(props.pool.address);
-  const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
-  stakeActions.value.unshift(...approvalActions);
-  isLoadingApprovalsForGauge.value = false;
+  const approvalActions = await trackLoading(async () => {
+    if (!preferentialGaugeAddress.value) return;
+    return getTokenApprovalActionsForSpender(preferentialGaugeAddress.value);
+  }, isLoadingApprovalsForGauge);
+
+  if (approvalActions) stakeActions.value.unshift(...approvalActions);
 }
 
 function handleClose() {

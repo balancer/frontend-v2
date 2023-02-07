@@ -12,6 +12,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { POOLS } from '@/constants/pools';
 import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
+import { subgraphRequest } from '@/lib/utils/subgraph';
+import { configService } from '@/services/config/config.service';
 
 /**
  * PoolStakingProvider
@@ -196,6 +198,39 @@ const provider = (_poolId?: string) => {
     return await gauge.unstake(balance);
   }
 
+  /**
+   * Fetch preferential gauge address for pool.
+   *
+   * @param {string} poolAddress - The pool address to get gauge for.
+   * @returns {Promise<string>} - The preferential gauge address.
+   */
+  async function fetchPreferentialGaugeAddress(
+    poolAddress: string
+  ): Promise<string> {
+    try {
+      const data = await subgraphRequest<{
+        pool: { preferentialGauge: { id: string } };
+      }>({
+        url: configService.network.subgraphs.gauge,
+        query: {
+          pool: {
+            __args: {
+              id: poolAddress.toLowerCase(),
+            },
+            preferentialGauge: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      return data.pool.preferentialGauge.id;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   return {
     isLoading,
     stakedShares,
@@ -204,6 +239,8 @@ const provider = (_poolId?: string) => {
     hasNonPrefGaugeBalance,
     isRefetchingStakedShares,
     refetchStakedShares,
+    preferentialGaugeAddress,
+    fetchPreferentialGaugeAddress,
     setCurrentPool,
     refetchAllPoolStakingData,
     stake,
