@@ -12,7 +12,7 @@ import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
 
 const tokens: Record<string, PoolSeedToken> = {};
-const weightedPoolsService = new WeightedPoolsService(FactoryVersion.V3);
+const weightedPoolsService = new WeightedPoolsService(FactoryVersion.V1);
 
 const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
