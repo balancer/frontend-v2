@@ -10,8 +10,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-
 function useFormValidations() {
   const errors = ref([] as Array<string>);
   const validatable = ref([] as Array<any>);

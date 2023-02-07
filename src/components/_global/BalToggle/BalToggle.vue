@@ -16,7 +16,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'BalToggle',
   inheritAttrs: false,
@@ -70,19 +69,19 @@ export default defineComponent({
     dark:group-hover:border-green-400 transition-colors;
 }
 
-.bal-toggle-track[for='tradeGasless'] {
+.bal-toggle-track[for='swapGasless'] {
   @apply h-8;
 }
 
-.bal-toggle-checkbox[name='tradeGasless'] {
+.bal-toggle-checkbox[name='swapGasless'] {
   @apply w-8 h-8 flex items-center justify-center;
 }
 
-.bal-toggle-checkbox[name='tradeGasless']::before {
+.bal-toggle-checkbox[name='swapGasless']::before {
   content: '⛽';
 }
 
-.bal-toggle-checkbox[name='tradeGasless']:checked::before {
+.bal-toggle-checkbox[name='swapGasless']:checked::before {
   content: '✍️';
 }
 

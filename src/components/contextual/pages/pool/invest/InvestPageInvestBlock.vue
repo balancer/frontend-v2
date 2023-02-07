@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
-import TradeSettingsPopover, {
-  TradeSettingsContext,
-} from '@/components/popovers/TradeSettingsPopover.vue';
+import SwapSettingsPopover, {
+  SwapSettingsContext,
+} from '@/components/popovers/SwapSettingsPopover.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import { configService } from '@/services/config/config.service';
@@ -48,7 +48,7 @@ onMounted(() => resetTabs());
         </div>
         <div class="flex justify-between items-center">
           <h4>{{ $t('addLiquidity') }}</h4>
-          <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+          <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
         <BalTabs
           v-if="isDeepPool && isPreMintedBptPool"

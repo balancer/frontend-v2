@@ -1,7 +1,7 @@
 import { reactive, toRefs } from 'vue';
 
 // globals
-const tradeState = reactive({
+const swapState = reactive({
   initialized: false,
   tokenInAddress: '',
   tokenOutAddress: '',
@@ -10,28 +10,28 @@ const tradeState = reactive({
 });
 
 function setInitialized(val: boolean) {
-  tradeState.initialized = val;
+  swapState.initialized = val;
 }
 
 function setTokenInAddress(address: string) {
-  tradeState.tokenInAddress = address;
+  swapState.tokenInAddress = address;
 }
 function setTokenOutAddress(address: string) {
-  tradeState.tokenOutAddress = address;
+  swapState.tokenOutAddress = address;
 }
 
 function setTokenInAmount(amount: string) {
-  tradeState.tokenInAmount = amount;
+  swapState.tokenInAmount = amount;
 }
 function setTokenOutAmount(amount: string) {
-  tradeState.tokenOutAmount = amount;
+  swapState.tokenOutAmount = amount;
 }
 
-export function useTradeState() {
+export function useSwapState() {
   return {
     // can't set to read only refs as these vars are used as
     // model values
-    ...toRefs(tradeState),
+    ...toRefs(swapState),
     setTokenInAddress,
     setTokenOutAddress,
     setTokenInAmount,

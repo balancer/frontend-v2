@@ -7,7 +7,6 @@ export default {
 
 <script setup lang="ts">
 import { omit } from 'lodash';
-import { computed, onMounted, ref, useAttrs } from 'vue';
 
 import { Rules } from '@/types';
 

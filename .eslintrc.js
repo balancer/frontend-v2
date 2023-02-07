@@ -11,6 +11,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended',
     'plugin:prettier-vue/recommended',
+    './.eslintrc-auto-import.json',
   ],
 
   plugins: ['simple-import-sort', 'tailwindcss'],
@@ -64,6 +65,12 @@ module.exports = {
             group: ['ethers/lib/*'],
             message:
               "Please import from '@ethersproject/*' instead to avoid vite rollup build issues",
+          },
+          {
+            group: ['*/lib/balancer.sdk'],
+            importNames: ['balancer'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
           },
         ],
       },
