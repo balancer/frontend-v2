@@ -5,6 +5,7 @@ import { computed, toRefs } from 'vue';
 import { TokensData } from './composables/useTokenBreakdown';
 
 import { isWeightedLike, usePool } from '@/composables/usePool';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * TYPES
@@ -33,6 +34,7 @@ const tokenData = computed(() => props.tokensData[token.value.address]);
 const { explorerLinks } = useWeb3();
 const { isDeepPool } = usePool(rootPool);
 const isWeighted = isWeightedLike(rootPool.value.poolType);
+const { getToken } = useTokens();
 
 /**
  * COMPUTED
@@ -54,6 +56,13 @@ const nestedPaddingClass = computed(() => {
       return 'pl-4';
   }
 });
+
+/**
+ * METHODS
+ */
+function symbolFor(token: PoolToken): string {
+  return getToken(token.address)?.symbol || token.symbol || '---';
+}
 </script>
 
 <template>
@@ -79,7 +88,7 @@ const nestedPaddingClass = computed(() => {
       />
       <span
         class="group-hover:text-purple-500 dark:group-hover:text-yellow-500 transition-colors"
-        >{{ token?.symbol || '---' }}</span
+        >{{ symbolFor(token) }}</span
       >
       <BalIcon
         name="arrow-up-right"
