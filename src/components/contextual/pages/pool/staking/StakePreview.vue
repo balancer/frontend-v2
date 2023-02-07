@@ -19,6 +19,7 @@ import useTransactions from '@/composables/useTransactions';
 import { fiatValueOf, tokensListExclBpt } from '@/composables/usePool';
 import StakeSummary from './StakeSummary.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { ApprovalAction } from '@/composables/approvals/types';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
@@ -53,7 +54,7 @@ const currentShares =
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
   ref([currentShares]),
-  true
+  ApprovalAction.Staking
 );
 
 const stakeAction = {

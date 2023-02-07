@@ -8,6 +8,7 @@ import useTokenApprovals, {
 import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
+import { ApprovalAction } from './types';
 
 /**
  * TYPES
@@ -21,7 +22,7 @@ type ApprovalActionOptions = {
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
   amounts: Ref<string[]>,
-  forStaking = false
+  actionType: ApprovalAction = ApprovalAction.AddLiquidity
 ) {
   /**
    * COMPOSABLES
@@ -29,7 +30,7 @@ export default function useTokenApprovalActions(
   const { t } = useI18n();
   const { getToken } = useTokens();
   const { vaultApprovalStateMap, approveToken, getApprovalStateMapFor } =
-    useTokenApprovals(tokenAddresses, amounts);
+    useTokenApprovals(tokenAddresses, amounts, actionType);
   const { appNetworkConfig } = useWeb3();
   const vaultAddress = appNetworkConfig.addresses.vault;
 
@@ -47,30 +48,26 @@ export default function useTokenApprovalActions(
   /**
    * METHODS
    */
-  function actionLabel(address: string, symbol: string): string {
-    if (forStaking) {
-      return t('transactionSummary.approveForStaking', [symbol]);
+  function actionLabel(symbol: string): string {
+    switch (actionType) {
+      case ApprovalAction.Locking:
+        return t('transactionSummary.approveForLocking', [symbol]);
+      case ApprovalAction.Staking:
+        return t('transactionSummary.approveForStaking', [symbol]);
+      default:
+        return t('transactionSummary.approveForInvesting', [symbol]);
     }
-
-    return t(
-      address === appNetworkConfig.addresses.veBAL
-        ? 'transactionSummary.approveForLocking'
-        : 'transactionSummary.approveForInvesting',
-      [symbol]
-    );
   }
 
-  function actionTooltip(address: string, symbol: string): string {
-    if (forStaking) {
-      return t('transactionSummary.tooltips.approveForStaking', [symbol]);
+  function actionTooltip(symbol: string): string {
+    switch (actionType) {
+      case ApprovalAction.Locking:
+        return t('transactionSummary.tooltips.approveForLocking', [symbol]);
+      case ApprovalAction.Staking:
+        return t('transactionSummary.tooltips.approveForStaking', [symbol]);
+      default:
+        return t('transactionSummary.tooltips.approveForInvesting', [symbol]);
     }
-
-    return t(
-      address === appNetworkConfig.addresses.veBAL
-        ? 'transactionSummary.tooltips.approveForLocking'
-        : 'transactionSummary.tooltips.approveForInvesting',
-      [symbol]
-    );
   }
 
   async function getTokenApprovalActionsForSpender(
@@ -98,10 +95,10 @@ export default function useTokenApprovalActions(
       const token = getToken(address);
       const state = stateMap[address];
       return {
-        label: actionLabel(spender, token.symbol),
+        label: actionLabel(token.symbol),
         loadingLabel: t('investment.preview.loadingLabel.approval'),
         confirmingLabel: t('confirming'),
-        stepTooltip: actionTooltip(spender, token.symbol),
+        stepTooltip: actionTooltip(token.symbol),
         action: () => {
           return approveToken(token.address, { spender, state, amount });
         },
