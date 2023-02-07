@@ -7,7 +7,7 @@ export default class PoolsService {
   constructor() {
     // use the V2 factory for Gnosis Chain
     const version =
-      networkId.value === 100 ? FactoryVersion.V2 : FactoryVersion.V3;
+      networkId.value === 100 ? FactoryVersion.V2 : FactoryVersion.V1;
     this.weighted = new WeightedPoolService(version);
   }
 }

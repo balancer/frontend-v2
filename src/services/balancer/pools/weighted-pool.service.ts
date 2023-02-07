@@ -63,9 +63,9 @@ export default class WeightedPoolService {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
     const weightedPoolFactoryAbi =
-      this.version === FactoryVersion.V2
-        ? WeightedPoolFactoryV2Abi
-        : WeightedPoolFactory__factory.abi;
+      this.version === FactoryVersion.V1
+        ? WeightedPoolFactory__factory.abi
+        : WeightedPoolFactoryV2Abi;
 
     const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
@@ -76,13 +76,12 @@ export default class WeightedPoolService {
     const rateProviders = Array(tokenAddresses.length).fill(POOLS.ZeroAddress);
 
     const params =
-      this.version === FactoryVersion.V2
+      this.version === FactoryVersion.V1
         ? [
             name,
             symbol,
             tokenAddresses,
             seedTokens,
-            rateProviders,
             swapFeeScaled.toString(),
             owner,
           ]
@@ -91,6 +90,7 @@ export default class WeightedPoolService {
             symbol,
             tokenAddresses,
             seedTokens,
+            rateProviders,
             swapFeeScaled.toString(),
             owner,
           ];
