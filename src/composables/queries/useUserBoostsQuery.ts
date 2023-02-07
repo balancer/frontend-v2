@@ -7,6 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import { GaugeShare } from './useUserGaugeSharesQuery';
 import { isL2 } from '../useNetwork';
+import { isStakingSupported } from '../staking/useStaking';
 
 /**
  * TYPES
@@ -44,7 +45,8 @@ export default function useUserBoostsQuery(
    * COMPUTED
    */
   const enabled = computed(
-    (): boolean => !!gaugeShares.value && isWalletReady.value
+    (): boolean =>
+      isStakingSupported.value && !!gaugeShares.value && isWalletReady.value
   );
 
   /**

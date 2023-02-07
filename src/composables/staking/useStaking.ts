@@ -1,6 +1,9 @@
 import { inject } from 'vue';
 
 import { StakingProviderSymbol } from '@/providers/local/staking/staking.provider';
+import { isGnosis } from '../useNetwork';
+
+export const isStakingSupported = computed((): boolean => !isGnosis.value);
 
 export default function useStaking() {
   const providedData = inject(StakingProviderSymbol);

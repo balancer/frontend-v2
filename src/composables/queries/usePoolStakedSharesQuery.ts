@@ -8,6 +8,7 @@ import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidit
 import { bnSum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import useWeb3 from '@/services/web3/useWeb3';
+import { isStakingSupported } from '../staking/useStaking';
 
 /**
  * TYPES
@@ -40,7 +41,8 @@ export default function usePoolStakedSharesQuery(
    * COMPUTED
    */
   const enabled = computed(
-    (): boolean => !!poolGauges.value && isWalletReady.value
+    (): boolean =>
+      isStakingSupported.value && !!poolGauges.value && isWalletReady.value
   );
 
   /**
