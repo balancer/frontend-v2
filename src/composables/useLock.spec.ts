@@ -10,7 +10,6 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { aVeBalPool } from '@tests/unit/builders/pool.builders';
 
 vi.mock('@/providers/tokens.provider');
-vi.mock('@ethersproject/address');
 
 initMulticallerWithDefaultMocks();
 

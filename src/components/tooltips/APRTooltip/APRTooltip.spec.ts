@@ -8,6 +8,8 @@ import { POOLS } from '@/constants/pools';
 import { renderComponent } from '@tests/renderComponent';
 
 vi.mock('@/providers/tokens.provider');
+// Need real implementation of isAddress
+vi.unmock('@ethersproject/address');
 
 const EmptyAprBreakdownMock: AprBreakdown = {
   swapFees: 0,

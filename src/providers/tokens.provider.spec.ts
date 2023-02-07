@@ -18,11 +18,6 @@ vi.spyOn(console, 'log').mockImplementation((message, optionalParams) => {
   originalConsoleLog(message, optionalParams);
 });
 
-vi.mock('@ethersproject/address', () => ({
-  getAddress: address => address,
-  isAddress: () => true,
-}));
-
 initDependenciesWithDefaultMocks();
 
 async function mountTokenProvider() {
