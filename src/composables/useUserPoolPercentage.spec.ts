@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { useUserPoolPercentage } from './useUserPoolPercentage';
 import { aPool } from '@tests/unit/builders/pool.builders';
 import { mountComposable } from '@tests/mount-helpers';
+import { POOLS } from '@/constants/pools';
 
 const bptBalance = '10';
 
@@ -28,5 +29,17 @@ it('calculates user pool percentage label', () => {
 it('calculates user pool percentage label when user has a very small share', () => {
   const pool = aPool({ totalLiquidity: '88888888888', totalShares: '100' });
   const { result } = mountComposable(() => useUserPoolPercentage(ref(pool)));
+  expect(result.userPoolPercentageLabel.value.toString()).toBe('< 0.0001%');
+});
+
+it.only('includes locked shares given a veBal pool', () => {
+  const veBalPool = aPool({
+    id: POOLS.IdsMap?.veBAL,
+    totalLiquidity: '88888888888',
+    totalShares: '100',
+  });
+  const { result } = mountComposable(() =>
+    useUserPoolPercentage(ref(veBalPool))
+  );
   expect(result.userPoolPercentageLabel.value.toString()).toBe('< 0.0001%');
 });

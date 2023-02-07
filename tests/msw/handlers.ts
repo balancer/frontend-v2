@@ -1,4 +1,4 @@
-import { rest } from 'msw';
+import { rest, graphql } from 'msw';
 import gaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
 
 export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
@@ -88,5 +88,9 @@ export const handlers = [
       return res(ctx.json({ is_blocked: true }));
     // NOT SANCTIONED:
     return res(ctx.json({ is_blocked: false }));
+  }),
+
+  graphql.query('Pools', (req, res, ctx) => {
+    return res(ctx.data({ foo: 'bar' }));
   }),
 ];

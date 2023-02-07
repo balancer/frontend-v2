@@ -1,4 +1,3 @@
-import { formatUnits } from '@ethersproject/units';
 import waitForExpect from 'wait-for-expect';
 import { mountComposable } from '@tests/mount-helpers';
 
@@ -11,12 +10,13 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { veBalPool } from '@/__mocks__/veBal-pool';
 
 vi.mock('@/providers/tokens.provider');
+vi.mock('@ethersproject/address');
 
 initMulticallerWithDefaultMocks();
 
 poolsStoreService.setPools([veBalPool]);
 
-test('TBD', async () => {
+test('returns veBal locked amount', async () => {
   const { result } = mountComposable(() => useLock());
 
   expect(result.isLoadingLock.value).toBeTrue();

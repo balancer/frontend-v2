@@ -1,14 +1,25 @@
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { computed, Ref } from 'vue';
+import { computed, ref, Ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { isVeBalPool } from './usePool';
+import { useLock } from './useLock';
 
 export function useUserPoolPercentage(pool: Ref<Pool>) {
   const { balanceFor } = useTokens();
   const { stakedShares } = usePoolStaking();
   const { fNum2 } = useNumbers();
+
+  const lockedAmount = computed(() => {
+    if (isVeBalPool(pool.value.id)) {
+      return useLock().lock.value?.lockedAmount;
+    }
+    return undefined;
+  });
+
+  // console.log('VAYA MOVIDA: ', lockedAmount.value);
 
   const userPoolPercentage = computed(() => {
     const bptBalance = bnum(balanceFor(pool.value.address)).plus(
