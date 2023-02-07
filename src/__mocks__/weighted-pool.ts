@@ -8,6 +8,7 @@ type DeepPartial<T> = {
 };
 
 const defaults: DeepPartial<Pool> = {
+  id: 'test pool id',
   totalLiquidity: '100000000',
   tokens: [
     aPoolToken({

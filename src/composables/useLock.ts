@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { computed } from 'vue';
 
 import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
@@ -12,7 +11,10 @@ import { isL2 } from './useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from './useVeBAL';
 
-export function useLock() {
+interface Options {
+  enabled?: boolean;
+}
+export function useLock({ enabled = true }: Options = {}) {
   /**
    * COMPOSABLES
    */
@@ -22,12 +24,12 @@ export function useLock() {
   /**
    * QUERIES
    */
-  const shouldFetchLockPool = computed((): boolean => !isL2.value);
+  const shouldFetchLockPool = computed((): boolean => !isL2.value && enabled);
   const lockPoolQuery = usePoolQuery(
     lockablePoolId.value as string,
     shouldFetchLockPool
   );
-  const lockQuery = useVeBalLockInfoQuery();
+  const lockQuery = useVeBalLockInfoQuery({ enabled });
 
   /**
    * COMPUTED

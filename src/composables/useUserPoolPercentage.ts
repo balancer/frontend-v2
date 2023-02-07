@@ -1,6 +1,6 @@
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { computed, ref, Ref } from 'vue';
+import { Ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
@@ -10,21 +10,24 @@ import { useLock } from './useLock';
 export function useUserPoolPercentage(pool: Ref<Pool>) {
   const { balanceFor } = useTokens();
   const { stakedShares } = usePoolStaking();
+  // Avoid lock queries when pool is not veBAL:
+  const { lock, lockedFiatTotal } = useLock({
+    enabled: isVeBalPool(pool.value.id),
+  });
   const { fNum2 } = useNumbers();
 
   const lockedAmount = computed(() => {
-    if (isVeBalPool(pool.value.id)) {
-      return useLock().lock.value?.lockedAmount;
-    }
-    return undefined;
+    // return lock.value?.lockedAmount || '0';
+    return lockedFiatTotal.value || '0';
+  });
+  const lockedFiatTotal2 = computed(() => {
+    return lockedFiatTotal.value || '0';
   });
 
-  // console.log('VAYA MOVIDA: ', lockedAmount.value);
-
   const userPoolPercentage = computed(() => {
-    const bptBalance = bnum(balanceFor(pool.value.address)).plus(
-      stakedShares.value
-    );
+    const bptBalance = bnum(balanceFor(pool.value.address))
+      .plus(stakedShares.value)
+      .plus(lockedAmount.value);
     return bptBalance.div(bnum(pool.value.totalLiquidity)).multipliedBy(100);
   });
 
@@ -38,5 +41,6 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
   return {
     userPoolPercentage,
     userPoolPercentageLabel,
+    lockedFiatTotal2,
   };
 }

@@ -4,8 +4,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { initMulticaller } from './Multicaller';
 import { VeBalLockInfoResult } from '@/services/balancer/contracts/contracts/veBAL';
-import { VeBalAbi } from '@tests/generated-contract-typings';
-import { formatUnits } from '@ethersproject/units';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 
 export const mockedOnchainTokenName = 'mocked onchain token name';
 
@@ -25,7 +24,7 @@ function buildOnchainMetadataMock(metadict: TokenInfoMap) {
   return Promise.resolve(result);
 }
 
-export const defaultLockedAmountBN = BigNumber.from(2000000000000000);
+export const defaultLockedAmountBN = parseUnits('0.5');
 export const defaultLockedAmount = formatUnits(defaultLockedAmountBN, 18);
 
 function buildVeBalLockMock() {
@@ -36,9 +35,6 @@ function buildVeBalLockMock() {
 
   return Promise.resolve(result);
 }
-
-type veBalAbiFunctions = VeBalAbi['functions'];
-type lockedResponse = Awaited<ReturnType<VeBalAbi['functions']['locked']>>;
 
 class MulticallerMock extends Multicaller {
   //@ts-ignore

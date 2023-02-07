@@ -7,14 +7,14 @@ import {
   initMulticallerWithDefaultMocks,
 } from '@/dependencies/Multicaller.mocks';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
-import { veBalPool } from '@/__mocks__/veBal-pool';
+import { aVeBalPool } from '@tests/unit/builders/pool.builders';
 
 vi.mock('@/providers/tokens.provider');
 vi.mock('@ethersproject/address');
 
 initMulticallerWithDefaultMocks();
 
-poolsStoreService.setPools([veBalPool]);
+poolsStoreService.setPools([aVeBalPool()]);
 
 test('returns veBal locked amount', async () => {
   const { result } = mountComposable(() => useLock());

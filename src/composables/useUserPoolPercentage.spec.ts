@@ -1,8 +1,12 @@
+import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
+import { mountComposable, provideFakePoolStaking } from '@tests/mount-helpers';
+import { aPool, aVeBalPool } from '@tests/unit/builders/pool.builders';
 import { ref } from 'vue';
+import waitForExpect from 'wait-for-expect';
 import { useUserPoolPercentage } from './useUserPoolPercentage';
-import { aPool } from '@tests/unit/builders/pool.builders';
-import { mountComposable } from '@tests/mount-helpers';
-import { POOLS } from '@/constants/pools';
+
+initMulticallerWithDefaultMocks();
 
 const bptBalance = '10';
 
@@ -32,14 +36,23 @@ it('calculates user pool percentage label when user has a very small share', () 
   expect(result.userPoolPercentageLabel.value.toString()).toBe('< 0.0001%');
 });
 
-it.only('includes locked shares given a veBal pool', () => {
-  const veBalPool = aPool({
-    id: POOLS.IdsMap?.veBAL,
-    totalLiquidity: '88888888888',
+it('includes locked shares given a veBal pool', async () => {
+  const veBalPool = aVeBalPool({
+    totalLiquidity: '100',
     totalShares: '100',
   });
-  const { result } = mountComposable(() =>
-    useUserPoolPercentage(ref(veBalPool))
+
+  poolsStoreService.setPools([veBalPool]);
+
+  const { result } = mountComposable(
+    () => useUserPoolPercentage(ref(veBalPool)),
+    // Locked pool does not have stacking
+    { extraProvidersCb: () => provideFakePoolStaking('0') }
   );
-  expect(result.userPoolPercentageLabel.value.toString()).toBe('< 0.0001%');
+  expect(result.userPoolPercentageLabel.value.toString()).toBe('10%');
+
+  await waitForExpect(
+    () => expect(result.userPoolPercentageLabel.value.toString()).toBe('11%')
+    // expect(result.userPoolPercentageLabel.value.toString()).toBe('10.5%')
+  );
 });
