@@ -20,9 +20,6 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
     // return lock.value?.lockedAmount || '0';
     return lockedFiatTotal.value || '0';
   });
-  const lockedFiatTotal2 = computed(() => {
-    return lockedFiatTotal.value || '0';
-  });
 
   const userPoolPercentage = computed(() => {
     const bptBalance = bnum(balanceFor(pool.value.address))
@@ -41,6 +38,5 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
   return {
     userPoolPercentage,
     userPoolPercentageLabel,
-    lockedFiatTotal2,
   };
 }
