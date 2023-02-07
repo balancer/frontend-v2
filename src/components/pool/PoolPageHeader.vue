@@ -139,7 +139,7 @@ const hasMetadata = computed((): boolean => !!poolMetadata.value);
         {{ poolTypeLabel }}
       </h3>
     </div>
-    <div class="flex">
+    <div class="flex items-center">
       <div
         v-for="({ address, symbol, weight }, i) in titleTokens"
         :key="i"

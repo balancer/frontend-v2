@@ -276,7 +276,7 @@ function iconAddresses(pool: PoolWithShares) {
       :square="upToLargeBreakpoint"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
-      isOnlyDeskSort
+      isOnlyDescSort
       :initialState="{
         sortColumn: sortColumn,
         sortDirection: 'desc',
@@ -310,7 +310,7 @@ function iconAddresses(pool: PoolWithShares) {
           <BalChip
             v-if="isLiquidityBootstrapping(pool.poolType)"
             label="LBP"
-            color="orange-500"
+            color="amber"
           />
           <BalChipNew v-else-if="pool?.isNew" class="mt-1" />
           <PoolWarningTooltip :pool="pool" />

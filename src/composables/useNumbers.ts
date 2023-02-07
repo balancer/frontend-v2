@@ -176,6 +176,10 @@ export function numF(
     formattedNumber = formattedNumber.slice(1);
   }
 
+  if (options.style === 'percent') {
+    formattedNumber = formatBigPercent(formattedNumber);
+  }
+
   return formattedNumber + postfixSymbol;
 }
 
@@ -188,6 +192,19 @@ export function numF(
  */
 export function bspToDec(bspValue: number | string): number {
   return bnum(bspValue).div(10_000).toNumber();
+}
+
+/**
+ * @summary Returns processed percent, which is > 1000.
+ * @example formatBigPercent('1337.23%');  // => '1,337%'
+ */
+export function formatBigPercent(percent: string): string {
+  const _percent = Number(percent.replace('%', ''));
+
+  if (_percent >= 1000) {
+    return `${_percent.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}%`;
+  }
+  return percent;
 }
 
 export default function useNumbers() {

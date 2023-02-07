@@ -9,7 +9,7 @@ type Props = {
   label?: string;
   closeable?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  color?: 'gray' | 'gradient' | 'white' | 'red' | 'orange' | 'orange-500';
+  color?: 'gray' | 'gradient' | 'white' | 'red' | 'orange' | 'amber';
   outline?: boolean;
   rounded?: boolean;
 };

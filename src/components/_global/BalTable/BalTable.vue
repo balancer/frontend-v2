@@ -47,7 +47,7 @@ type Props = {
   initialState?: InitialState;
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: DataProp, rowIndex: number) => string;
-  isOnlyDeskSort?: boolean;
+  isOnlyDescSort?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -64,7 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
   getTableRowClass: () => '',
-  isOnlyDeskSort: false,
+  isOnlyDescSort: false,
 });
 
 const stickyHeaderRef = ref();
@@ -124,7 +124,7 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
 };
 
 function setCurrenSortDirection(): void {
-  if (props.isOnlyDeskSort) {
+  if (props.isOnlyDescSort) {
     currentSortDirection.value = 'desc';
     return;
   }
@@ -240,7 +240,7 @@ watch(
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
               column.sortKey &&
-              !(props.isOnlyDeskSort && currentSortColumn === column.id)
+              !(props.isOnlyDescSort && currentSortColumn === column.id)
                 ? 'cursor-pointer'
                 : '',
               column.sortKey && currentSortColumn !== column.id

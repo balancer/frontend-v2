@@ -208,8 +208,9 @@ export default function usePoolsQuery(
         skip,
       };
     } catch (e) {
-      if (poolsStoreService.pools.value) {
-        return { pools: poolsStoreService.pools.value, skip };
+      const savedPools = poolsStoreService.pools.value;
+      if (savedPools && savedPools.length > 0) {
+        return { pools: savedPools, skip };
       }
       throw e;
     }
