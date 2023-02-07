@@ -49,7 +49,8 @@ export interface Config {
     merkleOrchard: string;
     multicall: string;
     vault: string;
-    weightedPoolFactory: string;
+    weightedPoolFactory?: string;
+    weightedPoolFactoryV2?: string;
     stablePoolFactory: string;
     weth: string;
     rETH: string;

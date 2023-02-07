@@ -20,6 +20,8 @@ import { isSameAddress, scale } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { Multicaller } from '@/lib/utils/balancer/contract';
+import { POOLS } from '@/constants/pools';
+import WeightedPoolFactoryV2Abi from '@/lib/abi/WeightedPoolFactoryV2.json';
 
 type Address = string;
 
@@ -48,8 +50,13 @@ export default class WeightedPoolService {
   ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
-    const weightedPoolFactoryAddress =
-      configService.network.addresses.weightedPoolFactory;
+    const isV2Factory = !!configService.network.addresses.weightedPoolFactoryV2;
+    const weightedPoolFactoryAddress = isV2Factory
+      ? configService.network.addresses.weightedPoolFactoryV2
+      : configService.network.addresses.weightedPoolFactory;
+    const weightedPoolFactoryAbi = isV2Factory
+      ? WeightedPoolFactoryV2Abi
+      : WeightedPoolFactory__factory.abi;
 
     const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
@@ -57,20 +64,31 @@ export default class WeightedPoolService {
 
     const seedTokens = this.calculateTokenWeights(tokens);
     const swapFeeScaled = scale(new BigNumber(swapFee), 18);
+    const rateProviders = Array(tokenAddresses.length).fill(POOLS.ZeroAddress);
 
-    const params = [
-      name,
-      symbol,
-      tokenAddresses,
-      seedTokens,
-      swapFeeScaled.toString(),
-      owner,
-    ];
+    const params = isV2Factory
+      ? [
+          name,
+          symbol,
+          tokenAddresses,
+          seedTokens,
+          rateProviders,
+          swapFeeScaled.toString(),
+          owner,
+        ]
+      : [
+          name,
+          symbol,
+          tokenAddresses,
+          seedTokens,
+          swapFeeScaled.toString(),
+          owner,
+        ];
 
     const txBuilder = new TransactionBuilder(provider.getSigner());
     return await txBuilder.contract.sendTransaction({
-      contractAddress: weightedPoolFactoryAddress,
-      abi: WeightedPoolFactory__factory.abi,
+      contractAddress: weightedPoolFactoryAddress ?? '',
+      abi: weightedPoolFactoryAbi,
       action: 'create',
       params,
     });
@@ -83,8 +101,10 @@ export default class WeightedPoolService {
     const receipt = await provider.getTransactionReceipt(createHash);
     if (!receipt) return null;
 
-    const weightedPoolFactoryAddress =
-      configService.network.addresses.weightedPoolFactory;
+    const isV2Factory = !!configService.network.addresses.weightedPoolFactoryV2;
+    const weightedPoolFactoryAddress = isV2Factory
+      ? configService.network.addresses.weightedPoolFactoryV2
+      : configService.network.addresses.weightedPoolFactory;
     const weightedPoolFactoryInterface =
       WeightedPoolFactory__factory.createInterface();
 
