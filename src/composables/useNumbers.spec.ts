@@ -1,4 +1,5 @@
 import { mountComposable } from '@tests/mount-helpers';
+import BigNumber from 'bignumber.js';
 import useNumbers, { bspToDec, FNumFormats } from './useNumbers';
 
 vi.mock('@/providers/tokens.provider');
@@ -22,6 +23,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '-567800.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '-122.45',
@@ -31,6 +41,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '-12245.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '-1',
@@ -40,6 +59,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '-100.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '-0.0078',
@@ -49,6 +77,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '-0.8%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '-0.1',
@@ -58,6 +95,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '-10.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '-0.0000443',
@@ -67,6 +113,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '0.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '0',
@@ -76,6 +131,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '0.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '0',
@@ -85,6 +149,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '0.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '0',
@@ -94,6 +167,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.00%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.00%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0%',
+        formattedPercentageUnit: '0.0%',
+        token: '0',
+        tokenFixed: '0.0000',
+        tokenLg: '0',
+        basisPointsPercent: '0.00%',
       },
       {
         input: '0.000005',
@@ -103,6 +185,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '< 0.01%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '< 0.01%',
+        percentLgPreset: '< 0.01%',
+        percentVariablePreset: '< 0.01%',
+        formattedPercentageUnit: '< 0.01%',
+        token: '< 0.0001',
+        tokenFixed: '< 0.0001',
+        tokenLg: '0',
+        basisPointsPercent: '< 0.01%',
       },
       {
         input: '0.001',
@@ -112,6 +203,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '< 0.01%',
         usdPreset: '$0.00',
         usdForcedPreset: '$0.00',
+        usdmPreset: '$0.00',
+        percentPrecet: '0.10%',
+        percentLgPreset: '0%',
+        percentVariablePreset: '0.1%',
+        formattedPercentageUnit: '0.1%',
+        token: '0.001',
+        tokenFixed: '0.0010',
+        tokenLg: '0',
+        basisPointsPercent: '< 0.01%',
       },
       {
         input: '0.123456789',
@@ -121,6 +221,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '< 0.01%',
         usdPreset: '$0.12',
         usdForcedPreset: '$0.12',
+        usdmPreset: '$0.12',
+        percentPrecet: '12.35%',
+        percentLgPreset: '12%',
+        percentVariablePreset: '12.3457%',
+        formattedPercentageUnit: '12.3%',
+        token: '0.1235',
+        tokenFixed: '0.1235',
+        tokenLg: '0',
+        basisPointsPercent: '< 0.01%',
       },
       {
         input: '0.6',
@@ -130,6 +239,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '< 0.01%',
         usdPreset: '$0.60',
         usdForcedPreset: '$0.60',
+        usdmPreset: '$0.60',
+        percentPrecet: '60.00%',
+        percentLgPreset: '60%',
+        percentVariablePreset: '60%',
+        formattedPercentageUnit: '60.0%',
+        token: '0.6',
+        tokenFixed: '0.6000',
+        tokenLg: '1',
+        basisPointsPercent: '< 0.01%',
       },
       {
         input: '1.3',
@@ -139,6 +257,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.01%',
         usdPreset: '$1.30',
         usdForcedPreset: '$1.30',
+        usdmPreset: '$1.30',
+        percentPrecet: '130.00%',
+        percentLgPreset: '130%',
+        percentVariablePreset: '130%',
+        formattedPercentageUnit: '130.0%',
+        token: '1.3',
+        tokenFixed: '1.3000',
+        tokenLg: '1',
+        basisPointsPercent: '0.01%',
       },
       {
         input: '8',
@@ -148,6 +275,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.08%',
         usdPreset: '$8.00',
         usdForcedPreset: '$8.00',
+        usdmPreset: '$8.00',
+        percentPrecet: '800.00%',
+        percentLgPreset: '800%',
+        percentVariablePreset: '800%',
+        formattedPercentageUnit: '800.0%',
+        token: '8',
+        tokenFixed: '8.0000',
+        tokenLg: '8',
+        basisPointsPercent: '0.08%',
       },
       {
         input: '13.44',
@@ -157,6 +293,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '0.13%',
         usdPreset: '$13.44',
         usdForcedPreset: '$13.44',
+        usdmPreset: '$13.44',
+        percentPrecet: '1,344%',
+        percentLgPreset: '1,344%',
+        percentVariablePreset: '1,344%',
+        formattedPercentageUnit: '1,344%',
+        token: '13.44',
+        tokenFixed: '13.4400',
+        tokenLg: '13',
+        basisPointsPercent: '0.13%',
       },
       {
         input: '121',
@@ -166,6 +311,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '1.21%',
         usdPreset: '$121.00',
         usdForcedPreset: '$121.00',
+        usdmPreset: '$121.00',
+        percentPrecet: '12,100%',
+        percentLgPreset: '12,100%',
+        percentVariablePreset: '12,100%',
+        formattedPercentageUnit: '12,100%',
+        token: '121',
+        tokenFixed: '121.0000',
+        tokenLg: '121',
+        basisPointsPercent: '1.21%',
       },
       {
         input: '188.9123',
@@ -175,6 +329,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '1.89%',
         usdPreset: '$188.91',
         usdForcedPreset: '$188.91',
+        usdmPreset: '$188.91',
+        percentPrecet: '18,891%',
+        percentLgPreset: '18,891%',
+        percentVariablePreset: '18,891%',
+        formattedPercentageUnit: '18,891%',
+        token: '188.9123',
+        tokenFixed: '188.9123',
+        tokenLg: '189',
+        basisPointsPercent: '1.89%',
       },
       {
         input: '5129.199911',
@@ -184,6 +347,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '51.29%',
         usdPreset: '$5,129.20',
         usdForcedPreset: '$5,129.20',
+        usdmPreset: '$5.13k',
+        percentPrecet: '512,920%',
+        percentLgPreset: '512,920%',
+        percentVariablePreset: '512,920%',
+        formattedPercentageUnit: '512,920%',
+        token: '5,129.1999',
+        tokenFixed: '5,129.1999',
+        tokenLg: '5,129',
+        basisPointsPercent: '51.29%',
       },
       {
         input: '87654',
@@ -193,6 +365,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '876.54%',
         usdPreset: '$87,654',
         usdForcedPreset: '$87,654.00',
+        usdmPreset: '$87.65k',
+        percentPrecet: '8,765,400%',
+        percentLgPreset: '8,765,400%',
+        percentVariablePreset: '8,765,400%',
+        formattedPercentageUnit: '8,765,400%',
+        token: '87,654',
+        tokenFixed: '87,654',
+        tokenLg: '87,654',
+        basisPointsPercent: '876.54%',
       },
       {
         input: '112124.3791743',
@@ -202,6 +383,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '1,121%',
         usdPreset: '$112,124',
         usdForcedPreset: '$112,124.38',
+        usdmPreset: '$112.12k',
+        percentPrecet: '11,212,438%',
+        percentLgPreset: '11,212,438%',
+        percentVariablePreset: '11,212,438%',
+        formattedPercentageUnit: '11,212,438%',
+        token: '112,124',
+        tokenFixed: '112,124',
+        tokenLg: '112,124',
+        basisPointsPercent: '1,121%',
       },
       {
         input: '1883234',
@@ -211,6 +401,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '18,832%',
         usdPreset: '$1,883,234',
         usdForcedPreset: '$1,883,234.00',
+        usdmPreset: '$1.88m',
+        percentPrecet: '188,323,400%',
+        percentLgPreset: '188,323,400%',
+        percentVariablePreset: '188,323,400%',
+        formattedPercentageUnit: '188,323,400%',
+        token: '1,883,234',
+        tokenFixed: '1,883,234',
+        tokenLg: '1,883,234',
+        basisPointsPercent: '18,832%',
       },
       {
         input: '121237821371',
@@ -220,6 +419,15 @@ describe('useNumbers', () => {
         bpPercentageOutput: '1,212,378,214%',
         usdPreset: '$121,237,821,371',
         usdForcedPreset: '$121,237,821,371.00',
+        usdmPreset: '$121.24b',
+        percentPrecet: '12,123,782,137,100%',
+        percentLgPreset: '12,123,782,137,100%',
+        percentVariablePreset: '12,123,782,137,100%',
+        formattedPercentageUnit: '12,123,782,137,100%',
+        token: '121,237,821,371',
+        tokenFixed: '121,237,821,371',
+        tokenLg: '121,237,821,371',
+        basisPointsPercent: '1,212,378,214%',
       },
     ];
 
@@ -325,125 +533,106 @@ describe('useNumbers', () => {
       });
     });
 
-    // it('Should return the same result as usd_m preset', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     const format1 = fNum(testNumber.input, 'usd_m');
-    //     const format2 = fNum2(testNumber.input, {
-    //       style: 'currency',
-    //       abbreviate: true,
-    //     });
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result as usd_m preset', () => {
+      testNumbers.forEach(testNumber => {
+        const format = fNum2(testNumber.input, {
+          style: 'currency',
+          abbreviate: true,
+        });
+        expect(format).toEqual(testNumber.usdmPreset);
+      });
+    });
 
-    // it('Should return the same result as nested usd usd_m preset', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     const format1 = fNum(fNum(testNumber.input, 'usd'), 'usd_m');
-    //     const format2 = fNum2(testNumber.input, {
-    //       style: 'currency',
-    //       abbreviate: true,
-    //     });
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result as percent preset', () => {
+      testNumbers.forEach(testNumber => {
+        if (Number(testNumber.input) > 0 && Number(testNumber.input) < 0.01)
+          return;
 
-    // it('Should return the same result as percent preset', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     if (Number(testNumber.input) > 0 && Number(testNumber.input) < 0.01)
-    //       return;
+        const format = fNum2(testNumber.input, {
+          style: 'percent',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        expect(format).toEqual(testNumber.percentPrecet);
+      });
+    });
 
-    //     const format = fNum2(testNumber.input, {
-    //       style: 'percent',
-    //       minimumFractionDigits: 2,
-    //       maximumFractionDigits: 2,
-    //     });
-    //     expect(format).toEqual(testNumber.bpPercentageOutput);
-    //   });
-    // });
+    it('Should return the same result as percent_lg preset', () => {
+      testNumbers.forEach(testNumber => {
+        if (Number(testNumber.input) > 0 && Number(testNumber.input) < 0.01)
+          return;
 
-    // it('Should return the same result as percent_lg preset', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     if (Number(testNumber.input) > 0 && Number(testNumber.input) < 0.01)
-    //       return;
+        const format = fNum2(testNumber.input, {
+          style: 'percent',
+          maximumFractionDigits: 0,
+        });
+        expect(format).toEqual(testNumber.percentLgPreset);
+      });
+    });
 
-    //     const format1 = fNum(testNumber.input, 'percent_lg');
-    //     const format2 = fNum2(testNumber.input, {
-    //       style: 'percent',
-    //       maximumFractionDigits: 0,
-    //     });
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result as percent_variable preset', () => {
+      testNumbers.forEach(testNumber => {
+        if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
 
-    // it('Should return the same result as percent_variable preset', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
+        const format = fNum2(testNumber.input, {
+          style: 'percent',
+          maximumFractionDigits: 4,
+          dontAdjustLarge: true,
+        });
+        expect(format).toEqual(testNumber.percentVariablePreset);
+      });
+    });
 
-    //     const format1 = fNum(testNumber, 'percent_variable');
-    //     const format2 = fNum2(testNumber, {
-    //       style: 'percent',
-    //       maximumFractionDigits: 4,
-    //       dontAdjustLarge: true,
-    //     });
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result as a formatted percentage unit', () => {
+      testNumbers.forEach(testNumber => {
+        if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
 
-    // it('Should return the same result as a formatted percentage unit', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
+        const format = fNum2(testNumber.input, {
+          style: 'percent',
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+          fixedFormat: true,
+        });
+        expect(format).toEqual(testNumber.formattedPercentageUnit);
+      });
+    });
 
-    //     const format1 = fNum(testNumber, null, { format: '0.0%' });
-    //     const format2 = fNum2(testNumber, {
-    //       style: 'percent',
-    //       minimumFractionDigits: 1,
-    //       maximumFractionDigits: 1,
-    //       fixedFormat: true,
-    //     });
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result for token', () => {
+      testNumbers.forEach(testNumber => {
+        const format = fNum2(testNumber.input, FNumFormats.token);
+        expect(format).toEqual(testNumber.token);
+      });
+    });
 
-    // it('Should return the same result for token', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     const format1 = fNum(testNumber, 'token');
-    //     const format2 = fNum2(testNumber, FNumFormats.token);
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result for token_fixed', () => {
+      testNumbers.forEach(testNumber => {
+        const format = fNum2(testNumber.input, {
+          minimumFractionDigits: 4,
+          maximumFractionDigits: 4,
+        });
+        expect(format).toEqual(testNumber.tokenFixed);
+      });
+    });
 
-    // it('Should return the same result for token_fixed', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     const format1 = fNum(testNumber, 'token_fixed');
-    //     const format2 = fNum2(testNumber, {
-    //       minimumFractionDigits: 4,
-    //       maximumFractionDigits: 4,
-    //     });
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result for token_lg', () => {
+      testNumbers.forEach(testNumber => {
+        const format = fNum2(testNumber.input, {
+          style: 'decimal',
+          maximumFractionDigits: 0,
+        });
+        expect(format).toEqual(testNumber.tokenLg);
+      });
+    });
 
-    // it('Should return the same result for token_lg', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     const format1 = fNum(testNumber, 'token_lg');
-    //     const format2 = fNum2(testNumber, {
-    //       style: 'decimal',
-    //       maximumFractionDigits: 0,
-    //     });
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
-
-    // it('Should return the same result for basis points / 10000 as percent', () => {
-    //   testNumbers.forEach(testNumber => {
-    //     const format1 = fNum2(testNumber, FNumFormats.bp);
-    //     const format2 = fNum2(
-    //       new BigNumber(testNumber).div(10000).toString(),
-    //       FNumFormats.percent
-    //     );
-    //     expect(format2).toEqual(format1);
-    //   });
-    // });
+    it('Should return the same result for basis points / 10000 as percent', () => {
+      testNumbers.forEach(testNumber => {
+        const format = fNum2(
+          new BigNumber(testNumber.input).div(10000).toString(),
+          FNumFormats.percent
+        );
+        expect(format).toEqual(testNumber.basisPointsPercent);
+      });
+    });
 
     it('Should not return < 0.0001 if fixedFormat is true', () => {
       const testNumber = '0.00000123';
