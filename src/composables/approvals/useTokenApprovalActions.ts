@@ -42,10 +42,6 @@ export default function useTokenApprovalActions(
     getTokenApprovalActions();
 
   /**
-   * COMPUTED
-   */
-
-  /**
    * METHODS
    */
   function actionLabel(symbol: string): string {
