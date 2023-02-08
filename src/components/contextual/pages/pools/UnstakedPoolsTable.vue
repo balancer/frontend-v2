@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import { configService } from '@/services/config/config.service';
