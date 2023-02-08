@@ -1,4 +1,4 @@
-import { computed, InjectionKey, provide, reactive, ref, watch } from 'vue';
+import { InjectionKey } from 'vue';
 import { UserStakingResponse } from '@/providers/local/user-staking.provider';
 import { useUserData } from '@/providers/user-data.provider';
 import { Pool } from '@/services/pool/types';
