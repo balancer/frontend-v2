@@ -12,18 +12,17 @@ jobs:
 
     - name: Extract TODO comments
       run: |
-        # Extract all TODO comments into a file
+        # Extract all TODO comments into a file, excluding todo.yml file in /.github/workflows
         grep -r -E --exclude={TODO.md,/.github/workflows/todo.yml} 'TODO' . | while read line; do
-          location="$(echo $line | cut -d ':' -f 1)"
           todo="$(echo $line | cut -d ':' -f 2- | sed 's/TODO/- [ ]/')"
-          echo "$todo ($location)" >> TODO.md
+          echo "$todo" >> TODO.md
         done
   
     - name: Commit TODO file
       uses: EndBug/add-and-commit@v4
       with:
         add: 'TODO.md'
-        message: 'Add TODO.md file [skip ci]'
+        message: 'Update TODO.md file'
 
     - name: Push changes
       uses: ad-m/github-push-action@master
