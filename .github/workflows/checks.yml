@@ -129,7 +129,7 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: ./e2e
       - name: Run Playwright tests
-        run: playwright:ci
+        run: npm run playwright:ci
         working-directory: ./e2e
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
