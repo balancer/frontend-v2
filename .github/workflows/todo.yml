@@ -14,7 +14,7 @@ jobs:
       run: |
         # Extract all TODO comments into a file, excluding todo.yml file in /.github/workflows
         grep -r -E --exclude={TODO.md,*.yml} 'TODO' . | while read line; do
-          todo="$(echo $line | cut -d ':' -f 2- | sed 's/TODO/- [ ]/')"
+          todo="$(echo $line | cut -d ':' -f 2- | sed 's/\/\/ TODO /- [ ]/')"
           echo "$todo" >> temp_TODO.md
         done
 
@@ -22,7 +22,7 @@ jobs:
       run: rm TODO.md || echo "TODO.md does not exist"
 
     - name: Create TODO file
-      run: awk 'NF {print $0 "\\n"}' temp_TODO.md > TODO.md
+      run: mv temp_TODO.md TODO.md
   
     - name: Commit TODO file
       uses: EndBug/add-and-commit@v4
