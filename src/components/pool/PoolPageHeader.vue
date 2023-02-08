@@ -49,7 +49,7 @@ const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
-const { balancerTokenListTokens } = useTokens();
+const { balancerTokenListTokens, getToken } = useTokens();
 const { hasNonPrefGaugeBalance } = usePoolStaking();
 
 /**
@@ -122,6 +122,14 @@ const poolTypeLabel = computed(() => {
 
 const poolMetadata = computed(() => POOLS.Metadata[props.pool?.id]);
 const hasMetadata = computed((): boolean => !!poolMetadata.value);
+
+/**
+ * METHODS
+ */
+function symbolFor(titleTokenIndex: number): string {
+  const token = props.titleTokens[titleTokenIndex];
+  return getToken(token.address)?.symbol || token.symbol || '---';
+}
 </script>
 
 <template>
@@ -141,13 +149,13 @@ const hasMetadata = computed((): boolean => !!poolMetadata.value);
     </div>
     <div class="flex items-center">
       <div
-        v-for="({ address, symbol, weight }, i) in titleTokens"
+        v-for="({ address, weight }, i) in titleTokens"
         :key="i"
         class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
       >
         <BalAsset :address="address" />
         <span class="ml-2">
-          {{ symbol }}
+          {{ symbolFor(i) }}
         </span>
         <span
           v-if="!isStableLikePool"

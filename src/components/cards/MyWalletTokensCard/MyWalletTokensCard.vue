@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
-import { useRoute } from 'vue-router';
-
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { tokensListExclBpt, usePool } from '@/composables/usePool';

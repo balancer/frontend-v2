@@ -1,5 +1,3 @@
-import { computed } from 'vue';
-
 export function useChipClasses(props) {
   const sizeClasses = () => {
     switch (props.size) {

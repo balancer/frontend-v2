@@ -21,7 +21,7 @@ type TokenAmount = {
   amount: string;
 };
 
-type SwapType = 'invest' | 'withdraw' | 'trade';
+type SwapType = 'invest' | 'withdraw' | 'swap';
 
 type SwapRow = {
   label: string;
@@ -126,7 +126,7 @@ const swapRows = computed<SwapRow[]>(() => {
       type = 'withdraw';
       label = t('withdraw.label');
     } else {
-      type = 'trade';
+      type = 'swap';
       label = t('swap');
     }
 
@@ -151,7 +151,7 @@ const swapRows = computed<SwapRow[]>(() => {
  * METHODS
  */
 function getTransactionValue(tokenAmounts: TokenAmount[], type: SwapType) {
-  if (type === 'trade') {
+  if (type === 'swap') {
     const mainTokenAddress = getUnderlyingTokenAddress(tokenAmounts[1].address);
     const mainEquivAmount = getMainTokenEquivalentAmount(
       tokenAmounts[1].address,
@@ -182,7 +182,7 @@ function getTransactionValue(tokenAmounts: TokenAmount[], type: SwapType) {
 function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
   const isInvest = type === 'invest';
 
-  if (type === 'trade') {
+  if (type === 'swap') {
     const swap = swaps[0];
     const { tokenIn, tokenOut, tokenAmountIn, tokenAmountOut } = swap;
 
@@ -274,7 +274,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
 
       <template #detailsCell="action">
         <div class="flex flex-wrap items-center py-4 px-6 -mt-1">
-          <template v-if="action.type === 'trade'">
+          <template v-if="action.type === 'swap'">
             <div class="token-item">
               <BalAsset
                 :address="action.tokenAmounts[0].address"

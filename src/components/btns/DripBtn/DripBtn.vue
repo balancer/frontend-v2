@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 import { faucet } from '@/services/balancer/contracts/contracts/faucet';
 
 import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';

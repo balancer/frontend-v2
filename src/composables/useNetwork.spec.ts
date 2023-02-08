@@ -22,7 +22,7 @@ describe('useNetwork', () => {
         { path: 'polygon.balancer.fi/#/test', result: 'polygon' },
         { path: 'app.balancer.fi', result: 'app' },
         { path: 'balancer.fi', result: 'balancer' },
-        { path: 'beta.balancer.fi/trade', result: 'balancer' },
+        { path: 'beta.balancer.fi/swap', result: 'balancer' },
         { path: 'beta.goerli.balancer.fi', result: 'goerli' },
         { path: 'beta.polygon.balancer.fi', result: 'polygon' },
         { path: 'beta.arbitrum.balancer.fi', result: 'arbitrum' },
@@ -41,8 +41,8 @@ describe('useNetwork', () => {
     it('should return the correct redirect URL', () => {
       const cases = [
         {
-          inputs: ['polygon.balancer.fi', '/trade'],
-          output: 'https://app.balancer.fi/#/polygon/trade',
+          inputs: ['polygon.balancer.fi', '/swap'],
+          output: 'https://app.balancer.fi/#/polygon/swap',
         },
         {
           inputs: ['arbitrum.balancer.fi', '/portfolio'],
@@ -61,16 +61,16 @@ describe('useNetwork', () => {
           output: undefined,
         },
         {
-          inputs: ['app.balancer.fi', '/trade'],
+          inputs: ['app.balancer.fi', '/swap'],
           output: undefined,
         },
         {
           inputs: [
             'polygon.balancer.fi',
-            '/polygon/trade',
+            '/polygon/swap',
             { networkSlug: 'polygon' },
           ],
-          output: 'https://app.balancer.fi/#/polygon/trade',
+          output: 'https://app.balancer.fi/#/polygon/swap',
         },
       ];
 

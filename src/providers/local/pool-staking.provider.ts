@@ -30,7 +30,7 @@ const provider = (poolId: string) => {
    * COMPOSABLES
    */
   const { balanceFor } = useTokens();
-  const { account } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
 
   /**
    * QUERIES
@@ -62,9 +62,10 @@ const provider = (poolId: string) => {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(poolGaugesQuery) ||
-      isQueryLoading(poolStakedSharesQuery) ||
-      isQueryLoading(userGaugeSharesQuery) ||
-      isQueryLoading(userBoostsQuery)
+      (isWalletReady.value &&
+        (isQueryLoading(poolStakedSharesQuery) ||
+          isQueryLoading(userGaugeSharesQuery) ||
+          isQueryLoading(userBoostsQuery)))
   );
 
   const preferentialGaugeAddress = computed(

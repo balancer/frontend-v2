@@ -148,7 +148,7 @@ export function isWeightedLike(poolType: PoolType): boolean {
   );
 }
 
-export function isTradingHaltable(poolType: PoolType): boolean {
+export function isSwappingHaltable(poolType: PoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
@@ -598,7 +598,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isLiquidityBootstrappingPool = computed(
     (): boolean => !!pool.value && isLiquidityBootstrapping(pool.value.poolType)
   );
-  const managedPoolWithTradingHalted = computed(
+  const managedPoolWithSwappingHalted = computed(
     (): boolean =>
       !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
   );
@@ -640,7 +640,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeightedLikePool,
     isManagedPool,
     isLiquidityBootstrappingPool,
-    managedPoolWithTradingHalted,
+    managedPoolWithSwappingHalted,
     isWethPool,
     isMainnetWstETHPool,
     noInitLiquidityPool,
@@ -653,7 +653,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeighted,
     isLiquidityBootstrapping,
     isWeightedLike,
-    isTradingHaltable,
+    isSwappingHaltable,
     isPreMintedBptType,
     isWeth,
     noInitLiquidity,
