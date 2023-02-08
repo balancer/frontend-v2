@@ -1,16 +1,3 @@
-name: Compile - [ ] Comments
- - name: Remove existing - [ ].md file
- run: rm - [ ].md || echo "TODO.md does not exist"
- - name: Create - [ ] file
- run: touch - [ ].md
- - name: Extract - [ ] comments
- # Extract all - [ ] comments into a file, excluding todo.yml file in /.github/workflows
- grep -r -E --exclude={- [ ].md,./.github/workflows/todo.yml} 'TODO' . | while read line; do
- todo="$(echo $line | cut -d ':' -f 2- | sed 's/- [ ]/- [ ]/')"
- echo "$todo" >> - [ ].md
- - name: Commit - [ ] file
- add: '- [ ].md'
- message: 'Update - [ ].md file'
 // - [ ]: Don't refetch whole pool, only update balances and weights with
 // - [ ]: Don't refetch whole pool, only update balances and weights with
 // - [ ]: move to sor mocks to subfile
