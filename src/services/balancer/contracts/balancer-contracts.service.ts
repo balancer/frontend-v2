@@ -31,7 +31,7 @@ export default class BalancerContractsService {
   constructor(
     readonly configService = _configService,
     readonly rpcProviderService = _rpcProviderService,
-    // TODO: Fix affected tests by refactoring export balancerContractsService
+    // TODO Fix affected tests by refactoring export balancerContractsService
     // readonly sdk = getBalancer()
     readonly sdk = balancer
   ) {

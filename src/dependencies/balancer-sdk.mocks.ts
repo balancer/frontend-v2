@@ -19,8 +19,8 @@ export const mockedTokenPrice = {
   eth: '0.005',
 };
 
-// TODO: move to sor mocks to subfile
-//TODO: Improve builder to avoid DeepPartial
+// TODO move to sor mocks to subfile
+//TODO Improve builder to avoid DeepPartial
 export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
   {
     id: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',

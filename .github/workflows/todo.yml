@@ -1,0 +1,38 @@
+name: Compile TODO Comments
+
+on: push
+
+jobs:
+  compile-todo:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Extract TODO comments
+      run: |
+        # Extract all TODO comments into a file, excluding todo.yml file in /.github/workflows
+        grep -r -E --exclude={TODO.md,*.yml} '// TODO' . | while read line; do
+          location="$(echo $line | sed 's/:[^:]*//' | sed 's/:[^:]*//')"
+          todo="$(echo $line | grep -o '\/\/ TODO.*' | sed 's/\/\/ TODO/- [ ]/')"
+          echo "$todo ($location)" >> temp_TODO.md
+        done
+
+    - name: Remove existing TODO.md file
+      run: rm TODO.md || echo "TODO.md does not exist"
+
+    - name: Create TODO file
+      run: mv temp_TODO.md TODO.md
+  
+    - name: Commit TODO file
+      uses: EndBug/add-and-commit@v4
+      with:
+        add: 'TODO.md'
+        message: 'Update TODO.md file'
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
