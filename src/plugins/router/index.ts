@@ -204,4 +204,13 @@ const router = createRouter({
   },
 });
 
+router.onError((error, to) => {
+  if (error.message.includes('Failed to fetch dynamically imported module')) {
+    console.log('ERROR IN ROUTE; ', error.message);
+    setTimeout(() => {
+      window.location.href = to.fullPath;
+    }, 2000);
+  }
+});
+
 export default applyNavGuards(router);
