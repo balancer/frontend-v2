@@ -112,6 +112,7 @@ jobs:
           # Checkout to folder "frontend/e2e"
           path: e2e
       - name: Run Playwright
+        working-directory: ./e2e
         uses: actions/setup-node@v3
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
@@ -119,15 +120,15 @@ jobs:
           # CYPRESS_WALLET_ACCOUNT_NUMBER: 1
         with:
           node-version: '16.x'
-          working-directory: e2e
+          # working-directory: e2e
           # wait for the app to start
           # wait-on: 'http://localhost:8080'
       - name: Install Playwright dependencies
-        run: cd e2e && npm ci
+        run: ls -la && npm ci
       - name: Install Playwright Browsers
-        run: ls -la && npx playwright install --with-deps
+        run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npm run playwright:ci
+        run: playwright:ci
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
         if: always()
