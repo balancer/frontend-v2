@@ -131,7 +131,6 @@ const provider = (_poolId?: string) => {
    * @param {string} id - The pool ID to get staking data for.
    */
   function setCurrentPool(id: string) {
-    console.log('setCurrentPool', id);
     poolId.value = id;
   }
 
