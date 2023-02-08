@@ -1,15 +1,9 @@
 import BigNumber from 'bignumber.js';
-import numeral from 'numeral';
 
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { useTokens } from '@/providers/tokens.provider';
-
-interface Options {
-  format?: string;
-  forcePreset?: boolean;
-}
 
 export interface FNumOptions extends Intl.NumberFormatOptions {
   fixedFormat?: boolean; // If true, don't auto-adjust based on number magnitde
@@ -54,41 +48,6 @@ enum PresetFormats {
 
 export type Preset = keyof typeof PresetFormats;
 
-export function fNum(
-  number: number | string,
-  preset: Preset | null = 'default',
-  options: Options = {}
-): string {
-  if (options.format) return numeral(number).format(options.format);
-
-  let adjustedPreset;
-  if (
-    number >= 10_000 &&
-    !options.forcePreset &&
-    !preset?.match(/_(lg|m|variable)$/)
-  ) {
-    adjustedPreset = `${preset}_lg`;
-  }
-
-  if (
-    (preset === 'token' || preset === 'token_fixed') &&
-    number > 0 &&
-    number < 0.0001
-  ) {
-    return '< 0.0001';
-  }
-
-  if (number < 1e-6) {
-    // Numeral returns NaN in this case so just set to zero.
-    // https://github.com/adamwdraper/Numeral-js/issues/596
-    number = 0;
-  }
-
-  return numeral(number).format(
-    PresetFormats[adjustedPreset || preset || 'default']
-  );
-}
-
 export function numF(
   number: number | string,
   options: FNumOptions | undefined = {},
@@ -101,6 +60,7 @@ export function numF(
     number = Number(number || 0);
   }
 
+  // bp - basis points
   if (options.style === 'bp') {
     number = bnum(number).div(10000).toNumber();
     options = { ...options, style: 'percent' };
@@ -224,5 +184,5 @@ export default function useNumbers() {
     return numF(number, options, _currency);
   }
 
-  return { fNum, fNum2, toFiat };
+  return { fNum2, toFiat };
 }

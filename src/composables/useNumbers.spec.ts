@@ -32,6 +32,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '-122.45',
@@ -50,6 +51,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '-1',
@@ -68,6 +70,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '-0.0078',
@@ -86,6 +89,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '-0.1',
@@ -104,6 +108,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '-0.0000443',
@@ -122,6 +127,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '0',
@@ -140,6 +146,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '0',
@@ -158,6 +165,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '0',
@@ -176,6 +184,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0000',
         tokenLg: '0',
         basisPointsPercent: '0.00%',
+        bpPercent: '0.00%',
       },
       {
         input: '0.000005',
@@ -194,6 +203,7 @@ describe('useNumbers', () => {
         tokenFixed: '< 0.0001',
         tokenLg: '0',
         basisPointsPercent: '< 0.01%',
+        bpPercent: '< 0.01%',
       },
       {
         input: '0.001',
@@ -212,6 +222,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.0010',
         tokenLg: '0',
         basisPointsPercent: '< 0.01%',
+        bpPercent: '< 0.01%',
       },
       {
         input: '0.123456789',
@@ -230,6 +241,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.1235',
         tokenLg: '0',
         basisPointsPercent: '< 0.01%',
+        bpPercent: '< 0.01%',
       },
       {
         input: '0.6',
@@ -248,6 +260,7 @@ describe('useNumbers', () => {
         tokenFixed: '0.6000',
         tokenLg: '1',
         basisPointsPercent: '< 0.01%',
+        bpPercent: '< 0.01%',
       },
       {
         input: '1.3',
@@ -266,6 +279,7 @@ describe('useNumbers', () => {
         tokenFixed: '1.3000',
         tokenLg: '1',
         basisPointsPercent: '0.01%',
+        bpPercent: '0.01%',
       },
       {
         input: '8',
@@ -284,6 +298,7 @@ describe('useNumbers', () => {
         tokenFixed: '8.0000',
         tokenLg: '8',
         basisPointsPercent: '0.08%',
+        bpPercent: '0.08%',
       },
       {
         input: '13.44',
@@ -302,6 +317,7 @@ describe('useNumbers', () => {
         tokenFixed: '13.4400',
         tokenLg: '13',
         basisPointsPercent: '0.13%',
+        bpPercent: '0.13%',
       },
       {
         input: '121',
@@ -320,6 +336,7 @@ describe('useNumbers', () => {
         tokenFixed: '121.0000',
         tokenLg: '121',
         basisPointsPercent: '1.21%',
+        bpPercent: '1.21%',
       },
       {
         input: '188.9123',
@@ -338,6 +355,7 @@ describe('useNumbers', () => {
         tokenFixed: '188.9123',
         tokenLg: '189',
         basisPointsPercent: '1.89%',
+        bpPercent: '1.89%',
       },
       {
         input: '5129.199911',
@@ -356,6 +374,7 @@ describe('useNumbers', () => {
         tokenFixed: '5,129.1999',
         tokenLg: '5,129',
         basisPointsPercent: '51.29%',
+        bpPercent: '51.29%',
       },
       {
         input: '87654',
@@ -374,6 +393,7 @@ describe('useNumbers', () => {
         tokenFixed: '87,654',
         tokenLg: '87,654',
         basisPointsPercent: '876.54%',
+        bpPercent: '876.54%',
       },
       {
         input: '112124.3791743',
@@ -392,6 +412,7 @@ describe('useNumbers', () => {
         tokenFixed: '112,124',
         tokenLg: '112,124',
         basisPointsPercent: '1,121%',
+        bpPercent: '1,121%',
       },
       {
         input: '1883234',
@@ -410,6 +431,7 @@ describe('useNumbers', () => {
         tokenFixed: '1,883,234',
         tokenLg: '1,883,234',
         basisPointsPercent: '18,832%',
+        bpPercent: '18,832%',
       },
       {
         input: '121237821371',
@@ -428,6 +450,7 @@ describe('useNumbers', () => {
         tokenFixed: '121,237,821,371',
         tokenLg: '121,237,821,371',
         basisPointsPercent: '1,212,378,214%',
+        bpPercent: '1,212,378,214%',
       },
     ];
 
@@ -567,6 +590,13 @@ describe('useNumbers', () => {
           maximumFractionDigits: 0,
         });
         expect(format).toEqual(testNumber.percentLgPreset);
+      });
+    });
+
+    it('Should return the same result as bp percent', () => {
+      testNumbers.forEach(testNumber => {
+        const format = fNum2(testNumber.input, FNumFormats.bp);
+        expect(format).toEqual(testNumber.bpPercent);
       });
     });
 
