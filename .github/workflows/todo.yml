@@ -9,6 +9,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      
+    - name: Remove existing TODO.md file
+      run: rm TODO.md || echo "TODO.md does not exist"
+
+    - name: Create TODO file
+      run: touch TODO.md
 
     - name: Extract TODO comments
       run: |
