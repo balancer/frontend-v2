@@ -91,40 +91,48 @@ jobs:
 
   E2E:
     # Only run e2e tests, if Build job is successful
-    needs: Build
+    # needs: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
       - name: Install deps
         run: npm install -g npm@8 && npm ci
       - name: Start app in background
         run: npm run serve &
-      - name: Checkout cypress app
-        uses: actions/checkout@v2
+      - name: Checkout Playwright app
+        uses: actions/checkout@v3
         with:
           repository: balancer-labs/frontend-e2e
+          # Checkout a specific branch
+          ref: feature/use-playwright
+          # Checkout to folder "frontend/e2e"
           path: e2e
-      - name: Run Synpress
-        uses: cypress-io/github-action@v4
+      - name: Run Playwright
+        uses: actions/setup-node@v3
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
-          NETWORK_NAME: goerli
-          CYPRESS_WALLET_ACCOUNT_NUMBER: 1
+          # NETWORK_NAME: goerli
+          # CYPRESS_WALLET_ACCOUNT_NUMBER: 1
         with:
+          node-version: '16.x'
           working-directory: e2e
           # wait for the app to start
-          wait-on: 'http://localhost:8080'
-          # Use custom test command for synpress
-          command: npm run synpress:ci
+          # wait-on: 'http://localhost:8080'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npm run playwright:ci
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: e2e_test_report
-          path: e2e/synpress/report
+          path: e2e/playwright-report
           # Keep the test report artifact for 5 days
           retention-days: 5
