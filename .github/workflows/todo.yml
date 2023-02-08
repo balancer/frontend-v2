@@ -1,0 +1,27 @@
+name: Compile TODO Comments
+
+on: push
+
+jobs:
+  compile-todo:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Extract TODO comments
+      run: |
+        # Extract all TODO comments into a file
+        grep -r -E --exclude=TODO.md 'TODO' . > TODO.md
+      
+    - name: Commit TODO file
+      uses: EndBug/add-and-commit@v4
+      with:
+        add: 'TODO.md'
+        message: 'Add TODO.md file [skip ci]'
+
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.3.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
