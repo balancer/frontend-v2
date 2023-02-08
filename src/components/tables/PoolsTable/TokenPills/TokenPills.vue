@@ -53,7 +53,7 @@ const isSelectedInPickedTokens = computed(() =>
  * METHODS
  */
 function symbolFor(token: PoolToken): string {
-  return token.symbol || getToken(token.address)?.symbol || '---';
+  return getToken(token.address)?.symbol || token.symbol || '---';
 }
 
 function weightFor(token: PoolToken): string {
