@@ -39,7 +39,7 @@ const provider = (_poolId?: string) => {
   const poolGaugesQuery = usePoolGaugesQuery(poolAddress);
   const { data: poolGauges, refetch: refetchPoolGauges } = poolGaugesQuery;
 
-  // Fetches all user's gauge shares, boosts and staked shares.
+  // Access user data fetched on wallet connection/change.
   const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
     useUserData();
   const { data: userGaugeShares, refetch: refetchUserGaugeShares } =

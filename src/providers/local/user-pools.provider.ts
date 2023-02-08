@@ -23,6 +23,7 @@ export const provider = (userStaking: UserStakingResponse) => {
     isLoading: isStakedDataLoading,
   } = userStaking;
 
+  // Access user data fetched on wallet connection/change.
   const { userPoolSharesQuery, lockQuery } = useUserData();
   const { data: userPoolShares, refetch: refetchUserPoolShares } =
     userPoolSharesQuery;
@@ -30,14 +31,17 @@ export const provider = (userStaking: UserStakingResponse) => {
   const { totalLockedValue } = useLock();
   const { injectTokens } = useTokens();
 
+  // Array of pool IDs that the user hasn't staked.
   const unstakedPoolIds = computed((): string[] =>
     Object.keys(userPoolShares.value || {})
   );
 
+  // Only fetch unstaked pools if the user has pool shares.
   const isPoolsQueryEnabled = computed(
     (): boolean => unstakedPoolIds.value.length > 0
   );
 
+  // Fetch pools that the user hasn't staked.
   const unstakedPoolsQuery = usePoolsQuery(
     ref([]),
     reactive({
@@ -50,16 +54,18 @@ export const provider = (userStaking: UserStakingResponse) => {
   );
   const { data: _unstakedPools } = unstakedPoolsQuery;
 
-  // Pool records for all the pools where a user has staked BPT.
+  // Helper property to drill down to first page of results.
   const unstakedPools = computed(
     (): Pool[] => _unstakedPools.value?.pages[0].pools || []
   );
 
+  // Combine staked and unstaked pools.
   const userPools = computed((): Pool[] => [
     ...unstakedPools.value,
     ...stakedPools.value,
   ]);
 
+  // Total fiat value of unstaked positions.
   const totalUnstakedValue = computed((): string => {
     return Object.keys(userPoolShares.value || {})
       .reduce((acc, poolId) => {
@@ -71,6 +77,7 @@ export const provider = (userStaking: UserStakingResponse) => {
       .toString();
   });
 
+  // Total portfolio fiat value, including staked, unstaked, and locked positions.
   const totalFiatValue = computed((): string =>
     bnSum([
       totalUnstakedValue.value,
@@ -87,6 +94,7 @@ export const provider = (userStaking: UserStakingResponse) => {
       (isVeBalSupported.value && isQueryLoading(lockQuery))
   );
 
+  // Trigger refetch of queries for staked and unstaked pools.
   async function refetchAllUserPools() {
     await Promise.all([
       refetchUserPoolShares.value(),
@@ -94,6 +102,8 @@ export const provider = (userStaking: UserStakingResponse) => {
     ]);
   }
 
+  // Whenever new pools show up in the user pools array, inject their tokens so
+  // that we can add the user's balance to the token registry.
   watch(userPools, newUserPools => {
     injectTokens(newUserPools.map(pool => pool.address));
   });
