@@ -12,7 +12,7 @@ import { cowswapProtocolService } from '@/services/cowswap/cowswapProtocol.servi
 import { OrderMetaData } from '@/services/cowswap/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { CowswapTransactionDetails } from './trade/useCowswap';
+import { CowswapTransactionDetails } from './swap/useCowswap';
 import { processedTxs } from './useEthers';
 import useNotifications from './useNotifications';
 import useNumbers, { FNumFormats } from './useNumbers';
@@ -33,7 +33,7 @@ export type TransactionAction =
   | 'drip'
   | 'claim'
   | 'approve'
-  | 'trade'
+  | 'swap'
   | 'wrap'
   | 'unwrap'
   | 'invest'

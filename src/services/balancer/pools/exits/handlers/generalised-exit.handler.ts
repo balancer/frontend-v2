@@ -9,13 +9,14 @@ import {
   QueryOutput,
   AmountsOut,
 } from './exit-pool.handler';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { flatTokenTree } from '@/composables/usePool';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
+const balancer = getBalancer();
 type ExitResponse = Awaited<ReturnType<typeof balancer.pools.generalisedExit>>;
 
 /**

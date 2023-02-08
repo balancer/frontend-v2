@@ -24,7 +24,7 @@ import { useTokens } from '@/providers/tokens.provider';
 // Composables
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import {
   bnSum,
   bnum,
@@ -530,7 +530,7 @@ export default function useWithdrawMath(
     const fetchPools = !batchSwap.value; // Only needs to be fetched on first call
 
     try {
-      const result = await balancer.swaps.queryBatchSwapWithSor({
+      const result = await getBalancer().swaps.queryBatchSwapWithSor({
         tokensIn: tokensIn,
         tokensOut: tokensOut || batchSwapTokensOut.value,
         swapType,

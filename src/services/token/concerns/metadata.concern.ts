@@ -3,7 +3,6 @@ import { set } from 'lodash';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { includesAddress, isSameAddress } from '@/lib/utils';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
   TokenInfo,
   TokenInfoMap,
@@ -12,6 +11,7 @@ import {
 } from '@/types/TokenList';
 
 import TokenService from '../token.service';
+import { getMulticaller } from '@/dependencies/Multicaller';
 
 export default class MetadataConcern {
   constructor(private readonly service: TokenService) {}
@@ -71,6 +71,7 @@ export default class MetadataConcern {
   private async getMetaOnchain(addresses: string[]): Promise<TokenInfoMap> {
     try {
       const network = this.service.configService.network.key;
+      const Multicaller = getMulticaller();
       const multi = new Multicaller(network, this.service.provider, erc20Abi);
       const metaDict = {};
 
