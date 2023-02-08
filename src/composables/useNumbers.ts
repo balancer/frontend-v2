@@ -199,6 +199,26 @@ export default function useNumbers() {
     return bnum(amount).times(price).toString();
   }
 
+  /**
+   * Converts a fiat value into a fiat label.
+   *
+   * @param {number | string} value - The number to format.
+   * @returns {string} - The formatted number.
+   */
+  function toFiatLabel(value: number | string): string {
+    return fNum2(value, FNumFormats.fiat);
+  }
+
+  /**
+   * Converts a token value into a token label.
+   *
+   * @param {number | string} value - The number to format.
+   * @returns {string} - The formatted number.
+   */
+  function toTokenLabel(value: number | string): string {
+    return fNum2(value, FNumFormats.token);
+  }
+
   function fNum2(
     number: number | string,
     options: FNumOptions | undefined = {}
@@ -207,5 +227,5 @@ export default function useNumbers() {
     return numF(number, options, _currency);
   }
 
-  return { fNum, fNum2, toFiat };
+  return { fNum, fNum2, toFiat, toFiatLabel, toTokenLabel };
 }
