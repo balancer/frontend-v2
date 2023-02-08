@@ -56,7 +56,7 @@ export default function usePoolGaugesQuery(
     liquidityGauges: {
       __args: {
         where: {
-          poolAddress: poolAddress?.value?.toLowerCase(),
+          poolAddress: poolAddress.value?.toLowerCase(),
         },
       },
       id: true,
@@ -74,7 +74,7 @@ export default function usePoolGaugesQuery(
       });
     } catch (error) {
       console.error(
-        `Failed to fetch pool gauge for pool: ${poolAddress?.value}`,
+        `Failed to fetch pool gauge for pool: ${poolAddress.value}`,
         {
           cause: error,
         }
