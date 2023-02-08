@@ -112,7 +112,6 @@ jobs:
           # Checkout to folder "frontend/e2e"
           path: e2e
       - name: Run Playwright
-        working-directory: ./e2e
         uses: actions/setup-node@v3
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
@@ -125,10 +124,13 @@ jobs:
           # wait-on: 'http://localhost:8080'
       - name: Install Playwright dependencies
         run: ls -la && npm ci
+        working-directory: ./e2e
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+        working-directory: ./e2e
       - name: Run Playwright tests
         run: playwright:ci
+        working-directory: ./e2e
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
         if: always()
