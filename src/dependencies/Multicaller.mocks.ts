@@ -5,7 +5,7 @@ import { initMulticaller } from './Multicaller';
 export const mockedOnchainTokenName = 'mocked onchain token name';
 
 function buildOnchainMetadataMock(metadict: TokenInfoMap) {
-  // TODO: discover how we can discover different calls and responses
+  // TODO discover how we can discover different calls and responses
   const result: TokenInfoMap = {};
   Object.keys(metadict).map(tokenAddress => {
     result[tokenAddress] = {

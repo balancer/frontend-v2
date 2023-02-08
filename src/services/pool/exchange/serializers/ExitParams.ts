@@ -60,7 +60,7 @@ export default class ExitParams {
 
     const minAmountsOut = parsedAmountsOut.map(amount =>
       // This is a hack to get around rounding issues for MetaStable pools
-      // TODO: do this more elegantly
+      // TODO do this more elegantly
       amount.gt(0) ? amount.sub(1) : amount
     );
     const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);

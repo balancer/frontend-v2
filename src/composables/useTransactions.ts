@@ -97,7 +97,7 @@ export type TransactionState = {
   [networkId: number]: TransactionsMap;
 };
 
-// TODO: What happens if the structure changes? Either keep a version or schema validator.
+// TODO What happens if the structure changes? Either keep a version or schema validator.
 export const transactionsState = ref<TransactionState>(
   lsGet<TransactionState>(LS_KEYS.Transactions, {}, TRANSACTIONS_SCHEMA_VERSION)
 );

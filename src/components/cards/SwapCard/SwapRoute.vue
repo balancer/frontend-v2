@@ -88,7 +88,7 @@ const routes = computed<Route[]>((): Route[] => {
 
   return getV2Routes(addressIn, addressOut, pools, swaps, addresses);
 });
-// TODO: Fix types
+// TODO Fix types
 function getV2Routes(
   addressIn: string,
   addressOut: string,

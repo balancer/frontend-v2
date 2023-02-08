@@ -55,8 +55,7 @@ export class ExactInExitHandler implements ExitPoolHandler {
     const evmBptIn = parseFixed(bptIn, 18).toString();
     const singleTokenMaxOut =
       amountsOut.length === 1
-        ? // TODO: Fix this in the SDK, then remove this toLowerCase
-          tokenOutAddress.toLowerCase()
+        ? tokenOutAddress.toLowerCase() // TODO Fix this in the SDK, then remove this toLowerCase
         : undefined;
 
     this.lastExitRes = await sdkPool.buildExitExactBPTIn(
