@@ -38,14 +38,14 @@ type FilterOptions = {
 export default function usePoolsQuery(
   filterTokens: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
-  filterOptions?: FilterOptions
+  filterOptions?: FilterOptions,
+  poolsSortField?: Ref<string>
 ) {
   /**
    * COMPOSABLES
    */
   const { injectTokens, tokens: tokenMeta } = useTokens();
   const { networkId } = useNetwork();
-
   let poolsRepository = initializePoolsRepository();
 
   /**
@@ -133,10 +133,9 @@ export default function usePoolsQuery(
     const tokenListFormatted = filterTokens.value.map(address =>
       address.toLowerCase()
     );
-
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
-      orderBy: 'totalLiquidity',
+      orderBy: poolsSortField?.value || 'totalLiquidity',
       orderDirection: 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
@@ -180,7 +179,7 @@ export default function usePoolsQuery(
    *  need to change to filter for those tokens
    */
   watch(
-    filterTokens,
+    () => [filterTokens, poolsSortField],
     () => {
       poolsRepository = initializePoolsRepository();
     },
@@ -193,6 +192,7 @@ export default function usePoolsQuery(
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     filterTokens,
+    poolsSortField,
     filterOptions?.poolIds,
     filterOptions?.poolAddresses
   );
@@ -202,19 +202,27 @@ export default function usePoolsQuery(
    */
   const queryFn = async ({ pageParam = 0 }) => {
     const fetchOptions = getFetchOptions(pageParam);
+    let skip = 0;
+    try {
+      const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
-    const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      skip = poolsRepository.currentProvider?.skip
+        ? poolsRepository.currentProvider.skip
+        : 0;
 
-    const skip = poolsRepository.currentProvider?.skip
-      ? poolsRepository.currentProvider.skip
-      : 0;
+      poolsStoreService.setPools(pools);
 
-    poolsStoreService.setPools(pools);
-
-    return {
-      pools,
-      skip,
-    };
+      return {
+        pools,
+        skip,
+      };
+    } catch (e) {
+      const savedPools = poolsStoreService.pools.value;
+      if (savedPools && savedPools.length > 0) {
+        return { pools: savedPools, skip };
+      }
+      throw e;
+    }
   };
 
   options.getNextPageParam = (lastPage: PoolsQueryResponse) => lastPage.skip;

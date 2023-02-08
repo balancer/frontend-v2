@@ -19,6 +19,7 @@ import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
   fiatValueOf,
+  isLiquidityBootstrapping,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
@@ -67,7 +68,7 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  sortColumn: 'poolValue',
+  sortColumn: 'totalLiquidity',
   hiddenColumns: () => [],
   showBoost: false,
   showActions: false,
@@ -77,8 +78,12 @@ const props = withDefaults(defineProps<Props>(), {
   skeletonClass: 'h-64',
 });
 
-const emit = defineEmits(['loadMore', 'triggerStake', 'triggerUnstake']);
-
+const emit = defineEmits<{
+  (e: 'loadMore'): void;
+  (e: 'triggerStake', value: Pool): void;
+  (e: 'triggerUnstake', value: Pool): void;
+  (e: 'onColumnSort', value: string): void;
+}>();
 /**
  * COMPOSABLES
  */
@@ -137,7 +142,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         maximumFractionDigits: 0,
       }),
     align: 'right',
-    id: 'poolValue',
+    id: 'totalLiquidity',
     sortKey: pool => {
       const apr = Number(pool.totalLiquidity);
       if (apr === Infinity || isNaN(apr)) return 0;
@@ -150,7 +155,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     name: t('volume24h', [t('hourAbbrev')]),
     accessor: pool => pool?.volumeSnapshot || '0',
     align: 'right',
-    id: 'poolVolume',
+    id: 'volume',
     Cell: 'volumeCell',
     sortKey: pool => {
       const volume = Number(pool?.volumeSnapshot);
@@ -175,7 +180,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     Cell: 'aprCell',
     accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
-    id: 'poolApr',
+    id: 'apr',
     sortKey: pool => {
       let apr = 0;
 
@@ -286,10 +291,12 @@ function iconAddresses(pool: Pool) {
       :square="upToLargeBreakpoint"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
+      isOnlyDescSort
       :initialState="{
         sortColumn: sortColumn,
         sortDirection: 'desc',
       }"
+      @on-column-sort="emit('onColumnSort', $event)"
       @load-more="emit('loadMore')"
     >
       <template #iconColumnHeader>
@@ -315,7 +322,12 @@ function iconAddresses(pool: Pool) {
               :selectedTokens="selectedTokens"
             />
           </div>
-          <BalChipNew v-if="pool?.isNew" class="mt-1" />
+          <BalChip
+            v-if="isLiquidityBootstrapping(pool.poolType)"
+            label="LBP"
+            color="amber"
+          />
+          <BalChipNew v-else-if="pool?.isNew" class="mt-1" />
           <PoolWarningTooltip :pool="pool" />
         </div>
       </template>
