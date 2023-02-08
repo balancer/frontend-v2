@@ -62,7 +62,7 @@ function handleModalClose() {
   showUnstakeModal.value = false;
 }
 
-async function handleStakeSuccess() {
+async function handleUnstakeSuccess() {
   await refetchAllUserPools();
 }
 </script>
@@ -95,7 +95,7 @@ async function handleStakeSuccess() {
       :isVisible="showUnstakeModal"
       action="unstake"
       @close="handleModalClose"
-      @success="handleStakeSuccess"
+      @success="handleUnstakeSuccess"
     />
   </div>
 </template>
