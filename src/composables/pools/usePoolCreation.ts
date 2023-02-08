@@ -441,7 +441,7 @@ export default function usePoolCreation() {
           name: poolCreationState.name,
         },
       });
-      1;
+
       txListener(tx, {
         onTxConfirmed: async () => {
           retrievePoolAddress(tx.hash);
