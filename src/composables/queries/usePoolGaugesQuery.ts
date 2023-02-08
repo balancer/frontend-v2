@@ -43,7 +43,7 @@ export default function usePoolGaugesQuery(
   const subgraphQuery = computed(() => ({
     pool: {
       __args: {
-        id: poolAddress?.value?.toLowerCase(),
+        id: poolAddress.value?.toLowerCase(),
       },
       preferentialGauge: {
         id: true,
