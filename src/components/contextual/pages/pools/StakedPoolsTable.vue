@@ -66,10 +66,6 @@ function handleModalClose() {
 async function handleStakeSuccess() {
   await refetchAllUserPools();
 }
-
-onMounted(() => {
-  refetchAllUserPools();
-});
 </script>
 
 <template>
