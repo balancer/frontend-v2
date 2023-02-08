@@ -94,6 +94,13 @@
   "blog": "Blog",
   "boostedPool": "Balancer Boosted pool",
   "byConnectingWallet": "By connecting a wallet, I agree to Balancer Foundation’s",
+  "brandedRedirect": {
+    "xave": {
+      "title": "Xave Finance",
+      "description": "Xave Finance  (pronounced \"Save Finance\") allows financial services companies (\"fintechs\") to leverage DeFi for real time remittance transfers and high yield consumer savings. Xave does this in a capital efficient way by building liquid FX markets via our custom FXPools integrated with the Balancer V2 Vault.",
+      "btnText": "Manage liquidity on xave.co"
+    }
+  },
   "cancel": "Cancel",
   "cancelling": "Cancelling",
   "change": "Change",
@@ -677,7 +684,6 @@
       "myTransactions": "My transactions",
       "allInvestments": "All liquidity provision",
       "myInvestments": "My liquidity",
-      "swaps": "Swaps",
       "swaps": "Swaps"
     },
     "noResults": {
