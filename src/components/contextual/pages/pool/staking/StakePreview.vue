@@ -4,7 +4,6 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
-import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
