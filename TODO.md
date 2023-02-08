@@ -3,7 +3,7 @@
 - [ ] move to sor mocks to subfile (./src/dependencies/balancer-sdk.mocks.ts)
 - [ ] discover how we can discover different calls and responses (./src/dependencies/Multicaller.mocks.ts)
 - [ ] Fix types (./src/components/cards/SwapCard/SwapRoute.vue)
-- [ ]: check pool type and use protocol yield percentage cache when applicable (./src/services/lido/lido.service.ts)
+- [ ] check pool type and use protocol yield percentage cache when applicable (./src/services/lido/lido.service.ts)
 - [ ] BETTER INTEGRATION OF REWARD TOKEN APRS (./src/services/staking/staking-rewards.service.ts)
 - [ ] do this more elegantly (./src/services/pool/exchange/serializers/ExitParams.ts)
 - [ ] type this (./src/services/web3/connectors/trustwallet/walletconnect.connector.ts)
