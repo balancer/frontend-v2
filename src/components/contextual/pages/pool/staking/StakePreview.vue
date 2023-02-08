@@ -42,7 +42,6 @@ const {
   stakedShares,
   refetchAllPoolStakingData,
   preferentialGaugeAddress,
-  isLoading: isLoadingPoolStaking,
 } = usePoolStaking();
 
 // Staked or unstaked shares depending on action type.
@@ -97,10 +96,6 @@ watch(
   },
   { immediate: true }
 );
-
-watch(isLoadingPoolStaking, _isLoading => {
-  console.log('pool staking', _isLoading, stakedShares.value);
-});
 
 /* COMPUTED */
 const assetRowWidth = computed(
