@@ -115,6 +115,7 @@ jobs:
         uses: actions/setup-node@v3
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # NETWORK_NAME: goerli
           # CYPRESS_WALLET_ACCOUNT_NUMBER: 1
         with:
