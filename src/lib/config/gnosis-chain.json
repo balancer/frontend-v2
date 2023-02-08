@@ -11,8 +11,8 @@
   "ws": "wss://rpc.gnosischain.com/wss",
   "publicRpc": "https://rpc.gnosis.gateway.fm",
   "loggingRpc": "https://rpc.gnosis.gateway.fm",
-  "explorer": "https://blockscout.com/xdai/mainnet",
-  "explorerName": "Blockscout",
+  "explorer": "https://gnosisscan.io",
+  "explorerName": "Gnosisscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gnosis-chain-v2",
   "poolsUrlV2": "",
   "subgraphs": {
