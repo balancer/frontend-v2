@@ -5,7 +5,7 @@ name: Compile - [ ] Comments
  run: touch - [ ].md
  - name: Extract - [ ] comments
  # Extract all - [ ] comments into a file, excluding todo.yml file in /.github/workflows
- grep -r -E --exclude={- [ ].md,/.github/workflows/todo.yml} 'TODO' . | while read line; do
+ grep -r -E --exclude={- [ ].md,./.github/workflows/todo.yml} 'TODO' . | while read line; do
  todo="$(echo $line | cut -d ':' -f 2- | sed 's/- [ ]/- [ ]/')"
  echo "$todo" >> - [ ].md
  - name: Commit - [ ] file
