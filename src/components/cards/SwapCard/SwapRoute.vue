@@ -96,7 +96,6 @@ function getV2Routes(
   swaps: SwapV2[],
   addresses: string[]
 ): Route[] {
-  // ) {
   const { addresses: constants } = appNetworkConfig;
 
   addressIn =
