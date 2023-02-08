@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import MigrateForm from '@/components/forms/pool_actions/MigrateForm/MigrateForm.vue';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * COMPOSABLES
@@ -19,6 +20,8 @@ const poolMigrationInfo = POOL_MIGRATIONS.find(
     poolMigrationInfo.fromPoolId === fromPoolId &&
     poolMigrationInfo.toPoolId === toPoolId
 );
+
+providePoolStaking(fromPoolId);
 </script>
 
 <template>
