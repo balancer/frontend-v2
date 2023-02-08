@@ -13,8 +13,12 @@ jobs:
     - name: Extract TODO comments
       run: |
         # Extract all TODO comments into a file
-        grep -r -E --exclude=TODO.md,todo.yml 'TODO' . | sed 's/TODO/- [ ]/' > TODO.md
-      
+        grep -r -E --exclude={TODO.md,/.github/workflows/todo.yml} 'TODO' . | while read line; do
+          location="$(echo $line | cut -d ':' -f 1)"
+          todo="$(echo $line | cut -d ':' -f 2- | sed 's/TODO/- [ ]/')"
+          echo "$todo ($location)" >> TODO.md
+        done
+  
     - name: Commit TODO file
       uses: EndBug/add-and-commit@v4
       with:
