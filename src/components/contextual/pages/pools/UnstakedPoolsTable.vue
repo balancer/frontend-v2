@@ -6,7 +6,7 @@ import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useUserPools } from '@/providers/local/user-pools.provider';
-import StakePreviewModal from '../pool/staking/StakePreviewModal.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
