@@ -24,7 +24,7 @@ import { fiatValueOf, tokensListExclBpt } from '../usePool';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useSlippage from '../useSlippage';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
-import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 export type MigratePoolState = {
   init: boolean;
@@ -59,6 +59,7 @@ export function usePoolMigration(
   const { oneHourInMs } = useTime();
   const { fNum2 } = useNumbers();
   const { minusSlippageScaled } = useSlippage();
+  const { fetchPreferentialGaugeAddress } = usePoolStaking();
 
   /**
    * STATE
@@ -337,8 +338,10 @@ export function usePoolMigration(
     };
 
     if (staked) {
-      const fromGaugeAddress = await getGaugeAddress(fromPool.address);
-      const toGaugeAddress = await getGaugeAddress(toPool.address);
+      const [fromGaugeAddress, toGaugeAddress] = await Promise.all([
+        fetchPreferentialGaugeAddress(fromPool.address),
+        fetchPreferentialGaugeAddress(toPool.address),
+      ]);
       fromData['gauge'] = fromGaugeAddress;
       toData['gauge'] = toGaugeAddress;
     }
