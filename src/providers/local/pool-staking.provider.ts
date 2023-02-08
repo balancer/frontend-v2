@@ -35,9 +35,11 @@ const provider = (_poolId?: string) => {
   const { balanceFor } = useTokens();
   const { account, isWalletReady } = useWeb3();
 
+  // Fetches all gauges for specified pool (incl. preferential gauge).
   const poolGaugesQuery = usePoolGaugesQuery(poolAddress);
   const { data: poolGauges, refetch: refetchPoolGauges } = poolGaugesQuery;
 
+  // Fetches all user's gauge shares, boosts and staked shares.
   const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
     useUserData();
   const { data: userGaugeShares, refetch: refetchUserGaugeShares } =
@@ -61,6 +63,7 @@ const provider = (_poolId?: string) => {
           isQueryLoading(userBoostsQuery)))
   );
 
+  // The current preferential gauge for the specified pool.
   const preferentialGaugeAddress = computed(
     (): string | undefined | null =>
       poolGauges.value?.pool?.preferentialGauge?.id
@@ -134,6 +137,7 @@ const provider = (_poolId?: string) => {
     poolId.value = id;
   }
 
+  // Triggers refetch of all queries in this provider.
   async function refetchAllPoolStakingData() {
     return Promise.all([
       refetchPoolGauges.value(),
