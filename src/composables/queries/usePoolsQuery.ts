@@ -40,7 +40,7 @@ export default function usePoolsQuery(
   filterTokens: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
   filterOptions?: FilterOptions,
-  poolsSortField?: Ref<string> | undefined
+  poolsSortField?: Ref<string>
 ) {
   /**
    * COMPOSABLES
