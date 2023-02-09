@@ -5,7 +5,7 @@
       "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
       "token": "0xba100000625a3754423978a60c9317c58a424e3d",
       "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json",
-      "weekStart": 52
+      "weekStart": 1
     },
     {
       "label": "UNN",
@@ -33,7 +33,7 @@
       "distributor": "0x55c8de1ac17c1a937293416c9bce5789cbbf61d1",
       "token": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
       "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-lido.json",
-      "weekStart": 25
+      "weekStart": 1
     },
     {
       "label": "D2D",
@@ -63,7 +63,7 @@
       "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
       "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
       "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
-      "weekStart": 10
+      "weekStart": 1
     },
     {
       "label": "QI",
@@ -86,14 +86,14 @@
       "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
       "token": "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
       "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json",
-      "weekStart": 6
+      "weekStart": 1
     },
     {
       "label": "PICKLE",
       "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
       "token": "0x965772e0e9c84b6f359c8597c891108dcf1c5b1a",
       "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-pickle-arbitrum.json",
-      "weekStart": 18
+      "weekStart": 1
     }
   ]
 }
