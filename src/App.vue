@@ -1,9 +1,8 @@
 <script lang="ts">
 import BigNumber from 'bignumber.js';
-import { defineComponent, onBeforeMount, ref, watch } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import { VueQueryDevTools } from 'vue-query/devtools';
 import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
 
 import Notifications from '@/components/notifications/Notifications.vue';
 import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.vue';
@@ -57,7 +56,6 @@ export default defineComponent({
     const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } =
       useWeb3();
     const route = useRoute();
-    const store = useStore();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
     const { sidebarOpen } = useSidebar();
 
@@ -75,10 +73,6 @@ export default defineComponent({
     /**
      * CALLBACKS
      */
-    onBeforeMount(async () => {
-      store.dispatch('app/init');
-    });
-
     function handleThirdPartyModalToggle(value: boolean) {
       isThirdPartyServicesModalVisible.value = value;
     }

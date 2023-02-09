@@ -14,17 +14,6 @@ const state: AppState = {
   transactionDeadline: lsGet(LS_KEYS.App.SwapDeadline, 100), // minutes
 };
 
-const actions = {
-  init: async ({ dispatch }) => {
-    try {
-      // Fetch initial swap tokens
-      dispatch('swap/init', null, { root: true });
-    } catch (error) {
-      console.error('Failed to initialize app', error);
-    }
-  },
-};
-
 const mutations = {
   toggleModal(state: AppState) {
     state.modalOpen = !state.modalOpen;
@@ -49,5 +38,4 @@ export default {
   namespaced: true,
   state,
   mutations,
-  actions,
 };
