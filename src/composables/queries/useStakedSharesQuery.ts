@@ -83,6 +83,7 @@ export default function useStakedSharesQuery(
       return shareMap;
     } catch (error) {
       handleFetchException('Failed to fetch staked share balance', error);
+      throw Error;
     }
   };
 

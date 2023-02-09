@@ -1,3 +1,4 @@
+import { handleFetchException } from '@/lib/utils/exceptions';
 import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
@@ -7,7 +8,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import { GaugeShare } from './useUserGaugeSharesQuery';
 import { isL2 } from '../useNetwork';
-import { handleFetchException } from '@/lib/utils/exceptions';
 
 /**
  * TYPES
@@ -65,6 +65,7 @@ export default function useUserBoostsQuery(
       });
     } catch (error) {
       handleFetchException('Failed to fetch user boost values', error);
+      throw error;
     }
   };
 
