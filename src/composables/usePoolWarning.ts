@@ -9,7 +9,7 @@ export enum PoolWarning {
   PoolOwnerVulnWarningGovernanceWithdraw = 'poolOwnerVulnWarningGovernanceWithdraw',
   PoolOwnerVulnWarningGovernance = 'poolOwnerVulnWarningGovernance',
   PoolOwnerVulnWarningEcosystem = 'poolOwnerVulnWarningEcosystem',
-  PoolOwnerVulnWarningEcosystemMigrate = 'PoolOwnerVulnWarningEcosystemMigrate',
+  PoolOwnerVulnWarningEcosystemMigrate = 'poolOwnerVulnWarningEcosystemMigrate',
   RenBTCWarning = 'renBTCWarning',
 }
 

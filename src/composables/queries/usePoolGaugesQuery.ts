@@ -5,7 +5,7 @@ import { useQuery } from 'vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
-import { isStakingSupported } from '../staking/useStaking';
+import { isGnosis } from '../useNetwork';
 
 /**
  * TYPES
@@ -28,7 +28,7 @@ export type PoolGauges = {
  * preferential gauge.
  */
 export default function usePoolGaugesQuery(
-  poolAddress: Ref<string>,
+  poolAddress: Ref<string | undefined>,
   options: UseQueryOptions<PoolGauges> = {}
 ) {
   /**
@@ -39,10 +39,14 @@ export default function usePoolGaugesQuery(
   /**
    * COMPUTED
    */
+  const enabled = computed(
+    (): boolean => !!poolAddress?.value && !isGnosis.value
+  );
+
   const subgraphQuery = computed(() => ({
     pool: {
       __args: {
-        id: poolAddress.value.toLowerCase(),
+        id: poolAddress.value?.toLowerCase(),
       },
       preferentialGauge: {
         id: true,
@@ -55,7 +59,7 @@ export default function usePoolGaugesQuery(
     liquidityGauges: {
       __args: {
         where: {
-          poolAddress: poolAddress.value.toLowerCase(),
+          poolAddress: poolAddress.value?.toLowerCase(),
         },
       },
       id: true,
@@ -86,7 +90,7 @@ export default function usePoolGaugesQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: isStakingSupported,
+    enabled,
     refetchOnWindowFocus: false,
     ...options,
   });

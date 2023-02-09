@@ -6,7 +6,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { isStakingSupported } from '../staking/useStaking';
+import { isGnosis } from '../useNetwork';
 
 /**
  * TYPES
@@ -52,7 +52,7 @@ export default function useUserGaugeSharesQuery(
    * COMPUTED
    */
   const enabled = computed(
-    (): boolean => isStakingSupported.value && isWalletReady.value
+    (): boolean => isWalletReady.value && !isGnosis.value
   );
 
   const queryArgs = computed(() => {

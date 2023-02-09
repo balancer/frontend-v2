@@ -34,7 +34,7 @@ import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQ
 import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
-import { isStakingSupported } from '@/composables/staking/useStaking';
+import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 
 /**
  * STATE
@@ -178,6 +178,10 @@ const poolPremintedBptIndex = computed(() => {
   return preMintedBptIndex(pool.value) ?? null;
 });
 
+const showBrandedRedirectCard = computed(() => {
+  return POOLS.BrandedRedirect?.[poolId] || false;
+});
+
 /**
  * WATCHERS
  */
@@ -265,8 +269,14 @@ watch(poolQuery.error, () => {
         </div>
       </div>
 
+      <BrandedRedirectCard
+        v-if="showBrandedRedirectCard"
+        :poolId="poolId"
+        class="order-1 lg:order-2 px-4 lg:px-0"
+      />
+
       <div
-        v-if="!isLiquidityBootstrappingPool"
+        v-else-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
         <BalStack vertical>
@@ -283,13 +293,7 @@ watch(poolQuery.error, () => {
 
           <BalLoadingBlock v-if="loadingPool" class="h-40 pool-actions-card" />
           <StakingIncentivesCard
-            v-if="
-              isStakingSupported &&
-              isStakablePool &&
-              !loadingPool &&
-              pool &&
-              isWalletReady
-            "
+            v-if="isStakablePool && !loadingPool && pool && isWalletReady"
             :pool="pool"
             class="staking-incentives"
           />

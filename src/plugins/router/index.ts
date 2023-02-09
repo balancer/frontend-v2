@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import { captureException } from '@sentry/browser';
 
 import { isGoerli } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
@@ -202,6 +203,18 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 };
   },
+});
+
+router.onError((error, to) => {
+  if (error.message.includes('Failed to fetch dynamically imported module')) {
+    captureException(
+      'Triggered automatic reload after failed to fetch dynamically imported module. ',
+      {
+        extra: error.message,
+      }
+    );
+    window.location.href = to.fullPath;
+  }
 });
 
 export default applyNavGuards(router);
