@@ -43,7 +43,7 @@ export function aWeightedPool() {
   return poolMock;
 }
 
-export function aPoolToken(options: Partial<PoolToken>): PoolToken {
+export function aPoolToken(options?: Partial<PoolToken>): PoolToken {
   const poolToken = mock<PoolToken>();
   return Object.assign(poolToken, options);
 }
