@@ -1,10 +1,13 @@
 import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import {
-  defaultPoolId,
   defaultGaugeBalance,
+  defaultPoolId,
   defaultTotalSupply,
 } from '@tests/msw/graphql-handlers';
+
+initDependenciesWithDefaultMocks();
 
 test('Returns token prices from balancer SDK', async () => {
   const { result } = mountComposable(() => useUserGaugeSharesQuery());

@@ -10,7 +10,7 @@ import veBalProxyABI from '@/lib/abi/veDelegationProxy.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
-import { getMulticaller } from '@/dependencies/Multicaller';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class VeBALProxy {
   instance: EthersContract;
@@ -44,7 +44,7 @@ export class VeBALProxy {
   }
 
   private getMulticaller() {
-    const Multicaller = getMulticaller();
+    const Multicaller = getOldMulticaller();
     return new Multicaller(this.config.network.key, this.provider, this.abi);
   }
 }

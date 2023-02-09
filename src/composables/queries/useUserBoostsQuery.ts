@@ -7,6 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import { GaugeShare } from './useUserGaugeSharesQuery';
 import { isL2 } from '../useNetwork';
+import { handleFetchException } from '@/lib/utils/exceptions';
 
 /**
  * TYPES
@@ -63,10 +64,7 @@ export default function useUserBoostsQuery(
         gaugeShares: gaugeShares.value,
       });
     } catch (error) {
-      console.error('Failed to fetch user boost values', {
-        cause: error,
-      });
-      throw error;
+      handleFetchException('Failed to fetch user boost values', error);
     }
   };
 

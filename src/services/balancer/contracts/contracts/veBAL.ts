@@ -9,7 +9,7 @@ import veBalAbi from '@/lib/abi/veBalAbi.json';
 import Service from '../balancer-contracts.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { ContractInterface } from 'ethers';
-import { getMulticaller } from '@/dependencies/Multicaller';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export type VeBalLockInfo = {
   lockedEndDate: number;
@@ -38,7 +38,7 @@ export default class VeBAL {
   }
 
   public async getLockInfo(account: string): Promise<VeBalLockInfo> {
-    const Multicaller = getMulticaller();
+    const Multicaller = getOldMulticaller();
     const veBalMulticaller = new Multicaller(
       this.service.config.key,
       this.service.provider,

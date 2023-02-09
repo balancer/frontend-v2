@@ -1,11 +1,9 @@
 import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
-import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { GaugeShare } from './useUserGaugeSharesQuery';
 
-initMulticallerWithDefaultMocks();
-initEthersContractWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 test('Does not calculate boosts when user does not have gauge shares', async () => {
   const emptyGaugeShares = ref([]);

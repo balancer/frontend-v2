@@ -5,10 +5,11 @@ import { useQuery } from 'vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
 import { GaugeShare } from './useUserGaugeSharesQuery';
-import { Multicaller } from '@/services/multicalls/multicaller';
 import { BigNumber } from '@ethersproject/bignumber';
 import { bnSum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
+import { handleFetchException } from '@/lib/utils/exceptions';
+import { getMulticaller } from '@/dependencies/Multicaller';
 
 /**
  * TYPES
@@ -54,6 +55,7 @@ export default function useStakedSharesQuery(
       if (!userGaugeShares.value) return {};
 
       let result = {} as Record<string, Record<string, BigNumber>>;
+      const Multicaller = getMulticaller();
       const multicaller = new Multicaller();
 
       userGaugeShares.value.forEach(gaugeShare => {
@@ -80,8 +82,7 @@ export default function useStakedSharesQuery(
 
       return shareMap;
     } catch (error) {
-      console.error('Failed to fetch staked share balance', { cause: error });
-      throw error;
+      handleFetchException('Failed to fetch staked share balance', error);
     }
   };
 

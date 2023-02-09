@@ -3,10 +3,10 @@ import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class VEBalHelpers {
   constructor(
@@ -32,7 +32,8 @@ export class VEBalHelpers {
     return weights;
   }
 
-  private getMulticaller(): Multicaller {
+  private getMulticaller() {
+    const Multicaller = getOldMulticaller();
     return new Multicaller(this.config.network.key, this.provider, this.abi);
   }
 }

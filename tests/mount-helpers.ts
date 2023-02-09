@@ -7,7 +7,6 @@ import {
   tokensProvider,
   TokensProviderSymbol,
 } from '@/providers/tokens.provider';
-import { provideUserData } from '@/providers/user-data.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { computed, provide, Ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
@@ -30,7 +29,6 @@ export function mountComposable<R>(
     provider: () => {
       provideUserSettings();
       provideTokenLists();
-      provideUserData();
       provide('store', {});
       provideFakePoolStaking();
       options?.extraProvidersCb?.();

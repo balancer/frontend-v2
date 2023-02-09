@@ -3,7 +3,8 @@ import {
   mockedTokenPrice,
 } from '@/dependencies/balancer-sdk.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { mockedOnchainTokenName } from '@/dependencies/Multicaller.mocks';
+import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
+import { mockedOnchainTokenName } from '@/dependencies/OldMulticaller.mocks';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { configService } from '@/services/config/config.service';
@@ -98,6 +99,7 @@ test('injects new tokens', async () => {
 });
 
 test('generates balancerFor', async () => {
+  initMulticallerWithDefaultMocks();
   const { balanceFor, priceFor } = await mountTokenProvider();
 
   expect(balanceFor(veBAL)).toEqual('0.000000000000000025');

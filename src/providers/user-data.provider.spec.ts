@@ -1,11 +1,9 @@
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
-import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mountComposable } from '@tests/mount-helpers';
 import waitForExpect from 'wait-for-expect';
 import { userDataProvider } from './user-data.provider';
 
-initMulticallerWithDefaultMocks();
-initEthersContractWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 async function mountUserDataProvider() {
   const { result } = mountComposable(() => userDataProvider());
