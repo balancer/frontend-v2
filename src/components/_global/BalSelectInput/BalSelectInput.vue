@@ -34,8 +34,6 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
-
 import { RuleFunction, Rules } from '@/types';
 
 import BalIcon from '../BalIcon/BalIcon.vue';
