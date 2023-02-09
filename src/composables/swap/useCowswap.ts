@@ -20,7 +20,7 @@ import { TokenInfo } from '@/types/TokenList';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from '../useTransactions';
-import { TradeQuote } from './types';
+import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
 import { Goals, trackGoal } from '../useFathom';
 
@@ -53,7 +53,7 @@ export type CowswapTransactionDetails = {
   tokenInAmount: string;
   tokenOutAmount: string;
   exactIn: boolean;
-  quote: TradeQuote;
+  quote: SwapQuote;
   slippageBufferRate: number;
   order: {
     validTo: OrderMetaData['validTo'];
@@ -122,7 +122,7 @@ export default function useCowswap({
     };
   }
 
-  function getQuote(): TradeQuote {
+  function getQuote(): SwapQuote {
     const { feeAmountInToken, feeAmountOutToken } = getFeeAmount();
 
     const maximumInAmount = tokenInAmountScaled.value
@@ -143,7 +143,7 @@ export default function useCowswap({
     };
   }
 
-  async function trade(successCallback?: () => void) {
+  async function swap(successCallback?: () => void) {
     try {
       confirming.value = true;
       state.submissionError = null;
@@ -213,7 +213,7 @@ export default function useCowswap({
       addTransaction({
         id: orderId,
         type: 'order',
-        action: 'trade',
+        action: 'swap',
         summary,
         details: {
           tokenIn: tokenIn.value,
@@ -354,7 +354,7 @@ export default function useCowswap({
 
   return {
     // methods
-    trade,
+    swap,
     handleAmountChange,
     resetState,
 

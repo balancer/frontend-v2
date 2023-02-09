@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect, onMounted } from 'vue';
-
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { UseTrading } from '@/composables/trade/useTrading';
+import { UseSwapping } from '@/composables/swap/useSwapping';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 
-import TradePairToggle from './TradePairToggle.vue';
+import SwapPairToggle from './SwapPairToggle.vue';
 
 /**
  * TYPES
@@ -20,8 +18,8 @@ type Props = {
   tokenOutAddress: string;
   exactIn: boolean;
   priceImpact?: number;
-  effectivePriceMessage?: UseTrading['effectivePriceMessage'];
-  tradeLoading?: boolean;
+  effectivePriceMessage?: UseSwapping['effectivePriceMessage'];
+  swapLoading?: boolean;
 };
 
 /**
@@ -169,7 +167,7 @@ onMounted(() => {
       :address="_tokenInAddress"
       name="tokenIn"
       :excludedTokens="[veBalTokenInfo?.address]"
-      :ignoreWalletBalance="tradeLoading"
+      :ignoreWalletBalance="swapLoading"
       autoFocus
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
@@ -178,7 +176,7 @@ onMounted(() => {
     />
 
     <div class="flex items-center my-2">
-      <TradePairToggle @toggle="handleTokenSwitch" />
+      <SwapPairToggle @toggle="handleTokenSwitch" />
       <div class="mx-2 h-px bg-gray-100 dark:bg-gray-700 grow" />
       <div
         v-if="rateLabel"

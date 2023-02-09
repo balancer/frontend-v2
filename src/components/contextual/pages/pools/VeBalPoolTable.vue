@@ -16,7 +16,7 @@ type Props = {
 const props = defineProps<Props>();
 
 /** COMPOSABLES */
-const { lockedFiatTotal } = useLock();
+const { totalLockedValue } = useLock();
 
 /** COMPUTED */
 const lockPools = computed<PoolWithShares[]>(() => {
@@ -25,7 +25,7 @@ const lockPools = computed<PoolWithShares[]>(() => {
       {
         ...props.lockPool,
         bpt: '',
-        shares: lockedFiatTotal.value,
+        shares: totalLockedValue.value,
         lockedEndDate:
           props.lock?.hasExistingLock && !props.lock?.isExpired
             ? props.lock?.lockedEndDate
@@ -35,6 +35,12 @@ const lockPools = computed<PoolWithShares[]>(() => {
   }
   return [];
 });
+
+const poolShares = computed(
+  (): Record<string, string> => ({
+    [props.lockPool.id]: totalLockedValue.value,
+  })
+);
 
 const poolsToRenderKey = computed(() => JSON.stringify(lockPools.value));
 
@@ -50,6 +56,7 @@ const hiddenColumns = ['poolVolume', 'migrate', 'actions', 'myBoost'];
       <PoolsTable
         :key="poolsToRenderKey"
         :data="lockPools"
+        :shares="poolShares"
         :hiddenColumns="hiddenColumns"
         sortColumn="myBalance"
         showPoolShares

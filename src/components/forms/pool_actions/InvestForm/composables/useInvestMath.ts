@@ -47,7 +47,7 @@ export default function useInvestMath(
   const { minusSlippageScaled } = useSlippage();
   const { getSigner } = useWeb3();
   const {
-    managedPoolWithTradingHalted,
+    managedPoolWithSwappingHalted,
     isComposableStableLikePool,
     isShallowComposableStablePool,
     isDeepPool,
@@ -190,7 +190,7 @@ export default function useInvestMath(
   });
 
   const bptOut = computed((): string => {
-    if (managedPoolWithTradingHalted.value) return fullBPTOut.value.toString();
+    if (managedPoolWithSwappingHalted.value) return fullBPTOut.value.toString();
     return minusSlippageScaled(fullBPTOut.value);
   });
 

@@ -42,7 +42,7 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { managedPoolWithTradingHalted, isDeepPool, isPreMintedBptPool } =
+const { managedPoolWithSwappingHalted, isDeepPool, isPreMintedBptPool } =
   usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -71,7 +71,7 @@ const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
  * COMPUTED
  */
 const forceProportionalInputs = computed(
-  (): boolean => managedPoolWithTradingHalted.value
+  (): boolean => managedPoolWithSwappingHalted.value
 );
 
 const poolHasLowLiquidity = computed((): boolean =>
@@ -125,9 +125,9 @@ watch(
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
-      :title="$t('investment.warning.managedPoolTradingHalted.title')"
+      :title="$t('investment.warning.managedPoolSwappingHalted.title')"
       :description="
-        $t('investment.warning.managedPoolTradingHalted.description')
+        $t('investment.warning.managedPoolSwappingHalted.description')
       "
       class="mb-5"
     />

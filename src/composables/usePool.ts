@@ -148,7 +148,7 @@ export function isWeightedLike(poolType: PoolType): boolean {
   );
 }
 
-export function isTradingHaltable(poolType: PoolType): boolean {
+export function isSwappingHaltable(poolType: PoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
@@ -242,8 +242,9 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
-    return numF(absMaxApr(aprs, boost), FNumFormats.bp);
-  } else if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
+    numF(absMaxApr(aprs, boost), FNumFormats.bp);
+  }
+  if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
     const minAPR = numF(aprs.min, FNumFormats.bp);
     const maxAPR = numF(aprs.max, FNumFormats.bp);
     return `${minAPR} - ${maxAPR}`;
@@ -597,7 +598,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isLiquidityBootstrappingPool = computed(
     (): boolean => !!pool.value && isLiquidityBootstrapping(pool.value.poolType)
   );
-  const managedPoolWithTradingHalted = computed(
+  const managedPoolWithSwappingHalted = computed(
     (): boolean =>
       !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
   );
@@ -639,7 +640,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeightedLikePool,
     isManagedPool,
     isLiquidityBootstrappingPool,
-    managedPoolWithTradingHalted,
+    managedPoolWithSwappingHalted,
     isWethPool,
     isMainnetWstETHPool,
     noInitLiquidityPool,
@@ -652,7 +653,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeighted,
     isLiquidityBootstrapping,
     isWeightedLike,
-    isTradingHaltable,
+    isSwappingHaltable,
     isPreMintedBptType,
     isWeth,
     noInitLiquidity,

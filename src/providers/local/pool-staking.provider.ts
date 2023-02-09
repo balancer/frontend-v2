@@ -1,11 +1,8 @@
 import usePoolGaugesQuery from '@/composables/queries/usePoolGaugesQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
-import usePoolStakedSharesQuery from '@/composables/queries/usePoolStakedSharesQuery';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
 import { computed, InjectionKey, provide } from 'vue';
-import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
-import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { getAddress } from '@ethersproject/address';
 import { parseUnits } from '@ethersproject/units';
@@ -14,47 +11,45 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { POOLS } from '@/constants/pools';
 import { safeInject } from '../inject';
+import { useUserData } from '../user-data.provider';
+import { subgraphRequest } from '@/lib/utils/subgraph';
+import { configService } from '@/services/config/config.service';
 
 /**
  * PoolStakingProvider
  *
  * Fetches data and provides functionality for a specific pool's gauge.
  */
-const provider = (poolId: string) => {
+const provider = (_poolId?: string) => {
   /**
    * STATE
    */
-  const poolAddress = computed((): string => getAddressFromPoolId(poolId));
+  const poolId = ref(_poolId);
+  const poolAddress = computed((): string | undefined =>
+    poolId.value ? getAddressFromPoolId(poolId.value) : undefined
+  );
 
   /**
    * COMPOSABLES
    */
   const { balanceFor } = useTokens();
-  const { account } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
 
-  /**
-   * QUERIES
-   */
-  // Fetches all gauges for this pool (incl. preferential gauge).
+  // Fetches all gauges for specified pool (incl. preferential gauge).
   const poolGaugesQuery = usePoolGaugesQuery(poolAddress);
   const { data: poolGauges, refetch: refetchPoolGauges } = poolGaugesQuery;
 
-  // Fetches the user's total staked shares for this pool using onchain calls.
-  const poolStakedSharesQuery = usePoolStakedSharesQuery(poolGauges);
-  const {
-    data: _stakedShares,
-    isRefetching: isRefetchingStakedShares,
-    refetch: refetchStakedShares,
-  } = poolStakedSharesQuery;
-
-  // Fetches user's gaugeShare for pool, to be used in boost calculation.
-  const userGaugeSharesQuery = useUserGaugeSharesQuery(poolAddress);
+  // Access user data fetched on wallet connection/change.
+  const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
+    useUserData();
   const { data: userGaugeShares, refetch: refetchUserGaugeShares } =
     userGaugeSharesQuery;
-
-  // Fetches user's boost value for this pool.
-  const userBoostsQuery = useUserBoostsQuery(userGaugeShares);
   const { data: boostsMap, refetch: refetchUserBoosts } = userBoostsQuery;
+  const {
+    data: _stakedShares,
+    refetch: refetchStakedShares,
+    isRefetching: isRefetchingStakedShares,
+  } = stakedSharesQuery;
 
   /**
    * COMPUTED
@@ -62,11 +57,13 @@ const provider = (poolId: string) => {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(poolGaugesQuery) ||
-      isQueryLoading(poolStakedSharesQuery) ||
-      isQueryLoading(userGaugeSharesQuery) ||
-      isQueryLoading(userBoostsQuery)
+      (isWalletReady.value &&
+        (isQueryLoading(stakedSharesQuery) ||
+          isQueryLoading(userGaugeSharesQuery) ||
+          isQueryLoading(userBoostsQuery)))
   );
 
+  // The current preferential gauge for the specified pool.
   const preferentialGaugeAddress = computed(
     (): string | undefined | null =>
       poolGauges.value?.pool?.preferentialGauge?.id
@@ -75,36 +72,72 @@ const provider = (poolId: string) => {
   // Is it possible to stake this pool's BPT?
   const isStakablePool = computed(
     (): boolean =>
+      !!poolId.value &&
       poolGauges.value?.liquidityGauges?.[0]?.id !== undefined &&
-      POOLS.Stakable.AllowList.includes(poolId)
+      POOLS.Stakable.AllowList.includes(poolId.value)
   );
 
   // User's staked shares for pool (onchain data).
-  const stakedShares = computed((): string => _stakedShares.value || '0');
+  const stakedShares = computed((): string => {
+    if (!poolId.value) return '0';
+
+    return _stakedShares?.value?.[poolId.value] || '0';
+  });
 
   // User's boost value for this pool
   const boost = computed((): string => {
-    if (!boostsMap.value) return '1';
+    if (!boostsMap.value || !poolId.value) return '1';
 
-    return boostsMap[poolId];
+    return boostsMap[poolId.value];
+  });
+
+  // Addresses of all pool gauges.
+  const gaugeAddresses = computed(
+    (): string[] => poolGauges.value?.pool.gauges.map(gauge => gauge.id) || []
+  );
+
+  // Map of user gauge addresses -> balance.
+  const userGaugeSharesMap = computed((): Record<string, string> => {
+    if (!userGaugeShares.value) return {};
+
+    return userGaugeShares.value.reduce((acc, share) => {
+      acc[share.gauge.id] = share.balance;
+      return acc;
+    }, {} as Record<string, string>);
   });
 
   // Does the user have a balance in a non-preferential gauge
   const hasNonPrefGaugeBalance = computed((): boolean => {
-    if (!userGaugeShares.value || !preferentialGaugeAddress.value) return false;
+    if (
+      !poolGauges.value ||
+      !userGaugeShares.value ||
+      !preferentialGaugeAddress.value
+    )
+      return false;
 
     const _preferentialGaugeAddress = preferentialGaugeAddress.value;
 
-    return userGaugeShares.value.some(
-      gauge =>
-        !isSameAddress(gauge.gauge.id, _preferentialGaugeAddress) &&
-        bnum(gauge.balance).gt(0)
+    return gaugeAddresses.value.some(
+      gaugeAddress =>
+        !isSameAddress(gaugeAddress, _preferentialGaugeAddress) &&
+        bnum(userGaugeSharesMap.value[gaugeAddress] || '0').gt(0)
     );
   });
 
   /**
    * METHODS
    */
+
+  /**
+   * Set current pool ID for this provider.
+   *
+   * @param {string} id - The pool ID to get staking data for.
+   */
+  function setCurrentPool(id: string) {
+    poolId.value = id;
+  }
+
+  // Triggers refetch of all queries in this provider.
   async function refetchAllPoolStakingData() {
     return Promise.all([
       refetchPoolGauges.value(),
@@ -121,10 +154,12 @@ const provider = (poolId: string) => {
    * this pool.
    */
   async function stake(): Promise<TransactionResponse> {
+    if (!poolAddress.value) throw new Error('No pool to stake.');
     if (!preferentialGaugeAddress.value) {
       throw new Error(`No preferential gauge found for this pool.`);
     }
 
+    console.log('poolAddress.value', poolAddress.value);
     const gauge = new LiquidityGauge(preferentialGaugeAddress.value);
     // User's current full BPT balance for this pool.
     const userBptBalance = parseUnits(
@@ -166,6 +201,39 @@ const provider = (poolId: string) => {
     return await gauge.unstake(balance);
   }
 
+  /**
+   * Fetch preferential gauge address for pool.
+   *
+   * @param {string} poolAddress - The pool address to get gauge for.
+   * @returns {Promise<string>} - The preferential gauge address.
+   */
+  async function fetchPreferentialGaugeAddress(
+    poolAddress: string
+  ): Promise<string> {
+    try {
+      const data = await subgraphRequest<{
+        pool: { preferentialGauge: { id: string } };
+      }>({
+        url: configService.network.subgraphs.gauge,
+        query: {
+          pool: {
+            __args: {
+              id: poolAddress.toLowerCase(),
+            },
+            preferentialGauge: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      return data.pool.preferentialGauge.id;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   return {
     isLoading,
     stakedShares,
@@ -174,6 +242,9 @@ const provider = (poolId: string) => {
     hasNonPrefGaugeBalance,
     isRefetchingStakedShares,
     refetchStakedShares,
+    preferentialGaugeAddress,
+    fetchPreferentialGaugeAddress,
+    setCurrentPool,
     refetchAllPoolStakingData,
     stake,
     unstake,
@@ -187,7 +258,7 @@ export type PoolStakingProviderResponse = ReturnType<typeof provider>;
 export const PoolStakingProviderSymbol: InjectionKey<PoolStakingProviderResponse> =
   Symbol(symbolKeys.Providers.PoolStaking);
 
-export function providePoolStaking(poolId: string) {
+export function providePoolStaking(poolId?: string) {
   provide(PoolStakingProviderSymbol, provider(poolId));
 }
 

@@ -8,7 +8,6 @@ import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-//TODO: there is another place where we need this type
 type JoinResponse = Awaited<
   ReturnType<BalancerSDK['pools']['generalisedJoin']>
 >;

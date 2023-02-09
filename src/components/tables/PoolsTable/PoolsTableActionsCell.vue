@@ -4,13 +4,13 @@ import { computed, toRef } from 'vue';
 import { isVeBalPool, usePool } from '@/composables/usePool';
 import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
-import { PoolWithShares } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: PoolWithShares;
+  pool: Pool;
   poolsType?: 'unstaked' | 'staked';
 };
 
@@ -22,8 +22,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'click:stake', value: PoolWithShares): void;
-  (e: 'click:migrate', value: PoolWithShares): void;
+  (e: 'click:stake', value: Pool): void;
+  (e: 'click:unstake', value: Pool): void;
+  (e: 'click:migrate', value: Pool): void;
 }>();
 /**
  * COMPOSABLES
@@ -54,6 +55,14 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       @click.prevent.stop="emit('click:stake', pool)"
     >
       {{ $t('stake') }}
+    </BalBtn>
+    <BalBtn
+      v-else-if="poolsType === 'staked'"
+      color="gradient"
+      size="sm"
+      @click.prevent.stop="emit('click:unstake', pool)"
+    >
+      {{ $t('unstake') }}
     </BalBtn>
     <BalBtn
       v-else-if="showVeBalLock"

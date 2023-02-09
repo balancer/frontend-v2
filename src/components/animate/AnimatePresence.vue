@@ -14,14 +14,7 @@
 
 <script lang="ts">
 import anime, { AnimeParams } from 'animejs';
-import {
-  defineComponent,
-  nextTick,
-  onMounted,
-  PropType,
-  ref,
-  watch,
-} from 'vue';
+import { PropType } from 'vue';
 export default defineComponent({
   props: {
     initial: {

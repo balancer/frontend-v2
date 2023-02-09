@@ -188,11 +188,12 @@ export function removeAddress(address: string, addresses: string[]): string[] {
  * @param {Function} fn - The async function to track if loading or finished.
  * @param {Ref<boolean>} toggle - The reactive property tracking loading state.
  */
-export async function trackLoading(
-  fn: () => Promise<any>,
+export async function trackLoading<T>(
+  fn: () => Promise<T>,
   toggle: Ref<boolean>
-) {
+): Promise<T> {
   toggle.value = true;
-  await fn();
+  const result = await fn();
   toggle.value = false;
+  return result;
 }
