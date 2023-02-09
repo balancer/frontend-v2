@@ -1,0 +1,26 @@
+import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
+import { mountComposable } from '@tests/mount-helpers';
+import waitForExpect from 'wait-for-expect';
+import { userDataProvider } from './user-data.provider';
+
+initMulticallerWithDefaultMocks();
+
+async function mountUserDataProvider() {
+  const { result } = mountComposable(() => userDataProvider());
+
+  const { lockQuery } = result;
+
+  expect(lockQuery.isLoading.value).toBeTrue();
+
+  await waitForExpect(() => {
+    expect(lockQuery.isLoading.value).toBeFalse();
+  });
+
+  return result;
+}
+
+test('Returns lock', async () => {
+  const { lockQuery } = await mountUserDataProvider();
+
+  expect(lockQuery.data.value?.hasExistingLock).toBeTrue();
+});
