@@ -120,7 +120,6 @@ jobs:
           # CYPRESS_WALLET_ACCOUNT_NUMBER: 1
         with:
           node-version: '16.x'
-          # working-directory: e2e
           # wait for the app to start
           # wait-on: 'http://localhost:8080'
       - name: Install Playwright dependencies
