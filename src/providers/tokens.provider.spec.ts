@@ -15,11 +15,6 @@ import { tokensProvider } from './tokens.provider';
 
 vi.spyOn(console, 'log').mockImplementation(noop);
 
-vi.mock('@ethersproject/address', () => ({
-  getAddress: address => address,
-  isAddress: () => true,
-}));
-
 initDependenciesWithDefaultMocks();
 
 async function mountTokenProvider() {
@@ -74,7 +69,8 @@ test('injects veBAL onchain data', async () => {
 test('injects new tokens', async () => {
   const { injectTokens, injectedTokens } = await mountTokenProvider();
 
-  await injectTokens(['new token address']);
+  const newTokenAddress = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce';
+  await injectTokens([newTokenAddress]);
 
   expect(injectedTokens.value).toMatchInlineSnapshot(`
     {
@@ -86,8 +82,8 @@ test('injects new tokens', async () => {
         "name": "mocked onchain token name",
         "symbol": "mocked onchain token symbol",
       },
-      "new token address": {
-        "address": "new token address",
+      "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE": {
+        "address": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
         "chainId": 5,
         "decimals": 18,
         "logoURI": "",

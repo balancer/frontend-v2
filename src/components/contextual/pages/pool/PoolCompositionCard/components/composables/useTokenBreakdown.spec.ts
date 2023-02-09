@@ -20,12 +20,6 @@ vi.mock('@/providers/tokens.provider', () => {
   };
 });
 
-vi.mock('@ethersproject/address', () => {
-  return {
-    getAddress: address => address,
-  };
-});
-
 const rootPool = BoostedPoolMock;
 // Values used to calculate userPoolPercentage (15)
 rootPool.totalLiquidity = '100';
