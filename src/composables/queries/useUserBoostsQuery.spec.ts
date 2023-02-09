@@ -1,9 +1,11 @@
 import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { GaugeShare } from './useUserGaugeSharesQuery';
 
 initMulticallerWithDefaultMocks();
+initEthersContractWithDefaultMocks();
 
 test('Does not calculate boosts when user does not have gauge shares', async () => {
   const emptyGaugeShares = ref([]);
@@ -19,12 +21,12 @@ test('Does not calculate boosts when user does not have gauge shares', async () 
 test('Does not calculate boosts when user does not have gauge shares', async () => {
   const gaugeShare: GaugeShare = {
     balance: '100',
-    gauge: { id: 'gauge Id', poolId: 'poolId', totalSupply: '1000' },
+    gauge: { id: 'gauge Id', poolId: 'test pool id', totalSupply: '1000' },
   };
   const userGaugeShares = ref([gaugeShare]);
   const { result } = mountComposable(() => useUserBoostsQuery(userGaugeShares));
 
   const data = await waitForQueryData(result);
 
-  expect(data).toEqual({});
+  expect(data).toEqual({ 'test pool id': '1.00000000833325' });
 });

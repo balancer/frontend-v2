@@ -18,3 +18,5 @@ export function getEthersContract() {
   }
   return _contract;
 }
+
+export type EthersContract = Contract;
