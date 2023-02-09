@@ -71,7 +71,7 @@
     "@vitest/coverage-c8": "^0.25.3",
     "@vue/test-utils": "^2.2.7",
     "@vueuse/core": "^4.3.4",
-    "@walletconnect/web3-provider": "^1.5.2",
+    "@walletconnect/ethereum-provider": "^2.4.0",
     "animejs": "^3.2.1",
     "autoprefixer": "^10.4.13",
     "axios": "0.21.2",

@@ -1,4 +1,4 @@
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
 import ConfigService from '@/services/config/config.service';
 import { WalletError } from '@/types';
@@ -9,8 +9,15 @@ export class WalletConnectConnector extends Connector {
   id = ConnectorId.WalletConnect;
   async connect() {
     const configService = new ConfigService();
-    const provider = new WalletConnectProvider({
-      rpc: {
+    const provider = await EthereumProvider.init({
+      projectId: 'ee9c0c7e1b8b86ebdfb8fd93bb116ca8',
+      chains: [
+        Network.MAINNET,
+        Network.POLYGON,
+        Network.ARBITRUM,
+        Network.GOERLI,
+      ],
+      rpcMap: {
         [Network.MAINNET]: configService.getNetworkRpc(Network.MAINNET),
         [Network.POLYGON]: configService.getNetworkRpc(Network.POLYGON),
         [Network.ARBITRUM]: configService.getNetworkRpc(Network.ARBITRUM),
