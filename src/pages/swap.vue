@@ -2,12 +2,18 @@
 import { computed, onMounted } from 'vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
-import SwapCard from '@/components/cards/SwapCard/SwapCard.vue';
+import SwapCardV2 from '@/components/cards/SwapCardV2/SwapCardV2.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import BridgeLink from '@/components/links/BridgeLink.vue';
 import { isL2 } from '@/composables/useNetwork';
+import { provideSwaps } from '@/providers/local/swaps.provider';
+
+/**
+ * PROVIDERS
+ */
+provideSwaps();
 
 /**
  * COMPOSABLES
@@ -43,7 +49,8 @@ onMounted(() => {
         <MyWallet />
       </template>
 
-      <SwapCard />
+      <!-- <SwapCard /> -->
+      <SwapCardV2 />
       <div class="p-4 sm:p-0 lg:p-0 mt-8">
         <BalAccordion
           v-if="upToLargeBreakpoint"
@@ -54,7 +61,7 @@ onMounted(() => {
             <MyWallet />
           </template>
           <template #price-chart>
-            <PairPriceGraph />
+            <!-- <PairPriceGraph /> -->
           </template>
           <template v-if="isL2" #bridge>
             <BridgeLink />
@@ -63,8 +70,8 @@ onMounted(() => {
       </div>
 
       <template #gutterRight>
-        <PairPriceGraph />
-        <BridgeLink v-if="isL2" class="mt-4" />
+        <!-- <PairPriceGraph /> -->
+        <BridgeLink v-if="isL2" />
       </template>
     </Col3Layout>
   </div>
