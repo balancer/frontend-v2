@@ -1,16 +1,13 @@
-import BigNumber from 'bignumber.js';
 import { computed } from 'vue';
-
-import { bnum } from '@/lib/utils';
-import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import usePoolQuery from './queries/usePoolQuery';
-import useVeBalLockInfoQuery from './queries/useVeBalLockInfoQuery';
 import { isL2 } from './useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from './useVeBAL';
+import { useUserData } from '@/providers/user-data.provider';
+import { fiatValueOf } from './usePool';
 
 export function useLock() {
   /**
@@ -27,7 +24,7 @@ export function useLock() {
     lockablePoolId.value as string,
     shouldFetchLockPool
   );
-  const lockQuery = useVeBalLockInfoQuery();
+  const { lockQuery } = useUserData();
 
   /**
    * COMPUTED
@@ -52,22 +49,10 @@ export function useLock() {
 
   const lock = computed(() => lockQuery.data.value);
 
-  const poolShares = computed(
-    (): BigNumber =>
-      lockPool.value != null
-        ? bnum(lockPool.value.totalLiquidity).div(lockPool.value.totalShares)
-        : bnum(0)
-  );
-
-  const lockFiatValue = computed((): string =>
-    lock.value && lock.value.hasExistingLock
-      ? poolShares.value.times(lock.value.lockedAmount).toString()
-      : '0'
-  );
-
-  const lockedFiatTotal = computed(() =>
+  // Total fiat value of locked tokens.
+  const totalLockedValue = computed((): string =>
     lockPool.value && lock.value?.hasExistingLock
-      ? getBptBalanceFiatValue(lockPool.value, lock.value.lockedAmount)
+      ? fiatValueOf(lockPool.value, lock.value.lockedAmount)
       : '0'
   );
 
@@ -78,7 +63,6 @@ export function useLock() {
     lockPoolToken,
     lockPool,
     lock,
-    lockFiatValue,
-    lockedFiatTotal,
+    totalLockedValue,
   };
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import HomePageHero from '@/components/heros/HomePageHero.vue';
@@ -19,8 +19,12 @@ const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } =
-  usePools(selectedTokens);
+const poolsSortField = ref('totalLiquidity');
+
+const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
+  selectedTokens,
+  poolsSortField
+);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
 
@@ -31,6 +35,10 @@ const isPaginated = computed(() => pools.value.length >= 10);
  */
 function navigateToCreatePool() {
   router.push({ name: 'create-pool', params: { networkSlug } });
+}
+
+function onColumnSort(columnId: string) {
+  poolsSortField.value = columnId;
 }
 </script>
 
@@ -89,6 +97,7 @@ function navigateToCreatePool() {
           :isLoadingMore="poolsIsFetchingNextPage"
           :isPaginated="isPaginated"
           skeletonClass="pools-table-loading-height"
+          @on-column-sort="onColumnSort"
           @load-more="loadMorePools"
         />
         <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">

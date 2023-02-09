@@ -79,7 +79,6 @@ import { useStore } from 'vuex';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import useFathom from '@/composables/useFathom';
-import useNumbers from '@/composables/useNumbers';
 import { ethereumTxTypeOptions } from '@/constants/options';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -109,7 +108,6 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
-    const { fNum } = useNumbers();
     const { explorerLinks, isEIP1559SupportedNetwork } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
@@ -140,7 +138,6 @@ export default defineComponent({
       isEIP1559SupportedNetwork,
       // methods
       setTransactionDeadline,
-      fNum,
       explorer: explorerLinks,
       onActivatorClick,
       ethereumTxType,
