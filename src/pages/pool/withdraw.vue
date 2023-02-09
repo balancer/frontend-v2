@@ -16,6 +16,7 @@ import { oneMinInMs } from '@/composables/useTime';
 import { useIntervalFn } from '@vueuse/core';
 import { computed, onMounted } from 'vue';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 
 /**
  * COMPOSABLES
@@ -24,6 +25,7 @@ const { network } = configService;
 const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { activeTab, resetTabs } = useWithdrawPageTabs();
+usePoolTransfersGuard();
 
 // Instead of refetching pool data on every block, we refetch every minute to prevent
 // overfetching a heavy request on short blocktime networks like Polygon.
