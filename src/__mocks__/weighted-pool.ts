@@ -9,6 +9,7 @@ type DeepPartial<T> = {
 
 const defaults: DeepPartial<Pool> = {
   totalLiquidity: '100000000',
+  address: '0x702605F43471183158938C1a3e5f5A359d7b31ba',
   tokens: [
     aPoolToken({
       address: '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
