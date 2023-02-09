@@ -1,22 +1,27 @@
 <script setup lang="ts">
-import { BRANDED_REDIRECTS } from './constants';
+import { BRANDED_REDIRECT_DATA } from './constants';
 import xave from '@/assets/images/branded-redirect-logos/xave.png';
+import { POOLS } from '@/constants/pools';
 
 const props = defineProps<{
   poolId: string;
 }>();
 
 const redirectData = computed(() => {
-  return BRANDED_REDIRECTS[props.poolId];
+  const brand = POOLS.BrandedRedirect?.[props.poolId];
+  if (!brand) return;
+  return BRANDED_REDIRECT_DATA[brand];
 });
 
 function openRedirectLink() {
-  window.open(redirectData.value.link, '_blank');
+  const link = redirectData.value?.link;
+  if (!link) return;
+  window.open(link, '_blank');
 }
 </script>
 
 <template>
-  <BalStack vertical>
+  <BalStack v-if="redirectData" vertical>
     <BalCard shadow="2xl" noPad class="rounded-xl" growContent>
       <div class="flex flex-col items-center">
         <img class="mb-4" :src="xave" :alt="redirectData.title" />

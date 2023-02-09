@@ -253,11 +253,11 @@ function getFeesData(
       } else {
         prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
       }
-      console.log(value, prevValue);
-      // const finalValue = value - prevValue > 0 ? value - prevValue : 0;
+
+      const finalValue = value - prevValue > 0 ? value - prevValue : 0;
       const result = Object.freeze<[string, number]>([
         timestamps.value[idx],
-        value - prevValue,
+        finalValue,
       ]);
       return result;
     }

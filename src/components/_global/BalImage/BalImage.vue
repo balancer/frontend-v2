@@ -45,7 +45,6 @@ function onLoaded() {
         v-show="loaded"
         :width="props.width"
         :height="props.height"
-        style="max-width: 100%; max-height: 100%"
         v-bind="$attrs"
         @load="onLoaded"
       />
