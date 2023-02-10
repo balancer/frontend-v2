@@ -41,30 +41,25 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import {
   computed,
-  defineComponent,
-  h,
   InjectionKey,
   onBeforeMount,
-  PropType,
   provide,
   ref,
   reactive,
   toRef,
   watch,
   onMounted,
+  Ref,
+  readonly,
 } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
+import { safeInject } from '../inject';
 
 /**
  * TYPES
  */
-type Props = {
-  pool: Pool;
-  isSingleAssetExit: boolean;
-};
-
 export type AmountOut = {
   address: string;
   value: string;
@@ -77,13 +72,12 @@ export type AmountOut = {
  *
  * Handles pool exiting state and transaction execution.
  */
-const provider = (props: Props) => {
+export const exitPoolProvider = (pool: Ref<Pool>) => {
   /**
    * STATE
    */
-  const pool = toRef(props, 'pool');
   const isMounted = ref(false);
-  const isSingleAssetExit = toRef(props, 'isSingleAssetExit');
+  const isSingleAssetExit = ref<boolean>(false);
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const bptIn = ref<string>('0');
@@ -430,13 +424,17 @@ const provider = (props: Props) => {
   }
 
   function setInitialPropAmountsOut() {
-    const leafNodes = tokenTreeLeafs(props.pool.tokens);
+    const leafNodes = tokenTreeLeafs(pool.value.tokens);
     propAmountsOut.value = leafNodes.map(address => ({
       address,
       value: '0',
       max: '',
       valid: true,
     }));
+  }
+
+  function setIsSingleAssetExit(value: boolean) {
+    isSingleAssetExit.value = value;
   }
 
   /**
@@ -460,7 +458,7 @@ const provider = (props: Props) => {
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
-    if (!props.isSingleAssetExit) {
+    if (!isSingleAssetExit.value) {
       setInitialPropAmountsOut();
     }
   });
@@ -470,20 +468,25 @@ const provider = (props: Props) => {
   });
 
   return {
-    pool,
-    isSingleAssetExit,
+    // state
+    txState,
     singleAmountOut,
-    propAmountsOut,
+    highPriceImpactAccepted,
+    bptIn,
+    bptInValid,
+    pool: readonly(pool),
+    isSingleAssetExit: readonly(isSingleAssetExit),
+    propAmountsOut: readonly(propAmountsOut),
+    priceImpact: readonly(priceImpact),
+
+    // computed
     exitTokenAddresses,
     exitTokens,
-    priceImpact,
     isLoadingQuery,
     isLoadingMax,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,
-    highPriceImpactAccepted,
-    txState,
     txInProgress,
     queryError,
     maxError,
@@ -492,48 +495,30 @@ const provider = (props: Props) => {
     hasAmountsOut,
     bptBalance,
     hasBpt,
-    bptIn,
     fiatTotalOut,
     fiatValueIn,
     fiatAmountsOut,
     exitTokenInfo,
     queryExitQuery,
-    bptInValid,
     approvalActions,
+
+    // methods
+    setIsSingleAssetExit,
     exit,
   };
 };
 
-/**
- * Provide setup: response type + symbol.
- */
-export type Response = ReturnType<typeof provider>;
-export const ExitPoolProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.ExitPool
-);
+export type ExitPoolProviderResponse = ReturnType<typeof exitPoolProvider>;
+export const ExitPoolProviderSymbol: InjectionKey<ExitPoolProviderResponse> =
+  Symbol(symbolKeys.Providers.ExitPool);
 
-/**
- * <ExitPoolProvider /> component.
- */
-export const ExitPoolProvider = defineComponent({
-  name: 'ExitPoolProvider',
+export function provideExitPool(pool: Ref<Pool>) {
+  const exitPoolResponse = isDeep(pool.value) ? exitPoolProvider(pool) : {};
 
-  props: {
-    pool: {
-      type: Object as PropType<Pool>,
-      required: true,
-    },
-    isSingleAssetExit: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  provide(ExitPoolProviderSymbol, exitPoolResponse);
+  return exitPoolResponse;
+}
 
-  setup(props) {
-    provide(ExitPoolProviderSymbol, provider(props));
-  },
-
-  render() {
-    return h('div', this.$slots?.default ? this.$slots.default() : []);
-  },
-});
+export function useExitPool(): ExitPoolProviderResponse {
+  return safeInject(ExitPoolProviderSymbol);
+}
