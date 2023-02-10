@@ -19,7 +19,7 @@ jobs:
         # Extract all TODO comments into a file, excluding todo.yml file in /.github/workflows
         grep -r -E --exclude={TODO.md,*.yml} '\/\/ TODO[:]?' . | while read line; do
           location="$(echo $line | sed 's/:[^:]*//' | awk -F: '{print $1}')"
-          todo="$(echo $line | awk -F: '{print $2}' | sed 's/^[^\/]*//' | sed 's/\/\/ TODO[:]*/- [ ]/')"
+          todo="$(echo $line | awk -F: '{print $2}{print $3}' | sed 's/^[^\/]*//' | sed 's/\/\/ TODO[:]*/- [ ]/')"
           echo "$todo ($location)" >> temp_TODO.md
         done
 
