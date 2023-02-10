@@ -5,10 +5,14 @@ import { last } from 'lodash';
 import { Dictionary } from 'lodash';
 import numeral from 'numeral';
 import ECharts from 'vue-echarts';
+import { initEcharts } from '@/dependencies/echarts';
 
 import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
+
+// TODO: lazy load from main?
+initEcharts();
 
 type AxisMoveEvent = {
   seriesIndex: number;
