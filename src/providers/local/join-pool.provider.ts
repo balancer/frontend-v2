@@ -208,12 +208,12 @@ const provider = (props: Props) => {
     (): string | undefined => queryJoinQuery.error.value?.message
   );
 
-  // Static call simulation is more accurate, but requires relay approval.
+  // Static call simulation is more accurate, but requires relayer approval.
   const simulationType = computed(
     (): SimulationType =>
       shouldSignRelayer.value
-        ? SimulationType.Static
-        : SimulationType.VaultModel
+        ? SimulationType.VaultModel
+        : SimulationType.Static
   );
 
   /**

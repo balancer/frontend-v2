@@ -329,12 +329,12 @@ const provider = (props: Props) => {
 
   const fiatValueIn = computed(() => fiatValueOf(pool.value, bptIn.value));
 
-  // Static call simulation is more accurate, but requires relay approval.
+  // Static call simulation is more accurate, but requires relayer approval.
   const simulationType = computed(
     (): SimulationType =>
       shouldSignRelayer.value
-        ? SimulationType.Static
-        : SimulationType.VaultModel
+        ? SimulationType.VaultModel
+        : SimulationType.Static
   );
 
   /**
