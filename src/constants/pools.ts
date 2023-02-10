@@ -247,6 +247,7 @@ const POOLS_MAINNET: Pools = {
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
     '0xf9ac7b9df2b3454e841110cce5550bd5ac6f875f': 'composableStablePool', // ComposableStable
     '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
+    '0xdba127fbc23fb20f5929c546af220a991b5c6e01': 'composableStablePool',
   },
   Stakable: {
     AllowList: [
