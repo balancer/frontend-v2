@@ -325,6 +325,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     // State
     amountsIn,
     highPriceImpactAccepted,
+    txState,
     pool: readonly(pool),
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
@@ -342,7 +343,6 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     hasAmountsIn,
     fiatValueIn,
     fiatValueOut,
-    txState,
     txInProgress,
     approvalActions,
     missingPricesIn,
