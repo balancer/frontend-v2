@@ -56,6 +56,7 @@ import {
 import { useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
+import { SimulationType } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -328,6 +329,14 @@ const provider = (props: Props) => {
 
   const fiatValueIn = computed(() => fiatValueOf(pool.value, bptIn.value));
 
+  // Static call simulation is more accurate, but requires relay approval.
+  const simulationType = computed(
+    (): SimulationType =>
+      shouldSignRelayer.value
+        ? SimulationType.Static
+        : SimulationType.VaultModel
+  );
+
   /**
    * METHODS
    */
@@ -355,6 +364,8 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        simulationType: SimulationType.Static,
+        relayerSignature: relayerSignature.value,
       });
 
       priceImpact.value = output.priceImpact;
@@ -397,7 +408,8 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        relayerSignature: '',
+        simulationType: SimulationType.Static,
+        relayerSignature: relayerSignature.value,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -426,6 +438,7 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        simulationType: simulationType.value,
         relayerSignature: relayerSignature.value,
       });
     } catch (error) {

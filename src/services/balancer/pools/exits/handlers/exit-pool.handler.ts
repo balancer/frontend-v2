@@ -1,4 +1,4 @@
-import { Address, BalancerSDK } from '@balancer-labs/sdk';
+import { Address, BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { AmountOut } from '@/providers/local/exit-pool.provider';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
@@ -24,6 +24,7 @@ export type ExitParams = {
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
+  simulationType: SimulationType;
 };
 
 export type QueryOutput = {
