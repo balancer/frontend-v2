@@ -6,17 +6,6 @@ import './setup-msw';
 import './mockMatchMedia';
 import { noop } from 'lodash';
 
-vi.mock('@ethersproject/address', async () => {
-  const mod = await vi.importActual<typeof import('@ethersproject/address')>(
-    '@ethersproject/address'
-  );
-  return {
-    ...mod,
-    isAddress: () => true,
-    getAddress: address => address,
-  };
-});
-
 vi.mock('@/services/web3/useWeb3');
 vi.mock('@/composables/useEthers');
 vi.mock('@/composables/useTransactions');
