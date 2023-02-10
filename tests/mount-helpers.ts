@@ -40,10 +40,12 @@ export function mountComposable<R>(
 export function mountComposableWithDefaultTokensProvider<R>(
   callback: () => R
 ): MountResult<R> {
-  return mountComposable<R>(callback, () => {
-    const userSettings = provideUserSettings();
-    const tokenLists = provideTokenLists();
-    provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+  return mountComposable<R>(callback, {
+    extraProvidersCb: () => {
+      const userSettings = provideUserSettings();
+      const tokenLists = provideTokenLists();
+      provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+    },
   });
 }
 

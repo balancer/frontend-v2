@@ -1,13 +1,11 @@
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 
-import { initMulticallWithDefaultMocks } from '@/dependencies/multicall.mocks';
-import { initRpcProviderServiceWithDefaultMocks } from '@/dependencies/rpc-provider.service.mocks';
 import { aTokenInfo } from '@/types/TokenList.builders';
 import { ref } from 'vue';
 import useBalancesQuery from './useBalancesQuery';
 
-initRpcProviderServiceWithDefaultMocks();
-initMulticallWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 test('Returns token balances', async () => {
   const zeroAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';

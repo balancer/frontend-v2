@@ -59,6 +59,10 @@ export function isComposableStableLike(poolType: PoolType): boolean {
   return isStablePhantom(poolType) || isComposableStable(poolType);
 }
 
+export function isFx(poolType: PoolType | string): boolean {
+  return poolType === 'FX';
+}
+
 export function isPreMintedBptType(poolType: PoolType): boolean {
   // Currently equivalent to isComposableStableLike but will be extended later
   // with managed and composable weighted pools.
@@ -119,7 +123,8 @@ export function isStableLike(poolType: PoolType): boolean {
     isStable(poolType) ||
     isMetaStable(poolType) ||
     isStablePhantom(poolType) ||
-    isComposableStable(poolType)
+    isComposableStable(poolType) ||
+    isFx(poolType)
   );
 }
 
@@ -485,7 +490,8 @@ export function findTokenInTree(
  */
 export function isBlocked(pool: Pool, account: string): boolean {
   const requiresAllowlisting =
-    isStableLike(pool.poolType) || isManaged(pool.poolType);
+    (isStableLike(pool.poolType) && !isFx(pool.poolType)) ||
+    isManaged(pool.poolType);
   const isOwnedByUser =
     pool.owner && isAddress(account) && isSameAddress(pool.owner, account);
   const isAllowlisted =

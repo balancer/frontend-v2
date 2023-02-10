@@ -1,3 +1,4 @@
+import { handleFetchException } from '@/lib/utils/exceptions';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
@@ -284,7 +285,7 @@ export default function useInvestMath(
       queryBptOut.value = result.bptOut.toString();
       loadingData.value = false;
     } catch (error) {
-      console.error('Failed to fetch query bptOut', error);
+      handleFetchException('Failed to fetch query bptOut', error);
     }
   }
 
