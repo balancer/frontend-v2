@@ -94,6 +94,13 @@
   "blog": "Blog",
   "boostedPool": "Balancer Boosted pool",
   "byConnectingWallet": "By connecting a wallet, I agree to Balancer Foundation’s",
+  "brandedRedirect": {
+    "xave": {
+      "title": "Xave Finance",
+      "description": "Xave Finance  (pronounced \"Save Finance\") allows financial services companies (\"fintechs\") to leverage DeFi for real time remittance transfers and high yield consumer savings. Xave does this in a capital efficient way by building liquid FX markets via our custom FXPools integrated with the Balancer V2 Vault.",
+      "btnText": "Manage liquidity on xave.co"
+    }
+  },
   "cancel": "Cancel",
   "cancelling": "Cancelling",
   "change": "Change",
@@ -380,6 +387,7 @@
   "fundPool": "Fund pool",
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
   "forum": "Forum",
+  "fx": "FX pool",
   "gaugeFilter": {
     "gaugeDisplay": "Pool gauge display",
     "showExpired": "Show expired pools",
@@ -677,7 +685,6 @@
       "myTransactions": "My transactions",
       "allInvestments": "All liquidity provision",
       "myInvestments": "My liquidity",
-      "swaps": "Swaps",
       "swaps": "Swaps"
     },
     "noResults": {
@@ -1372,6 +1379,7 @@
     "approveForInvesting": "Approve {0} for adding liquidity",
     "approveForSwapping": "Approve {0} for swapping",
     "approveForLocking": "Approve {0} for locking",
+    "approveForStaking": "Approve {0} for staking",
     "extendLock": "Lock until {0}",
     "unlock": "Unlock {0}",
     "approveRelayer": "Approve {0} relayer",
@@ -1381,7 +1389,12 @@
     "investInPool": "{0} in {1}",
     "withdrawFromPool": "{0} from {1}",
     "migratePool": "{0} {1} to {2}",
-    "wrapUnwrap": "{0} {1} to {2}"
+    "wrapUnwrap": "{0} {1} to {2}",
+    "tooltips": {
+      "approveForInvesting": "You must approve {0} to add liquidity for this token on Balancer. Approvals are required once per token, per wallet.",
+      "approveForLocking": "You must approve {0} to lock this token. Approvals are required once per token, per wallet.",
+      "approveForStaking": "You must approve {0} to stake this token on Balancer. Approvals are required once per token, per wallet."
+    }
   },
   "transactionType": "Transaction type",
   "unallocated": "Unallocated",

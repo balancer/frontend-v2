@@ -24,7 +24,8 @@ export type FactoryType =
   | 'managedPool'
   | 'liquidityBootstrappingPool'
   | 'boostedPool'
-  | 'composableStablePool';
+  | 'composableStablePool'
+  | 'fx';
 
 type PoolMetadata = {
   name: string;
@@ -78,6 +79,7 @@ export type Pools = {
   };
   Metadata: Record<string, PoolMetadata>;
   DisabledJoins: string[];
+  BrandedRedirect?: Record<string, string>;
 };
 
 const POOLS_GOERLI: Pools = {
@@ -220,6 +222,7 @@ const POOLS_MAINNET: Pools = {
       '0x8a34b5ad76f528bfec06c80d85ef3b53da7fc30000020000000000000000043e', // ankrETH/weth stable
       '0x961764651931941f23cea5bab246607dc19ef224000200000000000000000444', // tetubal
       '0xb08885e6026bab4333a80024ec25a1a3e1ff2b8a000200000000000000000445', // rETH (stafi ETH)/weth
+      '0x831261F44931B7DA8BA0DCC547223C60BB75B47F000200000000000000000460', // wUSDR/USDC stable pool
     ],
   },
   Investment: {
@@ -422,7 +425,7 @@ const POOLS_POLYGON: Pools = {
       '0xe22483774bd8611be2ad2f4194078dac9159f4ba0000000000000000000008f0', // 2BRL
       '0xbf29ef6e23af0ac5b6bf931c8b3f1080f5bc120600000000000000000000091f', // vQi stable
       '0x34a81e8956bf20b7448b31990a2c06f96830a6e4000200000000000000000a14', // wUSDR
-      '0xf5bbd166528b47d23fa9cc25d4e4aeb93fd1e3a4000200000000000000000a16', // frxETH / WETH
+      '0x5dee84ffa2dc27419ba7b3419d7146e53e4f7ded000200000000000000000a4e', // frxETH / WETH
     ],
   },
   Investment: {
@@ -440,6 +443,7 @@ const POOLS_POLYGON: Pools = {
     '0xca96c4f198d343e251b1a01f3eba061ef3da73c1': 'stablePool', // stable pool v2,
     '0x136fd06fa01ecf624c7f2b3cb15742c1339dc2c4': 'composableStablePool', // ComposableStable
     '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
+    '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
   },
   Stakable: {
     AllowList: [
@@ -491,6 +495,10 @@ const POOLS_POLYGON: Pools = {
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
   ],
+  BrandedRedirect: {
+    '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
+      'xave',
+  },
 };
 
 const POOLS_ARBITRUM: Pools = {

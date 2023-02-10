@@ -22,7 +22,7 @@ const showUnlockPreviewModal = ref(false);
  */
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
-const { lockedFiatTotal, lock, isLoadingLockInfo, lockPool, lockPoolToken } =
+const { totalLockedValue, lock, isLoadingLockInfo, lockPool, lockPoolToken } =
   useLock();
 const { isWalletReady } = useWeb3();
 
@@ -111,7 +111,7 @@ const fiatTotalExpiredLpTokens = computed(() =>
                     </AnimatePresence>
                     <AnimatePresence :isVisible="true">
                       <span :class="{ 'text-red-500': lock?.isExpired }">
-                        {{ fNum2(lockedFiatTotal, FNumFormats.fiat) }}
+                        {{ fNum2(totalLockedValue, FNumFormats.fiat) }}
                       </span>
                     </AnimatePresence>
                     <BalTooltip
