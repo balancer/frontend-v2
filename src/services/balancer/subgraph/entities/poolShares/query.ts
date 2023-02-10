@@ -14,7 +14,12 @@ const defaultAttrs = {
   balance: true,
 };
 
-export default (args = {}, attrs = {}) => ({
+export default (
+  args = {},
+  attrs = {},
+  name: string | undefined = undefined
+) => ({
+  __name: name,
   poolShares: {
     __args: merge({}, defaultArgs, args),
     ...merge({}, defaultAttrs, attrs),

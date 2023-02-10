@@ -19,7 +19,7 @@ import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { isSameAddress, scale } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
-import { Multicaller } from '@/lib/utils/balancer/contract';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 type Address = string;
 
@@ -122,6 +122,7 @@ export default class WeightedPoolService {
     const poolAddress = poolDetails.address;
     const vaultAddress = configService.network.addresses.vault;
 
+    const Multicaller = getOldMulticaller();
     const multicaller = new Multicaller(configService.network.key, provider, [
       ...WeightedPool__factory.abi,
       ...Vault__factory.abi,

@@ -11,7 +11,7 @@ import {
 } from '@/types/TokenList';
 
 import TokenService from '../token.service';
-import { getMulticaller } from '@/dependencies/Multicaller';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export default class MetadataConcern {
   constructor(private readonly service: TokenService) {}
@@ -71,7 +71,7 @@ export default class MetadataConcern {
   private async getMetaOnchain(addresses: string[]): Promise<TokenInfoMap> {
     try {
       const network = this.service.configService.network.key;
-      const Multicaller = getMulticaller();
+      const Multicaller = getOldMulticaller();
       const multi = new Multicaller(network, this.service.provider, erc20Abi);
       const metaDict = {};
 
@@ -90,7 +90,7 @@ export default class MetadataConcern {
 
       return await multi.execute(metaDict);
     } catch (error) {
-      console.error('Failed to fetch onchain meta', addresses, error);
+      console.trace('Failed to fetch onchain meta', addresses, error);
       return {};
     }
   }

@@ -1,5 +1,4 @@
 import { rest } from 'msw';
-import gaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
 
 export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
 
@@ -21,7 +20,7 @@ const emptyJsonHandler = (req, res, ctx) => {
   return res(ctx.json({}));
 };
 
-export const handlers = [
+export const restHandlers = [
   rest.get('https://cloudflare-ipfs.com/ipfs/xyz', (req, res, ctx) => {
     return res(ctx.text('ipfs test response'));
   }),
@@ -31,15 +30,6 @@ export const handlers = [
   rest.post('*blocklytics/*-blocks', (req, res, ctx) => {
     return res(ctx.json({ data: { blocks: ['12345678'] } }));
   }),
-  rest.post('*/balancer-labs/balancer-gauges*', (req, res, ctx) => {
-    return req.json().then(data => {
-      if (data.query.startsWith('query { liquidityGauges')) {
-        return res(ctx.json(gaugesResponse));
-      }
-      console.log('Unhandled gauge request with payload: ', data);
-    });
-  }),
-
   rest.post('https://mainnet.infura.io/v3/*', chainIdHandler),
   rest.post('https://goerli.infura.io/v3/*', chainIdHandler),
   rest.post('https://eth-goerli.alchemyapi.io/v2/*', chainIdHandler),
