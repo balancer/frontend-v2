@@ -18,7 +18,6 @@ Here is a simple example of how a form can be used:
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
 import { isRequired, isEmail, minChar } from '@/lib/utils/validations';
 import { FormRef } from '@/types';
 
