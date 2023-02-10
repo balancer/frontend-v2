@@ -146,6 +146,7 @@ async function handleOutputTokenChange(newTokenOut: string) {
 /**
  * CALLBACKS
  */
+// TODO: Test todo, remove
 watchEffect(() => {
   _tokenInAmount.value = props.tokenInAmount;
   _tokenInAddress.value = props.tokenInAddress;
