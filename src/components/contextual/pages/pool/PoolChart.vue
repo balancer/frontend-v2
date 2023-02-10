@@ -8,7 +8,7 @@ import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import PoolChartPeriodSelect from '@/components/pool/PoolChartPeriodSelect.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
@@ -254,10 +254,9 @@ function getFeesData(
         prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
       }
 
-      const finalValue = value - prevValue > 0 ? value - prevValue : 0;
       const result = Object.freeze<[string, number]>([
         timestamps.value[idx],
-        finalValue,
+        value - prevValue,
       ]);
       return result;
     }
@@ -382,6 +381,32 @@ const defaultChartData = computed(() => {
 });
 
 /**
+ * @description
+ * There could be a case when there are negative swap fees, e.g,
+ * under certain circumstances, FX Pools offers rebates to traders, i.e. "negative swap fees"
+ * @see
+ * https://docs.xave.co/product-overview-1/amm#mechanism
+ */
+const axisLabelFormatter = computed(() => {
+  if (activeTab.value === PoolChartTab.FEES) {
+    return {
+      yAxis: {
+        style: 'currency',
+        maximumFractionDigits: 0,
+        fixedFormat: true,
+      },
+    };
+  }
+  return {
+    yAxis: {
+      style: 'currency',
+      abbreviate: true,
+      maximumFractionDigits: 0,
+    },
+  };
+});
+
+/**
  * METHODS
  */
 function setCurrentPeriod(period: PoolChartPeriod) {
@@ -392,9 +417,18 @@ function setCurrentChartValue(payload: {
   chartDate: string;
   chartValue: number;
 }) {
-  currentChartValue.value = fNum2(payload.chartValue, {
+  let options: FNumOptions = {
     style: 'currency',
-  });
+  };
+  if (activeTab.value === PoolChartTab.FEES) {
+    options = {
+      style: 'currency',
+      maximumFractionDigits: 2,
+      fixedFormat: true,
+    };
+  }
+
+  currentChartValue.value = fNum2(payload.chartValue, options);
   currentChartDate.value = format(
     new Date(payload.chartDate),
     PRETTY_DATE_FORMAT
@@ -468,13 +502,7 @@ function addLaggingTimestamps() {
       v-else
       height="96"
       :data="chartData.data"
-      :axisLabelFormatter="{
-        yAxis: {
-          style: 'currency',
-          abbreviate: true,
-          maximumFractionDigits: 0,
-        },
-      }"
+      :axisLabelFormatter="axisLabelFormatter"
       :areaStyle="chartData.areaStyle"
       :color="chartData.color"
       :hoverColor="chartData.hoverColor"
