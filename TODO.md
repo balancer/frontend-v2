@@ -2,6 +2,7 @@
 ./src/pages/pool/withdraw.vue:- [ ] Don't refetch whole pool, only update balances and weights with (./src/pages/pool/withdraw.vue)
 ./src/dependencies/balancer-sdk.mocks.ts:- [ ] move to sor mocks to subfile (./src/dependencies/balancer-sdk.mocks.ts)
 ./src/dependencies/Multicaller.mocks.ts: - [ ] discover how we can discover different calls and responses (./src/dependencies/Multicaller.mocks.ts)
+./src/components/cards/SwapCard/SwapPair.vue:- [ ] Test todo, remove (./src/components/cards/SwapCard/SwapPair.vue)
 ./src/components/cards/SwapCard/SwapRoute.vue:- [ ] Fix types (./src/components/cards/SwapCard/SwapRoute.vue)
 ./src/services/lido/lido.service.ts: .times(1 - protocolFeePercentage) - [ ] check pool type and use protocol yield percentage cache when applicable (./src/services/lido/lido.service.ts)
 ./src/services/staking/staking-rewards.service.ts: - [ ] BETTER INTEGRATION OF REWARD TOKEN APRS (./src/services/staking/staking-rewards.service.ts)
