@@ -136,6 +136,10 @@ export function isLiquidityBootstrapping(poolType: PoolType): boolean {
   return poolType === PoolType.LiquidityBootstrapping;
 }
 
+export function isLBP(poolType: PoolType): boolean {
+  return isLiquidityBootstrapping(poolType);
+}
+
 export function isWeighted(poolType: PoolType): boolean {
   return poolType === PoolType.Weighted;
 }
