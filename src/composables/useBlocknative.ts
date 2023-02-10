@@ -13,7 +13,7 @@ export default function useBlocknative() {
   const blocknative = inject(bnSdkSymbol) as BlocknativeSdk;
   if (!blocknative) throw new Error('Blocknative SDK missing!');
 
-  // TODO blocknative is going to be deprecated for transaction tracking.
+  // TODO: blocknative is going to be deprecated for transaction tracking.
   const supportsBlocknative = computed(() =>
     SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
   );

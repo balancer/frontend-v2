@@ -17,11 +17,12 @@ jobs:
     - name: Extract TODO comments
       run: |
         # Extract all TODO comments into a file, excluding todo.yml file in /.github/workflows
-        grep -r -E --exclude={TODO.md,*.yml} '// TODO' . | while read line; do
+        grep -r -E --exclude={TODO.md,*.yml} '\/\/ TODO[:]*' . | while read line; do
           location="$(echo $line | sed 's/:[^:]*//' | sed 's/:[^:]*//')"
-          todo="$(echo $line | grep -o '\/\/ TODO.*' | sed 's/\/\/ TODO/- [ ]/')"
+          todo="$(echo $line | sed 's/\/\/ TODO[:]*/- [ ]/')"
           echo "$todo ($location)" >> temp_TODO.md
         done
+
 
     - name: Remove existing TODO.md file
       run: rm TODO.md || echo "TODO.md does not exist"
