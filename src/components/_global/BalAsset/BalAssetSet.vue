@@ -30,7 +30,6 @@
 <script lang="ts">
 import { isAddress } from '@ethersproject/address';
 import { chunk } from 'lodash';
-import { computed, defineComponent, PropType } from 'vue';
 
 import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 
