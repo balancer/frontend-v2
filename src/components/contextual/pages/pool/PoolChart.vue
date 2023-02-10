@@ -490,7 +490,7 @@ function addLaggingTimestamps() {
       @mouse-enter-event="isFocusedOnChart = true"
     />
   </div>
-  <BalBlankSlate v-else class="h-96">
+  <BalBlankSlate v-else class="h-96" align="center">
     <BalIcon name="bar-chart" />
     {{ $t('insufficientData') }}
   </BalBlankSlate>
