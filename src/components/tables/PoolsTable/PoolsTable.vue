@@ -25,6 +25,7 @@ import {
   orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel,
+  isLBP,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -350,12 +351,26 @@ function iconAddresses(pool: Pool) {
       <template #aprCell="pool">
         <div
           :key="columnStates.aprs"
-          class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
+          :class="[
+            'flex justify-end py-4 px-6 -mt-1 font-numeric',
+            {
+              'text-gray-300 dark:text-gray-600 line-through': isLBP(
+                pool.poolType
+              ),
+            },
+          ]"
         >
           <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.apr" :pool="pool" />
+            <BalTooltip
+              v-if="isLBP(pool.poolType)"
+              width="36"
+              :text="$t('lbpAprTooltip')"
+              iconSize="sm"
+              iconClass="ml-1"
+            />
+            <APRTooltip v-else-if="pool?.apr" :pool="pool" />
           </template>
         </div>
       </template>
