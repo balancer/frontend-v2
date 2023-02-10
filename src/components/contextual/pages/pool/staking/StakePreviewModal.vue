@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
-import { AnyPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import StakePreview, { StakeAction } from './StakePreview.vue';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
+/**
+ * TYPES
+ */
 type Props = {
   isVisible: boolean;
-  pool: AnyPool;
+  pool: Pool;
   action: StakeAction;
 };
 
-defineProps<Props>();
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
 const emit = defineEmits(['close', 'success']);
 
+/**
+ * STATE
+ */
 const showFireworks = ref(false);
+
+/**
+ * COMPOSABLES
+ */
+const { setCurrentPool } = usePoolStaking();
 
 /**
  * METHODS
@@ -27,6 +42,20 @@ function handleSuccess() {
   showFireworks.value = true;
   emit('success');
 }
+
+/**
+ * WATCHERS
+ */
+onMounted(() => {
+  setCurrentPool(props.pool.id);
+});
+
+watch(
+  () => props.pool,
+  newPool => {
+    setCurrentPool(newPool.id);
+  }
+);
 </script>
 
 <template>

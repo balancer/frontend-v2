@@ -22,7 +22,7 @@ type Props = {
   lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo?: VeBalLockInfo | null;
-  lockedFiatTotal: string;
+  totalLockedValue: string;
 };
 
 /**
@@ -104,7 +104,7 @@ const cards = computed(() => {
       id: 'myLockedLpToken',
       label: t('veBAL.myVeBAL.cards.myLockedLpToken.label'),
       value: isWalletReady.value
-        ? fNum2(props.lockedFiatTotal, FNumFormats.fiat)
+        ? fNum2(props.totalLockedValue, FNumFormats.fiat)
         : '—',
       secondaryText: isWalletReady.value
         ? fNum2(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token)

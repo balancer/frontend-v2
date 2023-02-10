@@ -13,6 +13,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import useTransactions from '../useTransactions';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { ApprovalAction } from './types';
 
 export type ApprovalState = {
   init: boolean;
@@ -32,7 +33,8 @@ export type ApprovalOptions = {
 
 export default function useTokenApprovals(
   tokenAddresses: string[],
-  amounts: Ref<string[]>
+  amounts: Ref<string[]>,
+  actionType: ApprovalAction = ApprovalAction.AddLiquidity
 ) {
   /**
    * COMPOSABLES
@@ -73,9 +75,27 @@ export default function useTokenApprovals(
       appNetworkConfig.addresses.vault
     )
   );
+
   /**
    * METHODS
    */
+  function txSummaryLabel(address: string): string {
+    switch (actionType) {
+      case ApprovalAction.Locking:
+        return t('transactionSummary.approveForLocking', [
+          getToken(address)?.symbol,
+        ]);
+      case ApprovalAction.Staking:
+        return t('transactionSummary.approveForStaking', [
+          getToken(address)?.symbol,
+        ]);
+      default:
+        return t('transactionSummary.approveForInvesting', [
+          getToken(address)?.symbol,
+        ]);
+    }
+  }
+
   async function approveToken(
     address: string,
     options: Partial<ApprovalOptions> = {}
@@ -105,12 +125,7 @@ export default function useTokenApprovals(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: t(
-          spender === appNetworkConfig.addresses.veBAL
-            ? 'transactionSummary.approveForLocking'
-            : 'transactionSummary.approveForInvesting',
-          [getToken(address)?.symbol]
-        ),
+        summary: txSummaryLabel(address),
         details: {
           contractAddress: address,
           spender: spender,

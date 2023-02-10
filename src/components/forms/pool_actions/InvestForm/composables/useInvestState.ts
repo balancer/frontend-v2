@@ -1,6 +1,6 @@
 import { reactive, toRefs } from 'vue';
 
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 
 type InvestState = {
   amounts: string[];
@@ -25,7 +25,7 @@ const state = reactive<InvestState>({
   sorReady: false,
 });
 
-const sor = balancer.sor;
+const sor = getBalancer().sor;
 
 /**
  * METHODS

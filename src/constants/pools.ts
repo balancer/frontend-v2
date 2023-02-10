@@ -24,7 +24,8 @@ export type FactoryType =
   | 'managedPool'
   | 'liquidityBootstrappingPool'
   | 'boostedPool'
-  | 'composableStablePool';
+  | 'composableStablePool'
+  | 'fx';
 
 type PoolMetadata = {
   name: string;
@@ -78,6 +79,7 @@ export type Pools = {
   };
   Metadata: Record<string, PoolMetadata>;
   DisabledJoins: string[];
+  BrandedRedirect?: Record<string, string>;
 };
 
 const POOLS_GOERLI: Pools = {
@@ -446,6 +448,7 @@ const POOLS_POLYGON: Pools = {
     '0xca96c4f198d343e251b1a01f3eba061ef3da73c1': 'stablePool', // stable pool v2,
     '0x136fd06fa01ecf624c7f2b3cb15742c1339dc2c4': 'composableStablePool', // ComposableStable
     '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
+    '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
   },
   Stakable: {
     AllowList: [
@@ -497,6 +500,10 @@ const POOLS_POLYGON: Pools = {
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
   ],
+  BrandedRedirect: {
+    '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
+      'xave',
+  },
 };
 
 const POOLS_ARBITRUM: Pools = {

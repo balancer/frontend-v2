@@ -1,14 +1,15 @@
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
+const balancer = getBalancer();
 type JoinResponse = Awaited<ReturnType<typeof balancer.pools.generalisedJoin>>;
 
 /**
@@ -31,9 +32,9 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, callData } = this.lastJoinRes;
+    const { to, encodedCall } = this.lastJoinRes;
 
-    return txBuilder.raw.sendTransaction({ to, data: callData });
+    return txBuilder.raw.sendTransaction({ to, data: encodedCall });
   }
 
   async queryJoin({
@@ -65,6 +66,8 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
       signerAddress,
       wrapLeafTokens,
       slippage,
+      signer,
+      SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
       relayerSignature
     );
 

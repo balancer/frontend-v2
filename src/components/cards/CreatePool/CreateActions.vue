@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { computed, onBeforeMount, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
