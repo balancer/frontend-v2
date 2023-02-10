@@ -1,24 +1,24 @@
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { Ref } from 'vue';
+import { computed, Ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
-import { isVeBalPool } from './usePool';
 import { useLock } from './useLock';
+import { isVeBalPool } from './usePool';
 
 export function useUserPoolPercentage(pool: Ref<Pool>) {
   const { balanceFor } = useTokens();
   const { stakedShares } = usePoolStaking();
-  // Avoid lock queries when pool is not veBAL:
-  const { lock, lockedFiatTotal } = useLock({
+
+  const { totalLockedValue } = useLock({
+    // Avoid lock queries when pool is not veBAL:
     enabled: isVeBalPool(pool.value.id),
   });
   const { fNum2 } = useNumbers();
 
   const lockedAmount = computed(() => {
-    // return lock.value?.lockedAmount || '0';
-    return lockedFiatTotal.value || '0';
+    return totalLockedValue.value || '0';
   });
 
   const userPoolPercentage = computed(() => {
@@ -31,7 +31,8 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
   const userPoolPercentageLabel = computed(
     () =>
       fNum2(userPoolPercentage.value.toString(), {
-        maximumSignificantDigits: 2,
+        maximumFractionDigits: 4,
+        minimumFractionDigits: 0,
       }) + '%'
   );
 

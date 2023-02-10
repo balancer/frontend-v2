@@ -86,8 +86,8 @@ test('injects new tokens', async () => {
         "name": "mocked onchain token name",
         "symbol": "mocked onchain token symbol",
       },
-      "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE": {
-        "address": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
+      "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce": {
+        "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
         "chainId": 5,
         "decimals": 18,
         "logoURI": "",
