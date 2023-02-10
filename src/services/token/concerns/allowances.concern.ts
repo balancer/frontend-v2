@@ -4,7 +4,7 @@ import { formatUnits } from '@ethersproject/units';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { isSameAddress } from '@/lib/utils';
-import { multicall } from '@/lib/utils/balancer/contract';
+import { getMulticall } from '@/dependencies/multicall';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import TokenService from '../token.service';
@@ -60,7 +60,7 @@ export default class AllowancesConcern {
     const network = this.service.configService.network.key;
     const provider = this.service.rpcProviderService.jsonProvider;
     const allowances: BigNumber[] = (
-      await multicall<BigNumberish>(
+      await getMulticall()<BigNumberish>(
         network,
         provider,
         erc20Abi,

@@ -12,7 +12,6 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, ref, watch } from 'vue';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useEthers from '@/composables/useEthers';

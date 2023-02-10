@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import BigNumber from 'bignumber.js';
-import { computed, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';

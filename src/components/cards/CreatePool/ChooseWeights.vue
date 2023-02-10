@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import anime from 'animejs';
 import { sum, sumBy, uniqueId } from 'lodash';
-import {
-  computed,
-  nextTick,
-  onBeforeUpdate,
-  onMounted,
-  ref,
-  watch,
-  ComponentPublicInstance,
-} from 'vue';
+import { ComponentPublicInstance } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
