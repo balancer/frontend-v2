@@ -57,6 +57,7 @@ export default class Pools {
       first,
       skip,
     });
+    console.log(pools);
 
     return pools as Pool[];
   }

@@ -7,12 +7,12 @@ import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { JoinPoolRequest, WeightedPoolEncoder } from '@balancer-labs/sdk';
 import { WeightedPool__factory } from '@balancer-labs/typechain';
-import WeightedPoolsService, { FactoryVersion } from './weighted-pool.service';
+import WeightedPoolsService from './weighted-pool.service';
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
 
 const tokens: Record<string, PoolSeedToken> = {};
-const weightedPoolsService = new WeightedPoolsService(FactoryVersion.V1);
+const weightedPoolsService = new WeightedPoolsService();
 
 const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';

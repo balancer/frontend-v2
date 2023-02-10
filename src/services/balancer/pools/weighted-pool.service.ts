@@ -21,15 +21,9 @@ import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { POOLS } from '@/constants/pools';
-import WeightedPoolFactoryV2Abi from '@/lib/abi/WeightedPoolFactoryV2.json';
+import WeightedPoolFactoryV3Abi from '@/lib/abi/WeightedPoolFactoryV3.json';
 
 type Address = string;
-
-export enum FactoryVersion {
-  V1 = 'V1',
-  V2 = 'V2',
-  V3 = 'V3',
-}
 
 export interface CreatePoolReturn {
   id: string;
@@ -46,8 +40,6 @@ export interface JoinPoolRequest {
 }
 
 export default class WeightedPoolService {
-  constructor(public readonly version: FactoryVersion) {}
-
   public async create(
     provider: Web3Provider,
     name: string,
@@ -58,11 +50,6 @@ export default class WeightedPoolService {
   ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
-    const weightedPoolFactoryAbi =
-      this.version === FactoryVersion.V1
-        ? WeightedPoolFactory__factory.abi
-        : WeightedPoolFactoryV2Abi;
-
     const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
     });
@@ -71,30 +58,20 @@ export default class WeightedPoolService {
     const swapFeeScaled = scale(new BigNumber(swapFee), 18);
     const rateProviders = Array(tokenAddresses.length).fill(POOLS.ZeroAddress);
 
-    const params =
-      this.version === FactoryVersion.V1
-        ? [
-            name,
-            symbol,
-            tokenAddresses,
-            seedTokens,
-            swapFeeScaled.toString(),
-            owner,
-          ]
-        : [
-            name,
-            symbol,
-            tokenAddresses,
-            seedTokens,
-            rateProviders,
-            swapFeeScaled.toString(),
-            owner,
-          ];
+    const params = [
+      name,
+      symbol,
+      tokenAddresses,
+      seedTokens,
+      rateProviders,
+      swapFeeScaled.toString(),
+      owner,
+    ];
 
     const txBuilder = new TransactionBuilder(provider.getSigner());
     return await txBuilder.contract.sendTransaction({
       contractAddress: configService.network.addresses.weightedPoolFactory,
-      abi: weightedPoolFactoryAbi,
+      abi: WeightedPoolFactoryV3Abi,
       action: 'create',
       params,
     });

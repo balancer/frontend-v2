@@ -1,14 +1,10 @@
-import WeightedPoolService, { FactoryVersion } from './weighted-pool.service';
-import { networkId } from '@/composables/useNetwork';
+import WeightedPoolService from './weighted-pool.service';
 
 export default class PoolsService {
   weighted: WeightedPoolService;
 
   constructor() {
-    // use the V2 factory for Gnosis Chain
-    const version =
-      networkId.value === 100 ? FactoryVersion.V2 : FactoryVersion.V1;
-    this.weighted = new WeightedPoolService(version);
+    this.weighted = new WeightedPoolService();
   }
 }
 
