@@ -2,13 +2,13 @@ export default {
   App: {
     DarkMode: 'app.darkMode',
     Locale: 'app.locale',
-    TradeSlippage: 'app.tradeSlippage',
-    TradeLiquidity: 'app.tradeLiquidity',
-    TradeDeadline: 'app.tradeDeadline',
+    SwapSlippage: 'app.swapSlippage',
+    SwapLiquidity: 'app.swapLiquidity',
+    SwapDeadline: 'app.swapDeadline',
     EthereumTxType: 'app.ethereumTxType',
   },
-  Trade: {
-    Gasless: 'trade.gasless',
+  Swap: {
+    Gasless: 'swap.gasless',
   },
   UserSettings: {
     Currency: 'userSettings.currency',

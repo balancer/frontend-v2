@@ -94,20 +94,25 @@ function applyNetworkPathRedirects(router: Router): Router {
           networkChangeCallback
         );
       } else {
-        const nonNetworkedRoutes = [
+        const networkAgnosticRoutes = [
           '/',
           '/terms-of-use',
           '/privacy-policy',
           '/cookies-policy',
         ];
-        if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
+        const routerHandledRedirects = ['not-found', 'trade-redirect'];
+        if (
+          !to.redirectedFrom ||
+          routerHandledRedirects.includes(to.redirectedFrom?.name as string) ||
+          networkAgnosticRoutes.includes(to.fullPath)
+        ) {
+          next();
+        } else {
           const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
           const newNetwork = newPath.includes('/pool')
             ? config[Network.MAINNET].slug
             : networkSlug;
           router.push({ path: `/${newNetwork}${newPath}` });
-        } else {
-          next();
         }
       }
     }

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatSymbol } from '@/constants/currency';
 

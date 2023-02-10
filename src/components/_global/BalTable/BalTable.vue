@@ -4,7 +4,6 @@ import BalTableRow from './BalTableRow.vue';
 import TotalsRow from './TotalsRow.vue';
 import { Sticky, Data, ColumnDefinition } from './types';
 import { sortBy, sumBy } from 'lodash';
-import { computed, onMounted, ref, watch, toRef } from 'vue';
 
 import PinHeader from './PinHeader.vue';
 
@@ -23,7 +22,10 @@ type DataPinState = {
   pinnedData: string[];
 };
 
-defineEmits(['loadMore']);
+const emit = defineEmits<{
+  (e: 'loadMore'): void;
+  (e: 'onColumnSort', value: string): void;
+}>();
 
 type Props = {
   columns: ColumnDefinition[];
@@ -44,6 +46,7 @@ type Props = {
   initialState?: InitialState;
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: DataProp, rowIndex: number) => string;
+  isOnlyDescSort?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -60,6 +63,7 @@ const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
   getTableRowClass: () => '',
+  isOnlyDescSort: false,
 });
 
 const stickyHeaderRef = ref();
@@ -97,13 +101,10 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
   currentSortColumn.value = columnId;
 
   if (updateDirection) {
-    if (currentSortDirection.value === null) {
-      currentSortDirection.value = 'desc';
-    } else if (currentSortDirection.value === 'desc') {
-      currentSortDirection.value = 'asc';
-    } else {
-      currentSortDirection.value = null;
-    }
+    setCurrenSortDirection();
+  }
+  if (columnId && currentSortDirection.value) {
+    emit('onColumnSort', columnId);
   }
 
   const sortedData = sortBy(
@@ -113,12 +114,29 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
   if (currentSortDirection.value === 'asc') {
     tableData.value = sortedData;
     return;
-  } else if (currentSortDirection.value === 'desc') {
+  }
+  if (currentSortDirection.value === 'desc') {
     tableData.value = sortedData.reverse();
     return;
   }
   tableData.value = props.data;
 };
+
+function setCurrenSortDirection(): void {
+  if (props.isOnlyDescSort) {
+    currentSortDirection.value = 'desc';
+    return;
+  }
+  if (currentSortDirection.value === null) {
+    currentSortDirection.value = 'desc';
+    return;
+  }
+  if (currentSortDirection.value === 'desc') {
+    currentSortDirection.value = 'asc';
+    return;
+  }
+  currentSortDirection.value = null;
+}
 
 function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
   switch (align) {
@@ -220,7 +238,10 @@ watch(
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              column.sortKey ? 'cursor-pointer' : '',
+              column.sortKey &&
+              !(props.isOnlyDescSort && currentSortColumn === column.id)
+                ? 'cursor-pointer'
+                : '',
               column.sortKey && currentSortColumn !== column.id
                 ? 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors'
                 : '',

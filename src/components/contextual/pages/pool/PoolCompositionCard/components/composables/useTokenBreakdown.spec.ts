@@ -1,9 +1,10 @@
 import { removeBptFrom } from '@/composables/usePool';
 import * as tokensProvider from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
-import { BoostedPoolMock } from '@/__mocks__/pool';
-import { aWeightedPool } from '@/__mocks__/weighted-pool';
+import { anEmptyPool, BoostedPoolMock } from '@/__mocks__/pool';
+import { aPoolToken, aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposable } from '@tests/mount-helpers';
+import { zeroAddress } from 'ethereumjs-util';
 import { ref } from 'vue';
 import { useTokenBreakdown } from './useTokenBreakdown';
 
@@ -17,12 +18,6 @@ vi.mock('@/providers/tokens.provider', () => {
         priceFor: () => 2,
       };
     },
-  };
-});
-
-vi.mock('@ethersproject/address', () => {
-  return {
-    getAddress: address => address,
   };
 });
 
@@ -133,6 +128,20 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     // (token balance / total balance) * 100
     expect(wethData.getTokenPercentageLabel()).toEqual('0.02%');
     expect(groData.getTokenPercentageLabel()).toEqual('99.98%');
+  });
+
+  it('shows 0% token percentage given a token without balance ', () => {
+    rootPool.totalLiquidity = '1900';
+    const tokenWithoutBalance = aPoolToken({
+      balance: '0',
+      address: zeroAddress(),
+    });
+    const pool = anEmptyPool([tokenWithoutBalance]);
+    const data = mountTokenBreakdown(pool);
+
+    const token = data.value[zeroAddress()];
+
+    expect(token.getTokenPercentageLabel()).toEqual('0%');
   });
 });
 

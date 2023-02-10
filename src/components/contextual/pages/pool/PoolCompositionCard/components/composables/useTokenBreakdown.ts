@@ -68,6 +68,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
       : fNum2(token.weight, FNumFormats.percent);
 
     function getTokenPercentageLabel() {
+      if (totalFiat === 0) return '0%';
       const tokenPercentage = Number(fiatValue) / Number(totalFiat);
       return tokenPercentage === 0
         ? ''

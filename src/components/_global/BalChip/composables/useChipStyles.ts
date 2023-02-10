@@ -1,5 +1,3 @@
-import { computed } from 'vue';
-
 export function useChipClasses(props) {
   const sizeClasses = () => {
     switch (props.size) {
@@ -18,6 +16,7 @@ export function useChipClasses(props) {
     if (props.color === 'white') return 'bg-white dark:bg-gray-900';
     if (props.color === 'red') return 'text-white bg-red-500';
     if (props.color === 'orange') return 'text-black bg-orange-300';
+    if (props.color === 'amber') return 'text-black bg-orange-500';
 
     return `bg-${props.color}-100 dark:bg-${props.color}-800`;
   };

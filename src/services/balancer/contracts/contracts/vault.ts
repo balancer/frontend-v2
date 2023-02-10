@@ -8,7 +8,7 @@ import { pick } from 'lodash';
 
 import {
   isStableLike,
-  isTradingHaltable,
+  isSwappingHaltable,
   isWeightedLike,
   isDeep,
   isComposableStableLike,
@@ -77,7 +77,7 @@ export default class Vault {
     if (isWeightedLike(type)) {
       poolMulticaller.call('weights', poolAddress, 'getNormalizedWeights', []);
 
-      if (isTradingHaltable(type)) {
+      if (isSwappingHaltable(type)) {
         poolMulticaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
       }
     } else if (isStableLike(type)) {

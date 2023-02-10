@@ -92,7 +92,7 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } =
+const { managedPoolWithSwappingHalted, isWethPool, isStableLikePool } =
   usePool(pool);
 
 /**
@@ -109,7 +109,7 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 );
 
 const forceProportionalInputs = computed(
-  (): boolean => managedPoolWithTradingHalted.value
+  (): boolean => managedPoolWithSwappingHalted.value
 );
 
 const poolHasLowLiquidity = computed((): boolean =>
@@ -233,9 +233,9 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
-      :title="$t('investment.warning.managedPoolTradingHalted.title')"
+      :title="$t('investment.warning.managedPoolSwappingHalted.title')"
       :description="
-        $t('investment.warning.managedPoolTradingHalted.description')
+        $t('investment.warning.managedPoolSwappingHalted.description')
       "
       class="mb-4"
     />

@@ -18,6 +18,8 @@ import useNumbers from '@/composables/useNumbers';
 import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
+  fiatValueOf,
+  isLiquidityBootstrapping,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
@@ -25,7 +27,7 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { Pool, PoolWithShares } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
@@ -38,7 +40,7 @@ import TokensBlack from '@/assets/images/icons/tokens_black.svg';
  * TYPES
  */
 type Props = {
-  data?: Pool[] | PoolWithShares[];
+  data?: Pool[];
   poolsType?: 'unstaked' | 'staked';
   isLoading?: boolean;
   isLoadingMore?: boolean;
@@ -49,8 +51,11 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
+  showActions?: boolean;
   columnStates?: Record<string, string>;
   skeletonClass?: string;
+  shares?: Record<string, string>;
+  boosts?: Record<string, string>;
 };
 
 /**
@@ -63,17 +68,22 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  sortColumn: 'poolValue',
+  sortColumn: 'totalLiquidity',
   hiddenColumns: () => [],
   showBoost: false,
+  showActions: false,
   columnStates: () => ({}),
   data: () => [],
   selectedTokens: () => [],
   skeletonClass: 'h-64',
 });
 
-const emit = defineEmits(['loadMore', 'triggerStake']);
-
+const emit = defineEmits<{
+  (e: 'loadMore'): void;
+  (e: 'triggerStake', value: Pool): void;
+  (e: 'triggerUnstake', value: Pool): void;
+  (e: 'onColumnSort', value: string): void;
+}>();
 /**
  * COMPOSABLES
  */
@@ -92,7 +102,7 @@ const wideCompositionWidth = computed(() =>
 /**
  * DATA
  */
-const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
+const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -112,7 +122,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(pool.shares, {
+      fNum2(balanceValue(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -120,7 +130,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     align: 'right',
     id: 'myBalance',
     hidden: !props.showPoolShares,
-    sortKey: pool => Number(pool.shares),
+    sortKey: pool => Number(balanceValue(pool)),
     width: 160,
     cellClassName: 'font-numeric',
   },
@@ -132,7 +142,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
         maximumFractionDigits: 0,
       }),
     align: 'right',
-    id: 'poolValue',
+    id: 'totalLiquidity',
     sortKey: pool => {
       const apr = Number(pool.totalLiquidity);
       if (apr === Infinity || isNaN(apr)) return 0;
@@ -145,7 +155,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     name: t('volume24h', [t('hourAbbrev')]),
     accessor: pool => pool?.volumeSnapshot || '0',
     align: 'right',
-    id: 'poolVolume',
+    id: 'volume',
     Cell: 'volumeCell',
     sortKey: pool => {
       const volume = Number(pool?.volumeSnapshot);
@@ -157,12 +167,11 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   },
   {
     name: t('myBoost'),
-    accessor: pool =>
-      pool?.boost ? `${bnum(pool?.boost).toFixed(3)}x` : 'N/A',
+    accessor: pool => `${bnum(boostFor(pool)).toFixed(3)}x`,
     align: 'right',
     id: 'myBoost',
     hidden: !props.showBoost,
-    sortKey: pool => Number(pool?.boost || '0'),
+    sortKey: pool => Number(boostFor(pool)),
     width: 150,
     cellClassName: 'font-numeric',
   },
@@ -171,7 +180,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     Cell: 'aprCell',
     accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
-    id: 'poolApr',
+    id: 'apr',
     sortKey: pool => {
       let apr = 0;
 
@@ -205,6 +214,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     accessor: 'actions',
     align: 'center',
     id: 'actions',
+    hidden: !props.showActions,
     width: 150,
   },
 ]);
@@ -216,7 +226,7 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
+function handleRowClick(pool: Pool, inNewTab?: boolean) {
   trackGoal(Goals.ClickPoolsTableRow);
   const route = router.resolve({
     name: 'pool',
@@ -225,7 +235,7 @@ function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
   inNewTab ? window.open(route.href) : router.push(route);
 }
 
-function navigateToPoolMigration(pool: PoolWithShares) {
+function navigateToPoolMigration(pool: Pool) {
   router.push({
     name: 'migrate-pool',
     params: {
@@ -236,7 +246,16 @@ function navigateToPoolMigration(pool: PoolWithShares) {
   });
 }
 
-function aprLabelFor(pool: PoolWithShares): string {
+function balanceValue(pool: Pool): string {
+  const bpt = props?.shares?.[pool.id] || '0';
+  return fiatValueOf(pool, bpt);
+}
+
+function boostFor(pool: Pool): string {
+  return props?.boosts?.[pool.id] || '1';
+}
+
+function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
@@ -247,7 +266,7 @@ function lockedUntil(lockEndDate?: number) {
   return lockEndDate ? format(lockEndDate, PRETTY_DATE_FORMAT) : '—';
 }
 
-function iconAddresses(pool: PoolWithShares) {
+function iconAddresses(pool: Pool) {
   return POOLS.Metadata[pool.id]?.hasIcon
     ? [pool.address]
     : orderedTokenAddresses(pool);
@@ -272,10 +291,12 @@ function iconAddresses(pool: PoolWithShares) {
       :square="upToLargeBreakpoint"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
+      isOnlyDescSort
       :initialState="{
         sortColumn: sortColumn,
         sortDirection: 'desc',
       }"
+      @on-column-sort="emit('onColumnSort', $event)"
       @load-more="emit('loadMore')"
     >
       <template #iconColumnHeader>
@@ -301,7 +322,12 @@ function iconAddresses(pool: PoolWithShares) {
               :selectedTokens="selectedTokens"
             />
           </div>
-          <BalChipNew v-if="pool?.isNew" class="mt-1" />
+          <BalChip
+            v-if="isLiquidityBootstrapping(pool.poolType)"
+            label="LBP"
+            color="amber"
+          />
+          <BalChipNew v-else-if="pool?.isNew" class="mt-1" />
           <PoolWarningTooltip :pool="pool" />
         </div>
       </template>
@@ -355,6 +381,7 @@ function iconAddresses(pool: PoolWithShares) {
           :pool="pool"
           :poolsType="poolsType"
           @click:stake="pool => emit('triggerStake', pool)"
+          @click:unstake="pool => emit('triggerUnstake', pool)"
           @click:migrate="pool => navigateToPoolMigration(pool)"
         />
       </template>
