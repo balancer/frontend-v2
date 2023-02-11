@@ -17,7 +17,7 @@ import useWithdrawalState from '../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 /**
  * TYPES

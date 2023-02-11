@@ -19,7 +19,7 @@ import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 
 /**
  * TYPES

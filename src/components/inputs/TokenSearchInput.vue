@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAddress } from '@ethersproject/address';
-import { compact, pick, take } from 'lodash';
+import { compact, pick, take } from 'lodash-es';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

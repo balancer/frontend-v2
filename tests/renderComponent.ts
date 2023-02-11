@@ -1,6 +1,6 @@
 import { RenderOptions, render } from '@testing-library/vue';
 import { registerTestPlugins } from './registerTestPlugins';
-import { mergeWith } from 'lodash';
+import { mergeWith } from 'lodash-es';
 import { RouterLinkStub } from '@vue/test-utils';
 import {
   PoolStakingProviderResponse,

@@ -1,5 +1,5 @@
 import { getAddress, isAddress } from '@ethersproject/address';
-import { compact, pick } from 'lodash';
+import { compact, pick } from 'lodash-es';
 import {
   computed,
   InjectionKey,

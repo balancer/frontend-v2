@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { tail } from 'lodash';
+import { tail } from 'lodash-es';
 
 import { ColumnDefinition, Sticky } from '@/components/_global/BalTable/types';
 

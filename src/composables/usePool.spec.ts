@@ -1,6 +1,6 @@
 import { Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { BoostedPoolMock } from '@/__mocks__/pool';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import {
   findTokenInTree,
   flatTokenTree,

@@ -4,7 +4,7 @@ import {
 } from '@/dependencies/EthersContract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 
 import veBalProxyABI from '@/lib/abi/veDelegationProxy.json';
 import { configService } from '@/services/config/config.service';

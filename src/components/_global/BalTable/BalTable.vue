@@ -3,7 +3,7 @@ import BalIcon from '../BalIcon/BalIcon.vue';
 import BalTableRow from './BalTableRow.vue';
 import TotalsRow from './TotalsRow.vue';
 import { Sticky, Data, ColumnDefinition } from './types';
-import { sortBy, sumBy } from 'lodash';
+import { sortBy, sumBy } from 'lodash-es';
 
 import PinHeader from './PinHeader.vue';
 

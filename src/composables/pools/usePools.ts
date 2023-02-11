@@ -1,4 +1,4 @@
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { computed, Ref, ref, watch } from 'vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';

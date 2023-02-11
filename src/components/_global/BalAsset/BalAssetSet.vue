@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { isAddress } from '@ethersproject/address';
-import { chunk } from 'lodash';
+import { chunk } from 'lodash-es';
 
 import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 

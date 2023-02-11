@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 
 import {
   ColumnDefinition,

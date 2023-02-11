@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SubgraphPoolBase } from '@balancer-labs/sdk';
 import { formatUnits } from '@ethersproject/units';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatDistanceToNow } from 'date-fns';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 

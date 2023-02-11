@@ -1,4 +1,4 @@
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import { balancerContractsService } from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
 import Vault from './vault';

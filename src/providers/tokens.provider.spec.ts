@@ -9,7 +9,7 @@ import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { configService } from '@/services/config/config.service';
 import { mountComposable } from '@tests/mount-helpers';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import waitForExpect from 'wait-for-expect';
 import { tokensProvider } from './tokens.provider';
 

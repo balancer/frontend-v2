@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 
 import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import useJoinExit from '@/composables/swap/useJoinExit';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 
 vi.mock('vue-i18n');
 vi.mock('vuex');

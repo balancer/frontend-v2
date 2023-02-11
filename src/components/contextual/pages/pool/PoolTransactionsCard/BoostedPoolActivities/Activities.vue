@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { computed } from 'vue';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';

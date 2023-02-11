@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { format, fromUnixTime } from 'date-fns';
-import { Dictionary, mapKeys, mapValues, pickBy, toPairs } from 'lodash';
+import { mapKeys, mapValues, pickBy, toPairs } from 'lodash-es';
+import { Dictionary } from 'lodash';
 import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
 

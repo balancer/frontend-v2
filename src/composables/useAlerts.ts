@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import { computed, ref } from 'vue';
 
 import { lsGet, lsSet } from '@/lib/utils';

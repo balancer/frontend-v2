@@ -1,6 +1,6 @@
 import { FunctionFragment, Interface } from '@ethersproject/abi';
 import { Contract } from 'ethers';
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 
 import { configService } from '../config/config.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';

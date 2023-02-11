@@ -42,7 +42,7 @@ import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import { setError, WithdrawalError } from './useWithdrawalState';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash-es';
 import { SHALLOW_COMPOSABLE_STABLE_BUFFER } from '@/constants/pools';
 
 import PoolExchange from '@/services/pool/exchange/exchange.service';

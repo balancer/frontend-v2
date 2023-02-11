@@ -8,7 +8,7 @@ import mockSorOutput from './__mocks__/mockSorOutput';
 import { mountComposable } from '@tests/mount-helpers';
 import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import { initBalancer } from '@/dependencies/balancer-sdk';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';

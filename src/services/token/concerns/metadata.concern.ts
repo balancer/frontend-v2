@@ -1,5 +1,5 @@
 import { getAddress } from '@ethersproject/address';
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { includesAddress, isSameAddress } from '@/lib/utils';

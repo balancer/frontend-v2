@@ -1,7 +1,7 @@
 import { getUnixTime } from 'date-fns';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { configService } from '@/services/config/config.service';

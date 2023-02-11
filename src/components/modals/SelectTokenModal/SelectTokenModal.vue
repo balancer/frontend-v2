@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import { computed, reactive, toRef, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 

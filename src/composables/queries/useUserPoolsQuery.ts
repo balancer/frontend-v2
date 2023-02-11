@@ -1,4 +1,4 @@
-import { flatten, keyBy } from 'lodash';
+import { flatten, keyBy } from 'lodash-es';
 import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';

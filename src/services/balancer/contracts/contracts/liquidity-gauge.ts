@@ -4,7 +4,7 @@ import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
 import { configService } from '@/services/config/config.service';

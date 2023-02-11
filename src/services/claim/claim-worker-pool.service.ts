@@ -1,4 +1,4 @@
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import PromiseWorker from 'promise-worker';
 // @ts-ignore
 import ClaimWorker from './claim.worker?worker';

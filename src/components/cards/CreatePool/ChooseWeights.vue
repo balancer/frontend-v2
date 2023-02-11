@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import anime from 'animejs';
-import { sum, sumBy, uniqueId } from 'lodash';
+import { sum, sumBy, uniqueId } from 'lodash-es';
 import { ComponentPublicInstance } from 'vue';
 import { useI18n } from 'vue-i18n';
 

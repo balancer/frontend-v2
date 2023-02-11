@@ -6,7 +6,7 @@ import {
   GraphQLQuery,
   PoolsSubgraphRepository,
 } from '@balancer-labs/sdk';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';
 

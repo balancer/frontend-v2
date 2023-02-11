@@ -6,7 +6,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 
 import useInputEvents from '@/components/_global/BalTextInput/composables/useInputEvents';
 import useInputValidation from '@/components/_global/BalTextInput/composables/useInputValidation';

@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
-import { chunk } from 'lodash';
+import { chunk } from 'lodash-es';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { includesAddress, isSameAddress } from '@/lib/utils';

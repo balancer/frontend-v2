@@ -4,7 +4,7 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { Contract } from 'ethers';
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 
 import {
   isStableLike,

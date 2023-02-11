@@ -1,5 +1,5 @@
 import { safeInject } from '@/providers/inject';
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 import {
   ref,
   computed,

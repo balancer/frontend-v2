@@ -16,7 +16,7 @@ import {
   PoolRepository as SDKPoolRepository,
 } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { tokenTreeLeafs } from '../usePool';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';

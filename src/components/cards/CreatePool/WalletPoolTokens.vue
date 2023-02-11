@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { sumBy } from 'lodash';
+import { sumBy } from 'lodash-es';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';

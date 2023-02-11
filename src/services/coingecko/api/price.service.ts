@@ -1,5 +1,5 @@
 import { fromUnixTime, getUnixTime, startOfHour } from 'date-fns';
-import { groupBy, invert, last } from 'lodash';
+import { groupBy, invert, last } from 'lodash-es';
 
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { TOKENS } from '@/constants/tokens';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as echarts from 'echarts/core';
 import { GridOption } from 'echarts/types/dist/shared';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { Dictionary } from 'lodash';
 import numeral from 'numeral';
 import ECharts from 'vue-echarts';

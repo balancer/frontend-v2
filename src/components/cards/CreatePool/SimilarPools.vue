@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { orderBy, take } from 'lodash';
+import { orderBy, take } from 'lodash-es';
 import { useI18n } from 'vue-i18n';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';

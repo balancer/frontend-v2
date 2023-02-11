@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { chunk, flatten } from 'lodash';
+import { chunk, flatten } from 'lodash-es';
 
 import { networkId } from '@/composables/useNetwork';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';

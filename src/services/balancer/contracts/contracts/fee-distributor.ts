@@ -1,7 +1,7 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber, Contract } from 'ethers';
-import { zipObject } from 'lodash';
+import { zipObject } from 'lodash-es';
 
 import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
 import FeeDistributorStaticABI from '@/lib/abi/FeeDistributorStatic.json';

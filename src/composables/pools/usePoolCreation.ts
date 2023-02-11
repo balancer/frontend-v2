@@ -1,7 +1,7 @@
 import { getAddress } from '@ethersproject/address';
 import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
-import { flatten, sumBy } from 'lodash';
+import { flatten, sumBy } from 'lodash-es';
 import { computed, reactive, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 

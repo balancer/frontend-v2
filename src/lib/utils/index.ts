@@ -1,6 +1,6 @@
 import { getAddress } from '@ethersproject/address';
 import BigNumber from 'bignumber.js';
-import { initial } from 'lodash';
+import { initial } from 'lodash-es';
 import { Ref } from 'vue';
 import { Path } from 'vue-i18n';
 

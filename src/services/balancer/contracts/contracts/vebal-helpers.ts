@@ -1,6 +1,6 @@
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
 import { configService } from '@/services/config/config.service';

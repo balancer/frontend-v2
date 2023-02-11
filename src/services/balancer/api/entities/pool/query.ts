@@ -1,5 +1,5 @@
 import { GraphQLArgs } from '@balancer-labs/sdk';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 const defaultArgs: GraphQLArgs = {
   where: {},

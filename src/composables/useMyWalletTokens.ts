@@ -1,4 +1,4 @@
-import { take } from 'lodash';
+import { take } from 'lodash-es';
 import { computed } from 'vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress, includesAddress, removeAddress } from '@/lib/utils';

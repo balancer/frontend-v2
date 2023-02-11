@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { initial, last } from 'lodash';
+import { initial, last } from 'lodash-es';
 import { QueryKey } from 'react-query';
 import { reactive } from 'vue';
 import { useQuery, UseQueryOptions } from 'vue-query';

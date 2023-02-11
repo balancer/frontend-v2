@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import omit from 'lodash/omit';
+import { omit } from 'lodash-es';
 
 interface Option {
   value: string | number;

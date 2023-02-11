@@ -1,4 +1,4 @@
-import { merge, orderBy, uniqueId } from 'lodash';
+import { merge, orderBy, uniqueId } from 'lodash-es';
 import { computed, ref } from 'vue';
 
 import { TransactionStatus } from './useTransactions';

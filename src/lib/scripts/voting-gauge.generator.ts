@@ -18,7 +18,7 @@ import { Multicaller } from '../utils/balancer/contract';
 import { formatUnits } from '@ethersproject/units';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import template from '../utils/template';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),

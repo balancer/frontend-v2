@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
