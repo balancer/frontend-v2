@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-
 import HomePageHero from '@/components/heros/HomePageHero.vue';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useNetwork from '@/composables/useNetwork';
-import useWeb3 from '@/services/web3/useWeb3';
 // import usePools from '@/composables/pools/usePools';
 
 // COMPOSABLES
-const router = useRouter();
-const { appNetworkConfig } = useWeb3();
-const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
@@ -24,16 +17,12 @@ const { selectedTokens, addSelectedToken, removeSelectedToken } =
 //   poolsSortField
 // );
 const { upToMediumBreakpoint } = useBreakpoints();
-const { networkSlug, networkConfig } = useNetwork();
 
 // const isPaginated = computed(() => pools.value.length >= 10);
 
 /**
  * METHODS
  */
-function navigateToCreatePool() {
-  router.push({ name: 'create-pool', params: { networkSlug } });
-}
 
 // function onColumnSort(columnId: string) {
 //   poolsSortField.value = columnId;
@@ -48,7 +37,6 @@ function navigateToCreatePool() {
         <div class="px-4 xl:px-0">
           <div class="flex justify-between items-end mb-8">
             <h3>
-              {{ networkConfig.chainName }}
               <span class="lowercase">{{ $t('pools') }}</span>
             </h3>
             <BalBtn
@@ -57,7 +45,6 @@ function navigateToCreatePool() {
               size="sm"
               outline
               :class="{ 'mt-4': upToMediumBreakpoint }"
-              @click="navigateToCreatePool"
             >
               {{ $t('createAPool.title') }}
             </BalBtn>
@@ -79,7 +66,6 @@ function navigateToCreatePool() {
               outline
               :class="{ 'mt-4': upToMediumBreakpoint }"
               :block="upToMediumBreakpoint"
-              @click="navigateToCreatePool"
             >
               {{ $t('createAPool.title') }}
             </BalBtn>
@@ -98,7 +84,7 @@ function navigateToCreatePool() {
           @on-column-sort="onColumnSort"
           @load-more="loadMorePools"
         /> -->
-        <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
+        <div class="p-4 xl:p-0 mt-16">
           <FeaturedProtocols />
         </div>
       </BalStack>
