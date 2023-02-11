@@ -14,49 +14,6 @@
             <AppLogo class="mb-4" />
           </router-link>
 
-          <div class="flex md:hidden flex-col gap-2">
-            <p>
-              <router-link
-                class="text-lg font-medium link"
-                :to="{ name: 'home', params: { networkSlug } }"
-              >
-                {{ $t('pool') }}
-              </router-link>
-            </p>
-            <p>
-              <router-link
-                class="text-lg font-medium link"
-                :to="{ name: 'swap', params: { networkSlug } }"
-              >
-                {{ $t('swap') }}
-              </router-link>
-            </p>
-            <p>
-              <router-link
-                class="text-lg font-medium link"
-                :to="{ name: 'claim', params: { networkSlug } }"
-              >
-                {{ $t('claim') }}
-              </router-link>
-            </p>
-            <p>
-              <router-link
-                class="text-lg font-medium link"
-                :to="{ name: 'portfolio', params: { networkSlug } }"
-              >
-                {{ $t('portfolio') }}
-              </router-link>
-            </p>
-            <p>
-              <router-link
-                class="text-lg font-medium link"
-                :to="{ name: 'vebal', params: { networkSlug } }"
-              >
-                {{ $t('vebal') }}
-              </router-link>
-            </p>
-          </div>
-
           <div class="flex flex-wrap md:order-3 gap-3 md:gap-4">
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Home"

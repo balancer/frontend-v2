@@ -2,8 +2,8 @@ import { computed, ref } from 'vue';
 
 import config from '@/lib/config';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
 import { RouteParamsRaw } from 'vue-router';
+import { Network } from '@/network';
 
 /**
  * STATE

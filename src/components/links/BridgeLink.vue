@@ -2,7 +2,7 @@
 import useNetwork from '@/composables/useNetwork';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 import { computed } from 'vue';
 
 const { networkId } = useNetwork();

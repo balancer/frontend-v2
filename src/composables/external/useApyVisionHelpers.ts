@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-import { PoolToken } from '@balancer-labs/sdk';
+import { PoolToken } from '@/network';
 
 import { isArbitrum, isMainnet, isPolygon } from '../useNetwork';
 

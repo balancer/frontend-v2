@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 import { getAddress } from '@ethersproject/address';
 import debug from 'debug';
 import fs from 'fs';

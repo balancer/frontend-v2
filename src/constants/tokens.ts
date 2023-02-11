@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 
 import { networkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';

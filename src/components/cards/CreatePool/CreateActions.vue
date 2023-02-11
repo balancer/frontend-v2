@@ -160,16 +160,6 @@ function handleSuccess(details: any): void {
           />
         </BalLink>
       </div>
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'pool', params: { networkSlug, id: poolId } }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
-        {{ $t('viewPool') }}
-      </BalBtn>
     </template>
   </div>
 </template>

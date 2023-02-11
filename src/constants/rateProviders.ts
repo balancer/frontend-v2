@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 import { networkId } from '@/composables/useNetwork';
 
 const ALLOWED_RATE_PROVIDERS_MAP = {

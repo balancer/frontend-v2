@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 
 import arbitrum from './arbitrum.json';
 import docker from './docker.json';

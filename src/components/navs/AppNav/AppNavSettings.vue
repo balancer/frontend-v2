@@ -107,7 +107,6 @@
           <div v-html="$t('marketConditionsWarning')" />
         </BalTooltip>
       </div>
-      <AppSlippageForm class="mt-1" />
     </div>
     <div v-if="isEIP1559SupportedNetwork" class="px-4 mt-6">
       <div class="flex items-baseline">
@@ -138,11 +137,10 @@
 </template>
 
 <script>
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
 import { useStore } from 'vuex';
 
-import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import { ethereumTxTypeOptions } from '@/constants/options';
@@ -156,7 +154,6 @@ import { shorten } from '@/lib/utils';
 
 export default defineComponent({
   components: {
-    AppSlippageForm,
     Avatar,
   },
 

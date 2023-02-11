@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 import { Web3Provider } from '@ethersproject/providers';
 import debounce from 'lodash/debounce';
 import { computed, inject, reactive, ref } from 'vue';

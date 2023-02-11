@@ -2,7 +2,6 @@ import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
-import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import { POOLS } from '@/constants/pools';
 import {
@@ -166,10 +165,6 @@ export function isWeth(pool: AnyPool): boolean {
     pool.tokensList || [],
     configService.network.addresses.weth
   );
-}
-
-export function isMigratablePool(pool: AnyPool) {
-  return POOL_MIGRATIONS.some(migration => migration.fromPoolId === pool.id);
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
@@ -667,7 +662,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isPreMintedBptType,
     isWeth,
     noInitLiquidity,
-    isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,
     orderedPoolTokens,

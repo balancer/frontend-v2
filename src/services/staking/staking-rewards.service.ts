@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 import { getUnixTime } from 'date-fns';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';

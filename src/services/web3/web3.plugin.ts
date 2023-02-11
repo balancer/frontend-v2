@@ -4,7 +4,7 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/network';
 import { setTag } from '@sentry/browser';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';

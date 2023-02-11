@@ -6,8 +6,6 @@ import {
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import { getBalancer } from '@/dependencies/balancer-sdk';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { configService } from '@/services/config/config.service';
@@ -128,32 +126,6 @@ export function usePoolMigration(
     return arr;
   });
 
-  const migrationType = computed(() => {
-    return POOL_MIGRATIONS.find(
-      migration => migration.fromPoolId === fromPool.id
-    );
-  });
-
-  const migrationFn = computed(() => {
-    switch (migrationType.value?.type) {
-      case PoolMigrationType.AAVE_BOOSTED_POOL:
-        return migrateBoostedPool;
-
-      case PoolMigrationType.STABAL3_POOL:
-        return migrateStabal3;
-
-      case PoolMigrationType.STMATIC_POOL:
-      case PoolMigrationType.XMATIC_POOL:
-        return migrateStables;
-
-      case PoolMigrationType.MAI_POOL:
-        return migrateMaiUsd;
-
-      default:
-        return migrateBoostedPool;
-    }
-  });
-
   const migrationData = computed(() => {
     const signer = getSigner();
     const signerAddress = account.value;
@@ -224,75 +196,6 @@ export function usePoolMigration(
       console.error(error);
       throw error;
     }
-  }
-
-  async function migrate(
-    amount: string,
-    isStaked: boolean
-  ): Promise<TransactionResponse> {
-    let query = await migrationFn.value(amount, isStaked, '0');
-
-    const expectedBptOut = await getExpectedBptOut(amount, isStaked);
-    const minBptOut = minusSlippageScaled(expectedBptOut);
-    query = await migrationFn.value(amount, isStaked, minBptOut);
-
-    const txBuilder = new TransactionBuilder(getSigner());
-    const tx = await txBuilder.raw.sendTransaction({
-      to: query.to,
-      data: query.data,
-    });
-
-    handleTransaction(tx);
-    return tx;
-  }
-
-  async function handleTransaction(tx: TransactionResponse): Promise<void> {
-    addTransaction({
-      id: tx.hash,
-      type: 'tx',
-      action: 'migratePool',
-      summary: t('transactionSummary.migratePool', [
-        fromFiatTotalLabel.value,
-        fromPoolTokenInfo.symbol,
-        toPoolTokenInfo.symbol,
-      ]),
-      details: {
-        fromPool: fromPool,
-        toPool: toPool,
-        totalFiatPoolInvestment: fromFiatTotalLabel.value,
-      },
-    });
-
-    const txResult = await txListener(tx, {
-      onTxConfirmed: async (receipt: TransactionReceipt) => {
-        migratePoolState.value.confirming = false;
-        migratePoolState.value.receipt = receipt;
-        const confirmedAt = await getTxConfirmedAt(receipt);
-        migratePoolState.value.confirmedAt = dateTimeLabelFor(confirmedAt);
-      },
-      onTxFailed: () => {
-        migratePoolState.value.confirming = false;
-      },
-    });
-
-    if (currentActionIndex.value + 1 === actions.value.length) {
-      migratePoolState.value.confirmed = txResult;
-    }
-  }
-
-  async function getExpectedBptOut(
-    bptIn: string,
-    isStaked: boolean
-  ): Promise<string> {
-    const query = await migrationFn.value(bptIn, isStaked, '0');
-
-    const txBuilder = new TransactionBuilder(getSigner());
-    const staticResult = await txBuilder.raw.call({
-      to: query.to,
-      data: query.data,
-    });
-
-    return query.decode(staticResult, isStaked);
   }
 
   function migrateBoostedPool(bptIn: string, staked: boolean, minBptOut = '0') {
@@ -372,10 +275,8 @@ export function usePoolMigration(
 
   return {
     getUserSignature,
-    migrate,
     actions,
     migratePoolState,
-    getExpectedBptOut,
     fromFiatTotal,
   };
 }
