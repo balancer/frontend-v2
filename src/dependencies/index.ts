@@ -1,4 +1,3 @@
-import { initBalancer } from './balancer-sdk';
 import { initEthersContract } from './EthersContract';
 import { initMulticall } from './multicall';
 import { initMulticaller } from './Multicaller';
@@ -7,7 +6,6 @@ import { initRpcProviderService } from './rpc-provider.service';
 
 export function initDependencies() {
   initMulticall();
-  initBalancer();
   initRpcProviderService();
   initMulticaller();
   initOldMulticaller();

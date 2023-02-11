@@ -1,4 +1,3 @@
-import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 

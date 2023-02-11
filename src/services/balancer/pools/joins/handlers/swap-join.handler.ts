@@ -2,13 +2,11 @@ import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import {
   TransactionRequest,
   TransactionResponse,
@@ -24,11 +22,11 @@ import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
  * the pool.
  */
 export class SwapJoinHandler implements JoinPoolHandler {
-  private lastSwapRoute?: SwapInfo;
+  private lastSwapRoute;
 
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk: BalancerSDK,
+    public readonly sdk,
     public readonly gasPriceService: GasPriceService
   ) {}
 

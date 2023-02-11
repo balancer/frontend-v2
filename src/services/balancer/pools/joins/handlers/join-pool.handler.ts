@@ -3,7 +3,6 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
-import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Ref } from 'vue';
@@ -25,7 +24,7 @@ export type QueryOutput = {
 export abstract class JoinPoolHandler {
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk: BalancerSDK,
+    public readonly sdk,
     public readonly gasPriceService: GasPriceService
   ) {}
 

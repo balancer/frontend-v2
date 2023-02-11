@@ -1,11 +1,4 @@
 import {
-  InvestmentPool__factory,
-  StablePool__factory,
-  Vault__factory,
-  WeightedPool__factory,
-} from '@balancer-labs/typechain';
-
-import {
   isStableLike,
   isSwappingHaltable,
   isWeightedLike,
@@ -25,9 +18,6 @@ import { Pool, RawOnchainPoolDataMap } from '../types';
 const PoolTypeABIs = Object.values(
   Object.fromEntries(
     [
-      ...WeightedPool__factory.abi,
-      ...StablePool__factory.abi,
-      ...InvestmentPool__factory.abi,
       ...StablePhantomPoolABI,
       ...LinearPoolABI,
       ...StaticATokenLMABI,
@@ -120,7 +110,6 @@ export class PoolMulticaller {
         key: `${pool.id}.poolTokens`,
         address: this.vaultAddress,
         function: 'getPoolTokens',
-        abi: Vault__factory.abi,
         params: [pool.id],
       });
     });

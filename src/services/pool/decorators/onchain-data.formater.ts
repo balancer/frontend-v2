@@ -1,4 +1,3 @@
-import { toNormalizedWeights } from '@balancer-labs/sdk';
 import { formatUnits } from '@ethersproject/units';
 
 import { isStableLike, isWeightedLike } from '@/composables/usePool';
@@ -80,9 +79,7 @@ export class OnchainDataFormater {
   private normalizeWeights(): number[] {
     if (isWeightedLike(this.pool.poolType)) {
       // toNormalizedWeights returns weights as 18 decimal fixed point
-      return toNormalizedWeights(this.rawData.weights || []).map(w =>
-        Number(formatUnits(w, 18))
-      );
+      return [];
     } else if (isStableLike(this.pool.poolType)) {
       const value = this.pool.tokensList.map(
         () => 1 / this.pool.tokensList.length

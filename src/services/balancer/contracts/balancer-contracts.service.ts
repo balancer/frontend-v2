@@ -1,8 +1,3 @@
-import {
-  InvestmentPool__factory,
-  StablePool__factory,
-  WeightedPool__factory,
-} from '@balancer-labs/typechain';
 import { JsonRpcProvider } from '@ethersproject/providers';
 
 import ERC20_ABI from '@/lib/abi/ERC20.json';
@@ -11,7 +6,6 @@ import LinearPoolAbi from '@/lib/abi/LinearPool.json';
 import StablePhantomPool from '@/lib/abi/StablePhantomPool.json';
 import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
 // eslint-disable-next-line no-restricted-imports
-import { balancer } from '@/lib/balancer.sdk';
 // import { getBalancer } from '@/dependencies/balancer-sdk';
 import { Config } from '@/lib/config';
 import { configService as _configService } from '@/services/config/config.service';
@@ -33,7 +27,7 @@ export default class BalancerContractsService {
     readonly rpcProviderService = _rpcProviderService,
     // TODO: Fix affected tests by refactoring export balancerContractsService
     // readonly sdk = getBalancer()
-    readonly sdk = balancer
+    readonly sdk = null
   ) {
     this.provider = this.rpcProviderService.jsonProvider;
     this.config = this.configService.network;

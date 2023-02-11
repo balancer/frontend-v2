@@ -8,7 +8,6 @@ import {
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
-import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, removeAddress } from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';

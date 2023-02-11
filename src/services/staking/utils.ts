@@ -6,7 +6,6 @@ import { TokenInfoMap } from '@/types/TokenList';
 
 import { RewardTokenData } from '../balancer/contracts/contracts/liquidity-gauge';
 import { TokenPrices } from '../coingecko/api/price.service';
-import { AprBreakdown } from '@balancer-labs/sdk';
 
 const MIN_BOOST = 1;
 const MAX_BOOST = 2.5;
@@ -124,7 +123,7 @@ export function getAprRange(apr: string) {
  * @summary A pool has staking rewards if there either a BAL
  * emission or if there is a rewards emission
  */
-export function hasStakingRewards(aprs?: AprBreakdown) {
+export function hasStakingRewards(aprs) {
   if (!aprs?.stakingApr) return false;
 
   return (
@@ -136,7 +135,7 @@ export function hasStakingRewards(aprs?: AprBreakdown) {
 /**
  * @summary Checks if a pool has BAL emissions
  */
-export function hasBalEmissions(aprs?: AprBreakdown): boolean {
+export function hasBalEmissions(aprs?): boolean {
   if (!aprs) return false;
   return bnum(aprs?.stakingApr?.min || 0).gt(0);
 }
