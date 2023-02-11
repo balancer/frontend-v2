@@ -17,7 +17,6 @@ import metamaskLogo from '@/assets/images/connectors/metamask.svg';
 import statusLogo from '@/assets/images/connectors/status.svg';
 import tallyLogo from '@/assets/images/connectors/tally.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
-import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import useFathom, { Goals, trackGoal } from '@/composables/useFathom';
 import { WALLET_SCREEN_ENDPOINT } from '@/constants/exploits';
@@ -29,16 +28,10 @@ import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
 import { networkId } from '@/composables/useNetwork';
 
-export type Wallet =
-  | 'metamask'
-  | 'walletconnect'
-  | 'gnosis'
-  | 'walletlink'
-  | 'tally';
+export type Wallet = 'metamask' | 'gnosis' | 'walletlink' | 'tally';
 
 export const SupportedWallets = [
   'metamask',
-  'walletconnect',
   'tally',
   'gnosis',
   'walletlink',
@@ -46,7 +39,6 @@ export const SupportedWallets = [
 
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
-  walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase Wallet',
   tally: 'Tally',
@@ -161,14 +153,6 @@ export default {
           '@/services/web3/connectors/metamask/metamask.connector'
         );
         return new MetamaskConnector(alreadyConnectedAccount.value);
-      }
-
-      if (wallet === 'walletconnect') {
-        const { WalletConnectConnector } = await import(
-          /* webpackChunkName: "WalletConnectConnector" */
-          '@/services/web3/connectors/trustwallet/walletconnect.connector'
-        );
-        return new WalletConnectConnector(alreadyConnectedAccount.value);
       }
 
       if (wallet === 'gnosis') {
@@ -358,9 +342,6 @@ export function getConnectorLogo(
   }
   if (connectorId === ConnectorId.InjectedTally) {
     return tallyLogo;
-  }
-  if (connectorId === ConnectorId.WalletConnect) {
-    return walletconnectLogo;
   }
   if (connectorId === ConnectorId.WalletLink) {
     return walletlinkLogo;
