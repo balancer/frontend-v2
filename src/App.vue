@@ -7,7 +7,7 @@ import { useStore } from 'vuex';
 import Notifications from '@/components/notifications/Notifications.vue';
 import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
+// import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import * as Layouts from '@/pages/_layouts';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -47,7 +47,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    useWeb3Watchers();
+    // useWeb3Watchers();
     usePoolCreationWatcher();
     useGlobalQueryWatchers();
     useGnosisSafeApp();
