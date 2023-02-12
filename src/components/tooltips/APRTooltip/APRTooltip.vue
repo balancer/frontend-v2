@@ -77,7 +77,9 @@ const totalLabel = computed((): string =>
         <div class="text-secondary">
           {{ $t('totalAPR') }}
         </div>
-        <div>{{ totalLabel }}</div>
+        <div class="text-lg font-bold normal-nums tracking-tighter">
+          {{ totalLabel }}
+        </div>
       </div>
       <div class="p-3 text-left">
         <!-- SWAP FEE APR -->

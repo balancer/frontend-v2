@@ -352,7 +352,7 @@ function iconAddresses(pool: Pool) {
         <div
           :key="columnStates.aprs"
           :class="[
-            'flex justify-end py-4 px-6 -mt-1 font-numeric',
+            'flex justify-end py-4 px-6 -mt-1 font-numeric text-right',
             {
               'text-gray-300 dark:text-gray-600 line-through': isLBP(
                 pool.poolType
