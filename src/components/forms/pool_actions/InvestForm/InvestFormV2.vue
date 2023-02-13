@@ -36,7 +36,6 @@ const props = defineProps<Props>();
 /**
  * STATE
  */
-const showInvestPreview = ref(false);
 const showStakeModal = ref(false);
 
 /**
@@ -57,6 +56,7 @@ const {
   hasValidInputs,
   hasAmountsIn,
   queryError,
+  showInvestPreview,
   setAmountsIn,
   addTokensIn,
 } = useJoinPool();

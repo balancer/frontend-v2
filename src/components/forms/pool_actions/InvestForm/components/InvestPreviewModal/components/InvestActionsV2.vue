@@ -11,7 +11,6 @@ import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { Pool } from '@/services/pool/types';
@@ -49,7 +48,6 @@ const { isStakablePool } = usePoolStaking();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
   rektPriceImpact,
-  amountsIn,
   fiatValueOut,
   join,
   txState,
@@ -59,23 +57,11 @@ const {
 
 const approvalActions = ref(joinPoolApprovalActions.value);
 
-const tokensToApprove = computed(() =>
-  amountsIn.value.map(amountIn => amountIn.address)
-);
-const amountsToApprove = computed(() =>
-  amountsIn.value.map(amountIn => amountIn.value)
-);
-const { tokenApprovalActions } = useTokenApprovalActions(
-  tokensToApprove.value,
-  amountsToApprove
-);
-
 /**
  * COMPUTED
  */
 const actions = computed((): TransactionActionInfo[] => [
   ...approvalActions.value,
-  ...tokenApprovalActions,
   {
     label: t('addLiquidity'),
     loadingLabel: t('investment.preview.loadingLabel.investment'),

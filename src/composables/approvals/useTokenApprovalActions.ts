@@ -20,7 +20,7 @@ type ApprovalActionOptions = {
 };
 
 export default function useTokenApprovalActions(
-  tokenAddresses: string[],
+  tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   actionType: ApprovalAction = ApprovalAction.AddLiquidity
 ) {
@@ -38,8 +38,13 @@ export default function useTokenApprovalActions(
    * STATE
    */
   // Approval actions based on Vault approvals for tokenAddresses
-  const tokenApprovalActions: TransactionActionInfo[] =
-    getTokenApprovalActions();
+  const tokenApprovalActions = computed((): TransactionActionInfo[] =>
+    getTokenApprovalActions({
+      spender: vaultAddress,
+      amount: MaxUint256.toString(),
+      stateMap: vaultApprovalStateMap.value,
+    })
+  );
 
   /**
    * METHODS

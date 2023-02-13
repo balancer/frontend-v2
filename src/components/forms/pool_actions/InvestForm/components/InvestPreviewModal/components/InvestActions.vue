@@ -82,6 +82,7 @@ const { networkSlug } = useNetwork();
 const { refetchBalances } = useTokens();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
+const tokenAddresses = computed(() => props.tokenAddresses);
 const {
   fullAmounts,
   batchSwapAmountMap,
@@ -93,7 +94,7 @@ const {
 } = toRefs(props.math);
 
 const { tokenApprovalActions } = useTokenApprovalActions(
-  props.tokenAddresses,
+  tokenAddresses,
   fullAmounts
 );
 
@@ -106,7 +107,7 @@ const poolExchange = new PoolExchange(toRef(props, 'pool'));
  * COMPUTED
  */
 const actions = computed((): TransactionActionInfo[] => [
-  ...tokenApprovalActions,
+  ...tokenApprovalActions.value,
   {
     label: t('addLiquidity'),
     loadingLabel: t('investment.preview.loadingLabel.investment'),

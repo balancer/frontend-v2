@@ -76,7 +76,7 @@ const { getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
-  [props.lockablePoolTokenInfo.address],
+  ref([props.lockablePoolTokenInfo.address]),
   ref([props.lockAmount]),
   ApprovalAction.Locking
 );

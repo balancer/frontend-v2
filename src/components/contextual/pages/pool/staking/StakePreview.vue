@@ -50,7 +50,7 @@ const currentShares =
     : stakedShares.value;
 
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
-  [props.pool.address],
+  ref[props.pool.address],
   ref([currentShares]),
   ApprovalAction.Staking
 );
