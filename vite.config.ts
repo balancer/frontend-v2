@@ -8,7 +8,6 @@ import { defineConfig } from 'vitest/config';
 import { version as pkgVersion } from './package.json';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
-import { createHtmlPlugin } from 'vite-plugin-html';
 import rollupPolyfillNode from 'rollup-plugin-polyfill-node';
 import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
@@ -22,14 +21,6 @@ export default defineConfig(({ mode }) => {
   const plugins = [
     vue(),
     VitePWA({ registerType: 'autoUpdate' }),
-    createHtmlPlugin({
-      minify: false,
-      inject: {
-        data: {
-          VITE_FATHOM_SITE_ID: envConfig.VITE_FATHOM_SITE_ID,
-        },
-      },
-    }),
     //cast to Plugin to avoid TS errors in defineConfig
     nodePolyfills() as Plugin,
     AutoImport({
