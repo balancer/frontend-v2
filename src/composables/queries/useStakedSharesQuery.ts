@@ -9,6 +9,7 @@ import { Multicaller } from '@/services/multicalls/multicaller';
 import { BigNumber } from '@ethersproject/bignumber';
 import { bnSum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
+import { isGnosis } from '../useNetwork';
 
 /**
  * TYPES
@@ -43,7 +44,8 @@ export default function useStakedSharesQuery(
    * COMPUTED
    */
   const enabled = computed(
-    (): boolean => !!userGaugeShares.value && isWalletReady.value
+    (): boolean =>
+      !!userGaugeShares.value && isWalletReady.value && !isGnosis.value
   );
 
   /**

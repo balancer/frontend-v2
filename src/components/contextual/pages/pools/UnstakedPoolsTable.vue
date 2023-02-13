@@ -72,6 +72,7 @@ onMounted(() => {
       <h5 class="px-4 xl:px-0">
         {{ $t('staking.unstakedPools') }}
       </h5>
+      {{ isLoadingPools }}
       <PoolsTable
         :key="poolsToRenderKey"
         :isLoading="isLoadingPools"
