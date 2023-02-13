@@ -84,9 +84,10 @@ const data = computed(() => {
     },
     owner
       ? {
-          title: t('poolOwner'),
+          title: poolOwnerTitle.value,
           value: shortenLabel(owner),
           link: explorer.addressLink(owner || ''),
+          tooltip: poolOwnerTooltip.value,
         }
       : null,
     {
@@ -99,6 +100,26 @@ const data = computed(() => {
       value: format((createTime || 0) * 1000, 'dd MMMM yyyy'),
     },
   ];
+});
+
+const poolOwnerTitle = computed(() => {
+  if (props.pool.owner === POOLS.ZeroAddress) {
+    return t('noOwner');
+  }
+
+  if (props.pool.owner === POOLS.DelegateOwner) {
+    return t('delegateOwner.title');
+  }
+
+  return t('poolOwner');
+});
+
+const poolOwnerTooltip = computed(() => {
+  if (props.pool.owner === POOLS.DelegateOwner) {
+    return t('delegateOwner.tooltip');
+  }
+
+  return '';
 });
 
 const poolManagementText = computed(() => {
