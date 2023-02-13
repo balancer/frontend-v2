@@ -98,4 +98,4 @@ router.onError((error, to) => {
   }
 });
 
-export default applyNavGuards(router);
+export default router;
