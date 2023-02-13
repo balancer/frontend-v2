@@ -16,8 +16,8 @@ const classes = computed(() => ({}));
 
 <template>
   <AppHero :class="classes">
-    <h1 class="headline" v-text="$t('defiLiquidityPools')" />
-    <p class="mt-2 text-xl text-white" v-text="$t('builtOnBalancer')" />
+    <h1 class="headline" />
+    <p class="mt-2 text-xl text-white" />
     <div class="flex justify-center mt-6">
       <BalBtn
         tag="a"
@@ -27,7 +27,6 @@ const classes = computed(() => ({}));
         color="white"
         outline
       >
-        {{ $t('learnMore') }}
         <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
       </BalBtn>
     </div>

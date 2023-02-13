@@ -21,7 +21,6 @@
               noStyle
               class="group link link--external"
             >
-              {{ $t('about') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
             </BalLink>
 
@@ -31,7 +30,6 @@
               noStyle
               class="group link link--external"
             >
-              {{ $t('docs') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
             </BalLink>
 
@@ -41,7 +39,6 @@
               noStyle
               class="group link link--external"
             >
-              {{ $t('forum') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
             </BalLink>
 
@@ -51,7 +48,6 @@
               noStyle
               class="group link link--external"
             >
-              {{ $t('vote') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
             </BalLink>
 
@@ -61,7 +57,6 @@
               noStyle
               class="group link link--external"
             >
-              {{ $t('grants') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
             </BalLink>
 
@@ -71,7 +66,6 @@
               noStyle
               class="group link link--external"
             >
-              {{ $t('bugBounty') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
             </BalLink>
 
@@ -81,7 +75,6 @@
               noStyle
               class="group link link--external"
             >
-              {{ $t('analytics') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
             </BalLink>
           </div>
@@ -148,26 +141,17 @@
           >
             <p>
               <router-link class="policy" :to="{ name: 'terms-of-use' }">
-                {{ $t('policies.termsOfUse') }}
               </router-link>
             </p>
             <p>
               <router-link class="policy" :to="{ name: 'privacy-policy' }">
-                {{ $t('policies.privacyPolicy') }}
               </router-link>
             </p>
             <p>
               <router-link class="policy" :to="{ name: 'cookies-policy' }">
-                {{ $t('policies.cookiesPolicy') }}
               </router-link>
             </p>
-            <p>
-              <a
-                class="policy"
-                @click="isThirdPartyServicesModalVisible = true"
-                >{{ $t('policies.thirdPartyServices') }}</a
-              >
-            </p>
+            <p></p>
           </div>
         </div>
       </div>
@@ -176,8 +160,6 @@
 </template>
 
 <script>
-import { useI18n } from 'vue-i18n';
-
 import { isThirdPartyServicesModalVisible } from '@/App.vue';
 import IconDiscord from '@/components/icons/IconDiscord.vue';
 import IconGithub from '@/components/icons/IconGithub.vue';
@@ -204,12 +186,10 @@ export default {
     AppLogo,
   },
   setup() {
-    const { t } = useI18n();
     const { networkSlug } = useNetwork();
 
     return {
       EXTERNAL_LINKS,
-      t,
       networkSlug,
       isThirdPartyServicesModalVisible,
     };
