@@ -325,8 +325,8 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
-        // Always query the join before sending the transaction with the most accurate
-        // Static simulation (only for generalised joins)
+        // Always query the join before sending the transaction with the most accurate data
+        // from the Static simulation (affects only generalised joins)
         simulationType: SimulationType.Static,
       });
     } catch (error) {

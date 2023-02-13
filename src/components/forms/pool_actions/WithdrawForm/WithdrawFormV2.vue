@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, computed } from 'vue';
+import { onBeforeMount, computed } from 'vue';
 // import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
@@ -12,11 +12,6 @@ import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPr
 import { useTokens } from '@/providers/tokens.provider';
 import { isDeep, isPreMintedBptType } from '@/composables/usePool';
 import { useI18n } from 'vue-i18n';
-
-/**
- * STATE
- */
-const showPreview = ref(false);
 
 /**
  * COMPOSABLES
@@ -41,6 +36,7 @@ const {
   hasAcceptedHighPriceImpact,
   hasAmountsOut,
   validAmounts,
+  showPreview,
 } = useExitPool();
 
 /**

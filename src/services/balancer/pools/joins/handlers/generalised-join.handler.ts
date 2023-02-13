@@ -59,9 +59,6 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const wrapLeafTokens = false;
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
-    console.log({
-      simulationType,
-    });
 
     this.lastJoinRes = await balancer.pools.generalisedJoin(
       poolId,

@@ -97,6 +97,7 @@ const provider = (props: Props) => {
     valid: true,
   });
   const propAmountsOut = ref<AmountOut[]>([]);
+  const showPreview = ref(false);
 
   /**
    * SERVICES
@@ -329,14 +330,6 @@ const provider = (props: Props) => {
 
   const fiatValueIn = computed(() => fiatValueOf(pool.value, bptIn.value));
 
-  // Static call simulation is more accurate, but requires relayer approval.
-  const simulationType = computed(
-    (): SimulationType =>
-      shouldSignRelayer.value
-        ? SimulationType.VaultModel
-        : SimulationType.Static
-  );
-
   /**
    * METHODS
    */
@@ -356,6 +349,8 @@ const provider = (props: Props) => {
     exitPoolService.setExitHandler(exitHandlerType.value);
 
     try {
+      const simulationType = getSimulationType();
+
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
@@ -364,7 +359,7 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        simulationType: SimulationType.Static,
+        simulationType,
         relayerSignature: relayerSignature.value,
       });
 
@@ -400,6 +395,7 @@ const provider = (props: Props) => {
     singleAmountOut.max = '';
 
     try {
+      const simulationType = getSimulationType();
       const output = await exitPoolService.queryExit({
         exitType: ExitType.GivenIn,
         bptIn: bptBalance.value,
@@ -408,7 +404,7 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        simulationType: SimulationType.Static,
+        simulationType,
         relayerSignature: relayerSignature.value,
       });
       const newMax =
@@ -438,7 +434,9 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        simulationType: simulationType.value,
+        // Always query the exit before sending the transaction with the most accurate data
+        // from the Static simulation (affects only generalised exits)
+        simulationType: SimulationType.Static,
         relayerSignature: relayerSignature.value,
       });
     } catch (error) {
@@ -455,6 +453,13 @@ const provider = (props: Props) => {
       max: '',
       valid: true,
     }));
+  }
+
+  // Static call simulation is more accurate than VaultModel, but requires relayer approval.
+  function getSimulationType(): SimulationType {
+    return showPreview.value && !approvalActions.value.length
+      ? SimulationType.Static
+      : SimulationType.VaultModel;
   }
 
   /**
@@ -519,6 +524,7 @@ const provider = (props: Props) => {
     bptInValid,
     approvalActions,
     exit,
+    showPreview,
   };
 };
 
