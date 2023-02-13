@@ -597,6 +597,7 @@
   "next": "Next",
   "noContent": "No content",
   "noClaimableIncentives": "No claimable incentives",
+  "noClaimableIncentivesOnThisChain": "No incentives have currently been added to this chain. Check back later.",
   "noData": "No data available",
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before liquidity provision is supported.",

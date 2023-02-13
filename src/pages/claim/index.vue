@@ -316,11 +316,12 @@ onBeforeMount(async () => {
           </div>
         </template>
 
+        <BalBlankSlate v-else-if="isGnosis" class="px-4 xl:px-0 mt-4 mb-16">
+          {{ $t('noClaimableIncentivesOnThisChain') }}
+        </BalBlankSlate>
         <BalBlankSlate
           v-else-if="
-            (!isClaimsLoading && gaugeTables.length === 0) ||
-            !isWalletReady ||
-            isGnosis
+            (!isClaimsLoading && gaugeTables.length === 0) || !isWalletReady
           "
           class="px-4 xl:px-0 mt-4 mb-16"
         >
