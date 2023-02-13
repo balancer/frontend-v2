@@ -8,9 +8,7 @@ import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-vi.mock('@/composables/useEthereumTxType');
 vi.mock('@/lib/utils/balancer/helpers/sor/sorManager');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockNativeAssetAddress = configService.network.nativeAsset.address;
 const mockEthPrice = 3000;

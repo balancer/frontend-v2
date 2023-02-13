@@ -222,7 +222,12 @@ const POOLS_MAINNET: Pools = {
       '0x8a34b5ad76f528bfec06c80d85ef3b53da7fc30000020000000000000000043e', // ankrETH/weth stable
       '0x961764651931941f23cea5bab246607dc19ef224000200000000000000000444', // tetubal
       '0xb08885e6026bab4333a80024ec25a1a3e1ff2b8a000200000000000000000445', // rETH (stafi ETH)/weth
-      '0x831261F44931B7DA8BA0DCC547223C60BB75B47F000200000000000000000460', // wUSDR/USDC stable pool
+      '0x831261f44931b7da8ba0dcc547223c60bb75b47f000200000000000000000460', // wUSDR/USDC stable pool
+      '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467', // sfrxeth/wsteth/reth (v3)
+      '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f', // bbeusd
+      '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // dola/bbeusd
+      '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477', // euler-frax/euler-usdc
+      '0x3dbb8d974b82e82ce79c20c0f5995f4f1f533ede000000000000000000000470', // zUSD-bb-e-USD
     ],
   },
   Investment: {
@@ -244,6 +249,8 @@ const POOLS_MAINNET: Pools = {
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
     '0xf9ac7b9df2b3454e841110cce5550bd5ac6f875f': 'composableStablePool', // ComposableStable
     '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
+    '0xdba127fbc23fb20f5929c546af220a991b5c6e01': 'composableStablePool',
+    '0x5dd94da3644ddd055fcf6b3e1aa310bb7801eb8b': 'weightedPool', // weighted pool v3
   },
   Stakable: {
     AllowList: [
@@ -443,6 +450,8 @@ const POOLS_POLYGON: Pools = {
     '0xca96c4f198d343e251b1a01f3eba061ef3da73c1': 'stablePool', // stable pool v2,
     '0x136fd06fa01ecf624c7f2b3cb15742c1339dc2c4': 'composableStablePool', // ComposableStable
     '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
+    '0x7bc6c0e73edaa66ef3f6e2f27b0ee8661834c6c9': 'composableStablePool', // ComposableStable V3
+    '0x82e4cFaef85b1B6299935340c964C942280327f4': 'weightedPool', // weighted pool v3
     '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
   },
   Stakable: {
@@ -536,6 +545,7 @@ const POOLS_ARBITRUM: Pools = {
       '0x7bceaa9c5e7f4836fec3bce2d5346637c9b13970000000000000000000000102', // vesta new stable
       '0xfb5e6d0c1dfed2ba000fbc040ab8df3615ac329c000000000000000000000159', // stETH
       '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316', // wsteth/weth stable
+      '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bbrfusd
     ],
   },
   Investment: {
@@ -553,6 +563,8 @@ const POOLS_ARBITRUM: Pools = {
     '0xef44d6786b2b4d544b7850fe67ce6381626bf2d6': 'stablePool', // stable pool v2
     '0xaeb406b0e430bf5ea2dc0b9fe62e4e53f74b3a33': 'composableStablePool', // ComposableStable
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'weightedPool', // weighted pool v2
+    '0x1c99324edc771c82a0dccb780cc7dda0045e50e7': 'composableStablePool', // ComposableStable V3
+    '0xf1665e19bc105be4edd3739f88315cc699cc5b65': 'weightedPool', // Weighted Pool V3
   },
   Stakable: {
     AllowList: [

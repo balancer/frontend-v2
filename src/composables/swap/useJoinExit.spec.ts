@@ -1,20 +1,10 @@
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
-import { mount } from '@tests/mount-composable-tester';
 import { computed, ref } from 'vue';
 
 import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
-
-vi.mock('vue-i18n');
-vi.mock('vuex');
-vi.mock('@/composables/useEthereumTxType');
-vi.mock('@/composables/useEthers');
-vi.mock('@/composables/useTransactions');
-vi.mock('@/locales');
-vi.mock('@/services/web3/useWeb3');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/composables/queries/useRelayerApprovalQuery');
+import { mountComposable } from '@tests/mount-helpers';
 
 vi.mock('@/providers/tokens.provider', () => ({
   useTokens: () => {
@@ -24,17 +14,6 @@ vi.mock('@/providers/tokens.provider', () => ({
       useTokens: vi.fn(noop),
       getToken: vi.fn(noop),
     };
-  },
-}));
-
-vi.mock('@/composables/approvals/useRelayerApproval', () => ({
-  __esModule: true,
-  default: () =>
-    vi.fn().mockImplementation(() => ({
-      relayerSignature: '-',
-    })),
-  RelayerType: {
-    BATCH_V4: 'BATCH_V4',
   },
 }));
 
@@ -104,12 +83,12 @@ describe('useJoinExit', () => {
 
   it('Should load', () => {
     vi.spyOn(console, 'time').mockImplementation(noop);
-    const { result } = mount(() => useJoinExit(mockProps));
+    const { result } = mountComposable(() => useJoinExit(mockProps));
     expect(result).toBeTruthy();
   });
 
   it('Should return an available joinExit swap', async () => {
-    const { result: joinExit } = mount(() => useJoinExit(mockProps));
+    const { result: joinExit } = mountComposable(() => useJoinExit(mockProps));
     await joinExit.handleAmountChange();
     expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(
       Number(mockAmount)

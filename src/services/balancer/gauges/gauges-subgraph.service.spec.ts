@@ -7,7 +7,7 @@ describe('GaugesSubgraphService', () => {
       it('Array of gauges', async () => {
         const response = await gaugesSubgraphService.gauges.get();
 
-        expect(response).toEqual(gaugesResponse.data.liquidityGauges);
+        expect(response).toEqual(gaugesResponse.liquidityGauges);
       });
     });
   });

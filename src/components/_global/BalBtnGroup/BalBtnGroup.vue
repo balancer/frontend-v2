@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import omit from 'lodash/omit';
-import { PropType } from 'vue';
 
 interface Option {
   value: string | number;
