@@ -1,8 +1,6 @@
 import { Network } from '@/network';
 import axios from 'axios';
 
-import { networkId } from '@/composables/useNetwork';
-
 import OperatorError from './errors/OperatorError';
 import {
   getSigningSchemeApiValue,
@@ -24,7 +22,7 @@ export default class CowswapProtocolService {
   baseURL: string;
 
   constructor(apiVersion = 'v1') {
-    const baseURL = API_URLS[networkId.value] ?? API_URLS[Network.MAINNET];
+    const baseURL = API_URLS[1] ?? API_URLS[Network.MAINNET];
 
     this.baseURL = `${baseURL}/${apiVersion}`;
   }

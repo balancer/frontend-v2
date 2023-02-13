@@ -1,6 +1,5 @@
 import { Network } from '@/network';
 
-import { networkId } from '@/composables/useNetwork';
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
 import template from '@/lib/utils/template';
@@ -22,7 +21,7 @@ export default class ConfigService {
   public get env(): Env {
     return {
       APP_ENV: import.meta.env.VITE_ENV || 'development',
-      NETWORK: networkId.value,
+      NETWORK: 1,
       APP_DOMAIN: import.meta.env.VITE_DOMAIN || 'app.balancer.fi',
       APP_HOST: import.meta.env.VITE_HOST || 'balancer.fi',
       IPFS_NODE: import.meta.env.VITE_IPFS_NODE || 'cloudflare-ipfs.com',
@@ -30,17 +29,17 @@ export default class ConfigService {
         import.meta.env.VITE_BLOCKNATIVE_DAPP_ID || 'MISSING_KEY',
       ALCHEMY_KEY:
         import.meta.env.VITE_ALCHEMY_KEY ||
-        this.getNetworkConfig(networkId.value).keys.alchemy ||
+        this.getNetworkConfig(1).keys.alchemy ||
         'MISSING_KEY',
       GRAPH_KEY:
         import.meta.env.VITE_ENV === 'development'
           ? import.meta.env.VITE_GRAPH_KEY_DEV || 'MISSING_KEY'
           : import.meta.env.VITE_GRAPH_KEY ||
-            this.getNetworkConfig(networkId.value).keys.graph ||
+            this.getNetworkConfig(1).keys.graph ||
             'MISSING_KEY',
       INFURA_PROJECT_ID:
         import.meta.env.VITE_INFURA_PROJECT_ID ||
-        this.getNetworkConfig(networkId.value).keys.infura ||
+        this.getNetworkConfig(1).keys.infura ||
         'MISSING_KEY',
       ENABLE_STABLE_POOLS: import.meta.env.VITE_ENABLE_STABLE_POOLS === 'true',
       WALLET_SCREENING: import.meta.env.VITE_WALLET_SCREENING === 'true',
@@ -48,7 +47,7 @@ export default class ConfigService {
   }
 
   public get network(): Config {
-    return configs[networkId.value];
+    return configs[1];
   }
 
   public getNetworkConfig(key: Network): Config {

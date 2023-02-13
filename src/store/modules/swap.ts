@@ -1,4 +1,3 @@
-import { networkId } from '@/composables/useNetwork';
 import initialTokens from '@/constants/initialTokens.json';
 import { lsGet, lsSet } from '@/lib/utils';
 
@@ -16,17 +15,11 @@ const actions = {
   init({ commit }) {
     commit(
       'setInputAsset',
-      lsGet(
-        `swap.inputAsset.${networkId.value}`,
-        initialTokens[networkId.value].input
-      )
+      lsGet(`swap.inputAsset.${1}`, initialTokens[1].input)
     );
     commit(
       'setOutputAsset',
-      lsGet(
-        `swap.outputAsset.${networkId.value}`,
-        initialTokens[networkId.value].output
-      )
+      lsGet(`swap.outputAsset.${1}`, initialTokens[1].output)
     );
   },
 };
@@ -34,12 +27,12 @@ const actions = {
 const mutations = {
   setInputAsset(state: SwapState, asset: string): void {
     state.inputAsset = asset;
-    lsSet(`swap.inputAsset.${networkId.value}`, asset);
+    lsSet(`swap.inputAsset.${1}`, asset);
   },
 
   setOutputAsset(state: SwapState, asset: string): void {
     state.outputAsset = asset;
-    lsSet(`swap.outputAsset.${networkId.value}`, asset);
+    lsSet(`swap.outputAsset.${1}`, asset);
   },
 };
 

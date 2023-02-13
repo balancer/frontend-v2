@@ -4,7 +4,6 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { chunk, flatten } from 'lodash-es';
 
-import { networkId } from '@/composables/useNetwork';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
 import configs from '@/lib/config';
 import { bnum } from '@/lib/utils';
@@ -107,7 +106,7 @@ export class ClaimService {
 
       const txBuilder = new TransactionBuilder(provider.getSigner());
       return await txBuilder.contract.sendTransaction({
-        contractAddress: configs[networkId.value].addresses.merkleOrchard,
+        contractAddress: configs[1].addresses.merkleOrchard,
         abi: merkleOrchardAbi,
         action: 'claimDistributions',
         params: [account, flatten(multiTokenClaims), tokens],

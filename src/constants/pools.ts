@@ -1,8 +1,6 @@
 import { Network } from '@/network';
 
-import { isMainnet, networkId } from '@/composables/useNetwork';
-
-export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
+export const MIN_FIAT_VALUE_POOL_MIGRATION = 1; // 100K USD or $1 for other networks
 
 // Do not display APR values greater than this amount; they are likely to be nonsensical
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
@@ -688,13 +686,4 @@ const POOLS_GENERIC: Pools = {
   DisabledJoins: [],
 };
 
-const POOLS_MAP = {
-  [Network.GOERLI]: POOLS_GOERLI,
-  [Network.MAINNET]: POOLS_MAINNET,
-  [Network.POLYGON]: POOLS_POLYGON,
-  [Network.ARBITRUM]: POOLS_ARBITRUM,
-};
-
-export const POOLS: Pools = POOLS_MAP[networkId.value]
-  ? POOLS_MAP[networkId.value]
-  : POOLS_GENERIC;
+export const POOLS: Pools = POOLS_GENERIC;

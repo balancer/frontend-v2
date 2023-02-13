@@ -1,4 +1,3 @@
-import { networkSlug, networkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 
 describe('Config service', () => {
@@ -13,13 +12,6 @@ describe('Config service', () => {
       expect(() => {
         configService.getNetworkConfig(99);
       }).toThrow('No config for network key: 99');
-    });
-  });
-
-  describe('Get app network slug and id', () => {
-    it('Returns the correct slug and id for app network key', () => {
-      expect(networkSlug).toBe('goerli');
-      expect(networkId.value).toBe(5);
     });
   });
 });

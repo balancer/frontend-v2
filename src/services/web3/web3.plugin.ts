@@ -26,7 +26,6 @@ import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector, ConnectorId } from './connectors/connector';
 import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
-import { networkId } from '@/composables/useNetwork';
 
 export type Wallet = 'metamask' | 'gnosis' | 'walletlink' | 'tally';
 

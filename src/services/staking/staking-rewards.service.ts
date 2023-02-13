@@ -4,7 +4,6 @@ import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { isNil, mapValues } from 'lodash-es';
 
-import { isL2 } from '@/composables/useNetwork';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
@@ -26,8 +25,6 @@ import {
   calculateRewardTokenAprs,
   getAprRange,
 } from './utils';
-import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
-import { UserBoosts } from '@/composables/queries/useUserBoostsQuery';
 
 export type GaugeBalApr = { min: string; max: string };
 export type GaugeBalAprs = Record<string, GaugeBalApr>;

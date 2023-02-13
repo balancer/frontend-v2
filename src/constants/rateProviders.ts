@@ -1,5 +1,4 @@
 import { Network } from '@/network';
-import { networkId } from '@/composables/useNetwork';
 
 const ALLOWED_RATE_PROVIDERS_MAP = {
   [Network.MAINNET]: {
@@ -69,5 +68,4 @@ const ALLOWED_RATE_PROVIDERS_MAP = {
   },
 };
 
-export const ALLOWED_RATE_PROVIDERS =
-  ALLOWED_RATE_PROVIDERS_MAP[networkId.value];
+export const ALLOWED_RATE_PROVIDERS = ALLOWED_RATE_PROVIDERS_MAP[1];

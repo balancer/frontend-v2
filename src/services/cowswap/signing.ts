@@ -13,7 +13,6 @@ import {
   TypedDataV3Signer,
 } from '@cowprotocol/contracts';
 
-import { networkId } from '@/composables/useNetwork';
 import { WalletError } from '@/types';
 
 import { COW_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
@@ -88,7 +87,7 @@ export function getSigningSchemeLibValue(
 async function _signOrder(params: SignOrderParams): Promise<Signature> {
   const { signer, order, signingScheme } = params;
 
-  const domain = domainGp(networkId.value, COW_SETTLEMENT_CONTRACT_ADDRESS);
+  const domain = domainGp(1, COW_SETTLEMENT_CONTRACT_ADDRESS);
 
   console.log('[Cowswap Signing] signOrder', {
     domain,
@@ -109,7 +108,7 @@ async function _signOrderCancellation(
 ): Promise<Signature> {
   const { signer, signingScheme, orderId } = params;
 
-  const domain = domainGp(networkId.value, COW_SETTLEMENT_CONTRACT_ADDRESS);
+  const domain = domainGp(1, COW_SETTLEMENT_CONTRACT_ADDRESS);
 
   console.log('[Cowswap Signing] signOrderCancellation', {
     domain,

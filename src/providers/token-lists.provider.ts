@@ -10,7 +10,6 @@ import {
   onBeforeMount,
 } from 'vue';
 
-import useNetwork from '@/composables/useNetwork';
 import localStorageKeys from '@/constants/local-storage.keys';
 import symbolKeys from '@/constants/symbol.keys';
 import { lsSet } from '@/lib/utils';
@@ -23,7 +22,6 @@ export interface TokenListsState {
 }
 
 const { uris } = tokenListService;
-const { networkId } = useNetwork();
 
 /**
  * STATE
@@ -39,7 +37,7 @@ const tokensListPromise =
     ? // Only use this file in testing mode (vitest)
       import('@tests/tokenlists/tokens-5.json')
     : // Use generated file in development/production mode
-      import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`);
+      import(`@/assets/data/tokenlists/tokens-1.json`);
 
 /**
  * All active (toggled) tokenlists

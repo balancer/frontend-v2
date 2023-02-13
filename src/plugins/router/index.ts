@@ -1,9 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { captureException } from '@sentry/browser';
 
-import { isGoerli } from '@/composables/useNetwork';
-import { applyNavGuards } from './nav-guards';
-
 const CookiesPolicyPage = () =>
   import(
     /* webpackChunkName: "CookiesPolicyPage" */ '@/pages/cookies-policy.vue'

@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import HomePageHero from '@/components/heros/HomePageHero.vue';
-
 // COMPOSABLES
 </script>
 
 <template>
-  <div>
-    <HomePageHero />
-  </div>
+  <div>HELLO HELLO</div>
 </template>
 
 <style>

@@ -1,6 +1,5 @@
 import { Network } from '@/network';
 
-import { networkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 
 /**
@@ -127,6 +126,6 @@ const TOKENS_MAP = {
   [Network.ARBITRUM]: TOKENS_ARBITRUM,
 };
 
-export const TOKENS: TokenConstants = TOKENS_MAP[networkId.value]
-  ? TOKENS_MAP[networkId.value]
+export const TOKENS: TokenConstants = TOKENS_MAP[1]
+  ? TOKENS_MAP[1]
   : TOKENS_GENERIC;

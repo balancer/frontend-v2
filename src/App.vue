@@ -6,9 +6,6 @@ import { useStore } from 'vuex';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import * as Layouts from '@/pages/_layouts';
 
-import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
-import useBackgroundColor from './composables/useBackgroundColor';
-
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
 export const isThirdPartyServicesModalVisible = ref(false);
@@ -16,7 +13,6 @@ export const isThirdPartyServicesModalVisible = ref(false);
 export default defineComponent({
   components: {
     ...Layouts,
-    GlobalModalContainer,
   },
 
   setup() {
@@ -29,7 +25,6 @@ export default defineComponent({
      */
     const route = useRoute();
     const store = useStore();
-    const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
 
     /**
      * CALLBACKS
@@ -42,7 +37,6 @@ export default defineComponent({
      * WATCHERS
      */
     watch(route, newRoute => {
-      updateBgColorFor(newRoute);
       if (newRoute.meta.layout) {
         layout.value = newRoute.meta.layout as string;
       } else {
@@ -64,7 +58,6 @@ export default defineComponent({
   <div id="app">
     <component :is="layout" />
   </div>
-  <GlobalModalContainer />
 </template>
 
 <style>
