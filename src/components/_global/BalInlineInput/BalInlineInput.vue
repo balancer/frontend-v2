@@ -7,7 +7,6 @@ export default {
 
 <script setup lang="ts">
 import { omit } from 'lodash';
-import { computed, ref, useAttrs } from 'vue';
 
 import useInputEvents from '@/components/_global/BalTextInput/composables/useInputEvents';
 import useInputValidation from '@/components/_global/BalTextInput/composables/useInputValidation';

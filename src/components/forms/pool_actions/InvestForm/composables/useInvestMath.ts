@@ -1,3 +1,4 @@
+import { handleFetchException } from '@/lib/utils/exceptions';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
@@ -47,7 +48,7 @@ export default function useInvestMath(
   const { minusSlippageScaled } = useSlippage();
   const { getSigner } = useWeb3();
   const {
-    managedPoolWithTradingHalted,
+    managedPoolWithSwappingHalted,
     isComposableStableLikePool,
     isShallowComposableStablePool,
     isDeepPool,
@@ -190,7 +191,7 @@ export default function useInvestMath(
   });
 
   const bptOut = computed((): string => {
-    if (managedPoolWithTradingHalted.value) return fullBPTOut.value.toString();
+    if (managedPoolWithSwappingHalted.value) return fullBPTOut.value.toString();
     return minusSlippageScaled(fullBPTOut.value);
   });
 
@@ -284,7 +285,7 @@ export default function useInvestMath(
       queryBptOut.value = result.bptOut.toString();
       loadingData.value = false;
     } catch (error) {
-      console.error('Failed to fetch query bptOut', error);
+      handleFetchException('Failed to fetch query bptOut', error);
     }
   }
 

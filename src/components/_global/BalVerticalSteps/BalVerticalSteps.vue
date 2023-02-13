@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
-import { getActiveClassName } from '@/components/utils';
 import { StepState } from '@/types';
 
 type Props = {
@@ -65,11 +62,15 @@ const stepCircleClasses = computed(() => {
 });
 
 /**
- * FUNCTIONS
+ * METHODS
  */
 function handleNavigate(state: StepState, stepIndex: number) {
   if (state === StepState.Todo) return;
   emit('navigate', stepIndex);
+}
+
+function getActiveClassName<T>(state: T, classes: [T, string][]) {
+  return (classes.find(_class => _class[0] === state) || [])[1] || '';
 }
 </script>
 

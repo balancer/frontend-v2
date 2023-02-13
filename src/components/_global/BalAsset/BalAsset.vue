@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
-
 import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
 import { TokenInfo } from '@/types/TokenList';

@@ -5,8 +5,6 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { computed, useAttrs } from 'vue';
-
 /**
  * TYPES
  */

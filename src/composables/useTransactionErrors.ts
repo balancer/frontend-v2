@@ -33,11 +33,20 @@ export default function useTranasactionErrors() {
     };
   }
 
+  function isUserRejected(error): boolean {
+    return (
+      (error?.code && error.code === 4001) ||
+      (error?.message && error.message.includes('user rejected transaction')) ||
+      (error?.cause &&
+        error.cause.message.includes('user rejected transaction'))
+    );
+  }
+
   /**
    * METHODS
    */
   function parseError(error): TransactionError | null {
-    if (error?.code && error.code === 4001) return null; // User rejected transaction
+    if (isUserRejected(error)) return null; // User rejected transaction
     if (error?.code && error.code === 'UNPREDICTABLE_GAS_LIMIT')
       return cannotEstimateGasError;
 
@@ -53,5 +62,6 @@ export default function useTranasactionErrors() {
 
   return {
     parseError,
+    isUserRejected,
   };
 }

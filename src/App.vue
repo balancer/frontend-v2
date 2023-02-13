@@ -1,6 +1,5 @@
 <script lang="ts">
 import BigNumber from 'bignumber.js';
-import { defineComponent, onBeforeMount, ref, watch } from 'vue';
 import { VueQueryDevTools } from 'vue-query/devtools';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';

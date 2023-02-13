@@ -1,3 +1,4 @@
+import { OldMulticaller as OldMulticaller } from '@/dependencies/OldMulticaller';
 import {
   InvestmentPool__factory,
   StablePool__factory,
@@ -9,7 +10,6 @@ import IERC4626 from '@/lib/abi/IERC4626.json';
 import LinearPoolAbi from '@/lib/abi/LinearPool.json';
 import StablePhantomPool from '@/lib/abi/StablePhantomPool.json';
 import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 
 import { configService } from '../config/config.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
@@ -29,7 +29,7 @@ const ERC20ABIs = Object.values(
   )
 );
 
-export class ERC20Multicaller extends Multicaller {
+export class ERC20Multicaller extends OldMulticaller {
   constructor(
     private readonly config = configService,
     private readonly jsonProvider = rpcProviderService.jsonProvider

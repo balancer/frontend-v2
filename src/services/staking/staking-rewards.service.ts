@@ -7,11 +7,10 @@ import { isNil, mapValues } from 'lodash';
 import { isL2 } from '@/composables/useNetwork';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
-import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import { balancerContractsService } from '../balancer/contracts/balancer-contracts.service';
+import BalancerContractsService from '../balancer/contracts/balancer-contracts.service';
 import { GaugeController } from '../balancer/contracts/contracts/gauge-controller';
 import { LiquidityGauge } from '../balancer/contracts/contracts/liquidity-gauge';
 import { BalancerTokenAdmin } from '../balancer/contracts/contracts/token-admin';
@@ -218,7 +217,7 @@ export class StakingRewardsService {
       configService.network.addresses.veDelegationProxy
     );
 
-    const getVebalInfo = await balancerContractsService.veBAL.getLockInfo(
+    const getVebalInfo = await new BalancerContractsService().veBAL.getLockInfo(
       userAddress
     );
     // need to use veBAL balance from the proxy as the balance from the proxy takes
@@ -288,7 +287,7 @@ export class StakingRewardsService {
     gaugeShares,
   }: {
     userAddress: string;
-    gaugeShares: UserGaugeShare[] | GaugeShare[];
+    gaugeShares: GaugeShare[];
   }): Promise<UserBoosts> {
     const { veBALTotalSupply, userVeBALBalance } = await this.getBoostDeps(
       userAddress

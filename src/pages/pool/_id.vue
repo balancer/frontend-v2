@@ -34,6 +34,7 @@ import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQ
 import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
+import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 
 /**
  * STATE
@@ -177,6 +178,10 @@ const poolPremintedBptIndex = computed(() => {
   return preMintedBptIndex(pool.value) ?? null;
 });
 
+const showBrandedRedirectCard = computed(() => {
+  return POOLS.BrandedRedirect?.[poolId] || false;
+});
+
 /**
  * WATCHERS
  */
@@ -264,8 +269,14 @@ watch(poolQuery.error, () => {
         </div>
       </div>
 
+      <BrandedRedirectCard
+        v-if="showBrandedRedirectCard"
+        :poolId="poolId"
+        class="order-1 lg:order-2 px-4 lg:px-0"
+      />
+
       <div
-        v-if="!isLiquidityBootstrappingPool"
+        v-else-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
         <BalStack vertical>

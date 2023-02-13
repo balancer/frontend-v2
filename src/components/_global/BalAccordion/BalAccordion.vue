@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from 'vue';
-
 type Section = {
   title: string;
   id: string;

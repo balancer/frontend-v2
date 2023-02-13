@@ -6,7 +6,7 @@ import { chunk } from 'lodash';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { includesAddress, isSameAddress } from '@/lib/utils';
-import { multicall } from '@/lib/utils/balancer/contract';
+import { getMulticall } from '@/dependencies/multicall';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import TokenService from '../token.service';
@@ -66,6 +66,8 @@ export default class BalancesConcern {
           account
         );
       }
+
+      const multicall = getMulticall();
 
       const balances: BigNumber[] = (
         await multicall<BigNumberish>(

@@ -4,21 +4,20 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
-import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
-import { bnum } from '@/lib/utils';
-import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
+import { bnum, trackLoading } from '@/lib/utils';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import { fiatValueOf, tokensListExclBpt } from '@/composables/usePool';
 import StakeSummary from './StakeSummary.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { ApprovalAction } from '@/composables/approvals/types';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
@@ -35,10 +34,14 @@ const { balanceFor, getToken, refetchBalances } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
-const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 
-const { stake, unstake, stakedShares, refetchAllPoolStakingData } =
-  usePoolStaking();
+const {
+  stake,
+  unstake,
+  stakedShares,
+  refetchAllPoolStakingData,
+  preferentialGaugeAddress,
+} = usePoolStaking();
 
 // Staked or unstaked shares depending on action type.
 const currentShares =
@@ -48,7 +51,8 @@ const currentShares =
 
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  ref([currentShares])
+  ref([currentShares]),
+  ApprovalAction.Staking
 );
 
 const stakeAction = {
@@ -102,13 +106,6 @@ const isStakeAndZero = computed(
     props.action === 'stake' && (currentShares === '0' || currentShares === '')
 );
 
-const fiatValueOfModifiedShares = ref(
-  bnum(props.pool.totalLiquidity)
-    .div(props.pool.totalShares)
-    .times(currentShares)
-    .toString()
-);
-
 const totalUserPoolSharePct = ref(
   bnum(
     bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
@@ -140,11 +137,11 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
       type: 'tx',
       action: props.action,
       summary: t(`transactionSummary.${props.action}`, {
-        pool: poolWeightsLabel(props.pool),
-        amount: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+        pool: props.pool.symbol,
+        amount: fNum2(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
       }),
       details: {
-        total: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+        total: fNum2(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
         pool: props.pool,
       },
     });
@@ -157,11 +154,12 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
 }
 
 async function loadApprovalsForGauge() {
-  isLoadingApprovalsForGauge.value = true;
-  const gaugeAddress = await getGaugeAddress(props.pool.address);
-  const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
-  stakeActions.value.unshift(...approvalActions);
-  isLoadingApprovalsForGauge.value = false;
+  const approvalActions = await trackLoading(async () => {
+    if (!preferentialGaugeAddress.value) return;
+    return getTokenApprovalActionsForSpender(preferentialGaugeAddress.value);
+  }, isLoadingApprovalsForGauge);
+
+  if (approvalActions) stakeActions.value.unshift(...approvalActions);
 }
 
 function handleClose() {
@@ -191,7 +189,7 @@ function handleClose() {
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(currentShares) }} {{ $t('lpTokens') }}</h5>
           <span class="text-secondary">
-            {{ getToken(pool.address).symbol }}
+            {{ getToken(pool.address)?.symbol }}
           </span>
         </BalStack>
         <BalAssetSet
@@ -203,7 +201,7 @@ function handleClose() {
     </div>
     <StakeSummary
       :action="action"
-      :fiatValue="fiatValueOfModifiedShares"
+      :fiatValue="fiatValueOf(pool, currentShares)"
       :sharePercentage="totalUserPoolSharePct"
     />
     <BalActionSteps

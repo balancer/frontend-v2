@@ -5,11 +5,11 @@ import { zipObject } from 'lodash';
 
 import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
 import FeeDistributorStaticABI from '@/lib/abi/FeeDistributorStatic.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { web3Service } from '@/services/web3/web3.service';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class FeeDistributor {
   public claimableTokens: string[] = [
@@ -38,7 +38,8 @@ export class FeeDistributor {
   /**
    * @summary Instantiates a multicaller instance of the FeeDistributor
    */
-  public getMulticaller(): Multicaller {
+  public getMulticaller() {
+    const Multicaller = getOldMulticaller();
     return new Multicaller(this.config.network.key, this.provider, this.abi);
   }
 

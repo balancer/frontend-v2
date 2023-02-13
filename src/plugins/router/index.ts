@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import { captureException } from '@sentry/browser';
 
 import { isGoerli } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
@@ -37,9 +38,9 @@ const PrivacyPolicyPage = () =>
   );
 const TermsOfUsePage = () =>
   import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
-const TradePage = () =>
+const SwapPage = () =>
   import(
-    /* webpackChunkName: "TradePage" */ /* webpackPrefetch: true */ '@/pages/trade.vue'
+    /* webpackChunkName: "SwapPage" */ /* webpackPrefetch: true */ '@/pages/swap.vue'
   );
 const UnlockVeBalPage = () =>
   import(/* webpackChunkName: "UnlockVeBalPage" */ '@/pages/unlock-vebal.vue');
@@ -88,14 +89,15 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'ContentLayout' },
   },
   {
-    path: '/:networkSlug/trade/:assetIn?/:assetOut?',
-    name: 'trade',
-    component: TradePage,
+    path: '/:networkSlug/swap/:assetIn?/:assetOut?',
+    name: 'swap',
+    component: SwapPage,
   },
   {
-    path: '/:networkSlug/swap/:assetIn?/:assetOut?',
+    path: '/:networkSlug/trade/:assetIn?/:assetOut?',
+    name: 'trade-redirect',
     redirect: to => {
-      return `/trade${to.path.split('/swap')[1]}`;
+      return `/${to.params.networkSlug}/swap${to.path.split('/trade')[1]}`;
     },
   },
   {
@@ -197,6 +199,18 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 };
   },
+});
+
+router.onError((error, to) => {
+  if (error.message.includes('Failed to fetch dynamically imported module')) {
+    captureException(
+      'Triggered automatic reload after failed to fetch dynamically imported module. ',
+      {
+        extra: error.message,
+      }
+    );
+    window.location.href = to.fullPath;
+  }
 });
 
 export default applyNavGuards(router);

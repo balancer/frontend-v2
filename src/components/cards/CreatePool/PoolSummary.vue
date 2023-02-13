@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { prominent } from 'color.js';
 import * as echarts from 'echarts/core';
-import { computed, nextTick, ref, watch } from 'vue';
 import ECharts from 'vue-echarts';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';

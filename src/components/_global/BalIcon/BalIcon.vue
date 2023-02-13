@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import feather from 'feather-icons';
-import { computed, onMounted } from 'vue';
 
 /**
  * TYPES

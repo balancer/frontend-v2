@@ -94,6 +94,13 @@
   "blog": "Blog",
   "boostedPool": "Balancer Boosted pool",
   "byConnectingWallet": "By connecting a wallet, I agree to Balancer Foundation’s",
+  "brandedRedirect": {
+    "xave": {
+      "title": "Xave Finance",
+      "description": "Xave Finance  (pronounced \"Save Finance\") allows financial services companies (\"fintechs\") to leverage DeFi for real time remittance transfers and high yield consumer savings. Xave does this in a capital efficient way by building liquid FX markets via our custom FXPools integrated with the Balancer V2 Vault.",
+      "btnText": "Manage liquidity on xave.co"
+    }
+  },
   "cancel": "Cancel",
   "cancelling": "Cancelling",
   "change": "Change",
@@ -140,7 +147,7 @@
   "configuration": "Configuration",
   "confirm": "Confirm",
   "confirming": "Confirming...",
-  "confirmTrade": "Confirm swap",
+  "confirmSwap": "Confirm swap",
   "confirmUnwrap": "Confirm {0} unwrap",
   "confirmWrap": "Confirm {0} wrap",
   "connect": "Connect",
@@ -380,6 +387,7 @@
   "fundPool": "Fund pool",
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
   "forum": "Forum",
+  "fx": "FX pool",
   "gaugeFilter": {
     "gaugeDisplay": "Pool gauge display",
     "showExpired": "Show expired pools",
@@ -460,7 +468,7 @@
     },
     "warning": {
       "noBalanceSomeTokens": "No wallet balance for some pool tokens",
-      "managedPoolTradingHalted": {
+      "managedPoolSwappingHalted": {
         "description": "A swapping halt has been issued by the manager of this pool. For your safety, while the swapping halt is in effect, you may only add liquidity in proportional amounts.",
         "title": "Swapping halted - proportional liquidity provision only"
       },
@@ -535,6 +543,7 @@
   "logOut": "Log out",
   "lost": "Lost",
   "lpTokens": "LP tokens",
+  "lbpAprTooltip": "Only the LBP creator can add liquidity and receive this APR.",
   "managedPool": "Managed pool",
   "manageLists": "Manage lists",
   "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
@@ -677,8 +686,7 @@
       "myTransactions": "My transactions",
       "allInvestments": "All liquidity provision",
       "myInvestments": "My liquidity",
-      "swaps": "Swaps",
-      "trades": "Trades"
+      "swaps": "Swaps"
     },
     "noResults": {
       "allTransactions": "No transactions in this pool",
@@ -702,7 +710,7 @@
     }
   },
   "poolTransactionStats": {
-    "trade": {
+    "swap": {
       "volume": "Volume {period}",
       "largest": "Largest swap {period}",
       "ave": "Ave. swap {period}",
@@ -757,8 +765,8 @@
   "potentialWeeklyYield": "Potential weekly yield",
   "preview": "Preview",
   "previewPool": "Preview new {0} pool",
-  "previewTrade": "Preview swap",
-  "previewTradeTransactions": "Preview swap transactions",
+  "previewSwap": "Preview swap",
+  "previewSwapTransactions": "Preview swap transactions",
   "previewUnwrap": "Preview {0} Unwrap",
   "previewWrap": "Preview {0} Wrap",
   "previewMigrate": "Preview migrate",
@@ -1232,7 +1240,7 @@
   "totalSupply": "Total supply",
   "totalValue": "Total value",
   "totalValueTo": "Total value to",
-  "tradeGaslessToggle": {
+  "swapGaslessToggle": {
     "disabledTooltip": {
       "eth": "This option is disabled because gasless swaps only work with ERC-20 tokens. 'ETH' is not an ERC-20 token.",
       "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction."
@@ -1240,10 +1248,10 @@
     "label": "Swap gasless",
     "tooltip": "‘Swap gasless’ on the Balancer CoW Protocol for free signature swaps, MEV protection, and the best prices with intelligent swap routing across DeFi exchanges. Turn it off to swap only through Balancer liquidity pools using gas."
   },
-  "tradeLiquidity": "Swap liquidity",
-  "tradeSettled": "Your swap has settled",
-  "tradesThroughWeth": "Swaps from ETH route through Balancer liquidity pools and incur gas fees.",
-  "tradeSubmissionError": {
+  "swapLiquidity": "Swap liquidity",
+  "swapSettled": "Your swap has settled",
+  "swapsThroughWeth": "Swaps from ETH route through Balancer liquidity pools and incur gas fees.",
+  "swapSubmissionError": {
     "actionLabel": "Dismiss",
     "title": "An error has occurred"
   },
@@ -1251,21 +1259,21 @@
     "withApproval": "This swap will be submitted via the Relayer. This uses a little more gas but gets a better price. Requires a free, one-time Batch Relayer signature.",
     "withoutApproval": "This swap will be submitted via the Relayer. This uses a little more gas but gets a better price. "
   },
-  "tradeSuccess": "Successfully swapped your tokens",
-  "tradeSummary": {
+  "swapSuccess": "Successfully swapped your tokens",
+  "swapSummary": {
     "exactIn": {
       "title": "Swap from {0} details",
       "totalAfterFees": "Total expected after fees",
       "totalBeforeFees": "Total to receive before fees",
       "totalWithSlippage": "The least you’ll get at {0} slippage",
-      "tradeFees": "Swap fees"
+      "swapFees": "Swap fees"
     },
     "exactOut": {
       "title": "Swap to {0} details",
       "totalAfterFees": "Total expected to swap after fees",
       "totalBeforeFees": "Total to swap before fees",
       "totalWithSlippage": "The most you’ll send at {0} slippage",
-      "tradeFees": "Swap fees"
+      "swapFees": "Swap fees"
     },
     "gasCosts": "Gas costs",
     "transactionTypesTooltips": {
@@ -1289,7 +1297,7 @@
         "content": "Upon your signature, the Balancer CoW Protocol will find an optimal route amongst other swappers or from liquidity on other DeFi exchanges, with MEV protection.",
         "title": "Sign a free message to swap"
       },
-      "trade": {
+      "swap": {
         "content": "Finalize the transaction by submitting it for inclusion on the blockchain.",
         "title": "Confirm transaction"
       }
@@ -1299,23 +1307,23 @@
       "totalAfterFees": "Total to receive",
       "totalBeforeFees": "Amount before fees",
       "totalWithSlippage": "Zero slippage to unwrap {0}",
-      "tradeFees": "Unwrap fees"
+      "swapFees": "Unwrap fees"
     },
     "wrap": {
       "title": "Summary",
       "totalAfterFees": "Total to receive",
       "totalBeforeFees": "Amount before fees",
       "totalWithSlippage": "Zero slippage to wrap {0}",
-      "tradeFees": "Wrap fees"
+      "swapFees": "Wrap fees"
     }
   },
-  "tradeToggle": {
+  "swapToggle": {
     "wrapEth": "Gas swap—required when wrapping ETH",
     "unwrapEth": "Gas swap—required when unwrapping ETH",
     "fromEth": "Gas swap—required when swapping from ETH",
     "signature": "Signature ‘gasless’ swap—price optimized with MEV protection.",
-    "tradeGasless": "Swap gasless by signature",
-    "tradeWithGas": "Swap with a gas fee"
+    "swapGasless": "Swap gasless by signature",
+    "swapWithGas": "Swap with a gas fee"
   },
   "transactionAction": {
     "stake": "Stake",
@@ -1327,7 +1335,7 @@
     "fundPool": "Fund pool",
     "migratePool": "Migrate pool",
     "invest": "Add liquidity",
-    "trade": "Swap",
+    "swap": "Swap",
     "unwrap": "Unwrap",
     "voteForGauge": "Vote",
     "withdraw": "Withdraw",
@@ -1354,7 +1362,7 @@
     },
     "slippage": {
       "title": "Transaction failed due to slippage",
-      "description": "The market price changed beyond your slippage tolerance due to other trades processed before yours. Try again or increase your slippage tolerance."
+      "description": "The market price changed beyond your slippage tolerance due to other swaps processed before yours. Try again or increase your slippage tolerance."
     }
   },
   "transactionPending": "No transactions pending | 1 transaction pending | {n} transactions pending",
@@ -1370,8 +1378,9 @@
     "stake": "{amount} in {pool}",
     "unstake": "{amount} from {pool}",
     "approveForInvesting": "Approve {0} for adding liquidity",
-    "approveForTrading": "Approve {0} for swapping",
+    "approveForSwapping": "Approve {0} for swapping",
     "approveForLocking": "Approve {0} for locking",
+    "approveForStaking": "Approve {0} for staking",
     "extendLock": "Lock until {0}",
     "unlock": "Unlock {0}",
     "approveRelayer": "Approve {0} relayer",
@@ -1381,7 +1390,12 @@
     "investInPool": "{0} in {1}",
     "withdrawFromPool": "{0} from {1}",
     "migratePool": "{0} {1} to {2}",
-    "wrapUnwrap": "{0} {1} to {2}"
+    "wrapUnwrap": "{0} {1} to {2}",
+    "tooltips": {
+      "approveForInvesting": "You must approve {0} to add liquidity for this token on Balancer. Approvals are required once per token, per wallet.",
+      "approveForLocking": "You must approve {0} to lock this token. Approvals are required once per token, per wallet.",
+      "approveForStaking": "You must approve {0} to stake this token on Balancer. Approvals are required once per token, per wallet."
+    }
   },
   "transactionType": "Transaction type",
   "unallocated": "Unallocated",

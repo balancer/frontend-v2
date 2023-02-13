@@ -253,9 +253,11 @@ function getFeesData(
       } else {
         prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
       }
+
+      const finalValue = value - prevValue > 0 ? value - prevValue : 0;
       const result = Object.freeze<[string, number]>([
         timestamps.value[idx],
-        value - prevValue,
+        finalValue,
       ]);
       return result;
     }
@@ -488,7 +490,7 @@ function addLaggingTimestamps() {
       @mouse-enter-event="isFocusedOnChart = true"
     />
   </div>
-  <BalBlankSlate v-else class="h-96">
+  <BalBlankSlate v-else class="h-96" align="center">
     <BalIcon name="bar-chart" />
     {{ $t('insufficientData') }}
   </BalBlankSlate>
