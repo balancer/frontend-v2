@@ -858,6 +858,7 @@
   "swapFeeManager": "Swap fee manager",
   "swapper": "Swapper",
   "swapRoute": "Swap route",
+  "swapException": "Failed to submit ({0}) swap transaction.",
   "switchNetwork": "Switch network",
   "symbol": "Symbol",
   "veBAL": {

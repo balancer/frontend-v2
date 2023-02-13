@@ -46,6 +46,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
+import useTranasactionErrors from '../useTransactionErrors';
 
 type SorState = {
   validationErrors: {
@@ -141,6 +142,7 @@ export default function useSor({
   const { fNum2, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
+  const { isUserRejected } = useTranasactionErrors();
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -566,12 +568,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
       return;
     } else if (wrapType.value == WrapType.Unwrap) {
@@ -590,12 +588,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
       return;
     }
@@ -618,12 +612,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -643,12 +633,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
     }
   }
@@ -746,6 +732,19 @@ export default function useSor({
       return convertStEthWrap({ amount, isWrap: isInputToken });
     }
     return amount;
+  }
+
+  /**
+   * Handles swap exceptions and returns a message to display to the user.
+   */
+  function handleSwapException(error: Error) {
+    console.trace(error);
+    if (!isUserRejected(error)) {
+      state.submissionError = t('swapException', ['Balancer']);
+      captureException(new Error(state.submissionError, { cause: error }));
+    }
+    swapping.value = false;
+    confirming.value = false;
   }
 
   return {
