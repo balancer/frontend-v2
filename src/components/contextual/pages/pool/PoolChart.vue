@@ -8,12 +8,13 @@ import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import PoolChartPeriodSelect from '@/components/pool/PoolChartPeriodSelect.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
-import useNumbers, { FNumOptions } from '@/composables/useNumbers';
+import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { isFx } from '@/composables/usePool';
+import FxPoolWarning from './FxPoolWarning.vue';
 
 /**
  * TYPES
@@ -381,32 +382,6 @@ const defaultChartData = computed(() => {
   return { title, value: chartData.value.defaultHeaderStateValue };
 });
 
-/**
- * @description
- * There could be a case when there are negative swap fees, e.g,
- * under certain circumstances, FX Pools offers rebates to traders, i.e. "negative swap fees"
- * @see
- * https://docs.xave.co/product-overview-1/amm#mechanism
- */
-const axisLabelFormatter = computed(() => {
-  if (activeTab.value === PoolChartTab.FEES) {
-    return {
-      yAxis: {
-        style: 'currency',
-        maximumFractionDigits: 0,
-        fixedFormat: true,
-      },
-    };
-  }
-  return {
-    yAxis: {
-      style: 'currency',
-      abbreviate: true,
-      maximumFractionDigits: 0,
-    },
-  };
-});
-
 const showFxPoolWarning = computed(() => {
   const { poolType } = props;
   return poolType && isFx(poolType) && activeTab.value === PoolChartTab.FEES;
@@ -423,18 +398,11 @@ function setCurrentChartValue(payload: {
   chartDate: string;
   chartValue: number;
 }) {
-  let options: FNumOptions = {
+  currentChartValue.value.num = fNum2(payload.chartValue, {
     style: 'currency',
-  };
-  if (activeTab.value === PoolChartTab.FEES) {
-    options = {
-      style: 'currency',
-      maximumFractionDigits: 2,
-      fixedFormat: true,
-    };
-  }
-
-  currentChartValue.value.num = fNum2(payload.chartValue, options);
+    maximumFractionDigits: 2,
+    fixedFormat: true,
+  });
   currentChartValue.value.isNegative = payload.chartValue < 0;
 
   currentChartDate.value = format(
@@ -517,7 +485,14 @@ function addLaggingTimestamps() {
       v-else
       height="96"
       :data="chartData.data"
-      :axisLabelFormatter="axisLabelFormatter"
+      :axisLabelFormatter="{
+        yAxis: {
+          style: 'currency',
+          maximumFractionDigits: 0,
+          fixedFormat: true,
+          abbreviate: true,
+        },
+      }"
       :areaStyle="chartData.areaStyle"
       :color="chartData.color"
       :hoverColor="chartData.hoverColor"
@@ -533,30 +508,7 @@ function addLaggingTimestamps() {
       @mouse-enter-event="isFocusedOnChart = true"
     />
 
-    <BalAlert
-      v-if="showFxPoolWarning"
-      class="py-2 px-2.5 mb-5"
-      type="tip"
-      size="md"
-      block
-      title=""
-    >
-      <div class="flex flex-col text-sm">
-        <span>{{ $t('poolChart.fxPoolWarning') }}</span>
-        <BalLink
-          href="https://docs.xave.co/product-overview-1/amm#mechanism"
-          external
-          noStyle
-        >
-          <div class="flex items-center text-blue-600">
-            <span>
-              {{ $t('learnMore') }}
-            </span>
-            <BalIcon name="arrow-up-right" size="sm" />
-          </div>
-        </BalLink>
-      </div>
-    </BalAlert>
+    <FxPoolWarning v-if="showFxPoolWarning" />
   </div>
   <BalBlankSlate v-else class="h-96">
     <BalIcon name="bar-chart" />
