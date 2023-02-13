@@ -1499,7 +1499,8 @@
       "fees": "Fees",
       "tvl": "TVL",
       "volume": "Volume"
-    }
+    },
+    "fxPoolWarning": "Under certain circumstances, FX Pools offer rebates to traders, i.e. \"negative swap fees\"."
   },
   "yes": "Yes",
   "none": "None",

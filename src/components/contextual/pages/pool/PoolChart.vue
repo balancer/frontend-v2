@@ -13,6 +13,7 @@ import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
+import { isFx } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -93,7 +94,7 @@ const tabs = [
 ];
 const activeTab = ref(tabs[0].value);
 
-const currentChartValue = ref('');
+const currentChartValue = ref({ num: '', isNegative: false });
 const currentChartDate = ref('');
 const isFocusedOnChart = ref(false);
 
@@ -406,6 +407,11 @@ const axisLabelFormatter = computed(() => {
   };
 });
 
+const showFxPoolWarning = computed(() => {
+  const { poolType } = props;
+  return poolType && isFx(poolType) && activeTab.value === PoolChartTab.FEES;
+});
+
 /**
  * METHODS
  */
@@ -428,7 +434,9 @@ function setCurrentChartValue(payload: {
     };
   }
 
-  currentChartValue.value = fNum2(payload.chartValue, options);
+  currentChartValue.value.num = fNum2(payload.chartValue, options);
+  currentChartValue.value.isNegative = payload.chartValue < 0;
+
   currentChartDate.value = format(
     new Date(payload.chartDate),
     PRETTY_DATE_FORMAT
@@ -478,8 +486,15 @@ function addLaggingTimestamps() {
       <div
         class="flex flex-col items-start xs:items-end text-2xl font-semibold tabular-nums"
       >
-        <p class="tracking-tighter">
-          {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
+        <p
+          class="tracking-tighter"
+          :class="{
+            'text-red-500': currentChartValue.isNegative && isFocusedOnChart,
+          }"
+        >
+          {{
+            isFocusedOnChart ? currentChartValue.num : defaultChartData.value
+          }}
         </p>
         <div
           class="text-sm font-medium text-secondary"
@@ -517,6 +532,31 @@ function addLaggingTimestamps() {
       @mouse-leave-event="isFocusedOnChart = false"
       @mouse-enter-event="isFocusedOnChart = true"
     />
+
+    <BalAlert
+      v-if="showFxPoolWarning"
+      class="py-2 px-2.5 mb-5"
+      type="tip"
+      size="md"
+      block
+      title=""
+    >
+      <div class="flex flex-col text-sm">
+        <span>{{ $t('poolChart.fxPoolWarning') }}</span>
+        <BalLink
+          href="https://docs.xave.co/product-overview-1/amm#mechanism"
+          external
+          noStyle
+        >
+          <div class="flex items-center text-blue-600">
+            <span>
+              {{ $t('learnMore') }}
+            </span>
+            <BalIcon name="arrow-up-right" size="sm" />
+          </div>
+        </BalLink>
+      </div>
+    </BalAlert>
   </div>
   <BalBlankSlate v-else class="h-96">
     <BalIcon name="bar-chart" />
