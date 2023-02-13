@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import Footer from '@/components/footer/Footer.vue';
-import AppNav from '@/components/navs/AppNav/AppNav.vue';
 </script>
 
 <template>
   <div>
     <div class="app-body">
-      <AppNav />
       <div class="pb-16">
         <router-view v-slot="{ Component }" :key="$route.path">
           <transition appear name="appear">
@@ -15,7 +12,6 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
         </router-view>
       </div>
     </div>
-    <Footer />
   </div>
 </template>
 
