@@ -3,10 +3,6 @@ import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
-import Notifications from '@/components/notifications/Notifications.vue';
-// import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.vue';
-// import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-// import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import * as Layouts from '@/pages/_layouts';
 
@@ -22,9 +18,6 @@ export const isThirdPartyServicesModalVisible = ref(false);
 export default defineComponent({
   components: {
     ...Layouts,
-    // WalletSelectModal,
-    // ThirdPartyServicesModal,
-    Notifications,
     AppSidebar,
     GlobalModalContainer,
   },
@@ -37,29 +30,10 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    // useWeb3Watchers();
-    // usePoolCreationWatcher();
-    // useGlobalQueryWatchers();
-    // useGnosisSafeApp();
-    // useExploitWatcher();
-    // useNavigationGuards();
-    // const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } =
-    //   useWeb3();
     const route = useRoute();
     const store = useStore();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
     const { sidebarOpen } = useSidebar();
-
-    // ADD FEATURE ALERT HERE
-    // const featureAlert: Alert = {
-    //   id: 'vebal-gap',
-    //   priority: AlertPriority.LOW,
-    //   label: t('alerts.vebalL2'),
-    //   type: AlertType.FEATURE,
-    //   rememberClose: false,
-    //   actionOnClick: false
-    // };
-    // addAlert(featureAlert);
 
     /**
      * CALLBACKS
@@ -83,13 +57,8 @@ export default defineComponent({
     return {
       // state
       layout,
-      // isBlocked,
       isThirdPartyServicesModalVisible,
-      // computed
-      // isWalletSelectVisible,
       sidebarOpen,
-      // methods
-      // toggleWalletSelectModal,
     };
   },
 });
@@ -100,7 +69,6 @@ export default defineComponent({
   <div id="app">
     <component :is="layout" />
     <AppSidebar v-if="sidebarOpen" />
-    <Notifications />
   </div>
   <GlobalModalContainer />
 </template>

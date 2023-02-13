@@ -6,7 +6,6 @@ import i18n from '@/plugins/i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
-import useNotifications from '@/composables/useNotifications';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
@@ -25,7 +24,6 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const { networkId, networkConfig } = useNetwork();
 const { chainId } = useWeb3();
 const router = useRouter();
-const { addNotification } = useNotifications();
 
 const networks = ref([
   {
@@ -84,11 +82,6 @@ const activeNetwork = computed((): NetworkOption | undefined =>
 onMounted(async () => {
   await router.isReady();
   if (router.currentRoute.value.query?.poolNetworkAlert) {
-    addNotification({
-      type: 'error',
-      title: '',
-      message: `${i18n.global.t('poolDoesntExist')} ${networkConfig.chainName}`,
-    });
     router.replace({ query: {} });
   }
 });

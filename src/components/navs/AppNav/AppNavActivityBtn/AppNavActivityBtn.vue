@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
-import useNotifications from '@/composables/useNotifications';
 import useTransactions from '@/composables/useTransactions';
 import { cowswapProtocolService } from '@/services/cowswap/cowswapProtocol.service';
 import { signOrderCancellation } from '@/services/cowswap/signing';
@@ -29,8 +28,6 @@ const {
   isPendingTransactionStatus,
 } = useTransactions();
 
-const { addNotification } = useNotifications();
-
 /**
  * METHODS
  */
@@ -55,11 +52,6 @@ async function cancelOrder(orderId: string) {
     });
   } catch (e) {
     console.log(e);
-    addNotification({
-      type: 'error',
-      title: t('errorCancellingOrder'),
-      message: (e as Error).message,
-    });
   }
 }
 </script>

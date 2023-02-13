@@ -14,7 +14,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import { CowswapTransactionDetails } from './swap/useCowswap';
 import { processedTxs } from './useEthers';
-import useNotifications from './useNotifications';
 import useNumbers, { FNumFormats } from './useNumbers';
 
 const WEEK_MS = 86_400_000 * 7;
@@ -259,7 +258,6 @@ export default function useTransactions() {
     getProvider: getWeb3Provider,
     blockNumber,
   } = useWeb3();
-  const { addNotification } = useNotifications();
   const { t } = useI18n();
   const { fNum2 } = useNumbers();
 
@@ -310,7 +308,6 @@ export default function useTransactions() {
     };
 
     setTransactions(transactionsMap);
-    addNotificationForTransaction(newTransaction.id, newTransaction.type);
   }
 
   function finalizeTransaction(
@@ -348,36 +345,12 @@ export default function useTransactions() {
         const updateSuccessful = updateTransaction(id, type, updates);
 
         if (updateSuccessful) {
-          addNotificationForTransaction(id, type);
           return true;
         }
       }
     }
 
     return false;
-  }
-
-  function addNotificationForTransaction(id: string, type: TransactionType) {
-    const transaction = getTransaction(id, type);
-
-    if (transaction != null) {
-      addNotification({
-        type: isFinalizedTransactionStatus(transaction.status)
-          ? isSuccessfulTransaction(transaction)
-            ? 'success'
-            : 'error'
-          : 'info',
-        title: `${t(`transactionAction.${transaction.action}`)} ${t(
-          `transactionStatus.${transaction.status}`
-        )}`,
-        message: transaction.summary,
-        transactionMetadata: {
-          id: transaction.id,
-          status: transaction.status,
-          explorerLink: getExplorerLink(transaction.id, transaction.type),
-        },
-      });
-    }
   }
 
   function checkOrderActivity(transaction: Transaction) {
