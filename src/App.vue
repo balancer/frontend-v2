@@ -1,14 +1,5 @@
 <script lang="ts">
-import BigNumber from 'bignumber.js';
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
-
-import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import * as Layouts from '@/pages/_layouts';
-
-BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
-
-export const isThirdPartyServicesModalVisible = ref(false);
 
 export default defineComponent({
   components: {
@@ -23,31 +14,18 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const route = useRoute();
-    const store = useStore();
 
     /**
      * CALLBACKS
      */
-    onBeforeMount(async () => {
-      store.dispatch('app/init');
-    });
 
     /**
      * WATCHERS
      */
-    watch(route, newRoute => {
-      if (newRoute.meta.layout) {
-        layout.value = newRoute.meta.layout as string;
-      } else {
-        layout.value = 'DefaultLayout';
-      }
-    });
 
     return {
       // state
       layout,
-      isThirdPartyServicesModalVisible,
     };
   },
 });

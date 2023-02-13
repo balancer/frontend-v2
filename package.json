@@ -7,9 +7,9 @@
   },
   "scripts": {
     "vite": "vite",
-    "dev": "npm run generate:tokenlists && vite",
+    "dev": "vite",
     "serve": "npm run dev",
-    "build": "npm run generate:tokenlists && vite build",
+    "build": "vite build",
     "build:withouttokenlists": "vite build",
     "build:watch": "vite build --watch",
     "preview": "vite preview",

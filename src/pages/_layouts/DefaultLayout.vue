@@ -4,13 +4,7 @@
 <template>
   <div>
     <div class="app-body">
-      <div class="pb-16">
-        <router-view v-slot="{ Component }" :key="$route.path">
-          <transition appear name="appear">
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </div>
+      <div class="pb-16">HELLO FROM DEFAULT LAYOUT</div>
     </div>
   </div>
 </template>
