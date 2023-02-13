@@ -1,6 +1,5 @@
 <script lang="ts">
 import BigNumber from 'bignumber.js';
-import { VueQueryDevTools } from 'vue-query/devtools';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -13,7 +12,6 @@ import * as Layouts from '@/pages/_layouts';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
-import SanctionedWalletModal from './components/web3/SanctionedWalletModal.vue';
 import useBackgroundColor from './composables/useBackgroundColor';
 import { useSidebar } from './composables/useSidebar';
 
@@ -24,9 +22,7 @@ export const isThirdPartyServicesModalVisible = ref(false);
 export default defineComponent({
   components: {
     ...Layouts,
-    VueQueryDevTools,
     // WalletSelectModal,
-    SanctionedWalletModal,
     // ThirdPartyServicesModal,
     Notifications,
     AppSidebar,
@@ -72,10 +68,6 @@ export default defineComponent({
       store.dispatch('app/init');
     });
 
-    function handleThirdPartyModalToggle(value: boolean) {
-      isThirdPartyServicesModalVisible.value = value;
-    }
-
     /**
      * WATCHERS
      */
@@ -98,7 +90,6 @@ export default defineComponent({
       sidebarOpen,
       // methods
       // toggleWalletSelectModal,
-      handleThirdPartyModalToggle,
     };
   },
 });
@@ -108,17 +99,6 @@ export default defineComponent({
   <div id="modal" />
   <div id="app">
     <component :is="layout" />
-    <VueQueryDevTools />
-    <!-- <WalletSelectModal
-      :isVisible="isWalletSelectVisible"
-      :onShowThirdParty="() => handleThirdPartyModalToggle(true)"
-      @close="toggleWalletSelectModal"
-    /> -->
-    <!-- <SanctionedWalletModal :isVisible="isBlocked" /> -->
-    <!-- <ThirdPartyServicesModal
-      :isVisible="isThirdPartyServicesModalVisible"
-      @close="handleThirdPartyModalToggle(false)"
-    /> -->
     <AppSidebar v-if="sidebarOpen" />
     <Notifications />
   </div>
