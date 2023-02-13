@@ -122,6 +122,7 @@
     "vite-node": "^0.28.1",
     "vite-plugin-html": "^3.2.0",
     "vite-plugin-node-polyfills": "^0.7.0",
+    "vite-plugin-pwa": "^0.14.4",
     "vite-plugin-sentry": "^1.1.6",
     "vitest": "^0.28.3",
     "vitest-mock-extended": "^1.0.8",

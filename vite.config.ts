@@ -14,12 +14,14 @@ import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
   const envConfig = loadEnv(mode, process.cwd());
 
   const plugins = [
     vue(),
+    VitePWA({ registerType: 'autoUpdate' }),
     createHtmlPlugin({
       minify: false,
       inject: {
@@ -32,7 +34,6 @@ export default defineConfig(({ mode }) => {
     nodePolyfills() as Plugin,
     AutoImport({
       imports: ['vue', 'vue-router'],
-      types: ['vue'],
       eslintrc: {
         enabled: true,
       },
