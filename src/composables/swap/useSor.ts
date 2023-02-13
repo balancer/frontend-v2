@@ -734,9 +734,6 @@ export default function useSor({
     return amount;
   }
 
-  /**
-   * Handles swap exceptions and returns a message to display to the user.
-   */
   function handleSwapException(error: Error) {
     console.trace(error);
     if (!isUserRejected(error)) {
