@@ -735,8 +735,8 @@ export default function useSor({
   }
 
   function handleSwapException(error: Error) {
-    console.trace(error);
     if (!isUserRejected(error)) {
+      console.trace(error);
       state.submissionError = t('swapException', ['Balancer']);
       captureException(new Error(state.submissionError, { cause: error }));
     }

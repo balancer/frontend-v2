@@ -253,8 +253,8 @@ export default function useJoinExit({
         },
       });
     } catch (error) {
-      console.trace(error);
       if (!isUserRejected(error)) {
+        console.trace(error);
         state.submissionError = t('swapException', ['Relayer']);
         captureException(new Error(state.submissionError, { cause: error }));
       }

@@ -242,8 +242,8 @@ export default function useCowswap({
       confirming.value = false;
       trackGoal(Goals.CowswapSwap);
     } catch (error) {
-      console.trace(error);
       if (!isUserRejected(error)) {
+        console.trace(error);
         state.submissionError = t('swapException', ['Cowswap']);
         captureException(new Error(state.submissionError, { cause: error }));
       }
