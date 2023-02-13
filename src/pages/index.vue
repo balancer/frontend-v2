@@ -10,23 +10,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-// const poolsSortField = ref('totalLiquidity');
-
-// const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
-//   selectedTokens,
-//   poolsSortField
-// );
 const { upToMediumBreakpoint } = useBreakpoints();
-
-// const isPaginated = computed(() => pools.value.length >= 10);
-
-/**
- * METHODS
- */
-
-// function onColumnSort(columnId: string) {
-//   poolsSortField.value = columnId;
-// }
 </script>
 
 <template>
