@@ -126,7 +126,7 @@ export default class WeightedPoolService {
 
     const Multicaller = getOldMulticaller();
     const multicaller = new Multicaller(configService.network.key, provider, [
-      ...WeightedPoolV3__factory.abi,
+      ...WeightedPool__factory.abi,
       ...Vault__factory.abi,
     ]);
 
