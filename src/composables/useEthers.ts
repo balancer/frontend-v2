@@ -11,7 +11,6 @@ import {
 } from '@/lib/utils/promise';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-import useBlocknative from './useBlocknative';
 import { toJsTimestamp } from './useTime';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from './useTransactions';
@@ -24,7 +23,6 @@ export const processedTxs = ref<Set<string>>(new Set(''));
 
 export default function useEthers() {
   const { finalizeTransaction, updateTransaction } = useTransactions();
-  const { supportsBlocknative } = useBlocknative();
   const { refetchBalances } = useTokens();
 
   async function getTxConfirmedAt(receipt: TransactionReceipt): Promise<Date> {
@@ -98,8 +96,8 @@ export default function useEthers() {
         finalizeTransaction(txHash, 'tx', receipt);
       }
       callbacks.onTxConfirmed(receipt);
-      if (shouldRefetchBalances && !supportsBlocknative.value) {
-        refetchBalances.value();
+      if (shouldRefetchBalances) {
+        // refetchBalances.value();
       }
       confirmed = true;
     } catch (error) {
