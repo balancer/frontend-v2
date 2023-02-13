@@ -7,9 +7,7 @@ import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import * as Layouts from '@/pages/_layouts';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
-import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
 import useBackgroundColor from './composables/useBackgroundColor';
-import { useSidebar } from './composables/useSidebar';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -18,7 +16,6 @@ export const isThirdPartyServicesModalVisible = ref(false);
 export default defineComponent({
   components: {
     ...Layouts,
-    AppSidebar,
     GlobalModalContainer,
   },
 
@@ -33,7 +30,6 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
-    const { sidebarOpen } = useSidebar();
 
     /**
      * CALLBACKS
@@ -58,7 +54,6 @@ export default defineComponent({
       // state
       layout,
       isThirdPartyServicesModalVisible,
-      sidebarOpen,
     };
   },
 });
@@ -68,7 +63,6 @@ export default defineComponent({
   <div id="modal" />
   <div id="app">
     <component :is="layout" />
-    <AppSidebar v-if="sidebarOpen" />
   </div>
   <GlobalModalContainer />
 </template>
