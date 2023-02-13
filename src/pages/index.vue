@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import HomePageHero from '@/components/heros/HomePageHero.vue';
-import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
-import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 // import usePools from '@/composables/pools/usePools';
 
 // COMPOSABLES
-const { selectedTokens, addSelectedToken, removeSelectedToken } =
-  usePoolFilters();
 
 const { upToMediumBreakpoint } = useBreakpoints();
 </script>
@@ -37,12 +33,6 @@ const { upToMediumBreakpoint } = useBreakpoints();
           <div
             class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
           >
-            <TokenSearchInput
-              v-model="selectedTokens"
-              class="w-full md:w-2/3"
-              @add="addSelectedToken"
-              @remove="removeSelectedToken"
-            />
             <BalBtn
               v-if="!upToMediumBreakpoint"
               color="blue"

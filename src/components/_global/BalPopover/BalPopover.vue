@@ -78,10 +78,7 @@ watch(popoverOpened, () => {
 </script>
 
 <template>
-  <div
-    v-click-outside="handleClickOutside"
-    :class="[popoverActivatorWrapperClasses]"
-  >
+  <div :class="[popoverActivatorWrapperClasses]">
     <div
       ref="activatorWrapper"
       class="group flex flex-col h-full bal-popover-activator"

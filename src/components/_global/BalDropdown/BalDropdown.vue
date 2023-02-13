@@ -48,7 +48,7 @@ function handleRowClick(option: any): void {
 </script>
 
 <template>
-  <div v-click-outside="hideDropdown" class="relative">
+  <div class="relative">
     <div class="activator" @click="toggleDropdown">
       <slot name="activator" />
     </div>
