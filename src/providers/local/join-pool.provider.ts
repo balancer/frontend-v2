@@ -73,7 +73,7 @@ const provider = (props: Props) => {
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
-  const showInvestPreview = ref(false);
+  const showPreview = ref(false);
 
   const debounceQueryJoin = debounce(queryJoin, 1000);
 
@@ -270,7 +270,7 @@ const provider = (props: Props) => {
   // Static call simulation is more accurate than VaultModel, but requires Vault approval for tokens
   // and relayer approval.
   function getSimulationType(): SimulationType {
-    return showInvestPreview.value && !approvalActions.value.length
+    return showPreview.value && !approvalActions.value.length
       ? SimulationType.Static
       : SimulationType.VaultModel;
   }
@@ -362,7 +362,7 @@ const provider = (props: Props) => {
     // State
     amountsIn,
     highPriceImpactAccepted,
-    showInvestPreview,
+    showPreview,
     pool: readonly(pool),
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
