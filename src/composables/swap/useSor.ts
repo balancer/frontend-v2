@@ -46,6 +46,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
+import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 
 type SorState = {
   validationErrors: {
@@ -288,7 +289,7 @@ export default function useSor({
       return;
     }
 
-    const amount = exactIn.value
+    let amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping swap
@@ -309,6 +310,11 @@ export default function useSor({
 
     const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
     const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
+
+    const inputAmountDecimals = exactIn.value
+      ? tokenInDecimals
+      : tokenOutDecimals;
+    amount = overflowProtected(amount, inputAmountDecimals);
 
     if (wrapType.value !== WrapType.NonWrap) {
       const wrapper =
