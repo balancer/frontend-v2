@@ -121,6 +121,16 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350,
   },
   {
+    name: t('myBoost'),
+    accessor: pool => `${bnum(boostFor(pool)).toFixed(3)}x`,
+    align: 'right',
+    id: 'myBoost',
+    hidden: !props.showBoost,
+    sortKey: pool => Number(boostFor(pool)),
+    width: 150,
+    cellClassName: 'font-numeric',
+  },
+  {
     name: t('myBalance'),
     accessor: pool =>
       fNum2(balanceValue(pool), {
@@ -164,16 +174,6 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
       return volume;
     },
     width: 175,
-    cellClassName: 'font-numeric',
-  },
-  {
-    name: t('myBoost'),
-    accessor: pool => `${bnum(boostFor(pool)).toFixed(3)}x`,
-    align: 'right',
-    id: 'myBoost',
-    hidden: !props.showBoost,
-    sortKey: pool => Number(boostFor(pool)),
-    width: 150,
     cellClassName: 'font-numeric',
   },
   {

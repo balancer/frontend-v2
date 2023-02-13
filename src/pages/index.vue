@@ -45,10 +45,10 @@ function onColumnSort(columnId: string) {
 <template>
   <div>
     <HomePageHero />
-    <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
+    <div class="xl:container xl:px-4 pt-10 md:pt-8 xl:mx-auto">
       <BalStack vertical>
         <div class="px-4 xl:px-0">
-          <div class="flex justify-between items-end mb-8">
+          <div class="flex justify-between items-end mb-2">
             <h3>
               {{ networkConfig.chainName }}
               <span class="lowercase">{{ $t('pools') }}</span>
