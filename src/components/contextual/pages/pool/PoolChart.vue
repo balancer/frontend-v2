@@ -13,6 +13,8 @@ import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
+import { isFx } from '@/composables/usePool';
+import FxPoolWarning from './FxPoolWarning.vue';
 
 /**
  * TYPES
@@ -93,7 +95,7 @@ const tabs = [
 ];
 const activeTab = ref(tabs[0].value);
 
-const currentChartValue = ref('');
+const currentChartValue = ref({ num: '', isNegative: false });
 const currentChartDate = ref('');
 const isFocusedOnChart = ref(false);
 
@@ -254,10 +256,9 @@ function getFeesData(
         prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
       }
 
-      const finalValue = value - prevValue > 0 ? value - prevValue : 0;
       const result = Object.freeze<[string, number]>([
         timestamps.value[idx],
-        finalValue,
+        value - prevValue,
       ]);
       return result;
     }
@@ -381,6 +382,11 @@ const defaultChartData = computed(() => {
   return { title, value: chartData.value.defaultHeaderStateValue };
 });
 
+const showFxPoolWarning = computed(() => {
+  const { poolType } = props;
+  return poolType && isFx(poolType) && activeTab.value === PoolChartTab.FEES;
+});
+
 /**
  * METHODS
  */
@@ -392,9 +398,13 @@ function setCurrentChartValue(payload: {
   chartDate: string;
   chartValue: number;
 }) {
-  currentChartValue.value = fNum2(payload.chartValue, {
+  currentChartValue.value.num = fNum2(payload.chartValue, {
     style: 'currency',
+    maximumFractionDigits: 2,
+    fixedFormat: true,
   });
+  currentChartValue.value.isNegative = payload.chartValue < 0;
+
   currentChartDate.value = format(
     new Date(payload.chartDate),
     PRETTY_DATE_FORMAT
@@ -444,8 +454,15 @@ function addLaggingTimestamps() {
       <div
         class="flex flex-col items-start xs:items-end text-2xl font-semibold tabular-nums"
       >
-        <p class="tracking-tighter">
-          {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
+        <p
+          class="tracking-tighter"
+          :class="{
+            'text-red-500': currentChartValue.isNegative && isFocusedOnChart,
+          }"
+        >
+          {{
+            isFocusedOnChart ? currentChartValue.num : defaultChartData.value
+          }}
         </p>
         <div
           class="text-sm font-medium text-secondary"
@@ -471,8 +488,9 @@ function addLaggingTimestamps() {
       :axisLabelFormatter="{
         yAxis: {
           style: 'currency',
-          abbreviate: true,
           maximumFractionDigits: 0,
+          fixedFormat: true,
+          abbreviate: true,
         },
       }"
       :areaStyle="chartData.areaStyle"
@@ -489,6 +507,8 @@ function addLaggingTimestamps() {
       @mouse-leave-event="isFocusedOnChart = false"
       @mouse-enter-event="isFocusedOnChart = true"
     />
+
+    <FxPoolWarning v-if="showFxPoolWarning" />
   </div>
   <BalBlankSlate v-else class="h-96" align="center">
     <BalIcon name="bar-chart" />

@@ -29,6 +29,12 @@ const { upToLargeBreakpoint } = useBreakpoints();
         </div>
         <div class="table-row-value">
           {{ row.value }}
+          <BalTooltip
+            v-if="row.tooltip"
+            :text="row.tooltip"
+            iconSize="sm"
+            class="mt-1 ml-2"
+          />
           <BalLink v-if="row.link" :href="row.link" external noStyle>
             <BalIcon
               name="arrow-up-right"
