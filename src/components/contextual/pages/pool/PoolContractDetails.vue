@@ -84,9 +84,9 @@ const data = computed(() => {
     },
     owner
       ? {
-          title: poolOwnerTitle.value,
-          value: shortenLabel(owner),
-          link: explorer.addressLink(owner || ''),
+          title: t('poolOwner'),
+          value: poolOwnerData.value.title,
+          link: poolOwnerData.value.link,
           tooltip: poolOwnerTooltip.value,
         }
       : null,
@@ -102,16 +102,20 @@ const data = computed(() => {
   ];
 });
 
-const poolOwnerTitle = computed(() => {
-  if (props.pool.owner === POOLS.ZeroAddress) {
-    return t('noOwner');
+const poolOwnerData = computed(() => {
+  const { owner } = props.pool;
+  if (owner === POOLS.ZeroAddress) {
+    return { title: t('noOwner'), link: '' };
   }
 
-  if (props.pool.owner === POOLS.DelegateOwner) {
-    return t('delegateOwner.title');
+  if (owner === POOLS.DelegateOwner) {
+    return { title: t('delegateOwner.title'), link: '' };
   }
 
-  return t('poolOwner');
+  return {
+    title: shortenLabel(owner || ''),
+    link: explorer.addressLink(owner || ''),
+  };
 });
 
 const poolOwnerTooltip = computed(() => {

@@ -26,16 +26,15 @@ const { upToLargeBreakpoint } = useBreakpoints();
       <div v-if="row" class="table-row">
         <div class="table-row-title">
           {{ row.title }}
-
+        </div>
+        <div class="table-row-value">
+          {{ row.value }}
           <BalTooltip
             v-if="row.tooltip"
             :text="row.tooltip"
             iconSize="sm"
             class="mt-1 ml-2"
           />
-        </div>
-        <div class="table-row-value">
-          {{ row.value }}
           <BalLink v-if="row.link" :href="row.link" external noStyle>
             <BalIcon
               name="arrow-up-right"
