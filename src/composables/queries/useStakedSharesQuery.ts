@@ -8,7 +8,7 @@ import { GaugeShare } from './useUserGaugeSharesQuery';
 import { BigNumber } from '@ethersproject/bignumber';
 import { bnSum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
-import { handleFetchException } from '@/lib/utils/exceptions';
+import { logFetchException } from '@/lib/utils/exceptions';
 import { getMulticaller } from '@/dependencies/Multicaller';
 
 /**
@@ -82,7 +82,7 @@ export default function useStakedSharesQuery(
 
       return shareMap;
     } catch (error) {
-      handleFetchException('Failed to fetch staked share balance', error);
+      logFetchException('Failed to fetch staked share balance', error);
       throw Error;
     }
   };

@@ -1,5 +1,7 @@
 import { removeBptFrom } from '@/composables/usePool';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import * as tokensProvider from '@/providers/tokens.provider';
+import { provideUserData } from '@/providers/user-data.provider';
 import { Pool } from '@/services/pool/types';
 import { anEmptyPool, BoostedPoolMock } from '@/__mocks__/pool';
 import { aPoolToken, aWeightedPool } from '@/__mocks__/weighted-pool';
@@ -21,6 +23,8 @@ vi.mock('@/providers/tokens.provider', () => {
   };
 });
 
+initDependenciesWithDefaultMocks();
+
 const rootPool = BoostedPoolMock;
 // Values used to calculate userPoolPercentage (15)
 rootPool.totalLiquidity = '100';
@@ -29,8 +33,9 @@ rootPool.totalShares = '100';
 const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
 
 function mountTokenBreakdown(pool: Pool) {
-  const { result } = mountComposable(() =>
-    useTokenBreakdown(ref(removeBptFrom(pool)))
+  const { result } = mountComposable(
+    () => useTokenBreakdown(ref(removeBptFrom(pool))),
+    { extraProvidersCb: () => provideUserData() }
   );
   return result;
 }
@@ -153,7 +158,9 @@ test('recalculates data when pool changes', async () => {
   const rootPool = ref(pool);
   const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
-  const { result } = mountComposable(() => useTokenBreakdown(rootPool));
+  const { result } = mountComposable(() => useTokenBreakdown(rootPool), {
+    extraProvidersCb: () => provideUserData(),
+  });
 
   let wethData = result.value[wethAddress];
 
