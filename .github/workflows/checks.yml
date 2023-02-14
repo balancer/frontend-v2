@@ -136,6 +136,6 @@ jobs:
         if: always()
         with:
           name: e2e_test_report
-          path: e2e/playwright-report
+          path: e2e/test-results
           # Keep the test report artifact for 5 days
           retention-days: 5
