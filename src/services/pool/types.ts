@@ -158,4 +158,5 @@ export type BalDetailsTableData = {
   title: string;
   value: string;
   link?: string;
+  tooltip?: string;
 };
