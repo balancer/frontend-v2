@@ -82,12 +82,14 @@ const feeOptions = FIXED_FEE_OPTIONS.map(option => {
  * FUNCTIONS
  */
 function onFixedInput(val: string): void {
-  initialFee.value = '0';
+  fee.value = '';
   initialFee.value = val;
   isCustomFee.value = false;
 }
 
 function onCustomInput(val: string): void {
+  if (val === '') return;
+
   initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
 
@@ -133,6 +135,8 @@ async function onChangeFeeController(val: string) {
     height: cardWrapper.value?.offsetHeight || 0,
   });
 }
+
+watch(fee, onCustomInput, { immediate: true });
 </script>
 
 <template>
@@ -176,20 +180,7 @@ async function onChangeFeeController(val: string) {
                   placeholder="0.1"
                   type="number"
                   step="any"
-                  @update:modelValue="onCustomInput"
                 />
-                <!-- <BalTextInput
-              class="w-20"
-              v-model="fee"
-              placeholder="0.1"
-              size="xs"
-              type="number"
-              @input="onCustomInput"
-            >
-              <template v-slot:append>
-                %
-              </template>
-            </BalTextInput> -->
                 <div class="px-1">%</div>
               </div>
             </div>
