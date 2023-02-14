@@ -69,7 +69,6 @@ function onCustomInput(val: string): void {
 watch(
   slippage,
   newSlippage => {
-    console.log('newSlippage', newSlippage);
     if (isFixedSlippage.value && !state.isCustomInput) {
       state.fixedSlippage = newSlippage;
       state.customSlippage = '';
