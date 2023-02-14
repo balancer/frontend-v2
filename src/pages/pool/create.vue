@@ -87,7 +87,7 @@ onBeforeMount(async () => {
   // make sure to inject any custom tokens we cannot inject
   // after tokens have finished loading as it will attempt to
   // inject 'known' tokens too, as during mount, tokens are still loading
-  injectUnknownPoolTokens();
+  await injectUnknownPoolTokens();
   isRestoring.value = false;
 });
 
