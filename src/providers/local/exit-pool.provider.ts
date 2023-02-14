@@ -97,7 +97,7 @@ const provider = (props: Props) => {
     valid: true,
   });
   const propAmountsOut = ref<AmountOut[]>([]);
-  const showPreview = ref(false);
+  const showPreview = ref<boolean>(false);
 
   /**
    * SERVICES

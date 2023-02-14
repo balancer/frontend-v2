@@ -73,7 +73,7 @@ const provider = (props: Props) => {
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
-  const showPreview = ref(false);
+  const showPreview = ref<boolean>(false);
 
   const debounceQueryJoin = debounce(queryJoin, 1000);
 

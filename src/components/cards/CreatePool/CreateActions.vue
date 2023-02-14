@@ -56,8 +56,8 @@ const { explorerLinks } = useWeb3();
 const { networkConfig } = useConfig();
 const { isTxConfirmed } = useEthers();
 const { tokenApprovalActions } = useTokenApprovalActions(
-  ref(props.tokenAddresses),
-  ref(props.amounts)
+  ref<string[]>(props.tokenAddresses),
+  ref<string[]>(props.amounts)
 );
 const {
   createPool,
