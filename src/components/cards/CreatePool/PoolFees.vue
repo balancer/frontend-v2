@@ -83,7 +83,6 @@ const feeOptions = FIXED_FEE_OPTIONS.map(option => {
  */
 function onFixedInput(val: string): void {
   fee.value = '';
-  initialFee.value = '0';
   initialFee.value = val;
   isCustomFee.value = false;
 }
