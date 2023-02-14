@@ -3,8 +3,6 @@ import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { flatten, sumBy } from 'lodash';
 import { computed, reactive, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
@@ -88,7 +86,6 @@ export default function usePoolCreation() {
   const { account, getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
-  const { t } = useI18n();
 
   /**
    * COMPUTED
@@ -436,12 +433,12 @@ export default function usePoolCreation() {
       id: tx.hash,
       type: 'tx',
       action: 'createPool',
-      summary: t('transactionSummary.createPool'),
+      summary: poolCreationState.name,
       details: {
         name: poolCreationState.name,
       },
     });
-    1;
+
     txListener(tx, {
       onTxConfirmed: async () => {
         retrievePoolAddress(tx.hash);
@@ -481,7 +478,7 @@ export default function usePoolCreation() {
       id: tx.hash,
       type: 'tx',
       action: 'fundPool',
-      summary: t('transactionSummary.fundPool'),
+      summary: poolCreationState.name,
     });
 
     txListener(tx, {
