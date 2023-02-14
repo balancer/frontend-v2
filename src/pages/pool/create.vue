@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
@@ -30,8 +30,7 @@ import { StepState } from '@/types';
  * STATE
  */
 const isUnknownTokenModalVisible = ref(false);
-const isRestoring = ref(false);
-const allowancesLoaded = ref(false);
+const isLoading = ref(true);
 
 /**
  * COMPOSABLES
@@ -72,8 +71,6 @@ onBeforeMount(async () => {
     previouslySavedState !== null &&
     !poolCreateTx.value
   ) {
-    isRestoring.value = true;
-
     // need to make sure to inject any tokens that were chosen
     previouslySavedState = JSON.parse(previouslySavedState);
     importState(previouslySavedState);
@@ -88,7 +85,7 @@ onBeforeMount(async () => {
   // after tokens have finished loading as it will attempt to
   // inject 'known' tokens too, as during mount, tokens are still loading
   await injectUnknownPoolTokens();
-  isRestoring.value = false;
+  isLoading.value = false;
 });
 
 /**
@@ -135,8 +132,6 @@ const steps = computed(() => [
     label: 4,
   },
 ]);
-
-const isLoading = computed(() => !allowancesLoaded.value || isRestoring.value);
 
 /**
  * FUNCTIONS
@@ -206,11 +201,6 @@ watch(
     immediate: true,
   }
 );
-
-onMounted(async () => {
-  await injectUnknownPoolTokens();
-  allowancesLoaded.value = true;
-});
 </script>
 
 <template>
