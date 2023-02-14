@@ -420,91 +420,80 @@ export default function usePoolCreation() {
 
   async function createPool(): Promise<TransactionResponse> {
     const provider = getProvider();
-    try {
-      const tx = await balancerService.pools.weighted.create(
-        provider,
-        poolCreationState.name,
-        poolCreationState.symbol,
-        poolCreationState.initialFee,
-        poolCreationState.seedTokens,
-        poolOwner.value
-      );
-      poolCreationState.createPoolTxHash = tx.hash;
-      saveState();
 
-      addTransaction({
-        id: tx.hash,
-        type: 'tx',
-        action: 'createPool',
-        summary: t('transactionSummary.createPool'),
-        details: {
-          name: poolCreationState.name,
-        },
-      });
-      1;
-      txListener(tx, {
-        onTxConfirmed: async () => {
-          retrievePoolAddress(tx.hash);
-        },
-        onTxFailed: () => {
-          console.log('Create failed');
-        },
-      });
+    const tx = await balancerService.pools.weighted.create(
+      provider,
+      poolCreationState.name,
+      poolCreationState.symbol,
+      poolCreationState.initialFee,
+      poolCreationState.seedTokens,
+      poolOwner.value
+    );
+    poolCreationState.createPoolTxHash = tx.hash;
+    saveState();
 
-      return tx;
-    } catch (e) {
-      console.log(e);
-      return Promise.reject('Create failed');
-    }
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'createPool',
+      summary: t('transactionSummary.createPool'),
+      details: {
+        name: poolCreationState.name,
+      },
+    });
+    1;
+    txListener(tx, {
+      onTxConfirmed: async () => {
+        retrievePoolAddress(tx.hash);
+      },
+      onTxFailed: () => {
+        console.log('Create failed');
+      },
+    });
+
+    return tx;
   }
 
   async function joinPool() {
     const provider = getProvider();
-    try {
-      const tokenAddresses: string[] = poolCreationState.seedTokens.map(
-        (token: PoolSeedToken) => {
-          if (
-            isSameAddress(
-              token.tokenAddress,
-              wrappedNativeAsset.value.address
-            ) &&
-            poolCreationState.useNativeAsset
-          ) {
-            return nativeAsset.address;
-          }
-          return token.tokenAddress;
+
+    const tokenAddresses: string[] = poolCreationState.seedTokens.map(
+      (token: PoolSeedToken) => {
+        if (
+          isSameAddress(token.tokenAddress, wrappedNativeAsset.value.address) &&
+          poolCreationState.useNativeAsset
+        ) {
+          return nativeAsset.address;
         }
-      );
-      const tx = await balancerService.pools.weighted.initJoin(
-        provider,
-        poolCreationState.poolId,
-        account.value,
-        account.value,
-        tokenAddresses,
-        getScaledAmounts()
-      );
+        return token.tokenAddress;
+      }
+    );
+    const tx = await balancerService.pools.weighted.initJoin(
+      provider,
+      poolCreationState.poolId,
+      account.value,
+      account.value,
+      tokenAddresses,
+      getScaledAmounts()
+    );
 
-      addTransaction({
-        id: tx.hash,
-        type: 'tx',
-        action: 'fundPool',
-        summary: t('transactionSummary.fundPool'),
-      });
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'fundPool',
+      summary: t('transactionSummary.fundPool'),
+    });
 
-      txListener(tx, {
-        onTxConfirmed: async () => {
-          resetState();
-        },
-        onTxFailed: () => {
-          console.log('Seed failed');
-        },
-      });
+    txListener(tx, {
+      onTxConfirmed: async () => {
+        resetState();
+      },
+      onTxFailed: () => {
+        console.log('Seed failed');
+      },
+    });
 
-      return tx;
-    } catch (e) {
-      console.log(e);
-      return Promise.reject('Join failed');
-    }
+    return tx;
   }
 
   function setActiveStep(step: number) {
