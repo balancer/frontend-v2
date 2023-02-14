@@ -70,10 +70,7 @@ const {
 } = usePoolCreation();
 const { networkSlug } = useNetwork();
 
-/**
- * COMPUTED
- */
-const actions = computed((): TransactionActionInfo[] => [
+const actions = ref<TransactionActionInfo[]>([
   ...tokenApprovalActions.value,
   {
     label: t('createPool'),
@@ -91,6 +88,9 @@ const actions = computed((): TransactionActionInfo[] => [
   },
 ]);
 
+/**
+ * COMPUTED
+ */
 const requiredActions = computed(() => {
   if (
     (hasRestoredFromSavedState.value && needsSeeding.value) ||
