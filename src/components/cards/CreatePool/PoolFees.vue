@@ -88,7 +88,7 @@ function onFixedInput(val: string): void {
 }
 
 function onCustomInput(val: string): void {
-  if (!val) return;
+  if (val === '') return;
 
   initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
