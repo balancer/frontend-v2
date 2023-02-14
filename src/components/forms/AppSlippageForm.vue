@@ -43,7 +43,7 @@ const isFixedSlippage = computed(() => {
 
 const customInputClasses = computed(() => ({
   'border border-blue-500 text-blue-500':
-    !isFixedSlippage.value || state.isCustomInput,
+    !isFixedSlippage.value && state.isCustomInput,
   'border dark:border-gray-900': isFixedSlippage.value && !state.isCustomInput,
 }));
 
@@ -57,6 +57,7 @@ function onFixedInput(val: string): void {
 }
 
 function onCustomInput(val: string): void {
+  if (!val) return;
   state.isCustomInput = true;
   val = bnum(val).div(100).toString();
   setSlippage(val);
@@ -78,6 +79,8 @@ watch(
   },
   { immediate: true }
 );
+
+watch(() => state.customSlippage, onCustomInput, { immediate: true });
 </script>
 
 <template>
@@ -95,7 +98,6 @@ watch(
         type="number"
         step="any"
         min="0"
-        @update:modelValue="onCustomInput"
       />
       <div class="px-2">%</div>
     </div>
