@@ -330,6 +330,30 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce',
     network: Network.MAINNET,
   },
+  {
+    id: '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xa3c500969accb3d8df08cba313c120818fe0ed9d000200000000000000000471',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x831261f44931b7da8ba0dcc547223c60bb75b47f000200000000000000000460',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xfd1cf6fd41f229ca86ada0584c63c49c3d66bbc9000200000000000000000438',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -422,6 +446,10 @@ export const ARBITRUM_POOLS: Pool[] = [
   },
   {
     id: '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352',
     network: Network.ARBITRUM,
   },
 ];
@@ -569,6 +597,14 @@ export const POLYGON_POOLS: Pool[] = [
   },
   {
     id: '0x34a81e8956bf20b7448b31990a2c06f96830a6e4000200000000000000000a14',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xf3312968c7d768c19107731100ece7d4780b47b2000200000000000000000a50',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x5dee84ffa2dc27419ba7b3419d7146e53e4f7ded000200000000000000000a4e',
     network: Network.POLYGON,
   },
 ];
