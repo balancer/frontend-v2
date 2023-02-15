@@ -97,7 +97,7 @@ const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 
 const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 450 : undefined
+  upToMediumBreakpoint.value ? 250 : undefined
 );
 
 /**
