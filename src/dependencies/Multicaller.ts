@@ -1,4 +1,5 @@
-import { Multicaller } from '@/lib/utils/balancer/contract';
+// eslint-disable-next-line no-restricted-imports
+import { Multicaller } from '@/services/multicalls/multicaller';
 import { handleDependencyError } from '.';
 
 let _multicaller: typeof Multicaller | undefined;

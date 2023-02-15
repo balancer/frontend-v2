@@ -23,7 +23,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -43,7 +43,7 @@ const poolWeightsLabel = computed(() =>
  * METHODS
  */
 function formatWeightLabel(weight: PoolToken['weight']) {
-  return fNum2(weight || '0', {
+  return fNum(weight || '0', {
     style: 'percent',
     maximumFractionDigits: 0,
   });
@@ -57,7 +57,7 @@ function formatWeightLabel(weight: PoolToken['weight']) {
         <div class="font-semibold">
           {{
             $t('getVeBAL.previewModal.lpTokens', [
-              fNum2(totalLpTokens, FNumFormats.token),
+              fNum(totalLpTokens, FNumFormats.token),
             ])
           }}
         </div>

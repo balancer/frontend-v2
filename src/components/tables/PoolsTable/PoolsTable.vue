@@ -25,6 +25,7 @@ import {
   orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel,
+  isLBP,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -87,7 +88,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
@@ -120,9 +121,19 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350,
   },
   {
+    name: t('myBoost'),
+    accessor: pool => `${bnum(boostFor(pool)).toFixed(3)}x`,
+    align: 'right',
+    id: 'myBoost',
+    hidden: !props.showBoost,
+    sortKey: pool => Number(boostFor(pool)),
+    width: 150,
+    cellClassName: 'font-numeric',
+  },
+  {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(balanceValue(pool), {
+      fNum(balanceValue(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -137,7 +148,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: t('poolValue'),
     accessor: pool =>
-      fNum2(pool.totalLiquidity || 0, {
+      fNum(pool.totalLiquidity || 0, {
         style: 'currency',
         maximumFractionDigits: 0,
       }),
@@ -163,16 +174,6 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
       return volume;
     },
     width: 175,
-    cellClassName: 'font-numeric',
-  },
-  {
-    name: t('myBoost'),
-    accessor: pool => `${bnum(boostFor(pool)).toFixed(3)}x`,
-    align: 'right',
-    id: 'myBoost',
-    hidden: !props.showBoost,
-    sortKey: pool => Number(boostFor(pool)),
-    width: 150,
     cellClassName: 'font-numeric',
   },
   {
@@ -339,7 +340,7 @@ function iconAddresses(pool: Pool) {
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
-              fNum2(pool?.volumeSnapshot, {
+              fNum(pool?.volumeSnapshot, {
                 style: 'currency',
                 maximumFractionDigits: 0,
               })
@@ -350,12 +351,26 @@ function iconAddresses(pool: Pool) {
       <template #aprCell="pool">
         <div
           :key="columnStates.aprs"
-          class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
+          :class="[
+            'flex justify-end py-4 px-6 -mt-1 font-numeric text-right',
+            {
+              'text-gray-300 dark:text-gray-600 line-through': isLBP(
+                pool.poolType
+              ),
+            },
+          ]"
         >
           <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.apr" :pool="pool" />
+            <BalTooltip
+              v-if="isLBP(pool.poolType)"
+              width="36"
+              :text="$t('lbpAprTooltip')"
+              iconSize="sm"
+              iconClass="ml-1"
+            />
+            <APRTooltip v-else-if="pool?.apr" :pool="pool" />
           </template>
         </div>
       </template>

@@ -39,6 +39,8 @@ import useEthers from '../useEthers';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
+import useTranasactionErrors from '../useTransactionErrors';
+import { useI18n } from 'vue-i18n';
 
 type JoinExitState = {
   validationErrors: {
@@ -99,7 +101,9 @@ export default function useJoinExit({
   );
   const { addTransaction } = useTransactions();
   const { txListener } = useEthers();
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
+  const { isUserRejected } = useTranasactionErrors();
+  const { t } = useI18n();
 
   const hasValidationError = computed(
     () => state.validationErrors.highPriceImpact != false
@@ -207,11 +211,11 @@ export default function useJoinExit({
       });
       console.log(tx);
 
-      const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
+      const tokenInAmountFormatted = fNum(tokenInAmountInput.value, {
         ...FNumFormats.token,
         maximumSignificantDigits: 6,
       });
-      const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
+      const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, {
         ...FNumFormats.token,
         maximumSignificantDigits: 6,
       });
@@ -248,10 +252,12 @@ export default function useJoinExit({
           confirming.value = false;
         },
       });
-    } catch (e) {
-      console.log(e);
-      captureException(e);
-      state.submissionError = (e as Error).message;
+    } catch (error) {
+      if (!isUserRejected(error)) {
+        console.trace(error);
+        state.submissionError = t('swapException', ['Relayer']);
+        captureException(new Error(state.submissionError, { cause: error }));
+      }
       swapping.value = false;
       confirming.value = false;
     }

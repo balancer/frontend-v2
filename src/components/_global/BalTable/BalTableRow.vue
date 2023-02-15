@@ -78,7 +78,7 @@ function getHorizontalStickyClass(index: number) {
           v-else
           :class="
             compact([
-              'px-6 py-4',
+              'mr-6 py-4',
               column.align === 'right' ? 'text-right' : 'text-left',
               column.cellClassName,
             ])

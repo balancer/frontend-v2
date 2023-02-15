@@ -19,6 +19,7 @@ export type GaugeShare = {
 };
 
 export type UserGaugeShares = {
+  __name: 'GaugeShares';
   gaugeShares: GaugeShare[];
 };
 type QueryOptions = UseQueryOptions<GaugeShare[]>;
@@ -66,6 +67,7 @@ export default function useUserGaugeSharesQuery(
   });
 
   const subgraphQuery = computed(() => ({
+    __name: 'GaugeShares',
     gaugeShares: {
       __args: queryArgs.value,
       balance: true,

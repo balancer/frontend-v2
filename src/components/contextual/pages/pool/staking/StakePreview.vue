@@ -31,7 +31,7 @@ const emit = defineEmits(['close', 'success']);
  * COMPOSABLES
  */
 const { balanceFor, getToken, refetchBalances } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 
@@ -138,10 +138,10 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
       action: props.action,
       summary: t(`transactionSummary.${props.action}`, {
         pool: props.pool.symbol,
-        amount: fNum2(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
+        amount: fNum(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
       }),
       details: {
-        total: fNum2(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
+        total: fNum(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
         pool: props.pool,
       },
     });
@@ -187,7 +187,7 @@ function handleClose() {
     >
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
-          <h5>{{ fNum2(currentShares) }} {{ $t('lpTokens') }}</h5>
+          <h5>{{ fNum(currentShares) }} {{ $t('lpTokens') }}</h5>
           <span class="text-secondary">
             {{ getToken(pool.address)?.symbol }}
           </span>

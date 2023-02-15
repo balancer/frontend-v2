@@ -24,7 +24,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { veBalBalance, veBalTokenInfo } = useVeBal();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -51,7 +51,7 @@ const percentVeBAL = computed(() => {
     </div>
     <div class="flex justify-center items-center p-10 -mt-2">
       <div class="text-2xl font-semibold">
-        {{ fNum2(veBalBalance, FNumFormats.token) }}
+        {{ fNum(veBalBalance, FNumFormats.token) }}
         {{ veBalTokenInfo?.symbol }}
       </div>
     </div>
@@ -60,7 +60,7 @@ const percentVeBAL = computed(() => {
         <div>
           {{
             veBalLockInfo?.hasExistingLock
-              ? fNum2(percentVeBAL, {
+              ? fNum(percentVeBAL, {
                   style: 'percent',
                   maximumFractionDigits: 4,
                 })

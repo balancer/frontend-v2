@@ -183,7 +183,7 @@ export default function useNumbers() {
    * @returns {string} - The formatted number.
    */
   function toFiatLabel(value: number | string): string {
-    return fNum2(value, FNumFormats.fiat);
+    return fNum(value, FNumFormats.fiat);
   }
 
   /**
@@ -193,10 +193,10 @@ export default function useNumbers() {
    * @returns {string} - The formatted number.
    */
   function toTokenLabel(value: number | string): string {
-    return fNum2(value, FNumFormats.token);
+    return fNum(value, FNumFormats.token);
   }
 
-  function fNum2(
+  function fNum(
     number: number | string,
     options: FNumOptions | undefined = {}
   ): string {
@@ -204,5 +204,5 @@ export default function useNumbers() {
     return numF(number, options, _currency);
   }
 
-  return { fNum2, toFiat, toFiatLabel, toTokenLabel };
+  return { fNum, toFiat, toFiatLabel, toTokenLabel };
 }

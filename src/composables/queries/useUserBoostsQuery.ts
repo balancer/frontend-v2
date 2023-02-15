@@ -1,3 +1,4 @@
+import { logFetchException } from '@/lib/utils/exceptions';
 import { computed, reactive, Ref } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
@@ -63,9 +64,7 @@ export default function useUserBoostsQuery(
         gaugeShares: gaugeShares.value,
       });
     } catch (error) {
-      console.error('Failed to fetch user boost values', {
-        cause: error,
-      });
+      logFetchException('Failed to fetch user boost values', error);
       throw error;
     }
   };

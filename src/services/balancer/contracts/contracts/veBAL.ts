@@ -5,11 +5,11 @@ import { parseUnits } from '@ethersproject/units';
 
 import { toJsTimestamp, toUtcTime } from '@/composables/useTime';
 import veBalAbi from '@/lib/abi/veBalAbi.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 
 import Service from '../balancer-contracts.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { ContractInterface } from 'ethers';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export type VeBalLockInfo = {
   lockedEndDate: number;
@@ -20,7 +20,7 @@ export type VeBalLockInfo = {
   isExpired: boolean;
 };
 
-type VeBalLockInfoResult = {
+export type VeBalLockInfoResult = {
   locked: BigNumber[];
   epoch: BigNumber;
   totalSupply: BigNumber;
@@ -38,6 +38,7 @@ export default class VeBAL {
   }
 
   public async getLockInfo(account: string): Promise<VeBalLockInfo> {
+    const Multicaller = getOldMulticaller();
     const veBalMulticaller = new Multicaller(
       this.service.config.key,
       this.service.provider,

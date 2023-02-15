@@ -1,29 +1,20 @@
-import { TokenInfoMap } from '@/types/TokenList';
-import { Multicaller } from '@/lib/utils/balancer/contract';
+// eslint-disable-next-line no-restricted-imports
+import { Multicaller } from '@/services/multicalls/multicaller';
+import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import { initMulticaller } from './Multicaller';
 
 export const mockedOnchainTokenName = 'mocked onchain token name';
 
-function buildOnchainMetadataMock(metadict: TokenInfoMap) {
-  // TODO: discover how we can discover different calls and responses
-  const result: TokenInfoMap = {};
-  Object.keys(metadict).map(tokenAddress => {
-    result[tokenAddress] = {
-      address: tokenAddress,
-      logoURI: '',
-      chainId: 5,
-      name: mockedOnchainTokenName,
-      symbol: 'mocked onchain token symbol',
-      decimals: 18,
-    };
-  });
-  return result;
-}
+export const defaultLockedAmountBN = parseUnits('0.5');
+export const defaultLockedAmount = formatUnits(defaultLockedAmountBN, 18);
 
 class MulticallerMock extends Multicaller {
   //@ts-ignore
-  execute(metadict) {
-    return Promise.resolve(buildOnchainMetadataMock(metadict));
+  execute() {
+    return {
+      'test poolId': { 'test poolId': BigNumber.from('2000000000000000000') },
+    };
   }
 }
 

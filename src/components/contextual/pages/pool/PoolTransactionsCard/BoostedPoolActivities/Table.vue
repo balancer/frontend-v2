@@ -59,7 +59,7 @@ const emit = defineEmits(['loadMore']);
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 const { priceFor } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -138,7 +138,7 @@ const swapRows = computed<SwapRow[]>(() => {
       type,
       value,
       formattedValue:
-        value > 0 ? fNum2(value, { style: 'currency', abbreviate: true }) : '-',
+        value > 0 ? fNum(value, { style: 'currency', abbreviate: true }) : '-',
       timestamp,
       formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
       tx,
@@ -281,7 +281,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 shrink-0"
               />
               <span class="font-numeric">{{
-                fNum2(action.tokenAmounts[0].amount, FNumFormats.token)
+                fNum(action.tokenAmounts[0].amount, FNumFormats.token)
               }}</span>
             </div>
             <BalIcon name="arrow-right" class="mx-1" />
@@ -291,7 +291,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 shrink-0"
               />
               <span class="font-numeric">{{
-                fNum2(action.tokenAmounts[1].amount, FNumFormats.token)
+                fNum(action.tokenAmounts[1].amount, FNumFormats.token)
               }}</span>
             </div>
           </template>
@@ -306,7 +306,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                   class="mr-2 shrink-0"
                 />
                 <span class="font-numeric">{{
-                  fNum2(tokenAmount.amount, FNumFormats.token)
+                  fNum(tokenAmount.amount, FNumFormats.token)
                 }}</span>
               </div>
             </template>

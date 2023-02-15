@@ -12,7 +12,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { InjectionKey, provide } from 'vue';
 import { safeInject } from './inject';
 
-const provider = () => {
+export const userDataProvider = () => {
   /**
    * COMPOSABLES
    */
@@ -43,13 +43,13 @@ const provider = () => {
 /**
  * Provide setup: response type + symbol.
  */
-export type UserDataResponse = ReturnType<typeof provider>;
+export type UserDataResponse = ReturnType<typeof userDataProvider>;
 export const UserDataProviderSymbol: InjectionKey<UserDataResponse> = Symbol(
   symbolKeys.Providers.UserData
 );
 
 export function provideUserData() {
-  provide(UserDataProviderSymbol, provider());
+  provide(UserDataProviderSymbol, userDataProvider());
 }
 
 export function useUserData(): UserDataResponse {

@@ -30,12 +30,12 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
 
 const myVotes = computed(() => {
   const normalizedVotes = scale(new BigNumber(props.gauge.userVotes), -4);
-  return fNum2(normalizedVotes.toString(), {
+  return fNum(normalizedVotes.toString(), {
     style: 'percent',
     maximumFractionDigits: 2,
   });

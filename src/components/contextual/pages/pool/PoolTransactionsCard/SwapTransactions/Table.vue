@@ -52,7 +52,7 @@ const emit = defineEmits(['loadMore']);
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 const { priceFor } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -123,7 +123,7 @@ const swapRows = computed<SwapRow[]>(() =>
             value,
             formattedValue:
               value > 0
-                ? fNum2(value, { style: 'currency', abbreviate: true })
+                ? fNum(value, { style: 'currency', abbreviate: true })
                 : '-',
             tokenIn,
             tokenOut,
@@ -190,14 +190,14 @@ const swapRows = computed<SwapRow[]>(() =>
           <div class="token-item">
             <BalAsset :address="action.tokenIn" class="mr-2 shrink-0" />
             <span class="font-numeric">{{
-              fNum2(action.tokenAmountIn, FNumFormats.token)
+              fNum(action.tokenAmountIn, FNumFormats.token)
             }}</span>
           </div>
           <BalIcon name="arrow-right" class="mx-1" />
           <div class="token-item">
             <BalAsset :address="action.tokenOut" class="mr-2 shrink-0" />
             <span class="font-numeric">{{
-              fNum2(action.tokenAmountOut, FNumFormats.token)
+              fNum(action.tokenAmountOut, FNumFormats.token)
             }}</span>
           </div>
         </div>
