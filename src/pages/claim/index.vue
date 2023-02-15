@@ -41,7 +41,7 @@ type GaugeTable = {
  */
 const { injectTokens, injectPrices, getToken } = useTokens();
 const { balToken } = useTokenHelpers();
-const { toFiat, fNum2 } = useNumbers();
+const { toFiat, fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
 const {
   gauges,
@@ -173,7 +173,7 @@ function gaugeTitle(pool: GaugePool): string {
   return Object.values(_tokens)
     .map(
       token =>
-        `${fNum2(token.weight || '0', {
+        `${fNum(token.weight || '0', {
           style: 'percent',
           maximumFractionDigits: 0,
         })} ${token.symbol}`

@@ -80,7 +80,7 @@ const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   ref([props.lockAmount]),
   ApprovalAction.Locking
 );
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { totalVotes, unallocatedVotes } = useVotingGauges();
 const { networkSlug } = useNetwork();
 
@@ -124,7 +124,7 @@ async function handleTransaction(
         ? t('transactionSummary.extendLock', [
             format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT),
           ])
-        : `${fNum2(props.lockAmount, FNumFormats.token)} ${
+        : `${fNum(props.lockAmount, FNumFormats.token)} ${
             props.lockablePoolTokenInfo.symbol
           }`,
     details: {

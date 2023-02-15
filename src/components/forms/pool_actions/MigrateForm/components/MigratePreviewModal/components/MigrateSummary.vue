@@ -27,7 +27,7 @@ withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 </script>
 
 <template>
@@ -39,7 +39,7 @@ const { fNum2 } = useNumbers();
           {{ $t('totalToMigrate') }}
         </div>
         <div class="summary-table-number">
-          ~{{ fNum2(fromTotal, FNumFormats.fiat) }}
+          ~{{ fNum(fromTotal, FNumFormats.fiat) }}
           <BalTooltip
             :text="$t('migratePool.tooltips.totalTo')"
             iconSize="sm"
@@ -52,7 +52,7 @@ const { fNum2 } = useNumbers();
           {{ $t('newTotal') }}
         </div>
         <div class="summary-table-number">
-          ~{{ fNum2(toTotal, FNumFormats.fiat) }}
+          ~{{ fNum(toTotal, FNumFormats.fiat) }}
           <BalTooltip
             :text="$t('migratePool.tooltips.newTotal')"
             iconSize="sm"
@@ -75,7 +75,7 @@ const { fNum2 } = useNumbers();
         <div class="summary-table-number">
           <BalLoadingBlock v-if="isLoadingBptOut" class="w-10 h-6" />
           <template v-else>
-            {{ fNum2(priceImpact, FNumFormats.percent) }}
+            {{ fNum(priceImpact, FNumFormats.percent) }}
             <BalTooltip
               :text="$t('tooltips.addLiquidity.priceImpact')"
               iconSize="sm"

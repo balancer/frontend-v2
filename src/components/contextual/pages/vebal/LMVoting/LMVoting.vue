@@ -44,7 +44,7 @@ const {
   votingPeriodLastHour,
   refetch: refetchVotingGauges,
 } = useVotingGauges();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 const { shouldResubmitVotes } = useVotingEscrowLocks();
@@ -58,7 +58,7 @@ const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
  * COMPUTED
  */
 const unallocatedVotesFormatted = computed<string>(() =>
-  fNum2(scale(bnum(unallocatedVotes.value), -4).toString(), FNumFormats.percent)
+  fNum(scale(bnum(unallocatedVotes.value), -4).toString(), FNumFormats.percent)
 );
 
 const unallocatedVoteWeight = computed(() => {
