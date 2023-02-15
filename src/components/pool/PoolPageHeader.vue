@@ -31,6 +31,7 @@ type Props = {
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
   isComposableStableLikePool: boolean;
+  isGreatMigratablePool: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -278,6 +279,13 @@ function symbolFor(titleTokenIndex: number): string {
     :description="$t('noInitLiquidityDetail')"
     class="mt-2"
     block
+  />
+  <BalAlert
+    v-if="isGreatMigratablePool"
+    class="mt-4"
+    type="tip"
+    :title="$t('greatMigration.warning.title')"
+    :description="$t('greatMigration.warning.text')"
   />
   <StakePreviewModal
     v-if="!!pool"
