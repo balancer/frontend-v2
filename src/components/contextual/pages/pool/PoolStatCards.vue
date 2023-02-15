@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 
 /**
@@ -49,19 +49,19 @@ const stats = computed(() => {
     {
       id: 'poolValue',
       label: t('poolValue'),
-      value: fNum2(props.pool?.totalLiquidity || '0', FNumFormats.fiat),
+      value: fNum(props.pool?.totalLiquidity || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {
       id: 'volumeTime',
       label: t('volumeTime', ['24h']),
-      value: fNum2(props.pool?.volumeSnapshot || '0', FNumFormats.fiat),
+      value: fNum(props.pool?.volumeSnapshot || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {
       id: 'feesTime',
       label: t('feesTime', ['24h']),
-      value: fNum2(props.pool?.feesSnapshot || '0', FNumFormats.fiat),
+      value: fNum(props.pool?.feesSnapshot || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {

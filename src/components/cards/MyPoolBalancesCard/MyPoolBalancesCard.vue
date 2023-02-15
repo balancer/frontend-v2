@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { tokens, balances, balanceFor } = useTokens();
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const { isDeepPool } = usePool(toRef(props, 'pool'));
 const { stakedShares } = usePoolStaking();
 
@@ -84,7 +84,7 @@ const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
     .reduce((total, value) => bnum(total).plus(value).toString());
-  return fNum2(fiatValue, FNumFormats.fiat);
+  return fNum(fiatValue, FNumFormats.fiat);
 });
 </script>
 

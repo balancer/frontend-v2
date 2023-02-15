@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   pickedTokens: () => [],
 });
 
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { getToken, hasBalance } = useTokens();
 
 /**
@@ -57,7 +57,7 @@ function symbolFor(token: PoolToken): string {
 }
 
 function weightFor(token: PoolToken): string {
-  return fNum2(token.weight || '0', {
+  return fNum(token.weight || '0', {
     style: 'percent',
     maximumFractionDigits: 0,
   });
