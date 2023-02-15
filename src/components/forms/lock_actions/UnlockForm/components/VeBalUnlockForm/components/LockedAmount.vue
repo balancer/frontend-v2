@@ -21,7 +21,7 @@ defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 </script>
 
 <template>
@@ -35,11 +35,11 @@ const { fNum2 } = useNumbers();
         <div class="w-full">
           <div class="flex justify-between">
             <div>{{ lockablePoolTokenInfo.symbol }}</div>
-            <div>{{ fNum2(totalLpTokens, FNumFormats.token) }}</div>
+            <div>{{ fNum(totalLpTokens, FNumFormats.token) }}</div>
           </div>
           <div class="flex justify-between text-gray-500">
             <div>{{ lockablePoolTokenInfo.name }}</div>
-            <div>{{ fNum2(fiatTotalLpTokens, FNumFormats.fiat) }}</div>
+            <div>{{ fNum(fiatTotalLpTokens, FNumFormats.fiat) }}</div>
           </div>
         </div>
       </div>

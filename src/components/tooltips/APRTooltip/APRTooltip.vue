@@ -29,7 +29,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -87,7 +87,7 @@ const totalLabel = computed((): string =>
           class="flex items-center mb-1 whitespace-nowrap"
           data-testid="swap-fee-apr"
         >
-          {{ fNum2(apr?.swapFees || '0', FNumFormats.bp) }}
+          {{ fNum(apr?.swapFees || '0', FNumFormats.bp) }}
           <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}
           </span>
