@@ -31,7 +31,6 @@ type Props = {
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
   isComposableStableLikePool: boolean;
-  isGreatMigratablePool: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -46,7 +45,9 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  * COMPOSABLES
  */
 const { isAffected, warnings } = usePoolWarning(poolId);
-const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
+const { hasNonApprovedRateProviders, isGreatMigratablePool } = usePool(
+  toRef(props, 'pool')
+);
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();

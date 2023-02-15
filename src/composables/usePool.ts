@@ -635,6 +635,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       )
   );
 
+  const isGreatMigratablePool = computed(() => {
+    return !!pool.value && POOLS.GreatMigration?.includes(pool.value.id);
+  });
+
   return {
     // computed
     isStablePool,
@@ -655,6 +659,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
+    isGreatMigratablePool,
     // methods
     isStable,
     isMetaStable,
