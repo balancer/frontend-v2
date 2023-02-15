@@ -8,7 +8,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { isGreaterThan } from '@/lib/utils/validations';
-import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
 
 const emit = defineEmits(['update:height']);
 
@@ -21,7 +21,7 @@ const cardWrapper = ref<HTMLElement>();
 /**
  * COMPOSBALES
  */
-const { userNetworkConfig } = useWeb3();
+const { networkConfig } = useNetwork();
 const {
   balanceFor,
   priceFor,
@@ -223,9 +223,7 @@ function saveAndProceed() {
     <BalCard shadow="xl" noBorder>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
-          <span class="text-xs text-secondary">{{
-            userNetworkConfig?.name
-          }}</span>
+          <span class="text-xs text-secondary">{{ networkConfig?.name }}</span>
           <BalStack horizontal spacing="xs" align="center">
             <button
               v-if="!createPoolTxHash"

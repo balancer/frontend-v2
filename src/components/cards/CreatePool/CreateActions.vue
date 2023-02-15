@@ -55,7 +55,7 @@ const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { networkConfig } = useConfig();
 const { isTxConfirmed } = useEthers();
-const { tokenApprovalActions } = useTokenApprovalActions(
+const { fetchTokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
   ref(props.amounts)
 );
@@ -73,8 +73,7 @@ const { networkSlug } = useNetwork();
 /**
  * COMPUTED
  */
-const actions = computed((): TransactionActionInfo[] => [
-  ...tokenApprovalActions,
+const actions = ref<TransactionActionInfo[]>([
   {
     label: t('createPool'),
     loadingLabel: t('investment.preview.loadingLabel.create'),
@@ -114,6 +113,11 @@ onBeforeMount(async () => {
     createState.isLoadingRestoredTx = false;
     createState.isRestoredTxConfirmed = isConfirmed;
   }
+
+  const approvalActions = await fetchTokenApprovalActions(
+    networkConfig.addresses.vault
+  );
+  actions.value = [...approvalActions, ...actions.value];
 });
 
 /**
