@@ -10,7 +10,7 @@ import { networkSlug } from '@/composables/useNetwork';
  */
 const { similarPools } = usePoolCreation();
 const { getToken } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 /**
  * FUNCTIONS
  */
@@ -18,13 +18,13 @@ function getPoolLabel(pool: Pool) {
   const tokensString = pool.tokens
     .map(
       t =>
-        `${getToken(t.address)?.symbol} ${fNum2(
+        `${getToken(t.address)?.symbol} ${fNum(
           t.weight || '0',
           FNumFormats.percent
         )}`
     )
     .join(', ');
-  return `${tokensString} (${fNum2(pool.swapFee, FNumFormats.percent)} fee)`;
+  return `${tokensString} (${fNum(pool.swapFee, FNumFormats.percent)} fee)`;
 }
 </script>
 

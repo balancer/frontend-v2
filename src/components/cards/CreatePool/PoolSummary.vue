@@ -38,7 +38,7 @@ const {
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const tailwind = useTailwind();
 const { resolve } = useUrls();
 
@@ -201,7 +201,7 @@ async function calculateColors() {
           {{ $t('createAPool.maxLiquidityTooltip') }}
         </BalTooltip>
       </BalStack>
-      <span>{{ fNum2(totalLiquidity.toString(), FNumFormats.fiat) }}</span>
+      <span>{{ fNum(totalLiquidity.toString(), FNumFormats.fiat) }}</span>
     </BalStack>
   </BalCard>
 </template>

@@ -22,7 +22,7 @@ const {
   resetPoolCreationState,
   goBack,
 } = usePoolCreation();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 
 /** COMPUTED */
@@ -88,7 +88,7 @@ function cancel() {
                 $t('poolValue')
               }}</span>
               <span class="font-semibold">{{
-                fNum2(existingPool.totalLiquidity, FNumFormats.fiat)
+                fNum(existingPool.totalLiquidity, FNumFormats.fiat)
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -96,7 +96,7 @@ function cancel() {
                 $t('volume24hShort')
               }}</span>
               <span class="font-semibold">{{
-                fNum2(existingPool?.volumeSnapshot || '0', FNumFormats.fiat)
+                fNum(existingPool?.volumeSnapshot || '0', FNumFormats.fiat)
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -104,7 +104,7 @@ function cancel() {
                 $t('fees')
               }}</span>
               <span class="font-semibold">{{
-                fNum2(existingPool.swapFee, FNumFormats.percent)
+                fNum(existingPool.swapFee, FNumFormats.percent)
               }}</span>
             </BalStack>
           </BalStack>
@@ -129,7 +129,7 @@ function cancel() {
                   $t('poolValue')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool.totalLiquidity, FNumFormats.fiat)
+                  fNum(pool.totalLiquidity, FNumFormats.fiat)
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
@@ -137,7 +137,7 @@ function cancel() {
                   $t('volume24hShort')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool?.volumeSnapshot || '0', FNumFormats.fiat)
+                  fNum(pool?.volumeSnapshot || '0', FNumFormats.fiat)
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
@@ -145,7 +145,7 @@ function cancel() {
                   $t('fees')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool.swapFee, FNumFormats.percent)
+                  fNum(pool.swapFee, FNumFormats.percent)
                 }}</span>
               </BalStack>
             </BalStack>

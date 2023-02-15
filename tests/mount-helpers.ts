@@ -38,20 +38,22 @@ export function mountComposable<R>(
 }
 
 export function mountComposableWithDefaultTokensProvider<R>(
-  callback: () => R
+  callback: () => R,
+  options?: { extraProvidersCb?: () => void }
 ): MountResult<R> {
   return mountComposable<R>(callback, {
     extraProvidersCb: () => {
       const userSettings = provideUserSettings();
       const tokenLists = provideTokenLists();
       provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+      options?.extraProvidersCb?.();
     },
   });
 }
 
-export async function waitForQueryData(result: {
+export async function waitForQueryData<T>(result: {
   isLoading: Ref<boolean>;
-  data: Ref<any>;
+  data: Ref<T>;
 }) {
   expect(result.isLoading.value).toBeTrue();
   await waitForExpect(() => {

@@ -20,7 +20,7 @@ const showUnlockPreviewModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { balanceFor } = useTokens();
 const { totalLockedValue, lock, isLoadingLockInfo, lockPool, lockPoolToken } =
   useLock();
@@ -111,7 +111,7 @@ const fiatTotalExpiredLpTokens = computed(() =>
                     </AnimatePresence>
                     <AnimatePresence :isVisible="true">
                       <span :class="{ 'text-red-500': lock?.isExpired }">
-                        {{ fNum2(totalLockedValue, FNumFormats.fiat) }}
+                        {{ fNum(totalLockedValue, FNumFormats.fiat) }}
                       </span>
                     </AnimatePresence>
                     <BalTooltip
@@ -137,7 +137,7 @@ const fiatTotalExpiredLpTokens = computed(() =>
                     </AnimatePresence>
                     <AnimatePresence :isVisible="true">
                       <span>
-                        {{ fNum2(fiatTotal, FNumFormats.fiat) }}
+                        {{ fNum(fiatTotal, FNumFormats.fiat) }}
                       </span>
                     </AnimatePresence>
                     <BalTooltip :text="$t('locking.unlockedLpTokensTooltip')" />
