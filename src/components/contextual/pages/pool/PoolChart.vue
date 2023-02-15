@@ -70,7 +70,7 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { t } = useI18n();
 const tailwind = useTailwind();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { isMobile } = useBreakpoints();
 const { darkMode } = useDarkMode();
 
@@ -229,7 +229,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
         values: tvlValues,
       },
     ],
-    defaultHeaderStateValue: fNum2(tvlValues[0][1], {
+    defaultHeaderStateValue: fNum(tvlValues[0][1], {
       style: 'currency',
     }),
   };
@@ -285,7 +285,7 @@ function getFeesData(
         values: feesValues,
       },
     ],
-    defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
+    defaultHeaderStateValue: fNum(defaultHeaderStateValue, {
       style: 'currency',
     }),
   };
@@ -335,7 +335,7 @@ function getVolumeData(
         values: volumeData,
       },
     ],
-    defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
+    defaultHeaderStateValue: fNum(defaultHeaderStateValue, {
       style: 'currency',
     }),
   };
@@ -398,7 +398,7 @@ function setCurrentChartValue(payload: {
   chartDate: string;
   chartValue: number;
 }) {
-  currentChartValue.value.num = fNum2(payload.chartValue, {
+  currentChartValue.value.num = fNum(payload.chartValue, {
     style: 'currency',
     maximumFractionDigits: 2,
     fixedFormat: true,

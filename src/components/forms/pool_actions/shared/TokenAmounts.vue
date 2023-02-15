@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 /**
  * COMPUTED
  */
@@ -75,7 +75,7 @@ function amountShare(address: string): string {
         <div class="flex flex-col self-center mr-3">
           <div class="font-medium">
             <span class="font-numeric">
-              {{ fNum2(token.amount, FNumFormats.token) }}
+              {{ fNum(token.amount, FNumFormats.token) }}
             </span>
             {{ tokenMap[token.address]?.symbol }}
           </div>
@@ -83,9 +83,9 @@ function amountShare(address: string): string {
             v-if="Number(token.fiatAmount) > 0"
             class="text-sm text-secondary font-numeric"
           >
-            {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
+            {{ fNum(token.fiatAmount, FNumFormats.fiat) }}
             <span v-if="!hideAmountShare">
-              ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
+              ({{ fNum(amountShare(token.address), FNumFormats.percent) }})
             </span>
           </div>
         </div>

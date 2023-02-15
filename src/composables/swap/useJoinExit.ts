@@ -101,7 +101,7 @@ export default function useJoinExit({
   );
   const { addTransaction } = useTransactions();
   const { txListener } = useEthers();
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
   const { isUserRejected } = useTranasactionErrors();
   const { t } = useI18n();
 
@@ -211,11 +211,11 @@ export default function useJoinExit({
       });
       console.log(tx);
 
-      const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
+      const tokenInAmountFormatted = fNum(tokenInAmountInput.value, {
         ...FNumFormats.token,
         maximumSignificantDigits: 6,
       });
-      const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
+      const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, {
         ...FNumFormats.token,
         maximumSignificantDigits: 6,
       });

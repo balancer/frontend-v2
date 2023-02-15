@@ -43,7 +43,7 @@ export default function useInvestMath(
   /**
    * COMPOSABLES
    */
-  const { toFiat, fNum2 } = useNumbers();
+  const { toFiat, fNum } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
   const { getSigner } = useWeb3();
@@ -115,7 +115,7 @@ export default function useInvestMath(
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum2(fiatTotal.value, FNumFormats.fiat)
+    fNum(fiatTotal.value, FNumFormats.fiat)
   );
 
   const hasAmounts = computed(() =>

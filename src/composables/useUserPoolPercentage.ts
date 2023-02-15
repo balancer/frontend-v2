@@ -15,7 +15,7 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
     // Avoid lock queries when pool is not veBAL:
     enabled: isVeBalPool(pool.value.id),
   });
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
 
   const lockedAmount = computed(() => {
     return totalLockedValue.value || '0';
@@ -30,7 +30,7 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
 
   const userPoolPercentageLabel = computed(
     () =>
-      fNum2(userPoolPercentage.value.toString(), {
+      fNum(userPoolPercentage.value.toString(), {
         maximumFractionDigits: 4,
         minimumFractionDigits: 0,
       }) + '%'

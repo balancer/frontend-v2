@@ -29,7 +29,7 @@ const {
   wrappedNativeAsset,
   dynamicDataLoading,
 } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const {
   seedTokens,
   totalLiquidity,
@@ -306,7 +306,7 @@ function saveAndProceed() {
               <BalStack horizontal spacing="xs" class="font-medium">
                 <span class="text-sm">
                   {{ t('available') }}:
-                  {{ fNum2(totalLiquidity.toString(), FNumFormats.fiat) }}
+                  {{ fNum(totalLiquidity.toString(), FNumFormats.fiat) }}
                 </span>
                 <button
                   :disabled="areAmountsMaxed"
@@ -325,7 +325,7 @@ function saveAndProceed() {
             </BalStack>
             <BalStack vertical spacing="none">
               <h6>
-                {{ fNum2(currentLiquidity.toString(), FNumFormats.fiat) }}
+                {{ fNum(currentLiquidity.toString(), FNumFormats.fiat) }}
               </h6>
               <AnimatePresence
                 :isVisible="!isOptimised"
@@ -353,8 +353,8 @@ function saveAndProceed() {
             type="warning"
             :title="
               t('createAPool.arbTitle', [
-                fNum2(arbitrageDelta.value.toString(), FNumFormats.fiat),
-                fNum2(arbitrageDelta.delta.toString(), FNumFormats.percent),
+                fNum(arbitrageDelta.value.toString(), FNumFormats.fiat),
+                fNum(arbitrageDelta.delta.toString(), FNumFormats.percent),
               ])
             "
           >

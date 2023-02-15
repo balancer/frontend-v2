@@ -27,7 +27,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { balanceFor } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { networkSlug } = useNetwork();
 
 /**
@@ -53,11 +53,11 @@ const fiatTotal = computed((): string =>
     <div class="p-4 -mt-2">
       <div class="flex justify-between">
         <div>{{ lockablePoolTokenInfo.symbol }}</div>
-        <div>{{ fNum2(bptBalance, FNumFormats.token) }}</div>
+        <div>{{ fNum(bptBalance, FNumFormats.token) }}</div>
       </div>
       <div class="flex justify-between text-secondary">
         <div>{{ lockablePoolTokenInfo.name }}</div>
-        <div>{{ fNum2(fiatTotal, FNumFormats.fiat) }}</div>
+        <div>{{ fNum(fiatTotal, FNumFormats.fiat) }}</div>
       </div>
       <BalLink
         tag="router-link"
