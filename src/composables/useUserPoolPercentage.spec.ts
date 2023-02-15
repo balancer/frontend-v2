@@ -14,19 +14,19 @@ vi.mock('@/providers/tokens.provider', () => {
 });
 
 it('calculates user pool percentage', () => {
-  const pool = aPool({ totalLiquidity: '100', totalShares: '100' });
+  const pool = aPool({ totalShares: '100' });
   const { result } = mountComposable(() => useUserPoolPercentage(ref(pool)));
   expect(result.userPoolPercentage.value.toString()).toBe('15');
 });
 
 it('calculates user pool percentage label', () => {
-  const pool = aPool({ totalLiquidity: '8888888', totalShares: '100' });
+  const pool = aPool({ totalShares: '8888888' });
   const { result } = mountComposable(() => useUserPoolPercentage(ref(pool)));
   expect(result.userPoolPercentageLabel.value.toString()).toBe('0.00017%');
 });
 
 it('calculates user pool percentage label when user has a very small share', () => {
-  const pool = aPool({ totalLiquidity: '88888888888', totalShares: '100' });
+  const pool = aPool({ totalShares: '88888888888' });
   const { result } = mountComposable(() => useUserPoolPercentage(ref(pool)));
   expect(result.userPoolPercentageLabel.value.toString()).toBe('< 0.0001%');
 });
