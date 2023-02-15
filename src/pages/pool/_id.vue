@@ -182,6 +182,10 @@ const showBrandedRedirectCard = computed(() => {
   return POOLS.BrandedRedirect?.[poolId] || false;
 });
 
+const isGreatMigratablePool = computed(() => {
+  return POOLS.GreatMigration?.includes(poolId) || false;
+});
+
 /**
  * WATCHERS
  */
@@ -223,6 +227,7 @@ watch(poolQuery.error, () => {
           :missingPrices="missingPrices"
           :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
           :isComposableStableLikePool="isComposableStableLikePool"
+          :isGreatMigratablePool="isGreatMigratablePool"
         />
       </div>
       <div class="hidden lg:block" />
