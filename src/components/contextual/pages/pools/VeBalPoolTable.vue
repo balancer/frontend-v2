@@ -16,16 +16,14 @@ type Props = {
 const props = defineProps<Props>();
 
 /** COMPOSABLES */
-const { totalLockedValue } = useLock();
+const { totalLockedShares } = useLock();
 
 /** COMPUTED */
-const lockPools = computed<PoolWithShares[]>(() => {
+const lockPools = computed<Pool[]>(() => {
   if (props.lockPool) {
     return [
       {
         ...props.lockPool,
-        bpt: '',
-        shares: totalLockedValue.value,
         lockedEndDate:
           props.lock?.hasExistingLock && !props.lock?.isExpired
             ? props.lock?.lockedEndDate
@@ -38,7 +36,7 @@ const lockPools = computed<PoolWithShares[]>(() => {
 
 const poolShares = computed(
   (): Record<string, string> => ({
-    [props.lockPool.id]: totalLockedValue.value,
+    [props.lockPool.id]: totalLockedShares.value,
   })
 );
 

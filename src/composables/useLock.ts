@@ -58,6 +58,12 @@ export function useLock({ enabled = true }: Options = {}) {
       : '0'
   );
 
+  const totalLockedShares = computed((): string =>
+    lockPool.value && lock.value?.hasExistingLock
+      ? lock.value.lockedAmount
+      : '0'
+  );
+
   return {
     isLoadingLockPool,
     isLoadingLockInfo,
@@ -66,5 +72,6 @@ export function useLock({ enabled = true }: Options = {}) {
     lockPool,
     lock,
     totalLockedValue,
+    totalLockedShares,
   };
 }
