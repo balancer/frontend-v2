@@ -30,7 +30,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken, getTokens } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 
 /**
@@ -84,11 +84,11 @@ const yieldBreakdownItems = computed((): [string, number][] =>
       :hideItems="!hasMultiRewardTokens"
     >
       <div class="flex items-center">
-        {{ fNum2(yieldAPR.total, FNumFormats.bp) }}
+        {{ fNum(yieldAPR.total, FNumFormats.bp) }}
         <span class="ml-1 text-xs text-secondary"> {{ yieldAPRLabel }} </span>
       </div>
       <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
-        {{ fNum2(amount, FNumFormats.bp) }}
+        {{ fNum(amount, FNumFormats.bp) }}
         <span class="ml-1 text-xs text-secondary">
           {{ yieldAPRTokens[getAddress(address)].symbol }} {{ $t('apr') }}
         </span>

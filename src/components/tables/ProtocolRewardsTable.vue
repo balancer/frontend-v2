@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * STATE
@@ -65,7 +65,7 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     id: 'amount',
     align: 'right',
     width: 150,
-    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)}`,
+    accessor: ({ amount }) => `${fNum(amount, FNumFormats.token)}`,
   },
   {
     name: t('value'),
@@ -73,7 +73,7 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
+    accessor: ({ value }) => fNum(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -144,7 +144,7 @@ const hasClaimableBalance = computed((): boolean => {
 
         <template #totalValueCell>
           <div class="flex justify-end">
-            {{ fNum2(totalClaimValue, FNumFormats.fiat) }}
+            {{ fNum(totalClaimValue, FNumFormats.fiat) }}
           </div>
         </template>
         <template #claimColumnCell="{ token, amount, value }">

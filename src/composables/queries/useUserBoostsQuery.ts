@@ -1,4 +1,4 @@
-import { handleFetchException } from '@/lib/utils/exceptions';
+import { logFetchException } from '@/lib/utils/exceptions';
 import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
@@ -64,7 +64,7 @@ export default function useUserBoostsQuery(
         gaugeShares: gaugeShares.value,
       });
     } catch (error) {
-      handleFetchException('Failed to fetch user boost values', error);
+      logFetchException('Failed to fetch user boost values', error);
       throw error;
     }
   };

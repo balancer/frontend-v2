@@ -10,7 +10,7 @@
       {{ tokenlist.name }}
       <div class="flex items-center text-sm text-gray">
         {{
-          fNum2(tokenlist.tokens.length, {
+          fNum(tokenlist.tokens.length, {
             style: 'decimal',
             maximumFractionDigits: 1,
             abbreviate: true,
@@ -66,7 +66,7 @@ export default {
     /**
      * COMPOSABLES
      */
-    const { fNum2 } = useNumbers();
+    const { fNum } = useNumbers();
     const { resolve } = useUrls();
 
     /**
@@ -87,7 +87,7 @@ export default {
     return {
       ...toRefs(state),
       url,
-      fNum2,
+      fNum,
     };
   },
 };

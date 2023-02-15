@@ -33,7 +33,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { veBalTokenInfo } = useVeBal();
 
 /**
@@ -85,7 +85,7 @@ const isIncreaseLockOnly = computed(
         </div>
         <div>
           {{
-            fNum2(
+            fNum(
               isIncreaseLockOnly ? fiatTotalLockedAmount : fiatTotalLpTokens,
               FNumFormats.fiat
             )
@@ -96,7 +96,7 @@ const isIncreaseLockOnly = computed(
         <div>
           {{ $t('getVeBAL.previewModal.summary.increasedLockAmount') }}
         </div>
-        <div>{{ fNum2(fiatTotalLockAmount, FNumFormats.fiat) }}</div>
+        <div>{{ fNum(fiatTotalLockAmount, FNumFormats.fiat) }}</div>
       </div>
       <div class="summary-item-row">
         <div>
@@ -111,7 +111,7 @@ const isIncreaseLockOnly = computed(
       <div class="summary-item-row">
         <div>{{ $t('getVeBAL.previewModal.summary.totalVotingEscrow') }}</div>
         <div class="flex items-center">
-          {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
+          {{ fNum(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
           <VeBalTooltipExplainer
             :expectedVeBalAmount="expectedVeBalAmount"
@@ -124,7 +124,7 @@ const isIncreaseLockOnly = computed(
         <div>
           {{ $t('getVeBAL.previewModal.summary.potentialWeeklyYield') }}
         </div>
-        <div>{{ fNum2(fiatWeeklyYield, FNumFormats.fiat) }}</div>
+        <div>{{ fNum(fiatWeeklyYield, FNumFormats.fiat) }}</div>
       </div> -->
     </div>
   </div>

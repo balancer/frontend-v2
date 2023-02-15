@@ -1,7 +1,4 @@
-export function handleFetchException(
-  failedFetchMessage: string,
-  error: unknown
-) {
+export function logFetchException(failedFetchMessage: string, error: unknown) {
   console.trace(failedFetchMessage, {
     cause: error,
   });
