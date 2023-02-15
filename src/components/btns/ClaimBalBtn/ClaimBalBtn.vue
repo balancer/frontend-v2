@@ -27,7 +27,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { data: subgraphGauges } = useGaugesQuery();
 const gaugesQuery = useGaugesDecorationQuery(subgraphGauges);
 
@@ -58,7 +58,7 @@ async function claimTx() {
     :actionFn="claimTx"
     :onConfirmFn="gaugesQuery.refetch.value"
     action="claim"
-    :summary="`${t('claim')} ${fNum2(props.amount, FNumFormats.token)} BAL`"
+    :summary="`${t('claim')} ${fNum(props.amount, FNumFormats.token)} BAL`"
     :confirmingLabel="$t('claiming')"
   />
 </template>

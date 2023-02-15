@@ -88,7 +88,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
@@ -133,7 +133,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(balanceValue(pool), {
+      fNum(balanceValue(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -148,7 +148,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: t('poolValue'),
     accessor: pool =>
-      fNum2(pool.totalLiquidity || 0, {
+      fNum(pool.totalLiquidity || 0, {
         style: 'currency',
         maximumFractionDigits: 0,
       }),
@@ -340,7 +340,7 @@ function iconAddresses(pool: Pool) {
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
-              fNum2(pool?.volumeSnapshot, {
+              fNum(pool?.volumeSnapshot, {
                 style: 'currency',
                 maximumFractionDigits: 0,
               })
