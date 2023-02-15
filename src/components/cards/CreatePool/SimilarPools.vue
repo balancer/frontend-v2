@@ -6,11 +6,13 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * COMPOSABLES
  */
-const { userNetworkConfig, isWalletReady } = useWeb3();
+const { isWalletReady } = useWeb3();
+const { networkConfig } = useNetwork();
 const {
   similarPools,
   isLoadingSimilarPools,
@@ -54,7 +56,7 @@ function cancel() {
         <span
           v-if="isWalletReady"
           class="text-xs text-gray-600 dark:text-gray-400"
-          >{{ userNetworkConfig?.name }}</span
+          >{{ networkConfig?.name }}</span
         >
         <BalStack align="center" horizontal spacing="xs">
           <button

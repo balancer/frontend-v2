@@ -9,6 +9,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress, shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * PROPS & EMITS
@@ -51,7 +52,8 @@ const { getToken, priceFor, nativeAsset, wrappedNativeAsset, balanceFor } =
   useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
-const { userNetworkConfig, account } = useWeb3();
+const { account } = useWeb3();
+const { networkConfig } = useNetwork();
 
 /**
  * LIFECYCLE
@@ -171,9 +173,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
   <BalStack vertical spacing="xs" class="mb-24">
     <BalCard shadow="xl" noBorder>
       <BalStack vertical spacing="xs">
-        <span class="text-xs text-secondary">{{
-          userNetworkConfig?.name
-        }}</span>
+        <span class="text-xs text-secondary">{{ networkConfig?.name }}</span>
       </BalStack>
       <BalStack vertical>
         <div class="flex items-center mt-2">
