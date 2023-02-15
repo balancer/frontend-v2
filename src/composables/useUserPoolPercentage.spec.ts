@@ -34,19 +34,19 @@ function mountUserPoolPercentage(pool: Pool) {
 }
 
 it('calculates user pool percentage', () => {
-  const pool = aPool({ totalLiquidity: '100', totalShares: '100' });
+  const pool = aPool({ totalShares: '100' });
   const result = mountUserPoolPercentage(pool);
   expect(result.userPoolPercentage.value.toString()).toBe('15');
 });
 
 it('calculates user pool percentage label', () => {
-  const pool = aPool({ totalLiquidity: '8888888', totalShares: '100' });
+  const pool = aPool({ totalShares: '8888888' });
   const result = mountUserPoolPercentage(pool);
   expect(result.userPoolPercentageLabel.value.toString()).toBe('0.0002%');
 });
 
 it('calculates user pool percentage label when user has a very small share', () => {
-  const pool = aPool({ totalLiquidity: '88888888888', totalShares: '100' });
+  const pool = aPool({ totalShares: '88888888888' });
   const result = mountUserPoolPercentage(pool);
   expect(result.userPoolPercentageLabel.value.toString()).toBe('< 0.0001%');
 });
