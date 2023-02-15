@@ -33,7 +33,7 @@ const voteState = useActionState();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * STATE
@@ -143,7 +143,7 @@ function getTransactionSummaryMsg(): string {
     return (
       acc +
       t('veBAL.liquidityMining.popover.voteForGauge', [
-        fNum2(bpsToPct(votes.value[gauge.address]), FNumFormats.percent),
+        fNum(bpsToPct(votes.value[gauge.address]), FNumFormats.percent),
         gauge.pool.symbol,
       ]) +
       (i < gauges.length - 1 ? ', ' : '')

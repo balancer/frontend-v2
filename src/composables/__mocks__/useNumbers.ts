@@ -4,6 +4,6 @@ export default function useNumbers() {
   return {
     toFiat: vi.fn(),
     priceFor: vi.fn(),
-    fNum2: vi.fn(),
+    fNum: vi.fn(),
   };
 }

@@ -11,8 +11,8 @@ describe('useNumbers', () => {
     expect(result).toBeTruthy();
   });
 
-  describe('fNum2', () => {
-    const { fNum2 } = result;
+  describe('fNum', () => {
+    const { fNum } = result;
 
     const testNumbers = [
       {
@@ -149,7 +149,7 @@ describe('useNumbers', () => {
         bpPercent: '0.00%',
       },
       {
-        input: '0',
+        input: '0.0',
         formattedPercentage: '0.00%',
         withoutArgs: '0',
         formattedDollarValue: '$0.00',
@@ -168,7 +168,7 @@ describe('useNumbers', () => {
         bpPercent: '0.00%',
       },
       {
-        input: '0',
+        input: '0.0000',
         formattedPercentage: '0.00%',
         withoutArgs: '0',
         formattedDollarValue: '$0.00',
@@ -457,12 +457,12 @@ describe('useNumbers', () => {
     const badTestNumbers = ['NaN', '-', ''];
 
     it('Should return 0 for an empty string', () => {
-      expect(fNum2('')).toEqual('-');
+      expect(fNum('')).toEqual('-');
     });
 
     it('should return bad inputs as -', () => {
       badTestNumbers.forEach(badTestNumber => {
-        const formattedNumber = fNum2(badTestNumber, {
+        const formattedNumber = fNum(badTestNumber, {
           style: 'decimal',
           maximumFractionDigits: 20,
           useGrouping: false,
@@ -475,7 +475,7 @@ describe('useNumbers', () => {
     it('Should not lose any precision with numbers passed as a string', () => {
       testNumbers.forEach(testNumber => {
         if (Number(testNumber.input) === 0) return; // Ignore 0 numbers as it will always trim their precision.
-        const formattedNumber = fNum2(testNumber.input, {
+        const formattedNumber = fNum(testNumber.input, {
           style: 'decimal',
           maximumFractionDigits: 20,
           useGrouping: false,
@@ -490,7 +490,7 @@ describe('useNumbers', () => {
         if (testNumber.input === '') return; // Ignore empty string as that is converted to 0
         if (Number(testNumber.input) === 0) return; // Ignore 0 numbers as it will always trim their precision.
         const testNumberAsNumber = Number(testNumber.input);
-        const formattedNumber = fNum2(testNumberAsNumber, {
+        const formattedNumber = fNum(testNumberAsNumber, {
           style: 'decimal',
           maximumFractionDigits: 20,
           useGrouping: false,
@@ -502,7 +502,7 @@ describe('useNumbers', () => {
 
     it('Should give the same result without any arguments', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'decimal',
           maximumFractionDigits: 1,
           abbreviate: true,
@@ -516,7 +516,7 @@ describe('useNumbers', () => {
         if (Number(testNumber.input) > 0 && Number(testNumber.input) < 0.01)
           return;
 
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'percent',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
@@ -528,7 +528,7 @@ describe('useNumbers', () => {
 
     it('Should give the same result as a formatted dollar value', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'currency',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
@@ -541,14 +541,14 @@ describe('useNumbers', () => {
 
     it('Should return the same result as usd preset', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, FNumFormats.fiat);
+        const format = fNum(testNumber.input, FNumFormats.fiat);
         expect(format).toEqual(testNumber.usdPreset);
       });
     });
 
     it('Should return the same result as usd forced preset', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'currency',
           dontAdjustLarge: true,
         });
@@ -558,7 +558,7 @@ describe('useNumbers', () => {
 
     it('Should return the same result as usd_m preset', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'currency',
           abbreviate: true,
         });
@@ -571,7 +571,7 @@ describe('useNumbers', () => {
         if (Number(testNumber.input) > 0 && Number(testNumber.input) < 0.01)
           return;
 
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'percent',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
@@ -585,7 +585,7 @@ describe('useNumbers', () => {
         if (Number(testNumber.input) > 0 && Number(testNumber.input) < 0.01)
           return;
 
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'percent',
           maximumFractionDigits: 0,
         });
@@ -595,7 +595,7 @@ describe('useNumbers', () => {
 
     it('Should return the same result as bp percent', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, FNumFormats.bp);
+        const format = fNum(testNumber.input, FNumFormats.bp);
         expect(format).toEqual(testNumber.bpPercent);
       });
     });
@@ -604,7 +604,7 @@ describe('useNumbers', () => {
       testNumbers.forEach(testNumber => {
         if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
 
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'percent',
           maximumFractionDigits: 4,
           dontAdjustLarge: true,
@@ -617,7 +617,7 @@ describe('useNumbers', () => {
       testNumbers.forEach(testNumber => {
         if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
 
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'percent',
           minimumFractionDigits: 1,
           maximumFractionDigits: 1,
@@ -629,14 +629,14 @@ describe('useNumbers', () => {
 
     it('Should return the same result for token', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, FNumFormats.token);
+        const format = fNum(testNumber.input, FNumFormats.token);
         expect(format).toEqual(testNumber.token);
       });
     });
 
     it('Should return the same result for token_fixed', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           minimumFractionDigits: 4,
           maximumFractionDigits: 4,
         });
@@ -646,7 +646,7 @@ describe('useNumbers', () => {
 
     it('Should return the same result for token_lg', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(testNumber.input, {
+        const format = fNum(testNumber.input, {
           style: 'decimal',
           maximumFractionDigits: 0,
         });
@@ -656,7 +656,7 @@ describe('useNumbers', () => {
 
     it('Should return the same result for basis points / 10000 as percent', () => {
       testNumbers.forEach(testNumber => {
-        const format = fNum2(
+        const format = fNum(
           new BigNumber(testNumber.input).div(10000).toString(),
           FNumFormats.percent
         );
@@ -666,7 +666,7 @@ describe('useNumbers', () => {
 
     it('Should not return < 0.0001 if fixedFormat is true', () => {
       const testNumber = '0.00000123';
-      const formattedNumber = fNum2(testNumber, {
+      const formattedNumber = fNum(testNumber, {
         maximumSignificantDigits: 6,
         fixedFormat: true,
       });
@@ -674,7 +674,7 @@ describe('useNumbers', () => {
     });
 
     it('Should return < 0.01% if percent is between 0 and 0.01', () => {
-      const formattedNumber = fNum2('0.00009', FNumFormats.percent);
+      const formattedNumber = fNum('0.00009', FNumFormats.percent);
       expect(formattedNumber).toEqual('< 0.01%');
     });
   });

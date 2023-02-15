@@ -40,7 +40,7 @@ export default function useSwapping(
 ) {
   // COMPOSABLES
   const store = useStore();
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
   const { getToken, tokens } = useTokens();
   const { blockNumber } = useWeb3();
   const { slippage } = useUserSettings();
@@ -83,11 +83,11 @@ export default function useSwapping(
 
     if (tokenInAmount > 0 && tokenOutAmount > 0) {
       return {
-        tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum2(
+        tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum(
           bnum(tokenOutAmount).div(tokenInAmount).toString(),
           FNumFormats.token
         )} ${tokenOut.value?.symbol}`,
-        tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum2(
+        tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum(
           bnum(tokenInAmount).div(tokenOutAmount).toString(),
           FNumFormats.token
         )} ${tokenIn.value?.symbol}`,
