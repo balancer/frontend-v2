@@ -26,7 +26,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
 
 const {
@@ -62,7 +62,7 @@ const optimizeBtnClasses = computed(() => ({
         {{ $t('total') }}
       </div>
       <div class="data-table-number-col">
-        {{ fNum2(fiatTotal, FNumFormats.fiat) }}
+        {{ fNum(fiatTotal, FNumFormats.fiat) }}
         <div v-if="isWalletReady && !hasNoBalances" class="text-sm">
           <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
             {{ $t('maxed') }}
@@ -84,7 +84,7 @@ const optimizeBtnClasses = computed(() => ({
       <div class="data-table-number-col">
         <div class="flex">
           <span v-if="!loadingData">
-            {{ fNum2(priceImpact, FNumFormats.percent) }}
+            {{ fNum(priceImpact, FNumFormats.percent) }}
           </span>
           <BalLoadingBlock v-else class="w-10" />
 
