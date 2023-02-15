@@ -74,6 +74,13 @@ export default function useTokenApprovalActions(
     return getTokenApprovalActions({ spender, amount, stateMap });
   }
 
+  async function fetchTokenApprovalActions(
+    spender: string
+  ): Promise<TransactionActionInfo[]> {
+    const stateMap = await getApprovalStateMapFor(spender);
+    return getTokenApprovalActions({ stateMap });
+  }
+
   function getTokenApprovalActions(
     options: Partial<ApprovalActionOptions> = {}
   ): TransactionActionInfo[] {
@@ -105,5 +112,6 @@ export default function useTokenApprovalActions(
   return {
     tokenApprovalActions,
     getTokenApprovalActionsForSpender,
+    fetchTokenApprovalActions,
   };
 }
