@@ -354,6 +354,42 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0xfd1cf6fd41f229ca86ada0584c63c49c3d66bbc9000200000000000000000438',
     network: Network.MAINNET,
   },
+  {
+    id: '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x9f9d900462492d4c21e9523ca95a7cd86142f298000200000000000000000462',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x1ee442b5326009bb18f2f472d3e0061513d1a0ff000200000000000000000464',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x5f1f4e50ba51d723f12385a8a9606afc3a0555f5000200000000000000000465',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x36be1e97ea98ab43b4debf92742517266f5731a3000200000000000000000466',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
