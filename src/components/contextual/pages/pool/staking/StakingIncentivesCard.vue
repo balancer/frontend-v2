@@ -12,6 +12,7 @@ import { Pool } from '@/services/pool/types';
 import StakePreviewModal from './StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { usePool } from '@/composables/usePool';
 
 type Props = {
   pool: Pool;
@@ -37,7 +38,7 @@ const {
   stakedShares,
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
-
+const { isGreatMigratablePool } = usePool(toRef(props, 'pool'));
 /**
  * COMPUTED
  */
@@ -53,6 +54,14 @@ const fiatValueOfUnstakedShares = computed(() => {
     .div(props.pool.totalShares)
     .times(balanceFor(getAddress(props.pool.address)))
     .toString();
+});
+
+const isStakeDisabled = computed(() => {
+  return (
+    isGreatMigratablePool.value ||
+    fiatValueOfUnstakedShares.value === '0' ||
+    hasNonPrefGaugeBalance.value
+  );
 });
 
 /**
@@ -161,10 +170,7 @@ function handlePreviewClose() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    :disabled="
-                      fiatValueOfUnstakedShares === '0' ||
-                      hasNonPrefGaugeBalance
-                    "
+                    :disabled="isStakeDisabled"
                     @click="showStakePreview"
                   >
                     {{ $t('stake') }}
