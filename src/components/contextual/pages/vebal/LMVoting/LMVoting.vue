@@ -131,11 +131,11 @@ function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
 
 function handleModalClose() {
   activeVotingGauge.value = null;
-  refetchVotingGauges.value();
+  refetchVotingGauges();
 }
 
 function handleVoteSuccess() {
-  refetchVotingGauges.value();
+  refetchVotingGauges();
 }
 </script>
 

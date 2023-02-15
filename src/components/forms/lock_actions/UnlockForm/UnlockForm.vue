@@ -28,13 +28,9 @@ const veBalLockInfoQuery = useVeBalLockInfoQuery();
 /**
  * COMPUTED
  */
-const lockablePoolLoading = computed(
-  () => lockablePoolQuery.isLoading.value || lockablePoolQuery.isIdle.value
-);
+const lockablePoolLoading = computed(() => lockablePoolQuery.isLoading.value);
 
-const veBalQueryLoading = computed(
-  () => veBalLockInfoQuery.isLoading.value || veBalLockInfoQuery.isIdle.value
-);
+const veBalQueryLoading = computed(() => veBalLockInfoQuery.isLoading.value);
 
 const lockablePool = computed<Pool | undefined>(
   () => lockablePoolQuery.data.value

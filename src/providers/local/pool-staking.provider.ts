@@ -140,10 +140,10 @@ const provider = (_poolId?: string) => {
   // Triggers refetch of all queries in this provider.
   async function refetchAllPoolStakingData() {
     return Promise.all([
-      refetchPoolGauges.value(),
-      refetchStakedShares.value(),
-      refetchUserGaugeShares.value(),
-      refetchUserBoosts.value(),
+      refetchPoolGauges(),
+      refetchStakedShares(),
+      refetchUserGaugeShares(),
+      refetchUserBoosts(),
     ]);
   }
 

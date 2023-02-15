@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
-import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { Ref } from 'vue';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -17,6 +16,7 @@ import { getMulticaller } from '@/dependencies/Multicaller';
 type QueryResponse = {
   [poolId: string]: string;
 };
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
  * Fetches staked shares for all user positions using onchain calls.
@@ -26,7 +26,7 @@ type QueryResponse = {
  */
 export default function useStakedSharesQuery(
   userGaugeShares: Ref<GaugeShare[] | undefined>,
-  options: UseQueryOptions<QueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -96,5 +96,9 @@ export default function useStakedSharesQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

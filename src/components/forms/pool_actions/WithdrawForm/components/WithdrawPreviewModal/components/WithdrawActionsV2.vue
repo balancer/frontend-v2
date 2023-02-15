@@ -134,7 +134,7 @@ function redirectToPool() {
  */
 watch(blockNumber, () => {
   if (!isLoadingQuery.value && !txInProgress.value) {
-    queryExitQuery.refetch.value();
+    queryExitQuery.refetch();
   }
 });
 </script>

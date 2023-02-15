@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
@@ -13,10 +12,9 @@ import { isVeBalSupported } from '../useVeBAL';
  * TYPES
  */
 type QueryResponse = VeBalLockInfo;
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
-export default function useVeBalQuery(
-  options: UseQueryOptions<QueryResponse> = {}
-) {
+export default function useVeBalQuery(options: QueryOptions = {}) {
   /**
    * COMPOSABLES
    */
@@ -38,6 +36,6 @@ export default function useVeBalQuery(
   return useQuery<QueryResponse>(
     reactive(['tokens', 'veBAL', { networkId, account }]),
     queryFn,
-    queryOptions
+    queryOptions as QueryOptions
   );
 }
