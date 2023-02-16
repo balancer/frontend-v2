@@ -96,10 +96,7 @@ export const provider = (userStaking: UserStakingResponse) => {
 
   // Trigger refetch of queries for staked and unstaked pools.
   async function refetchAllUserPools() {
-    await Promise.all([
-      refetchUserPoolShares.value(),
-      refetchStakedPools.value(),
-    ]);
+    await Promise.all([refetchUserPoolShares(), refetchStakedPools()]);
   }
 
   // Whenever new pools show up in the user pools array, inject their tokens so

@@ -48,7 +48,7 @@ const optionTokens = ref<Record<string, TokenInfo>>({});
  * COMPOSABLEs
  */
 const { getToken } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -83,7 +83,7 @@ function toggleModal(): void {
       </span>
       <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
         {{
-          fNum2(weight, {
+          fNum(weight, {
             style: 'percent',
             maximumFractionDigits: 0,
           })
@@ -112,7 +112,7 @@ function toggleModal(): void {
           </span>
           <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
             {{
-              fNum2(weight, {
+              fNum(weight, {
                 style: 'percent',
                 maximumFractionDigits: 0,
               })
