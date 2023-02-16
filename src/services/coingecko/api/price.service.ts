@@ -3,7 +3,6 @@ import { groupBy, invert, last } from 'lodash';
 
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { TOKENS } from '@/constants/tokens';
-import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
 import { configService as _configService } from '@/services/config/config.service';
@@ -14,6 +13,7 @@ import {
   getNativeAssetId,
   getPlatformId,
 } from '../coingecko.service';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -217,20 +217,18 @@ export class PriceService {
   /**
    * Map address to mainnet address if app network is a testnet
    */
-  @returnChecksum()
   public addressMapIn(address: string): string {
     const addressMap = TOKENS?.PriceChainMap;
     if (!addressMap) return address;
-    return addressMap[address.toLowerCase()] || address;
+    return getAddress(addressMap[address.toLowerCase()] || address);
   }
 
   /**
    * Map mainnet address back to testnet address
    */
-  @returnChecksum()
   public addressMapOut(address: string): string {
     const addressMap = TOKENS?.PriceChainMap;
     if (!addressMap) return address;
-    return invert(addressMap)[address.toLowerCase()] || address;
+    return getAddress(invert(addressMap)[address.toLowerCase()] || address);
   }
 }

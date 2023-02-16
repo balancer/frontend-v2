@@ -1,9 +1,12 @@
 import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
 import useTokenPricesQuery from './useTokenPricesQuery';
+
+initDependenciesWithDefaultMocks();
 
 test('Returns token prices from balancer SDK', async () => {
   const tokenAddresses = ref([

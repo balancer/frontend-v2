@@ -1,15 +1,17 @@
-import { computed } from 'vue';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
+import { useTokens } from '@/providers/tokens.provider';
+import { useUserData } from '@/providers/user-data.provider';
 import usePoolQuery from './queries/usePoolQuery';
 import { isL2 } from './useNetwork';
-import { useTokens } from '@/providers/tokens.provider';
-import useVeBal from './useVeBAL';
-import { useUserData } from '@/providers/user-data.provider';
 import { fiatValueOf } from './usePool';
+import useVeBal from './useVeBAL';
 
-export function useLock() {
+interface Options {
+  enabled?: boolean;
+}
+export function useLock({ enabled = true }: Options = {}) {
   /**
    * COMPOSABLES
    */
@@ -19,7 +21,7 @@ export function useLock() {
   /**
    * QUERIES
    */
-  const shouldFetchLockPool = computed((): boolean => !isL2.value);
+  const shouldFetchLockPool = computed((): boolean => !isL2.value && enabled);
   const lockPoolQuery = usePoolQuery(
     lockablePoolId.value as string,
     shouldFetchLockPool
@@ -56,6 +58,12 @@ export function useLock() {
       : '0'
   );
 
+  const totalLockedShares = computed((): string =>
+    lockPool.value && lock.value?.hasExistingLock
+      ? lock.value.lockedAmount
+      : '0'
+  );
+
   return {
     isLoadingLockPool,
     isLoadingLockInfo,
@@ -64,5 +72,6 @@ export function useLock() {
     lockPool,
     lock,
     totalLockedValue,
+    totalLockedShares,
   };
 }

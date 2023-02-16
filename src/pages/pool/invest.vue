@@ -8,6 +8,7 @@ import { useIntervalFn } from '@vueuse/core';
 import { oneMinInMs } from '@/composables/useTime';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useRoute } from 'vue-router';
+import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 
 /**
  * STATE
@@ -19,6 +20,7 @@ const poolId = (route.params.id as string).toLowerCase();
  * PROVIDERS
  */
 providePoolStaking(poolId);
+usePoolTransfersGuard();
 
 /**
  * COMPOSABLES

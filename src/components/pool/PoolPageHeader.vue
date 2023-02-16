@@ -46,7 +46,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  */
 const { isAffected, warnings } = usePoolWarning(poolId);
 const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { balancerTokenListTokens, getToken } = useTokens();
@@ -85,7 +85,7 @@ const swapFeeToolTip = computed(() => {
 const poolFeeLabel = computed(() => {
   if (!props.pool || !props.pool?.swapFee) return '';
 
-  const feeLabel = `${fNum2(props.pool.swapFee, {
+  const feeLabel = `${fNum(props.pool.swapFee, {
     style: 'percent',
     maximumFractionDigits: 4,
   })}`;
@@ -162,7 +162,7 @@ function symbolFor(titleTokenIndex: number): string {
           class="mt-px ml-1 text-xs font-medium text-gray-400"
         >
           {{
-            fNum2(weight || '0', {
+            fNum(weight || '0', {
               style: 'percent',
               maximumFractionDigits: 0,
             })

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ComponentPublicInstance } from 'vue';
-
 type Section = {
   title: string;
   id: string;

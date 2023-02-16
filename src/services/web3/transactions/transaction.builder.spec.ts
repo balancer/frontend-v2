@@ -1,3 +1,5 @@
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Contract } from 'ethers';
@@ -41,6 +43,9 @@ vi.mock('ethers', () => {
     }),
   };
 });
+
+initOldMulticallerWithDefaultMocks();
+initEthersContractWithDefaultMocks();
 
 const SignerMock = JsonRpcSigner;
 

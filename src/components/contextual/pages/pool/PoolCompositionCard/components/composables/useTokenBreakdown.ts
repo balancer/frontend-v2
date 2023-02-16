@@ -18,7 +18,7 @@ export interface TokenData {
 export type TokensData = Record<string, TokenData>;
 
 export function useTokenBreakdown(rootPool: Ref<Pool>) {
-  const { fNum2, toFiat } = useNumbers();
+  const { fNum, toFiat } = useNumbers();
 
   const { userPoolPercentage } = useUserPoolPercentage(rootPool);
   const isDeepPool = computed(() => isDeep(rootPool.value));
@@ -65,13 +65,14 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
 
     const tokenWeightLabel = !token?.weight
       ? ''
-      : fNum2(token.weight, FNumFormats.percent);
+      : fNum(token.weight, FNumFormats.percent);
 
     function getTokenPercentageLabel() {
+      if (totalFiat === 0) return '0%';
       const tokenPercentage = Number(fiatValue) / Number(totalFiat);
       return tokenPercentage === 0
         ? ''
-        : fNum2(tokenPercentage, FNumFormats.percent);
+        : fNum(tokenPercentage, FNumFormats.percent);
     }
 
     tokensData[token.address] = {
@@ -110,7 +111,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
 
     function formatBalanceValue(value: string | number) {
       if (!isNumber(value)) return value;
-      return fNum2(value, FNumFormats.token);
+      return fNum(value, FNumFormats.token);
     }
 
     function calculateFiatValue() {
@@ -128,7 +129,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
     function formatFiatValue(value: string | number): string {
       value = value.toString();
       if (!isNumber(value)) return value;
-      return fNum2(value, FNumFormats.fiat);
+      return fNum(value, FNumFormats.fiat);
     }
 
     function applyUserPoolPercentageTo(value: string): number {
