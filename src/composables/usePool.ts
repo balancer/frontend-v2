@@ -268,7 +268,7 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (aprs.min > APR_THRESHOLD || aprs.max > APR_THRESHOLD) {
-    return numF(0, FNumFormats.bp);
+    return '-';
   }
   if (boost) {
     numF(absMaxApr(aprs, boost), FNumFormats.bp);
