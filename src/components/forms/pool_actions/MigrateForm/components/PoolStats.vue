@@ -20,7 +20,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -46,7 +46,7 @@ const aprLabel = computed((): string => {
           {{ $t('poolValue') }}
         </div>
         <div class="font-semibold">
-          {{ fNum2(pool.totalLiquidity, FNumFormats.fiat) }}
+          {{ fNum(pool.totalLiquidity, FNumFormats.fiat) }}
         </div>
       </div>
       <div class="mb-3">
@@ -54,7 +54,7 @@ const aprLabel = computed((): string => {
           {{ $t('volumeTime', ['24h']) }}
         </div>
         <div class="font-semibold">
-          {{ fNum2(pool.volumeSnapshot || '0', FNumFormats.fiat) }}
+          {{ fNum(pool.volumeSnapshot || '0', FNumFormats.fiat) }}
         </div>
       </div>
       <div>

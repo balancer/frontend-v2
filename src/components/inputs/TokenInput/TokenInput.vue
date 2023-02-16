@@ -104,7 +104,7 @@ const _address = ref<string>('');
  * COMPOSABLES
  */
 const { getToken, balanceFor, nativeAsset, getMaxBalanceFor } = useTokens();
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
 
@@ -290,7 +290,7 @@ watch(_address, async (newAddress, oldAddress) => {
 
             <BalLoadingBlock v-if="balanceLoading" class="mx-2 w-12 h-4" />
             <span v-else class="mx-1">
-              {{ fNum2(tokenBalance, FNumFormats.token) }}
+              {{ fNum(tokenBalance, FNumFormats.token) }}
             </span>
 
             <template v-if="hasBalance && !noMax && !disableMax">
@@ -311,12 +311,10 @@ watch(_address, async (newAddress, oldAddress) => {
           <div class="pl-2 truncate">
             <template v-if="hasAmount && hasToken">
               <span v-if="!hideFiatValue">
-                {{ fNum2(tokenValue, FNumFormats.fiat) }}
+                {{ fNum(tokenValue, FNumFormats.fiat) }}
               </span>
               <span v-if="priceImpact" :class="priceImpactClass">
-                ({{
-                  priceImpactSign + fNum2(priceImpact, FNumFormats.percent)
-                }})
+                ({{ priceImpactSign + fNum(priceImpact, FNumFormats.percent) }})
               </span>
             </template>
             <template v-else-if="hint">

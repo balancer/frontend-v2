@@ -9,7 +9,7 @@ import {
 
 initDependenciesWithDefaultMocks();
 
-test('Returns token prices from balancer SDK', async () => {
+test('Returns gauge shares for the current user', async () => {
   const { result } = mountComposable(() => useUserGaugeSharesQuery());
 
   const data = await waitForQueryData(result);
