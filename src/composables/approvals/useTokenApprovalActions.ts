@@ -38,13 +38,8 @@ export default function useTokenApprovalActions(
    * STATE
    */
   // Approval actions based on Vault approvals for tokenAddresses
-  const tokenApprovalActions = computed((): TransactionActionInfo[] =>
-    getTokenApprovalActions({
-      spender: vaultAddress,
-      amount: MaxUint256.toString(),
-      stateMap: vaultApprovalStateMap.value,
-    })
-  );
+  const tokenApprovalActions: TransactionActionInfo[] =
+    getTokenApprovalActions();
 
   /**
    * METHODS
@@ -86,6 +81,7 @@ export default function useTokenApprovalActions(
     return getTokenApprovalActions({ stateMap });
   }
 
+  // Approval actions based on Vault approvals for tokenAddresses
   function getTokenApprovalActions(
     options: Partial<ApprovalActionOptions> = {}
   ): TransactionActionInfo[] {
@@ -116,6 +112,7 @@ export default function useTokenApprovalActions(
 
   return {
     tokenApprovalActions,
+    getTokenApprovalActions,
     getTokenApprovalActionsForSpender,
     fetchTokenApprovalActions,
   };

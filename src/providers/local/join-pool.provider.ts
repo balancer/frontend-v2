@@ -74,6 +74,7 @@ const provider = (props: Props) => {
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
   const showPreview = ref<boolean>(false);
+  const approvalActions = ref<TransactionActionInfo[]>([]);
 
   const debounceQueryJoin = debounce(queryJoin, 1000);
 
@@ -204,17 +205,10 @@ const provider = (props: Props) => {
   const amountsToApprove = computed(() => {
     return amountsIn.value.map(amountIn => amountIn.value);
   });
-  const { tokenApprovalActions } = useTokenApprovalActions(
+  const { getTokenApprovalActions } = useTokenApprovalActions(
     tokensToApprove,
     amountsToApprove
   );
-
-  // Approval actions like relayer approval and token approvals.
-  const approvalActions = computed((): TransactionActionInfo[] => {
-    return shouldSignRelayer.value
-      ? [relayerApprovalAction.value, ...tokenApprovalActions.value]
-      : tokenApprovalActions.value;
-  });
 
   const isLoadingQuery = computed(
     (): boolean => queryJoinQuery.isFetching.value
@@ -275,6 +269,14 @@ const provider = (props: Props) => {
       : SimulationType.VaultModel;
   }
 
+  // Updates the approval actions like relayer approval and token approvals.
+  function setApprovalActions() {
+    const tokenApprovalActions = getTokenApprovalActions();
+    approvalActions.value = shouldSignRelayer.value
+      ? [relayerApprovalAction.value, ...tokenApprovalActions]
+      : tokenApprovalActions;
+  }
+
   /**
    * Simulate join transaction to get expected output and calculate price impact.
    */
@@ -288,6 +290,7 @@ const provider = (props: Props) => {
 
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      setApprovalActions();
       const simulationType = getSimulationType();
 
       const output = await joinPoolService.queryJoin({
@@ -297,7 +300,7 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
-        simulationType: simulationType,
+        simulationType,
       });
 
       bptOut.value = output.bptOut;
@@ -317,6 +320,7 @@ const provider = (props: Props) => {
     try {
       txError.value = '';
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      setApprovalActions();
 
       return joinPoolService.join({
         amountsIn: amountsInWithValue.value,
