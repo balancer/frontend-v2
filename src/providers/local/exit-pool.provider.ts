@@ -379,7 +379,7 @@ const provider = (props: Props) => {
     if (!isSingleAssetExit.value) return null;
 
     // If the user has not BPT, there is no maximum amount out.
-    if (!hasBpt.value) return;
+    if (!hasBpt.value) return null;
 
     const singleAssetMaxedExitHandler = shouldUseSwapExit.value
       ? ExitHandler.Swap
@@ -399,9 +399,11 @@ const provider = (props: Props) => {
         prices: prices.value,
         relayerSignature: '',
       });
-
-      singleAmountOut.max =
+      const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
+      singleAmountOut.max = newMax;
+
+      return newMax;
     } catch (error) {
       captureException(error);
       throw new Error('Failed to calculate max.', { cause: error });
