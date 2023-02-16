@@ -100,6 +100,7 @@ export function isDeep(pool: Pool): boolean {
     '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
     '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
+    '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
   ];
 
   return treatAsDeep.includes(pool.id);
