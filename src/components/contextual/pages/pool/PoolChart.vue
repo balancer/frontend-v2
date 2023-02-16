@@ -427,7 +427,7 @@ function addLaggingTimestamps() {
 <template>
   <BalLoadingBlock v-if="loading" class="chart-loading-block" />
 
-  <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
+  <div v-else-if="false" class="chart">
     <div
       class="flex flex-col xs:flex-row xs:flex-wrap justify-between mb-6 dark:border-gray-900"
     >
