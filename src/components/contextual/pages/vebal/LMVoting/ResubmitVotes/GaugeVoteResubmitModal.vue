@@ -33,7 +33,7 @@ const voteState = useActionState();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * STATE
@@ -143,7 +143,7 @@ function getTransactionSummaryMsg(): string {
     return (
       acc +
       t('veBAL.liquidityMining.popover.voteForGauge', [
-        fNum2(bpsToPct(votes.value[gauge.address]), FNumFormats.percent),
+        fNum(bpsToPct(votes.value[gauge.address]), FNumFormats.percent),
         gauge.pool.symbol,
       ]) +
       (i < gauges.length - 1 ? ', ' : '')
@@ -165,7 +165,7 @@ async function handleTransaction(tx) {
       const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
 
       voteState.setSuccess({ receipt, confirmedAt });
-      refetchVotingGauges.value();
+      refetchVotingGauges();
     },
     onTxFailed: () => {
       console.error('Vote failed');
@@ -267,8 +267,8 @@ watchEffect(() => {
     </div>
   </BalModal>
 </template>
-  
-  <style lang="css" scoped>
+
+<style lang="css" scoped>
 .total-allocation {
   @apply bg-gray-50 dark:bg-gray-800  border border-gray-200 dark:border-0 rounded-lg;
 }
@@ -277,4 +277,3 @@ watchEffect(() => {
   @apply bg-red-600 dark:bg-red-600 text-white;
 }
 </style>
-  

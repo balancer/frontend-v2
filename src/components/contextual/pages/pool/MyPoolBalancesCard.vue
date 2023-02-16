@@ -32,7 +32,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { balanceFor } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { isMigratablePool } = usePool(toRef(props, 'pool'));
 const { stakedShares } = usePoolStaking();
@@ -85,7 +85,7 @@ function navigateToPoolMigration(pool: Pool) {
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h5>
         <h5 class="text-2xl">
-          {{ isWalletReady ? fNum2(fiatValue, FNumFormats.fiat) : '-' }}
+          {{ isWalletReady ? fNum(fiatValue, FNumFormats.fiat) : '-' }}
         </h5>
       </div>
     </template>

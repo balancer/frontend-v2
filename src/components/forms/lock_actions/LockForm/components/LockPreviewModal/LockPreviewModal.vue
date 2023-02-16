@@ -84,7 +84,7 @@ function handleClose() {
 
 function handleSuccess() {
   lockConfirmed.value = true;
-  refetchLockInfo.value();
+  refetchLockInfo();
   resetState();
 }
 </script>
