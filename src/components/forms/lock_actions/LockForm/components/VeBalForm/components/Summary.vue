@@ -17,7 +17,7 @@ defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { veBalTokenInfo } = useVeBal();
 </script>
 
@@ -28,7 +28,7 @@ const { veBalTokenInfo } = useVeBal();
       <div>
         {{
           expectedVeBalAmount != null
-            ? fNum2(expectedVeBalAmount, FNumFormats.token)
+            ? fNum(expectedVeBalAmount, FNumFormats.token)
             : '-'
         }}
         {{ veBalTokenInfo.symbol }}
