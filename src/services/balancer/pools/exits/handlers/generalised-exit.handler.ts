@@ -61,15 +61,21 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
     console.log({ simulationType });
-    this.lastExitRes = await balancer.pools.generalisedExit(
-      this.pool.value.id,
-      evmAmountIn.toString(),
-      signerAddress,
-      slippage,
-      signer,
-      simulationType,
-      relayerSignature
-    );
+    this.lastExitRes = await balancer.pools
+      .generalisedExit(
+        this.pool.value.id,
+        evmAmountIn.toString(),
+        signerAddress,
+        slippage,
+        signer,
+        simulationType,
+        relayerSignature
+      )
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+    console.log({ lastExitRes: this.lastExitRes });
     if (!this.lastExitRes) throw new Error('Failed to query exit.');
 
     const priceImpact: number = bnum(
