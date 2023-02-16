@@ -14,7 +14,7 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
     const bptBalance = bnum(balanceFor(pool.value.address)).plus(
       stakedShares.value
     );
-    return bptBalance.div(bnum(pool.value.totalLiquidity)).multipliedBy(100);
+    return bptBalance.div(bnum(pool.value.totalShares)).multipliedBy(100);
   });
 
   const userPoolPercentageLabel = computed(

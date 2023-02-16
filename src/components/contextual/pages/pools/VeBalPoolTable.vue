@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import { useLock } from '@/composables/useLock';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { Pool, PoolWithShares } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * PROPS
