@@ -3,21 +3,21 @@ import {
   mockedTokenPrice,
 } from '@/dependencies/balancer-sdk.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { mockedOnchainTokenName } from '@/dependencies/Multicaller.mocks';
+import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
+import { mockedOnchainTokenName } from '@/dependencies/OldMulticaller.mocks';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { configService } from '@/services/config/config.service';
 import { mountComposable } from '@tests/mount-helpers';
-import { noop } from 'lodash';
 import waitForExpect from 'wait-for-expect';
 import { tokensProvider } from './tokens.provider';
 
-vi.spyOn(console, 'log').mockImplementation(noop);
-
-vi.mock('@ethersproject/address', () => ({
-  getAddress: address => address,
-  isAddress: () => true,
-}));
+const originalConsoleLog = console.log;
+vi.spyOn(console, 'log').mockImplementation((message, optionalParams) => {
+  // Silence Fetching logs
+  if (message.startsWith('Fetching')) return;
+  originalConsoleLog(message, optionalParams);
+});
 
 initDependenciesWithDefaultMocks();
 
@@ -73,7 +73,8 @@ test('injects veBAL onchain data', async () => {
 test('injects new tokens', async () => {
   const { injectTokens, injectedTokens } = await mountTokenProvider();
 
-  await injectTokens(['new token address']);
+  const newTokenAddress = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce';
+  await injectTokens([newTokenAddress]);
 
   expect(injectedTokens.value).toMatchInlineSnapshot(`
     {
@@ -85,8 +86,8 @@ test('injects new tokens', async () => {
         "name": "mocked onchain token name",
         "symbol": "mocked onchain token symbol",
       },
-      "new token address": {
-        "address": "new token address",
+      "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE": {
+        "address": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
         "chainId": 5,
         "decimals": 18,
         "logoURI": "",
@@ -98,6 +99,7 @@ test('injects new tokens', async () => {
 });
 
 test('generates balancerFor', async () => {
+  initMulticallerWithDefaultMocks();
   const { balanceFor, priceFor } = await mountTokenProvider();
 
   expect(balanceFor(veBAL)).toEqual('0.000000000000000025');

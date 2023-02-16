@@ -16,7 +16,7 @@ import { useTokens } from '@/providers/tokens.provider';
  */
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { defaultTokenList } = useTokenLists();
 const { priceFor, balanceFor } = useTokens();
 
@@ -55,14 +55,14 @@ const columns = ref<ColumnDefinition<any>[]>([
     id: 'Balance',
     align: 'right',
     width: 150,
-    accessor: ({ balance }) => `${fNum2(balance, FNumFormats.token)}`,
+    accessor: ({ balance }) => `${fNum(balance, FNumFormats.token)}`,
   },
   {
     name: t('value'),
     id: 'value',
     align: 'right',
     width: 150,
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
+    accessor: ({ value }) => fNum(value, FNumFormats.fiat),
   },
   {
     name: 'Drip',

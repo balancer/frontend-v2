@@ -47,7 +47,7 @@ const props = defineProps<Props>();
  */
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const router = useRouter();
 const { networkSlug } = useNetwork();
 
@@ -76,7 +76,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalAmountCell',
-    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`,
+    accessor: ({ amount }) => `${fNum(amount, FNumFormats.token)} BAL`,
   },
   {
     name: t('value'),
@@ -84,7 +84,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
+    accessor: ({ value }) => fNum(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -169,12 +169,12 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
       </template>
       <template #totalAmountCell>
         <div class="flex justify-end">
-          {{ fNum2(totalClaimAmount, FNumFormats.token) }} BAL
+          {{ fNum(totalClaimAmount, FNumFormats.token) }} BAL
         </div>
       </template>
       <template #totalValueCell>
         <div class="flex justify-end">
-          {{ fNum2(totalClaimValue, FNumFormats.fiat) }}
+          {{ fNum(totalClaimValue, FNumFormats.fiat) }}
         </div>
       </template>
       <template #claimTotalCell>

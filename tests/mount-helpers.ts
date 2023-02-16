@@ -15,15 +15,15 @@ import { registerTestPlugins } from './registerTestPlugins';
 
 export const defaultStakedShares = '5';
 
-function provideFakePoolStaking() {
+export function provideFakePoolStaking(stackedShares = defaultStakedShares) {
   provide(PoolStakingProviderSymbol, {
-    stakedShares: computed(() => defaultStakedShares),
+    stakedShares: computed(() => stackedShares),
   } as PoolStakingProviderResponse);
 }
 
 export function mountComposable<R>(
   callback: () => R,
-  extraProviders?: () => void
+  options?: { extraProvidersCb?: () => void }
 ): MountResult<R> {
   return mount<R>(callback, {
     provider: () => {
@@ -31,25 +31,29 @@ export function mountComposable<R>(
       provideTokenLists();
       provide('store', {});
       provideFakePoolStaking();
-      extraProviders?.();
+      options?.extraProvidersCb?.();
     },
     configApp: app => registerTestPlugins(app),
   });
 }
 
 export function mountComposableWithDefaultTokensProvider<R>(
-  callback: () => R
+  callback: () => R,
+  options?: { extraProvidersCb?: () => void }
 ): MountResult<R> {
-  return mountComposable<R>(callback, () => {
-    const userSettings = provideUserSettings();
-    const tokenLists = provideTokenLists();
-    provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+  return mountComposable<R>(callback, {
+    extraProvidersCb: () => {
+      const userSettings = provideUserSettings();
+      const tokenLists = provideTokenLists();
+      provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+      options?.extraProvidersCb?.();
+    },
   });
 }
 
-export async function waitForQueryData(result: {
+export async function waitForQueryData<T>(result: {
   isLoading: Ref<boolean>;
-  data: Ref<any>;
+  data: Ref<T>;
 }) {
   expect(result.isLoading.value).toBeTrue();
   await waitForExpect(() => {

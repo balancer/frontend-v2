@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import anime, { AnimeParams } from 'animejs';
-import { PropType } from 'vue';
 export default defineComponent({
   props: {
     initial: {

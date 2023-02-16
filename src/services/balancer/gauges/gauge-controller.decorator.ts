@@ -9,9 +9,11 @@ import {
 } from '@/composables/useTime';
 import { VotingGauge } from '@/constants/voting-gauges';
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
+// eslint-disable-next-line no-restricted-imports
+import { Multicaller } from '@/lib/utils/balancer/contract';
 
 const FIRST_WEEK_TIMESTAMP = 1648684800;
 
@@ -183,7 +185,8 @@ export class GaugeControllerDecorator {
     }
   }
 
-  private resetMulticaller(): Multicaller {
+  private resetMulticaller() {
+    const Multicaller = getOldMulticaller();
     return new Multicaller(this.network.toString(), this.provider, this.abi);
   }
 }

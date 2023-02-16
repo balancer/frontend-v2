@@ -54,7 +54,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
@@ -223,7 +223,7 @@ const hasEnoughVotes = computed((): boolean => {
 });
 
 const unallocatedVotesFormatted = computed((): string =>
-  fNum2(
+  fNum(
     scale(bnum(props.unallocatedVoteWeight), -4).toString(),
     FNumFormats.percent
   )
@@ -244,14 +244,14 @@ const remainingVotes = computed(() => {
       ? 'veBAL.liquidityMining.popover.remainingVotesEditing'
       : 'veBAL.liquidityMining.popover.remainingVotes';
   }
-  const remainingVotesFormatted = fNum2(
+  const remainingVotesFormatted = fNum(
     scale(
       bnum(props.unallocatedVoteWeight).plus(bnum(currentWeight.value)),
       -4
     ).toString(),
     FNumFormats.percent
   );
-  const currentVotesFormatted = fNum2(
+  const currentVotesFormatted = fNum(
     scale(bnum(currentWeight.value), -4).toString(),
     FNumFormats.percent
   );
@@ -302,7 +302,7 @@ async function handleTransaction(tx) {
     type: 'tx',
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
-      fNum2(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
+      fNum(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
       props.gauge.pool.symbol,
     ]),
     details: {

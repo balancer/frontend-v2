@@ -3,7 +3,9 @@ import { fireEvent, screen, within } from '@testing-library/vue';
 import { renderComponent } from '@tests/renderComponent';
 import PoolCompositionCard from './PoolCompositionCard.vue';
 
+//TODO: Find clearer and safer way to inject this providers
 vi.mock('@/providers/tokens.provider');
+vi.mock('@/composables/useUserPoolPercentage');
 
 function renderCard() {
   renderComponent(PoolCompositionCard, {
@@ -26,14 +28,16 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, should render 
     const aUSDTContainer = within(aUSDT.parentElement as HTMLElement);
 
     //USER COMPOSITION TAB
-    await aUSDTContainer.findByText('167,824');
-    await aUSDTContainer.findByText('$335,648');
+    await aUSDTContainer.findByText('249.2435');
+    await aUSDTContainer.findByText('$498.49');
+    await aUSDTContainer.findByText('28.45%');
 
     //TOTAL COMPOSITION TAB
     await goToTotalCompositionTab();
 
     await aUSDTContainer.findByText('16,616');
     await aUSDTContainer.findByText('$33,232');
+    await aUSDTContainer.findByText('28.45%');
   });
 
   it('for a non wrapped token (DAI)', async () => {
@@ -43,12 +47,14 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, should render 
     const aUSDTContainer = within(dai[1].parentElement as HTMLElement);
 
     //USER COMPOSITION TAB
-    await aUSDTContainer.findByText('243,454');
-    await aUSDTContainer.findByText('$486,908');
+    await aUSDTContainer.findByText('361.5652');
+    await aUSDTContainer.findByText('$723.13');
+    await aUSDTContainer.findByText('41.26%');
 
     //TOTAL COMPOSITION TAB
     await goToTotalCompositionTab();
     await aUSDTContainer.findByText('24,104');
     await aUSDTContainer.findByText('$48,209');
+    await aUSDTContainer.findByText('41.26%');
   });
 });

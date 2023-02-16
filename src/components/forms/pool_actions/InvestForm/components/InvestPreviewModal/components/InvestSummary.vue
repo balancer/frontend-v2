@@ -27,7 +27,7 @@ withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { currency } = useUserSettings();
 </script>
 
@@ -35,7 +35,7 @@ const { currency } = useUserSettings();
   <BalDataList :title="$t('summary')">
     <BalDataListRow :label="$t('investment.preview.summary.total')">
       <template #value>
-        {{ fNum2(fiatTotal, FNumFormats.fiat) }}
+        {{ fNum(fiatTotal, FNumFormats.fiat) }}
         <BalTooltip
           :text="$t('tooltips.addLiquidity.total', [currency.toUpperCase()])"
           iconSize="sm"
@@ -53,7 +53,7 @@ const { currency } = useUserSettings();
       <template #value>
         <BalLoadingBlock v-if="isLoadingPriceImpact" class="w-10 h-6" />
         <template v-else>
-          {{ fNum2(priceImpact, FNumFormats.percent) }}
+          {{ fNum(priceImpact, FNumFormats.percent) }}
           <BalTooltip
             :text="$t('tooltips.addLiquidity.priceImpact')"
             iconSize="sm"

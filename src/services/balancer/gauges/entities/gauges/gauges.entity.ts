@@ -9,7 +9,8 @@ export class GaugesEntity {
   ) {}
 
   public async get(args = {}, attrs = {}): Promise<SubgraphGauge[]> {
-    const query = this.query(args, attrs);
+    const queryName = 'Gauges';
+    const query = this.query(args, attrs, queryName);
     const data = await this.service.client.get(query);
     return data.liquidityGauges;
   }

@@ -1,6 +1,6 @@
 import { PoolMock } from './weighted-pool';
 import { BoostedPoolMock } from './boosted-pool';
-import { Pool, PoolType } from '@/services/pool/types';
+import { Pool, PoolToken, PoolType } from '@/services/pool/types';
 
 export const EmptyPoolMock: Pool = {
   protocolSwapFeeCache: '',
@@ -29,3 +29,9 @@ export const EmptyPoolMock: Pool = {
 };
 
 export { PoolMock, BoostedPoolMock };
+
+export function anEmptyPool(tokens: PoolToken[]) {
+  const pool = EmptyPoolMock;
+  pool.tokens = tokens;
+  return EmptyPoolMock;
+}
