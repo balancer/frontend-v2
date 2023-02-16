@@ -554,7 +554,7 @@ export function fiatValueOf(pool: Pool, shares: string): string {
  * @returns {boolean} True if included in list.
  */
 export function isJoinsDisabled(id: string): boolean {
-  return POOLS.DisabledJoins.includes(id);
+  return POOLS.DisabledJoins.includes(id.toLowerCase());
 }
 
 /**
