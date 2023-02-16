@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { reactive, Ref, ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -12,6 +11,7 @@ import { getBalancer } from '@/dependencies/balancer-sdk';
  * TYPES
  */
 type QueryResponse = TokenPrices;
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
  * Fetches token prices for all provided addresses.
@@ -20,7 +20,7 @@ export default function useTokenPricesQuery(
   addresses: Ref<string[]> = ref([]),
   pricesToInject: Ref<TokenPrices> = ref({}),
   enabled: Ref<boolean> = ref(false),
-  options: UseQueryOptions<QueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   const { networkId } = useNetwork();
   const queryKey = reactive(
@@ -61,5 +61,9 @@ export default function useTokenPricesQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }
