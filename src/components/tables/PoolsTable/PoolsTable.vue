@@ -29,7 +29,7 @@ import {
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { POOLS } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -170,7 +170,8 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     Cell: 'volumeCell',
     sortKey: pool => {
       const volume = Number(pool?.volumeSnapshot);
-      if (volume === Infinity || isNaN(volume)) return 0;
+      if (volume === Infinity || isNaN(volume) || volume > VOLUME_THRESHOLD)
+        return 0;
       return volume;
     },
     width: 175,
@@ -189,7 +190,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
-      return isFinite(apr) ? apr : 0;
+      return isFinite(apr) && apr < APR_THRESHOLD ? apr : 0;
     },
     width: 220,
   },
@@ -340,10 +341,15 @@ function iconAddresses(pool: Pool) {
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
-              fNum(pool?.volumeSnapshot, {
-                style: 'currency',
-                maximumFractionDigits: 0,
-              })
+              fNum(
+                pool?.volumeSnapshot < VOLUME_THRESHOLD
+                  ? pool?.volumeSnapshot
+                  : 0,
+                {
+                  style: 'currency',
+                  maximumFractionDigits: 0,
+                }
+              )
             }}
           </span>
         </div>
