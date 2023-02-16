@@ -344,7 +344,7 @@ function iconAddresses(pool: Pool) {
               fNum(
                 pool?.volumeSnapshot < VOLUME_THRESHOLD
                   ? pool?.volumeSnapshot
-                  : 0,
+                  : '-',
                 {
                   style: 'currency',
                   maximumFractionDigits: 0,
