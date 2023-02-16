@@ -347,7 +347,7 @@ onBeforeMount(async () => {
           <BalLink
             v-if="isWalletReady"
             tag="router-link"
-            to="/claim/legacy"
+            to="/ethereum/claim/legacy"
             class="flex items-center"
             >{{ $t('legacyClaims') }}
             <BalIcon name="arrow-right" size="sm" class="mx-1"
