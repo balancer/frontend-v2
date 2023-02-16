@@ -1,4 +1,4 @@
-import { Address, BalancerSDK, SimulationType } from '@balancer-labs/sdk';
+import { Address, BalancerSDK } from '@balancer-labs/sdk';
 import { AmountOut } from '@/providers/local/exit-pool.provider';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
@@ -7,6 +7,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { TransactionActionInfo } from '@/types/transactions';
 
 export type AmountsOut = Record<Address, string>;
 
@@ -24,7 +25,8 @@ export type ExitParams = {
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
-  simulationType: SimulationType;
+  bptInValid: boolean;
+  approvalActions: TransactionActionInfo[];
 };
 
 export type QueryOutput = {

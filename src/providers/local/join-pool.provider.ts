@@ -39,7 +39,6 @@ import { useQuery } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
-import { SimulationType } from '@balancer-labs/sdk';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 
 /**
@@ -261,14 +260,6 @@ const provider = (props: Props) => {
     queryJoinQuery.remove();
   }
 
-  // Static call simulation is more accurate than VaultModel, but requires Vault approval for tokens
-  // and relayer approval.
-  function getSimulationType(): SimulationType {
-    return showPreview.value && !approvalActions.value.length
-      ? SimulationType.Static
-      : SimulationType.VaultModel;
-  }
-
   // Updates the approval actions like relayer approval and token approvals.
   function setApprovalActions() {
     const tokenApprovalActions = getTokenApprovalActions();
@@ -291,7 +282,6 @@ const provider = (props: Props) => {
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
       setApprovalActions();
-      const simulationType = getSimulationType();
 
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
@@ -300,7 +290,7 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
-        simulationType,
+        approvalActions: approvalActions.value,
       });
 
       bptOut.value = output.bptOut;
@@ -329,9 +319,7 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
-        // Always query the join before sending the transaction with the most accurate data
-        // from the Static simulation (affects only generalised joins)
-        simulationType: SimulationType.Static,
+        approvalActions: approvalActions.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;

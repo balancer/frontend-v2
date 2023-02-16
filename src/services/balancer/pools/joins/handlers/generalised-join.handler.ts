@@ -1,6 +1,6 @@
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
@@ -43,7 +43,7 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     signer,
     slippageBsp,
     relayerSignature,
-    simulationType,
+    approvalActions,
   }: JoinParams): Promise<QueryOutput> {
     const evmAmountsIn: string[] = amountsIn.map(({ address, value }) => {
       const token = selectByAddress(tokensIn, address);
@@ -59,8 +59,15 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const wrapLeafTokens = false;
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
+    const hasInvalidAmounts = amountsIn.some(item => !item.valid);
 
-    console.log({ simulationType });
+    // Static call simulation is more accurate than VaultModel, but requires relayer approval.
+    const simulationType: SimulationType =
+      !hasInvalidAmounts && !approvalActions.length
+        ? SimulationType.Static
+        : SimulationType.VaultModel;
+
+    console.log({ simulationType, hasInvalidAmounts });
 
     this.lastJoinRes = await balancer.pools.generalisedJoin(
       poolId,

@@ -1,6 +1,6 @@
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import {
@@ -49,7 +49,8 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     signer,
     slippageBsp,
     relayerSignature,
-    simulationType,
+    approvalActions,
+    bptInValid,
   }: ExitParams): Promise<QueryOutput> {
     const evmAmountIn = parseFixed(
       bptIn || '0',
@@ -60,7 +61,15 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
 
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
+
+    // Static call simulation is more accurate than VaultModel, but requires relayer approval.
+    const simulationType: SimulationType =
+      bptInValid && !approvalActions.length
+        ? SimulationType.Static
+        : SimulationType.VaultModel;
+
     console.log({ simulationType });
+
     this.lastExitRes = await balancer.pools
       .generalisedExit(
         this.pool.value.id,
@@ -73,9 +82,9 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
       )
       .catch(err => {
         console.log(err);
-        throw err;
+        throw new Error(err);
       });
-    console.log({ lastExitRes: this.lastExitRes });
+
     if (!this.lastExitRes) throw new Error('Failed to query exit.');
 
     const priceImpact: number = bnum(

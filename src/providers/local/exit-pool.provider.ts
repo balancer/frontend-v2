@@ -56,7 +56,6 @@ import {
 import { useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
-import { SimulationType } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -349,8 +348,6 @@ const provider = (props: Props) => {
     exitPoolService.setExitHandler(exitHandlerType.value);
 
     try {
-      const simulationType = getSimulationType();
-
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
@@ -359,7 +356,8 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        simulationType,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
       });
 
@@ -395,7 +393,6 @@ const provider = (props: Props) => {
     singleAmountOut.max = '';
 
     try {
-      const simulationType = getSimulationType();
       const output = await exitPoolService.queryExit({
         exitType: ExitType.GivenIn,
         bptIn: bptBalance.value,
@@ -404,7 +401,8 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        simulationType,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
       });
       const newMax =
@@ -413,7 +411,6 @@ const provider = (props: Props) => {
 
       return newMax;
     } catch (error) {
-      console.error(error);
       captureException(error);
       throw new Error('Failed to calculate max.', { cause: error });
     }
@@ -435,9 +432,8 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        // Always query the exit before sending the transaction with the most accurate data
-        // from the Static simulation (affects only generalised exits)
-        simulationType: SimulationType.Static,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
       });
     } catch (error) {
@@ -454,13 +450,6 @@ const provider = (props: Props) => {
       max: '',
       valid: true,
     }));
-  }
-
-  // Static call simulation is more accurate than VaultModel, but requires relayer approval.
-  function getSimulationType(): SimulationType {
-    return showPreview.value && !approvalActions.value.length
-      ? SimulationType.Static
-      : SimulationType.VaultModel;
   }
 
   /**
