@@ -60,7 +60,7 @@ const emit = defineEmits(['loadMore']);
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -124,7 +124,7 @@ const activityRows = computed<ActivityRow[]>(() =>
           value,
           formattedValue:
             value > 0
-              ? fNum2(value, { style: 'currency', abbreviate: true })
+              ? fNum(value, { style: 'currency', abbreviate: true })
               : '-',
           timestamp,
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
@@ -165,7 +165,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     return {
       address,
       symbol,
-      amount: fNum2(amountNumber, FNumFormats.token),
+      amount: fNum(amountNumber, FNumFormats.token),
     };
   });
 }

@@ -57,6 +57,7 @@ mockTokensProvider.balancerTokenListTokens = computed(() => ({}));
 mockTokensProvider.getToken.mockImplementation(address => {
   return mockTokens[address];
 });
+mockTokensProvider.injectTokens.mockResolvedValue();
 
 export function tokensProvider(): TokensResponse {
   return mockTokensProvider;

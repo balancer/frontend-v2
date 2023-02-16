@@ -1,6 +1,5 @@
-import { UseInfiniteQueryOptions } from 'react-query/types';
 import { Ref, ref, watch } from 'vue';
-import { useInfiniteQuery } from 'vue-query';
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
