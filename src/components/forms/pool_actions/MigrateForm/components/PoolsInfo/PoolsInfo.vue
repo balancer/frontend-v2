@@ -35,7 +35,7 @@ const props = defineProps<Props>();
  */
 const { t } = useI18n();
 const { fromPool, toPool } = toRefs(props);
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { balanceFor } = useTokens();
 const { stakedShares } = usePoolStaking();
 
@@ -65,7 +65,7 @@ const balanceLabel = computed(() => {
   balance = stakedAmount + unstakedAmount;
 
   return balance > 0
-    ? fNum2(balance, {
+    ? fNum(balance, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -82,7 +82,7 @@ const migrateStakeChooseArr = ref({
     title: t('migratePool.poolInfo.stakedLabel'),
     value: true,
     amount: computed(() =>
-      fNum2(fiatValueOfStakedShares.value, {
+      fNum(fiatValueOfStakedShares.value, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -93,7 +93,7 @@ const migrateStakeChooseArr = ref({
     title: t('migratePool.poolInfo.unstakedLabel'),
     value: true,
     amount: computed(() =>
-      fNum2(fiatValueOfUnstakedShares.value, {
+      fNum(fiatValueOfUnstakedShares.value, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,

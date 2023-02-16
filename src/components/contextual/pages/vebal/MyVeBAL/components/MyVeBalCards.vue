@@ -41,7 +41,7 @@ const showUnlockPreviewModal = ref(false);
  * COMPOSABLES
  */
 const { balanceFor } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { veBalBalance, lockablePoolId } = useVeBal();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
@@ -88,10 +88,10 @@ const cards = computed(() => {
       id: 'myLpToken',
       label: t('veBAL.myVeBAL.cards.myLpToken.label'),
       value: isWalletReady.value
-        ? fNum2(fiatTotal.value, FNumFormats.fiat)
+        ? fNum(fiatTotal.value, FNumFormats.fiat)
         : '—',
       secondaryText: isWalletReady.value
-        ? fNum2(bptBalance.value, FNumFormats.token)
+        ? fNum(bptBalance.value, FNumFormats.token)
         : '—',
       showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: {
@@ -104,10 +104,10 @@ const cards = computed(() => {
       id: 'myLockedLpToken',
       label: t('veBAL.myVeBAL.cards.myLockedLpToken.label'),
       value: isWalletReady.value
-        ? fNum2(props.totalLockedValue, FNumFormats.fiat)
+        ? fNum(props.totalLockedValue, FNumFormats.fiat)
         : '—',
       secondaryText: isWalletReady.value
-        ? fNum2(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token)
+        ? fNum(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token)
         : '—',
       showPlusIcon: isWalletReady.value && !isExpired ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
@@ -132,7 +132,7 @@ const cards = computed(() => {
       secondaryText:
         props.veBalLockInfo && hasExistingLock && !isExpired
           ? t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
-              fNum2(
+              fNum(
                 bnum(veBalBalance.value)
                   .div(props.veBalLockInfo.totalSupply)
                   .toString(),
@@ -145,7 +145,7 @@ const cards = computed(() => {
           : '-',
       showPlusIcon: false,
       value: hasExistingLock
-        ? fNum2(veBalBalance.value, FNumFormats.token)
+        ? fNum(veBalBalance.value, FNumFormats.token)
         : '—',
     },
   ];

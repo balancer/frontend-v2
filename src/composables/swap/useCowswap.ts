@@ -92,7 +92,7 @@ export default function useCowswap({
   const store = useStore();
   const { account, getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
   const { balanceFor } = useTokens();
   const { isUserRejected } = useTranasactionErrors();
   const { t } = useI18n();
@@ -204,10 +204,10 @@ export default function useCowswap({
       const tokenInAmountEst = exactIn.value ? '' : '~';
       const tokenOutAmountEst = exactIn.value ? '~' : '';
 
-      const summary = `${tokenInAmountEst}${fNum2(
+      const summary = `${tokenInAmountEst}${fNum(
         sellAmount,
         FNumFormats.token
-      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum2(
+      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum(
         buyAmount,
         FNumFormats.token
       )} ${tokenOut.value.symbol}`;

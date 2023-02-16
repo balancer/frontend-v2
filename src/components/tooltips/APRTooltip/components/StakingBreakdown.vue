@@ -24,7 +24,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { getToken } = useTokens();
 
 /**
@@ -60,17 +60,17 @@ const boostedTotalAPR = computed((): string => {
       .plus(rewardTokensAPR.value)
       .toString();
 
-    return fNum2(boostedStakingAPR, FNumFormats.bp);
+    return fNum(boostedStakingAPR, FNumFormats.bp);
   }
 
-  return fNum2(rewardTokensAPR.value, FNumFormats.bp);
+  return fNum(rewardTokensAPR.value, FNumFormats.bp);
 });
 
 /**
  * @summary The total APR if we have don't have the user's boost.
  */
 const unboostedTotalAPR = computed((): string =>
-  fNum2(
+  fNum(
     bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
     FNumFormats.bp
   )
@@ -128,14 +128,14 @@ const breakdownItems = computed((): Array<any> => {
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
-          {{ fNum2(amount, FNumFormats.bp) }}
+          {{ fNum(amount, FNumFormats.bp) }}
           <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>
         </template>
       </BalBreakdown>
       <div v-else-if="hasRewardTokens" class="flex items-center">
-        {{ fNum2(rewardTokensAPR, FNumFormats.bp) }}
+        {{ fNum(rewardTokensAPR, FNumFormats.bp) }}
         <span class="ml-1 text-xs text-secondary">
           {{ $t('staking.stakingApr') }}
         </span>

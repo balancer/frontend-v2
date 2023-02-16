@@ -1,6 +1,5 @@
-import { UseInfiniteQueryOptions } from 'react-query/types';
 import { reactive } from 'vue';
-import { useInfiniteQuery } from 'vue-query';
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -14,10 +13,12 @@ type PoolSwapsQueryResponse = {
   skip?: number;
 };
 
+type QueryOptions = UseInfiniteQueryOptions<PoolSwapsQueryResponse>;
+
 export default function usePoolSwapsQuery(
   id: string,
   subgraphQuery: Record<string, any> = {},
-  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   // COMPOSABLES
   const { networkId } = useNetwork();
@@ -59,6 +60,6 @@ export default function usePoolSwapsQuery(
   return useInfiniteQuery<PoolSwapsQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions as QueryOptions
   );
 }

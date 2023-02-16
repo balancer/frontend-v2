@@ -127,7 +127,7 @@ async function handleTransaction(tx): Promise<void> {
         Goals.Withdrawal,
         bnum(fiatTotal.value).times(100).toNumber() || 0
       );
-      await refetchBalances.value();
+      await refetchBalances();
     },
     onTxFailed: () => {
       txState.value.confirming = false;
