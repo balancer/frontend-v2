@@ -11,24 +11,17 @@ export class WalletConnectConnector extends Connector {
     const configService = new ConfigService();
     const provider = await EthereumProvider.init({
       projectId: 'ee9c0c7e1b8b86ebdfb8fd93bb116ca8',
-      chains: [
-        Network.MAINNET,
-        Network.POLYGON,
-        Network.ARBITRUM,
-        Network.GOERLI,
-      ],
+      chains: [Network.MAINNET, Network.POLYGON, Network.ARBITRUM],
       rpcMap: {
         [Network.MAINNET]: configService.getNetworkRpc(Network.MAINNET),
         [Network.POLYGON]: configService.getNetworkRpc(Network.POLYGON),
         [Network.ARBITRUM]: configService.getNetworkRpc(Network.ARBITRUM),
-        [Network.GOERLI]: configService.getNetworkRpc(Network.GOERLI),
       },
     });
     this.provider = provider;
 
     try {
       const accounts = await provider.enable();
-
       const chainId = await provider.request({ method: 'eth_chainId' });
       this.handleChainChanged(chainId);
       this.handleAccountsChanged(accounts);
