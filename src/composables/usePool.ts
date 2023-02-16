@@ -1,4 +1,9 @@
-import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
+import {
+  Network,
+  AprBreakdown,
+  PoolType,
+  APR_THRESHOLD,
+} from '@balancer-labs/sdk';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
@@ -262,6 +267,9 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
+  if (aprs.min > APR_THRESHOLD || aprs.max > APR_THRESHOLD) {
+    return numF(0, FNumFormats.bp);
+  }
   if (boost) {
     numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
