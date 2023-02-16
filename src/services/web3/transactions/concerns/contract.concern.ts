@@ -1,4 +1,8 @@
 import { Goals, trackGoal } from '@/composables/useFathom';
+import {
+  verifyNetwork,
+  verifyTransactionSender,
+} from '@/providers/web3-plugin.provider';
 import { WalletError } from '@/types';
 import {
   JsonRpcSigner,
@@ -7,7 +11,6 @@ import {
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/browser';
 import { Contract, ContractInterface } from 'ethers';
-import { verifyNetwork, verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
 type SendTransactionOpts = {
