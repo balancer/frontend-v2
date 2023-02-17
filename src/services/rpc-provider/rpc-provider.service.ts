@@ -1,7 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
 import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
 
-import template from '@/lib/utils/template';
 import { configService } from '@/services/config/config.service';
 
 import { StaticJsonRpcBatchProvider } from './static-json-rpc-batch-provider';
@@ -12,7 +11,9 @@ export default class RpcProviderService {
   constructor(
     private readonly config = configService,
     public readonly network = config.network.shortName,
-    public readonly jsonProvider = new StaticJsonRpcBatchProvider(config.rpc)
+    public readonly jsonProvider = new StaticJsonRpcBatchProvider(
+      configService.rpc
+    )
   ) {}
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
@@ -32,11 +33,9 @@ export default class RpcProviderService {
   }
 
   public getJsonProvider(networkKey: Network): JsonRpcProvider {
-    const rpcUrl = template(this.config.getNetworkConfig(networkKey).rpc, {
-      INFURA_KEY: this.config.env.INFURA_PROJECT_ID,
-      ALCHEMY_KEY: this.config.env.ALCHEMY_KEY,
-    });
-    return new StaticJsonRpcBatchProvider(rpcUrl);
+    return new StaticJsonRpcBatchProvider(
+      this.config.getNetworkRpc(networkKey)
+    );
   }
 }
 

@@ -11,6 +11,7 @@ interface Env {
   APP_DOMAIN: string;
   APP_HOST: string;
   IPFS_NODE: string;
+  RPC_URL: string;
   BLOCKNATIVE_DAPP_ID: string;
   ALCHEMY_KEY: string;
   GRAPH_KEY: string;
@@ -26,6 +27,9 @@ export default class ConfigService {
       APP_DOMAIN: import.meta.env.VITE_DOMAIN || 'app.balancer.fi',
       APP_HOST: import.meta.env.VITE_HOST || 'balancer.fi',
       IPFS_NODE: import.meta.env.VITE_IPFS_NODE || 'cloudflare-ipfs.com',
+      RPC_URL:
+        import.meta.env[`VITE_RPC_URL_${networkId.value}`] ||
+        this.getNetworkConfig(networkId.value).rpc,
       BLOCKNATIVE_DAPP_ID:
         import.meta.env.VITE_BLOCKNATIVE_DAPP_ID || 'MISSING_KEY',
       ALCHEMY_KEY:
@@ -60,14 +64,17 @@ export default class ConfigService {
   public getNetworkRpc(network: Network): string {
     const networkConfig = this.getNetworkConfig(network);
 
-    return template(networkConfig.rpc, {
-      INFURA_KEY: networkConfig.keys.infura,
-      ALCHEMY_KEY: networkConfig.keys.alchemy,
-    });
+    return template(
+      import.meta.env[`VITE_RPC_URL_${network}`] || networkConfig.rpc,
+      {
+        INFURA_KEY: networkConfig.keys.infura,
+        ALCHEMY_KEY: networkConfig.keys.alchemy,
+      }
+    );
   }
 
   public get rpc(): string {
-    return template(this.network.rpc, {
+    return template(configService.env.RPC_URL, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
       ALCHEMY_KEY: this.env.ALCHEMY_KEY,
     });

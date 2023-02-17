@@ -115,6 +115,12 @@ docker run \
   balancerfi/frontend-v2
 ```
 
+### Custom RPC urls
+
+To override RPC network config from `src/lib/config`, you can use the following environment variables:
+
+`VITE_RPC_URL_<networkId>=XXX`
+
 ### One Click Deploys
 
 The frontend can easily be deployed to any static host. Use the buttons below to spin up an instance. You will be prompted to provide your Infura Project ID, Alchemy Key, and Blocknative Dapp ID as these are required for the frontend to work correctly.
