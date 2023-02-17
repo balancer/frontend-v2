@@ -87,7 +87,7 @@ function onColumnSort(columnId: string) {
             </BalBtn>
           </div>
         </div>
-        <PoolsTable
+        <!-- <PoolsTable
           :data="pools"
           :noPoolsLabel="$t('noPoolsFound')"
           :isLoading="isLoading"
@@ -99,7 +99,7 @@ function onColumnSort(columnId: string) {
           skeletonClass="pools-table-loading-height"
           @on-column-sort="onColumnSort"
           @load-more="loadMorePools"
-        />
+        /> -->
         <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
           <FeaturedProtocols />
         </div>

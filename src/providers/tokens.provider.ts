@@ -244,37 +244,37 @@ export const tokensProvider = (
    * Fetches static token metadata for given addresses and injects
    * tokens into state tokens map.
    */
-  async function injectTokens(addresses: string[]): Promise<void> {
-    addresses = addresses
-      .filter(a => a)
-      .map(getAddressFromPoolId)
-      .map(getAddress);
+  // async function injectTokens(addresses: string[]): Promise<void> {
+  //   addresses = addresses
+  //     .filter(a => a)
+  //     .map(getAddressFromPoolId)
+  //     .map(getAddress);
 
-    // Remove any duplicates
-    addresses = [...new Set(addresses)];
+  //   // Remove any duplicates
+  //   addresses = [...new Set(addresses)];
 
-    const existingAddresses = Object.keys(tokens.value);
+  //   const existingAddresses = Object.keys(tokens.value);
 
-    // Only inject tokens that aren't already in tokens
-    const injectable = addresses.filter(
-      address => !includesAddress(existingAddresses, address)
-    );
-    if (injectable.length === 0) return;
+  //   // Only inject tokens that aren't already in tokens
+  //   const injectable = addresses.filter(
+  //     address => !includesAddress(existingAddresses, address)
+  //   );
+  //   if (injectable.length === 0) return;
 
-    //Wait for dynamic token list import to be resolved
-    await tokensListPromise;
+  //   //Wait for dynamic token list import to be resolved
+  //   await tokensListPromise;
 
-    const newTokens = await tokenService.metadata.get(
-      injectable,
-      allTokenLists.value
-    );
+  //   const newTokens = await tokenService.metadata.get(
+  //     injectable,
+  //     allTokenLists.value
+  //   );
 
-    state.injectedTokens = { ...state.injectedTokens, ...newTokens };
+  //   state.injectedTokens = { ...state.injectedTokens, ...newTokens };
 
-    // Wait for balances/allowances/prices to be fetched for newly injected tokens.
-    await nextTick();
-    await forChange(dynamicDataLoading, false);
-  }
+  //   // Wait for balances/allowances/prices to be fetched for newly injected tokens.
+  //   await nextTick();
+  //   await forChange(dynamicDataLoading, false);
+  // }
 
   /**
    * Given query, filters tokens map by name, symbol or address.
@@ -303,7 +303,7 @@ export const tokensProvider = (
         return { [address]: token };
       } else {
         if (!disableInjection) {
-          await injectTokens([address]);
+          // await injectTokens([address]);
           return pick(tokens.value, address);
         } else {
           return { [address]: token };
@@ -458,8 +458,8 @@ export const tokensProvider = (
    */
   onBeforeMount(async () => {
     // Inject veBAL because it's not in tokenlists.
-    const { veBAL } = configService.network.addresses;
-    await injectTokens([veBAL]);
+    // const { veBAL } = configService.network.addresses;
+    // await injectTokens([veBAL]);
     state.loading = false;
   });
 
@@ -486,7 +486,7 @@ export const tokensProvider = (
     refetchPrices,
     refetchBalances,
     refetchAllowances,
-    injectTokens,
+    // injectTokens,
     searchTokens,
     hasBalance,
     approvalRequired,

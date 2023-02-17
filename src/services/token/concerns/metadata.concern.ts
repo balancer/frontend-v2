@@ -27,6 +27,7 @@ export default class MetadataConcern {
   ): Promise<TokenInfoMap> {
     addresses = addresses.map(address => getAddress(address));
     const tokenListTokens = this.tokenListsTokensFrom(tokenLists);
+    console.trace('Get meta from lists');
     let metaDict = this.getMetaFromLists(addresses, tokenListTokens);
 
     // If token meta can't be found in TokenLists, fetch onchain

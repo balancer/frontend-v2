@@ -21,7 +21,7 @@ export default function usePools(
     poolsSortField
   );
 
-  const { injectTokens } = useTokens();
+  // const { injectTokens } = useTokens();
 
   /**
    * COMPUTED
@@ -51,16 +51,16 @@ export default function usePools(
   /**
    * WATCHERS
    */
-  watch(pools, async newPools => {
-    const tokens = flatten(
-      newPools.map(pool => [
-        ...pool.tokensList,
-        ...tokenTreeLeafs(pool.tokens),
-        pool.address,
-      ])
-    );
-    await injectTokens(tokens);
-  });
+  // watch(pools, async newPools => {
+  //   const tokens = flatten(
+  //     newPools.map(pool => [
+  //       ...pool.tokensList,
+  //       ...tokenTreeLeafs(pool.tokens),
+  //       pool.address,
+  //     ])
+  //   );
+  //   await injectTokens(tokens);
+  // });
 
   return {
     pools,

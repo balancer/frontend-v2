@@ -43,7 +43,7 @@ export default function usePoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, tokens: tokenMeta } = useTokens();
+  const { tokens: tokenMeta } = useTokens();
   const { networkId } = useNetwork();
   let poolsRepository = initializePoolsRepository();
 
@@ -73,7 +73,7 @@ export default function usePoolsQuery(
             pool.address,
           ])
         );
-        injectTokens(tokens);
+        // injectTokens(tokens);
 
         return pools;
       },
@@ -100,7 +100,7 @@ export default function usePoolsQuery(
             pool.address,
           ])
         );
-        await injectTokens(tokens);
+        // await injectTokens(tokens);
 
         decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
 
