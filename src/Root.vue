@@ -8,16 +8,26 @@ import { provideUserSettings } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideTokens } from '@/providers/tokens.provider';
 import { provideUserData } from '@/providers/user-data.provider';
+import { createProviderComponent as createSpaProviderComponent } from './SpaProviderComponent';
+import { provideWeb3Plugin } from './providers/web3-plugin.provider';
 
-/**
- * GLOBAL PROVIDERS
- */
-const userSettings = provideUserSettings();
-const tokenLists = provideTokenLists();
-provideTokens(userSettings, tokenLists);
-provideUserData();
+//TODO: make useWeb3 dependency explicit to be able to load after mount (just SSR client)
+const Web3Provider = createSpaProviderComponent(() => provideWeb3Plugin());
+const MetadataProvider = createSpaProviderComponent(() => {
+  /**
+   * GLOBAL PROVIDERS
+   */
+  const userSettings = provideUserSettings();
+  const tokenLists = provideTokenLists();
+  provideTokens(userSettings, tokenLists);
+  provideUserData();
+});
 </script>
 
 <template>
-  <App />
+  <Web3Provider>
+    <MetadataProvider>
+      <App />
+    </MetadataProvider>
+  </Web3Provider>
 </template>

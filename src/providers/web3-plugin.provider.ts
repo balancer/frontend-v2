@@ -1,4 +1,3 @@
-import { App } from 'vue';
 import { safeInject } from '@/providers/inject';
 
 import symbolKeys from '@/constants/symbol.keys';
@@ -225,9 +224,9 @@ export const Web3ProviderSymbol: InjectionKey<Web3Response> = Symbol(
   symbolKeys.Providers.Web3
 );
 
-export function provideWeb3Plugin(app: App): Web3Response {
+export function provideWeb3Plugin(): Web3Response {
   const web3 = web3Provider();
-  app.provide(Web3ProviderSymbol, web3);
+  provide(Web3ProviderSymbol, web3);
   return web3;
 }
 

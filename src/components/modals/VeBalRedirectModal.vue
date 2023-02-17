@@ -5,8 +5,9 @@ import { useRouter } from 'vue-router';
 import { Network } from '@balancer-labs/sdk';
 
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
-import useVeBAL from '@/composables/useVeBAL';
+// import useVeBAL from '@/composables/useVeBAL';
 import { getNetworkSlug } from '@/composables/useNetwork';
+import { noop } from 'lodash';
 
 /**
  * STATE
@@ -16,7 +17,9 @@ const redirectModal = ref<typeof BalModal>();
 /**
  * COMPOSABLES
  */
-const { showRedirectModal, setShowRedirectModal } = useVeBAL();
+// const { showRedirectModal, setShowRedirectModal } = useVeBAL();
+const showRedirectModal = false;
+const setShowRedirectModal = noop;
 const router = useRouter();
 
 /**
