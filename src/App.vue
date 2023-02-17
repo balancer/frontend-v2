@@ -1,14 +1,23 @@
-<script lang="ts">
+<script  lang="ts">
+export const isThirdPartyServicesModalVisible = ref(false);
+</script>
+
+<script setup lang="ts">
 import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
 import Notifications from '@/components/notifications/Notifications.vue';
+import {
+  DefaultLayout,
+  BlankLayout,
+  ContentLayout,
+  FocusedLayout,
+} from '@/pages/_layouts';
 import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
-import * as Layouts from '@/pages/_layouts';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
@@ -24,94 +33,62 @@ import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatche
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
-export const isThirdPartyServicesModalVisible = ref(false);
+const Layouts = {
+  DefaultLayout: DefaultLayout,
+  BlankLayout: BlankLayout,
+  ContentLayout: ContentLayout,
+  FocusedLayout: FocusedLayout,
+};
 
-export default defineComponent({
-  components: {
-    ...Layouts,
-    WalletSelectModal,
-    SanctionedWalletModal,
-    ThirdPartyServicesModal,
-    Notifications,
-    AppSidebar,
-    GlobalModalContainer,
-  },
+/**
+ * STATE
+ */
+const layoutName = ref('DefaultLayout');
+/**
+ * COMPOSABLES
+ */
+const route = useRoute();
+const store = useStore();
+const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } = useWeb3();
+const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
+const { sidebarOpen } = useSidebar();
+onMounted(() => {
+  useWeb3Watchers();
+  usePoolCreationWatcher();
+  useGlobalQueryWatchers();
+  useGnosisSafeApp();
+  useExploitWatcher();
+  useNavigationGuards();
+});
 
-  setup() {
-    /**
-     * STATE
-     */
-    const layout = ref('DefaultLayout');
-    /**
-     * COMPOSABLES
-     */
-    useWeb3Watchers();
-    usePoolCreationWatcher();
-    useGlobalQueryWatchers();
-    useGnosisSafeApp();
-    useExploitWatcher();
-    useNavigationGuards();
-    const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } =
-      useWeb3();
-    const route = useRoute();
-    const store = useStore();
-    const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
-    const { sidebarOpen } = useSidebar();
+/**
+ * CALLBACKS
+ */
+onBeforeMount(async () => {
+  store.dispatch('app/init');
+});
 
-    // ADD FEATURE ALERT HERE
-    // const featureAlert: Alert = {
-    //   id: 'vebal-gap',
-    //   priority: AlertPriority.LOW,
-    //   label: t('alerts.vebalL2'),
-    //   type: AlertType.FEATURE,
-    //   rememberClose: false,
-    //   actionOnClick: false
-    // };
-    // addAlert(featureAlert);
+function handleThirdPartyModalToggle(value: boolean) {
+  isThirdPartyServicesModalVisible.value = value;
+}
 
-    /**
-     * CALLBACKS
-     */
-    onBeforeMount(async () => {
-      store.dispatch('app/init');
-    });
-
-    function handleThirdPartyModalToggle(value: boolean) {
-      isThirdPartyServicesModalVisible.value = value;
-    }
-
-    /**
-     * WATCHERS
-     */
-    watch(route, newRoute => {
-      updateBgColorFor(newRoute);
-      if (newRoute.meta.layout) {
-        layout.value = newRoute.meta.layout as string;
-      } else {
-        layout.value = 'DefaultLayout';
-      }
-    });
-
-    return {
-      // state
-      layout,
-      isBlocked,
-      isThirdPartyServicesModalVisible,
-      // computed
-      isWalletSelectVisible,
-      sidebarOpen,
-      // methods
-      toggleWalletSelectModal,
-      handleThirdPartyModalToggle,
-    };
-  },
+/**
+ * WATCHERS
+ */
+watch(route, newRoute => {
+  updateBgColorFor(newRoute);
+  if (newRoute.meta.layout) {
+    layoutName.value = newRoute.meta.layout as string;
+  } else {
+    layoutName.value = 'DefaultLayout';
+  }
 });
 </script>
 
 <template>
   <div id="modal" />
   <div id="app">
-    <component :is="layout" />
+    <component :is="Layouts[layoutName]" />
 
     <WalletSelectModal
       :isVisible="isWalletSelectVisible"
