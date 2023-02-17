@@ -474,7 +474,7 @@ const POOLS_POLYGON: Pools = {
     '0x136fd06fa01ecf624c7f2b3cb15742c1339dc2c4': 'composableStablePool', // ComposableStable
     '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
     '0x7bc6c0e73edaa66ef3f6e2f27b0ee8661834c6c9': 'composableStablePool', // ComposableStable V3
-    '0x82e4cFaef85b1B6299935340c964C942280327f4': 'weightedPool', // weighted pool v3
+    '0x82e4cfaef85b1b6299935340c964c942280327f4': 'weightedPool', // weighted pool v3
     '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
   },
   Stakable: {
