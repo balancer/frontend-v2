@@ -42,7 +42,7 @@ const {
   acceptedCustomTokenDisclaimer,
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { nativeAsset, getToken } = useTokens();
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { t } = useI18n();
@@ -406,7 +406,7 @@ function onAlertMountChange() {
           >
             {{
               $t('createAPool.youCanFundWithThisPoolWith', [
-                fNum2(totalLiquidity.toString(), FNumFormats.fiat),
+                fNum(totalLiquidity.toString(), FNumFormats.fiat),
               ])
             }}
           </BalAlert>

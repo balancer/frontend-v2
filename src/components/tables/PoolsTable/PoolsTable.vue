@@ -88,7 +88,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
@@ -97,7 +97,7 @@ const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 
 const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 450 : undefined
+  upToMediumBreakpoint.value ? 250 : undefined
 );
 
 /**
@@ -133,7 +133,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(balanceValue(pool), {
+      fNum(balanceValue(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -148,7 +148,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: t('poolValue'),
     accessor: pool =>
-      fNum2(pool.totalLiquidity || 0, {
+      fNum(pool.totalLiquidity || 0, {
         style: 'currency',
         maximumFractionDigits: 0,
       }),
@@ -341,7 +341,7 @@ function iconAddresses(pool: Pool) {
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
-              fNum2(
+              fNum(
                 pool?.volumeSnapshot < VOLUME_THRESHOLD
                   ? pool?.volumeSnapshot
                   : '-',

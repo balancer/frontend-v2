@@ -37,7 +37,7 @@ const props = defineProps<Props>();
  */
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const { getToken } = useTokens();
 
 /**
@@ -58,7 +58,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     align: 'right',
     width: 150,
     accessor: ({ amount, token }) =>
-      `${fNum2(amount, FNumFormats.token)} ${token.symbol}`,
+      `${fNum(amount, FNumFormats.token)} ${token.symbol}`,
   },
   {
     name: t('value'),
@@ -66,7 +66,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
+    accessor: ({ value }) => fNum(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -126,7 +126,7 @@ const totalRewardValue = computed((): string => {
       </template>
       <template #totalValueCell>
         <div class="flex justify-end">
-          {{ fNum2(totalRewardValue, FNumFormats.fiat) }}
+          {{ fNum(totalRewardValue, FNumFormats.fiat) }}
         </div>
       </template>
       <template #totalClaimCell>

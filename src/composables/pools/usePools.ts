@@ -45,7 +45,7 @@ export default function usePools(
    * METHODS
    */
   function loadMorePools() {
-    poolsQuery.fetchNextPage.value();
+    poolsQuery.fetchNextPage();
   }
 
   /**

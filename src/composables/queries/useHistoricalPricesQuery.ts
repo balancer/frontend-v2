@@ -1,7 +1,6 @@
 import differenceInDays from 'date-fns/differenceInDays';
-import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
@@ -12,13 +11,15 @@ import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
 import { tokensListExclBpt } from '../usePool';
 
+type QueryOptions = QueryObserverOptions<HistoricalPrices>;
+
 /**
  * HELPERS
  */
 export default function useHistoricalPricesQuery(
   id: string,
   days?: number,
-  options: QueryObserverOptions<HistoricalPrices> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * @description
@@ -77,5 +78,9 @@ export default function useHistoricalPricesQuery(
     ...options,
   });
 
-  return useQuery<HistoricalPrices>(queryKey, queryFn, queryOptions);
+  return useQuery<HistoricalPrices>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }
