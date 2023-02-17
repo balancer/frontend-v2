@@ -7,7 +7,7 @@ Official frontend app for the Balancer protocol (v2).
 To setup the development environment first clone the repo:
 
 ```bash
-git clone https://github.com/balancer-labs/frontend-v2.git && cd frontend-v2
+git clone https://github.com/balancer/frontend-v2.git && cd frontend-v2
 ```
 
 ### Local env
@@ -119,11 +119,11 @@ docker run \
 
 The frontend can easily be deployed to any static host. Use the buttons below to spin up an instance. You will be prompted to provide your Infura Project ID, Alchemy Key, and Blocknative Dapp ID as these are required for the frontend to work correctly.
 
-[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer-labs/frontend-v2/tree/master)
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer/frontend-v2/tree/master)
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/balancer-labs/frontend-v2)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/balancer/frontend-v2)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer-labs/frontend-v2)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer/frontend-v2)
 
 ## Vite setup
 

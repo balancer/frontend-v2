@@ -17,9 +17,9 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '1': {
     Balancer: {
       Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/master/generated/listed.tokenlist.json',
       Vetted:
-        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/master/generated/vetted.tokenlist.json',
     },
     External: [
       'ipns://tokens.uniswap.org',
@@ -29,9 +29,9 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '5': {
     Balancer: {
       Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/goerli.listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/goerli.listed.tokenlist.json',
       Vetted:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/goerli.vetted.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/goerli.vetted.tokenlist.json',
     },
     External: [],
   },
@@ -45,9 +45,9 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '137': {
     Balancer: {
       Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/polygon.listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/polygon.listed.tokenlist.json',
       Vetted:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/polygon.vetted.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/polygon.vetted.tokenlist.json',
     },
     External: [
       'https://unpkg.com/quickswap-default-token-list@1.0.67/build/quickswap-default.tokenlist.json',
@@ -56,9 +56,9 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '42161': {
     Balancer: {
       Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/arbitrum.listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/arbitrum.listed.tokenlist.json',
       Vetted:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/arbitrum.vetted.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/arbitrum.vetted.tokenlist.json',
     },
     External: [],
   },
