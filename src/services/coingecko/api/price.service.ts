@@ -67,7 +67,7 @@ export class PriceService {
    */
   async getTokens(
     addresses: string[],
-    addressesPerRequest = 100
+    addressesPerRequest = 25
   ): Promise<TokenPrices> {
     try {
       if (addresses.length / addressesPerRequest > 10)
