@@ -479,7 +479,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     highPriceImpactAccepted,
     bptIn,
     bptInValid,
-    pool: readonly(pool),
+    pool,
     isSingleAssetExit: readonly(isSingleAssetExit),
     propAmountsOut: readonly(propAmountsOut),
     priceImpact: readonly(priceImpact),
