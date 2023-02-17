@@ -31,7 +31,7 @@ const {
   priceFor,
 } = useTokens();
 const { tokensList } = usePoolCreation();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 /**
  * COMPUTED
  */
@@ -71,10 +71,10 @@ const totalFiat = computed(() => {
             </BalStack>
             <BalStack vertical spacing="none" align="end">
               <h6>
-                {{ fNum2(balanceFor(token), FNumFormats.token) }}
+                {{ fNum(balanceFor(token), FNumFormats.token) }}
               </h6>
               <span class="text-sm text-gray-600">{{
-                fNum2(
+                fNum(
                   priceFor(token) * Number(balanceFor(token)),
                   FNumFormats.fiat
                 )
@@ -102,10 +102,10 @@ const totalFiat = computed(() => {
               </BalStack>
               <BalStack vertical spacing="none" align="end">
                 <h6>
-                  {{ fNum2(balanceFor(token), FNumFormats.token) }}
+                  {{ fNum(balanceFor(token), FNumFormats.token) }}
                 </h6>
                 <span class="text-sm text-gray-600">{{
-                  fNum2(
+                  fNum(
                     priceFor(token) * Number(balanceFor(token)),
                     FNumFormats.fiat
                   )
@@ -116,7 +116,7 @@ const totalFiat = computed(() => {
         </div>
         <BalStack justify="between">
           <h6>Total</h6>
-          <h6>{{ fNum2(totalFiat, FNumFormats.fiat) }}</h6>
+          <h6>{{ fNum(totalFiat, FNumFormats.fiat) }}</h6>
         </BalStack>
       </div>
     </BalStack>

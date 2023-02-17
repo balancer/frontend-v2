@@ -41,7 +41,7 @@ const props = defineProps<Props>();
 const emit = defineEmits(['swap', 'close']);
 // COMPOSABLES
 const { t } = useI18n();
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const { tokens, balanceFor, approvalRequired } = useTokens();
 const {
   relayerSignature: batchRelayerSignature,
@@ -65,13 +65,13 @@ const showSummaryInFiat = ref(false);
 
 // COMPUTED
 const slippageRatePercent = computed(() =>
-  fNum2(slippage.value, FNumFormats.percent)
+  fNum(slippage.value, FNumFormats.percent)
 );
 
 const addressIn = computed(() => props.swapping.tokenIn.value.address);
 
 const tokenInFiatValue = computed(() =>
-  fNum2(
+  fNum(
     toFiat(
       props.swapping.tokenInAmountInput.value,
       props.swapping.tokenIn.value.address
@@ -81,7 +81,7 @@ const tokenInFiatValue = computed(() =>
 );
 
 const tokenOutFiatValue = computed(() =>
-  fNum2(
+  fNum(
     toFiat(
       props.swapping.tokenOutAmountInput.value,
       props.swapping.tokenOut.value.address
@@ -93,7 +93,7 @@ const tokenOutFiatValue = computed(() =>
 const showSwapRoute = computed(() => props.swapping.isBalancerSwap.value);
 
 const zeroFee = computed(() =>
-  showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
+  showSummaryInFiat.value ? fNum('0', FNumFormats.fiat) : '0.0 ETH'
 );
 
 const exceedsBalance = computed(() => {
@@ -166,7 +166,7 @@ const summary = computed(() => {
     return mapValues(
       summaryItems,
       itemValue =>
-        `${fNum2(
+        `${fNum(
           toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
           FNumFormats.fiat
         )}`
@@ -175,7 +175,7 @@ const summary = computed(() => {
     return mapValues(
       summaryItems,
       itemValue =>
-        `${fNum2(itemValue, FNumFormats.token)} ${
+        `${fNum(itemValue, FNumFormats.token)} ${
           exactIn || props.swapping.isWrapUnwrapSwap.value
             ? tokenOut.symbol
             : tokenIn.symbol
@@ -569,7 +569,7 @@ watch(blockNumber, () => {
             class="p-3"
             type="error"
             size="sm"
-            :title="`${t('exceedsBalance')} ${fNum2(
+            :title="`${t('exceedsBalance')} ${fNum(
               balanceFor(props.swapping.tokenInAddressInput.value),
               FNumFormats.token
             )} ${props.swapping.tokenIn.value.symbol}`"
@@ -589,7 +589,7 @@ watch(blockNumber, () => {
               <div>
                 <div class="font-medium">
                   {{
-                    fNum2(swapping.tokenInAmountInput.value, FNumFormats.token)
+                    fNum(swapping.tokenInAmountInput.value, FNumFormats.token)
                   }}
                   {{ swapping.tokenIn.value.symbol }}
                 </div>
@@ -613,7 +613,7 @@ watch(blockNumber, () => {
               <div>
                 <div class="font-medium">
                   {{
-                    fNum2(swapping.tokenOutAmountInput.value, FNumFormats.token)
+                    fNum(swapping.tokenOutAmountInput.value, FNumFormats.token)
                   }}
                   {{ swapping.tokenOut.value.symbol }}
                 </div>
@@ -627,7 +627,7 @@ watch(blockNumber, () => {
                   >
                     / {{ $t('priceImpact') }}:
                     {{
-                      fNum2(swapping.sor.priceImpact.value, FNumFormats.percent)
+                      fNum(swapping.sor.priceImpact.value, FNumFormats.percent)
                     }}
                   </span>
                 </div>
@@ -723,7 +723,7 @@ watch(blockNumber, () => {
         :title="$t('priceUpdatedAlert.title')"
         :description="
           $t('priceUpdatedAlert.description', [
-            fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent),
+            fNum(PRICE_UPDATE_THRESHOLD, FNumFormats.percent),
           ])
         "
         :actionLabel="$t('priceUpdatedAlert.actionLabel')"

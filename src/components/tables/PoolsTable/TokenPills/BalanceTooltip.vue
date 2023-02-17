@@ -21,7 +21,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const { account } = useWeb3();
 const { balanceFor } = useTokens();
 
@@ -41,11 +41,11 @@ const shortenedAccount = computed(() => shortenLabel(account.value));
       <BalAsset :address="token.address" :size="36" class="mr-2" />
       <div>
         <div class="text-sm font-semibold">
-          {{ fNum2(tokenBalance, FNumFormats.token) }}
+          {{ fNum(tokenBalance, FNumFormats.token) }}
           {{ symbol }}
         </div>
         <div class="text-secondary">
-          {{ fNum2(toFiat(tokenBalance, token.address), FNumFormats.fiat) }}
+          {{ fNum(toFiat(tokenBalance, token.address), FNumFormats.fiat) }}
         </div>
       </div>
     </div>
