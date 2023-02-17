@@ -15,7 +15,7 @@ import { useUserPools } from '@/providers/local/user-pools.provider';
  * COMPOSABLES
  */
 const router = useRouter();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { totalFiatValue, isLoading: isLoadingPools } = useUserPools();
 const { totalLockedValue } = useLock();
@@ -30,11 +30,11 @@ const classes = computed(() => ({
 }));
 
 const totalInvestedLabel = computed((): string =>
-  fNum2(totalFiatValue.value, FNumFormats.fiat)
+  fNum(totalFiatValue.value, FNumFormats.fiat)
 );
 
 const totalVeBalLabel = computed((): string =>
-  fNum2(totalLockedValue.value, FNumFormats.fiat)
+  fNum(totalLockedValue.value, FNumFormats.fiat)
 );
 
 const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
@@ -76,7 +76,7 @@ const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
     </template>
     <template v-else>
       <div class="text-3xl font-semibold text-white">
-        {{ fNum2('0', FNumFormats.fiat) }}
+        {{ fNum('0', FNumFormats.fiat) }}
       </div>
       <HeroConnectWalletButton class="mt-4" />
     </template>

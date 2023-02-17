@@ -1,10 +1,10 @@
 import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
 import TokenAdminAbi from '@/lib/abi/TokenAdmin.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class BalancerTokenAdmin {
   constructor(
@@ -22,7 +22,8 @@ export class BalancerTokenAdmin {
     return formatUnits(rate, 18);
   }
 
-  private getMulticaller(): Multicaller {
+  private getMulticaller() {
+    const Multicaller = getOldMulticaller();
     return new Multicaller(this.config.network.key, this.provider, this.abi);
   }
 }

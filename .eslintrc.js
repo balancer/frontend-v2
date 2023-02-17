@@ -72,6 +72,18 @@ module.exports = {
             message:
               'Please import from src/dependencies to make this dependency more testable',
           },
+          {
+            group: ['@/lib/utils/balancer/contract'],
+            importNames: ['Multicaller'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
+          // {
+          //   group: ['@/services/multicalls/multicaller'],
+          //   importNames: ['Multicaller'],
+          //   message:
+          //     'Please import from src/dependencies to make this dependency more testable',
+          // },
         ],
       },
     ],

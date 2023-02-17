@@ -46,6 +46,8 @@ import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
+import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
+import useTranasactionErrors from '../useTransactionErrors';
 
 type SorState = {
   validationErrors: {
@@ -138,9 +140,10 @@ export default function useSor({
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
-  const { fNum2, toFiat } = useNumbers();
+  const { fNum, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
+  const { isUserRejected } = useTranasactionErrors();
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -288,7 +291,7 @@ export default function useSor({
       return;
     }
 
-    const amount = exactIn.value
+    let amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping swap
@@ -309,6 +312,11 @@ export default function useSor({
 
     const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
     const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
+
+    const inputAmountDecimals = exactIn.value
+      ? tokenInDecimals
+      : tokenOutDecimals;
+    amount = overflowProtected(amount, inputAmountDecimals);
 
     if (wrapType.value !== WrapType.NonWrap) {
       const wrapper =
@@ -479,11 +487,11 @@ export default function useSor({
     confirming.value = false;
 
     let summary = '';
-    const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
+    const tokenInAmountFormatted = fNum(tokenInAmountInput.value, {
       ...FNumFormats.token,
       maximumSignificantDigits: 6,
     });
-    const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
+    const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, {
       ...FNumFormats.token,
       maximumSignificantDigits: 6,
     });
@@ -566,12 +574,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
       return;
     } else if (wrapType.value == WrapType.Unwrap) {
@@ -590,12 +594,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
       return;
     }
@@ -618,12 +618,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -643,12 +639,8 @@ export default function useSor({
           successCallback();
         }
         trackSwapEvent();
-      } catch (e) {
-        console.log(e);
-        captureException(e);
-        state.submissionError = (e as Error).message;
-        swapping.value = false;
-        confirming.value = false;
+      } catch (error) {
+        handleSwapException(error as Error);
       }
     }
   }
@@ -705,7 +697,7 @@ export default function useSor({
   }
 
   function formatAmount(amount: string) {
-    return fNum2(amount, {
+    return fNum(amount, {
       maximumSignificantDigits: 6,
       useGrouping: false,
       fixedFormat: true,
@@ -746,6 +738,16 @@ export default function useSor({
       return convertStEthWrap({ amount, isWrap: isInputToken });
     }
     return amount;
+  }
+
+  function handleSwapException(error: Error) {
+    if (!isUserRejected(error)) {
+      console.trace(error);
+      state.submissionError = t('swapException', ['Balancer']);
+      captureException(new Error(state.submissionError, { cause: error }));
+    }
+    swapping.value = false;
+    confirming.value = false;
   }
 
   return {

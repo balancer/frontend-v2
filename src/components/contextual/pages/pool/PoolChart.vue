@@ -13,6 +13,8 @@ import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
+import { isFx } from '@/composables/usePool';
+import FxPoolWarning from './FxPoolWarning.vue';
 
 /**
  * TYPES
@@ -68,7 +70,7 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { t } = useI18n();
 const tailwind = useTailwind();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { isMobile } = useBreakpoints();
 const { darkMode } = useDarkMode();
 
@@ -93,7 +95,7 @@ const tabs = [
 ];
 const activeTab = ref(tabs[0].value);
 
-const currentChartValue = ref('');
+const currentChartValue = ref({ num: '', isNegative: false });
 const currentChartDate = ref('');
 const isFocusedOnChart = ref(false);
 
@@ -227,7 +229,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
         values: tvlValues,
       },
     ],
-    defaultHeaderStateValue: fNum2(tvlValues[0][1], {
+    defaultHeaderStateValue: fNum(tvlValues[0][1], {
       style: 'currency',
     }),
   };
@@ -253,6 +255,7 @@ function getFeesData(
       } else {
         prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
       }
+
       const result = Object.freeze<[string, number]>([
         timestamps.value[idx],
         value - prevValue,
@@ -282,7 +285,7 @@ function getFeesData(
         values: feesValues,
       },
     ],
-    defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
+    defaultHeaderStateValue: fNum(defaultHeaderStateValue, {
       style: 'currency',
     }),
   };
@@ -332,7 +335,7 @@ function getVolumeData(
         values: volumeData,
       },
     ],
-    defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
+    defaultHeaderStateValue: fNum(defaultHeaderStateValue, {
       style: 'currency',
     }),
   };
@@ -379,6 +382,11 @@ const defaultChartData = computed(() => {
   return { title, value: chartData.value.defaultHeaderStateValue };
 });
 
+const showFxPoolWarning = computed(() => {
+  const { poolType } = props;
+  return poolType && isFx(poolType) && activeTab.value === PoolChartTab.FEES;
+});
+
 /**
  * METHODS
  */
@@ -390,9 +398,13 @@ function setCurrentChartValue(payload: {
   chartDate: string;
   chartValue: number;
 }) {
-  currentChartValue.value = fNum2(payload.chartValue, {
+  currentChartValue.value.num = fNum(payload.chartValue, {
     style: 'currency',
+    maximumFractionDigits: 2,
+    fixedFormat: true,
   });
+  currentChartValue.value.isNegative = payload.chartValue < 0;
+
   currentChartDate.value = format(
     new Date(payload.chartDate),
     PRETTY_DATE_FORMAT
@@ -425,7 +437,7 @@ function addLaggingTimestamps() {
 <template>
   <BalLoadingBlock v-if="loading" class="chart-loading-block" />
 
-  <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
+  <div v-else-if="false" class="chart">
     <div
       class="flex flex-col xs:flex-row xs:flex-wrap justify-between mb-6 dark:border-gray-900"
     >
@@ -442,8 +454,15 @@ function addLaggingTimestamps() {
       <div
         class="flex flex-col items-start xs:items-end text-2xl font-semibold tabular-nums"
       >
-        <p class="tracking-tighter">
-          {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
+        <p
+          class="tracking-tighter"
+          :class="{
+            'text-red-500': currentChartValue.isNegative && isFocusedOnChart,
+          }"
+        >
+          {{
+            isFocusedOnChart ? currentChartValue.num : defaultChartData.value
+          }}
         </p>
         <div
           class="text-sm font-medium text-secondary"
@@ -469,8 +488,9 @@ function addLaggingTimestamps() {
       :axisLabelFormatter="{
         yAxis: {
           style: 'currency',
-          abbreviate: true,
           maximumFractionDigits: 0,
+          fixedFormat: true,
+          abbreviate: true,
         },
       }"
       :areaStyle="chartData.areaStyle"
@@ -487,8 +507,10 @@ function addLaggingTimestamps() {
       @mouse-leave-event="isFocusedOnChart = false"
       @mouse-enter-event="isFocusedOnChart = true"
     />
+
+    <FxPoolWarning v-if="showFxPoolWarning" />
   </div>
-  <BalBlankSlate v-else class="h-96">
+  <BalBlankSlate v-else class="h-96" align="center">
     <BalIcon name="bar-chart" />
     {{ $t('insufficientData') }}
   </BalBlankSlate>

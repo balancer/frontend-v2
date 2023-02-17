@@ -57,7 +57,7 @@ export function usePoolMigration(
   const { account, getSigner } = useWeb3();
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
   const { minusSlippageScaled } = useSlippage();
   const { fetchPreferentialGaugeAddress } = usePoolStaking();
 
@@ -185,7 +185,7 @@ export function usePoolMigration(
   });
 
   const fromFiatTotalLabel = computed((): string => {
-    return fNum2(fromFiatTotal.value, FNumFormats.fiat);
+    return fNum(fromFiatTotal.value, FNumFormats.fiat);
   });
 
   /**

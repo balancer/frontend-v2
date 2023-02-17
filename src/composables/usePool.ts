@@ -1,4 +1,9 @@
-import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
+import {
+  Network,
+  AprBreakdown,
+  PoolType,
+  APR_THRESHOLD,
+} from '@balancer-labs/sdk';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
@@ -59,6 +64,10 @@ export function isComposableStableLike(poolType: PoolType): boolean {
   return isStablePhantom(poolType) || isComposableStable(poolType);
 }
 
+export function isFx(poolType: PoolType | string): boolean {
+  return poolType === 'FX';
+}
+
 export function isPreMintedBptType(poolType: PoolType): boolean {
   // Currently equivalent to isComposableStableLike but will be extended later
   // with managed and composable weighted pools.
@@ -85,6 +94,18 @@ export function isDeep(pool: Pool): boolean {
     '0x334c96d792e4b26b841d28f53235281cec1be1f200020000000000000000038a', // rETH/bba-usd (mainnet)
     '0x53bc3cba3832ebecbfa002c12023f8ab1aa3a3a0000000000000000000000411', // TUSD/bb-a-usd (mainnet)
     '0x4c8d2e60863e8d7e1033eda2b3d84e92a641802000000000000000000000040f', // FRAX/aave-usdc (mainnet)
+    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467', // wstETH/sfrxETH/rETH (mainnet)
+    '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f', // euler usd (mainnet)
+    '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // dola/bb-e-usd (mainnet)
+    '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477', // euler frax/euler usdc (mainnet)
+    '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
+    '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488', // tusd/bb-e-usd (mainnet)
+    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489', // bb-i-usd (mainnet)
+    '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65', // tetu/qi (polygon)
+    '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
+    '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
+    '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
+    '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
   ];
 
   return treatAsDeep.includes(pool.id);
@@ -119,7 +140,8 @@ export function isStableLike(poolType: PoolType): boolean {
     isStable(poolType) ||
     isMetaStable(poolType) ||
     isStablePhantom(poolType) ||
-    isComposableStable(poolType)
+    isComposableStable(poolType) ||
+    isFx(poolType)
   );
 }
 
@@ -129,6 +151,10 @@ export function isUnknownType(poolType: any): boolean {
 
 export function isLiquidityBootstrapping(poolType: PoolType): boolean {
   return poolType === PoolType.LiquidityBootstrapping;
+}
+
+export function isLBP(poolType: PoolType): boolean {
+  return isLiquidityBootstrapping(poolType);
 }
 
 export function isWeighted(poolType: PoolType): boolean {
@@ -241,6 +267,9 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
+  if (aprs.min > APR_THRESHOLD || aprs.max > APR_THRESHOLD) {
+    return '-';
+  }
   if (boost) {
     numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
@@ -485,7 +514,8 @@ export function findTokenInTree(
  */
 export function isBlocked(pool: Pool, account: string): boolean {
   const requiresAllowlisting =
-    isStableLike(pool.poolType) || isManaged(pool.poolType);
+    (isStableLike(pool.poolType) && !isFx(pool.poolType)) ||
+    isManaged(pool.poolType);
   const isOwnedByUser =
     pool.owner && isAddress(account) && isSameAddress(pool.owner, account);
   const isAllowlisted =
@@ -524,14 +554,14 @@ export function fiatValueOf(pool: Pool, shares: string): string {
  * @returns {boolean} True if included in list.
  */
 export function isJoinsDisabled(id: string): boolean {
-  return POOLS.DisabledJoins.includes(id);
+  return POOLS.DisabledJoins.includes(id.toLowerCase());
 }
 
 /**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
 
   /**
    * Returns pool weights label
@@ -548,7 +578,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     return Object.values(pool.onchain.tokens)
       .map(
         token =>
-          `${fNum2(token.weight, {
+          `${fNum(token.weight, {
             style: 'percent',
             maximumFractionDigits: 0,
           })} ${token.symbol}`

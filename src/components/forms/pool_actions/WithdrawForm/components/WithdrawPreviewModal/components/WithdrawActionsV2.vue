@@ -48,7 +48,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 const {
   txState,
@@ -82,11 +82,11 @@ async function handleTransaction(tx): Promise<void> {
     type: 'tx',
     action: 'withdraw',
     summary: t('transactionSummary.withdrawFromPool', [
-      fNum2(fiatTotalOut.value, FNumFormats.fiat),
+      fNum(fiatTotalOut.value, FNumFormats.fiat),
       poolWeightsLabel(props.pool),
     ]),
     details: {
-      total: fNum2(fiatTotalOut.value, FNumFormats.fiat),
+      total: fNum(fiatTotalOut.value, FNumFormats.fiat),
       pool: props.pool,
     },
   });
@@ -134,7 +134,7 @@ function redirectToPool() {
  */
 watch(blockNumber, () => {
   if (!isLoadingQuery.value && !txInProgress.value) {
-    queryExitQuery.refetch.value();
+    queryExitQuery.refetch();
   }
 });
 </script>

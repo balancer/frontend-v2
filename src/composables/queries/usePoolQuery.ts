@@ -1,6 +1,6 @@
-import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive, Ref, ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
+
 import { GraphQLArgs } from '@balancer-labs/sdk';
 
 import { useTokens } from '@/providers/tokens.provider';
@@ -17,10 +17,12 @@ import { configService } from '@/services/config/config.service';
 import { POOLS } from '@/constants/pools';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
+type QueryOptions = QueryObserverOptions<Pool>;
+
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * If pool is already downloaded, we can use it instantly
@@ -95,5 +97,5 @@ export default function usePoolQuery(
     ...options,
   });
 
-  return useQuery<Pool>(queryKey, queryFn, queryOptions);
+  return useQuery<Pool>(queryKey, queryFn, queryOptions as QueryOptions);
 }

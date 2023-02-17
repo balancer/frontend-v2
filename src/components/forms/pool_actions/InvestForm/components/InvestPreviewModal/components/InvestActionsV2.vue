@@ -41,7 +41,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
@@ -94,11 +94,11 @@ async function handleTransaction(tx): Promise<void> {
     type: 'tx',
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
-      fNum2(fiatValueOut.value, FNumFormats.fiat),
+      fNum(fiatValueOut.value, FNumFormats.fiat),
       poolWeightsLabel(props.pool),
     ]),
     details: {
-      total: fNum2(fiatValueOut.value, FNumFormats.fiat),
+      total: fNum(fiatValueOut.value, FNumFormats.fiat),
       pool: props.pool,
     },
   });

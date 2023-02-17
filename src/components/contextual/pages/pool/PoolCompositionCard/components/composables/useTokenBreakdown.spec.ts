@@ -1,9 +1,12 @@
 import { removeBptFrom } from '@/composables/usePool';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import * as tokensProvider from '@/providers/tokens.provider';
+import { provideUserData } from '@/providers/user-data.provider';
 import { Pool } from '@/services/pool/types';
-import { BoostedPoolMock } from '@/__mocks__/pool';
-import { aWeightedPool } from '@/__mocks__/weighted-pool';
+import { anEmptyPool, BoostedPoolMock } from '@/__mocks__/pool';
+import { aPoolToken, aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposable } from '@tests/mount-helpers';
+import { zeroAddress } from 'ethereumjs-util';
 import { ref } from 'vue';
 import { useTokenBreakdown } from './useTokenBreakdown';
 
@@ -20,11 +23,7 @@ vi.mock('@/providers/tokens.provider', () => {
   };
 });
 
-vi.mock('@ethersproject/address', () => {
-  return {
-    getAddress: address => address,
-  };
-});
+initDependenciesWithDefaultMocks();
 
 const rootPool = BoostedPoolMock;
 // Values used to calculate userPoolPercentage (15)
@@ -34,8 +33,9 @@ rootPool.totalShares = '100';
 const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
 
 function mountTokenBreakdown(pool: Pool) {
-  const { result } = mountComposable(() =>
-    useTokenBreakdown(ref(removeBptFrom(pool)))
+  const { result } = mountComposable(
+    () => useTokenBreakdown(ref(removeBptFrom(pool))),
+    { extraProvidersCb: () => provideUserData() }
   );
   return result;
 }
@@ -134,6 +134,20 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     expect(wethData.getTokenPercentageLabel()).toEqual('0.02%');
     expect(groData.getTokenPercentageLabel()).toEqual('99.98%');
   });
+
+  it('shows 0% token percentage given a token without balance ', () => {
+    rootPool.totalLiquidity = '1900';
+    const tokenWithoutBalance = aPoolToken({
+      balance: '0',
+      address: zeroAddress(),
+    });
+    const pool = anEmptyPool([tokenWithoutBalance]);
+    const data = mountTokenBreakdown(pool);
+
+    const token = data.value[zeroAddress()];
+
+    expect(token.getTokenPercentageLabel()).toEqual('0%');
+  });
 });
 
 test('recalculates data when pool changes', async () => {
@@ -144,7 +158,9 @@ test('recalculates data when pool changes', async () => {
   const rootPool = ref(pool);
   const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
-  const { result } = mountComposable(() => useTokenBreakdown(rootPool));
+  const { result } = mountComposable(() => useTokenBreakdown(rootPool), {
+    extraProvidersCb: () => provideUserData(),
+  });
 
   let wethData = result.value[wethAddress];
 

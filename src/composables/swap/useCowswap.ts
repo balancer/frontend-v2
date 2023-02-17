@@ -23,6 +23,8 @@ import useTransactions from '../useTransactions';
 import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
 import { Goals, trackGoal } from '../useFathom';
+import useTranasactionErrors from '../useTransactionErrors';
+import { useI18n } from 'vue-i18n';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
@@ -90,8 +92,10 @@ export default function useCowswap({
   const store = useStore();
   const { account, getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
   const { balanceFor } = useTokens();
+  const { isUserRejected } = useTranasactionErrors();
+  const { t } = useI18n();
 
   // DATA
   const updatingQuotes = ref(false);
@@ -200,10 +204,10 @@ export default function useCowswap({
       const tokenInAmountEst = exactIn.value ? '' : '~';
       const tokenOutAmountEst = exactIn.value ? '~' : '';
 
-      const summary = `${tokenInAmountEst}${fNum2(
+      const summary = `${tokenInAmountEst}${fNum(
         sellAmount,
         FNumFormats.token
-      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum2(
+      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum(
         buyAmount,
         FNumFormats.token
       )} ${tokenOut.value.symbol}`;
@@ -237,9 +241,12 @@ export default function useCowswap({
       }
       confirming.value = false;
       trackGoal(Goals.CowswapSwap);
-    } catch (e) {
-      captureException(e);
-      state.submissionError = (e as Error).message;
+    } catch (error) {
+      if (!isUserRejected(error)) {
+        console.trace(error);
+        state.submissionError = t('swapException', ['Cowswap']);
+        captureException(new Error(state.submissionError, { cause: error }));
+      }
       confirming.value = false;
     }
   }

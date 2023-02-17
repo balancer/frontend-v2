@@ -9,7 +9,7 @@ import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
-import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
+import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, removeAddress } from '@/lib/utils';
@@ -35,8 +35,8 @@ import {
   ref,
   watch,
 } from 'vue';
-import { useQuery, useQueryClient } from 'vue-query';
 import { useUserSettings } from '../user-settings.provider';
+import { useQuery } from '@tanstack/vue-query';
 
 /**
  * TYPES
@@ -68,7 +68,10 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   const queryEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
   );
-  const queryJoinQuery = useQuery<void, Error>(
+  const queryJoinQuery = useQuery<
+    Awaited<ReturnType<typeof debounceQueryJoin>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Joins.QueryJoin(
       // If amountsIn change we should call queryJoin to get expected output.
       amountsIn,
@@ -99,7 +102,6 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
     RelayerType.BATCH_V4
   );
-  const queryClient = useQueryClient();
 
   /**
    * COMPUTED
@@ -236,7 +238,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
-    queryJoinQuery.remove.value();
+    queryJoinQuery.remove();
   }
 
   /**
@@ -247,11 +249,8 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     // return early
     if (!hasAmountsIn.value) {
       priceImpact.value = 0;
-      return;
+      return null;
     }
-
-    // Invalidate previous query in order to prevent stale data
-    queryClient.invalidateQueries(QUERY_JOIN_ROOT_KEY);
 
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
@@ -266,6 +265,8 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
 
       bptOut.value = output.bptOut;
       priceImpact.value = output.priceImpact;
+
+      return output;
     } catch (error) {
       captureException(error);
       throw new Error('Failed to construct join.', { cause: error });

@@ -34,6 +34,7 @@ import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQ
 import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
+import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 
 /**
  * STATE
@@ -60,10 +61,7 @@ const _isVeBalPool = isVeBalPool(poolId);
 const poolQuery = usePoolQuery(poolId, undefined, undefined);
 const pool = computed(() => poolQuery.data.value);
 const poolQueryLoading = computed(
-  () =>
-    poolQuery.isLoading.value ||
-    poolQuery.isIdle.value ||
-    Boolean(poolQuery.error.value)
+  () => poolQuery.isLoading.value || Boolean(poolQuery.error.value)
 );
 const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
@@ -78,9 +76,7 @@ const {
 const poolSnapshotsQuery = usePoolSnapshotsQuery(poolId, undefined, {
   refetchOnWindowFocus: false,
 });
-const isLoadingSnapshots = computed(
-  () => poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
-);
+const isLoadingSnapshots = computed(() => poolSnapshotsQuery.isLoading.value);
 
 const snapshots = computed(() => poolSnapshotsQuery.data.value);
 //#endregion
@@ -98,10 +94,7 @@ const historicalPrices = computed(() => historicalPricesQuery.data.value);
 //#region APR query
 const aprQuery = usePoolAprQuery(poolId);
 const loadingApr = computed(
-  () =>
-    aprQuery.isLoading.value ||
-    aprQuery.isIdle.value ||
-    Boolean(aprQuery.error.value)
+  () => aprQuery.isLoading.value || Boolean(aprQuery.error.value)
 );
 const poolApr = computed(() => aprQuery.data.value);
 //#endregion
@@ -177,6 +170,10 @@ const poolPremintedBptIndex = computed(() => {
   return preMintedBptIndex(pool.value) ?? null;
 });
 
+const showBrandedRedirectCard = computed(() => {
+  return POOLS.BrandedRedirect?.[poolId] || false;
+});
+
 /**
  * WATCHERS
  */
@@ -187,7 +184,7 @@ watch(poolQuery.error, () => {
       label: t('alerts.pool-fetch-error'),
       type: AlertType.ERROR,
       persistent: true,
-      action: poolQuery.refetch.value,
+      action: poolQuery.refetch,
       actionLabel: t('alerts.retry-label'),
       priority: AlertPriority.MEDIUM,
     });
@@ -264,8 +261,14 @@ watch(poolQuery.error, () => {
         </div>
       </div>
 
+      <BrandedRedirectCard
+        v-if="showBrandedRedirectCard"
+        :poolId="poolId"
+        class="order-1 lg:order-2 px-4 lg:px-0"
+      />
+
       <div
-        v-if="!isLiquidityBootstrappingPool"
+        v-else-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
         <BalStack vertical>

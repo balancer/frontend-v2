@@ -21,7 +21,7 @@ export class GaugesSubgraphClient {
   }
 
   public payloadFor(query) {
-    return JSON.stringify({ query: jsonToGraphQLQuery({ query }) });
+    return { query: jsonToGraphQLQuery({ query }) };
   }
 }
 

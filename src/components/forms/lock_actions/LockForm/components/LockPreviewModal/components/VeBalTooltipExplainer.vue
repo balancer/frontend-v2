@@ -22,7 +22,7 @@ defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { veBalTokenInfo } = useVeBal();
 const { t } = useI18n();
 
@@ -53,7 +53,7 @@ const conversationTableRows = computed(() => [
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-t">
         <h5>
-          {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
+          {{ fNum(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
         </h5>
       </div>

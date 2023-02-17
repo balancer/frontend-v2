@@ -3,9 +3,13 @@ import { initEthersContract } from './EthersContract';
 
 export const mockedOnchainTokenName = 'mocked onchain token name';
 
+export const defaultAdjustedBalance = '55555';
 export class EthersContractMock extends Contract {
   hasApprovedRelayer() {
     return false;
+  }
+  adjustedBalanceOf() {
+    return defaultAdjustedBalance;
   }
 }
 

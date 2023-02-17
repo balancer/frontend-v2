@@ -6,6 +6,7 @@ import useNumbers from '@/composables/useNumbers';
 import { isRequired, isValidAddress } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import { shorten } from '@/lib/utils';
+import useNetwork from '@/composables/useNetwork';
 
 const emit = defineEmits(['update:height']);
 
@@ -25,7 +26,7 @@ const cardWrapper = ref<HTMLElement>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const {
   initialFee,
   feeController,
@@ -42,7 +43,7 @@ const {
   isLoadingSimilarPools,
 } = usePoolCreation();
 const { account } = useWeb3();
-const { userNetworkConfig } = useWeb3();
+const { networkConfig } = useNetwork();
 
 /**
  * COMPUTED
@@ -68,7 +69,7 @@ const isProceedDisabled = computed(() => {
 // this does not need to be computed as it relies on a static
 const feeOptions = FIXED_FEE_OPTIONS.map(option => {
   return {
-    label: fNum2(option, {
+    label: fNum(option, {
       style: 'percent',
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
@@ -82,12 +83,14 @@ const feeOptions = FIXED_FEE_OPTIONS.map(option => {
  * FUNCTIONS
  */
 function onFixedInput(val: string): void {
-  initialFee.value = '0';
+  fee.value = '';
   initialFee.value = val;
   isCustomFee.value = false;
 }
 
 function onCustomInput(val: string): void {
+  if (val === '') return;
+
   initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
 
@@ -133,6 +136,8 @@ async function onChangeFeeController(val: string) {
     height: cardWrapper.value?.offsetHeight || 0,
   });
 }
+
+watch(fee, onCustomInput, { immediate: true });
 </script>
 
 <template>
@@ -140,9 +145,7 @@ async function onChangeFeeController(val: string) {
     <BalCard shadow="xl" noBorder>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
-          <span class="text-xs text-secondary">{{
-            userNetworkConfig?.name
-          }}</span>
+          <span class="text-xs text-secondary">{{ networkConfig?.name }}</span>
           <BalStack horizontal align="center" spacing="xs">
             <button
               class="flex text-blue-500 hover:text-blue-700"
@@ -176,20 +179,7 @@ async function onChangeFeeController(val: string) {
                   placeholder="0.1"
                   type="number"
                   step="any"
-                  @update:modelValue="onCustomInput"
                 />
-                <!-- <BalTextInput
-              class="w-20"
-              v-model="fee"
-              placeholder="0.1"
-              size="xs"
-              type="number"
-              @input="onCustomInput"
-            >
-              <template v-slot:append>
-                %
-              </template>
-            </BalTextInput> -->
                 <div class="px-1">%</div>
               </div>
             </div>
