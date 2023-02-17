@@ -1,15 +1,10 @@
-import {
-  Network,
-  AprBreakdown,
-  PoolType,
-  APR_THRESHOLD,
-} from '@balancer-labs/sdk';
+import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
