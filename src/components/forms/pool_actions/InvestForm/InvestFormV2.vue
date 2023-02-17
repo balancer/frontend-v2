@@ -36,6 +36,7 @@ const props = defineProps<Props>();
 /**
  * STATE
  */
+const showInvestPreview = ref(false);
 const showStakeModal = ref(false);
 
 /**
@@ -56,7 +57,6 @@ const {
   hasValidInputs,
   hasAmountsIn,
   queryError,
-  showPreview,
   setAmountsIn,
   addTokensIn,
 } = useJoinPool();
@@ -106,7 +106,7 @@ watch(
   ) => {
     // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
     // only if preview modal is not open
-    if (!showPreview.value) {
+    if (!showInvestPreview.value) {
       const hasTabChanged = prevIsSingleAsset !== isSingleAsset;
       const hasUserTokensChanged = !isEqual(
         prevPoolTokensWithBalance,
@@ -204,15 +204,15 @@ watch(
           !!queryError
         "
         block
-        @click="showPreview = true"
+        @click="showInvestPreview = true"
       />
     </div>
 
     <teleport to="#modal">
       <InvestPreviewModalV2
-        v-if="showPreview"
+        v-if="showInvestPreview"
         :pool="pool"
-        @close="showPreview = false"
+        @close="showInvestPreview = false"
         @show-stake-modal="showStakeModal = true"
       />
       <StakePreviewModal

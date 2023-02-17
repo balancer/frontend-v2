@@ -14,6 +14,11 @@ import { isDeep, isPreMintedBptType } from '@/composables/usePool';
 import { useI18n } from 'vue-i18n';
 
 /**
+ * STATE
+ */
+const showPreview = ref(false);
+
+/**
  * COMPOSABLES
  */
 const { t } = useI18n();
@@ -36,7 +41,6 @@ const {
   hasAcceptedHighPriceImpact,
   hasAmountsOut,
   validAmounts,
-  showPreview,
 } = useExitPool();
 
 /**

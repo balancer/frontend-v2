@@ -96,7 +96,6 @@ const provider = (props: Props) => {
     valid: true,
   });
   const propAmountsOut = ref<AmountOut[]>([]);
-  const showPreview = ref<boolean>(false);
 
   /**
    * SERVICES
@@ -514,7 +513,6 @@ const provider = (props: Props) => {
     bptInValid,
     approvalActions,
     exit,
-    showPreview,
   };
 };
 

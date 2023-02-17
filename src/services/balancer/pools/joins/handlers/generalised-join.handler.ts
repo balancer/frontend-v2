@@ -61,13 +61,14 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const poolId = this.pool.value.id;
     const hasInvalidAmounts = amountsIn.some(item => !item.valid);
 
-    // Static call simulation is more accurate than VaultModel, but requires relayer approval.
+    // Static call simulation is more accurate than VaultModel, but requires relayer approval,
+    // token approvals, and account to have enought token balance.
     const simulationType: SimulationType =
       !hasInvalidAmounts && !approvalActions.length
         ? SimulationType.Static
         : SimulationType.VaultModel;
 
-    console.log({ simulationType, hasInvalidAmounts });
+    console.log({ simulationType });
 
     this.lastJoinRes = await balancer.pools.generalisedJoin(
       poolId,

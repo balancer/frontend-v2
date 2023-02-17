@@ -72,7 +72,6 @@ const provider = (props: Props) => {
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
-  const showPreview = ref<boolean>(false);
   const approvalActions = ref<TransactionActionInfo[]>([]);
 
   const debounceQueryJoin = debounce(queryJoin, 1000);
@@ -354,7 +353,6 @@ const provider = (props: Props) => {
     // State
     amountsIn,
     highPriceImpactAccepted,
-    showPreview,
     pool: readonly(pool),
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
