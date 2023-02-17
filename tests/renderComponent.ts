@@ -1,12 +1,12 @@
-import { RenderOptions, render } from '@testing-library/vue';
-import { registerTestPlugins } from './registerTestPlugins';
-import { mergeWith } from 'lodash';
-import { RouterLinkStub } from '@vue/test-utils';
 import {
   PoolStakingProviderResponse,
   PoolStakingProviderSymbol,
 } from '@/providers/local/pool-staking.provider';
+import { render, RenderOptions } from '@testing-library/vue';
+import { RouterLinkStub } from '@vue/test-utils';
+import { mergeWith } from 'lodash';
 import { computed } from 'vue';
+import { registerTestPlugins } from './registerTestPlugins';
 
 const DefaultTestPlugins = {
   install(app) {

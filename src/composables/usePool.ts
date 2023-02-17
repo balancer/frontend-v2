@@ -1,4 +1,9 @@
-import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
+import {
+  Network,
+  AprBreakdown,
+  PoolType,
+  APR_THRESHOLD,
+} from '@balancer-labs/sdk';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
@@ -558,7 +563,7 @@ export function isJoinsDisabled(id: string): boolean {
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
 
   /**
    * Returns pool weights label
@@ -575,7 +580,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     return Object.values(pool.onchain.tokens)
       .map(
         token =>
-          `${fNum2(token.weight, {
+          `${fNum(token.weight, {
             style: 'percent',
             maximumFractionDigits: 0,
           })} ${token.symbol}`

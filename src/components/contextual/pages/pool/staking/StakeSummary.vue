@@ -16,7 +16,7 @@ defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 </script>
 
 <template>
@@ -31,7 +31,7 @@ const { fNum2 } = useNumbers();
       </template>
       <template #value>
         <span class="capitalize">
-          {{ fNum2(fiatValue, FNumFormats.fiat) }}
+          {{ fNum(fiatValue, FNumFormats.fiat) }}
         </span>
         <BalTooltip
           :text="
@@ -48,7 +48,7 @@ const { fNum2 } = useNumbers();
     <BalDataListRow :label="$t('staking.newTotalShare')">
       <template #value>
         <span class="capitalize">
-          {{ fNum2(sharePercentage, FNumFormats.percent) }}
+          {{ fNum(sharePercentage, FNumFormats.percent) }}
         </span>
         <BalTooltip
           :text="$t('staking.totalShareTooltip')"

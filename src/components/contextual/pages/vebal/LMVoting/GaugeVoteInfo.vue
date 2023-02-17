@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {});
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -56,7 +56,7 @@ const voteTextClass = computed(() => {
  */
 function formatVotesAsPercent(votes: string): string {
   const normalizedVotes = scale(bnum(votes), -18);
-  return fNum2(normalizedVotes.toString(), {
+  return fNum(normalizedVotes.toString(), {
     style: 'percent',
     maximumFractionDigits: 2,
     fixedFormat: true,

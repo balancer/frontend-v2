@@ -37,7 +37,7 @@ const feeDistributorV2 = new FeeDistributor(
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { account } = useWeb3();
 const protocolRewardsQuery = useProtocolRewardsQuery();
 
@@ -59,9 +59,9 @@ function claimTx() {
     color="gradient"
     size="sm"
     :actionFn="claimTx"
-    :onConfirmFn="protocolRewardsQuery.refetch.value"
+    :onConfirmFn="protocolRewardsQuery.refetch"
     action="claim"
-    :summary="`${t('claim')} ${fNum2(fiatValue, FNumFormats.fiat)}`"
+    :summary="`${t('claim')} ${fNum(fiatValue, FNumFormats.fiat)}`"
     :confirmingLabel="$t('claiming')"
     v-bind="$attrs"
   />

@@ -25,7 +25,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const { fNum2 } = useNumbers();
           {{ props.token?.symbol }}
           <span v-if="!isStableLike(pool.poolType) && !isDeep(pool)">
             {{
-              fNum2(weight, {
+              fNum(weight, {
                 style: 'percent',
                 maximumFractionDigits: 0,
               })
@@ -55,10 +55,10 @@ const { fNum2 } = useNumbers();
       <BalLoadingBlock v-if="loading" class="w-20 h-12" />
       <template v-else>
         <span class="text-xl font-medium break-words">
-          {{ fNum2(value, FNumFormats.token) }}
+          {{ fNum(value, FNumFormats.token) }}
         </span>
         <span class="text-sm text-gray-600 dark:text-gray-400">
-          {{ fNum2(fiatAmountOut || '0', FNumFormats.fiat) }}
+          {{ fNum(fiatAmountOut || '0', FNumFormats.fiat) }}
         </span>
       </template>
     </div>
