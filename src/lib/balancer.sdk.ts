@@ -27,6 +27,8 @@ export const balancer = new BalancerSDK({
 export const hasFetchedPoolsForSor = ref(false);
 
 export async function fetchPoolsForSor() {
+  console.log('Avoiding fetch pools for sor');
+  return;
   if (hasFetchedPoolsForSor.value) return;
 
   console.time('fetchPoolsForSor');
