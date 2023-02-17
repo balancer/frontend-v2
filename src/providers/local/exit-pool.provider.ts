@@ -114,8 +114,6 @@ const provider = (props: Props) => {
     RelayerType.BATCH_V4
   );
 
-  const { isWeightedPool } = usePool(pool);
-
   const debounceQueryExit = debounce(queryExit, 1000);
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
     leading: true,

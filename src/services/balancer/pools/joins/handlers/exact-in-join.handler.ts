@@ -4,7 +4,6 @@ import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import {
   bnum,
@@ -64,7 +63,7 @@ export class ExactInJoinHandler implements JoinPoolHandler {
 
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await balancer.pools.find(this.pool.value.id);
+    const sdkPool = await this.sdk.pools.find(this.pool.value.id);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     const tokensListForSor = tokensList.map(address =>
@@ -82,19 +81,18 @@ export class ExactInJoinHandler implements JoinPoolHandler {
       throw new Error('Failed to fetch expected output.');
     }
 
-    // TODO: Use expectedBPTOut once SDK supports it
-    const { minBPTOut } = this.lastJoinRes;
-    if (bnum(minBPTOut).eq(0))
+    const { expectedBPTOut } = this.lastJoinRes;
+    if (bnum(expectedBPTOut).eq(0))
       throw new Error('Failed to fetch expected output.');
 
     const bptOut = formatFixed(
-      minBPTOut,
+      expectedBPTOut,
       this.pool.value.onchain?.decimals || 18
     );
 
     const evmPriceImpact = await sdkPool.calcPriceImpact(
       evmAmountsIn,
-      minBPTOut,
+      expectedBPTOut,
       true
     );
 
