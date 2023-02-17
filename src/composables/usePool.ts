@@ -9,7 +9,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -40,7 +40,9 @@ export function addressFor(poolId: string): string {
 
 export function isLinear(poolType: PoolType): boolean {
   return (
-    poolType === PoolType.AaveLinear || poolType === PoolType.ERC4626Linear
+    poolType === PoolType.AaveLinear ||
+    poolType === PoolType.ERC4626Linear ||
+    poolType === PoolType.EulerLinear
   );
 }
 
