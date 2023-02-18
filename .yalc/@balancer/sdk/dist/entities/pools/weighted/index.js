@@ -2,23 +2,25 @@ import { PoolType, SwapKind } from '../../../types';
 import { Token, TokenAmount } from '../../';
 import { MathSol, WAD, getPoolAddress, unsafeFastParseEther } from '../../../utils';
 import { _calcOutGivenIn, _calcInGivenOut } from './math';
-export class WeightedPoolToken extends TokenAmount {
-    constructor(token, amount, weight) {
+class WeightedPoolToken extends TokenAmount {
+    constructor(token, amount, weight, index) {
         super(token, amount);
         this.weight = BigInt(weight);
+        this.index = index;
     }
 }
 export class WeightedPool {
     static fromRawPool(pool) {
-        const poolTokens = pool.tokens.map(t => {
-            if (!t.weight)
+        const poolTokens = [];
+        for (const t of pool.tokens) {
+            if (!t.weight) {
                 throw new Error('Weighted pool token does not have a weight');
+            }
             const token = new Token(1, t.address, t.decimals, t.symbol, t.name);
             const tokenAmount = TokenAmount.fromHumanAmount(token, t.balance);
-            return new WeightedPoolToken(token, tokenAmount.amount, unsafeFastParseEther(t.weight));
-        });
-        const weightedPool = new WeightedPool(pool.id, pool.poolTypeVersion, BigInt(unsafeFastParseEther(pool.swapFee)), poolTokens);
-        return weightedPool;
+            poolTokens.push(new WeightedPoolToken(token, tokenAmount.amount, unsafeFastParseEther(t.weight), t.index));
+        }
+        return new WeightedPool(pool.id, pool.poolTypeVersion, unsafeFastParseEther(pool.swapFee), poolTokens);
     }
     constructor(id, poolTypeVersion, swapFee, tokens) {
         this.poolType = PoolType.Weighted;
@@ -26,22 +28,17 @@ export class WeightedPool {
         this.MAX_OUT_RATIO = 300000000000000000n; // 0.3
         this.id = id;
         this.poolTypeVersion = poolTypeVersion;
-        this.tokens = tokens;
         this.address = getPoolAddress(id);
         this.swapFee = swapFee;
+        this.tokens = tokens;
+        this.tokenMap = new Map(tokens.map(token => [token.token.address, token]));
     }
     getNormalizedLiquidity(tokenIn, tokenOut) {
-        const tIn = this.tokens.find(t => t.token.address === tokenIn.address);
-        const tOut = this.tokens.find(t => t.token.address === tokenOut.address);
-        if (!tIn || !tOut)
-            throw new Error('Pool does not contain the tokens provided');
+        const { tIn, tOut } = this.getRequiredTokenPair(tokenIn, tokenOut);
         return (tIn.amount * tOut.weight) / (tIn.weight + tOut.weight);
     }
     getLimitAmountSwap(tokenIn, tokenOut, swapKind) {
-        const tIn = this.tokens.find(t => t.token.address === tokenIn.address);
-        const tOut = this.tokens.find(t => t.token.address === tokenOut.address);
-        if (!tIn || !tOut)
-            throw new Error('Pool does not contain the tokens provided');
+        const { tIn, tOut } = this.getRequiredTokenPair(tokenIn, tokenOut);
         if (swapKind === SwapKind.GivenIn) {
             return (tIn.amount * this.MAX_IN_RATIO) / WAD;
         }
@@ -50,35 +47,37 @@ export class WeightedPool {
         }
     }
     swapGivenIn(tokenIn, tokenOut, swapAmount) {
-        const tIn = this.tokens.find(t => t.token.address === tokenIn.address);
-        const tOut = this.tokens.find(t => t.token.address === tokenOut.address);
-        if (!tIn || !tOut)
-            throw new Error('Pool does not contain the tokens provided');
-        if (swapAmount.amount > this.getLimitAmountSwap(tokenIn, tokenOut, SwapKind.GivenIn))
+        const { tIn, tOut } = this.getRequiredTokenPair(tokenIn, tokenOut);
+        if (swapAmount.amount > this.getLimitAmountSwap(tokenIn, tokenOut, SwapKind.GivenIn)) {
             throw new Error('Swap amount exceeds the pool limit');
+        }
         const amountWithFee = this.subtractSwapFeeAmount(swapAmount);
         const tokenOutScale18 = _calcOutGivenIn(tIn.scale18, tIn.weight, tOut.scale18, tOut.weight, amountWithFee.scale18, this.poolTypeVersion);
-        const tokenOutAmount = TokenAmount.fromScale18Amount(tokenOut, tokenOutScale18);
-        return tokenOutAmount;
+        return TokenAmount.fromScale18Amount(tokenOut, tokenOutScale18);
     }
     swapGivenOut(tokenIn, tokenOut, swapAmount) {
-        const tIn = this.tokens.find(t => t.token.address === tokenIn.address);
-        const tOut = this.tokens.find(t => t.token.address === tokenOut.address);
-        if (!tIn || !tOut)
-            throw new Error('Pool does not contain the tokens provided');
-        if (swapAmount.amount > this.getLimitAmountSwap(tokenIn, tokenOut, SwapKind.GivenOut))
+        const { tIn, tOut } = this.getRequiredTokenPair(tokenIn, tokenOut);
+        if (swapAmount.amount > this.getLimitAmountSwap(tokenIn, tokenOut, SwapKind.GivenOut)) {
             throw new Error('Swap amount exceeds the pool limit');
+        }
         const tokenInScale18 = _calcInGivenOut(tIn.scale18, tIn.weight, tOut.scale18, tOut.weight, swapAmount.scale18, this.poolTypeVersion);
         const tokenInAmount = TokenAmount.fromScale18Amount(tokenIn, tokenInScale18, true);
-        const amountWithFee = this.addSwapFeeAmount(tokenInAmount);
-        return amountWithFee;
+        return this.addSwapFeeAmount(tokenInAmount);
     }
     subtractSwapFeeAmount(amount) {
-        const feeAmount = amount.mulFixed(this.swapFee);
+        const feeAmount = amount.mulUpFixed(this.swapFee);
         return amount.sub(feeAmount);
     }
     addSwapFeeAmount(amount) {
         return amount.divUpFixed(MathSol.complementFixed(this.swapFee));
+    }
+    getRequiredTokenPair(tokenIn, tokenOut) {
+        const tIn = this.tokenMap.get(tokenIn.address);
+        const tOut = this.tokenMap.get(tokenOut.address);
+        if (!tIn || !tOut) {
+            throw new Error('Pool does not contain the tokens provided');
+        }
+        return { tIn, tOut };
     }
 }
 //# sourceMappingURL=index.js.map

@@ -16,6 +16,8 @@ export class Swap {
         return new Swap({ paths, swapKind, swapAmount });
     }
     constructor({ paths, swapKind, swapAmount, }) {
+        if (paths.length === 0)
+            throw new Error('Invalid swap: must contain at least 1 path.');
         this.paths = paths;
         this.swapKind = swapKind;
         this.isNativeSwap = swapAmount.token.isNative;

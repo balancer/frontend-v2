@@ -8,4 +8,16 @@ export const getPoolAddress = (poolId) => {
         throw new Error('Invalid poolId length');
     return poolId.slice(0, 42).toLowerCase();
 };
+export function poolIsLinearPool(poolType) {
+    return poolType.includes('Linear');
+}
+export function poolHasVirtualSupply(poolType) {
+    return poolType === 'PhantomStable' || poolIsLinearPool(poolType);
+}
+export function poolHasActualSupply(poolType) {
+    return poolType === 'ComposableStable';
+}
+export function poolHasPercentFee(poolType) {
+    return poolType === 'Element';
+}
 //# sourceMappingURL=pool.js.map

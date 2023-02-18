@@ -1,6 +1,5 @@
-import { FunctionFragment } from '@ethersproject/abi';
-import { Interface } from '@ethersproject/abi';
-import { LoadPoolsOptions } from '../data/types';
+import { FunctionFragment, Interface } from '@ethersproject/abi';
+import { SwapOptions } from '../types';
 export declare function jsonRpcFetch<T>({ rpcUrl, from, to, contractInterface, functionFragment, values, options, }: {
     rpcUrl: string;
     from?: string;
@@ -8,5 +7,9 @@ export declare function jsonRpcFetch<T>({ rpcUrl, from, to, contractInterface, f
     contractInterface: Interface;
     functionFragment: FunctionFragment | string;
     values?: ReadonlyArray<any>;
-    options?: LoadPoolsOptions;
+    options?: SwapOptions;
 }): Promise<T>;
+export declare function jsonRpcGetBlockTimestampByNumber({ rpcUrl, blockNumber, }: {
+    rpcUrl: string;
+    blockNumber: number;
+}): Promise<number>;

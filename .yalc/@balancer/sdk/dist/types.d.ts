@@ -1,7 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Token, BasePool, BasePoolFactory } from './entities';
+import { Token, BasePool, BasePoolFactory, TokenAmount, Swap } from './entities';
 import { BaseProvider } from '@ethersproject/providers';
 import { PoolDataEnricher, PoolDataProvider } from './data/types';
+import { PathGraphTraversalConfig } from './pathGraph/pathGraphTypes';
 export declare enum PoolType {
     Weighted = "Weighted",
     ComposableStable = "ComposableStable",
@@ -17,6 +18,7 @@ export interface SwapOptions {
     slippage?: BigNumber;
     funds?: FundManagement;
     deadline?: BigNumber;
+    graphTraversalConfig?: Partial<PathGraphTraversalConfig>;
 }
 export interface FundManagement {
     sender: string;
@@ -25,7 +27,6 @@ export interface FundManagement {
     toInternalBalance: boolean;
 }
 export type SorOptions = {
-    onchainBalances: boolean;
     minPercentForPath: number;
 };
 export type SorConfig = {
@@ -35,6 +36,7 @@ export type SorConfig = {
     customPoolFactories?: BasePoolFactory[];
     poolDataProviders: PoolDataProvider | PoolDataProvider[];
     poolDataEnrichers?: PoolDataEnricher | PoolDataEnricher[];
+    rpcUrl: string;
 };
 export type PoolFilters = {
     topN: number;
@@ -60,3 +62,8 @@ export interface BatchSwapStep {
     amount: string;
     userData: string;
 }
+export interface SwapInfo {
+    quote: TokenAmount;
+    swap: Swap;
+}
+export type HumanAmount = string;

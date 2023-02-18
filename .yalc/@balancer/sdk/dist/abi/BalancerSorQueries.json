@@ -84,7 +84,7 @@
                     },
                     {
                         "internalType": "bool",
-                        "name": "loadTokenRates",
+                        "name": "loadScalingFactors",
                         "type": "bool"
                     },
                     {
@@ -119,7 +119,7 @@
                     },
                     {
                         "internalType": "uint256[]",
-                        "name": "tokenRatePoolIdxs",
+                        "name": "scalingFactorPoolIdxs",
                         "type": "uint256[]"
                     },
                     {
@@ -162,7 +162,7 @@
             },
             {
                 "internalType": "uint256[][]",
-                "name": "tokenRates",
+                "name": "scalingFactors",
                 "type": "uint256[][]"
             },
             {
@@ -204,6 +204,25 @@
                 "internalType": "address[]",
                 "name": "poolAddresses",
                 "type": "address[]"
+            }
+        ],
+        "name": "getScalingFactorsForPools",
+        "outputs": [
+            {
+                "internalType": "uint256[][]",
+                "name": "",
+                "type": "uint256[][]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "poolAddresses",
+                "type": "address[]"
             },
             {
                 "internalType": "enum SwapFeeType[]",
@@ -217,30 +236,6 @@
                 "internalType": "uint256[]",
                 "name": "",
                 "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes32[]",
-                "name": "poolIds",
-                "type": "bytes32[]"
-            },
-            {
-                "internalType": "address[]",
-                "name": "poolAddresses",
-                "type": "address[]"
-            }
-        ],
-        "name": "getTokenRatesForPools",
-        "outputs": [
-            {
-                "internalType": "uint256[][]",
-                "name": "",
-                "type": "uint256[][]"
             }
         ],
         "stateMutability": "view",

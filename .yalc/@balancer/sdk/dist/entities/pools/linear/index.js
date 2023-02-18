@@ -1,110 +1,114 @@
 import { PoolType, SwapKind } from '../../../types';
 import { Token, TokenAmount } from '../../';
-import { getPoolAddress, MAX_UINT256, unsafeFastParseEther, WAD } from '../../../utils';
+import { ALMOST_ONE, getPoolAddress, MAX_UINT112, unsafeFastParseEther, WAD } from '../../../utils';
 import { _calcBptOutPerMainIn, _calcBptOutPerWrappedIn, _calcMainOutPerBptIn, _calcMainOutPerWrappedIn, _calcWrappedOutPerBptIn, _calcWrappedOutPerMainIn, _calcMainInPerWrappedOut, _calcMainInPerBptOut, _calcWrappedInPerMainOut, _calcWrappedInPerBptOut, _calcBptInPerWrappedOut, _calcBptInPerMainOut, } from './math';
-const ALMOST_ONE = BigInt(unsafeFastParseEther('0.99'));
-const ONE = BigInt(unsafeFastParseEther('1'));
-const MAX_RATIO = BigInt(unsafeFastParseEther('10'));
-const MAX_TOKEN_BALANCE = MAX_UINT256 - 1n;
-export class BPT extends TokenAmount {
-    constructor(token, amount) {
+const ONE = unsafeFastParseEther('1');
+const MAX_RATIO = unsafeFastParseEther('10');
+const MAX_TOKEN_BALANCE = MAX_UINT112 - 1n;
+class BPT extends TokenAmount {
+    constructor(token, amount, index) {
         super(token, amount);
-        this.rate = 1n;
-        this.virtualBalance = MAX_UINT256 - this.amount;
+        this.rate = WAD;
+        this.virtualBalance = MAX_TOKEN_BALANCE - this.amount;
+        this.index = index;
     }
 }
-export class WrappedToken extends TokenAmount {
-    constructor(token, amount, rate) {
+class WrappedToken extends TokenAmount {
+    constructor(token, amount, rate, index) {
         super(token, amount);
         this.rate = BigInt(rate);
         this.scale18 = (this.amount * this.scalar * this.rate) / WAD;
+        this.index = index;
     }
 }
 export class LinearPool {
     static fromRawPool(pool) {
         const orderedTokens = pool.tokens.sort((a, b) => a.index - b.index);
-        const swapFee = BigInt(unsafeFastParseEther(pool.swapFee).toString());
+        const swapFee = unsafeFastParseEther(pool.swapFee);
         const mT = orderedTokens[pool.mainIndex];
         const mToken = new Token(1, mT.address, mT.decimals, mT.symbol, mT.name);
         const lowerTarget = TokenAmount.fromHumanAmount(mToken, pool.lowerTarget);
         const upperTarget = TokenAmount.fromHumanAmount(mToken, pool.upperTarget);
         const mTokenAmount = TokenAmount.fromHumanAmount(mToken, mT.balance);
         const wT = orderedTokens[pool.wrappedIndex];
-        const wTRate = BigInt(unsafeFastParseEther(wT.priceRate || '1.0').toString());
+        const wTRate = unsafeFastParseEther(wT.priceRate || '1.0');
         const wToken = new Token(1, wT.address, wT.decimals, wT.symbol, wT.name);
         const wTokenAmount = TokenAmount.fromHumanAmount(wToken, wT.balance);
-        const wrappedToken = new WrappedToken(wToken, wTokenAmount.amount, wTRate);
+        const wrappedToken = new WrappedToken(wToken, wTokenAmount.amount, wTRate, wT.index);
         const bptIndex = orderedTokens.findIndex(t => t.address === pool.address);
         const bT = orderedTokens[bptIndex];
         const bToken = new Token(1, bT.address, bT.decimals, bT.symbol, bT.name);
         const bTokenAmount = TokenAmount.fromHumanAmount(bToken, bT.balance);
-        const bptToken = new BPT(bToken, bTokenAmount.amount);
-        const tokens = [mTokenAmount, wrappedToken, bptToken];
+        const bptToken = new BPT(bToken, bTokenAmount.amount, bT.index);
         const params = {
             fee: swapFee,
             rate: wTRate,
             lowerTarget: lowerTarget.scale18,
             upperTarget: upperTarget.scale18,
         };
-        const linearPool = new LinearPool(pool.id, pool.poolTypeVersion, tokens, params, mTokenAmount, wrappedToken, bptToken);
-        return linearPool;
+        return new LinearPool(pool.id, pool.poolTypeVersion, params, mTokenAmount, wrappedToken, bptToken);
     }
-    constructor(id, poolTypeVersion, tokens, params, mainToken, wrappedToken, bptToken) {
+    constructor(id, poolTypeVersion, params, mainToken, wrappedToken, bptToken) {
         this.poolType = PoolType.AaveLinear;
         this.id = id;
         this.poolTypeVersion = poolTypeVersion;
         this.swapFee = params.fee;
-        this.tokens = tokens;
         this.mainToken = mainToken;
         this.wrappedToken = wrappedToken;
         this.bptToken = bptToken;
         this.address = getPoolAddress(id);
         this.params = params;
+        this.tokens = [this.mainToken, this.wrappedToken, this.bptToken];
+        this.tokenMap = new Map(this.tokens.map(token => [token.token.address, token]));
     }
     getNormalizedLiquidity(tokenIn, tokenOut) {
-        const tIn = this.tokens.find(t => t.token.address === tokenIn.address);
-        const tOut = this.tokens.find(t => t.token.address === tokenOut.address);
+        const tIn = this.tokenMap.get(tokenIn.address);
+        const tOut = this.tokenMap.get(tokenOut.address);
         if (!tIn || !tOut)
             throw new Error('Pool does not contain the tokens provided');
         // TODO: Fix linear normalized liquidity calc
         return tOut.amount;
     }
     swapGivenIn(tokenIn, tokenOut, swapAmount) {
-        const tInIndex = this.tokens.findIndex(t => t.token.address === tokenIn.address);
-        if (swapAmount.amount > this.tokens[tInIndex].amount)
-            throw new Error('Swap amount exceeds the pool limit');
+        const tOut = this.tokenMap.get(tokenOut.address);
+        let output;
         if (tokenIn.isEqual(this.mainToken.token)) {
             if (tokenOut.isEqual(this.wrappedToken.token)) {
-                return this._exactMainTokenInForWrappedOut(swapAmount);
+                output = this._exactMainTokenInForWrappedOut(swapAmount);
             }
             else {
-                return this._exactMainTokenInForBptOut(swapAmount);
+                output = this._exactMainTokenInForBptOut(swapAmount);
             }
         }
         else if (tokenIn.isEqual(this.wrappedToken.token)) {
             if (tokenOut.isEqual(this.mainToken.token)) {
-                return this._exactWrappedTokenInForMainOut(swapAmount);
+                output = this._exactWrappedTokenInForMainOut(swapAmount);
             }
             else {
-                return this._exactWrappedTokenInForBptOut(swapAmount);
+                output = this._exactWrappedTokenInForBptOut(swapAmount);
             }
         }
         else if (tokenIn.isEqual(this.bptToken.token)) {
             if (tokenOut.isEqual(this.mainToken.token)) {
-                return this._exactBptInForMainOut(swapAmount);
+                output = this._exactBptInForMainOut(swapAmount);
             }
             else {
-                return this._exactBptInForWrappedOut(swapAmount);
+                output = this._exactBptInForWrappedOut(swapAmount);
             }
         }
         else {
             throw new Error('Pool does not contain the tokens provided');
         }
+        if (output.amount > (tOut?.amount || 0n)) {
+            throw new Error('Swap amount exceeds the pool limit');
+        }
+        return output;
     }
     swapGivenOut(tokenIn, tokenOut, swapAmount) {
-        const tOutIndex = this.tokens.findIndex(t => t.token.address === tokenOut.address);
-        if (swapAmount.amount > this.tokens[tOutIndex].amount)
+        const tOut = this.tokenMap.get(tokenOut.address);
+        if (swapAmount.amount > (tOut?.amount || 0n)) {
             throw new Error('Swap amount exceeds the pool limit');
+        }
         if (tokenIn.isEqual(this.mainToken.token)) {
             if (tokenOut.isEqual(this.wrappedToken.token)) {
                 return this._mainTokenInForExactWrappedOut(swapAmount);
@@ -134,8 +138,8 @@ export class LinearPool {
         }
     }
     getLimitAmountSwap(tokenIn, tokenOut, swapKind) {
-        const tIn = this.tokens.find(t => t.token.address === tokenIn.address);
-        const tOut = this.tokens.find(t => t.token.address === tokenOut.address);
+        const tIn = this.tokenMap.get(tokenIn.address);
+        const tOut = this.tokenMap.get(tokenOut.address);
         if (!tIn || !tOut)
             throw new Error('Pool does not contain the tokens provided');
         if (swapKind === SwapKind.GivenIn) {

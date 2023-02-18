@@ -10,10 +10,10 @@ export declare class PathGraph {
         pools: BasePool[];
         maxPathsPerTokenPair?: number;
     }): void;
-    getCandidatePaths({ tokenIn, tokenOut, pathConfig, }: {
+    getCandidatePaths({ tokenIn, tokenOut, graphTraversalConfig, }: {
         tokenIn: Token;
         tokenOut: Token;
-        pathConfig?: Partial<PathGraphTraversalConfig>;
+        graphTraversalConfig?: Partial<PathGraphTraversalConfig>;
     }): Path[];
     private sortAndFilterPaths;
     private buildPoolAddressMap;

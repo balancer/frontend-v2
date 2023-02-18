@@ -2,15 +2,17 @@ import { PoolType, SwapKind } from '../../../types';
 import { BigintIsh, Token, TokenAmount } from '../../';
 import { BasePool } from '../../pools';
 import { RawLinearPool } from '../../../data/types';
-export declare class BPT extends TokenAmount {
+declare class BPT extends TokenAmount {
     readonly rate: bigint;
     readonly virtualBalance: bigint;
-    constructor(token: Token, amount: BigintIsh);
+    readonly index: number;
+    constructor(token: Token, amount: BigintIsh, index: number);
 }
-export declare class WrappedToken extends TokenAmount {
+declare class WrappedToken extends TokenAmount {
     readonly rate: bigint;
     readonly scale18: bigint;
-    constructor(token: Token, amount: BigintIsh, rate: BigintIsh);
+    readonly index: number;
+    constructor(token: Token, amount: BigintIsh, rate: BigintIsh, index: number);
 }
 export type Params = {
     fee: bigint;
@@ -19,18 +21,19 @@ export type Params = {
     upperTarget: bigint;
 };
 export declare class LinearPool implements BasePool {
-    id: string;
-    address: string;
-    poolType: PoolType;
-    poolTypeVersion: number;
-    swapFee: bigint;
-    tokens: Array<BPT | TokenAmount | WrappedToken>;
-    mainToken: TokenAmount;
-    wrappedToken: WrappedToken;
-    bptToken: BPT;
-    params: Params;
+    readonly id: string;
+    readonly address: string;
+    readonly poolType: PoolType;
+    readonly poolTypeVersion: number;
+    readonly swapFee: bigint;
+    readonly mainToken: TokenAmount;
+    readonly wrappedToken: WrappedToken;
+    readonly bptToken: BPT;
+    readonly params: Params;
+    readonly tokens: (BPT | WrappedToken | TokenAmount)[];
+    private readonly tokenMap;
     static fromRawPool(pool: RawLinearPool): LinearPool;
-    constructor(id: string, poolTypeVersion: number, tokens: Array<BPT | TokenAmount | WrappedToken>, params: Params, mainToken: TokenAmount, wrappedToken: WrappedToken, bptToken: BPT);
+    constructor(id: string, poolTypeVersion: number, params: Params, mainToken: TokenAmount, wrappedToken: WrappedToken, bptToken: BPT);
     getNormalizedLiquidity(tokenIn: Token, tokenOut: Token): bigint;
     swapGivenIn(tokenIn: Token, tokenOut: Token, swapAmount: TokenAmount): TokenAmount;
     swapGivenOut(tokenIn: Token, tokenOut: Token, swapAmount: TokenAmount): TokenAmount;
@@ -48,3 +51,4 @@ export declare class LinearPool implements BasePool {
     private _bptInForExactMainOut;
     private _bptInForExactWrappedOut;
 }
+export {};

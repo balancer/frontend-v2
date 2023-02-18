@@ -177,12 +177,11 @@ export default function useSor({
       configService.network.addresses.weth
     );
 
-    console.log(`rpc ${configService.network.rpc}`);
     const subgraphPoolDataService = new SubgraphPoolProvider(
       configService.network.subgraph
     );
 
-    const SOR_QUERIES = '0x40f7218fa50ead995c4343eB0bB46dD414F9da7A';
+    const SOR_QUERIES = '0x6732d651EeA0bc98FcF4EFF8B62e0CdCB0064f4b';
 
     const rpcUrl = template(
       configService.getNetworkConfig(configService.network.key).rpc,
@@ -193,9 +192,8 @@ export default function useSor({
     );
 
     const onChainPoolDataEnricher = new OnChainPoolDataEnricher(
-      configService.network.addresses.vault,
-      SOR_QUERIES,
-      rpcUrl
+      rpcUrl,
+      SOR_QUERIES
     );
 
     smartOrderRouter = new SmartOrderRouter({
@@ -203,6 +201,7 @@ export default function useSor({
       provider: rpcProviderService.jsonProvider,
       poolDataProviders: subgraphPoolDataService,
       poolDataEnrichers: onChainPoolDataEnricher,
+      rpcUrl,
     });
 
     fetchPools();
@@ -215,7 +214,7 @@ export default function useSor({
 
     console.time('[SOR] fetchPools');
     await sorManager.fetchPools();
-    newPools.value = await smartOrderRouter.fetchPools();
+    newPools.value = await smartOrderRouter.fetchAndCachePools();
     console.timeEnd('[SOR] fetchPools');
     poolsLoading.value = false;
     // Updates any swaps with up to date pools/balances
@@ -353,13 +352,13 @@ export default function useSor({
 
       const tokenInAmount = TokenAmount.fromHumanAmount(tokenIn, amount);
 
-      const swapInfo: SwapInfo = await smartOrderRouter.getSwapsWithPools(
+      const swapInfo: SwapInfo = await SmartOrderRouter.getSwapsWithPools({
         tokenIn,
         tokenOut,
-        SwapKind.GivenIn,
-        tokenInAmount,
-        newPools.value
-      );
+        swapKind: SwapKind.GivenIn,
+        swapAmount: tokenInAmount,
+        pools: newPools.value,
+      });
 
       newSorReturn.value = swapInfo;
       onchainQuote.value = (
@@ -411,13 +410,13 @@ export default function useSor({
 
       const tokenOutAmount = TokenAmount.fromHumanAmount(tokenOut, amount);
 
-      const swapInfo: SwapInfo = await smartOrderRouter.getSwapsWithPools(
+      const swapInfo: SwapInfo = await SmartOrderRouter.getSwapsWithPools({
         tokenIn,
         tokenOut,
-        SwapKind.GivenOut,
-        tokenOutAmount,
-        newPools.value
-      );
+        swapKind: SwapKind.GivenOut,
+        swapAmount: tokenOutAmount,
+        pools: newPools.value,
+      });
 
       newSorReturn.value = swapInfo;
       onchainQuote.value = (

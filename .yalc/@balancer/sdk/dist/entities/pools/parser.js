@@ -1,5 +1,6 @@
 import { WeightedPoolFactory } from './weighted/factory';
 import { StablePoolFactory } from './stable/factory';
+import { MetaStablePoolFactory } from './metaStable/factory';
 import { LinearPoolFactory } from './linear/factory';
 export class PoolParser {
     constructor(customPoolFactories) {
@@ -8,6 +9,7 @@ export class PoolParser {
             ...customPoolFactories,
             new WeightedPoolFactory(),
             new StablePoolFactory(),
+            new MetaStablePoolFactory(),
             new LinearPoolFactory(),
         ];
     }

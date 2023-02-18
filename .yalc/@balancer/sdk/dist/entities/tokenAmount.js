@@ -1,12 +1,11 @@
-import { parseUnits } from '@ethersproject/units';
 import _Decimal from 'decimal.js-light';
-import { WAD } from '../utils';
+import { unsafeFastParseUnits, WAD } from '../utils';
 export class TokenAmount {
     static fromRawAmount(token, rawAmount) {
         return new TokenAmount(token, rawAmount);
     }
     static fromHumanAmount(token, humanAmount) {
-        const rawAmount = parseUnits(humanAmount, token.decimals).toString();
+        const rawAmount = unsafeFastParseUnits(humanAmount, token.decimals);
         return new TokenAmount(token, rawAmount);
     }
     static fromScale18Amount(token, scale18Amount, divUp) {
@@ -29,7 +28,12 @@ export class TokenAmount {
     sub(other) {
         return new TokenAmount(this.token, this.amount - other.amount);
     }
-    mulFixed(other) {
+    mulUpFixed(other) {
+        const product = this.amount * other;
+        const multiplied = (product - 1n) / WAD + 1n;
+        return new TokenAmount(this.token, multiplied);
+    }
+    mulDownFixed(other) {
         const multiplied = (this.amount * other) / WAD;
         return new TokenAmount(this.token, multiplied);
     }

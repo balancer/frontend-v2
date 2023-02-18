@@ -1,11 +1,9 @@
 import { SwapKind } from './types';
 import { BasePool, Path, Swap, Token, TokenAmount } from './entities';
+import { PathGraphTraversalConfig } from './pathGraph/pathGraphTypes';
 export declare class Router {
-    cache: Record<string, {
-        paths: Path[];
-    }>;
     private readonly pathGraph;
     constructor();
-    getCandidatePaths: (tokenIn: Token, tokenOut: Token, swapKind: SwapKind, pools: BasePool[]) => Path[];
-    getBestPaths: (paths: Path[], swapKind: SwapKind, swapAmount: TokenAmount) => Promise<Swap>;
+    getCandidatePaths(tokenIn: Token, tokenOut: Token, swapKind: SwapKind, pools: BasePool[], graphTraversalConfig?: Partial<PathGraphTraversalConfig>): Path[];
+    getBestPaths(paths: Path[], swapKind: SwapKind, swapAmount: TokenAmount): Promise<Swap>;
 }

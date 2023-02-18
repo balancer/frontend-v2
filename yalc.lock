@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@balancer/sdk": {
-      "signature": "755323bb8000f5d14e8ea9e958246c4c",
+      "signature": "07058eb00a7410c71c4b2c35160dd324",
       "file": true
     }
   }

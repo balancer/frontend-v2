@@ -1,25 +1,37 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import { BaseProvider } from '@ethersproject/providers';
-import { Router } from './router';
-import { BasePool, Swap, Token, TokenAmount } from './entities';
-import { ChainId } from './utils';
-import { SorConfig, SwapKind, SwapOptions } from './types';
-export interface SwapInfo {
-    quote: TokenAmount;
-    swap: Swap;
-}
-export type TransactionData = {
-    calldata: string;
-    value: BigNumber;
-};
+import { BasePool, BasePoolFactory, Path, Token, TokenAmount } from './entities';
+import { SorConfig, SwapInfo, SwapKind, SwapOptions } from './types';
+import { RawPool } from './data/types';
+import { PathGraphTraversalConfig } from './pathGraph/pathGraphTypes';
 export declare class SmartOrderRouter {
-    chainId: ChainId;
-    provider: BaseProvider;
-    readonly router: Router;
+    private readonly chainId;
+    private readonly provider;
+    private readonly router;
     private readonly poolParser;
     private readonly poolDataService;
-    constructor({ chainId, provider, options, poolDataProviders, poolDataEnrichers, customPoolFactories, }: SorConfig);
+    private pools;
+    private blockNumber;
+    private poolsProviderData;
+    constructor({ chainId, provider, options, poolDataProviders, rpcUrl, poolDataEnrichers, customPoolFactories, }: SorConfig);
+    fetchAndCachePools(blockNumber?: number): Promise<BasePool[]>;
+    fetchAndCacheLatestPoolEnrichmentData(blockNumber?: number): Promise<void>;
+    get isInitialized(): boolean;
     getSwaps(tokenIn: Token, tokenOut: Token, swapKind: SwapKind, swapAmount: TokenAmount, swapOptions?: SwapOptions): Promise<SwapInfo>;
-    getSwapsWithPools(tokenIn: Token, tokenOut: Token, swapKind: SwapKind, swapAmount: TokenAmount, pools: BasePool[], swapOptions?: SwapOptions): Promise<SwapInfo>;
-    fetchPools(swapOptions?: SwapOptions): Promise<BasePool[]>;
+    getCandidatePaths(tokenIn: Token, tokenOut: Token, swapKind: SwapKind, options?: Pick<SwapOptions, 'block' | 'graphTraversalConfig'>): Promise<Path[]>;
+    static parseRawPools({ pools, customPoolFactories, }: {
+        pools: RawPool[];
+        customPoolFactories?: BasePoolFactory[];
+    }): BasePool[];
+    static getSwapsWithPools({ tokenIn, tokenOut, swapKind, swapAmount, pools, swapOptions, }: {
+        tokenIn: Token;
+        tokenOut: Token;
+        swapKind: SwapKind;
+        swapAmount: TokenAmount;
+        pools: BasePool[];
+        swapOptions?: Omit<SwapOptions, 'graphTraversalConfig'> & {
+            graphTraversalConfig: Omit<PathGraphTraversalConfig, 'poolIdsToInclude'>;
+        };
+    }): Promise<{
+        quote: TokenAmount;
+        swap: import("./entities").Swap;
+    }>;
 }

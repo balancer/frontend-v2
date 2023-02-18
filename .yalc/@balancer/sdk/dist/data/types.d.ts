@@ -1,3 +1,4 @@
+import { HumanAmount } from '../types';
 export type SupportedRawPoolTypes = LinearPoolType | 'Weighted' | 'Investment' | 'LiquidityBootstrapping' | 'Stable' | 'MetaStable' | 'ComposableStable' | 'StablePhantom' | 'Element';
 type LinearPoolType = `${string}Linear`;
 export type RawPool = RawBasePool | RawLinearPool | RawWeightedPool | RawStablePool | RawComposableStablePool | RawMetaStablePool;
@@ -6,24 +7,23 @@ export interface RawBasePool {
     address: string;
     poolType: string;
     poolTypeVersion: number;
-    swapFee: string;
+    swapFee: HumanAmount;
     swapEnabled: boolean;
     tokens: RawPoolToken[];
     tokensList: string[];
-    liquidity: string;
-    totalShares: string;
+    liquidity: HumanAmount;
+    totalShares: HumanAmount;
 }
 export interface RawLinearPool extends RawBasePool {
     poolType: LinearPoolType;
     mainIndex: number;
     wrappedIndex: number;
-    lowerTarget: string;
-    upperTarget: string;
+    lowerTarget: HumanAmount;
+    upperTarget: HumanAmount;
     tokens: RawPoolTokenWithRate[];
 }
 export interface RawBaseStablePool extends RawBasePool {
     amp: string;
-    hasActiveAmpUpdate?: boolean;
 }
 export interface RawStablePool extends RawBaseStablePool {
     poolType: 'Stable';
@@ -47,25 +47,29 @@ export interface RawPoolToken {
     symbol: string;
     name: string;
     decimals: number;
-    balance: string;
+    balance: HumanAmount;
 }
 export interface RawWeightedPoolToken extends RawPoolToken {
-    weight: string;
+    weight: HumanAmount;
 }
 export interface RawPoolTokenWithRate extends RawPoolToken {
-    priceRate: string;
+    priceRate: HumanAmount;
 }
-export interface LoadPoolsOptions {
+export interface GetPoolsResponse {
+    pools: RawPool[];
+    syncedToBlockNumber?: number;
+    poolsWithActiveAmpUpdates?: string[];
+    poolsWithActiveWeightUpdates?: string[];
+}
+export interface ProviderSwapOptions {
     block?: number;
+    timestamp: number;
 }
 export interface PoolDataProvider {
-    getPools(options?: LoadPoolsOptions): Promise<{
-        pools: RawPool[];
-        syncedToBlockNumber?: number;
-    }>;
+    getPools(options: ProviderSwapOptions): Promise<GetPoolsResponse>;
 }
 export interface PoolDataEnricher {
-    fetchAdditionalPoolData(pools: RawPool[], syncedToBlockNumber?: number, options?: LoadPoolsOptions): Promise<AdditionalPoolData[]>;
+    fetchAdditionalPoolData(data: GetPoolsResponse, options: ProviderSwapOptions): Promise<AdditionalPoolData[]>;
     enrichPoolsWithData(pools: RawPool[], additionalPoolData: AdditionalPoolData[]): RawPool[];
 }
 export interface AdditionalPoolData {

@@ -35,14 +35,14 @@ export class PathGraph {
     // Additionally, we impose the following requirements for a path to be considered valid
     // (a) It does not visit the same token twice
     // (b) It does not use the same pool twice
-    getCandidatePaths({ tokenIn, tokenOut, pathConfig, }) {
+    getCandidatePaths({ tokenIn, tokenOut, graphTraversalConfig, }) {
         // apply defaults, allowing caller override whatever they'd like
         const config = {
             maxDepth: 7,
             maxNonBoostedPathDepth: 3,
             maxNonBoostedHopTokensInBoostedPath: 1,
             approxPathsToReturn: 5,
-            ...pathConfig,
+            ...graphTraversalConfig,
         };
         const tokenPaths = this.findAllValidTokenPaths({
             token: tokenIn.wrapped,
@@ -92,10 +92,10 @@ export class PathGraph {
         })
             .sort((a, b) => (a.limit < b.limit ? 1 : -1));
         const filtered = [];
-        let seenPools = [];
         // Remove any paths with duplicate pools. since the paths are now sorted by limit,
         // selecting the first path will always be the optimal.
         for (const { path } of pathsWithLimits) {
+            let seenPools = [];
             let isValid = true;
             for (const segment of path) {
                 if (seenPools.includes(segment.pool.id)) {
