@@ -237,7 +237,7 @@ const provider = (props: Props) => {
     let tokens: PoolToken[] = [];
 
     tokens = isDeep(pool.value) ? flatTokenTree(pool.value) : pool.value.tokens;
-
+    console.log({ tokens });
     return tokens.filter(
       token => !isSameAddress(token.address, pool.value.address)
     );
@@ -443,7 +443,9 @@ const provider = (props: Props) => {
   }
 
   function setInitialPropAmountsOut() {
-    const leafNodes = tokenTreeLeafs(props.pool.tokens);
+    const leafNodes: string[] = isDeepPool.value
+      ? tokenTreeLeafs(props.pool.tokens)
+      : props.pool.tokensList;
     propAmountsOut.value = leafNodes.map(address => ({
       address,
       value: '0',
