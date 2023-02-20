@@ -421,7 +421,6 @@ const POOLS_POLYGON: Pools = {
     'Gyro2',
     'Gyro3',
     'GyroE',
-    'FX',
     'HighAmpComposableStable',
   ],
   Stable: {

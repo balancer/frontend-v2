@@ -211,5 +211,6 @@ onUnmounted(() => {
 
 .tooltip-text {
   animation: fadeIn 0.5s ease-out 0.05s both;
+  word-break: normal;
 }
 </style>

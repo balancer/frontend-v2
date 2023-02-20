@@ -2,7 +2,7 @@ import useUserPoolSharesQuery from '@/composables/queries/useUserPoolSharesQuery
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { defaultPoolBalance } from '@tests/msw/graphql-handlers';
 
-test('Returns token prices from balancer SDK', async () => {
+test('Returns pool shares for the current user', async () => {
   const { result } = mountComposable(() => useUserPoolSharesQuery());
 
   const data = await waitForQueryData(result);

@@ -142,6 +142,9 @@ export const tokensProvider = (
    * The prices, balances and allowances maps provide dynamic
    * metadata for each token in the tokens state array.
    ****************************************************************/
+
+  // Prevent prices fetching initally until we inject default tokens like veBAL.
+  // This helps reduce coingecko API calls.
   const pricesQueryEnabled = computed(() => !state.loading);
 
   const {
@@ -199,8 +202,8 @@ export const tokensProvider = (
 
   const dynamicDataLoading = computed(
     () =>
-      priceQueryLoading.value ||
-      priceQueryRefetching.value ||
+      (pricesQueryEnabled.value &&
+        (priceQueryLoading.value || priceQueryRefetching.value)) ||
       balanceQueryLoading.value ||
       balanceQueryRefetching.value ||
       allowanceQueryLoading.value ||

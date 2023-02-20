@@ -35,8 +35,8 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
-import { useQuery, useQueryClient } from 'vue-query';
-import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
+import { useQuery } from '@tanstack/vue-query';
+import QUERY_KEYS from '@/constants/queryKeys';
 import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
 
@@ -77,7 +77,10 @@ const provider = (props: Props) => {
   const queryEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
   );
-  const queryJoinQuery = useQuery<void, Error>(
+  const queryJoinQuery = useQuery<
+    Awaited<ReturnType<typeof debounceQueryJoin>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Joins.QueryJoin(
       // If amountsIn change we should call queryJoin to get expected output.
       amountsIn,
@@ -108,7 +111,6 @@ const provider = (props: Props) => {
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
     RelayerType.BATCH_V4
   );
-  const queryClient = useQueryClient();
 
   /**
    * COMPUTED
@@ -245,7 +247,7 @@ const provider = (props: Props) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
-    queryJoinQuery.remove.value();
+    queryJoinQuery.remove();
   }
 
   /**
@@ -256,11 +258,8 @@ const provider = (props: Props) => {
     // return early
     if (!hasAmountsIn.value) {
       priceImpact.value = 0;
-      return;
+      return null;
     }
-
-    // Invalidate previous query in order to prevent stale data
-    queryClient.invalidateQueries(QUERY_JOIN_ROOT_KEY);
 
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
@@ -275,6 +274,8 @@ const provider = (props: Props) => {
 
       bptOut.value = output.bptOut;
       priceImpact.value = output.priceImpact;
+
+      return output;
     } catch (error) {
       captureException(error);
       throw new Error('Failed to construct join.', { cause: error });
