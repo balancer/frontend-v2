@@ -22,7 +22,7 @@ defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { veBalTokenInfo } = useVeBal();
 
 /**
@@ -41,7 +41,7 @@ const { veBalTokenInfo } = useVeBal();
           {{ $t('unlockVeBAL.previewModal.summary.totalToUnlock') }}
         </div>
         <div>
-          {{ fNum2(fiatTotalLpTokens, FNumFormats.fiat) }}
+          {{ fNum(fiatTotalLpTokens, FNumFormats.fiat) }}
         </div>
       </div>
       <div class="summary-item-row">
@@ -49,7 +49,7 @@ const { veBalTokenInfo } = useVeBal();
           {{ $t('unlockVeBAL.previewModal.summary.totalVotingEscrow') }}
         </div>
         <div>
-          {{ fNum2(0, FNumFormats.token) }}
+          {{ fNum(0, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
         </div>
       </div>

@@ -44,7 +44,7 @@ interface Asset {
 
 const props = defineProps<Props>();
 
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 const { appNetworkConfig } = useWeb3();
 const { getToken } = useTokens();
@@ -219,7 +219,7 @@ function getV2Routes(
 }
 
 function formatShare(share: number): string {
-  return fNum2(share, FNumFormats.percent);
+  return fNum(share, FNumFormats.percent);
 }
 </script>
 

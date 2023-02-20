@@ -1,6 +1,5 @@
-import { UseInfiniteQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
-import { useInfiniteQuery } from 'vue-query';
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -15,9 +14,11 @@ type UserPoolActivitiesQueryResponse = {
   skip?: number;
 };
 
+type QueryOptions = UseInfiniteQueryOptions<UserPoolActivitiesQueryResponse>;
+
 export default function usePoolUserActivitiesQuery(
   id: string,
-  options: UseInfiniteQueryOptions<UserPoolActivitiesQueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();
@@ -66,6 +67,6 @@ export default function usePoolUserActivitiesQuery(
   return useInfiniteQuery<UserPoolActivitiesQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions as QueryOptions
   );
 }

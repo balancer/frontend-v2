@@ -20,7 +20,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 const { priceImpact, highPriceImpact, loadingData } = toRefs(props.math);
 
@@ -41,7 +41,7 @@ const priceImpactClasses = computed(() => ({
       <div class="data-table-number-col">
         <div class="flex items-center">
           <BalLoadingBlock v-if="loadingData" class="w-10 h-6" />
-          <span v-else>{{ fNum2(priceImpact, FNumFormats.percent) }}</span>
+          <span v-else>{{ fNum(priceImpact, FNumFormats.percent) }}</span>
 
           <BalTooltip :text="$t('withdraw.tooltips.priceImpact')">
             <template #activator>

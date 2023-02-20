@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
@@ -18,6 +17,8 @@ export type ProtocolRewardsQueryResponse = {
   v2?: BalanceMap;
 };
 
+type QueryOptions = UseQueryOptions<ProtocolRewardsQueryResponse>;
+
 /**
  * SERVICES
  */
@@ -31,9 +32,7 @@ const feeDistributorV2 = new FeeDistributor(
 /**
  * @summary Fetches claimable protocol reward balances.
  */
-export default function useProtocolRewardsQuery(
-  options: UseQueryOptions<ProtocolRewardsQueryResponse> = {}
-) {
+export default function useProtocolRewardsQuery(options: QueryOptions = {}) {
   /**
    * COMPOSABLES
    */
@@ -82,6 +81,6 @@ export default function useProtocolRewardsQuery(
   return useQuery<ProtocolRewardsQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions as QueryOptions
   );
 }

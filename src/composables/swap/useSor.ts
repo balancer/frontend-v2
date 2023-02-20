@@ -140,7 +140,7 @@ export default function useSor({
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
-  const { fNum2, toFiat } = useNumbers();
+  const { fNum, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
   const { isUserRejected } = useTranasactionErrors();
@@ -487,11 +487,11 @@ export default function useSor({
     confirming.value = false;
 
     let summary = '';
-    const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
+    const tokenInAmountFormatted = fNum(tokenInAmountInput.value, {
       ...FNumFormats.token,
       maximumSignificantDigits: 6,
     });
-    const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
+    const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, {
       ...FNumFormats.token,
       maximumSignificantDigits: 6,
     });
@@ -697,7 +697,7 @@ export default function useSor({
   }
 
   function formatAmount(amount: string) {
-    return fNum2(amount, {
+    return fNum(amount, {
       maximumSignificantDigits: 6,
       useGrouping: false,
       fixedFormat: true,

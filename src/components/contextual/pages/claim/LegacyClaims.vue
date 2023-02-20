@@ -39,7 +39,7 @@ const claimError = ref<TransactionError | null>(null);
 
 // COMPOSABLES
 const userClaimsQuery = useUserClaimsQuery();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const {
   account,
   getProvider,
@@ -121,7 +121,7 @@ const hasClaimableTokens = computed(() =>
 );
 
 watch(isMismatchedNetwork, () => {
-  userClaimsQuery.refetch.value();
+  userClaimsQuery.refetch();
 });
 
 // METHODS
@@ -140,7 +140,7 @@ async function claimAvailableRewards() {
       const summary = claimableTokens.value
         .map(
           claimableToken =>
-            `${fNum2(claimableToken.amount, {
+            `${fNum(claimableToken.amount, {
               minimumFractionDigits: 4,
               maximumFractionDigits: 4,
             })} ${claimableToken.symbol}`
@@ -157,7 +157,7 @@ async function claimAvailableRewards() {
       txListener(tx, {
         onTxConfirmed: () => {
           isClaiming.value = false;
-          userClaimsQuery.refetch.value();
+          userClaimsQuery.refetch();
         },
         onTxFailed: () => {
           isClaiming.value = false;
@@ -213,11 +213,11 @@ async function claimAvailableRewards() {
               />
               <div>
                 <div class="font-medium">
-                  {{ fNum2(claimableToken.amount, FNumFormats.token) }}
+                  {{ fNum(claimableToken.amount, FNumFormats.token) }}
                   {{ claimableToken.symbol }}
                 </div>
                 <div class="text-gray-400 font-sm">
-                  {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
+                  {{ fNum(claimableToken.fiatValue, FNumFormats.fiat) }}
                 </div>
               </div>
             </div>
@@ -237,7 +237,7 @@ async function claimAvailableRewards() {
       >
         {{ $t('claimAll') }}
         <template v-if="hasClaimableTokens">
-          ~{{ fNum2(totalClaimableTokensFiatValue, FNumFormats.fiat) }}
+          ~{{ fNum(totalClaimableTokensFiatValue, FNumFormats.fiat) }}
         </template>
       </BalBtn>
       <BalAlert
