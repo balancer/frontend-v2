@@ -195,7 +195,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
-    const { fNum2 } = useNumbers();
+    const { fNum } = useNumbers();
     const { appNetworkConfig, isMismatchedNetwork } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
@@ -305,14 +305,14 @@ export default defineComponent({
               ]),
               body: t('cowswapErrors.lowBalance.body', [
                 swapping.tokenIn.value.symbol,
-                fNum2(
+                fNum(
                   formatUnits(
                     swapping.getQuote().maximumInAmount,
                     swapping.tokenIn.value.decimals
                   ),
                   FNumFormats.token
                 ),
-                fNum2(swapping.slippageBufferRate.value, FNumFormats.percent),
+                fNum(swapping.slippageBufferRate.value, FNumFormats.percent),
               ]),
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {
