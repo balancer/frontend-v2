@@ -117,7 +117,7 @@ docker run \
 
 ### Custom RPC urls
 
-To override RPC network config from `src/lib/config`, you can use the following environment variables:
+To override RPC network config set in `src/lib/config`, you can use the following environment variables:
 
 `VITE_RPC_URL_<networkId>=XXX`
 
