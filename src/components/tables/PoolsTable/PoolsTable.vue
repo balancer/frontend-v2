@@ -93,12 +93,13 @@ const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
-const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 
-const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 250 : undefined
-);
+const wideCompositionWidth = computed(() => {
+  if (upToSmallBreakpoint.value) return 250;
+  return 350;
+});
 
 /**
  * DATA
