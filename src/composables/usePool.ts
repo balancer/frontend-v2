@@ -4,7 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -35,7 +35,9 @@ export function addressFor(poolId: string): string {
 
 export function isLinear(poolType: PoolType): boolean {
   return (
-    poolType === PoolType.AaveLinear || poolType === PoolType.ERC4626Linear
+    poolType === PoolType.AaveLinear ||
+    poolType === PoolType.ERC4626Linear ||
+    poolType === PoolType.EulerLinear
   );
 }
 
@@ -97,6 +99,10 @@ export function isDeep(pool: Pool): boolean {
     '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488', // tusd/bb-e-usd (mainnet)
     '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489', // bb-i-usd (mainnet)
     '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65', // tetu/qi (polygon)
+    '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
+    '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
+    '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
+    '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
   ];
 
   return treatAsDeep.includes(pool.id);
@@ -258,6 +264,9 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
+  if (aprs.min > APR_THRESHOLD || aprs.max > APR_THRESHOLD) {
+    return '-';
+  }
   if (boost) {
     numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
@@ -542,7 +551,7 @@ export function fiatValueOf(pool: Pool, shares: string): string {
  * @returns {boolean} True if included in list.
  */
 export function isJoinsDisabled(id: string): boolean {
-  return POOLS.DisabledJoins.includes(id);
+  return POOLS.DisabledJoins.includes(id.toLowerCase());
 }
 
 /**

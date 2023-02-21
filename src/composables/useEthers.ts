@@ -99,7 +99,7 @@ export default function useEthers() {
       }
       callbacks.onTxConfirmed(receipt);
       if (shouldRefetchBalances && !supportsBlocknative.value) {
-        refetchBalances.value();
+        refetchBalances();
       }
       confirmed = true;
     } catch (error) {

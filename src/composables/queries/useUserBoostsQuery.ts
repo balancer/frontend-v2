@@ -1,7 +1,6 @@
 import { logFetchException } from '@/lib/utils/exceptions';
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -15,6 +14,7 @@ import { isGnosis, isL2 } from '../useNetwork';
 export type UserBoosts = {
   [poolId: string]: string;
 };
+type QueryOptions = UseQueryOptions<UserBoosts>;
 
 /**
  * useUserBoostsQuery
@@ -24,12 +24,12 @@ export type UserBoosts = {
  * individual pool.
  *
  * @param {Ref<GaugeShare>} gaugeShares - The gauges to fetch boost values for.
- * @param {UseQueryOptions} options - useQuery options.
+ * @param {QueryOptions} options - useQuery options.
  * @returns Pool ID to boost value map.
  */
 export default function useUserBoostsQuery(
   gaugeShares: Ref<undefined> | Ref<GaugeShare[]>,
-  options: UseQueryOptions<UserBoosts> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -78,5 +78,5 @@ export default function useUserBoostsQuery(
     ...options,
   });
 
-  return useQuery<UserBoosts>(queryKey, queryFn, queryOptions);
+  return useQuery<UserBoosts>(queryKey, queryFn, queryOptions as QueryOptions);
 }

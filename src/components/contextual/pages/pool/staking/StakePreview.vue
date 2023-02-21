@@ -125,7 +125,7 @@ onBeforeMount(async () => {
 async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
-  await Promise.all([refetchBalances.value(), refetchAllPoolStakingData()]);
+  await Promise.all([refetchBalances(), refetchAllPoolStakingData()]);
   emit('success');
 }
 

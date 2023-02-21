@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { gaugesDecorator } from '@/services/balancer/gauges/gauges.decorator';
@@ -13,14 +12,15 @@ import { useTokens } from '@/providers/tokens.provider';
 /**
  * TYPES
  */
-type QueryResponse = Gauge[] | undefined;
+type QueryResponse = Gauge[] | null;
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
  * @summary Fetches onchain data for gauges list.
  */
 export default function useGaugesDecorationQuery(
   gauges: Ref<SubgraphGauge[] | undefined>,
-  options: UseQueryOptions<QueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -47,7 +47,7 @@ export default function useGaugesDecorationQuery(
    * QUERY FUNCTION
    */
   const queryFn = async () => {
-    if (!gauges.value) return undefined;
+    if (!gauges.value) return null;
     const _gauges = await gaugesDecorator.decorate(gauges.value, account.value);
     const tokens = _gauges.map(gauge => gauge.rewardTokens).flat();
     await injectTokens(tokens);
@@ -62,5 +62,9 @@ export default function useGaugesDecorationQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }
