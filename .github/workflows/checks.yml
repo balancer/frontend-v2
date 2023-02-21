@@ -113,12 +113,6 @@ jobs:
           path: e2e
       - name: Run Playwright
         uses: actions/setup-node@v3
-        env:
-          SECRET_WORDS: ${ {secrets.TEST_WALLET_SECRET_WORDS }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST_KEY: testingtesting123
-          # NETWORK_NAME: goerli
-          # CYPRESS_WALLET_ACCOUNT_NUMBER: 1
         with:
           node-version: '16.x'
           # wait for the app to start
@@ -130,6 +124,12 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: ./e2e
       - name: Run Playwright tests
+        env:
+          SECRET_WORDS: ${ {secrets.TEST_WALLET_SECRET_WORDS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_KEY: testingtesting123
+          # NETWORK_NAME: goerli
+          # CYPRESS_WALLET_ACCOUNT_NUMBER: 1
         run: echo testkey $TEST_KEY && npm run playwright:ci
         working-directory: ./e2e
       - name: Upload test artifacts
