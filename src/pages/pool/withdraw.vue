@@ -6,7 +6,6 @@ import { useIntervalFn } from '@vueuse/core';
 import { computed } from 'vue';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import WithdrawPage from '@/components/contextual/pages/pool/withdraw/WithdrawPage.vue';
-import ProvideExitPool from '@/components/contextual/pages/pool/withdraw/ProvideExitPool.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 
@@ -44,8 +43,6 @@ const isLoading = computed(
 <template>
   <div class="px-4 sm:px-0 mx-auto max-w-md">
     <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
-    <ProvideExitPool v-else :pool="pool">
-      <WithdrawPage :pool="pool"></WithdrawPage>
-    </ProvideExitPool>
+    <WithdrawPage v-else :pool="pool"></WithdrawPage>
   </div>
 </template>

@@ -6,14 +6,10 @@ import SwapSettingsPopover, {
 } from '@/components/popovers/SwapSettingsPopover.vue';
 import { configService } from '@/services/config/config.service';
 import { usePool } from '@/composables/usePool';
-import useWithdrawPageTabs, {
-  tabs,
-  Tab,
-} from '@/composables/pools/useWithdrawPageTabs';
-
-import { computed, onMounted } from 'vue';
-import { useExitPool } from '@/providers/local/exit-pool.provider';
+import useWithdrawPageTabs from '@/composables/pools/useWithdrawPageTabs';
 import { Pool } from '@balancer-labs/sdk';
+import WithdrawPageTabs from './WithdrawPageTabs.vue';
+import { provideExitPool } from '@/providers/local/exit-pool.provider';
 
 type Props = {
   pool: Pool;
@@ -34,14 +30,10 @@ const pool = computed(() => props.pool);
  */
 const { network } = configService;
 const { isDeepPool } = usePool(pool);
-const { activeTab, resetTabs } = useWithdrawPageTabs();
-const { setIsSingleAssetExit } = useExitPool();
+const { resetTabs } = useWithdrawPageTabs();
+provideExitPool(pool);
 
 onMounted(() => resetTabs());
-
-watch(activeTab, value => {
-  setIsSingleAssetExit(value === Tab.SingleToken);
-});
 </script>
 
 <template>
@@ -55,13 +47,7 @@ watch(activeTab, value => {
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <BalTabs
-          v-if="isDeepPool"
-          v-model="activeTab"
-          :tabs="tabs"
-          class="p-0 m-0 -mb-px whitespace-nowrap"
-          noPad
-        />
+        <WithdrawPageTabs v-if="isDeepPool" />
       </div>
     </template>
     <WithdrawFormV2 v-if="isDeepPool" />
