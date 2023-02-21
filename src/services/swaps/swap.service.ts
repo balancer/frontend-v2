@@ -8,20 +8,25 @@ import { getBalancer } from '@/dependencies/balancer-sdk';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import {
+  GasPriceService,
+  gasPriceService,
+} from '../gas-price/gas-price.service';
+import {
   QueryOutput,
   SwapHandler,
   SwapParams,
 } from './handlers/abstract-swap.handler';
+import { BalancerSwapHandler } from './handlers/balancer-swap.handler';
 
 /**
  * TYPES
  */
-enum SwapProtocol {
-  Balancer,
-  Cowswap,
+export enum SwapProtocol {
+  Balancer = 'Balancer',
+  Cowswap = 'Cowswap',
 }
 
-type HandlerParams = [BalancerSDK];
+type HandlerParams = [BalancerSDK, GasPriceService];
 
 export class SwapService {
   // The swap handler class to call swap interface functions.
@@ -32,7 +37,10 @@ export class SwapService {
    *
    * @param {BalancerSDK} sdk - Balancers SDK.
    */
-  constructor(public readonly sdk = getBalancer()) {
+  constructor(
+    public readonly sdk = getBalancer(),
+    public readonly gasPriceServ = gasPriceService
+  ) {
     this.swapHandler = this.setSwapHandler(SwapProtocol.Balancer);
   }
 
@@ -43,14 +51,14 @@ export class SwapService {
    * @returns {ExitPoolHandler} The ExitPoolHandler class to be used.
    */
   setSwapHandler(handler: SwapProtocol): SwapHandler {
-    const { sdk } = this;
-    const handlerParams: HandlerParams = [sdk];
+    const { sdk, gasPriceServ } = this;
+    const handlerParams: HandlerParams = [sdk, gasPriceServ];
 
     switch (handler) {
       case SwapProtocol.Balancer:
         return (this.swapHandler = new BalancerSwapHandler(...handlerParams));
-      case SwapProtocol.Cowswap:
-        return (this.swapHandler = new CowSwapHandler(...handlerParams));
+      // case SwapProtocol.Cowswap:
+      //   return (this.swapHandler = new CowSwapHandler(...handlerParams));
       default:
         throw new Error(`Handler not handled: ${handler}`);
     }
@@ -74,3 +82,5 @@ export class SwapService {
     return this.swapHandler.querySwap(params);
   }
 }
+
+export const swapService = new SwapService();

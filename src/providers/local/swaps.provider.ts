@@ -2,15 +2,21 @@
  * Provides swap related state.
  */
 import symbolKeys from '@/constants/symbol.keys';
+import { SwapProtocol, swapService } from '@/services/swaps/swap.service';
+import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfoMap } from '@/types/TokenList';
 import { SwapType } from '@balancer-labs/sdk';
 import { captureException } from '@sentry/browser';
+import { debounce } from 'lodash';
 import { InjectionKey } from 'vue';
 import { safeInject } from '../inject';
+import { useTokens } from '../tokens.provider';
+import { useUserSettings } from '../user-settings.provider';
 
 /**
  * TYPES
  */
-type TokenInput = {
+export type TokenInput = {
   address: string;
   amount: string;
   valid: boolean;
@@ -37,9 +43,20 @@ const provider = () => {
   });
 
   /**
+   * COMPOSABLES
+   */
+  const { getTokens } = useTokens();
+  const { getSigner } = useWeb3();
+  const { slippageBsp } = useUserSettings();
+
+  /**
    * COMPUTED
    */
   const priceImpact = computed((): number => 0);
+
+  const tokenData = computed(
+    (): TokenInfoMap => getTokens([tokenIn.address, tokenOut.address])
+  );
 
   // Cowswap mode is toggled on.
   const isCowswap = computed(
@@ -60,9 +77,30 @@ const provider = () => {
   /**
    * When amounts change we need to query the swap and get the expected output.
    */
-  function querySwap() {
+  const debounceQuerySwap = debounce(querySwap, 1000);
+  async function querySwap(
+    swapType: SwapType,
+    tokenIn: TokenInput,
+    tokenOut: TokenInput
+  ) {
     try {
-      const output = await swapService.querySwap();
+      swapService.setSwapHandler(swapProtocol.value);
+
+      const output = await swapService.querySwap({
+        swapType,
+        tokenIn,
+        tokenOut,
+        tokenData: tokenData.value,
+        slippageBsp: slippageBsp.value,
+        signer: getSigner(),
+      });
+
+      if (swapType === SwapType.SwapExactIn) {
+        tokenOut.amount = output.returnAmount;
+      } else if (swapType === SwapType.SwapExactOut) {
+        tokenIn.amount = output.returnAmount;
+      }
+      console.log('output', output);
     } catch (error) {
       captureException(error);
       throw new Error('Failed to fetch swap.', { cause: error });
@@ -71,13 +109,19 @@ const provider = () => {
 
   watch(
     () => tokenIn,
-    newTokenIn => console.log('tokenIn', newTokenIn),
+    newTokenIn => {
+      console.log('tokenIn', newTokenIn);
+      debounceQuerySwap(SwapType.SwapExactIn, newTokenIn, tokenOut);
+    },
     { deep: true }
   );
 
   watch(
     () => tokenOut,
-    newTokenOut => console.log('tokenOut', newTokenOut),
+    newTokenOut => {
+      console.log('tokenOut', newTokenOut);
+      debounceQuerySwap(SwapType.SwapExactOut, tokenIn, newTokenOut);
+    },
     { deep: true }
   );
 

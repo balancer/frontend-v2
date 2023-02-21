@@ -6,19 +6,11 @@ import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
-import { Pool } from '@/services/pool/types';
 import { BalancerSDK, BatchSwap, SwapInfo, SwapType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Ref } from 'vue';
-import { SwapHandler, SwapParams } from './abstract-swap.handler';
-import {
-  ExitParams,
-  ExitPoolHandler,
-  ExitType,
-  QueryOutput,
-} from './exit-pool.handler';
+import { QueryOutput, SwapHandler, SwapParams } from './abstract-swap.handler';
 
 /**
  * Handles exits for single asset flows where we need to use a BatchSwap to exit
@@ -27,15 +19,18 @@ import {
 export class BalancerSwapHandler implements SwapHandler {
   private lastSwap?: SwapInfo;
 
-  constructor(public readonly sdk: BalancerSDK) {}
+  constructor(
+    public readonly sdk: BalancerSDK,
+    public readonly gasPriceService: GasPriceService
+  ) {}
 
-  async exit(params: SwapParams): Promise<TransactionResponse> {
+  async swap(params: SwapParams): Promise<TransactionResponse> {
     const userAddress = await params.signer.getAddress();
-    await this.queryExit(params);
+    await this.querySwap(params);
     if (!this.lastSwap) throw new Error('Could not fetch swap route for join.');
 
     const swap = this.getSwapAttributes(
-      params.exitType,
+      params.swapType,
       this.lastSwap,
       params.slippageBsp,
       userAddress
@@ -51,8 +46,9 @@ export class BalancerSwapHandler implements SwapHandler {
     );
   }
 
-  async queryExit(params: ExitParams): Promise<QueryOutput> {
-    if (params.exitType === ExitType.GivenIn) {
+  async querySwap(params: SwapParams): Promise<QueryOutput> {
+    console.log('querySwap', params);
+    if (params.swapType === SwapType.SwapExactIn) {
       return this.queryOutGivenIn(params);
     } else {
       return this.queryInGivenOut(params);
@@ -64,101 +60,106 @@ export class BalancerSwapHandler implements SwapHandler {
    */
 
   /**
-   * Get swap given bptIn, this only used in exits when the user clicks to
+   * Get swap given tokenIn, this only used in exits when the user clicks to
    * maximize their withdrawal, i.e. we have to send their full BPT balance.
    */
   private async queryOutGivenIn({
-    bptIn,
-    tokenInfo,
-    amountsOut,
+    tokenIn,
+    tokenOut,
+    tokenData,
     signer,
-  }: ExitParams): Promise<QueryOutput> {
-    const amountIn = bptIn;
-    const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
+  }: SwapParams): Promise<QueryOutput> {
+    const tokenInData = selectByAddress(tokenData, tokenIn.address);
+    const tokenOutData = selectByAddress(tokenData, tokenOut.address);
 
-    const tokenOut = tokenInfo[amountsOut[0].address];
-
-    if (!tokenIn || !tokenOut)
+    if (!tokenInData || !tokenOutData)
       throw new Error('Missing critical token metadata.');
-    if (!amountIn || bnum(amountIn).eq(0))
-      return { amountsOut: { [tokenOut.address]: '0' }, priceImpact: 0 };
+    if (!tokenIn.amount || bnum(tokenIn.amount).eq(0))
+      return { returnAmount: '', priceImpact: 0 };
 
+    // TODO: check if we need to fetch pools more than once.
     if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
-    const safeAmountIn = overflowProtected(bptIn, tokenIn.decimals);
-    const bnumAmountIn = parseFixed(safeAmountIn, tokenIn.decimals);
+    const safeAmountIn = overflowProtected(
+      tokenIn.amount,
+      tokenInData.decimals
+    );
+    const evmAmountIn = parseFixed(safeAmountIn, tokenInData.decimals);
     const gasPrice = await this.getGasPrice(signer);
 
-    this.lastSwapRoute = await this.sdk.swaps.findRouteGivenIn({
-      tokenIn: tokenIn.address,
+    this.lastSwap = await this.sdk.swaps.findRouteGivenIn({
+      tokenIn: this.formatAddressForSor(tokenIn.address),
       tokenOut: this.formatAddressForSor(tokenOut.address),
-      amount: bnumAmountIn,
+      amount: evmAmountIn,
       gasPrice,
       maxPools: 4,
     });
 
-    const amountOut = formatFixed(
-      this.lastSwapRoute.returnAmount,
-      tokenOut.decimals
+    console.log('this.lastSwap', this.lastSwap);
+
+    const returnAmount = formatFixed(
+      this.lastSwap.returnAmount,
+      tokenOutData.decimals
     );
-    if (bnum(amountOut).eq(0)) throw new Error('Not enough liquidity.');
+    if (bnum(returnAmount).eq(0)) throw new Error('Not enough liquidity.');
 
     const priceImpact = this.calcPriceImpact(
-      amountIn,
-      amountOut,
-      this.lastSwapRoute.marketSp
+      safeAmountIn,
+      returnAmount,
+      this.lastSwap.marketSp
     );
 
-    return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
+    return { returnAmount, priceImpact };
   }
 
   /**
    * Get swap given specified amount out.
    */
   private async queryInGivenOut({
-    tokenInfo,
-    amountsOut,
+    tokenIn,
+    tokenOut,
+    tokenData,
     signer,
-  }: ExitParams): Promise<QueryOutput> {
-    const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
-    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
-    if (!tokenIn || !tokenOut)
+  }: SwapParams): Promise<QueryOutput> {
+    const tokenInData = selectByAddress(tokenData, tokenIn.address);
+    const tokenOutData = selectByAddress(tokenData, tokenOut.address);
+
+    if (!tokenInData || !tokenOutData)
       throw new Error('Missing critical token metadata.');
 
-    const amountOut = amountsOut[0].value;
-    if (!amountOut || bnum(amountOut).eq(0))
-      return { amountsOut: {}, priceImpact: 0 };
+    if (!tokenOut.amount || bnum(tokenOut.amount).eq(0))
+      return { returnAmount: '', priceImpact: 0 };
 
     if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
     const safeAmountOut = overflowProtected(
-      amountsOut[0].value,
-      tokenOut.decimals
+      tokenOut.amount,
+      tokenOutData.decimals
     );
-    const bnumAmountOut = parseFixed(safeAmountOut, tokenOut.decimals);
+    const evmAmountOut = parseFixed(safeAmountOut, tokenOutData.decimals);
     const gasPrice = await this.getGasPrice(signer);
 
-    this.lastSwapRoute = await this.sdk.swaps.findRouteGivenOut({
-      tokenIn: tokenIn.address,
+    this.lastSwap = await this.sdk.swaps.findRouteGivenOut({
+      tokenIn: this.formatAddressForSor(tokenIn.address),
       tokenOut: this.formatAddressForSor(tokenOut.address),
-      amount: bnumAmountOut,
+      amount: evmAmountOut,
       gasPrice,
       maxPools: 4,
     });
 
-    const amountIn = formatFixed(
-      this.lastSwapRoute.returnAmount,
-      tokenIn.decimals
+    const returnAmount = formatFixed(
+      this.lastSwap.returnAmount,
+      tokenInData.decimals
     );
-    if (bnum(amountIn).eq(0)) throw new Error('Not enough liquidity.');
+    if (bnum(returnAmount).eq(0)) throw new Error('Not enough liquidity.');
 
     const priceImpact = this.calcPriceImpact(
-      amountIn,
-      amountOut,
-      this.lastSwapRoute.marketSp
+      returnAmount,
+      safeAmountOut,
+      this.lastSwap.marketSp
     );
 
-    return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
+    return { returnAmount, priceImpact };
   }
 
   private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {
