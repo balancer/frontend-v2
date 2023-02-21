@@ -11,20 +11,16 @@ export function useUserPoolPercentage(pool: Ref<Pool>) {
   const { balanceFor } = useTokens();
   const { stakedShares } = usePoolStaking();
 
-  const { totalLockedValue } = useLock({
+  const { totalLockedShares } = useLock({
     // Avoid lock queries when pool is not veBAL:
     enabled: isVeBalPool(pool.value.id),
   });
   const { fNum } = useNumbers();
 
-  const lockedAmount = computed(() => {
-    return totalLockedValue.value || '0';
-  });
-
   const userPoolPercentage = computed(() => {
     const bptBalance = bnum(balanceFor(pool.value.address))
       .plus(stakedShares.value)
-      .plus(lockedAmount.value);
+      .plus(totalLockedShares.value);
     return bptBalance.div(bnum(pool.value.totalShares)).multipliedBy(100);
   });
 

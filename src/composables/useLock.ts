@@ -56,6 +56,7 @@ export function useLock({ enabled = true }: Options = {}) {
       : '0'
   );
 
+  // Total locked shares (veBAL).
   const totalLockedShares = computed((): string =>
     lockPool.value && lock.value?.hasExistingLock
       ? lock.value.lockedAmount

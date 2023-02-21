@@ -109,6 +109,7 @@ const POOLS_GOERLI: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'FX',
@@ -185,6 +186,7 @@ const POOLS_MAINNET: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'Gyro2',
@@ -362,6 +364,10 @@ const POOLS_MAINNET: Pools = {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
     },
+    '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f': {
+      name: 'Balancer Boosted Euler USD',
+      hasIcon: true,
+    },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
       hasIcon: true,
@@ -409,6 +415,7 @@ const POOLS_POLYGON: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'Gyro2',
@@ -550,6 +557,7 @@ const POOLS_ARBITRUM: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'FX',
@@ -639,6 +647,7 @@ const POOLS_GENERIC: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'FX',
