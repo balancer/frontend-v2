@@ -38,6 +38,7 @@ import {
   TokenInfoMap,
   TokenListMap,
 } from '@/types/TokenList';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -61,6 +62,7 @@ export const tokensProvider = (
    */
   const { networkConfig } = useConfig();
   const { currency } = userSettings;
+  const { isWalletReady } = useWeb3();
   const {
     tokensListPromise,
     allTokenLists,
@@ -204,10 +206,11 @@ export const tokensProvider = (
     () =>
       (pricesQueryEnabled.value &&
         (priceQueryLoading.value || priceQueryRefetching.value)) ||
-      balanceQueryLoading.value ||
-      balanceQueryRefetching.value ||
-      allowanceQueryLoading.value ||
-      allowanceQueryRefetching.value
+      (isWalletReady.value &&
+        (balanceQueryLoading.value ||
+          balanceQueryRefetching.value ||
+          allowanceQueryLoading.value ||
+          allowanceQueryRefetching.value))
   );
 
   /**
