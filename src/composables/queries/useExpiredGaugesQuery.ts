@@ -1,7 +1,6 @@
 import { getAddress } from '@ethersproject/address';
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
@@ -14,6 +13,7 @@ import useNetwork from '../useNetwork';
  */
 type QueryResponse = Readonly<Address[]>;
 type MulticallerResult = Record<Address, { isKilled: boolean }>;
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 function callGaugesIsKilledStatus(
   gaugeAddresses: Address[]
@@ -36,7 +36,7 @@ function callGaugesIsKilledStatus(
  */
 export default function useExpiredGaugesQuery(
   gaugeAddresses: Ref<Address[] | undefined>,
-  options: UseQueryOptions<QueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -88,5 +88,9 @@ export default function useExpiredGaugesQuery(
     enabled: isQueryEnabled,
     ...options,
   });
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

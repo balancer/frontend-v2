@@ -1,16 +1,11 @@
 import { getAddress } from '@ethersproject/address';
 import { fireEvent } from '@testing-library/vue';
 
-import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
-import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
 import { balancerMinter } from '@/services/balancer/contracts/contracts/balancer-minter';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 
 import ClaimBalBtn from './ClaimBalBtn.vue';
 import { renderComponent } from '@tests/renderComponent';
-
-ClaimBalBtn.components = { TxActionBtn };
-TxActionBtn.components = { BalBtn };
 
 vi.mock('@/providers/tokens.provider');
 vi.mock('@/composables/queries/useGaugesQuery');

@@ -7,6 +7,7 @@ export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 1
 // Do not display APR values greater than this amount; they are likely to be nonsensical
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
 export const APR_THRESHOLD = 1_000_000;
+export const VOLUME_THRESHOLD = 1_000_000_000;
 
 /**
  * For proportional exits from ComposableStable pools the ExactBPTInForTokensOut
@@ -108,6 +109,7 @@ const POOLS_GOERLI: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'FX',
@@ -184,6 +186,7 @@ const POOLS_MAINNET: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'Gyro2',
@@ -361,6 +364,10 @@ const POOLS_MAINNET: Pools = {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
     },
+    '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f': {
+      name: 'Balancer Boosted Euler USD',
+      hasIcon: true,
+    },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
       hasIcon: true,
@@ -369,11 +376,16 @@ const POOLS_MAINNET: Pools = {
       name: 'AuraBAL Stable Pool',
       hasIcon: false,
     },
+    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
+      name: 'Balancer Idle JuniorBY Boosted StablePool',
+      hasIcon: false,
+    },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
     '0xad6a8c18b62eb914604ec1eec7fbcf132799fe090001000000000000000003f6',
     '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
+    '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
   ],
 };
 
@@ -407,6 +419,7 @@ const POOLS_POLYGON: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'Gyro2',
@@ -471,7 +484,7 @@ const POOLS_POLYGON: Pools = {
     '0x136fd06fa01ecf624c7f2b3cb15742c1339dc2c4': 'composableStablePool', // ComposableStable
     '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
     '0x7bc6c0e73edaa66ef3f6e2f27b0ee8661834c6c9': 'composableStablePool', // ComposableStable V3
-    '0x82e4cFaef85b1B6299935340c964C942280327f4': 'weightedPool', // weighted pool v3
+    '0x82e4cfaef85b1b6299935340c964c942280327f4': 'weightedPool', // weighted pool v3
     '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
   },
   Stakable: {
@@ -548,6 +561,7 @@ const POOLS_ARBITRUM: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'FX',
@@ -637,6 +651,7 @@ const POOLS_GENERIC: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'FX',

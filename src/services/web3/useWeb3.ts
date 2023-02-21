@@ -2,7 +2,7 @@ import { Network } from '@balancer-labs/sdk';
 import { Web3Provider } from '@ethersproject/providers';
 import debounce from 'lodash/debounce';
 import { computed, inject, reactive, ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery } from '@tanstack/vue-query';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';

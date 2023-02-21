@@ -4,7 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -35,7 +35,9 @@ export function addressFor(poolId: string): string {
 
 export function isLinear(poolType: PoolType): boolean {
   return (
-    poolType === PoolType.AaveLinear || poolType === PoolType.ERC4626Linear
+    poolType === PoolType.AaveLinear ||
+    poolType === PoolType.ERC4626Linear ||
+    poolType === PoolType.EulerLinear
   );
 }
 
@@ -262,6 +264,9 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
+  if (aprs.min > APR_THRESHOLD || aprs.max > APR_THRESHOLD) {
+    return '-';
+  }
   if (boost) {
     numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
@@ -546,7 +551,7 @@ export function fiatValueOf(pool: Pool, shares: string): string {
  * @returns {boolean} True if included in list.
  */
 export function isJoinsDisabled(id: string): boolean {
-  return POOLS.DisabledJoins.includes(id);
+  return POOLS.DisabledJoins.includes(id.toLowerCase());
 }
 
 /**

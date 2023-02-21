@@ -38,6 +38,7 @@ import {
   TokenInfoMap,
   TokenListMap,
 } from '@/types/TokenList';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -61,6 +62,7 @@ export const tokensProvider = (
    */
   const { networkConfig } = useConfig();
   const { currency } = userSettings;
+  const { isWalletReady } = useWeb3();
   const {
     tokensListPromise,
     allTokenLists,
@@ -142,6 +144,9 @@ export const tokensProvider = (
    * The prices, balances and allowances maps provide dynamic
    * metadata for each token in the tokens state array.
    ****************************************************************/
+
+  // Prevent prices fetching initally until we inject default tokens like veBAL.
+  // This helps reduce coingecko API calls.
   const pricesQueryEnabled = computed(() => !state.loading);
 
   const {
@@ -199,12 +204,13 @@ export const tokensProvider = (
 
   const dynamicDataLoading = computed(
     () =>
-      priceQueryLoading.value ||
-      priceQueryRefetching.value ||
-      balanceQueryLoading.value ||
-      balanceQueryRefetching.value ||
-      allowanceQueryLoading.value ||
-      allowanceQueryRefetching.value
+      (pricesQueryEnabled.value &&
+        (priceQueryLoading.value || priceQueryRefetching.value)) ||
+      (isWalletReady.value &&
+        (balanceQueryLoading.value ||
+          balanceQueryRefetching.value ||
+          allowanceQueryLoading.value ||
+          allowanceQueryRefetching.value))
   );
 
   /**
