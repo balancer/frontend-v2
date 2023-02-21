@@ -74,6 +74,9 @@ const provider = () => {
     swapType.value = type;
   }
 
+  // Need to only trigger query on direct user action
+  // function handleInput()
+
   /**
    * When amounts change we need to query the swap and get the expected output.
    */
@@ -111,6 +114,8 @@ const provider = () => {
     () => tokenIn,
     newTokenIn => {
       console.log('tokenIn', newTokenIn);
+      // Remove this, doing this in tokenIn/Out changes triggers infinite loop
+      // of queries.
       debounceQuerySwap(SwapType.SwapExactIn, newTokenIn, tokenOut);
     },
     { deep: true }
