@@ -376,6 +376,10 @@ const POOLS_MAINNET: Pools = {
       name: 'AuraBAL Stable Pool',
       hasIcon: false,
     },
+    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
+      name: 'Balancer Idle JuniorBY Boosted StablePool',
+      hasIcon: false,
+    },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
