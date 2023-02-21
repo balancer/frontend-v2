@@ -78,6 +78,7 @@ onMounted(async () => {
     class="flex justify-start items-center mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
   >
     <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px">
+      userHasShares {{ userHasShares }}
       <PercentagePill v-if="userHasShares" :isActive="showUserShares">
         {{ userPoolPercentageLabel }}
       </PercentagePill>
