@@ -125,7 +125,7 @@ jobs:
         working-directory: ./e2e
       - name: Run Playwright tests
         env:
-          SECRET_WORDS: ${ {secrets.TEST_WALLET_SECRET_WORDS }}
+          SECRET_WORDS: ${{ secrets.TEST_WALLET_SECRET_WORDS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TEST_KEY: testingtesting123
           # NETWORK_NAME: goerli
