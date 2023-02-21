@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.90.5",
+  "version": "1.90.6",
   "engines": {
     "node": "=16",
     "npm": ">=8"
@@ -10,6 +10,7 @@
     "dev": "npm run generate:tokenlists && vite",
     "serve": "npm run dev",
     "build": "npm run generate:tokenlists && vite build",
+    "build:docker": "export NODE_OPTIONS=--max-old-space-size=8192 && npm run build",
     "build:withouttokenlists": "vite build",
     "build:watch": "vite build --watch",
     "preview": "vite preview",
