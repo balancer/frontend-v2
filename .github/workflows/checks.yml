@@ -129,7 +129,7 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: ./e2e
       - name: Run Playwright tests
-        run: echo secret: $SECRET_WORDS && npm run playwright:ci
+        run: echo secret $SECRET_WORDS && npm run playwright:ci
         working-directory: ./e2e
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
