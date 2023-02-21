@@ -651,6 +651,7 @@ const POOLS_GNOSIS: Pools = {
   ExcludedPoolTypes: [
     'Element',
     'AaveLinear',
+    'EulerLinear',
     'Linear',
     'ERC4626Linear',
     'FX',
