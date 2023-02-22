@@ -62,11 +62,10 @@ onUnmounted(() => {
           <AppIcon v-if="['xs', 'sm'].includes(bp)" />
           <AppLogo v-else />
         </router-link>
-
         <DesktopLinks v-if="isDesktop" class="ml-8 font-medium" />
       </div>
 
-      <AppNavActions />
+      <!-- <AppNavActions /> -->
     </div>
   </nav>
 </template>

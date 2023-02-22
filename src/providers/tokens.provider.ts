@@ -4,15 +4,14 @@ import {
   computed,
   InjectionKey,
   nextTick,
-  onBeforeMount,
   provide,
   reactive,
   toRef,
   toRefs,
 } from 'vue';
 
-import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
-import useBalancesQuery from '@/composables/queries/useBalancesQuery';
+import getUseAllowancesQuery from '@/composables/queries/useAllowancesQuery';
+import getUseBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useConfig from '@/composables/useConfig';
 import symbolKeys from '@/constants/symbol.keys';
@@ -38,7 +37,7 @@ import {
   TokenInfoMap,
   TokenListMap,
 } from '@/types/TokenList';
-import useWeb3 from '@/services/web3/useWeb3';
+import { Web3PluginResponse } from './web3-plugin.provider';
 
 /**
  * TYPES
@@ -55,14 +54,14 @@ export interface TokensProviderState {
  */
 export const tokensProvider = (
   userSettings: UserSettingsResponse,
-  tokenLists: TokenListsResponse
+  tokenLists: TokenListsResponse,
+  web3PluginResponse: Web3PluginResponse
 ) => {
   /**
    * COMPOSABLES
    */
   const { networkConfig } = useConfig();
   const { currency } = userSettings;
-  const { isWalletReady } = useWeb3();
   const {
     tokensListPromise,
     allTokenLists,
@@ -146,7 +145,7 @@ export const tokensProvider = (
    ****************************************************************/
 
   // Prevent prices fetching initally until we inject default tokens like veBAL.
-  // This helps reduce coingecko API calls.
+  // This helps reduce coingecko API calls.  const pricesQueryEnabled = computed(() => !state.loading);
   const pricesQueryEnabled = computed(() => !state.loading);
 
   const {
@@ -166,6 +165,8 @@ export const tokensProvider = (
     }
   );
 
+  const useBalancesQuery = getUseBalancesQuery(web3PluginResponse);
+
   const {
     data: balanceData,
     isSuccess: balanceQuerySuccess,
@@ -174,6 +175,8 @@ export const tokensProvider = (
     isError: balancesQueryError,
     refetch: refetchBalances,
   } = useBalancesQuery(tokens, { keepPreviousData: true });
+
+  const useAllowancesQuery = getUseAllowancesQuery(web3PluginResponse);
 
   const {
     data: allowanceData,
@@ -202,6 +205,7 @@ export const tokensProvider = (
       allowanceQuerySuccess.value
   );
 
+  const { isWalletReady } = web3PluginResponse;
   const dynamicDataLoading = computed(
     () =>
       (pricesQueryEnabled.value &&
@@ -459,7 +463,9 @@ export const tokensProvider = (
   /**
    * LIFECYCLE
    */
-  onBeforeMount(async () => {
+  onMounted(async () => {
+    // TODO: In SRR mode tokens.provider.ts must be called inside onMounted to this code should be refactored as nested onMounted does not make sense
+
     // Inject veBAL because it's not in tokenlists.
     const { veBAL } = configService.network.addresses;
     await injectTokens([veBAL]);
@@ -510,9 +516,10 @@ export const TokensProviderSymbol: InjectionKey<TokensResponse> = Symbol(
 
 export function provideTokens(
   userSettings: UserSettingsResponse,
-  tokenLists: TokenListsResponse
+  tokenLists: TokenListsResponse,
+  web3Plugin: Web3PluginResponse
 ) {
-  const tokensResponse = tokensProvider(userSettings, tokenLists);
+  const tokensResponse = tokensProvider(userSettings, tokenLists, web3Plugin);
   provide(TokensProviderSymbol, tokensResponse);
   return tokensResponse;
 }

@@ -205,11 +205,9 @@
               </router-link>
             </p>
             <p>
-              <a
-                class="policy"
-                @click="isThirdPartyServicesModalVisible = true"
-                >{{ $t('policies.thirdPartyServices') }}</a
-              >
+              <a class="policy">{{ $t('policies.thirdPartyServices') }}</a>
+              <!-- //TODO: Can we undo this coupling with App.vue? -->
+              <!-- @click="isThirdPartyServicesModalVisible = true" -->
             </p>
           </div>
         </div>
@@ -221,7 +219,7 @@
 <script>
 import { useI18n } from 'vue-i18n';
 
-import { isThirdPartyServicesModalVisible } from '@/App.vue';
+// import { isThirdPartyServicesModalVisible } from '@/App.vue';
 import IconDiscord from '@/components/icons/IconDiscord.vue';
 import IconGithub from '@/components/icons/IconGithub.vue';
 import IconLinkedin from '@/components/icons/IconLinkedin.vue';
@@ -233,7 +231,7 @@ import { EXTERNAL_LINKS } from '@/constants/links';
 
 import useNetwork from '@/composables/useNetwork';
 
-import AppLogo from '../images/AppLogo.vue';
+// import AppLogo from '../images/AppLogo.vue';
 
 export default {
   components: {
@@ -244,7 +242,7 @@ export default {
     IconGithub,
     IconMail,
     IconLinkedin,
-    AppLogo,
+    // AppLogo,
   },
   setup() {
     const { t } = useI18n();
@@ -254,7 +252,7 @@ export default {
       EXTERNAL_LINKS,
       t,
       networkSlug,
-      isThirdPartyServicesModalVisible,
+      // isThirdPartyServicesModalVisible,
     };
   },
 };

@@ -14,42 +14,44 @@ export interface UserSettingsState {
   slippage: string;
 }
 
-/**
- * SETUP
- */
-const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
-const lsSlippage = lsGet(LS_KEYS.App.SwapSlippage, '0.01');
-
-/**
- * STATE
- */
-const state: UserSettingsState = reactive({
-  currency: lsCurrency,
-  slippage: lsSlippage,
-});
-
-/**
- * COMPUTED
- */
-const slippageScaled = computed((): string =>
-  parseUnits(state.slippage, 18).toString()
-);
-const slippageBsp = computed<number>(() => parseFloat(state.slippage) * 10000);
-
-/**
- * METHODS
- */
-function setCurrency(newCurrency: FiatCurrency): void {
-  lsSet(LS_KEYS.UserSettings.Currency, newCurrency);
-  state.currency = newCurrency;
-}
-
-function setSlippage(newSlippage: string): void {
-  lsSet(LS_KEYS.App.SwapSlippage, newSlippage);
-  state.slippage = newSlippage;
-}
-
 export const userSettingsProvider = () => {
+  /**
+   * SETUP
+   */
+  const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
+  const lsSlippage = lsGet(LS_KEYS.App.SwapSlippage, '0.01');
+
+  /**
+   * STATE
+   */
+  const state: UserSettingsState = reactive({
+    currency: lsCurrency,
+    slippage: lsSlippage,
+  });
+
+  /**
+   * COMPUTED
+   */
+  const slippageScaled = computed((): string =>
+    parseUnits(state.slippage, 18).toString()
+  );
+  const slippageBsp = computed<number>(
+    () => parseFloat(state.slippage) * 10000
+  );
+
+  /**
+   * METHODS
+   */
+  function setCurrency(newCurrency: FiatCurrency): void {
+    lsSet(LS_KEYS.UserSettings.Currency, newCurrency);
+    state.currency = newCurrency;
+  }
+
+  function setSlippage(newSlippage: string): void {
+    lsSet(LS_KEYS.App.SwapSlippage, newSlippage);
+    state.slippage = newSlippage;
+  }
+
   return {
     ...toRefs(state),
     // methods

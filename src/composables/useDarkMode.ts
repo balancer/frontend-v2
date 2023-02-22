@@ -3,12 +3,8 @@ import { ref } from 'vue';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { lsGet, lsSet } from '@/lib/utils';
 
-const osDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-const lsDarkMode =
-  lsGet(LS_KEYS.App.DarkMode, osDarkMode.toString()) === 'true';
-
 // STATE
-const darkMode = ref<boolean>(lsDarkMode);
+const darkMode = ref<boolean>(false);
 
 // MUTATIONS
 function setDarkMode(val: boolean): void {
@@ -21,8 +17,14 @@ function setDarkMode(val: boolean): void {
   }
 }
 
-// INIT
-setDarkMode(darkMode.value);
+onMounted(() => {
+  // INIT
+  const osDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const lsDarkMode =
+    lsGet(LS_KEYS.App.DarkMode, osDarkMode.toString()) === 'true';
+  darkMode.value = lsDarkMode;
+  setDarkMode(darkMode.value);
+});
 
 export default function useDarkMode() {
   function toggleDarkMode(): void {

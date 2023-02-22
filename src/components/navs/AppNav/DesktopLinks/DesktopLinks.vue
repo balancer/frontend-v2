@@ -5,13 +5,19 @@ import DesktopLinkItem from './DesktopLinkItem.vue';
 import useNetwork from '@/composables/useNetwork';
 import { Goals, trackGoal } from '@/composables/useFathom';
 
-const { isGoerli } = useWeb3();
+const isGoerli = ref(false);
 
 /**
  * COMPOSABLES
  */
-const route = useRoute();
-const { networkSlug } = useNetwork();
+const route = { name: '' };
+let networkSlug = ref('');
+
+onMounted(() => {
+  console.log('MOUNTING DESKTOP LINKS');
+  networkSlug.value = useNetwork().networkSlug;
+  // isGoerli.value = useWeb3().isGoerli.value;
+});
 
 /**
  * METHODS
@@ -23,7 +29,7 @@ function isActive(page: string): boolean {
 </script>
 
 <template>
-  <div class="desktop-links">
+  <div v-if="networkSlug" class="desktop-links">
     <DesktopLinkItem
       :to="{ name: 'home', params: { networkSlug } }"
       :active="isActive('home')"

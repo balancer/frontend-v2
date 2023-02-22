@@ -1,7 +1,7 @@
 import { Network } from '@balancer-labs/sdk';
 import { Web3Provider } from '@ethersproject/providers';
 import debounce from 'lodash/debounce';
-import { computed, inject, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useQuery } from '@tanstack/vue-query';
 
 import useNetwork from '@/composables/useNetwork';
@@ -14,8 +14,8 @@ import {
 import { configService } from '../config/config.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
-import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { web3Service } from './web3.service';
+import { useWeb3Plugin } from '@/providers/web3-plugin.provider';
 
 /** STATE */
 const blockNumber = ref(0);
@@ -27,7 +27,8 @@ function setBlockNumber(n: number): void {
 }
 
 /** INIT STATE */
-rpcProviderService.initBlockListener(setBlockNumber);
+// TODO: Websockets are breaking server
+// rpcProviderService.initBlockListener(setBlockNumber);
 
 const toggleWalletSelectModal = (value?: boolean) => {
   isWalletSelectVisible.value = value ?? !isWalletSelectVisible.value;
@@ -45,7 +46,8 @@ export default function useWeb3() {
     disconnectWallet,
     connectWallet,
     isBlocked,
-  } = inject(Web3ProviderSymbol) as Web3Plugin;
+  } = useWeb3Plugin();
+
   const appNetworkConfig = configService.network;
 
   const { networkId } = useNetwork();

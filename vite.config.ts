@@ -1,4 +1,5 @@
 import vue from '@vitejs/plugin-vue';
+import VitePluginSSR from 'vite-plugin-ssr/plugin';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import AutoImport from 'unplugin-auto-import/vite';
@@ -20,6 +21,7 @@ export default defineConfig(({ mode }) => {
 
   const plugins = [
     vue(),
+    VitePluginSSR(),
     createHtmlPlugin({
       minify: false,
       inject: {
@@ -32,13 +34,12 @@ export default defineConfig(({ mode }) => {
     nodePolyfills() as Plugin,
     AutoImport({
       imports: ['vue', 'vue-router'],
-      types: ['vue'],
       eslintrc: {
         enabled: true,
       },
     }),
     Components({
-      dirs: ['src/components/_global/**'],
+      dirs: ['src/components/_global/**', 'src/components/ssr/**'],
       extensions: ['vue'],
       dts: true,
     }),
@@ -87,6 +88,7 @@ export default defineConfig(({ mode }) => {
         '@': resolve(__dirname, './src'),
         '@types': resolve(__dirname, './types'),
         '@tests': resolve(__dirname, './tests'),
+        '@pages': resolve(__dirname, './pages'),
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
         'tailwind.config.js': resolve(__dirname, 'tailwind.config.js'),

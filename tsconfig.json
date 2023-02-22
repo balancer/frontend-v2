@@ -20,6 +20,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@tests/*": ["tests/*"],
+      "@pages/*": ["pages/*"],
       // Stubbing react types
       // https://github.com/johnsoncodehk/volar/discussions/592#discussioncomment-2163786
       "react": ["src/types/empty-stub.d.ts"],
@@ -35,7 +36,8 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "pages/**/*"
   ],
   "exclude": ["node_modules", "dist"],
   "files": ["node_modules/jest-extended/types/index.d.ts"]
