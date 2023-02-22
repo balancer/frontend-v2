@@ -1,13 +1,16 @@
+<script lang="ts">
+// REVIEW: script exporting title is causing export default error when running build
+export const title = 'SSR';
+</script>
+
 <script lang="ts" setup>
-// TODO: script exporting title is causing export default error when running build
-// const title = 'SSR';
-//
 import Index from '@/pages/index.vue';
 import { useClientLogic } from '@pages/_default/useClientLogic';
 
 // TODO: avoid this call and reuse isWeb3PluginLoaded from Layout.vue
 const { isWeb3PluginLoaded } = useClientLogic();
 </script>
+
 
 <template>
   <p>
