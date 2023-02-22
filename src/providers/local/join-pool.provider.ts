@@ -366,7 +366,6 @@ export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
   Symbol(symbolKeys.Providers.JoinPool);
 
 export function provideJoinPool(pool: Ref<Pool>) {
-  // TODO: Make sure joinPoolProvider is suported for other than deep pools too
   const joinPoolResponse = isDeep(pool.value) ? joinPoolProvider(pool) : {};
   provide(JoinPoolProviderSymbol, joinPoolResponse);
   return joinPoolResponse;

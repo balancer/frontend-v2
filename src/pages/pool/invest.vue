@@ -6,6 +6,8 @@ import { oneMinInMs } from '@/composables/useTime';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useRoute } from 'vue-router';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
+import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { usePool } from '@/composables/usePool';
 
 /**
  * STATE
@@ -22,7 +24,21 @@ usePoolTransfersGuard();
 /**
  * COMPOSABLES
  */
-const { pool, poolQuery } = usePoolTransfers();
+const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
+const { isDeepPool } = usePool(pool);
+
+/**
+ * COMPUTED
+ */
+// We only need to wait for SOR if it's a deep pool.
+const isLoadingSor = computed(
+  (): boolean => isDeepPool.value && !hasFetchedPoolsForSor.value
+);
+
+const isLoading = computed(
+  (): boolean =>
+    loadingPool.value && !transfersAllowed.value && isLoadingSor.value
+);
 
 // Instead of refetching pool data on every block, we refetch every minute to prevent
 // overfetching a heavy request on short blocktime networks like Polygon.
@@ -32,7 +48,9 @@ useIntervalFn(poolQuery.refetch, oneMinInMs);
 </script>
 
 <template>
-  <!-- TODO: handle loading state -->
-  <InvestPage v-if="pool" :pool="pool"></InvestPage>
+  <div class="px-4 lg:px-0 mx-auto max-w-3xl">
+    <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
+    <InvestPage v-else :pool="pool"></InvestPage>
+  </div>
 </template>
 

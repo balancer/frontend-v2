@@ -12,33 +12,29 @@ import useInvestPageTabs, {
   Tab,
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
-import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
+import { Pool } from '@balancer-labs/sdk';
+
+type Props = {
+  pool: Pool;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
+
+/**
+ * COMPUTED
+ */
+const pool = computed(() => props.pool);
 
 /**
  * COMPOSABLES
  */
 const { network } = configService;
-const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { activeTab, resetTabs } = useInvestPageTabs();
 const { isDeepPool, isPreMintedBptPool } = usePool(pool);
-
-/**
- * PROVIDERS
- */
-
-/**
- * COMPUTED
- */
-// We only need to wait for SOR if it's a deep pool.
-const isLoadingSor = computed(
-  (): boolean => isDeepPool.value && !hasFetchedPoolsForSor.value
-);
-
-const isLoading = computed(
-  (): boolean =>
-    loadingPool.value || !transfersAllowed.value || isLoadingSor.value
-);
 
 const { setIsSingleAssetJoin } = useJoinPool();
 
@@ -53,8 +49,7 @@ onMounted(() => resetTabs());
 </script>
 
 <template>
-  <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
-  <BalCard v-else shadow="xl" exposeOverflow noBorder>
+  <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
         <div class="text-xs leading-none text-secondary">
