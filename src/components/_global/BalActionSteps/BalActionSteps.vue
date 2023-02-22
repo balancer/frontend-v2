@@ -183,8 +183,10 @@ async function submit(
     state.init = false;
     state.confirming = false;
     state.error = parseError(error);
-    console.error(error);
-    captureException(error);
+    if (state.error) {
+      console.error(error);
+      captureException(error);
+    }
   }
 }
 
