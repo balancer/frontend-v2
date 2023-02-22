@@ -368,8 +368,8 @@ export default defineComponent({
 
     function isNativeAssetIdentifier(assetInParam: string): boolean {
       return (
-        assetInParam.toLowerCase() === nativeAsset.deeplinkId.toLowerCase() ||
-        assetInParam.toLowerCase() === nativeAsset.symbol.toLowerCase()
+        assetInParam?.toLowerCase() === nativeAsset.deeplinkId?.toLowerCase() ||
+        assetInParam?.toLowerCase() === nativeAsset.symbol?.toLowerCase()
       );
     }
 
