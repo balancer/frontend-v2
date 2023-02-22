@@ -38,8 +38,8 @@ const modeLinks = [
   </div>
   <div>
     <div class="app-body">
-      <!-- <AppNav v-if="isWeb3PluginLoaded"> </AppNav> -->
-      <!-- <div v-else>Client logic loading...</div> -->
+      <AppNav v-if="isWeb3PluginLoaded"> </AppNav>
+      <div v-else>Client logic loading...</div>
       <slot></slot>
     </div>
   </div>
