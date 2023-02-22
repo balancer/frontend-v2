@@ -74,7 +74,7 @@ onMounted(() => {
       </h5>
       <PoolsTable
         :key="poolsToRenderKey"
-        :isLoading="isLoadingPools"
+        :isLoading="isWalletReady && isLoadingPools"
         :data="unstakedPools"
         :shares="userPoolShares"
         :noPoolsLabel="noPoolsLabel"
