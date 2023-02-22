@@ -60,17 +60,24 @@ export default class ConfigService {
   public getNetworkRpc(network: Network): string {
     const networkConfig = this.getNetworkConfig(network);
 
-    return template(networkConfig.rpc, {
-      INFURA_KEY: networkConfig.keys.infura,
-      ALCHEMY_KEY: networkConfig.keys.alchemy,
-    });
+    return template(
+      import.meta.env[`VITE_RPC_URL_${network}`] || networkConfig.rpc,
+      {
+        INFURA_KEY: networkConfig.keys.infura,
+        ALCHEMY_KEY: networkConfig.keys.alchemy,
+      }
+    );
   }
 
   public get rpc(): string {
-    return template(this.network.rpc, {
-      INFURA_KEY: this.env.INFURA_PROJECT_ID,
-      ALCHEMY_KEY: this.env.ALCHEMY_KEY,
-    });
+    return template(
+      import.meta.env[`VITE_RPC_URL_${networkId.value}`] ||
+        this.getNetworkConfig(networkId.value).rpc,
+      {
+        INFURA_KEY: this.env.INFURA_PROJECT_ID,
+        ALCHEMY_KEY: this.env.ALCHEMY_KEY,
+      }
+    );
   }
 
   public get subgraphUrls(): string[] | void {
