@@ -4,7 +4,6 @@ import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vu
 import SwapSettingsPopover, {
   SwapSettingsContext,
 } from '@/components/popovers/SwapSettingsPopover.vue';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
