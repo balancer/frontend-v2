@@ -1,3 +1,4 @@
+// import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { Pool } from '@/services/pool/types';
@@ -21,7 +22,6 @@ export class PoolDecorator {
   ): Promise<Pool[]> {
     const processedPools = this.pools.map(pool => {
       const poolService = new this.poolServiceClass(pool);
-      poolService.setUnwrappedTokens();
       return poolService.pool;
     });
 
