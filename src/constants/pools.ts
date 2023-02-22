@@ -662,13 +662,16 @@ const POOLS_GNOSIS: Pools = {
   ],
   Stable: {
     AllowList: [
-      '0x11884da90fb4221b3aa288a7741c51ec4fc43b2f000000000000000000000004',
+      '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // bb-ag-usd
     ],
   },
   Investment: {
     AllowList: [],
   },
-  Factories: {},
+  Factories: {
+    '0xc128468b7ce63ea702c1f104d55a2566b13d3abd': 'composableStablePool', // ComposableStable V3
+    '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'weightedPool', // WeightedPool V3
+  },
   Stakable: {
     AllowList: [],
   },
