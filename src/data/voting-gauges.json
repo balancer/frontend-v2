@@ -2745,7 +2745,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x808507121B80c02388fAd14726482e061B8da827": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x808507121B80c02388fAd14726482e061B8da827/logo.png",
+      "0x808507121B80c02388fAd14726482e061B8da827": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x808507121b80c02388fad14726482e061b8da827.png",
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
@@ -3013,6 +3013,192 @@
     },
     "tokenLogoURIs": {
       "0x44108f0223A3C3028F5Fe7AEC7f9bb2E66beF82F": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x44108f0223a3c3028f5fe7aec7f9bb2e66bef82f.png",
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png"
+    }
+  },
+  {
+    "address": "0x19A13793af96f534F0027b4b6a3eB699647368e7",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a",
+      "address": "0x99c88AD7dc566616548adde8ED3eFfa730eB6C34",
+      "poolType": "ComposableStable",
+      "symbol": "bb-g-USD",
+      "tokens": [
+        {
+          "address": "0x4A82b580365Cff9B146281Ab72500957a849ABDC",
+          "weight": "null",
+          "symbol": "bb-g-USDC"
+        },
+        {
+          "address": "0xe03aF00faBe8401560c1FF7d242d622a5b601573",
+          "weight": "null",
+          "symbol": "bb-g-DAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4A82b580365Cff9B146281Ab72500957a849ABDC": "",
+      "0xe03aF00faBe8401560c1FF7d242d622a5b601573": ""
+    }
+  },
+  {
+    "address": "0x29C6361Af40fc1B6585ce0885319511dF4450a8E",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499",
+      "address": "0x20b156776114E8a801e9767D90c6ccCCc8Adf398",
+      "poolType": "ComposableStable",
+      "symbol": "bb-yv-USD",
+      "tokens": [
+        {
+          "address": "0x8E6eC57A822c2F527F2Df7C7D7D361dF3E7530a1",
+          "weight": "null",
+          "symbol": "bb-yv-DAI"
+        },
+        {
+          "address": "0x9B1c8407a360443A9E5ECA004713E4088FAB8AC0",
+          "weight": "null",
+          "symbol": "bb-yv-USDC"
+        },
+        {
+          "address": "0xD6E355036f41dC261B3f1ed3Bbc6003E87AAdB4f",
+          "weight": "null",
+          "symbol": "bb-yv-USDT"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x8E6eC57A822c2F527F2Df7C7D7D361dF3E7530a1": "",
+      "0x9B1c8407a360443A9E5ECA004713E4088FAB8AC0": "",
+      "0xD6E355036f41dC261B3f1ed3Bbc6003E87AAdB4f": ""
+    }
+  },
+  {
+    "address": "0x36365dA262dB3965Ba2E1C4411409Bf22508e0A1",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x15c1cdacd3da1e1c1304200b1beb080d50bbbc0f00020000000000000000045f",
+      "address": "0x15C1cDAcd3dA1E1C1304200b1bEb080D50BbBc0F",
+      "poolType": "Weighted",
+      "symbol": "50TRYB-50USDC",
+      "tokens": [
+        {
+          "address": "0x2C537E5624e4af88A7ae4060C022609376C8D0EB",
+          "weight": "0.5",
+          "symbol": "TRYB"
+        },
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "weight": "0.5",
+          "symbol": "USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x2C537E5624e4af88A7ae4060C022609376C8D0EB": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2C537E5624e4af88A7ae4060C022609376C8D0EB/logo.png",
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+    }
+  },
+  {
+    "address": "0xA9A63971c55c132aF0e6B39a081e604F07f4e234",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488",
+      "address": "0x483006684f422a9448023b2382615C57c5ecF18f",
+      "poolType": "ComposableStable",
+      "symbol": "TUSD-bb-e-USD",
+      "tokens": [
+        {
+          "address": "0x3BB22Fc9033b802F2AC47c18885F63476F158aFC",
+          "weight": "null",
+          "symbol": "bb-a-TUSD"
+        },
+        {
+          "address": "0x50Cf90B954958480b8DF7958A9E965752F627124",
+          "weight": "null",
+          "symbol": "bb-euler-USD-BPT"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x3BB22Fc9033b802F2AC47c18885F63476F158aFC": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x3bb22fc9033b802f2ac47c18885f63476f158afc.png",
+      "0x50Cf90B954958480b8DF7958A9E965752F627124": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x50cf90b954958480b8df7958a9e965752f627124.png"
+    }
+  },
+  {
+    "address": "0x33BcAa8A390e6DcF2f18AE5fDd9e38fD248219eB",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489",
+      "address": "0x60683B05e9a39E3509D8fdb9C959f23170f8A0fa",
+      "poolType": "ComposableStable",
+      "symbol": "bb-i-USD",
+      "tokens": [
+        {
+          "address": "0x2FF1A9Dbdacd55297452cFD8a4d94724Bc22a5F7",
+          "weight": "null",
+          "symbol": "bb-i-USDT"
+        },
+        {
+          "address": "0xbc0F2372008005471874e426e86CCFae7B4De79d",
+          "weight": "null",
+          "symbol": "bb-i-USDC"
+        },
+        {
+          "address": "0xDbA274B4D04097b90A72b62467d828cEFD708037",
+          "weight": "null",
+          "symbol": "bb-i-DAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x2FF1A9Dbdacd55297452cFD8a4d94724Bc22a5F7": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x2ff1a9dbdacd55297452cfd8a4d94724bc22a5f7.png",
+      "0xbc0F2372008005471874e426e86CCFae7B4De79d": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xbc0f2372008005471874e426e86ccfae7b4de79d.png",
+      "0xDbA274B4D04097b90A72b62467d828cEFD708037": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xdba274b4d04097b90a72b62467d828cefd708037.png"
+    }
+  },
+  {
+    "address": "0xE879f17910E77c01952b97E4A098B0ED15B6295c",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0xd4f79ca0ac83192693bce4699d0c10c66aa6cf0f00020000000000000000047e",
+      "address": "0xd4f79CA0Ac83192693bce4699d0c10C66Aa6Cf0F",
+      "poolType": "Weighted",
+      "symbol": "OHM-wstETH",
+      "tokens": [
+        {
+          "address": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5",
+          "weight": "0.5",
+          "symbol": "OHM"
+        },
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "0.5",
+          "symbol": "wstETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5.png",
       "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png"
     }
   },
@@ -4206,6 +4392,151 @@
     "tokenLogoURIs": {
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
       "0xEe327F889d5947c1dc1934Bb208a1E792F953E96": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0xee327f889d5947c1dc1934bb208a1e792f953e96.png"
+    }
+  },
+  {
+    "address": "0xEd510769CCf53eA14388Fc9d6E98EDa5b1a5BAC8",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0xeab6455f8a99390b941a33bbdaf615abdf93455e000200000000000000000a66",
+      "address": "0xeaB6455f8A99390B941A33BBDAf615abdf93455e",
+      "poolType": "Weighted",
+      "symbol": "50THX-50stMATIC",
+      "tokens": [
+        {
+          "address": "0x2934b36ca9A4B31E633C5BE670C8C8b28b6aA015",
+          "weight": "0.5",
+          "symbol": "THX"
+        },
+        {
+          "address": "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4",
+          "weight": "0.5",
+          "symbol": "stMATIC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x2934b36ca9A4B31E633C5BE670C8C8b28b6aA015": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x2934b36ca9a4b31e633c5be670c8c8b28b6aa015.png",
+      "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png"
+    }
+  },
+  {
+    "address": "0x9649d14f2b3300Edf690C96fbCb25eDC4B52Ea05",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x577f6076e558818a5df21ce4acde9a9623ec0b4c000200000000000000000a64",
+      "address": "0x577f6076E558818A5dF21Ce4acdE9A9623eC0b4c",
+      "poolType": "Weighted",
+      "symbol": "80SD-20maticX",
+      "tokens": [
+        {
+          "address": "0x1d734A02eF1e1f5886e66b0673b71Af5B53ffA94",
+          "weight": "0.8",
+          "symbol": "SD"
+        },
+        {
+          "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
+          "weight": "0.2",
+          "symbol": "MaticX"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x1d734A02eF1e1f5886e66b0673b71Af5B53ffA94": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x1d734a02ef1e1f5886e66b0673b71af5b53ffa94.png",
+      "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
+    }
+  },
+  {
+    "address": "0x3bEEB803124bf0553B1d54301BA18368c74483c6",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x77e97d4908be63394bc5dff72c8c7bddf1699882000000000000000000000a6a",
+      "address": "0x77e97D4908Be63394bc5DFf72C8C7Bddf1699882",
+      "poolType": "ComposableStable",
+      "symbol": "2eur (agEUR)",
+      "tokens": [
+        {
+          "address": "0x4e3Decbb3645551B8A19f0eA1678079FCB33fB4c",
+          "weight": "null",
+          "symbol": "jEUR"
+        },
+        {
+          "address": "0xE0B52e49357Fd4DAf2c15e02058DCE6BC0057db4",
+          "weight": "null",
+          "symbol": "agEUR"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4e3Decbb3645551B8A19f0eA1678079FCB33fB4c": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x4e3decbb3645551b8a19f0ea1678079fcb33fb4c.png",
+      "0xE0B52e49357Fd4DAf2c15e02058DCE6BC0057db4": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0xe0b52e49357fd4daf2c15e02058dce6bc0057db4.png"
+    }
+  },
+  {
+    "address": "0x0DB3F34d07682B7C61B0B72D02a26CD3cBDBBdd0",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0x513cdee00251f39de280d9e5f771a6eafebcc88e000000000000000000000a6b",
+      "address": "0x513CdEE00251F39DE280d9E5f771A6eaFebCc88E",
+      "poolType": "ComposableStable",
+      "symbol": "2eur (PAR)",
+      "tokens": [
+        {
+          "address": "0x4e3Decbb3645551B8A19f0eA1678079FCB33fB4c",
+          "weight": "null",
+          "symbol": "jEUR"
+        },
+        {
+          "address": "0xE2Aa7db6dA1dAE97C5f5C6914d285fBfCC32A128",
+          "weight": "null",
+          "symbol": "PAR"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4e3Decbb3645551B8A19f0eA1678079FCB33fB4c": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x4e3decbb3645551b8a19f0ea1678079fcb33fb4c.png",
+      "0xE2Aa7db6dA1dAE97C5f5C6914d285fBfCC32A128": "https://assets.coingecko.com/coins/images/14153/large/par_round_200.png?1614670422"
+    }
+  },
+  {
+    "address": "0xD762F3C30A17222C0b8d25aFE1F1dCEC9816F15B",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1677002963,
+    "pool": {
+      "id": "0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65",
+      "address": "0xD80Ef9FabfdC3B52e17f74c383Cf88ee2efBf0b6",
+      "poolType": "ComposableStable",
+      "symbol": "B-tetuQi-Stable",
+      "tokens": [
+        {
+          "address": "0x4Cd44ced63d9a6FEF595f6AD3F7CED13fCEAc768",
+          "weight": "null",
+          "symbol": "tetuQi"
+        },
+        {
+          "address": "0x580A84C73811E1839F75d86d75d88cCa0c241fF4",
+          "weight": "null",
+          "symbol": "QI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4Cd44ced63d9a6FEF595f6AD3F7CED13fCEAc768": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x4cd44ced63d9a6fef595f6ad3f7ced13fceac768.png",
+      "0x580A84C73811E1839F75d86d75d88cCa0c241fF4": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x580A84C73811E1839F75d86d75d88cCa0c241fF4/logo.png"
     }
   },
   {
