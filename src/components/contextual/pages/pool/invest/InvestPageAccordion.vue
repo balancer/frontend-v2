@@ -4,18 +4,29 @@ import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
 import InvestPageMyWallet from './InvestPageMyWallet.vue';
 import { useI18n } from 'vue-i18n';
+import { usePool } from '@/composables/usePool';
+import { Pool } from '@balancer-labs/sdk';
 
 type Props = {
-  isDeepPool: boolean;
+  pool: Pool;
 };
 
-const props = withDefaults(defineProps<Props>(), {});
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
+
+/**
+ * COMPUTED
+ */
+const pool = computed(() => props.pool);
 
 /**
  * COMPOSABLES
  */
 const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 const { t } = useI18n();
+const { isDeepPool } = usePool(pool);
 
 /**
  * COMPUTED
@@ -25,7 +36,7 @@ const nativeBalanceText = computed<string>(() =>
 );
 
 const sectionTitle = computed<string>(() =>
-  props.isDeepPool
+  isDeepPool.value
     ? `${t('myWallet2')} ${nativeBalanceText.value}`
     : t('poolTransfer.myWalletTokensCard.title')
 );
@@ -41,7 +52,7 @@ const sectionTitle = computed<string>(() =>
     ]"
   >
     <template #myWalletTokens>
-      <InvestPageMyWallet />
+      <InvestPageMyWallet :pool="pool" />
     </template>
   </BalAccordion>
 </template>
