@@ -9,6 +9,7 @@ import { isJoinsDisabled } from '@/composables/usePool';
 import config from '@/lib/config';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
+import metaService from '@/services/meta/meta.service';
 
 /**
  * State
@@ -22,6 +23,7 @@ export function applyNavGuards(router: Router): Router {
   router = applyNetworkSubdomainRedirect(router);
   router = applyNetworkPathRedirects(router);
   router = applyPoolJoinRedirects(router);
+  router = applyMetaData(router);
 
   return router;
 }
@@ -133,6 +135,14 @@ function applyPoolJoinRedirects(router: Router): Router {
         params: to.params,
       });
     } else next();
+  });
+  return router;
+}
+
+function applyMetaData(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    metaService.setMeta(to);
+    next();
   });
   return router;
 }

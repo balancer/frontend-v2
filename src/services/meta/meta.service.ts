@@ -1,12 +1,20 @@
-import { RouteComponent } from 'vue-router';
+import useNetwork from '@/composables/useNetwork';
+import { Config } from '@/lib/config';
+import { RouteLocationNormalized } from 'vue-router';
 import { ROUTE_META_DATA } from './meta.constants';
 
 interface IMetaService {
-  setMeta(route: RouteComponent | string): any;
+  setMeta(route: RouteLocationNormalized | string): void;
 }
 
 class MetaService implements IMetaService {
-  public setMeta(route: RouteComponent): void {
+  networkConfig: Config;
+  constructor() {
+    const { networkConfig: _networkConfig } = useNetwork();
+    this.networkConfig = _networkConfig;
+  }
+
+  public setMeta(route: RouteLocationNormalized): void {
     const descriptionMeta = document.querySelector('meta[name=description]');
     const keywordsMeta = document.querySelector('meta[name=keywords]');
 
@@ -16,7 +24,10 @@ class MetaService implements IMetaService {
       ROUTE_META_DATA[route.name];
 
     if (metaTitle) {
-      document.title = metaTitle;
+      document.title = metaTitle.replace(
+        '[network_name]',
+        this.networkConfig.name
+      );
     }
 
     if (metaDescription) {
