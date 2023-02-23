@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useJoinPool from '@/composables/pools/useJoinPool';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 
 /**
  * COMPOSABLES

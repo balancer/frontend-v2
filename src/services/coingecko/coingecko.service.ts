@@ -9,6 +9,7 @@ export const getNativeAssetId = (chainId: string): string => {
     '5': 'ethereum',
     '42': 'ethereum',
     '137': 'matic-network',
+    '100': 'xdai',
     '42161': 'ethereum',
   };
 
@@ -21,6 +22,7 @@ export const getPlatformId = (chainId: string): string => {
     '5': 'ethereum',
     '42': 'ethereum',
     '137': 'polygon-pos',
+    '100': 'xdai',
     '42161': 'arbitrum-one',
   };
 

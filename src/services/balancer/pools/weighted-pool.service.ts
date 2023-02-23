@@ -20,6 +20,8 @@ import { isSameAddress, scale } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
+import { POOLS } from '@/constants/pools';
+import WeightedPoolFactoryV3Abi from '@/lib/abi/WeightedPoolFactoryV3.json';
 
 type Address = string;
 
@@ -48,29 +50,28 @@ export default class WeightedPoolService {
   ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
-    const weightedPoolFactoryAddress =
-      configService.network.addresses.weightedPoolFactory;
-
     const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
     });
 
     const seedTokens = this.calculateTokenWeights(tokens);
     const swapFeeScaled = scale(new BigNumber(swapFee), 18);
+    const rateProviders = Array(tokenAddresses.length).fill(POOLS.ZeroAddress);
 
     const params = [
       name,
       symbol,
       tokenAddresses,
       seedTokens,
+      rateProviders,
       swapFeeScaled.toString(),
       owner,
     ];
 
     const txBuilder = new TransactionBuilder(provider.getSigner());
     return await txBuilder.contract.sendTransaction({
-      contractAddress: weightedPoolFactoryAddress,
-      abi: WeightedPoolFactory__factory.abi,
+      contractAddress: configService.network.addresses.weightedPoolFactory,
+      abi: WeightedPoolFactoryV3Abi,
       action: 'create',
       params,
     });
@@ -83,13 +84,14 @@ export default class WeightedPoolService {
     const receipt = await provider.getTransactionReceipt(createHash);
     if (!receipt) return null;
 
-    const weightedPoolFactoryAddress =
-      configService.network.addresses.weightedPoolFactory;
     const weightedPoolFactoryInterface =
       WeightedPoolFactory__factory.createInterface();
 
     const poolCreationEvent = receipt.logs
-      .filter(log => log.address === weightedPoolFactoryAddress)
+      .filter(
+        log =>
+          log.address === configService.network.addresses.weightedPoolFactory
+      )
       .map(log => {
         try {
           return weightedPoolFactoryInterface.parseLog(log);
