@@ -13,6 +13,8 @@ const bridgeUrl = computed((): string => {
       return 'https://wallet.polygon.technology/polygon/bridge';
     case Network.ARBITRUM:
       return 'https://bridge.arbitrum.io/';
+    case Network.GNOSIS:
+      return 'https://bridge.gnosischain.com/';
     default:
       return '';
   }
