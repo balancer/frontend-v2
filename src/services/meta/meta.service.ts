@@ -1,9 +1,10 @@
 import { RouteLocationNormalized } from 'vue-router';
 import { configService } from '../config/config.service';
-import { ROUTE_META_DATA } from './meta.constants';
+import { OG_META_DATA, ROUTE_META_DATA } from './meta.constants';
 
 interface IMetaService {
   setMeta(route: RouteLocationNormalized | string): void;
+  setOgImage(poolId: string): void;
 }
 
 class MetaService implements IMetaService {
@@ -32,6 +33,17 @@ class MetaService implements IMetaService {
     if (metaKeywords) {
       keywordsMeta?.setAttribute('content', metaKeywords);
     }
+  }
+
+  public setOgImage(poolId: string): void {
+    const ogImageTag = document.querySelector('meta[property="og:image"]');
+    const metaData = OG_META_DATA[poolId];
+
+    if (!ogImageTag || !metaData) {
+      return;
+    }
+
+    ogImageTag.setAttribute('content', metaData.imageUrl);
   }
 }
 
