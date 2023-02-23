@@ -66,6 +66,15 @@ export function getTimestampSecondsFromNow(secs: number): number {
   return Math.ceil(Date.now() / 1000) + secs;
 }
 
+/**
+ * Get seconds since given timestamp.
+ *
+ * @param {number} timestamp - Unix timestamp in seconds.
+ */
+export function getSecondsSince(timestamp: number): number {
+  return Math.ceil(Date.now() / 1000) - timestamp;
+}
+
 export default function useTime() {
   return {
     oneSecondInMs,

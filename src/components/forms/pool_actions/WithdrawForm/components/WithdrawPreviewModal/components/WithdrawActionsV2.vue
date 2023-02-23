@@ -19,7 +19,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
 import router from '@/plugins/router';
-import useExitPool from '@/composables/pools/useExitPool';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
