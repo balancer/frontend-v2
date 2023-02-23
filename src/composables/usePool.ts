@@ -103,6 +103,7 @@ export function isDeep(pool: Pool): boolean {
     // '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
     // '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
     '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
+    '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a', // bb-g-usd (mainnet)
   ];
 
   return treatAsDeep.includes(pool.id);
