@@ -323,6 +323,7 @@ function iconAddresses(pool: Pool) {
               :tokens="orderedPoolTokens(pool, pool.tokens)"
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
+              :pickedTokens="selectedTokens"
             />
           </div>
           <BalChip

@@ -155,7 +155,7 @@ function isActive(network: NetworkOption): boolean {
         </template>
       </BalBtn>
     </template>
-    <div class="flex overflow-hidden flex-col w-44 rounded-lg">
+    <div class="flex overflow-hidden flex-col w-48 rounded-lg">
       <div
         class="py-2 px-3 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
       >
