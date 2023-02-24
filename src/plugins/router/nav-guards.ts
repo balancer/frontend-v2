@@ -142,12 +142,6 @@ function applyPoolJoinRedirects(router: Router): Router {
 function applyMetaData(router: Router): Router {
   router.beforeEach((to, from, next) => {
     metaService.setMeta(to);
-
-    const id = to.params?.id;
-    if (id) {
-      metaService.setOgImage(id as string);
-    }
-
     next();
   });
   return router;

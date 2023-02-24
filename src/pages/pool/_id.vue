@@ -35,7 +35,6 @@ import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
-import metaService from '@/services/meta/meta.service';
 
 /**
  * STATE
