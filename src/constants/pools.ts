@@ -691,7 +691,12 @@ const POOLS_GNOSIS: Pools = {
   Stakable: {
     AllowList: [],
   },
-  Metadata: {},
+  Metadata: {
+    '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010': {
+      name: 'Balancer Boosted Agave USD',
+      hasIcon: false,
+    },
+  },
   DisabledJoins: [],
 };
 
