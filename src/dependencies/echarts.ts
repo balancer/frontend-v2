@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
-
 let echartsLoaded = false;
 
 import { BarChart, LineChart, PieChart } from 'echarts/charts';
@@ -24,7 +22,6 @@ export function initEcharts() {
   echartsLoaded = true;
 }
 
-//TODO: Use this in a wrapper component for vue-charts
 export function getEcharts() {
   if (!echartsLoaded) {
     initEcharts();

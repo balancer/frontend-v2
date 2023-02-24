@@ -12,7 +12,6 @@ import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
 import { initEcharts } from '@/dependencies/echarts';
 
-// TODO: lazy load from main?
 initEcharts();
 
 /**

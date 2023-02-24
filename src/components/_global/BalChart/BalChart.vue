@@ -12,7 +12,6 @@ import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { bnum } from '@/lib/utils';
 
-// TODO: lazy load from main?
 initEcharts();
 
 type AxisMoveEvent = {
