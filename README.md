@@ -151,10 +151,8 @@ Auto imports components located in `src/components/_global` so that they are ava
 
 ### Analyze bundle
 
-Analyze and visualize the bundle dependencies by adding these env vars to your `.env` file before running the build:
+Analyze and visualize the bundle dependencies:
 
 ```bash
-# Local .env file
-VITE_BUILD_ANALIZE=true
-VITE_BUILD_VISUALIZE=true
+npm run build:analyze
 ```
