@@ -6,7 +6,7 @@ export const ROUTE_META_DATA = {
     metaKeywords: '',
   },
   pool: {
-    metaTitle: '[pool_symbol] on [network_name]',
+    metaTitle: '[pool_symbol]',
     metaDescription: '[pool_name] — a Balancer [pool_type] pool',
   },
   swap: {
