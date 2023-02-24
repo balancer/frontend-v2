@@ -6,30 +6,39 @@ import { usePool } from '@/composables/usePool';
 import { isSameAddress, indexOfAddress } from '@/lib/utils';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import useJoinPool from '@/composables/pools/useJoinPool';
 import useInvestPageTabs, {
   Tab,
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
+import { Pool } from '@balancer-labs/sdk';
+
+type Props = {
+  pool: Pool;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
+
+/**
+ * COMPUTED
+ */
+const pool = computed(() => props.pool);
+const excludedTokens = computed<string[]>(() => {
+  return pool.value?.address ? [pool.value.address] : [];
+});
 
 /**
  * COMPOSABLES
  */
-const { pool, loadingPool, transfersAllowed, useNativeAsset } =
-  usePoolTransfers();
-
+const { useNativeAsset } = usePoolTransfers();
 const { isWethPool, isDeepPool } = usePool(pool);
 const { tokenAddresses, amounts } = useInvestState();
 const { setAmountsIn, isSingleAssetJoin, amountsIn } = useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
 const { activeTab } = useInvestPageTabs();
-
-/**
- * COMPUTED
- */
-const excludedTokens = computed<string[]>(() => {
-  return pool.value?.address ? [pool.value.address] : [];
-});
 
 /**
  * METHODS
@@ -107,12 +116,7 @@ function handleMyWalletTokenClick(tokenAddress: string, isPoolToken: boolean) {
 </script>
 
 <template>
-  <BalLoadingBlock
-    v-if="loadingPool || !pool || !transfersAllowed"
-    class="h-64"
-  />
   <MyWallet
-    v-else
     includeNativeAsset
     :excludedTokens="excludedTokens"
     :pool="pool"

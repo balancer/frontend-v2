@@ -17,8 +17,8 @@ import { isSameAddress } from '../utils';
 import { Multicaller } from '../utils/balancer/contract';
 import { formatUnits } from '@ethersproject/units';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import template from '../utils/template';
 import { mapValues } from 'lodash';
+import { configService } from '@/services/config/config.service';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -36,10 +36,9 @@ type GaugeInfo = {
 };
 
 async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
-  const INFURA_KEY = import.meta.env.VITE_INFURA_PROJECT_ID;
-  if (!INFURA_KEY) throw Error('VITE_INFURA_PROJECT_ID not found!');
-
-  const rpcUrl = template(config[Network.MAINNET].rpc, { INFURA_KEY });
+  const rpcUrl = configService.getNetworkRpc(Network.MAINNET);
+  if (rpcUrl.includes('INFURA_KEY'))
+    throw Error('VITE_INFURA_PROJECT_ID not found!');
   const provider = new JsonRpcProvider(rpcUrl);
 
   const multicaller = new Multicaller(

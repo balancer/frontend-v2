@@ -387,6 +387,10 @@ const POOLS_MAINNET: Pools = {
       name: 'AuraBAL Stable Pool',
       hasIcon: false,
     },
+    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
+      name: 'Balancer Idle JuniorBY Boosted StablePool',
+      hasIcon: false,
+    },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
@@ -647,6 +651,50 @@ const POOLS_ARBITRUM: Pools = {
   DisabledJoins: [],
 };
 
+const POOLS_GNOSIS: Pools = {
+  IdsMap: {},
+  Pagination: {
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5,
+  },
+  DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
+  ZeroAddress: '0x0000000000000000000000000000000000000000',
+  DynamicFees: {
+    Gauntlet: [],
+  },
+  BlockList: [''],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'EulerLinear',
+    'Linear',
+    'ERC4626Linear',
+    'FX',
+    'Gyro2',
+    'Gyro3',
+    'GyroE',
+    'HighAmpComposableStable',
+  ],
+  Stable: {
+    AllowList: [
+      '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // bb-ag-usd
+    ],
+  },
+  Investment: {
+    AllowList: [],
+  },
+  Factories: {
+    '0xc128468b7ce63ea702c1f104d55a2566b13d3abd': 'composableStablePool', // ComposableStable V3
+    '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'weightedPool', // WeightedPool V3
+  },
+  Stakable: {
+    AllowList: [],
+  },
+  Metadata: {},
+  DisabledJoins: [],
+};
+
 const POOLS_GENERIC: Pools = {
   IdsMap: {},
   Pagination: {
@@ -744,6 +792,7 @@ const POOLS_MAP = {
   [Network.MAINNET]: POOLS_MAINNET,
   [Network.POLYGON]: POOLS_POLYGON,
   [Network.ARBITRUM]: POOLS_ARBITRUM,
+  [Network.GNOSIS]: POOLS_GNOSIS,
 };
 
 export const POOLS: Pools = POOLS_MAP[networkId.value]

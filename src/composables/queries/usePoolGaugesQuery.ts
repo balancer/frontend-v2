@@ -4,6 +4,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
+import { isGnosis } from '../useNetwork';
 
 /**
  * TYPES
@@ -39,7 +40,9 @@ export default function usePoolGaugesQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed((): boolean => !!poolAddress?.value);
+  const enabled = computed(
+    (): boolean => !!poolAddress?.value && !isGnosis.value
+  );
 
   const subgraphQuery = computed(() => ({
     pool: {
