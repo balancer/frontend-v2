@@ -8,6 +8,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
+import usePoolDecorationQuery from '@/composables/queries/usePoolDecorationQuery';
 
 /**
  * STATE
@@ -32,22 +33,28 @@ export default function usePoolTransfers() {
   /**
    * COMPUTED
    */
-  const pool = computed((): Pool | undefined => {
+  const initialPool = computed((): Pool | undefined => {
     return poolQuery.data.value;
   });
+
+  const poolDecorationQuery = usePoolDecorationQuery(initialPool);
 
   const poolQueryLoading = computed((): boolean => isQueryLoading(poolQuery));
 
   const loadingPool = computed(
-    (): boolean => poolQueryLoading.value || !pool.value
+    (): boolean => poolQueryLoading.value || !initialPool.value
   );
 
+  const pool = computed((): Pool | undefined => {
+    return poolDecorationQuery.data.value || initialPool.value;
+  });
+
   const tokenAddresses = computed(() => {
-    if (pool.value) {
-      if (isDeep(pool.value)) {
-        return pool.value.mainTokens || [];
+    if (initialPool.value) {
+      if (isDeep(initialPool.value)) {
+        return initialPool.value.mainTokens || [];
       }
-      return tokensListExclBpt(pool.value);
+      return tokensListExclBpt(initialPool.value);
     }
     return [];
   });
@@ -62,6 +69,7 @@ export default function usePoolTransfers() {
   return {
     pool,
     poolQuery,
+    poolDecorationQuery,
     loadingPool,
     useNativeAsset,
     missingPrices,
