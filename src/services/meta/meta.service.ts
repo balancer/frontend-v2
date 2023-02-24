@@ -14,8 +14,14 @@ class MetaService implements IMetaService {
     const descriptionMeta = document.querySelector('meta[name=description]');
     const keywordsMeta = document.querySelector('meta[name=keywords]');
 
-    if (!route.name || !ROUTE_META_DATA[route.name]) return;
-
+    if (!route.name || !ROUTE_META_DATA[route.name]) {
+      document.title = 'Balancer';
+      descriptionMeta?.setAttribute(
+        'content',
+        'A UI that supports core Balancer protocol functionality. Explore & create pools, manage liquidity, swap tokens, get veBAL and claim incentives.'
+      );
+      return;
+    }
     const { metaTitle, metaDescription, metaKeywords } =
       ROUTE_META_DATA[route.name];
 
