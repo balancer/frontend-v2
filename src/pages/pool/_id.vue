@@ -131,7 +131,6 @@ function addIntersectionObserver(): void {
 }
 onMounted(() => {
   addIntersectionObserver();
-  metaService.setOgImage(poolId);
 });
 onBeforeUnmount(() => {
   observer?.disconnect();
