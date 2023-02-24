@@ -104,6 +104,10 @@ export function isDeep(pool: Pool): boolean {
     // '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
     '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
     '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a', // bb-g-usd (mainnet)
+    '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // agave stable (gnosis)
+    '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto (gnosis)
+    '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011', // agave gno/usdc (gnosis)
+    '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012', // agave gno/weth (gnosis)
   ];
 
   return treatAsDeep.includes(pool.id);
