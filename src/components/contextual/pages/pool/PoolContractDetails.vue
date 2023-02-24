@@ -48,6 +48,7 @@ const data = computed(() => {
     createTime,
     swapFee,
     name,
+    id,
     onchain,
   } = props.pool;
 
@@ -58,7 +59,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: name,
+      value: POOLS.Metadata[id]?.name || name,
     },
     {
       title: t('poolSymbol'),
