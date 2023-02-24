@@ -141,6 +141,11 @@ function applyPoolJoinRedirects(router: Router): Router {
 
 function applyMetaData(router: Router): Router {
   router.beforeEach((to, from, next) => {
+    // Pool meta data is handled in the pool page
+    if (to.name === 'pool') {
+      next();
+      return;
+    }
     metaService.setMeta(to);
     next();
   });
