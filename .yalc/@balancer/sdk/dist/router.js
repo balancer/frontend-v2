@@ -1,4 +1,5 @@
 import { SwapKind } from './types';
+import { WAD } from './utils/math';
 import { PathWithAmount, Swap } from './entities';
 import { PathGraph } from './pathGraph/pathGraph';
 export class Router {
@@ -20,8 +21,6 @@ export class Router {
         if (paths.length === 0) {
             throw new Error('No potential swap paths provided');
         }
-        // TODO: swapAmount is being used in full on both paths
-        //       this should only be for ordering and then figuring out best split
         const quotePaths = [];
         // Check if PathWithAmount is valid (each hop pool swap limit)
         paths.forEach(path => {
@@ -52,8 +51,33 @@ export class Router {
                 valueArr.sort((a, b) => a.value - b.value);
         }
         const orderedQuotePaths = valueArr.map(item => item.item);
+        // If there is only one path, return it
+        if (orderedQuotePaths.length === 1) {
+            return await Swap.fromPaths(orderedQuotePaths, swapKind, swapAmount);
+        }
+        // Split swapAmount in half, making sure not to lose dust
+        const swapAmount50up = swapAmount.mulDownFixed(WAD / 2n);
+        const swapAmount50down = swapAmount.sub(swapAmount50up);
+        const path50up = new PathWithAmount(orderedQuotePaths[0].tokens, orderedQuotePaths[0].pools, swapAmount50up);
+        const path50down = new PathWithAmount(orderedQuotePaths[1].tokens, orderedQuotePaths[1].pools, swapAmount50down);
         const swap = await Swap.fromPaths(orderedQuotePaths.slice(0, 1), swapKind, swapAmount);
-        return swap;
+        const swapSplit = await Swap.fromPaths([path50up, path50down], swapKind, swapAmount);
+        if (swapKind === SwapKind.GivenIn) {
+            if (swap.outputAmount.amount > swapSplit.outputAmount.amount) {
+                return swap;
+            }
+            else {
+                return swapSplit;
+            }
+        }
+        else {
+            if (swap.inputAmount.amount < swapSplit.inputAmount.amount) {
+                return swap;
+            }
+            else {
+                return swapSplit;
+            }
+        }
     }
 }
 //# sourceMappingURL=router.js.map

@@ -65,6 +65,7 @@ export class PathWithAmount extends Path {
     print() {
         // TODO: cleanup
         const printPath = [];
+        let reversedPrintPath = [];
         if (this.swapKind === SwapKind.GivenIn) {
             const amounts = new Array(this.tokens.length);
             amounts[0] = this.swapAmount;
@@ -78,6 +79,7 @@ export class PathWithAmount extends Path {
                     output: outputAmount.amount.toString() + ' ' + this.tokens[i + 1].symbol,
                 });
             }
+            console.table(printPath);
         }
         else {
             const amounts = new Array(this.tokens.length);
@@ -92,8 +94,9 @@ export class PathWithAmount extends Path {
                     output: amounts[i].amount.toString() + ' ' + this.tokens[i].symbol,
                 });
             }
+            reversedPrintPath = printPath.reverse();
+            console.table(reversedPrintPath);
         }
-        console.table(printPath);
     }
 }
 //# sourceMappingURL=path.js.map

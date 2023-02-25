@@ -75,12 +75,14 @@ export class LinearPool {
         if (tokenIn.isEqual(this.mainToken.token)) {
             if (tokenOut.isEqual(this.wrappedToken.token)) {
                 output = this._exactMainTokenInForWrappedOut(swapAmount);
+                output = output.divDownFixed(this.wrappedToken.rate);
             }
             else {
                 output = this._exactMainTokenInForBptOut(swapAmount);
             }
         }
         else if (tokenIn.isEqual(this.wrappedToken.token)) {
+            swapAmount = swapAmount.mulDownFixed(this.wrappedToken.rate);
             if (tokenOut.isEqual(this.mainToken.token)) {
                 output = this._exactWrappedTokenInForMainOut(swapAmount);
             }
@@ -94,6 +96,7 @@ export class LinearPool {
             }
             else {
                 output = this._exactBptInForWrappedOut(swapAmount);
+                output = output.divDownFixed(this.wrappedToken.rate);
             }
         }
         else {
@@ -109,33 +112,38 @@ export class LinearPool {
         if (swapAmount.amount > (tOut?.amount || 0n)) {
             throw new Error('Swap amount exceeds the pool limit');
         }
+        let input;
         if (tokenIn.isEqual(this.mainToken.token)) {
             if (tokenOut.isEqual(this.wrappedToken.token)) {
-                return this._mainTokenInForExactWrappedOut(swapAmount);
+                swapAmount = swapAmount.mulDownFixed(this.wrappedToken.rate);
+                input = this._mainTokenInForExactWrappedOut(swapAmount);
             }
             else {
-                return this._mainTokenInForExactBptOut(swapAmount);
+                input = this._mainTokenInForExactBptOut(swapAmount);
             }
         }
         else if (tokenIn.isEqual(this.wrappedToken.token)) {
             if (tokenOut.isEqual(this.mainToken.token)) {
-                return this._wrappedTokenInForExactMainOut(swapAmount);
+                input = this._wrappedTokenInForExactMainOut(swapAmount);
             }
             else {
-                return this._wrappedTokenInForExactBptOut(swapAmount);
+                input = this._wrappedTokenInForExactBptOut(swapAmount);
             }
+            input = input.mulDownFixed(this.wrappedToken.rate);
         }
         else if (tokenIn.isEqual(this.bptToken.token)) {
             if (tokenOut.isEqual(this.mainToken.token)) {
-                return this._bptInForExactMainOut(swapAmount);
+                input = this._bptInForExactMainOut(swapAmount);
             }
             else {
-                return this._bptInForExactWrappedOut(swapAmount);
+                swapAmount = swapAmount.mulDownFixed(this.wrappedToken.rate);
+                input = this._bptInForExactWrappedOut(swapAmount);
             }
         }
         else {
             throw new Error('Pool does not contain the tokens provided');
         }
+        return input;
     }
     getLimitAmountSwap(tokenIn, tokenOut, swapKind) {
         const tIn = this.tokenMap.get(tokenIn.address);

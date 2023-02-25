@@ -65,14 +65,14 @@ export class Swap {
         this.swaps = swaps;
     }
     get inputAmount() {
-        if (!this.paths.every(p => p.inputAmount.token === this.paths[0].inputAmount.token)) {
+        if (!this.paths.every(p => p.inputAmount.token.isEqual(this.paths[0].inputAmount.token))) {
             throw new Error('Input amount can only be calculated if all paths have the same input token');
         }
         const amounts = this.paths.map(path => path.inputAmount);
         return amounts.reduce((a, b) => a.add(b));
     }
     get outputAmount() {
-        if (!this.paths.every(p => p.outputAmount.token === this.paths[0].outputAmount.token)) {
+        if (!this.paths.every(p => p.outputAmount.token.isEqual(this.paths[0].outputAmount.token))) {
             throw new Error('Output amount can only be calculated if all paths have the same output token');
         }
         const amounts = this.paths.map(path => path.outputAmount);
