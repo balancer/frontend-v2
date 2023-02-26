@@ -395,6 +395,10 @@ const POOLS_MAINNET: Pools = {
       name: 'Balancer Boosted Yearn USD',
       hasIcon: true,
     },
+    '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a': {
+      name: 'Balancer Boosted Gearbox USD',
+      hasIcon: true,
+    },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
