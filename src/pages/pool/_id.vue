@@ -144,7 +144,7 @@ const noInitLiquidity = computed(
 );
 
 const missingPrices = computed(() => {
-  if (pool.value) {
+  if (pool.value && prices.value) {
     const tokensWithPrice = Object.keys(prices.value);
     const tokens = tokenTreeLeafs(pool.value.tokens);
 
