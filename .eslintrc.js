@@ -11,6 +11,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended',
     'plugin:prettier-vue/recommended',
+    './.eslintrc-auto-import.json',
   ],
 
   plugins: ['simple-import-sort', 'tailwindcss'],
@@ -65,6 +66,24 @@ module.exports = {
             message:
               "Please import from '@ethersproject/*' instead to avoid vite rollup build issues",
           },
+          {
+            group: ['*/lib/balancer.sdk'],
+            importNames: ['balancer'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
+          {
+            group: ['@/lib/utils/balancer/contract'],
+            importNames: ['Multicaller'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
+          // {
+          //   group: ['@/services/multicalls/multicaller'],
+          //   importNames: ['Multicaller'],
+          //   message:
+          //     'Please import from src/dependencies to make this dependency more testable',
+          // },
         ],
       },
     ],
@@ -73,10 +92,7 @@ module.exports = {
 
   overrides: [
     {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
+      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/**/*.spec.{j,t}s?(x)'],
       env: {
         jest: true,
       },

@@ -5,6 +5,7 @@ import { Ref } from 'vue';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { NativeAsset, TokenInfo } from '@/types/TokenList';
+import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -16,19 +17,26 @@ const QUERY_KEYS = {
     All: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
+      poolsSortField: Ref<string> | undefined,
       poolIds: Ref<string[]> | undefined,
       poolAddresses: Ref<string[]> | undefined
-    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
+    ) => [
+      POOLS_ROOT_KEY,
+      'all',
+      {
+        networkId,
+        tokens,
+        poolsSortField,
+        poolIds,
+        poolAddresses,
+      },
+    ],
     User: (
       networkId: Ref<Network>,
       account: Ref<string>,
       gaugeAddresses: Ref<string[]>
     ) => [POOLS_ROOT_KEY, 'user', { networkId, account, gaugeAddresses }],
-    Current: (id: string, gaugeAddresses: Ref<string[]>) => [
-      POOLS_ROOT_KEY,
-      'current',
-      { id, gaugeAddresses },
-    ],
+    Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }],
     APR: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'apr',
@@ -109,6 +117,36 @@ const QUERY_KEYS = {
         },
       ],
     },
+  },
+  Pool: {
+    Gauges: (poolAddress: Ref<string | undefined>) => [
+      'pool',
+      'gauges',
+      { poolAddress },
+    ],
+    Decorated: (poolId: Ref<string | undefined>) => [
+      'pool',
+      'decorated',
+      { poolId },
+    ],
+  },
+  User: {
+    Pool: {
+      StakedShares: (
+        userGaugeShares: Ref<GaugeShare[] | undefined>,
+        account: Ref<string>
+      ) => ['user', 'pool', 'stakedShares', { userGaugeShares, account }],
+    },
+    Pools: (account: Ref<string>) => ['user', 'pools', { account }],
+    Gauges: (account: Ref<string>, poolAddress: Ref<string> | undefined) => [
+      'user',
+      'gauges',
+      { account, poolAddress },
+    ],
+    Boosts: (
+      account: Ref<string>,
+      userGaugeShares: Ref<undefined> | Ref<GaugeShare[]>
+    ) => ['user', 'boosts', { account, userGaugeShares }],
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],

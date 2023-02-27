@@ -48,6 +48,7 @@ const data = computed(() => {
     createTime,
     swapFee,
     name,
+    id,
     onchain,
   } = props.pool;
 
@@ -58,7 +59,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: name,
+      value: POOLS.Metadata[id]?.name || name,
     },
     {
       title: t('poolSymbol'),
@@ -82,11 +83,14 @@ const data = computed(() => {
       title: t('poolManager'),
       value: poolType === PoolType.Managed ? t('yes') : t('none'),
     },
-    {
-      title: t('poolOwner'),
-      value: shortenLabel(owner || ''),
-      link: explorer.addressLink(owner || ''),
-    },
+    owner
+      ? {
+          title: t('poolOwner'),
+          value: poolOwnerData.value.title,
+          link: poolOwnerData.value.link,
+          tooltip: poolOwnerTooltip.value,
+        }
+      : null,
     {
       title: t('contractAddress'),
       value: shortenLabel(address),
@@ -97,6 +101,30 @@ const data = computed(() => {
       value: format((createTime || 0) * 1000, 'dd MMMM yyyy'),
     },
   ];
+});
+
+const poolOwnerData = computed(() => {
+  const { owner } = props.pool;
+  if (owner === POOLS.ZeroAddress) {
+    return { title: t('noOwner'), link: '' };
+  }
+
+  if (owner === POOLS.DelegateOwner) {
+    return { title: t('delegateOwner.title'), link: '' };
+  }
+
+  return {
+    title: shortenLabel(owner || ''),
+    link: explorer.addressLink(owner || ''),
+  };
+});
+
+const poolOwnerTooltip = computed(() => {
+  if (props.pool.owner === POOLS.DelegateOwner) {
+    return t('delegateOwner.tooltip');
+  }
+
+  return '';
 });
 
 const poolManagementText = computed(() => {

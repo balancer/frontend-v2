@@ -3,7 +3,7 @@ import { screen } from '@testing-library/vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 
 import GaugesTable from './GaugesTable.vue';
-import { renderComponent } from '@/tests/renderComponent';
+import { renderComponent } from '@tests/renderComponent';
 GaugesTable.components = {
   BalAssetSet,
 };

@@ -2,10 +2,9 @@
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import TradeSettingsPopover, {
-  TradeSettingsContext,
-} from '@/components/popovers/TradeSettingsPopover.vue';
-import useStaking from '@/composables/staking/useStaking';
+import SwapSettingsPopover, {
+  SwapSettingsContext,
+} from '@/components/popovers/SwapSettingsPopover.vue';
 import useNumbers from '@/composables/useNumbers';
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
@@ -16,6 +15,7 @@ import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue'
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { fiatValueOf } from '@/composables/usePool';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -35,16 +35,12 @@ const props = defineProps<Props>();
  */
 const { t } = useI18n();
 const { fromPool, toPool } = toRefs(props);
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { balanceFor } = useTokens();
-
-const {
-  userData: { stakedSharesForProvidedPool },
-} = useStaking();
+const { stakedShares } = usePoolStaking();
 
 const fiatValueOfStakedShares = computed(() => {
-  const stakedShares = (stakedSharesForProvidedPool.value || 0).toString();
-  return fiatValueOf(props.fromPool, stakedShares);
+  return fiatValueOf(props.fromPool, stakedShares.value);
 });
 
 const fiatValueOfUnstakedShares = computed(() => {
@@ -69,7 +65,7 @@ const balanceLabel = computed(() => {
   balance = stakedAmount + unstakedAmount;
 
   return balance > 0
-    ? fNum2(balance, {
+    ? fNum(balance, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -86,7 +82,7 @@ const migrateStakeChooseArr = ref({
     title: t('migratePool.poolInfo.stakedLabel'),
     value: true,
     amount: computed(() =>
-      fNum2(fiatValueOfStakedShares.value, {
+      fNum(fiatValueOfStakedShares.value, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -97,7 +93,7 @@ const migrateStakeChooseArr = ref({
     title: t('migratePool.poolInfo.unstakedLabel'),
     value: true,
     amount: computed(() =>
-      fNum2(fiatValueOfUnstakedShares.value, {
+      fNum(fiatValueOfUnstakedShares.value, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -152,7 +148,7 @@ const isUnstakedMigrationEnabled = computed(() => {
           <h4>
             {{ t(`migratePool.${poolMigrationInfo.type}.migrateToPool.title`) }}
           </h4>
-          <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+          <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
       </div>
     </template>
@@ -209,7 +205,7 @@ const isUnstakedMigrationEnabled = computed(() => {
       :unstakedPoolValue="fiatValueOfUnstakedShares"
       :isStakedMigrationEnabled="isStakedMigrationEnabled"
       :isUnstakedMigrationEnabled="isUnstakedMigrationEnabled"
-      :stakedBptBalance="stakedSharesForProvidedPool"
+      :stakedBptBalance="stakedShares"
       :unstakedBptBalance="unstakedBptBalance"
       :fromPool="fromPool"
       :toPool="toPool"

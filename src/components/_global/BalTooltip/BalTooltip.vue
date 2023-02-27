@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import BalIcon, { IconSize } from '../BalIcon/BalIcon.vue';
 
@@ -129,7 +128,7 @@ onUnmounted(() => {
 </template>
 <style>
 .tooltip {
-  @apply z-50 hidden relative shadow-sm;
+  @apply z-50 hidden relative shadow-sm text-left;
 }
 
 .dark .tooltip {
@@ -212,5 +211,6 @@ onUnmounted(() => {
 
 .tooltip-text {
   animation: fadeIn 0.5s ease-out 0.05s both;
+  word-break: normal;
 }
 </style>

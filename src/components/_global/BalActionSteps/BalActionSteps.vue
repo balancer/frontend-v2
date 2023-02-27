@@ -12,7 +12,6 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, ref, watch } from 'vue';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useEthers from '@/composables/useEthers';
@@ -184,8 +183,10 @@ async function submit(
     state.init = false;
     state.confirming = false;
     state.error = parseError(error);
-    console.error(error);
-    captureException(error);
+    if (state.error) {
+      console.error(error);
+      captureException(error);
+    }
   }
 }
 

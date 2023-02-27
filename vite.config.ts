@@ -1,7 +1,7 @@
 import vue from '@vitejs/plugin-vue';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-// import AutoImport from 'unplugin-auto-import/vite'
+import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { loadEnv, Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
@@ -17,6 +17,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({ mode }) => {
   const envConfig = loadEnv(mode, process.cwd());
+  const isBuildAnalysis = process.env.BUILD_ANALIZE;
 
   const plugins = [
     vue(),
@@ -30,16 +31,12 @@ export default defineConfig(({ mode }) => {
     }),
     //cast to Plugin to avoid TS errors in defineConfig
     nodePolyfills() as Plugin,
-    // AutoImport({
-    //   imports: [
-    //     'vue',
-    //     'vue-router',
-    //   ],
-    //   dts: 'src/auto-imports.d.ts',
-    //   eslintrc: {
-    //     enabled: true,
-    //   },
-    // }),
+    AutoImport({
+      imports: ['vue', 'vue-router'],
+      eslintrc: {
+        enabled: true,
+      },
+    }),
     Components({
       dirs: ['src/components/_global/**'],
       extensions: ['vue'],
@@ -115,12 +112,20 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     build: {
-      sourcemap: true,
+      sourcemap: isBuildAnalysis ? false : true,
       minify: true,
       rollupOptions: {
         plugins: [
-          envConfig.VITE_BUILD_ANALIZE ? analyze({ summaryOnly: false }) : null,
-          envConfig.VITE_BUILD_VISUALIZE ? visualizer({ open: true }) : null,
+          isBuildAnalysis ? analyze({ summaryOnly: false }) : null,
+          isBuildAnalysis
+            ? visualizer({
+                open: true,
+                template: 'treemap',
+                brotliSize: true,
+                gzipSize: true,
+                filename: './stats.html',
+              })
+            : null,
           // https://stackoverflow.com/a/72440811/10752354
           rollupPolyfillNode(),
         ],
@@ -136,7 +141,7 @@ export default defineConfig(({ mode }) => {
       globals: true,
       environment: 'happy-dom',
       setupFiles: [
-        'tests/unit/vitest/setup-vitest.ts',
+        'tests/vitest/setup-vitest.ts',
         // https://github.com/jest-community/jest-extended/tree/main/examples/typescript/all
         'jest-extended/all',
       ],

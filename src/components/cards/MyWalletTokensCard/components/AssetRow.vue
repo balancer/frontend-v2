@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 
@@ -21,7 +19,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken, balanceFor } = useTokens();
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 
 /**
  * COMPUTED
@@ -29,14 +27,14 @@ const { fNum2, toFiat } = useNumbers();
 const token = computed(() => getToken(props.address));
 
 const balanceLabel = computed(() =>
-  fNum2(balanceFor(props.address), FNumFormats.token)
+  fNum(balanceFor(props.address), FNumFormats.token)
 );
 
 const fiatLabel = computed(() => {
   const tokenBalance = balanceFor(props.address);
   const fiatValue = toFiat(tokenBalance, props.address);
 
-  return fNum2(fiatValue, FNumFormats.fiat);
+  return fNum(fiatValue, FNumFormats.fiat);
 });
 </script>
 

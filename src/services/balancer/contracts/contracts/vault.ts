@@ -8,7 +8,7 @@ import { pick } from 'lodash';
 
 import {
   isStableLike,
-  isTradingHaltable,
+  isSwappingHaltable,
   isWeightedLike,
   isDeep,
   isComposableStableLike,
@@ -16,7 +16,6 @@ import {
 } from '@/composables/usePool';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { isSameAddress } from '@/lib/utils';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { Pool } from '@/services/pool/types';
 import {
   LinearPoolDataMap,
@@ -31,6 +30,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 
 import Service from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export default class Vault {
   service: Service;
@@ -58,6 +58,7 @@ export default class Vault {
     const poolAddress = getAddress(id.slice(0, 42));
     let result = <RawOnchainPoolData>{};
 
+    const Multicaller = getOldMulticaller();
     const vaultMultiCaller = new Multicaller(
       this.service.config.key,
       this.service.provider,
@@ -77,7 +78,7 @@ export default class Vault {
     if (isWeightedLike(type)) {
       poolMulticaller.call('weights', poolAddress, 'getNormalizedWeights', []);
 
-      if (isTradingHaltable(type)) {
+      if (isSwappingHaltable(type)) {
         poolMulticaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
       }
     } else if (isStableLike(type)) {

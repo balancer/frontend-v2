@@ -1,6 +1,6 @@
-import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive, Ref, ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
+
 import { GraphQLArgs } from '@balancer-labs/sdk';
 
 import { useTokens } from '@/providers/tokens.provider';
@@ -14,37 +14,34 @@ import { isBlocked, tokensListExclBpt, tokenTreeLeafs } from '../usePool';
 
 import PoolRepository from '@/services/pool/pool.repository';
 import { configService } from '@/services/config/config.service';
-import useGaugesQuery from './useGaugesQuery';
 import { POOLS } from '@/constants/pools';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+
+type QueryOptions = QueryObserverOptions<Pool>;
 
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {}
+  options: QueryOptions = {}
 ) {
   /**
-   * @description
    * If pool is already downloaded, we can use it instantly
    * it may be if user came to pool page from home page
    */
   const poolInfo = poolsStoreService.findPool(id);
+
   /**
    * COMPOSABLES
    */
-  const { injectTokens, dynamicDataLoading, tokens } = useTokens();
+  const { injectTokens, tokens } = useTokens();
   const { account } = useWeb3();
-  const { data: subgraphGauges } = useGaugesQuery();
-  const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id)
-  );
 
   const poolRepository = new PoolRepository(tokens);
 
   /**
    * COMPUTED
    */
-  const enabled = computed(() => !dynamicDataLoading.value && isEnabled.value);
+  const enabled = computed(() => isEnabled.value);
 
   /**
    * METHODS
@@ -65,7 +62,7 @@ export default function usePoolQuery(
   /**
    * QUERY INPUTS
    */
-  const queryKey = QUERY_KEYS.Pools.Current(id, gaugeAddresses);
+  const queryKey = QUERY_KEYS.Pools.Current(id);
 
   const queryFn = async () => {
     let pool: Pool;
@@ -100,5 +97,5 @@ export default function usePoolQuery(
     ...options,
   });
 
-  return useQuery<Pool>(queryKey, queryFn, queryOptions);
+  return useQuery<Pool>(queryKey, queryFn, queryOptions as QueryOptions);
 }

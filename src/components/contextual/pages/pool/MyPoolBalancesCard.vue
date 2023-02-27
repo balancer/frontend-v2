@@ -3,9 +3,8 @@ import { computed, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
-import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { fiatValueOf, usePool } from '@/composables/usePool';
+import { fiatValueOf, isVeBalPool, usePool } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
@@ -13,6 +12,8 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import PoolActionsCard from './PoolActionsCard.vue';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { useLock } from '@/composables/useLock';
 
 /**
  * TYPES
@@ -31,30 +32,30 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { balanceFor } = useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { isMigratablePool } = usePool(toRef(props, 'pool'));
-const {
-  userData: { stakedSharesForProvidedPool },
-} = useStaking();
+const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
+const { totalLockedValue } = useLock();
 
 /**
  * COMPUTED
  */
 const bptBalance = computed((): string =>
-  bnum(balanceFor(props.pool.address))
-    .plus(stakedSharesForProvidedPool.value)
-    .toString()
+  bnum(balanceFor(props.pool.address)).plus(stakedShares.value).toString()
 );
 
-const fiatValue = computed(() => fiatValueOf(props.pool, bptBalance.value));
+const fiatValue = computed(() => {
+  if (isVeBalPool(props.pool.id)) return totalLockedValue.value;
+
+  return fiatValueOf(props.pool, bptBalance.value);
+});
 
 const showMigrateButton = computed(
   () =>
-    (bnum(bptBalance.value).gt(0) ||
-      bnum(stakedSharesForProvidedPool.value).gt(0)) &&
+    (bnum(bptBalance.value).gt(0) || bnum(stakedShares.value).gt(0)) &&
     isMigratablePool(props.pool)
 );
 
@@ -84,7 +85,7 @@ function navigateToPoolMigration(pool: Pool) {
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h5>
         <h5 class="text-2xl">
-          {{ isWalletReady ? fNum2(fiatValue, FNumFormats.fiat) : '-' }}
+          {{ isWalletReady ? fNum(fiatValue, FNumFormats.fiat) : '-' }}
         </h5>
       </div>
     </template>

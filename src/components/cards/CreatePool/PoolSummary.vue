@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { prominent } from 'color.js';
 import * as echarts from 'echarts/core';
-import { computed, nextTick, ref, watch } from 'vue';
 import ECharts from 'vue-echarts';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
@@ -11,6 +10,9 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
+import { initEcharts } from '@/dependencies/echarts';
+
+initEcharts();
 
 /**
  * CONSTANTS
@@ -39,7 +41,7 @@ const {
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const tailwind = useTailwind();
 const { resolve } = useUrls();
 
@@ -202,7 +204,7 @@ async function calculateColors() {
           {{ $t('createAPool.maxLiquidityTooltip') }}
         </BalTooltip>
       </BalStack>
-      <span>{{ fNum2(totalLiquidity.toString(), FNumFormats.fiat) }}</span>
+      <span>{{ fNum(totalLiquidity.toString(), FNumFormats.fiat) }}</span>
     </BalStack>
   </BalCard>
 </template>

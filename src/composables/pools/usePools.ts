@@ -7,11 +7,20 @@ import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 import { tokenTreeLeafs } from '../usePool';
 
-export default function usePools(filterTokens: Ref<string[]> = ref([])) {
+export default function usePools(
+  filterTokens: Ref<string[]> = ref([]),
+  poolsSortField: Ref<string>
+) {
   /**
    * COMPOSABLES
    */
-  const poolsQuery = usePoolsQuery(filterTokens);
+  const poolsQuery = usePoolsQuery(
+    filterTokens,
+    undefined,
+    undefined,
+    poolsSortField
+  );
+
   const { injectTokens } = useTokens();
 
   /**
@@ -19,6 +28,7 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
    */
   const pools = computed<Pool[]>(() => {
     const paginatedPools = poolsQuery.data.value;
+
     return paginatedPools
       ? flatten(paginatedPools.pages.map(page => page.pools))
       : [];
@@ -35,7 +45,7 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
    * METHODS
    */
   function loadMorePools() {
-    poolsQuery.fetchNextPage.value();
+    poolsQuery.fetchNextPage();
   }
 
   /**

@@ -31,7 +31,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { data: subgraphGauges } = useGaugesQuery();
 const { account } = useWeb3();
 const gaugesQuery = useGaugesDecorationQuery(subgraphGauges);
@@ -65,9 +65,9 @@ function claimTx() {
     color="gradient"
     size="sm"
     :actionFn="claimTx"
-    :onConfirmFn="gaugesQuery.refetch.value"
+    :onConfirmFn="gaugesQuery.refetch"
     action="claim"
-    :summary="`${t('claim')} ${fNum2(props.fiatValue, FNumFormats.fiat)}`"
+    :summary="`${t('claim')} ${fNum(props.fiatValue, FNumFormats.fiat)}`"
     :confirmingLabel="t('claiming')"
   />
 </template>

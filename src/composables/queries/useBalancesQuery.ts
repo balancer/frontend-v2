@@ -1,10 +1,10 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref, ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { tokenService } from '@/services/token/token.service';
+import TokenService from '@/services/token/token.service';
+
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -14,13 +14,14 @@ import useNetwork from '../useNetwork';
  * TYPES
  */
 type QueryResponse = BalanceMap;
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
  * Fetches all balances for provided tokens.
  */
 export default function useBalancesQuery(
   tokens: Ref<TokenInfoMap> = ref({}),
-  options: UseQueryOptions<QueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -43,7 +44,7 @@ export default function useBalancesQuery(
 
   const queryFn = async () => {
     console.log('Fetching', tokenAddresses.value.length, 'balances');
-    return await tokenService.balances.get(account.value, tokens.value);
+    return await new TokenService().balances.get(account.value, tokens.value);
   };
 
   const queryOptions = reactive({
@@ -51,5 +52,9 @@ export default function useBalancesQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

@@ -7,7 +7,7 @@ import {
 
 import {
   isStableLike,
-  isTradingHaltable,
+  isSwappingHaltable,
   isWeightedLike,
   isComposableStableLike,
   isComposableStable,
@@ -45,7 +45,7 @@ export class PoolMulticaller {
   ) {}
 
   public async fetch(): Promise<RawOnchainPoolDataMap> {
-    let result = <RawOnchainPoolDataMap>{};
+    const result = <RawOnchainPoolDataMap>{};
     const multicaller = new this.MulticallerClass();
 
     this.pools.forEach(pool => {
@@ -67,6 +67,13 @@ export class PoolMulticaller {
           address: pool.address,
           function: 'getSwapFeePercentage',
           abi: PoolTypeABIs,
+        })
+        .call({
+          key: `${pool.id}.poolTokens`,
+          address: this.vaultAddress,
+          function: 'getPoolTokens',
+          abi: Vault__factory.abi,
+          params: [pool.id],
         });
 
       if (isWeightedLike(pool.poolType)) {
@@ -77,7 +84,7 @@ export class PoolMulticaller {
           abi: PoolTypeABIs,
         });
 
-        if (isTradingHaltable(pool.poolType)) {
+        if (isSwappingHaltable(pool.poolType)) {
           multicaller.call({
             key: `${pool.id}.swapEnabled`,
             address: pool.address,
@@ -111,18 +118,6 @@ export class PoolMulticaller {
           }
         }
       }
-    });
-
-    result = await multicaller.execute();
-
-    this.pools.forEach(pool => {
-      multicaller.call({
-        key: `${pool.id}.poolTokens`,
-        address: this.vaultAddress,
-        function: 'getPoolTokens',
-        abi: Vault__factory.abi,
-        params: [pool.id],
-      });
     });
 
     return await multicaller.execute(result);

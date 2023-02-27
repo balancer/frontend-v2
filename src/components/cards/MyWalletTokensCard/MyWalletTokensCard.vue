@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
-import { useRoute } from 'vue-router';
-
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { tokensListExclBpt, usePool } from '@/composables/usePool';
@@ -37,7 +34,7 @@ const emit = defineEmits<{
  */
 const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const route = useRoute();
 
 /**
@@ -88,7 +85,7 @@ const fiatTotal = computed(() => {
     })
     .reduce((total, value) => bnum(total).plus(value).toString());
 
-  return fNum2(fiatValue, FNumFormats.fiat);
+  return fNum(fiatValue, FNumFormats.fiat);
 });
 
 /**

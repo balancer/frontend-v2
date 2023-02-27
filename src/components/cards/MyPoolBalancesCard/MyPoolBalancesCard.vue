@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
-
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { tokensListExclBpt, usePool } from '@/composables/usePool';
 // Composables
@@ -11,7 +9,7 @@ import { Pool } from '@/services/pool/types';
 
 // Components
 import AssetRow from './components/AssetRow.vue';
-import useStaking from '@/composables/staking/useStaking';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES
@@ -31,11 +29,9 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { tokens, balances, balanceFor } = useTokens();
-const { fNum2, toFiat } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const { isDeepPool } = usePool(toRef(props, 'pool'));
-const {
-  userData: { stakedSharesForProvidedPool },
-} = useStaking();
+const { stakedShares } = usePoolStaking();
 
 /**
  * SERVICES
@@ -55,7 +51,7 @@ const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
-    bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
+    bnum(bptBalance.value).plus(stakedShares.value).toString(),
     0,
     'send'
   );
@@ -88,7 +84,7 @@ const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
     .reduce((total, value) => bnum(total).plus(value).toString());
-  return fNum2(fiatValue, FNumFormats.fiat);
+  return fNum(fiatValue, FNumFormats.fiat);
 });
 </script>
 

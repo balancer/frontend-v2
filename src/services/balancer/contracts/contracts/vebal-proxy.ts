@@ -1,16 +1,19 @@
-import { Contract } from '@ethersproject/contracts';
+import {
+  EthersContract,
+  getEthersContract,
+} from '@/dependencies/EthersContract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 
 import veBalProxyABI from '@/lib/abi/veDelegationProxy.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
+import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class VeBALProxy {
-  instance: Contract;
+  instance: EthersContract;
 
   constructor(
     public readonly address: string,
@@ -19,6 +22,7 @@ export class VeBALProxy {
     private readonly config = configService,
     private readonly web3 = web3Service
   ) {
+    const Contract = getEthersContract();
     this.instance = new Contract(this.address, this.abi, this.provider);
   }
 
@@ -39,7 +43,8 @@ export class VeBALProxy {
     return mapValues(response, balance => formatUnits(balance || '0', 18));
   }
 
-  private getMulticaller(): Multicaller {
+  private getMulticaller() {
+    const Multicaller = getOldMulticaller();
     return new Multicaller(this.config.network.key, this.provider, this.abi);
   }
 }

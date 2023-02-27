@@ -1,44 +1,42 @@
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
-import { useTokens } from '@/providers/tokens.provider';
 import { useTxState } from '@/composables/useTxState';
-import { useUserSettings } from '../user-settings.provider';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
+import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, removeAddress } from '@/lib/utils';
+import { safeInject } from '@/providers/inject';
+import { useTokens } from '@/providers/tokens.provider';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { captureException } from '@sentry/browser';
+import debounce from 'debounce-promise';
 import {
   computed,
-  defineComponent,
-  h,
   InjectionKey,
   onBeforeMount,
   onMounted,
-  PropType,
   provide,
   reactive,
   readonly,
+  Ref,
   ref,
-  toRef,
   watch,
 } from 'vue';
-import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
-import { TransactionActionInfo } from '@/types/transactions';
-import useRelayerApproval, {
-  RelayerType,
-} from '@/composables/approvals/useRelayerApproval';
-import { useQuery, useQueryClient } from 'vue-query';
-import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
-import { captureException } from '@sentry/browser';
-import debounce from 'debounce-promise';
+import { useUserSettings } from '../user-settings.provider';
+import { useQuery } from '@tanstack/vue-query';
 
 /**
  * TYPES
@@ -49,35 +47,31 @@ export type AmountIn = {
   valid: boolean;
 };
 
-type Props = {
-  pool: Pool;
-  isSingleAssetJoin: boolean;
-};
-
 /**
- * JoinPoolProvider
  *
  * Handles pool joining state and transaction execution.
  */
-const provider = (props: Props) => {
+export const joinPoolProvider = (pool: Ref<Pool>) => {
   /**
    * STATE
    */
-  const pool = toRef(props, 'pool');
   const isMounted = ref(false);
-  const isSingleAssetJoin = toRef(props, 'isSingleAssetJoin');
   const amountsIn = ref<AmountIn[]>([]);
   const bptOut = ref<string>('0');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
+  const isSingleAssetJoin = ref<boolean>(false);
 
   const debounceQueryJoin = debounce(queryJoin, 1000);
 
   const queryEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
   );
-  const queryJoinQuery = useQuery<void, Error>(
+  const queryJoinQuery = useQuery<
+    Awaited<ReturnType<typeof debounceQueryJoin>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Joins.QueryJoin(
       // If amountsIn change we should call queryJoin to get expected output.
       amountsIn,
@@ -108,7 +102,6 @@ const provider = (props: Props) => {
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
     RelayerType.BATCH_V4
   );
-  const queryClient = useQueryClient();
 
   /**
    * COMPUTED
@@ -245,7 +238,7 @@ const provider = (props: Props) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
-    queryJoinQuery.remove.value();
+    queryJoinQuery.remove();
   }
 
   /**
@@ -256,11 +249,8 @@ const provider = (props: Props) => {
     // return early
     if (!hasAmountsIn.value) {
       priceImpact.value = 0;
-      return;
+      return null;
     }
-
-    // Invalidate previous query in order to prevent stale data
-    queryClient.invalidateQueries(QUERY_JOIN_ROOT_KEY);
 
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
@@ -275,6 +265,8 @@ const provider = (props: Props) => {
 
       bptOut.value = output.bptOut;
       priceImpact.value = output.priceImpact;
+
+      return output;
     } catch (error) {
       captureException(error);
       throw new Error('Failed to construct join.', { cause: error });
@@ -301,6 +293,10 @@ const provider = (props: Props) => {
       txError.value = (error as Error).message;
       throw new Error('Failed to submit join transaction.', { cause: error });
     }
+  }
+
+  function setIsSingleAssetJoin(value: boolean) {
+    isSingleAssetJoin.value = value;
   }
 
   /**
@@ -330,6 +326,7 @@ const provider = (props: Props) => {
     // State
     amountsIn,
     highPriceImpactAccepted,
+    txState,
     pool: readonly(pool),
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
@@ -347,7 +344,6 @@ const provider = (props: Props) => {
     hasAmountsIn,
     fiatValueIn,
     fiatValueOut,
-    txState,
     txInProgress,
     approvalActions,
     missingPricesIn,
@@ -358,42 +354,23 @@ const provider = (props: Props) => {
     resetAmounts,
     join,
     resetTxState,
+    setIsSingleAssetJoin,
 
     // queries
     queryJoinQuery,
   };
 };
 
-/**
- * Provide setup: response type + symbol.
- */
-export type Response = ReturnType<typeof provider>;
-export const JoinPoolProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.JoinPool
-);
+export type JoinPoolProviderResponse = ReturnType<typeof joinPoolProvider>;
+export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
+  Symbol(symbolKeys.Providers.JoinPool);
 
-/**
- * <JoinPoolProvider /> component.
- */
-export const JoinPoolProvider = defineComponent({
-  name: 'JoinPoolProvider',
+export function provideJoinPool(pool: Ref<Pool>) {
+  const joinPoolResponse = isDeep(pool.value) ? joinPoolProvider(pool) : {};
+  provide(JoinPoolProviderSymbol, joinPoolResponse);
+  return joinPoolResponse;
+}
 
-  props: {
-    pool: {
-      type: Object as PropType<Pool>,
-      required: true,
-    },
-    isSingleAssetJoin: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  setup(props) {
-    provide(JoinPoolProviderSymbol, provider(props));
-  },
-
-  render() {
-    return h('div', this.$slots?.default ? this.$slots.default() : []);
-  },
-});
+export const useJoinPool = (): JoinPoolProviderResponse => {
+  return safeInject(JoinPoolProviderSymbol);
+};

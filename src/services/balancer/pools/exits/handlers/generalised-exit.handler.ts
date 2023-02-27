@@ -1,6 +1,6 @@
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import {
@@ -9,13 +9,14 @@ import {
   QueryOutput,
   AmountsOut,
 } from './exit-pool.handler';
-import { balancer } from '@/lib/balancer.sdk';
+import { getBalancer } from '@/dependencies/balancer-sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { flatTokenTree } from '@/composables/usePool';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
+const balancer = getBalancer();
 type ExitResponse = Awaited<ReturnType<typeof balancer.pools.generalisedExit>>;
 
 /**
@@ -38,9 +39,9 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, callData } = this.lastExitRes;
+    const { to, encodedCall } = this.lastExitRes;
 
-    return txBuilder.raw.sendTransaction({ to, data: callData });
+    return txBuilder.raw.sendTransaction({ to, data: encodedCall });
   }
 
   async queryExit({
@@ -64,6 +65,8 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
       evmAmountIn.toString(),
       signerAddress,
       slippage,
+      signer,
+      SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
       relayerSignature
     );
     if (!this.lastExitRes) throw new Error('Failed to query exit.');

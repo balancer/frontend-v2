@@ -4,15 +4,23 @@ import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPool
 import VeBalPoolTable from '@/components/contextual/pages/pools/VeBalPoolTable.vue';
 import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import { useLock } from '@/composables/useLock';
-import StakingProvider from '@/providers/local/staking/staking.provider';
+import { providerUserPools } from '@/providers/local/user-pools.provider';
+import { provideUserStaking } from '@/providers/local/user-staking.provider';
 
-// COMPOSABLES
+/**
+ * PROVIDERS
+ */
+const userStaking = provideUserStaking();
+providerUserPools(userStaking);
 
+/**
+ * COMPOSABLES
+ */
 const { lockPool, lock } = useLock();
 </script>
 
 <template>
-  <StakingProvider>
+  <div>
     <PortfolioPageHero />
     <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
       <BalStack vertical>
@@ -32,5 +40,5 @@ const { lockPool, lock } = useLock();
         </BalStack>
       </BalStack>
     </div>
-  </StakingProvider>
+  </div>
 </template>

@@ -1,25 +1,32 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { useUserStaking } from '@/providers/local/user-staking.provider';
+import { Pool } from '@/services/pool/types';
+import { useUserPools } from '@/providers/local/user-pools.provider';
+import StakePreviewModal from '../pool/staking/StakePreviewModal.vue';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+
+/**
+ * STATE
+ */
+const showUnstakeModal = ref(false);
+const poolToUnstake = ref<Pool | undefined>();
+
+/**
+ * PROVIDERS
+ */
+providePoolStaking();
 
 /**
  * COMPOSABLES
  */
-const {
-  userData: {
-    stakedPools,
-    isLoadingUserStakingData,
-    isLoadingStakedPools,
-    isLoadingUserPools,
-    poolBoosts,
-  },
-} = useStaking();
+const { stakedPools, poolBoostsMap, stakedShares, isLoading } =
+  useUserStaking();
+const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
 const networkName = configService.network.shortName;
@@ -27,34 +34,37 @@ const networkName = configService.network.shortName;
 /**
  * COMPUTED
  */
-const isLoading = computed((): boolean => {
-  return (
-    isLoadingUserStakingData.value ||
-    isLoadingStakedPools.value ||
-    isLoadingUserPools.value
-  );
-});
-
 const noPoolsLabel = computed(() => {
   return isWalletReady.value || isWalletConnecting.value
     ? t('noStakedInvestments', [networkName])
     : t('connectYourWallet');
 });
 
-const poolsWithBoost = computed(() => {
-  return stakedPools.value.map(pool => ({
-    ...pool,
-    boost: (poolBoosts.value || {})[pool.id],
-  }));
-});
-
 const hiddenColumns = computed(() => {
   const _hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
   if (isL2.value) _hiddenColumns.push('myBoost');
+
   return _hiddenColumns;
 });
 
-const poolsToRenderKey = computed(() => JSON.stringify(poolsWithBoost.value));
+const poolsToRenderKey = computed(() => JSON.stringify(stakedPools.value));
+
+/**
+ * METHODS
+ */
+function handleUnstake(pool: Pool) {
+  showUnstakeModal.value = true;
+  poolToUnstake.value = pool;
+}
+
+function handleModalClose() {
+  refetchAllUserPools();
+  showUnstakeModal.value = false;
+}
+
+async function handleUnstakeSuccess() {
+  await refetchAllUserPools();
+}
 </script>
 
 <template>
@@ -65,15 +75,27 @@ const poolsToRenderKey = computed(() => JSON.stringify(poolsWithBoost.value));
       </h5>
       <PoolsTable
         :key="poolsToRenderKey"
-        :data="poolsWithBoost"
+        :data="stakedPools"
+        :shares="stakedShares"
+        :boosts="poolBoostsMap"
         poolsType="staked"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
         sortColumn="myBalance"
-        :isLoading="isLoading"
+        :isLoading="isWalletReady && isLoading"
         showPoolShares
-        showBoost
+        showActions
+        :showBoost="!isL2"
+        @trigger-unstake="handleUnstake"
       />
     </BalStack>
+    <StakePreviewModal
+      v-if="poolToUnstake"
+      :pool="poolToUnstake"
+      :isVisible="showUnstakeModal"
+      action="unstake"
+      @close="handleModalClose"
+      @success="handleUnstakeSuccess"
+    />
   </div>
 </template>

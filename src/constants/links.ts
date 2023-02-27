@@ -34,7 +34,7 @@ export const EXTERNAL_LINKS = {
     },
   },
   Copper: {
-    Home: 'https://fjordfoundry.com/',
+    Home: 'https://fjordfoundry.com/?utm_source=balancer&utm_medium=website',
     Auctions: (poolAddress: string, networkPrefix = '') =>
       `https://${networkPrefix}copperlaunch.com/auctions/${poolAddress}`,
   },

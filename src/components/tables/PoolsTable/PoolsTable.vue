@@ -18,15 +18,18 @@ import useNumbers from '@/composables/useNumbers';
 import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
+  fiatValueOf,
+  isLiquidityBootstrapping,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel,
+  isLBP,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { Pool, PoolWithShares } from '@/services/pool/types';
-import { POOLS } from '@/constants/pools';
+import { Pool } from '@/services/pool/types';
+import { POOLS, APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -38,7 +41,7 @@ import TokensBlack from '@/assets/images/icons/tokens_black.svg';
  * TYPES
  */
 type Props = {
-  data?: Pool[] | PoolWithShares[];
+  data?: Pool[];
   poolsType?: 'unstaked' | 'staked';
   isLoading?: boolean;
   isLoadingMore?: boolean;
@@ -49,8 +52,11 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
+  showActions?: boolean;
   columnStates?: Record<string, string>;
   skeletonClass?: string;
+  shares?: Record<string, string>;
+  boosts?: Record<string, string>;
 };
 
 /**
@@ -63,36 +69,42 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  sortColumn: 'poolValue',
+  sortColumn: 'totalLiquidity',
   hiddenColumns: () => [],
   showBoost: false,
+  showActions: false,
   columnStates: () => ({}),
   data: () => [],
   selectedTokens: () => [],
   skeletonClass: 'h-64',
 });
 
-const emit = defineEmits(['loadMore', 'triggerStake']);
-
+const emit = defineEmits<{
+  (e: 'loadMore'): void;
+  (e: 'triggerStake', value: Pool): void;
+  (e: 'triggerUnstake', value: Pool): void;
+  (e: 'onColumnSort', value: string): void;
+}>();
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
-const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 
-const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 450 : undefined
-);
+const wideCompositionWidth = computed(() => {
+  if (upToSmallBreakpoint.value) return 250;
+  return 350;
+});
 
 /**
  * DATA
  */
-const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
+const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -110,9 +122,19 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350,
   },
   {
+    name: t('myBoost'),
+    accessor: pool => `${bnum(boostFor(pool)).toFixed(3)}x`,
+    align: 'right',
+    id: 'myBoost',
+    hidden: !props.showBoost,
+    sortKey: pool => Number(boostFor(pool)),
+    width: 150,
+    cellClassName: 'font-numeric',
+  },
+  {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(pool.shares, {
+      fNum(balanceValue(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true,
@@ -120,19 +142,19 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     align: 'right',
     id: 'myBalance',
     hidden: !props.showPoolShares,
-    sortKey: pool => Number(pool.shares),
+    sortKey: pool => Number(balanceValue(pool)),
     width: 160,
     cellClassName: 'font-numeric',
   },
   {
     name: t('poolValue'),
     accessor: pool =>
-      fNum2(pool.totalLiquidity || 0, {
+      fNum(pool.totalLiquidity || 0, {
         style: 'currency',
         maximumFractionDigits: 0,
       }),
     align: 'right',
-    id: 'poolValue',
+    id: 'totalLiquidity',
     sortKey: pool => {
       const apr = Number(pool.totalLiquidity);
       if (apr === Infinity || isNaN(apr)) return 0;
@@ -145,25 +167,15 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     name: t('volume24h', [t('hourAbbrev')]),
     accessor: pool => pool?.volumeSnapshot || '0',
     align: 'right',
-    id: 'poolVolume',
+    id: 'volume',
     Cell: 'volumeCell',
     sortKey: pool => {
       const volume = Number(pool?.volumeSnapshot);
-      if (volume === Infinity || isNaN(volume)) return 0;
+      if (volume === Infinity || isNaN(volume) || volume > VOLUME_THRESHOLD)
+        return 0;
       return volume;
     },
     width: 175,
-    cellClassName: 'font-numeric',
-  },
-  {
-    name: t('myBoost'),
-    accessor: pool =>
-      pool?.boost ? `${bnum(pool?.boost).toFixed(3)}x` : 'N/A',
-    align: 'right',
-    id: 'myBoost',
-    hidden: !props.showBoost,
-    sortKey: pool => Number(pool?.boost || '0'),
-    width: 150,
     cellClassName: 'font-numeric',
   },
   {
@@ -171,7 +183,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     Cell: 'aprCell',
     accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
-    id: 'poolApr',
+    id: 'apr',
     sortKey: pool => {
       let apr = 0;
 
@@ -179,7 +191,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
         apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
-      return isFinite(apr) ? apr : 0;
+      return isFinite(apr) && apr < APR_THRESHOLD ? apr : 0;
     },
     width: 220,
   },
@@ -205,6 +217,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     accessor: 'actions',
     align: 'center',
     id: 'actions',
+    hidden: !props.showActions,
     width: 150,
   },
 ]);
@@ -216,7 +229,7 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
+function handleRowClick(pool: Pool, inNewTab?: boolean) {
   trackGoal(Goals.ClickPoolsTableRow);
   const route = router.resolve({
     name: 'pool',
@@ -225,7 +238,7 @@ function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
   inNewTab ? window.open(route.href) : router.push(route);
 }
 
-function navigateToPoolMigration(pool: PoolWithShares) {
+function navigateToPoolMigration(pool: Pool) {
   router.push({
     name: 'migrate-pool',
     params: {
@@ -236,7 +249,16 @@ function navigateToPoolMigration(pool: PoolWithShares) {
   });
 }
 
-function aprLabelFor(pool: PoolWithShares): string {
+function balanceValue(pool: Pool): string {
+  const bpt = props?.shares?.[pool.id] || '0';
+  return fiatValueOf(pool, bpt);
+}
+
+function boostFor(pool: Pool): string {
+  return props?.boosts?.[pool.id] || '1';
+}
+
+function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
@@ -247,7 +269,7 @@ function lockedUntil(lockEndDate?: number) {
   return lockEndDate ? format(lockEndDate, PRETTY_DATE_FORMAT) : '—';
 }
 
-function iconAddresses(pool: PoolWithShares) {
+function iconAddresses(pool: Pool) {
   return POOLS.Metadata[pool.id]?.hasIcon
     ? [pool.address]
     : orderedTokenAddresses(pool);
@@ -272,10 +294,12 @@ function iconAddresses(pool: PoolWithShares) {
       :square="upToLargeBreakpoint"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
+      isOnlyDescSort
       :initialState="{
         sortColumn: sortColumn,
         sortDirection: 'desc',
       }"
+      @on-column-sort="emit('onColumnSort', $event)"
       @load-more="emit('loadMore')"
     >
       <template #iconColumnHeader>
@@ -299,9 +323,15 @@ function iconAddresses(pool: PoolWithShares) {
               :tokens="orderedPoolTokens(pool, pool.tokens)"
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
+              :pickedTokens="selectedTokens"
             />
           </div>
-          <BalChipNew v-if="pool?.isNew" class="mt-1" />
+          <BalChip
+            v-if="isLiquidityBootstrapping(pool.poolType)"
+            label="LBP"
+            color="amber"
+          />
+          <BalChipNew v-else-if="pool?.isNew" class="mt-1" />
           <PoolWarningTooltip :pool="pool" />
         </div>
       </template>
@@ -313,10 +343,15 @@ function iconAddresses(pool: PoolWithShares) {
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
-              fNum2(pool?.volumeSnapshot, {
-                style: 'currency',
-                maximumFractionDigits: 0,
-              })
+              fNum(
+                pool?.volumeSnapshot < VOLUME_THRESHOLD
+                  ? pool?.volumeSnapshot
+                  : '-',
+                {
+                  style: 'currency',
+                  maximumFractionDigits: 0,
+                }
+              )
             }}
           </span>
         </div>
@@ -324,12 +359,26 @@ function iconAddresses(pool: PoolWithShares) {
       <template #aprCell="pool">
         <div
           :key="columnStates.aprs"
-          class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
+          :class="[
+            'flex justify-end py-4 px-6 -mt-1 font-numeric text-right',
+            {
+              'text-gray-300 dark:text-gray-600 line-through': isLBP(
+                pool.poolType
+              ),
+            },
+          ]"
         >
           <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.apr" :pool="pool" />
+            <BalTooltip
+              v-if="isLBP(pool.poolType)"
+              width="36"
+              :text="$t('lbpAprTooltip')"
+              iconSize="sm"
+              iconClass="ml-1"
+            />
+            <APRTooltip v-else-if="pool?.apr" :pool="pool" />
           </template>
         </div>
       </template>
@@ -355,6 +404,7 @@ function iconAddresses(pool: PoolWithShares) {
           :pool="pool"
           :poolsType="poolsType"
           @click:stake="pool => emit('triggerStake', pool)"
+          @click:unstake="pool => emit('triggerUnstake', pool)"
           @click:migrate="pool => navigateToPoolMigration(pool)"
         />
       </template>

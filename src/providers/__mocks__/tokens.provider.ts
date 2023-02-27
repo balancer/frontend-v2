@@ -1,4 +1,3 @@
-import { TokenInfoMap } from '@/types/TokenList';
 import { mock } from 'vitest-mock-extended';
 import { computed } from 'vue';
 import { TokensResponse } from '../tokens.provider';
@@ -46,7 +45,7 @@ export function useTokens() {
 
 export const mockTokensProvider = mock<TokensResponse>();
 mockTokensProvider.priceFor.mockReturnValue(2);
-mockTokensProvider.balanceFor.mockReturnValue('0');
+mockTokensProvider.balanceFor.mockReturnValue('10');
 mockTokensProvider.getTokens.mockImplementation(addresses => {
   return Object.fromEntries(
     addresses.map(address => {
@@ -54,12 +53,11 @@ mockTokensProvider.getTokens.mockImplementation(addresses => {
     })
   );
 });
+mockTokensProvider.balancerTokenListTokens = computed(() => ({}));
 mockTokensProvider.getToken.mockImplementation(address => {
   return mockTokens[address];
 });
-mockTokensProvider.balancerTokenListTokens = computed(() =>
-  mock<TokenInfoMap>()
-);
+mockTokensProvider.injectTokens.mockResolvedValue();
 
 export function tokensProvider(): TokensResponse {
   return mockTokensProvider;

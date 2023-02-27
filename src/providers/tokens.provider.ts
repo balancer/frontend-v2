@@ -3,6 +3,7 @@ import { compact, pick } from 'lodash';
 import {
   computed,
   InjectionKey,
+  nextTick,
   onBeforeMount,
   provide,
   reactive,
@@ -18,6 +19,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
 import {
   bnum,
+  forChange,
   getAddressFromPoolId,
   includesAddress,
   isSameAddress,
@@ -36,6 +38,7 @@ import {
   TokenInfoMap,
   TokenListMap,
 } from '@/types/TokenList';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -59,6 +62,7 @@ export const tokensProvider = (
    */
   const { networkConfig } = useConfig();
   const { currency } = userSettings;
+  const { isWalletReady } = useWeb3();
   const {
     tokensListPromise,
     allTokenLists,
@@ -140,12 +144,16 @@ export const tokensProvider = (
    * The prices, balances and allowances maps provide dynamic
    * metadata for each token in the tokens state array.
    ****************************************************************/
+
+  // Prevent prices fetching initally until we inject default tokens like veBAL.
+  // This helps reduce coingecko API calls.
   const pricesQueryEnabled = computed(() => !state.loading);
 
   const {
     data: priceData,
     isSuccess: priceQuerySuccess,
     isLoading: priceQueryLoading,
+    isRefetching: priceQueryRefetching,
     isError: priceQueryError,
     refetch: refetchPrices,
   } = useTokenPricesQuery(
@@ -162,6 +170,7 @@ export const tokensProvider = (
     data: balanceData,
     isSuccess: balanceQuerySuccess,
     isLoading: balanceQueryLoading,
+    isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
   } = useBalancesQuery(tokens, { keepPreviousData: true });
@@ -170,6 +179,7 @@ export const tokensProvider = (
     data: allowanceData,
     isSuccess: allowanceQuerySuccess,
     isLoading: allowanceQueryLoading,
+    isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
   } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
@@ -194,9 +204,13 @@ export const tokensProvider = (
 
   const dynamicDataLoading = computed(
     () =>
-      priceQueryLoading.value ||
-      balanceQueryLoading.value ||
-      allowanceQueryLoading.value
+      (pricesQueryEnabled.value &&
+        (priceQueryLoading.value || priceQueryRefetching.value)) ||
+      (isWalletReady.value &&
+        (balanceQueryLoading.value ||
+          balanceQueryRefetching.value ||
+          allowanceQueryLoading.value ||
+          allowanceQueryRefetching.value))
   );
 
   /**
@@ -259,6 +273,10 @@ export const tokensProvider = (
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
+
+    // Wait for balances/allowances/prices to be fetched for newly injected tokens.
+    await nextTick();
+    await forChange(dynamicDataLoading, false);
   }
 
   /**

@@ -12,7 +12,7 @@ import { cowswapProtocolService } from '@/services/cowswap/cowswapProtocol.servi
 import { OrderMetaData } from '@/services/cowswap/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { CowswapTransactionDetails } from './trade/useCowswap';
+import { CowswapTransactionDetails } from './swap/useCowswap';
 import { processedTxs } from './useEthers';
 import useNotifications from './useNotifications';
 import useNumbers, { FNumFormats } from './useNumbers';
@@ -33,7 +33,7 @@ export type TransactionAction =
   | 'drip'
   | 'claim'
   | 'approve'
-  | 'trade'
+  | 'swap'
   | 'wrap'
   | 'unwrap'
   | 'invest'
@@ -261,7 +261,7 @@ export default function useTransactions() {
   } = useWeb3();
   const { addNotification } = useNotifications();
   const { t } = useI18n();
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
 
   // COMPUTED
   const provider = computed(() => getWeb3Provider());
@@ -286,9 +286,9 @@ export default function useTransactions() {
         tokenOut.decimals
       );
 
-      return `${fNum2(tokenInAmount, FNumFormats.token)} ${
+      return `${fNum(tokenInAmount, FNumFormats.token)} ${
         tokenIn.symbol
-      } -> ${fNum2(tokenOutAmount, FNumFormats.token)} ${tokenOut.symbol}`;
+      } -> ${fNum(tokenOutAmount, FNumFormats.token)} ${tokenOut.symbol}`;
     }
 
     return transaction.summary;

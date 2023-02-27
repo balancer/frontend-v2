@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { sumBy } from 'lodash';
-import { computed } from 'vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -13,7 +12,7 @@ import { useTokens } from '@/providers/tokens.provider';
 const { tokens } = useTokens();
 const { seedTokens, maxInitialLiquidity, tokenColors, getOptimisedLiquidity } =
   usePoolCreation();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 /**
@@ -77,7 +76,7 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
           </div>
           <div class="col-span-6 text-sm text-right">
             {{
-              fNum2(
+              fNum(
                 optimisedLiquidity[token.tokenAddress].liquidityRequired,
                 FNumFormats.fiat
               )
@@ -102,7 +101,7 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
             totalsClass,
           ]"
         >
-          {{ fNum2(maxInitialLiquidity, FNumFormats.fiat) }}
+          {{ fNum(maxInitialLiquidity, FNumFormats.fiat) }}
         </div>
       </div>
     </div>

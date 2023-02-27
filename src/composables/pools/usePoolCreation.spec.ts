@@ -1,4 +1,4 @@
-import { mountComposable } from '@/tests/mount-helpers';
+import { mountComposable } from '@tests/mount-helpers';
 
 import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 

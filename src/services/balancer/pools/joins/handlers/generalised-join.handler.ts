@@ -1,15 +1,16 @@
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-type JoinResponse = Awaited<ReturnType<typeof balancer.pools.generalisedJoin>>;
+type JoinResponse = Awaited<
+  ReturnType<BalancerSDK['pools']['generalisedJoin']>
+>;
 
 /**
  * Handles generalized joins for deep pools using SDK functions.
@@ -31,9 +32,9 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, callData } = this.lastJoinRes;
+    const { to, encodedCall } = this.lastJoinRes;
 
-    return txBuilder.raw.sendTransaction({ to, data: callData });
+    return txBuilder.raw.sendTransaction({ to, data: encodedCall });
   }
 
   async queryJoin({
@@ -58,13 +59,15 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
 
-    this.lastJoinRes = await balancer.pools.generalisedJoin(
+    this.lastJoinRes = await this.sdk.pools.generalisedJoin(
       poolId,
       tokenAddresses,
       evmAmountsIn,
       signerAddress,
       wrapLeafTokens,
       slippage,
+      signer,
+      SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
       relayerSignature
     );
 

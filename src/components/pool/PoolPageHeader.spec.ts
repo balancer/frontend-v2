@@ -4,41 +4,20 @@ import PoolPageHeader from './PoolPageHeader.vue';
 import samplePool from './__mocks__/sample-pool.json';
 import sampleTitleTokens from './__mocks__/sample-title-tokens.json';
 
-import { renderComponent } from '@/tests/renderComponent';
-
-// needed to prevent teleport error
-vi.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
-  default: {
-    template: '<div>-</div>',
-  },
-}));
-
-vi.mock('@ethersproject/address', () => {
-  return {
-    includesAddress: vi.fn(),
-    getAddress: vi.fn(),
-  };
-});
+import { renderComponent } from '@tests/renderComponent';
 
 vi.mock('@/providers/tokens.provider');
-
-vi.mock('@/composables/staking/useStaking', () => {
-  return {
-    default: () => {
-      return {
-        userData: {
-          hasNonPrefGaugeBalances: false,
-        },
-      };
-    },
-  };
-});
-
 vi.mock('@/services/web3/useWeb3');
 
 describe('PoolPageHeader', () => {
   it('should not render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {
+      global: {
+        stubs: {
+          // needed to prevent teleport error
+          StakePreviewModal: true,
+        },
+      },
       props: {
         loadingApr: true,
         noInitLiquidity: false,
@@ -70,6 +49,11 @@ describe('PoolPageHeader', () => {
 
   it('should render weighted pool price provider warning', async () => {
     renderComponent(PoolPageHeader, {
+      global: {
+        stubs: {
+          StakePreviewModal: true,
+        },
+      },
       props: {
         loadingApr: true,
         noInitLiquidity: false,

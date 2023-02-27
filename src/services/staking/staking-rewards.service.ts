@@ -7,11 +7,10 @@ import { isNil, mapValues } from 'lodash';
 import { isL2 } from '@/composables/useNetwork';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
-import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import { balancerContractsService } from '../balancer/contracts/balancer-contracts.service';
+import BalancerContractsService from '../balancer/contracts/balancer-contracts.service';
 import { GaugeController } from '../balancer/contracts/contracts/gauge-controller';
 import { LiquidityGauge } from '../balancer/contracts/contracts/liquidity-gauge';
 import { BalancerTokenAdmin } from '../balancer/contracts/contracts/token-admin';
@@ -27,6 +26,8 @@ import {
   calculateRewardTokenAprs,
   getAprRange,
 } from './utils';
+import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
+import { UserBoosts } from '@/composables/queries/useUserBoostsQuery';
 
 export type GaugeBalApr = { min: string; max: string };
 export type GaugeBalAprs = Record<string, GaugeBalApr>;
@@ -200,61 +201,107 @@ export class StakingRewardsService {
     return Object.fromEntries(aprs);
   }
 
+  /**
+   * getBoostDeps
+   *
+   * Fetches data required to calculate boosts
+   * 1. vebal total supply.
+   * 2. Given user's vebal balance.
+   *
+   * @param {string} userAddress - Account to fetch data for.
+   * @param {string[]} gaugeAddresses - Gauge's to fetch data for.
+   * @returns Set of data described in description above.
+   */
+  async getBoostDeps(userAddress: string) {
+    const veBalProxy = new VeBALProxy(
+      configService.network.addresses.veDelegationProxy
+    );
+
+    const getVebalInfo = await new BalancerContractsService().veBAL.getLockInfo(
+      userAddress
+    );
+    // need to use veBAL balance from the proxy as the balance from the proxy takes
+    // into account the amount of delegated veBAL as well
+    const getVeBALBalance = veBalProxy.getAdjustedBalance(userAddress);
+
+    const [{ totalSupply: veBALTotalSupply }, userVeBALBalance] =
+      await Promise.all([getVebalInfo, getVeBALBalance]);
+
+    return {
+      veBALTotalSupply,
+      userVeBALBalance,
+    };
+  }
+
+  /**
+   * calcUserBoost
+   *
+   * Pure function for calculating a user's boost for a given gauge.
+   * See: https://www.notion.so/veBAL-Boost-7a2ae8b6c8ff470f9dbe5b6bab4ff989#3037cbd3f619457681d63627db92541a
+   *
+   * @param {string} userGaugeBalance - User's balance in gauge.
+   * @param {string} gaugeTotalSupply - The gauge's total supply.
+   * @param {string} userVeBALBalance - User's veBAL balance.
+   * @param {string} veBALTotalSupply - veBAL total supply.
+   * @returns User's boost value for given gauge.
+   */
+  calcUserBoost({
+    userGaugeBalance,
+    gaugeTotalSupply,
+    userVeBALBalance,
+    veBALTotalSupply,
+  }: {
+    userGaugeBalance: string;
+    gaugeTotalSupply: string;
+    userVeBALBalance: string;
+    veBALTotalSupply: string;
+  }): string {
+    const _userGaugeBalance = bnum(userGaugeBalance);
+    const _gaugeTotalSupply = bnum(gaugeTotalSupply);
+    const _userVeBALBalance = bnum(userVeBALBalance);
+    const _veBALTotalSupply = bnum(veBALTotalSupply);
+    const boost = bnum(1).plus(
+      bnum(1.5)
+        .times(_userVeBALBalance)
+        .div(_veBALTotalSupply)
+        .times(_gaugeTotalSupply)
+        .div(_userGaugeBalance)
+    );
+    const minBoost = bnum(2.5).lt(boost) ? 2.5 : boost;
+
+    return minBoost.toString();
+  }
+
+  /**
+   * getUserBoosts
+   *
+   * Fetches user boost values for given set of gauges. Returns map of poolId ->
+   * boost.
+   *
+   * @param {string} userAddress - Account to fetch boosts for.
+   * @param {GaugeShare[]} gaugeShares - Gauges to calculate boosts for.
+   * @returns Map of poolId -> boost
+   */
   async getUserBoosts({
     userAddress,
     gaugeShares,
   }: {
     userAddress: string;
-    gaugeShares: UserGaugeShare[];
-  }) {
-    const veBalProxy = new VeBALProxy(
-      configService.network.addresses.veDelegationProxy
-    );
-    const veBALInfo = await balancerContractsService.veBAL.getLockInfo(
+    gaugeShares: GaugeShare[];
+  }): Promise<UserBoosts> {
+    const { veBALTotalSupply, userVeBALBalance } = await this.getBoostDeps(
       userAddress
-    );
-    // need to use veBAL balance from the proxy as the balance from the proxy takes
-    // into account the amount of delegated veBAL as well
-    const veBALBalance = await veBalProxy.getAdjustedBalance(userAddress);
-    const veBALTotalSupply = veBALInfo.totalSupply;
-
-    const gaugeAddresses = gaugeShares.map(gaugeShare => gaugeShare.gauge.id);
-    const workingSupplies = await this.getWorkingSupplyForGauges(
-      gaugeAddresses
     );
 
     const boosts = gaugeShares.map(gaugeShare => {
-      const gaugeAddress = getAddress(gaugeShare.gauge.id);
-      const gaugeWorkingSupply = bnum(workingSupplies[gaugeAddress]);
-      const gaugeBalance = bnum(gaugeShare.balance);
-      const adjustedGaugeBalance = bnum(0.4)
-        .times(gaugeBalance)
-        .plus(
-          bnum(0.6).times(
-            bnum(veBALBalance)
-              .div(veBALTotalSupply)
-              .times(gaugeShare.gauge.totalSupply)
-          )
-        );
+      const boost = this.calcUserBoost({
+        userGaugeBalance: gaugeShare.balance,
+        gaugeTotalSupply: gaugeShare.gauge.totalSupply,
+        userVeBALBalance,
+        veBALTotalSupply,
+      });
 
-      // choose the minimum of either gauge balance or the adjusted gauge balance
-      const workingBalance = gaugeBalance.lt(adjustedGaugeBalance)
-        ? gaugeBalance
-        : adjustedGaugeBalance;
-
-      const zeroBoostWorkingBalance = bnum(0.4).times(gaugeBalance);
-      const zeroBoostWorkingSupply = gaugeWorkingSupply
-        .minus(workingBalance)
-        .plus(zeroBoostWorkingBalance);
-
-      const boostedFraction = workingBalance.div(gaugeWorkingSupply);
-      const unboostedFraction = zeroBoostWorkingBalance.div(
-        zeroBoostWorkingSupply
-      );
-
-      const boost = boostedFraction.div(unboostedFraction);
-
-      return [gaugeShare.gauge.poolId, boost.toString()];
+      return [gaugeShare.gauge.poolId, boost];
     });
 
     return Object.fromEntries(boosts);

@@ -1,4 +1,4 @@
-import { SANCTIONED_ADDRESS } from '@/tests/msw/handlers';
+import { SANCTIONED_ADDRESS } from '@tests/msw/rest-handlers';
 import { isBlockedAddress } from './web3.plugin';
 
 describe('Given that VITE_WALLET_SCREENING is false', () => {

@@ -8,18 +8,17 @@ import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import useStaking from '@/composables/staking/useStaking';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
-import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
-import useJoinPool from '@/composables/pools/useJoinPool';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 /**
  * TYPES
@@ -42,11 +41,11 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
-const { isPoolEligibleForStaking } = useStaking();
+const { isStakablePool } = usePoolStaking();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
   rektPriceImpact,
@@ -86,13 +85,6 @@ const actions = computed((): TransactionActionInfo[] => [
   },
 ]);
 
-const isStakablePool = computed((): boolean => {
-  return (
-    POOLS.Stakable.AllowList.includes(props.pool.id) &&
-    isPoolEligibleForStaking.value
-  );
-});
-
 /**
  * METHODS
  */
@@ -102,11 +94,11 @@ async function handleTransaction(tx): Promise<void> {
     type: 'tx',
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
-      fNum2(fiatValueOut.value, FNumFormats.fiat),
+      fNum(fiatValueOut.value, FNumFormats.fiat),
       poolWeightsLabel(props.pool),
     ]),
     details: {
-      total: fNum2(fiatValueOut.value, FNumFormats.fiat),
+      total: fNum(fiatValueOut.value, FNumFormats.fiat),
       pool: props.pool,
     },
   });

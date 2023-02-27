@@ -3,33 +3,23 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import AppHero from '@/components/heros/AppHero.vue';
-import useUserPools from '@/composables/pools/useUserPools';
-import useStaking from '@/composables/staking/useStaking';
 import { useLock } from '@/composables/useLock';
 import useNetwork, { isL2 } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
+import { useUserPools } from '@/providers/local/user-pools.provider';
 
 /**
  * COMPOSABLES
  */
 const router = useRouter();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { isWalletReady, isWalletConnecting } = useWeb3();
-const { totalInvestedAmount, isLoadingUserPools } = useUserPools();
-const { lockFiatValue, isLoadingLock } = useLock();
+const { totalFiatValue, isLoading: isLoadingPools } = useUserPools();
+const { totalLockedValue } = useLock();
 const { networkSlug } = useNetwork();
-const {
-  userData: {
-    totalStakedFiatValue,
-    isLoadingUserStakingData,
-    isLoadingStakedPools,
-    isUserStakeDataIdle,
-  },
-} = useStaking();
 
 /**
  * COMPUTED
@@ -39,33 +29,15 @@ const classes = computed(() => ({
   ['h-44']: isWalletReady.value || isWalletConnecting.value,
 }));
 
-const isStakingLoading = computed(() => {
-  return (
-    isLoadingStakedPools.value ||
-    isLoadingUserStakingData.value ||
-    isUserStakeDataIdle.value
-  );
-});
-
-const totalInvestedLabel = computed((): string => {
-  const value = bnum(totalInvestedAmount.value || '0')
-    .plus(lockFiatValue.value)
-    .plus(totalStakedFiatValue.value)
-    .toString();
-  return fNum2(value, FNumFormats.fiat);
-});
+const totalInvestedLabel = computed((): string =>
+  fNum(totalFiatValue.value, FNumFormats.fiat)
+);
 
 const totalVeBalLabel = computed((): string =>
-  fNum2(lockFiatValue.value, FNumFormats.fiat)
+  fNum(totalLockedValue.value, FNumFormats.fiat)
 );
 
-const isLoadingLockAndStaking = computed(
-  (): boolean => (!isL2.value && isLoadingLock.value) || isStakingLoading.value
-);
-
-const isLoadingTotalValue = computed(
-  (): boolean => isLoadingUserPools.value || isLoadingLockAndStaking.value
-);
+const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
 </script>
 
 <template>
@@ -95,8 +67,8 @@ const isLoadingTotalValue = computed(
           class="group flex items-center px-3 h-8 text-sm font-medium text-yellow-500 hover:text-white focus:text-white rounded-tr rounded-bl border border-yellow-500 transition-colors cursor-pointer vebal-banner"
           @click="router.push({ name: 'vebal', params: { networkSlug } })"
         >
-          <span v-if="lockFiatValue === '0'"
-            >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
+          <span v-if="totalLockedValue === '0'"
+            >{{ totalLockedValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
           >
           <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
         </div>
@@ -104,7 +76,7 @@ const isLoadingTotalValue = computed(
     </template>
     <template v-else>
       <div class="text-3xl font-semibold text-white">
-        {{ fNum2('0', FNumFormats.fiat) }}
+        {{ fNum('0', FNumFormats.fiat) }}
       </div>
       <HeroConnectWalletButton class="mt-4" />
     </template>

@@ -306,6 +306,114 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0xd590931466cdd6d488a25da1e89dd0539723800c00020000000000000000042b',
     network: Network.MAINNET,
   },
+  {
+    id: '0x8a34b5ad76f528bfec06c80d85ef3b53da7fc30000020000000000000000043e',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xdb0cbcf1b8282dedc90e8c2cefe11041d6d1e9f0000200000000000000000431',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xe4010ef5e37dc23154680f23c4a0d48bfca91687000200000000000000000432',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xb08885e6026bab4333a80024ec25a1a3e1ff2b8a000200000000000000000445',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x384f67aa430376efc4f8987eabf7f3f84eb9ea5d00020000000000000000043d',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xa3c500969accb3d8df08cba313c120818fe0ed9d000200000000000000000471',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x831261f44931b7da8ba0dcc547223c60bb75b47f000200000000000000000460',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xfd1cf6fd41f229ca86ada0584c63c49c3d66bbc9000200000000000000000438',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x9f9d900462492d4c21e9523ca95a7cd86142f298000200000000000000000462',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x1ee442b5326009bb18f2f472d3e0061513d1a0ff000200000000000000000464',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x5f1f4e50ba51d723f12385a8a9606afc3a0555f5000200000000000000000465',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x36be1e97ea98ab43b4debf92742517266f5731a3000200000000000000000466',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x15c1cdacd3da1e1c1304200b1beb080d50bbbc0f00020000000000000000045f',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xd4f79ca0ac83192693bce4699d0c10c66aa6cf0f00020000000000000000047e',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -398,6 +506,10 @@ export const ARBITRUM_POOLS: Pool[] = [
   },
   {
     id: '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352',
     network: Network.ARBITRUM,
   },
 ];
@@ -545,6 +657,34 @@ export const POLYGON_POOLS: Pool[] = [
   },
   {
     id: '0x34a81e8956bf20b7448b31990a2c06f96830a6e4000200000000000000000a14',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xf3312968c7d768c19107731100ece7d4780b47b2000200000000000000000a50',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x5dee84ffa2dc27419ba7b3419d7146e53e4f7ded000200000000000000000a4e',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xeab6455f8a99390b941a33bbdaf615abdf93455e000200000000000000000a66',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x577f6076e558818a5df21ce4acde9a9623ec0b4c000200000000000000000a64',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x77e97d4908be63394bc5dff72c8c7bddf1699882000000000000000000000a6a',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x513cdee00251f39de280d9e5f771a6eafebcc88e000000000000000000000a6b',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65',
     network: Network.POLYGON,
   },
 ];

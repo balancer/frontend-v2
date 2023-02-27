@@ -24,6 +24,7 @@ import { TokenInfo } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import useVotingGauges from '@/composables/useVotingGauges';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import { ApprovalAction } from '@/composables/approvals/types';
 
 /**
  * TYPES
@@ -76,9 +77,10 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.lockablePoolTokenInfo.address],
-  ref([props.lockAmount])
+  ref([props.lockAmount]),
+  ApprovalAction.Locking
 );
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { totalVotes, unallocatedVotes } = useVotingGauges();
 const { networkSlug } = useNetwork();
 
@@ -122,7 +124,7 @@ async function handleTransaction(
         ? t('transactionSummary.extendLock', [
             format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT),
           ])
-        : `${fNum2(props.lockAmount, FNumFormats.token)} ${
+        : `${fNum(props.lockAmount, FNumFormats.token)} ${
             props.lockablePoolTokenInfo.symbol
           }`,
     details: {

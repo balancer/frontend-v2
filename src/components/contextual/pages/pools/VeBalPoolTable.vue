@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import { useLock } from '@/composables/useLock';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { Pool, PoolWithShares } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * PROPS
@@ -16,16 +16,14 @@ type Props = {
 const props = defineProps<Props>();
 
 /** COMPOSABLES */
-const { lockedFiatTotal } = useLock();
+const { totalLockedShares } = useLock();
 
 /** COMPUTED */
-const lockPools = computed<PoolWithShares[]>(() => {
+const lockPools = computed<Pool[]>(() => {
   if (props.lockPool) {
     return [
       {
         ...props.lockPool,
-        bpt: '',
-        shares: lockedFiatTotal.value,
         lockedEndDate:
           props.lock?.hasExistingLock && !props.lock?.isExpired
             ? props.lock?.lockedEndDate
@@ -35,6 +33,12 @@ const lockPools = computed<PoolWithShares[]>(() => {
   }
   return [];
 });
+
+const poolShares = computed(
+  (): Record<string, string> => ({
+    [props.lockPool.id]: totalLockedShares.value,
+  })
+);
 
 const poolsToRenderKey = computed(() => JSON.stringify(lockPools.value));
 
@@ -50,6 +54,7 @@ const hiddenColumns = ['poolVolume', 'migrate', 'actions', 'myBoost'];
       <PoolsTable
         :key="poolsToRenderKey"
         :data="lockPools"
+        :shares="poolShares"
         :hiddenColumns="hiddenColumns"
         sortColumn="myBalance"
         showPoolShares

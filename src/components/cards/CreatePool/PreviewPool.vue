@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import BigNumber from 'bignumber.js';
-import { computed, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -10,6 +9,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress, shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * PROPS & EMITS
@@ -50,9 +50,10 @@ const {
 
 const { getToken, priceFor, nativeAsset, wrappedNativeAsset, balanceFor } =
   useTokens();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { t } = useI18n();
-const { userNetworkConfig, account } = useWeb3();
+const { account } = useWeb3();
+const { networkConfig } = useNetwork();
 
 /**
  * LIFECYCLE
@@ -172,9 +173,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
   <BalStack vertical spacing="xs" class="mb-24">
     <BalCard shadow="xl" noBorder>
       <BalStack vertical spacing="xs">
-        <span class="text-xs text-secondary">{{
-          userNetworkConfig?.name
-        }}</span>
+        <span class="text-xs text-secondary">{{ networkConfig?.name }}</span>
       </BalStack>
       <BalStack vertical>
         <div class="flex items-center mt-2">
@@ -216,7 +215,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                   <BalAsset :address="token.tokenAddress" :size="36" />
                   <BalStack vertical spacing="none">
                     <span class="font-semibold">
-                      {{ fNum2(token.weight / 100, FNumFormats.percent) }}
+                      {{ fNum(token.weight / 100, FNumFormats.percent) }}
                       {{ getToken(token.tokenAddress)?.symbol }}
                     </span>
                     <span
@@ -227,7 +226,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                     >
                       {{ initialWeightLabel }}:
                       {{
-                        fNum2(
+                        fNum(
                           initialWeights[token.tokenAddress].toString(),
                           FNumFormats.percent
                         )
@@ -237,11 +236,11 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                 </BalStack>
                 <BalStack vertical spacing="none" align="end">
                   <span class="font-semibold">
-                    {{ fNum2(token.amount, FNumFormats.token) }}
+                    {{ fNum(token.amount, FNumFormats.token) }}
                   </span>
                   <span class="text-sm text-secondary">
                     {{
-                      fNum2(
+                      fNum(
                         bnum(token.amount)
                           .times(priceFor(token.tokenAddress))
                           .toString(),
@@ -260,7 +259,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           >
             <h6>{{ $t('total') }}</h6>
             <h6>
-              {{ fNum2(poolLiquidity.toString(), FNumFormats.fiat) }}
+              {{ fNum(poolLiquidity.toString(), FNumFormats.fiat) }}
             </h6>
           </BalStack>
         </BalCard>
@@ -299,7 +298,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
               <span class="text-sm">{{ $t('swapFee') }}:</span>
               <BalStack horizontal spacing="sm">
                 <span class="text-sm">{{
-                  fNum2(initialFee, FNumFormats.percent)
+                  fNum(initialFee, FNumFormats.percent)
                 }}</span>
                 <button class="hover:text-blue-500" @click="navigateToPoolFee">
                   <BalIcon name="edit" size="xs" />
