@@ -656,7 +656,7 @@ const POOLS_ARBITRUM: Pools = {
     ],
   },
   Metadata: {
-  '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
+    '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
       name: 'Balancer Boosted Reaper Granary USD',
       hasIcon: true,
     },
