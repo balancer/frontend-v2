@@ -391,6 +391,14 @@ const POOLS_MAINNET: Pools = {
       name: 'Balancer Idle JuniorBY Boosted StablePool',
       hasIcon: false,
     },
+    '0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499': {
+      name: 'Balancer Boosted Yearn USD',
+      hasIcon: true,
+    },
+    '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a': {
+      name: 'Balancer Boosted Gearbox USD',
+      hasIcon: true,
+    },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
@@ -647,7 +655,12 @@ const POOLS_ARBITRUM: Pools = {
       '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
+      name: 'Balancer Boosted Reaper Granary USD',
+      hasIcon: true,
+    },
+  },
   DisabledJoins: [],
 };
 
