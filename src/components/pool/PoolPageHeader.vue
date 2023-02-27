@@ -285,8 +285,8 @@ function symbolFor(titleTokenIndex: number): string {
     v-if="isDeprecatedPool"
     class="mt-4"
     type="tip"
-    :title="$t('greatMigration.warning.title')"
-    :description="$t('greatMigration.warning.text')"
+    :title="$t('deprecatedPool.warning.title')"
+    :description="$t('deprecatedPool.warning.text')"
   />
   <StakePreviewModal
     v-if="!!pool"

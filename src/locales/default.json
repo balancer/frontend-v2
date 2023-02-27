@@ -342,7 +342,6 @@
   "delegateFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every swap utilizing the liquidity in this pool. Control has been delegated to the community, so fees could change in the future if this pool becomes actively managed.",
   "depositing": "depositing",
   "details": "Details",
-  "deprecatedPool": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
   "disconnect": "Disconnect",
   "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <span class='font-semibold'>{0}</span>",
   "docs": "Docs",
@@ -422,7 +421,8 @@
   "goToMigratedPool": "Go to migrated pool",
   "governance": "Governance",
   "grants": "Grants",
-  "greatMigration": {
+  "deprecatedPool": {
+    "tooltip": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
     "warning": {
       "title": "Move your liquidity for future BAL incentives",
       "text": "Liquidity mining incentives are being phased out for this pool, since upgraded pools are now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to an incentivized pool."
