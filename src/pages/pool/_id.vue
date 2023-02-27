@@ -22,10 +22,10 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
-  removeBptFrom,
   usePool,
   tokensListExclBpt,
   tokenTreeLeafs,
+  orderedPoolTokens,
 } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
@@ -155,10 +155,8 @@ const missingPrices = computed(() => {
 
 const titleTokens = computed<PoolToken[]>(() => {
   if (!pool.value || !pool.value.tokens) return [];
-  const { tokens } = removeBptFrom(pool.value);
-  if (!tokens) return [];
 
-  return [...tokens].sort((a, b) => Number(b.weight) - Number(a.weight));
+  return orderedPoolTokens(pool.value, pool.value.tokens);
 });
 
 const isStakablePool = computed((): boolean =>
