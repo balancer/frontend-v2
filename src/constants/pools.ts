@@ -399,6 +399,34 @@ const POOLS_MAINNET: Pools = {
       name: 'Balancer Boosted Gearbox USD',
       hasIcon: true,
     },
+    '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476': {
+      name: 'Euler Boosted USD/DOLA',
+      hasIcon: false,
+    },
+    // '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477': {
+    //   name: 'FRAX/USDC',
+    //   hasIcon: false,
+    // },
+    '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488': {
+      name: 'Euler Boosted USD/TUSD',
+      hasIcon: false,
+    },
+    '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474': {
+      name: 'Euler Boosted USD/rETH',
+      hasIcon: false,
+    },
+    '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475': {
+      name: 'Euler Boosted USD/TEMPLE',
+      hasIcon: false,
+    },
+    '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473': {
+      name: 'Euler Boosted USD/wstETH',
+      hasIcon: false,
+    },
+    // '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472': {
+    //   name: 'APE/wstETH',
+    //   hasIcon: false,
+    // },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
