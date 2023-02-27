@@ -2,7 +2,7 @@ import { Network } from '@balancer-labs/sdk';
 import { Web3Provider } from '@ethersproject/providers';
 import debounce from 'lodash/debounce';
 import { computed, inject, reactive, ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery } from '@tanstack/vue-query';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -75,6 +75,7 @@ export default function useWeb3() {
   const isArbitrum = computed(
     () => appNetworkConfig.chainId === Network.ARBITRUM
   );
+  const isGnosis = computed(() => appNetworkConfig.chainId === Network.GNOSIS);
   const isEIP1559SupportedNetwork = computed(
     () => appNetworkConfig.supportsEIP1559
   );
@@ -157,6 +158,7 @@ export default function useWeb3() {
     isGoerli,
     isPolygon,
     isArbitrum,
+    isGnosis,
     isEIP1559SupportedNetwork,
     isWalletConnecting,
     isBlocked,

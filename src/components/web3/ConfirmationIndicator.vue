@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery } from '@tanstack/vue-query';
 
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
@@ -40,7 +40,6 @@ const receipt = computed(() => props.txReceipt);
 const {
   data: confirmationData,
   isLoading: isFetchingConfirmationDate,
-  isIdle,
   error,
 } = useQuery<ConfirmationData>(
   QUERY_KEYS.Transaction.ConfirmationDate(receipt),
@@ -56,8 +55,7 @@ const {
 );
 
 const isLoading = computed(
-  (): boolean =>
-    isFetchingConfirmationDate.value || isIdle.value || !!error.value
+  (): boolean => isFetchingConfirmationDate.value || !!error.value
 );
 </script>
 

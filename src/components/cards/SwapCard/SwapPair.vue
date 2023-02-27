@@ -39,7 +39,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { getToken } = useTokens();
 const { veBalTokenInfo } = useVeBal();
 
@@ -89,7 +89,7 @@ const rateLabel = computed(() => {
     outSymbol = tokenIn.value.symbol;
   }
 
-  return `1 ${inSymbol} = ${fNum2(rate, FNumFormats.token)} ${outSymbol}`;
+  return `1 ${inSymbol} = ${fNum(rate, FNumFormats.token)} ${outSymbol}`;
 });
 
 /**

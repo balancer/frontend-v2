@@ -11,7 +11,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
 import InvestActionsV2 from './components/InvestActionsV2.vue';
-import useJoinPool from '@/composables/pools/useJoinPool';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 import { useIntervalFn } from '@vueuse/shared';
 import { oneSecondInMs } from '@/composables/useTime';
 
@@ -156,7 +156,7 @@ function handleShowStakeModal() {
 // networks like Polygon.
 useIntervalFn(() => {
   if (!isLoadingQuery.value && !txInProgress.value) {
-    queryJoinQuery.refetch.value();
+    queryJoinQuery.refetch();
   }
 }, oneSecondInMs * 10);
 </script>

@@ -53,7 +53,7 @@ const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
 const { getTokens } = useTokens();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -161,7 +161,7 @@ onBeforeMount(() => {
                 {{ token.symbol }}
                 <span v-if="!isStableLikePool">
                   {{
-                    fNum2(seedTokens[i], {
+                    fNum(seedTokens[i], {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })
@@ -176,10 +176,10 @@ onBeforeMount(() => {
             <BalLoadingBlock v-if="loadingData" class="w-20 h-12" />
             <template v-else>
               <span class="text-xl break-words">
-                {{ fNum2(proportionalAmounts[i], FNumFormats.token) }}
+                {{ fNum(proportionalAmounts[i], FNumFormats.token) }}
               </span>
               <span class="text-sm text-gray-400">
-                {{ fNum2(fiatAmounts[i], FNumFormats.fiat) }}
+                {{ fNum(fiatAmounts[i], FNumFormats.fiat) }}
               </span>
             </template>
           </div>

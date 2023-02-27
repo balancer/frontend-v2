@@ -2,13 +2,13 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useJoinPool from '@/composables/pools/useJoinPool';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 
 /**
  * COMPOSABLES
  */
 const { highPriceImpact, isLoadingQuery, priceImpact } = useJoinPool();
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -28,7 +28,7 @@ const priceImpactClasses = computed(() => ({
       <div class="data-table-number-col">
         <div class="flex">
           <span v-if="!isLoadingQuery">
-            {{ fNum2(priceImpact, FNumFormats.percent) }}
+            {{ fNum(priceImpact, FNumFormats.percent) }}
           </span>
           <BalLoadingBlock v-else class="w-10" />
 

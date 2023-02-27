@@ -1,3 +1,4 @@
+// import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { Pool } from '@/services/pool/types';
@@ -17,18 +18,17 @@ export class PoolDecorator {
 
   public async decorate(
     tokens: TokenInfoMap,
-    decorateAll = true
+    fullDecoration = true
   ): Promise<Pool[]> {
     const processedPools = this.pools.map(pool => {
       const poolService = new this.poolServiceClass(pool);
-      poolService.setUnwrappedTokens();
       return poolService.pool;
     });
 
     const poolMulticaller = new PoolMulticaller(processedPools);
 
     const [poolSnapshots, rawOnchainDataMap] = await Promise.all([
-      decorateAll ? this.getSnapshots() : [],
+      fullDecoration ? this.getSnapshots() : [],
       poolMulticaller.fetch(),
     ]);
 
@@ -39,7 +39,7 @@ export class PoolDecorator {
 
       // All of the following are pre-cached by the Balancer API so we can skip
       // decoration of them if the pool came from the API.
-      if (decorateAll) {
+      if (fullDecoration) {
         const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
         poolService.setFeesSnapshot(poolSnapshot);
         poolService.setVolumeSnapshot(poolSnapshot);

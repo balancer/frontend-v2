@@ -1,11 +1,11 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { isGnosis } from '../useNetwork';
 
 /**
  * TYPES
@@ -23,6 +23,7 @@ export type UserGaugeShares = {
   __name: 'GaugeShares';
   gaugeShares: GaugeShare[];
 };
+type QueryOptions = UseQueryOptions<GaugeShare[]>;
 
 /**
  * useUserGaugeSharesQuery
@@ -31,12 +32,12 @@ export type UserGaugeShares = {
  * poolAddress is provided.
  *
  * @param {Ref<string>} poolAddress - Pool to fetch gaugeShares for.
- * @param {UseQueryOptions} options - useQuery options.
+ * @param {QueryOptions} options - useQuery options.
  * @returns {GaugeShare[]} An array of user gauge shares.
  */
 export default function useUserGaugeSharesQuery(
   poolAddress?: Ref<string>,
-  options: UseQueryOptions<GaugeShare[]> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -51,7 +52,9 @@ export default function useUserGaugeSharesQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed((): boolean => isWalletReady.value);
+  const enabled = computed(
+    (): boolean => isWalletReady.value && !isGnosis.value
+  );
 
   const queryArgs = computed(() => {
     if (poolAddress?.value)
@@ -107,5 +110,9 @@ export default function useUserGaugeSharesQuery(
     ...options,
   });
 
-  return useQuery<GaugeShare[]>(queryKey, queryFn, queryOptions);
+  return useQuery<GaugeShare[]>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

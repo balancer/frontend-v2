@@ -124,6 +124,11 @@ const QUERY_KEYS = {
       'gauges',
       { poolAddress },
     ],
+    Decorated: (poolId: Ref<string | undefined>) => [
+      'pool',
+      'decorated',
+      { poolId },
+    ],
   },
   User: {
     Pool: {

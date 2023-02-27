@@ -4,7 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -35,7 +35,9 @@ export function addressFor(poolId: string): string {
 
 export function isLinear(poolType: PoolType): boolean {
   return (
-    poolType === PoolType.AaveLinear || poolType === PoolType.ERC4626Linear
+    poolType === PoolType.AaveLinear ||
+    poolType === PoolType.ERC4626Linear ||
+    poolType === PoolType.EulerLinear
   );
 }
 
@@ -82,12 +84,12 @@ export function isDeep(pool: Pool): boolean {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD2 (mainnet)
     '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
-    '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387', // wstETH/bb-a-USD (mainnet)
+    // '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387', // wstETH/bb-a-USD (mainnet)
     '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // dola/bb-a-USD (mainnet)
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
-    '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b', // STG/bba-usd (mainnet)
-    '0x334c96d792e4b26b841d28f53235281cec1be1f200020000000000000000038a', // rETH/bba-usd (mainnet)
-    '0x53bc3cba3832ebecbfa002c12023f8ab1aa3a3a0000000000000000000000411', // TUSD/bb-a-usd (mainnet)
+    // '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b', // STG/bba-usd (mainnet)
+    // '0x334c96d792e4b26b841d28f53235281cec1be1f200020000000000000000038a', // rETH/bba-usd (mainnet)
+    // '0x53bc3cba3832ebecbfa002c12023f8ab1aa3a3a0000000000000000000000411', // TUSD/bb-a-usd (mainnet)
     '0x4c8d2e60863e8d7e1033eda2b3d84e92a641802000000000000000000000040f', // FRAX/aave-usdc (mainnet)
     '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467', // wstETH/sfrxETH/rETH (mainnet)
     '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f', // euler usd (mainnet)
@@ -97,6 +99,15 @@ export function isDeep(pool: Pool): boolean {
     '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488', // tusd/bb-e-usd (mainnet)
     '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489', // bb-i-usd (mainnet)
     '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65', // tetu/qi (polygon)
+    '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
+    // '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
+    // '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
+    '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
+    '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a', // bb-g-usd (mainnet)
+    '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // agave stable (gnosis)
+    '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto (gnosis)
+    '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011', // agave gno/usdc (gnosis)
+    '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012', // agave gno/weth (gnosis)
   ];
 
   return treatAsDeep.includes(pool.id);
@@ -258,6 +269,9 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
+  if (aprs.min > APR_THRESHOLD || aprs.max > APR_THRESHOLD) {
+    return '-';
+  }
   if (boost) {
     numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
@@ -542,14 +556,14 @@ export function fiatValueOf(pool: Pool, shares: string): string {
  * @returns {boolean} True if included in list.
  */
 export function isJoinsDisabled(id: string): boolean {
-  return POOLS.DisabledJoins.includes(id);
+  return POOLS.DisabledJoins.includes(id.toLowerCase());
 }
 
 /**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
-  const { fNum2 } = useNumbers();
+  const { fNum } = useNumbers();
 
   /**
    * Returns pool weights label
@@ -566,7 +580,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     return Object.values(pool.onchain.tokens)
       .map(
         token =>
-          `${fNum2(token.weight, {
+          `${fNum(token.weight, {
             style: 'percent',
             maximumFractionDigits: 0,
           })} ${token.symbol}`

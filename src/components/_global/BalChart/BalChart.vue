@@ -5,10 +5,14 @@ import { last } from 'lodash';
 import { Dictionary } from 'lodash';
 import numeral from 'numeral';
 import ECharts from 'vue-echarts';
+import { initEcharts } from '@/dependencies/echarts';
 
 import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
+import { bnum } from '@/lib/utils';
+
+initEcharts();
 
 type AxisMoveEvent = {
   seriesIndex: number;
@@ -81,7 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
 const chartInstance = ref<echarts.ECharts>();
 const currentValue = ref('$0,00');
 const change = ref(0);
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const tailwind = useTailwind();
 const { darkMode } = useDarkMode();
 
@@ -99,7 +103,7 @@ const chartConfig = computed(() => ({
       const latestValue = last(
         props.data.find(d => d.name === legendName)?.values as any
       ) as [string | number, string | number];
-      return `${legendName}: ${fNum2(
+      return `${legendName}: ${fNum(
         latestValue[1],
         props.axisLabelFormatter.yAxis
       )}`;
@@ -125,7 +129,7 @@ const chartConfig = computed(() => ({
     minInterval: props.xAxisMinInterval,
     axisLabel: {
       formatter: props.axisLabelFormatter.xAxis
-        ? value => fNum2(value, props.axisLabelFormatter.xAxis)
+        ? value => fNum(value, props.axisLabelFormatter.xAxis)
         : undefined,
       color: tailwind.theme.colors.gray['400'],
     },
@@ -154,7 +158,7 @@ const chartConfig = computed(() => ({
     axisLabel: {
       show: !props.hideYAxis,
       formatter: props.axisLabelFormatter.yAxis
-        ? value => fNum2(value, props.axisLabelFormatter.yAxis)
+        ? value => fNum(value, props.axisLabelFormatter.yAxis)
         : undefined,
       color: tailwind.theme.colors.gray['400'],
     },
@@ -196,7 +200,7 @@ const chartConfig = computed(() => ({
                     <span>
                       ${param.marker} ${param.seriesName}
                       <span class='font-semibold'>
-                        ${fNum2(param.value[1], props.axisLabelFormatter.yAxis)}
+                        ${fNum(param.value[1], props.axisLabelFormatter.yAxis)}
                       </span>
                     </span>
                   `
@@ -244,7 +248,7 @@ const chartConfig = computed(() => ({
         borderRadius: 3,
         padding: 4,
         formatter: (params: any) => {
-          return fNum2(params.data.yAxis, props.axisLabelFormatter.yAxis);
+          return fNum(params.data.yAxis, props.axisLabelFormatter.yAxis);
         },
         color: '#FFF',
         fontSize: 10,
@@ -293,7 +297,7 @@ function setCurrentValueToLatest(updateCurrentValue: boolean) {
   );
 
   if (updateCurrentValue) {
-    currentValue.value = fNum2(
+    currentValue.value = fNum(
       currentDayValue.value() || 0,
       props.axisLabelFormatter.yAxis || {
         style: 'currency',
@@ -356,8 +360,12 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       chartValue: currentChartValue[1],
     });
 
-    currentValue.value = fNum2(
-      props.data[seriesIndex].values[dataIndex][1],
+    // toFixed to prevent maximumFractionalDigits error in fNum formatting.
+    // Shouldn't need more than 6 decimals because this is a USD value.
+    const value = bnum(props.data[seriesIndex].values[dataIndex][1]).toFixed(6);
+
+    currentValue.value = fNum(
+      value,
       props.axisLabelFormatter.yAxis || {
         style: 'currency',
         currency: 'USD',

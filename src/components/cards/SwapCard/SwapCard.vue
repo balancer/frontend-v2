@@ -195,7 +195,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
-    const { fNum2 } = useNumbers();
+    const { fNum } = useNumbers();
     const { appNetworkConfig, isMismatchedNetwork } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
@@ -305,14 +305,14 @@ export default defineComponent({
               ]),
               body: t('cowswapErrors.lowBalance.body', [
                 swapping.tokenIn.value.symbol,
-                fNum2(
+                fNum(
                   formatUnits(
                     swapping.getQuote().maximumInAmount,
                     swapping.tokenIn.value.decimals
                   ),
                   FNumFormats.token
                 ),
-                fNum2(swapping.slippageBufferRate.value, FNumFormats.percent),
+                fNum(swapping.slippageBufferRate.value, FNumFormats.percent),
               ]),
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {
@@ -365,15 +365,23 @@ export default defineComponent({
         dismissedErrors.value.highPriceImpact = true;
       }
     }
+
+    function isNativeAssetIdentifier(assetParam: string | undefined): boolean {
+      return (
+        assetParam?.toLowerCase() === nativeAsset.deeplinkId?.toLowerCase() ||
+        assetParam?.toLowerCase() === nativeAsset.symbol?.toLowerCase()
+      );
+    }
+
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === nativeAsset.deeplinkId) {
+      if (isNativeAssetIdentifier(assetIn)) {
         assetIn = nativeAsset.address;
       } else if (isAddress(assetIn)) {
         assetIn = getAddress(assetIn);
       }
       let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === nativeAsset.deeplinkId) {
+      if (isNativeAssetIdentifier(assetOut)) {
         assetOut = nativeAsset.address;
       } else if (isAddress(assetOut)) {
         assetOut = getAddress(assetOut);

@@ -1,22 +1,21 @@
-import { UseQueryOptions } from 'react-query/types';
 import { reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { gaugesSubgraphService } from '@/services/balancer/gauges/gauges-subgraph.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { isGnosis } from '../useNetwork';
 
 /**
  * TYPES
  */
 type QueryResponse = SubgraphGauge[];
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
  * @summary Fetches guages list from subgraph
  */
-export default function useGaugesQuery(
-  options: UseQueryOptions<QueryResponse> = {}
-) {
+export default function useGaugesQuery(options: QueryOptions = {}) {
   /**
    * QUERY KEY
    */
@@ -38,9 +37,13 @@ export default function useGaugesQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: true,
+    enabled: !isGnosis.value,
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

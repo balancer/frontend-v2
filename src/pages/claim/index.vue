@@ -12,7 +12,7 @@ import ProtocolRewardsTable, {
   ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { isL2, isMainnet } from '@/composables/useNetwork';
+import { isGnosis, isL2, isMainnet } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
@@ -41,7 +41,7 @@ type GaugeTable = {
  */
 const { injectTokens, injectPrices, getToken } = useTokens();
 const { balToken } = useTokenHelpers();
-const { toFiat, fNum2 } = useNumbers();
+const { toFiat, fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
 const {
   gauges,
@@ -81,7 +81,7 @@ const networks: NetworkMetadata[] = [
  * COMPUTED
  */
 const loading = computed(
-  (): boolean => isClaimsLoading.value && isWalletReady.value
+  (): boolean => isClaimsLoading.value && isWalletReady.value && !isGnosis.value
 );
 
 const networkBtns = computed(() => {
@@ -91,7 +91,7 @@ const networkBtns = computed(() => {
 });
 
 const balRewardsData = computed((): RewardRow[] => {
-  if (!isWalletReady.value) return [];
+  if (!isWalletReady.value || isGnosis.value) return [];
   // Using reduce to filter out gauges we don't have corresponding pools for
   return gauges.value.reduce<RewardRow[]>((arr, gauge) => {
     const amount = formatUnits(gauge.claimableTokens, balToken.value.decimals);
@@ -173,7 +173,7 @@ function gaugeTitle(pool: GaugePool): string {
   return Object.values(_tokens)
     .map(
       token =>
-        `${fNum2(token.weight || '0', {
+        `${fNum(token.weight || '0', {
           style: 'percent',
           maximumFractionDigits: 0,
         })} ${token.symbol}`
@@ -182,7 +182,7 @@ function gaugeTitle(pool: GaugePool): string {
 }
 
 function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
-  if (!isWalletReady.value || !data) return [];
+  if (!isWalletReady.value || !data || isGnosis.value) return [];
 
   return Object.keys(data).map(tokenAddress => {
     const token = getToken(tokenAddress);
@@ -316,6 +316,9 @@ onBeforeMount(async () => {
           </div>
         </template>
 
+        <BalBlankSlate v-else-if="isGnosis" class="px-4 xl:px-0 mt-4 mb-16">
+          {{ $t('noClaimableIncentivesOnThisChain') }}
+        </BalBlankSlate>
         <BalBlankSlate
           v-else-if="
             (!isClaimsLoading && gaugeTables.length === 0) || !isWalletReady
@@ -347,7 +350,7 @@ onBeforeMount(async () => {
           <BalLink
             v-if="isWalletReady"
             tag="router-link"
-            to="/claim/legacy"
+            to="/ethereum/claim/legacy"
             class="flex items-center"
             >{{ $t('legacyClaims') }}
             <BalIcon name="arrow-right" size="sm" class="mx-1"

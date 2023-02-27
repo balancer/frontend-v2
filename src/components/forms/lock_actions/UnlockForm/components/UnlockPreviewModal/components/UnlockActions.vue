@@ -61,7 +61,7 @@ const { getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 
 const unlockAction: TransactionActionInfo = {
   label: t(`unlockVeBAL.previewModal.actions.unlock.label`),
@@ -81,7 +81,7 @@ async function handleTransaction(tx: TransactionResponse): Promise<void> {
     id: tx.hash,
     type: 'tx',
     action: 'unlock',
-    summary: `${fNum2(props.totalLpTokens, FNumFormats.token)} ${
+    summary: `${fNum(props.totalLpTokens, FNumFormats.token)} ${
       props.lockablePoolTokenInfo.symbol
     }`,
     details: {

@@ -159,7 +159,7 @@ async function handleTransaction(tx): Promise<void> {
         Goals.LiquidityAdded,
         bnum(fiatTotal.value).times(100).toNumber() || 0
       );
-      await refetchBalances.value();
+      await refetchBalances();
     },
     onTxFailed: () => {
       console.error('Add liquidity failed');

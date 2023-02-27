@@ -3,7 +3,8 @@
     ref="animateRef"
     :class="[
       `flex items-center py-3 border border-transparent ml-4 mr-2 px-2 text-base
-  leading-5 opacity-0 highlight hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg`,
+  leading-5 opacity-0 highlight hover:bg-blue-50 dark:hover:bg-blue-900
+  rounded-lg transition-colors ease-in duration-300`,
       {
         'bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-500':
           focussed,
@@ -32,12 +33,12 @@
       <template v-else>
         <template v-if="balance > 0">
           <template v-if="balance >= 0.0001">
-            {{ fNum2(balance, FNumFormats.token) }}
+            {{ fNum(balance, FNumFormats.token) }}
           </template>
           <template v-else> &#60; 0.0001 </template>
         </template>
         <div v-if="value > 0" class="text-sm font-normal text-secondary">
-          {{ fNum2(value, FNumFormats.fiat) }}
+          {{ fNum(value, FNumFormats.fiat) }}
         </div>
       </template>
     </span>
@@ -67,7 +68,7 @@ export default {
     /**
      * COMPOSABLES
      */
-    const { fNum2 } = useNumbers();
+    const { fNum } = useNumbers();
     const animateRef = ref();
     const { balances, prices } = useTokens();
     const { currency } = useUserSettings();
@@ -102,7 +103,7 @@ export default {
     });
 
     return {
-      fNum2,
+      fNum,
       FNumFormats,
       animateRef,
       balance,

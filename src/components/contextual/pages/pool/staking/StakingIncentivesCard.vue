@@ -29,7 +29,7 @@ const stakeAction = ref<StakeAction>('stake');
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum } = useNumbers();
 const { balanceFor } = useTokens();
 const {
   isStakablePool,
@@ -146,7 +146,7 @@ function handlePreviewClose() {
                     </AnimatePresence>
                     <AnimatePresence :isVisible="!isRefetchingStakedShares">
                       <span>
-                        {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
+                        {{ fNum(fiatValueOfStakedShares, FNumFormats.fiat) }}
                       </span>
                     </AnimatePresence>
                     <BalTooltip :text="$t('staking.stakedLpTokensTooltip')" />
@@ -160,7 +160,7 @@ function handlePreviewClose() {
                     </AnimatePresence>
                     <AnimatePresence :isVisible="!isRefetchingStakedShares">
                       <span>
-                        {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
+                        {{ fNum(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
                       </span>
                     </AnimatePresence>
                     <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />

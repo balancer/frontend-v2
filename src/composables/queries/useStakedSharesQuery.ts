@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
-import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { Ref } from 'vue';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -8,7 +7,8 @@ import { GaugeShare } from './useUserGaugeSharesQuery';
 import { BigNumber } from '@ethersproject/bignumber';
 import { bnSum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
-import { handleFetchException } from '@/lib/utils/exceptions';
+import { isGnosis } from '../useNetwork';
+import { logFetchException } from '@/lib/utils/exceptions';
 import { getMulticaller } from '@/dependencies/Multicaller';
 
 /**
@@ -17,6 +17,7 @@ import { getMulticaller } from '@/dependencies/Multicaller';
 type QueryResponse = {
   [poolId: string]: string;
 };
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
  * Fetches staked shares for all user positions using onchain calls.
@@ -26,7 +27,7 @@ type QueryResponse = {
  */
 export default function useStakedSharesQuery(
   userGaugeShares: Ref<GaugeShare[] | undefined>,
-  options: UseQueryOptions<QueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -44,7 +45,8 @@ export default function useStakedSharesQuery(
    * COMPUTED
    */
   const enabled = computed(
-    (): boolean => !!userGaugeShares.value && isWalletReady.value
+    (): boolean =>
+      !!userGaugeShares.value && isWalletReady.value && !isGnosis.value
   );
 
   /**
@@ -82,7 +84,7 @@ export default function useStakedSharesQuery(
 
       return shareMap;
     } catch (error) {
-      handleFetchException('Failed to fetch staked share balance', error);
+      logFetchException('Failed to fetch staked share balance', error);
       throw Error;
     }
   };
@@ -96,5 +98,9 @@ export default function useStakedSharesQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

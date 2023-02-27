@@ -58,7 +58,6 @@ declare module '@vue/runtime-core' {
     DiscordIcon: typeof import('./src/components/_global/icons/brands/DiscordIcon.vue')['default']
     EmailIcon: typeof import('./src/components/_global/icons/EmailIcon.vue')['default']
     GithubIcon: typeof import('./src/components/_global/icons/brands/GithubIcon.vue')['default']
-    Jazzicon: typeof import('./src/components/_global/JazzIcon/Jazzicon.vue')['default']
     LightBulbIcon: typeof import('./src/components/_global/icons/LightBulbIcon.vue')['default']
     MediumIcon: typeof import('./src/components/_global/icons/brands/MediumIcon.vue')['default']
     MinusSquareIcon: typeof import('./src/components/_global/icons/MinusSquareIcon.vue')['default']
