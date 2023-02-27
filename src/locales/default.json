@@ -425,7 +425,7 @@
   "greatMigration": {
     "warning": {
       "title": "Move your liquidity for future BAL incentives",
-      "text": "Liquidity mining incentives have expired for this pool, since upgraded pools are now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to an incentivized pool."
+      "text": "Liquidity mining incentives are being phased out for this pool, since upgraded pools are now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to an incentivized pool."
     }
   },
   "highPriceImpact": "High price impact",

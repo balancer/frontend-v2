@@ -81,7 +81,7 @@ export type Pools = {
   Metadata: Record<string, PoolMetadata>;
   DisabledJoins: string[];
   BrandedRedirect?: Record<string, string>;
-  GreatMigration?: string[];
+  Deprecated?: string[];
 };
 
 const POOLS_GOERLI: Pools = {
@@ -407,7 +407,7 @@ const POOLS_MAINNET: Pools = {
     '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
     '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
   ],
-  GreatMigration: [
+  Deprecated: [
     '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba',
     '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396',
     '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366',
