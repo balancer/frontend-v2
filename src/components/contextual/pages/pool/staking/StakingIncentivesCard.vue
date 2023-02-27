@@ -38,7 +38,7 @@ const {
   stakedShares,
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
-const { isGreatMigratablePool } = usePool(toRef(props, 'pool'));
+const { isDeprecatedPool } = usePool(toRef(props, 'pool'));
 /**
  * COMPUTED
  */
@@ -58,7 +58,7 @@ const fiatValueOfUnstakedShares = computed(() => {
 
 const isStakeDisabled = computed(() => {
   return (
-    isGreatMigratablePool.value ||
+    isDeprecatedPool.value ||
     fiatValueOfUnstakedShares.value === '0' ||
     hasNonPrefGaugeBalance.value
   );

@@ -25,7 +25,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
-const { isMigratablePool, hasNonApprovedRateProviders, isGreatMigratablePool } =
+const { isMigratablePool, hasNonApprovedRateProviders, isDeprecatedPool } =
   usePool(toRef(props, 'pool'));
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
@@ -35,7 +35,7 @@ const { networkSlug } = useNetwork();
  */
 const joinDisabled = computed(
   (): boolean =>
-    isGreatMigratablePool.value ||
+    isDeprecatedPool.value ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
     (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id))

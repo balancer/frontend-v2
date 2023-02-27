@@ -657,7 +657,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       )
   );
 
-  const isGreatMigratablePool = computed(() => {
+  const isDeprecatedPool = computed(() => {
     return !!pool.value && POOLS.Deprecated?.includes(pool.value.id);
   });
 
@@ -681,7 +681,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
-    isGreatMigratablePool,
+    isDeprecatedPool,
     // methods
     isStable,
     isMetaStable,

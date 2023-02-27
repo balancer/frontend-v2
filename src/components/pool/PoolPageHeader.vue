@@ -45,7 +45,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  * COMPOSABLES
  */
 const { isAffected, warnings } = usePoolWarning(poolId);
-const { hasNonApprovedRateProviders, isGreatMigratablePool } = usePool(
+const { hasNonApprovedRateProviders, isDeprecatedPool } = usePool(
   toRef(props, 'pool')
 );
 const { fNum } = useNumbers();
@@ -282,7 +282,7 @@ function symbolFor(titleTokenIndex: number): string {
     block
   />
   <BalAlert
-    v-if="isGreatMigratablePool"
+    v-if="isDeprecatedPool"
     class="mt-4"
     type="tip"
     :title="$t('greatMigration.warning.title')"
