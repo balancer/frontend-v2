@@ -22,7 +22,6 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
-  removeBptFrom,
   usePool,
   tokensListExclBpt,
   tokenTreeLeafs,

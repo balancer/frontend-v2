@@ -210,15 +210,13 @@ export function orderedTokenAddresses(pool: AnyPool): string[] {
   return sortedTokens.map(token => getAddress(token?.address || ''));
 }
 
-type TokenProperties = Pick<PoolToken, 'address' | 'weight'>;
-
 /**
  * @summary Orders pool tokens by weight if weighted pool
  */
-export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
+export function orderedPoolTokens(
   pool: Pool,
-  tokens: TPoolTokens[]
-): TPoolTokens[] {
+  tokens: PoolToken[]
+): PoolToken[] {
   if (isDeep(pool)) {
     const leafs = tokenTreeLeafs(tokens);
     const flatTokens = flatTokenTree(pool);
