@@ -1,3 +1,4 @@
+import { POOLS } from '@/constants/pools';
 import { Pool } from '@balancer-labs/sdk';
 import { RouteLocationNormalized } from 'vue-router';
 import { configService } from '../config/config.service';
@@ -24,7 +25,10 @@ class MetaService implements IMetaService {
 
     // Replace pool specific meta data
     if (route.name === 'pool' && pool) {
-      metaTitle = metaTitle.replace('[pool_symbol]', pool.symbol || 'Pool');
+      metaTitle = metaTitle.replace(
+        '[pool_symbol]',
+        POOLS.Metadata[pool.id]?.name || pool.symbol || 'Pool'
+      );
       metaDescription = metaDescription
         .replace('[pool_type]', pool.poolType)
         .replace('[pool_name]', pool.name);
