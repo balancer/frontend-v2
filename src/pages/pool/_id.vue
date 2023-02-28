@@ -69,6 +69,7 @@ const {
   isStableLikePool,
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
+  isDeprecatedPool,
 } = usePool(poolQuery.data);
 //#endregion
 
@@ -271,6 +272,13 @@ watch(poolQuery.error, () => {
         v-else-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
+        <BalAlert
+          v-if="isDeprecatedPool"
+          type="tip"
+          class="mb-4"
+          :title="$t('deprecatedPool.warning.title')"
+          :description="$t('deprecatedPool.warning.text')"
+        />
         <BalStack vertical>
           <BalLoadingBlock
             v-if="loadingPool || !pool"

@@ -45,9 +45,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  * COMPOSABLES
  */
 const { isAffected, warnings } = usePoolWarning(poolId);
-const { hasNonApprovedRateProviders, isDeprecatedPool } = usePool(
-  toRef(props, 'pool')
-);
+const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
@@ -280,13 +278,6 @@ function symbolFor(titleTokenIndex: number): string {
     :description="$t('noInitLiquidityDetail')"
     class="mt-2"
     block
-  />
-  <BalAlert
-    v-if="isDeprecatedPool"
-    class="mt-4"
-    type="tip"
-    :title="$t('deprecatedPool.warning.title')"
-    :description="$t('deprecatedPool.warning.text')"
   />
   <StakePreviewModal
     v-if="!!pool"
