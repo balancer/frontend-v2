@@ -12,7 +12,7 @@ import { Pool } from '@/services/pool/types';
 import StakePreviewModal from './StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
-import { usePool } from '@/composables/usePool';
+import { POOLS } from '@/constants/pools';
 
 type Props = {
   pool: Pool;
@@ -38,7 +38,7 @@ const {
   stakedShares,
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
-const { isDeprecatedPool } = usePool(toRef(props, 'pool'));
+
 /**
  * COMPUTED
  */
@@ -58,7 +58,7 @@ const fiatValueOfUnstakedShares = computed(() => {
 
 const isStakeDisabled = computed(() => {
   return (
-    isDeprecatedPool.value ||
+    POOLS.Deprecated?.[props.pool.id].stakingDisabled ||
     fiatValueOfUnstakedShares.value === '0' ||
     hasNonPrefGaugeBalance.value
   );

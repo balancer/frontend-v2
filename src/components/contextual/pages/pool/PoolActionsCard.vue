@@ -7,6 +7,7 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { Goals, trackGoal } from '@/composables/useFathom';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -36,6 +37,7 @@ const { networkSlug } = useNetwork();
  */
 const joinDisabled = computed(
   (): boolean =>
+    POOLS.Deprecated?.[props.pool.id].joinsDisabled ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
     (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id))
