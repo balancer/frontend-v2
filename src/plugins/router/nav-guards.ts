@@ -129,7 +129,10 @@ function applyNetworkPathRedirects(router: Router): Router {
  */
 function applyPoolJoinRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
-    if (to.name === 'invest' && isJoinsDisabled(to.params?.id as string)) {
+    if (
+      to.name === 'add-liquidity' &&
+      isJoinsDisabled(to.params?.id as string)
+    ) {
       next({
         name: 'pool',
         params: to.params,

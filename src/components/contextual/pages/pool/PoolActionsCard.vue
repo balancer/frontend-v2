@@ -56,7 +56,7 @@ const joinDisabled = computed(
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
         :tag="joinDisabled ? 'div' : 'router-link'"
-        :to="{ name: 'invest', params: { networkSlug } }"
+        :to="{ name: 'add-liquidity', params: { networkSlug } }"
         :label="$t('addLiquidity')"
         color="gradient"
         :disabled="joinDisabled"
