@@ -28,8 +28,13 @@ const newPoolId = computed(
   (): string | undefined => deprecatedDetails(props.pool.id)?.newPool
 );
 
+const localeKey = computed((): string => {
+  if (newPoolId.value) return 'deprecatedPool.hasNewPool';
+
+  return 'deprecatedPool.generic';
+});
+
 const poolRoute = computed(() => {
-  console.log('newPoolId', newPoolId.value);
   if (!newPoolId.value) return undefined;
 
   return router.resolve({
@@ -40,11 +45,11 @@ const poolRoute = computed(() => {
 </script>
 
 <template>
-  <BalAlert type="tip" class="mb-4" :title="$t('deprecatedPool.warning.title')">
-    <span>{{ $t('deprecatedPool.warning.text') }}</span>
+  <BalAlert type="tip" class="mb-4" :title="$t(`${localeKey}.title`)">
+    <span>{{ $t(`${localeKey}.description`) }}</span>
+    &nbsp;
     <BalLink v-if="newPoolId" tag="router-link" :to="poolRoute">
-      incentivized pool</BalLink
-    >
-    <span v-else> incentivized pool</span>.
+      {{ $t('incentivizedPool') }}</BalLink
+    >.
   </BalAlert>
 </template>
