@@ -564,7 +564,7 @@ export function isJoinsDisabled(id: string): boolean {
  * @param {string} id - The pool ID to check
  * @returns {boolean} True if included in list
  */
-export function deprecatedDetails(id: string): DeprecatedDetails | void {
+export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
   return POOLS.Deprecated?.[id.toLowerCase()];
 }
 

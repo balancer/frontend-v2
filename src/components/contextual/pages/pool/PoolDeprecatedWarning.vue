@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
-
-import { usePoolStaking } from '@/providers/local/pool-staking.provider';
-import { bnum } from '@/lib/utils';
-import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
+import { deprecatedDetails } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -21,36 +18,33 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { balanceFor } = useTokens();
-const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
 
 /**
  * COMPUTED
  */
-const hasBalance = computed(() =>
-  bnum(balanceFor(props.pool.address)).plus(stakedShares.value).gt(0)
+const newPoolId = computed(
+  (): string | undefined => deprecatedDetails(props.pool.id)?.newPool
 );
 
-const poolRoute = computed(
-  () =>
-    router.resolve({
-      name: 'pool',
-      params: { id: props.pool.id, networkSlug },
-    }).fullPath
-);
+const poolRoute = computed(() => {
+  console.log('newPoolId', newPoolId.value);
+  if (!newPoolId.value) return undefined;
+
+  return router.resolve({
+    name: 'pool',
+    params: { id: newPoolId.value, networkSlug },
+  }).fullPath;
+});
 </script>
 
 <template>
-  <BalAlert
-    v-if="hasBalance"
-    type="tip"
-    class="mb-4"
-    :title="$t('deprecatedPool.warning.title')"
-  >
+  <BalAlert type="tip" class="mb-4" :title="$t('deprecatedPool.warning.title')">
     <span>{{ $t('deprecatedPool.warning.text') }}</span>
-    &nbsp;
-    <BalLink tag="router-link" :to="poolRoute">inventivized pool</BalLink>.
+    <BalLink v-if="newPoolId" tag="router-link" :to="poolRoute">
+      incentivized pool</BalLink
+    >
+    <span v-else> incentivized pool</span>.
   </BalAlert>
 </template>
