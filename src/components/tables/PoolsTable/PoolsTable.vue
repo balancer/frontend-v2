@@ -191,7 +191,9 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
-      return isFinite(apr) && apr < APR_THRESHOLD ? apr : 0;
+      return isFinite(apr) && (pool.apr?.swapFees || 0) < APR_THRESHOLD
+        ? apr
+        : 0;
     },
     width: 220,
   },
