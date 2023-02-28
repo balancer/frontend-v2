@@ -269,7 +269,7 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
-  if (aprs.min > APR_THRESHOLD || aprs.max > APR_THRESHOLD) {
+  if (aprs.swapFees > APR_THRESHOLD) {
     return '-';
   }
   if (boost) {
