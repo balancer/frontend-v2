@@ -54,7 +54,7 @@ export type NamedPools = {
   veBAL: string;
 };
 
-type DeprecatedDetails = {
+export type DeprecatedDetails = {
   newPool?: string;
   suggestedPools?: string[];
   joinsDisabled?: boolean;

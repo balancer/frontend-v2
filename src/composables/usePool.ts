@@ -4,7 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS, APR_THRESHOLD } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD, DeprecatedDetails } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -557,6 +557,15 @@ export function fiatValueOf(pool: Pool, shares: string): string {
  */
 export function isJoinsDisabled(id: string): boolean {
   return POOLS.DisabledJoins.includes(id.toLowerCase());
+}
+
+/**
+ * Checks if pool ID is included in the list of deprecated pools
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list
+ */
+export function deprecatedDetails(id: string): DeprecatedDetails | void {
+  return POOLS.Deprecated?.[id.toLowerCase()];
 }
 
 /**

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
-import { isJoinsDisabled, usePool } from '@/composables/usePool';
+import {
+  isJoinsDisabled,
+  usePool,
+  deprecatedDetails,
+} from '@/composables/usePool';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { Goals, trackGoal } from '@/composables/useFathom';
-import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -37,7 +40,7 @@ const { networkSlug } = useNetwork();
  */
 const joinDisabled = computed(
   (): boolean =>
-    POOLS.Deprecated?.[props.pool.id].joinsDisabled ||
+    deprecatedDetails(props.pool.id)?.joinsDisabled ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
     (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id))
