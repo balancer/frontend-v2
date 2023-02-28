@@ -18,7 +18,7 @@ export interface UserSettingsState {
  * SETUP
  */
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
-const lsSlippage = lsGet(LS_KEYS.App.SwapSlippage, '0.01');
+const lsSlippage = lsGet(LS_KEYS.App.SwapSlippage, '0.005'); // Defaults to 0.5%
 
 /**
  * STATE
