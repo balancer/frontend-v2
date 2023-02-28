@@ -1,11 +1,11 @@
 import { flatten } from 'lodash';
-import { computed, Ref, ref, watch } from 'vue';
 
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+// import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { useTokens } from '@/providers/tokens.provider';
-import { Pool } from '@/services/pool/types';
-import { tokenTreeLeafs } from '../usePool';
+// import { Pool } from '@/services/pool/types';
+//Importing usePool has side-effects: fetching SOR --> try to make it more explicit
+// import { tokenTreeLeafs } from '../usePool';
 
 export default function usePools(
   filterTokens: Ref<string[]> = ref([]),
@@ -14,14 +14,16 @@ export default function usePools(
   /**
    * COMPOSABLES
    */
-  const poolsQuery = usePoolsQuery(
-    filterTokens,
-    undefined,
-    undefined,
-    poolsSortField
-  );
+  // const poolsQuery = usePoolsQuery(
+  //   filterTokens,
+  //   undefined,
+  //   undefined,
+  //   poolsSortField
+  // );
 
-  const { injectTokens } = useTokens();
+  const poolsQuery = { isLoading: ref(true), data: ref(null) };
+
+  // const { injectTokens } = useTokens();
 
   /**
    * COMPUTED
@@ -55,11 +57,11 @@ export default function usePools(
     const tokens = flatten(
       newPools.map(pool => [
         ...pool.tokensList,
-        ...tokenTreeLeafs(pool.tokens),
+        // ...tokenTreeLeafs(pool.tokens),
         pool.address,
       ])
     );
-    await injectTokens(tokens);
+    // await injectTokens(tokens);
   });
 
   return {

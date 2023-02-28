@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 import { isMainnet, networkId } from '@/composables/useNetwork';
 

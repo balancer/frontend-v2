@@ -6,22 +6,16 @@ import { useStore } from 'vuex';
 import Notifications from '@/components/notifications/Notifications.vue';
 import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
+
+import useWeb3 from '@/services/web3/useWeb3';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import * as Layouts from '@/pages/_layouts';
-import useWeb3 from '@/services/web3/useWeb3';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
-import SanctionedWalletModal from './components/web3/SanctionedWalletModal.vue';
 import useBackgroundColor from './composables/useBackgroundColor';
-import useGnosisSafeApp from './composables/useGnosisSafeApp';
-import useNavigationGuards from './composables/useNavigationGuards';
-import { useSidebar } from './composables/useSidebar';
-import useExploitWatcher from './composables/watchers/useExploitWatcher';
-import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
-import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
 
+import { useSidebar } from './composables/useSidebar';
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
 export const isThirdPartyServicesModalVisible = ref(false);
@@ -29,9 +23,8 @@ export const isThirdPartyServicesModalVisible = ref(false);
 export default defineComponent({
   components: {
     ...Layouts,
-    WalletSelectModal,
-    SanctionedWalletModal,
-    ThirdPartyServicesModal,
+    //WalletSelectModal, // Adds 1MB
+    // ThirdPartyServicesModal, //Adds 1MB
     Notifications,
     AppSidebar,
     GlobalModalContainer,
@@ -45,17 +38,20 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    useWeb3Watchers();
-    usePoolCreationWatcher();
-    useGlobalQueryWatchers();
-    useGnosisSafeApp();
-    useExploitWatcher();
-    useNavigationGuards();
-    const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } =
-      useWeb3();
+    // useWeb3Watchers();
+    // usePoolCreationWatcher();
+    // useGlobalQueryWatchers();
+    // useGnosisSafeApp();
+    // useExploitWatcher();
+    // useNavigationGuards();
+    // const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } =
+    //   useWeb3();
+    const isBlocked = ref(false);
     const route = useRoute();
     const store = useStore();
+
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
+
     const { sidebarOpen } = useSidebar();
 
     // ADD FEATURE ALERT HERE
@@ -95,13 +91,11 @@ export default defineComponent({
     return {
       // state
       layout,
-      isBlocked,
       isThirdPartyServicesModalVisible,
       // computed
-      isWalletSelectVisible,
       sidebarOpen,
+      isBlocked,
       // methods
-      toggleWalletSelectModal,
       handleThirdPartyModalToggle,
     };
   },
@@ -113,11 +107,11 @@ export default defineComponent({
   <div id="app">
     <component :is="layout" />
 
-    <WalletSelectModal
+    <!-- <WalletSelectModal
       :isVisible="isWalletSelectVisible"
       :onShowThirdParty="() => handleThirdPartyModalToggle(true)"
       @close="toggleWalletSelectModal"
-    />
+    />-->
     <SanctionedWalletModal :isVisible="isBlocked" />
     <ThirdPartyServicesModal
       :isVisible="isThirdPartyServicesModalVisible"

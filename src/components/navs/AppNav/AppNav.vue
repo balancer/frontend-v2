@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
 
-import AppIcon from '@/components/images/AppIcon.vue';
-import AppLogo from '@/components/images/AppLogo.vue';
 import useAlerts from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useFathom from '@/composables/useFathom';
 import useNetwork from '@/composables/useNetwork';
 
-import AppNavActions from './AppNavActions.vue';
+import AppIcon from '@/components/images/AppIcon.vue';
+import AppLogo from '@/components/images/AppLogo.vue';
 import AppNavAlert from './AppNavAlert.vue';
-import DesktopLinks from './DesktopLinks/DesktopLinks.vue';
+// import AppNavActions from './AppNavActions.vue'; //Adds everything
+// import DesktopLinks from './DesktopLinks/DesktopLinks.vue';
+// import { defineAsyncComponent } from 'vue';
+// Async loading for bundle size
+// const AppNavActions = defineAsyncComponent(() => import('./AppNavActions.vue'));
+// const DesktopLinks = defineAsyncComponent(
+//   () => import('./DesktopLinks/DesktopLinks.vue')
+// );
 
 /**
  * STATE

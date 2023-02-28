@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import VeBalRedirectModal from './VeBalRedirectModal.vue';
+import { defineAsyncComponent } from 'vue';
+// Async loading for bundle size
+const VeBalRedirectModal = defineAsyncComponent(
+  () => import('./VeBalRedirectModal.vue')
+);
 </script>
 
 <template>

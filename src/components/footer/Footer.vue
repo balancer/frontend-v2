@@ -236,6 +236,7 @@ import useNetwork from '@/composables/useNetwork';
 import AppLogo from '../images/AppLogo.vue';
 
 export default {
+  //TIP: We could async import these components to save 25 KB from main chunk
   components: {
     IconTwitter,
     IconDiscord,

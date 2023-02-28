@@ -1,5 +1,3 @@
-import { ref } from 'vue';
-
 // STATE
 const selectedTokens = ref<string[]>([]);
 

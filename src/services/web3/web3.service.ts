@@ -1,11 +1,9 @@
-import { Network } from '@balancer-labs/sdk';
 import {
   JsonRpcProvider,
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
-import { ComputedRef } from 'vue';
 
 import ConfigService, { configService } from '@/services/config/config.service';
 import {
@@ -13,6 +11,7 @@ import {
   rpcProviderService,
 } from '../rpc-provider/rpc-provider.service';
 import { TransactionBuilder } from './transactions/transaction.builder';
+import { Network } from '@/lib/config';
 
 interface Web3Profile {
   ens: string | null;
@@ -23,7 +22,7 @@ export default class Web3Service {
   appProvider: JsonRpcProvider;
   ensProvider: JsonRpcProvider;
   userProvider!: ComputedRef<Web3Provider>;
-  txBuilder!: TransactionBuilder;
+  // txBuilder!: TransactionBuilder;
 
   constructor(
     private readonly rpcProviderService = _rpcProviderService,
@@ -39,7 +38,9 @@ export default class Web3Service {
   }
 
   public setTxBuilder(signer: JsonRpcSigner) {
-    this.txBuilder = new TransactionBuilder(signer);
+    // TODO: We can save the signer, defer the transaction builder instantiation to avoid extra bundle size at bootstrap
+    // and then async loading it when used
+    // this.txBuilder = new TransactionBuilder(signer); //Adds 1MB to bundle size
   }
 
   async getEnsName(address: string): Promise<string | null> {

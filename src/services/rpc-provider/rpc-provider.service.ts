@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
 
 import { configService } from '@/services/config/config.service';

@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-import HomePageHero from '@/components/heros/HomePageHero.vue';
-import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
+// import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
-import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import usePoolFilters from '@/composables/pools/usePoolFilters';
+// import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
-import usePools from '@/composables/pools/usePools';
+// import usePools from '@/composables/pools/usePools';
+import usePoolFilters from '@/composables/pools/usePoolFilters';
+
+// Async loading for bundle size
+const HomePageHero = defineAsyncComponent(
+  () => import('@/components/heros/HomePageHero.vue')
+);
+const PoolsTable = defineAsyncComponent(
+  () => import('@/components/tables/PoolsTable/PoolsTable.vue')
+);
 
 // COMPOSABLES
 const router = useRouter();
@@ -21,14 +25,16 @@ const { selectedTokens, addSelectedToken, removeSelectedToken } =
 
 const poolsSortField = ref('totalLiquidity');
 
-const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
-  selectedTokens,
-  poolsSortField
-);
+// const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
+//   selectedTokens,
+//   poolsSortField
+// );
+// const isLoading = computed(() => true);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
 
-const isPaginated = computed(() => pools.value.length >= 10);
+// const isPaginated = computed(() => pools.value.length >= 10);
+const isPaginated = computed(() => true);
 
 /**
  * METHODS
@@ -68,7 +74,10 @@ function onColumnSort(columnId: string) {
           <div
             class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
           >
-            <TokenSearchInput
+            FILTER
+            <!-- FILTER {{ isLoading }} -->
+
+            <!-- <TokenSearchInput
               v-model="selectedTokens"
               class="w-full md:w-2/3"
               @add="addSelectedToken"
@@ -84,7 +93,7 @@ function onColumnSort(columnId: string) {
               @click="navigateToCreatePool"
             >
               {{ $t('createAPool.title') }}
-            </BalBtn>
+            </BalBtn> -->
           </div>
         </div>
         <PoolsTable

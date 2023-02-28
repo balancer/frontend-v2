@@ -7,7 +7,7 @@ import { bnum } from '@/lib/utils';
 
 import useConfig from './useConfig';
 import { getPreviousThursday, oneYearInSecs, toJsTimestamp } from './useTime';
-import { useTokens } from '@/providers/tokens.provider';
+// import { useTokens } from '@/providers/tokens.provider';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 
 /**
@@ -80,7 +80,13 @@ export default function useVeBal() {
   /**
    * COMPOSABLES
    */
-  const { balanceFor, getToken } = useTokens();
+  // const { balanceFor, getToken } = useTokens();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const balanceFor = anyAddress => '1';
+  const getToken = anyAddress => {
+    console.log('getting fake token info in vebal', anyAddress);
+    return {};
+  };
   const { networkConfig } = useConfig();
 
   /**

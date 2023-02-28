@@ -80,7 +80,6 @@ type PluginState = {
 };
 type WalletScreenResponse = { is_blocked: boolean };
 
-// TODO: extract isBlocked logic to new composable
 export async function isBlockedAddress(
   address: string
 ): Promise<boolean | null> {
@@ -110,7 +109,6 @@ export async function verifyTransactionSender(signer: JsonRpcSigner) {
   }
 }
 
-// TODO: Maybe better close to network directory??
 export async function verifyNetwork(signer: JsonRpcSigner) {
   const userNetwork = await signer.getChainId();
   if (userNetwork.toString() !== networkId.value.toString()) {
@@ -159,22 +157,28 @@ export default {
     ): Promise<Connector | void> {
       if (wallet === 'metamask') {
         const { MetamaskConnector } = await import(
+          /* webpackChunkName: "MetamaskConnector" */
           '@/services/web3/connectors/metamask/metamask.connector'
         );
         return new MetamaskConnector(alreadyConnectedAccount.value);
       }
+
       if (wallet === 'walletconnect') {
         const { WalletConnectConnector } = await import(
+          /* webpackChunkName: "WalletConnectConnector" */
           '@/services/web3/connectors/trustwallet/walletconnect.connector'
         );
         return new WalletConnectConnector(alreadyConnectedAccount.value);
       }
+
       if (wallet === 'gnosis') {
         const { GnosisSafeConnector } = await import(
+          /* webpackChunkName: "GnosisSafeConnector" */
           '@/services/web3/connectors/gnosis/gnosis.connector'
         );
         return new GnosisSafeConnector(alreadyConnectedAccount.value);
       }
+
       if (wallet === 'walletlink') {
         const { WalletLinkConnector } = await import(
           /* webpackChunkName: "WalletLinkConnector" */
@@ -182,6 +186,7 @@ export default {
         );
         return new WalletLinkConnector(alreadyConnectedAccount.value);
       }
+
       if (wallet === 'tally') {
         const { TallyConnector } = await import(
           /* webpackChunkName: "TallyConnector" */

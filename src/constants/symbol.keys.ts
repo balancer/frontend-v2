@@ -10,5 +10,6 @@ export default {
     UserStaking: 'provider.userStaking',
     UserData: 'provider.userData',
     UserPools: 'provider.userPools',
+    Web3: 'provider.web3Connection',
   },
 };

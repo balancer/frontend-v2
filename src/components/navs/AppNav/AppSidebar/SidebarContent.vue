@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -26,7 +25,8 @@ const emit = defineEmits(['close']);
  * COMPOSABLES
  */
 const { darkMode, toggleDarkMode } = useDarkMode();
-const { blockNumber } = useWeb3();
+// const { blockNumber } = useWeb3();
+const blockNumber = ref(1);
 const { networkConfig } = useConfig();
 const { version } = useApp();
 const { networkSlug } = useNetwork();

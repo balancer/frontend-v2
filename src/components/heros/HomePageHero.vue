@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 import AppHero from '@/components/heros/AppHero.vue';
 import useFathom from '@/composables/useFathom';
 import { EXTERNAL_LINKS } from '@/constants/links';

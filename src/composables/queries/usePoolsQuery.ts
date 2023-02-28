@@ -1,19 +1,18 @@
-import { Ref, ref, watch } from 'vue';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { Pool } from '@/services/pool/types';
+// import { Pool } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
-import { useTokens } from '@/providers/tokens.provider';
+// import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
-import {
-  GraphQLArgs,
-  PoolsFallbackRepository,
-  PoolsRepositoryFetchOptions,
-  PoolRepository as SDKPoolRepository,
-} from '@balancer-labs/sdk';
+// import {
+//   GraphQLArgs,
+//   PoolsFallbackRepository,
+//   PoolsRepositoryFetchOptions,
+//   PoolRepository as SDKPoolRepository,
+// } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
 import { tokenTreeLeafs } from '../usePool';
@@ -43,23 +42,23 @@ export default function usePoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, tokens: tokenMeta } = useTokens();
+  // const { injectTokens, tokens: tokenMeta } = useTokens();
   const { networkId } = useNetwork();
-  let poolsRepository = initializePoolsRepository();
+  // let poolsRepository = initializePoolsRepository();
 
   /**
    * METHODS
    */
 
-  function initializePoolsRepository(): PoolsFallbackRepository {
-    const fallbackRepository = new PoolsFallbackRepository(
-      buildRepositories(),
-      {
-        timeout: 30 * 1000,
-      }
-    );
-    return fallbackRepository;
-  }
+  // function initializePoolsRepository(): PoolsFallbackRepository {
+  //   const fallbackRepository = new PoolsFallbackRepository(
+  //     buildRepositories(),
+  //     {
+  //       timeout: 30 * 1000,
+  //     }
+  //   );
+  //   return fallbackRepository;
+  // }
 
   function initializeDecoratedAPIRepository() {
     return {
@@ -73,7 +72,7 @@ export default function usePoolsQuery(
             pool.address,
           ])
         );
-        injectTokens(tokens);
+        // injectTokens(tokens);
 
         return pools;
       },
@@ -100,7 +99,7 @@ export default function usePoolsQuery(
             pool.address,
           ])
         );
-        await injectTokens(tokens);
+        // await injectTokens(tokens);
 
         decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
 
@@ -177,13 +176,13 @@ export default function usePoolsQuery(
    *  When filterTokens changes, re-initialize the repositories as their queries
    *  need to change to filter for those tokens
    */
-  watch(
-    () => [filterTokens, poolsSortField],
-    () => {
-      poolsRepository = initializePoolsRepository();
-    },
-    { deep: true }
-  );
+  // watch(
+  //   () => [filterTokens, poolsSortField],
+  //   () => {
+  //     poolsRepository = initializePoolsRepository();
+  //   },
+  //   { deep: true }
+  // );
 
   /**
    * QUERY KEY
@@ -201,13 +200,14 @@ export default function usePoolsQuery(
    */
   const queryFn = async ({ pageParam = 0 }) => {
     const fetchOptions = getFetchOptions(pageParam);
-    let skip = 0;
+    const skip = 0;
     try {
-      const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      // const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      const pools: Pool[] = [];
 
-      skip = poolsRepository.currentProvider?.skip
-        ? poolsRepository.currentProvider.skip
-        : 0;
+      // skip = poolsRepository.currentProvider?.skip
+      //   ? poolsRepository.currentProvider.skip
+      //   : 0;
 
       poolsStoreService.setPools(pools);
 

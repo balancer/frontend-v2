@@ -116,10 +116,10 @@ export default defineConfig(({ mode }) => {
       minify: true,
       rollupOptions: {
         plugins: [
-          isBuildAnalysis ? analyze({ summaryOnly: false }) : null,
+          // isBuildAnalysis ? analyze({ summaryOnly: false }) : null,
           isBuildAnalysis
             ? visualizer({
-                open: true,
+                open: false,
                 template: 'treemap',
                 brotliSize: true,
                 gzipSize: true,

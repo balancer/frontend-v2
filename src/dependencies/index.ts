@@ -1,17 +1,17 @@
 import { initBalancer } from './balancer-sdk';
 import { initEthersContract } from './EthersContract';
-import { initMulticall } from './multicall';
 import { initMulticaller } from './Multicaller';
+import { initMulticall } from './multicall';
 import { initOldMulticaller } from './OldMulticaller';
 import { initRpcProviderService } from './rpc-provider.service';
 
 export function initDependencies() {
+  // initBalancer(); // Adds 1.26MB of balancer-labs
+  // initMulticaller(); //100KB
+  // initEthersContract(); // Adds 100KB with bn.js (imported by ethereum-abi)
+  // initRpcProviderService(); // ??Adds 100KB with bn.js (imported by ethereum-abi)
   initMulticall();
-  initBalancer();
-  initRpcProviderService();
-  initMulticaller();
   initOldMulticaller();
-  initEthersContract();
 }
 
 export function handleDependencyError(dependencyName: string): never {

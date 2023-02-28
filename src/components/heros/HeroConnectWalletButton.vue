@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
+import useConnector from '@/services/web3/useConnector';
 
 /**
  * COMPOSABLES
  */
-const { startConnectWithInjectedProvider } = useWeb3();
+const { startConnectWithInjectedProvider } = useConnector();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 

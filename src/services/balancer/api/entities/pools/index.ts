@@ -1,11 +1,11 @@
 import { configService } from '@/services/config/config.service';
-import { Pool } from '@/services/pool/types';
+// import { Pool } from '@/services/pool/types';
 import { PoolsQueryBuilder } from '@/types/subgraph';
-import {
-  GraphQLArgs,
-  GraphQLQuery,
-  PoolsBalancerAPIRepository,
-} from '@balancer-labs/sdk';
+// import {
+//   GraphQLArgs,
+//   GraphQLQuery,
+//   PoolsBalancerAPIRepository,
+// } from '@balancer-labs/sdk';
 import _ from 'lodash';
 
 import Service from '../../balancer-api.service';
