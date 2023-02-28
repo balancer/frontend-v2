@@ -658,7 +658,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   );
 
   const isDeprecatedPool = computed(() => {
-    return !!pool.value && POOLS.Deprecated?.includes(pool.value.id);
+    return !!pool.value && !!POOLS.Deprecated?.[pool.value.id];
   });
 
   return {
