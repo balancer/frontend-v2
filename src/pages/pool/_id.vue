@@ -53,7 +53,7 @@ providePoolStaking(poolId);
  */
 const { t } = useI18n();
 
-const { prices } = useTokens();
+const { prices, priceQueryLoading } = useTokens();
 const { isWalletReady } = useWeb3();
 const { addAlert, removeAlert } = useAlerts();
 const _isVeBalPool = isVeBalPool(poolId);
@@ -145,7 +145,7 @@ const noInitLiquidity = computed(
 );
 
 const missingPrices = computed(() => {
-  if (pool.value && prices.value) {
+  if (pool.value && prices.value && !priceQueryLoading.value) {
     const tokensWithPrice = Object.keys(prices.value);
     const tokens = tokenTreeLeafs(pool.value.tokens);
 
