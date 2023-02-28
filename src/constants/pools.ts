@@ -57,6 +57,7 @@ export type NamedPools = {
 type DeprecatedDetails = {
   newPool?: string;
   suggestedPools?: string[];
+  joinsDisabled?: boolean;
 };
 
 export type Pools = {
@@ -413,26 +414,11 @@ const POOLS_MAINNET: Pools = {
     '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
   ],
   Deprecated: {
-    '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba': {
-      newPool: '',
-      suggestedPools: [],
-    },
-    '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396': {
-      newPool: '',
-      suggestedPools: [],
-    },
-    '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366': {
-      newPool: '',
-      suggestedPools: [],
-    },
-    '0x798b112420ad6391a4129ac25ef59663a44c88bb0002000000000000000003f4': {
-      newPool: '',
-      suggestedPools: [],
-    },
-    '0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367': {
-      newPool: '',
-      suggestedPools: [],
-    },
+    '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba': {},
+    '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396': {},
+    '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366': {},
+    '0x798b112420ad6391a4129ac25ef59663a44c88bb0002000000000000000003f4': {},
+    '0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367': {},
   },
 };
 
