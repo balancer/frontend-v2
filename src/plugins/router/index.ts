@@ -24,8 +24,10 @@ const PoolPage = () =>
   );
 const CreatePoolPage = () =>
   import(/* webpackChunkName: "CreatePoolPage" */ '@/pages/pool/create.vue');
-const PoolInvestPage = () =>
-  import(/* webpackChunkName: "PoolInvestPage" */ '@/pages/pool/invest.vue');
+const PoolAddLiquidityPage = () =>
+  import(
+    /* webpackChunkName: "PoolAddLiquidityPage" */ '@/pages/pool/add-liquidity.vue'
+  );
 const MigratePoolPage = () =>
   import(/* webpackChunkName: "MigratePoolPage" */ '@/pages/pool/migrate.vue');
 const PoolWithdrawPage = () =>
@@ -122,10 +124,17 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/:networkSlug/pool/:id/invest',
-    name: 'invest',
-    component: PoolInvestPage,
+    path: '/:networkSlug/pool/:id/add-liquidity',
+    name: 'add-liquidity',
+    component: PoolAddLiquidityPage,
     meta: { layout: 'FocusedLayout' },
+  },
+  {
+    path: '/:networkSlug/pool/:id/invest',
+    name: 'invest-redirect',
+    redirect: to => {
+      return `/${to.params.networkSlug}/pool/${to.params.id}/add-liquidity`;
+    },
   },
   {
     path: '/:networkSlug/pool/:id/withdraw',

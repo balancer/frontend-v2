@@ -9,6 +9,7 @@ import { isJoinsDisabled } from '@/composables/usePool';
 import config from '@/lib/config';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
+import metaService from '@/services/meta/meta.service';
 
 /**
  * State
@@ -22,6 +23,7 @@ export function applyNavGuards(router: Router): Router {
   router = applyNetworkSubdomainRedirect(router);
   router = applyNetworkPathRedirects(router);
   router = applyPoolJoinRedirects(router);
+  router = applyMetaData(router);
 
   return router;
 }
@@ -127,12 +129,28 @@ function applyNetworkPathRedirects(router: Router): Router {
  */
 function applyPoolJoinRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
-    if (to.name === 'invest' && isJoinsDisabled(to.params?.id as string)) {
+    if (
+      to.name === 'add-liquidity' &&
+      isJoinsDisabled(to.params?.id as string)
+    ) {
       next({
         name: 'pool',
         params: to.params,
       });
     } else next();
+  });
+  return router;
+}
+
+function applyMetaData(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    // Pool meta data is handled in the pool page
+    if (to.name === 'pool') {
+      next();
+      return;
+    }
+    metaService.setMeta(to);
+    next();
   });
   return router;
 }
