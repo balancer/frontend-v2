@@ -13,7 +13,7 @@ import { calculateValidTo } from '../cowswap/utils';
 import ConfigService, { configService } from '@/services/config/config.service';
 
 import Web3Service, { web3Service } from '../web3/web3.service';
-import { useAppStore } from '@/composables/useAppStore';
+import { useApp } from '@/composables/useApp';
 
 export default class VaultService {
   abi: ContractInterface;
@@ -35,7 +35,7 @@ export default class VaultService {
     tokenOutAmount: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    const { transactionDeadline } = useAppStore();
+    const { transactionDeadline } = useApp();
     const deadline = calculateValidTo(transactionDeadline.value);
     return this.web3.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
@@ -52,9 +52,9 @@ export default class VaultService {
     tokenAddresses: string[],
     funds: FundManagement,
     limits: string[],
+    transactionDeadline:
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    const { transactionDeadline } = useAppStore();
 
     const deadline = calculateValidTo(transactionDeadline.value);
     return this.web3.txBuilder.contract.sendTransaction({

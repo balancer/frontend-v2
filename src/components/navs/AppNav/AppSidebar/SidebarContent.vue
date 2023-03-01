@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import AppLogo from '@/components/images/AppLogo.vue';
-import useApp from '@/composables/useApp';
+import { version } from '@/composables/useApp';
 import useConfig from '@/composables/useConfig';
 import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
@@ -28,7 +28,6 @@ const emit = defineEmits(['close']);
 const { darkMode, toggleDarkMode } = useDarkMode();
 const { blockNumber } = useWeb3();
 const { networkConfig } = useConfig();
-const { version } = useApp();
 const { networkSlug } = useNetwork();
 const { t } = useI18n();
 const router = useRouter();
@@ -120,7 +119,7 @@ watch(blockNumber, async () => {
     <div
       class="flex flex-col justify-center px-4 h-20 border-b border-gray-800"
     >
-      <AppLogo />
+      <AppLogo forceDark />
     </div>
 
     <div class="grid mt-2 text-lg grid-col-1">

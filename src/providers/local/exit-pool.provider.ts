@@ -1,3 +1,4 @@
+import { transactionsState } from './../../composables/useTransactions';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
@@ -56,6 +57,7 @@ import { useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
+import { useApp } from '@/composables/useApp';
 
 /**
  * TYPES
@@ -102,6 +104,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   const { toFiat } = useNumbers();
   const { injectTokens, getTokens, prices, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
+  const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
@@ -506,6 +509,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     exitTokenInfo,
     queryExitQuery,
     approvalActions,
+    transactionDeadline,
 
     // methods
     setIsSingleAssetExit,

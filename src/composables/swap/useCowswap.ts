@@ -23,7 +23,7 @@ import { captureException } from '@sentry/browser';
 import { Goals, trackGoal } from '../useFathom';
 import useTranasactionErrors from '../useTransactionErrors';
 import { useI18n } from 'vue-i18n';
-import { useAppStore } from '@/composables/useAppStore';
+import { useApp } from '@/composables/useApp';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
@@ -88,7 +88,7 @@ export default function useCowswap({
   slippageBufferRate,
 }: Props) {
   // COMPOSABLES
-  const { transactionDeadline } = useAppStore();
+  const { transactionDeadline } = useApp();
   const { account, getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();

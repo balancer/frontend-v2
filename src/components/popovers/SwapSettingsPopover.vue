@@ -7,7 +7,7 @@ export enum SwapSettingsContext {
 
 <script setup lang="ts">
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
-import { useAppStore } from '@/composables/useAppStore';
+import { useApp } from '@/composables/useApp';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import useFathom from '@/composables/useFathom';
 import { ethereumTxTypeOptions } from '@/constants/options';
@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { context } = toRefs(props);
 
 // COMPOSABLES
-const { transactionDeadline, setTransactionDeadline } = useAppStore();
+const { transactionDeadline, setTransactionDeadline } = useApp();
 
 const { isEIP1559SupportedNetwork } = useWeb3();
 const { trackGoal, Goals } = useFathom();
