@@ -192,7 +192,6 @@ const POOLS_MAINNET: Pools = {
     'Gyro2',
     'Gyro3',
     'GyroE',
-    'FX',
     'HighAmpComposableStable',
   ],
   Stable: {
@@ -259,6 +258,7 @@ const POOLS_MAINNET: Pools = {
     '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
     '0xdba127fbc23fb20f5929c546af220a991b5c6e01': 'composableStablePool',
     '0x5dd94da3644ddd055fcf6b3e1aa310bb7801eb8b': 'weightedPool', // weighted pool v3
+    '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx', // fx
   },
   Stakable: {
     AllowList: [
@@ -434,6 +434,10 @@ const POOLS_MAINNET: Pools = {
     '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
     '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
   ],
+  BrandedRedirect: {
+    '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce':
+      'xave',
+  },
 };
 
 const POOLS_POLYGON: Pools = {
