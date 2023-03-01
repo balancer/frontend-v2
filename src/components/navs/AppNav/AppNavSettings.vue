@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { Network } from '@balancer-labs/sdk';
 
