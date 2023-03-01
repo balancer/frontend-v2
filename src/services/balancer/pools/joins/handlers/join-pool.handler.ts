@@ -6,7 +6,6 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Ref } from 'vue';
 
 export type JoinParams = {
   amountsIn: AmountIn[];
@@ -15,6 +14,7 @@ export type JoinParams = {
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
+  transactionDeadline: number;
 };
 
 export type QueryOutput = {

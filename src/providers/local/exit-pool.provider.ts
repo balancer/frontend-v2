@@ -352,6 +352,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        transactionDeadline,
       });
 
       priceImpact.value = output.priceImpact;
@@ -395,6 +396,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
         relayerSignature: '',
+        transactionDeadline: transactionDeadline,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -424,6 +426,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
         relayerSignature: relayerSignature.value,
+        transactionDeadline: transactionDeadline,
       });
     } catch (error) {
       txError.value = (error as Error).message;
