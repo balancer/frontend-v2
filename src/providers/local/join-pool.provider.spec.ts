@@ -34,9 +34,3 @@ test('Throws error for weighted pools', async () => {
 
   expect(expectedError.message).toStartWith('Pool type not handled:');
 });
-
-test('TBD', async () => {
-  const { amountsIn } = await mountJoinPoolProvider(BoostedPoolMock);
-
-  expect(amountsIn.value).toEqual([]);
-});
