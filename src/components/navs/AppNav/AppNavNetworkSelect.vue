@@ -46,6 +46,12 @@ const networks = ref([
     networkSlug: 'arbitrum',
     key: '42161',
   },
+  // {
+  //   id: 'gnosis-chain',
+  //   name: 'Gnosis Chain',
+  //   networkSlug: 'gnosis-chain',
+  //   key: '100',
+  // },
 ]);
 
 const networksDev = ref([
@@ -113,7 +119,13 @@ watch(chainId, (newChainId, oldChainId) => {
 
 // METHODS
 function getNetworkChangeUrl(network: NetworkOption): string {
-  const routes = ['pool', 'create-pool', 'invest', 'withdraw', 'migrate-pool'];
+  const routes = [
+    'pool',
+    'create-pool',
+    'add-liquidity',
+    'withdraw',
+    'migrate-pool',
+  ];
   if (routes.includes(router.currentRoute.value.name?.toString() ?? '')) {
     return `/#/${network.networkSlug}?poolNetworkAlert=true`;
   }
@@ -149,7 +161,7 @@ function isActive(network: NetworkOption): boolean {
         </template>
       </BalBtn>
     </template>
-    <div class="flex overflow-hidden flex-col w-44 rounded-lg">
+    <div class="flex overflow-hidden flex-col w-48 rounded-lg">
       <div
         class="py-2 px-3 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
       >

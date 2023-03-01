@@ -8,6 +8,7 @@ import { Pool } from '@/services/pool/types';
 import BoostedActivities from '../BoostedPoolActivities/Activities.vue';
 import Activities from '../PoolActivities/Activities.vue';
 import { PoolTransactionsTab } from '../types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -25,6 +26,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 /**
+ * COMPOSABLES
+ */
+const { isWalletReady } = useWeb3();
+
+/**
  * COMPUTED
  */
 const tabs = computed(() =>
@@ -34,20 +40,28 @@ const tabs = computed(() =>
           value: PoolTransactionsTab.ALL_ACTIVITY,
           label: t('poolTransactions.tabs.allTransactions'),
         },
-        {
-          value: PoolTransactionsTab.USER_ACTIVITY,
-          label: t('poolTransactions.tabs.myTransactions'),
-        },
+        ...(isWalletReady.value
+          ? [
+              {
+                value: PoolTransactionsTab.USER_ACTIVITY,
+                label: t('poolTransactions.tabs.myTransactions'),
+              },
+            ]
+          : []),
       ]
     : [
         {
           value: PoolTransactionsTab.ALL_ACTIVITY,
           label: t('poolTransactions.tabs.allInvestments'),
         },
-        {
-          value: PoolTransactionsTab.USER_ACTIVITY,
-          label: t('poolTransactions.tabs.myInvestments'),
-        },
+        ...(isWalletReady.value
+          ? [
+              {
+                value: PoolTransactionsTab.USER_ACTIVITY,
+                label: t('poolTransactions.tabs.myInvestments'),
+              },
+            ]
+          : []),
       ]
 );
 

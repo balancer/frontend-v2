@@ -62,8 +62,14 @@ describe('vault.service', () => {
         userData: '',
       };
       const tokenOutAmount = '10';
+      const transactionDeadline = 5;
 
-      await vaultService.swap(single, funds, tokenOutAmount);
+      await vaultService.swap(
+        single,
+        funds,
+        tokenOutAmount,
+        transactionDeadline
+      );
       const sendTransactionArgs =
         // @ts-ignore
         web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
@@ -71,7 +77,7 @@ describe('vault.service', () => {
         contractAddress: vaultService.address,
         abi: vaultService.abi,
         action: 'swap',
-        params: [single, funds, tokenOutAmount, expect.any(Number)], // expect.any(Number) refers to the deadline from calculateValidTo(storeState.app.transactionDeadline)
+        params: [single, funds, tokenOutAmount, expect.any(Number)], // expect.any(Number) refers to the deadline from calculateValidTo(transactionDeadline)
         options: {},
       });
     });
@@ -82,12 +88,15 @@ describe('vault.service', () => {
       const swapKind = SwapType.SwapExactIn;
       const tokenAddresses = [tokens.USDC.address, tokens.DAI.address];
       const limits = ['10', '10'];
+      const transactionDeadline = 6;
+
       await vaultService.batchSwap(
         swapKind,
         swaps,
         tokenAddresses,
         funds,
-        limits
+        limits,
+        transactionDeadline
       );
       const sendTransactionArgs =
         // @ts-ignore
@@ -102,7 +111,7 @@ describe('vault.service', () => {
           tokenAddresses,
           funds,
           limits,
-          expect.any(Number), // expect.any(Number) refers to the deadline from calculateValidTo(storeState.app.transactionDeadline)
+          expect.any(Number), // expect.any(Number) refers to the deadline from calculateValidTo(transactionDeadline)
         ],
         options: {},
       });

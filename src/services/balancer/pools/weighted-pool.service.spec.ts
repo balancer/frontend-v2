@@ -41,6 +41,7 @@ WeightedPool__factory.connect = () => {
 describe('PoolCreator', () => {
   const mockPoolName = 'TestPool';
   const mockPoolSymbol = '50WETH-50USDT';
+  const mockRateProviders = [AddressZero, AddressZero];
   const mockSwapFee = '0.01';
   const mockOwner = AddressZero;
 
@@ -131,10 +132,11 @@ describe('PoolCreator', () => {
           new BigNumber(tokens.WETH.weight).multipliedBy(1e16).toString(),
           new BigNumber(tokens.USDT.weight).multipliedBy(1e16).toString(),
         ]);
-        expect(sendTransactionParams[4]).toEqual(
+        expect(sendTransactionParams[4]).toEqual(mockRateProviders);
+        expect(sendTransactionParams[5]).toEqual(
           new BigNumber(mockSwapFee).multipliedBy(1e18).toString()
         );
-        expect(sendTransactionParams[5]).toEqual(mockOwner);
+        expect(sendTransactionParams[6]).toEqual(mockOwner);
       });
     });
 
@@ -187,6 +189,8 @@ describe('PoolCreator', () => {
         mockProvider,
         'hash'
       );
+      console.error(mockProvider);
+      console.error(poolDetails);
       expect(poolDetails?.address.toLowerCase()).toEqual(
         '0x92e244b931bd6c71c1db2e50326480a0ba530fc7'
       );

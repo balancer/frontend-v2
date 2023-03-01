@@ -5,7 +5,7 @@ import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import useExitPool from '@/composables/pools/useExitPool';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
 import { useI18n } from 'vue-i18n';
 import ProportionalWithdrawalTokenInfoV2 from './ProportionalWithdrawalTokenInfoV2.vue';
 

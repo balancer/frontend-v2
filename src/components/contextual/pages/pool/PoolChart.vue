@@ -400,7 +400,7 @@ function setCurrentChartValue(payload: {
 }) {
   currentChartValue.value.num = fNum(payload.chartValue, {
     style: 'currency',
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
     fixedFormat: true,
   });
   currentChartValue.value.isNegative = payload.chartValue < 0;
@@ -437,7 +437,7 @@ function addLaggingTimestamps() {
 <template>
   <BalLoadingBlock v-if="loading" class="chart-loading-block" />
 
-  <div v-else-if="false" class="chart">
+  <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div
       class="flex flex-col xs:flex-row xs:flex-wrap justify-between mb-6 dark:border-gray-900"
     >

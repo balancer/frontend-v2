@@ -10,6 +10,9 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { useTokens } from '@/providers/tokens.provider';
 import useUrls from '@/composables/useUrls';
+import { initEcharts } from '@/dependencies/echarts';
+
+initEcharts();
 
 /**
  * CONSTANTS

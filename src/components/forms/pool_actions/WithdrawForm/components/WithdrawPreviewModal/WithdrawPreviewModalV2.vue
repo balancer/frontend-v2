@@ -6,7 +6,7 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import WithdrawSummary from './components/WithdrawSummary.vue';
-import useExitPool from '@/composables/pools/useExitPool';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
 import WithdrawActionsV2 from './components/WithdrawActionsV2.vue';
 import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
 

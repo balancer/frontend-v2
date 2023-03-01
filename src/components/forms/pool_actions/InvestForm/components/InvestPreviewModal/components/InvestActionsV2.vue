@@ -15,7 +15,7 @@ import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { Pool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
-import useJoinPool from '@/composables/pools/useJoinPool';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 

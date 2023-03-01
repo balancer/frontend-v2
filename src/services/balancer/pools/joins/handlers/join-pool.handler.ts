@@ -7,7 +7,6 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Ref } from 'vue';
 
 export type JoinParams = {
   amountsIn: AmountIn[];
@@ -17,6 +16,7 @@ export type JoinParams = {
   slippageBsp: number;
   relayerSignature?: string;
   approvalActions: TransactionActionInfo[];
+  transactionDeadline: number;
 };
 
 export type QueryOutput = {

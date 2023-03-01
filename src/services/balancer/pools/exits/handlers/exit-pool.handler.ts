@@ -27,6 +27,7 @@ export type ExitParams = {
   relayerSignature?: string;
   bptInValid: boolean;
   approvalActions: TransactionActionInfo[];
+  transactionDeadline: number;
 };
 
 export type QueryOutput = {

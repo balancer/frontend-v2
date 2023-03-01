@@ -82,7 +82,7 @@ async function handleUnstakeSuccess() {
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
         sortColumn="myBalance"
-        :isLoading="isLoading"
+        :isLoading="isWalletReady && isLoading"
         showPoolShares
         showActions
         :showBoost="!isL2"

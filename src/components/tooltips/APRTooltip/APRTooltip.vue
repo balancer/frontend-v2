@@ -37,7 +37,9 @@ const { fNum } = useNumbers();
 const apr = computed<AprBreakdown | undefined>(
   () => props.pool?.apr || props.poolApr
 );
-const validAPR = computed(() => Number(apr.value?.min || 0) <= APR_THRESHOLD);
+const validAPR = computed(
+  () => Number(apr.value?.swapFees || 0) <= APR_THRESHOLD
+);
 
 const hasYieldAPR = computed(() => {
   return bnum(apr.value?.tokenAprs.total || '0').gt(0);

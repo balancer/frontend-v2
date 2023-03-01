@@ -93,12 +93,13 @@ const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
-const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 
-const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 250 : undefined
-);
+const wideCompositionWidth = computed(() => {
+  if (upToSmallBreakpoint.value) return 250;
+  return 350;
+});
 
 /**
  * DATA
@@ -190,7 +191,9 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
-      return isFinite(apr) && apr < APR_THRESHOLD ? apr : 0;
+      return isFinite(apr) && (pool.apr?.swapFees || 0) < APR_THRESHOLD
+        ? apr
+        : 0;
     },
     width: 220,
   },
@@ -303,8 +306,8 @@ function iconAddresses(pool: Pool) {
     >
       <template #iconColumnHeader>
         <div class="flex items-center">
-          <img v-if="darkMode" :src="TokensWhite" />
-          <img v-else :src="TokensBlack" />
+          <img v-if="darkMode" :src="TokensWhite" alt="token" />
+          <img v-else :src="TokensBlack" alt="token" />
         </div>
       </template>
       <template #iconColumnCell="pool">
@@ -322,6 +325,7 @@ function iconAddresses(pool: Pool) {
               :tokens="orderedPoolTokens(pool, pool.tokens)"
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
+              :pickedTokens="selectedTokens"
             />
           </div>
           <BalChip

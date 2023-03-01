@@ -5,10 +5,14 @@ import { last } from 'lodash';
 import { Dictionary } from 'lodash';
 import numeral from 'numeral';
 import ECharts from 'vue-echarts';
+import { initEcharts } from '@/dependencies/echarts';
 
 import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
+import { bnum } from '@/lib/utils';
+
+initEcharts();
 
 type AxisMoveEvent = {
   seriesIndex: number;
@@ -356,8 +360,12 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       chartValue: currentChartValue[1],
     });
 
+    // toFixed to prevent maximumFractionalDigits error in fNum formatting.
+    // Shouldn't need more than 6 decimals because this is a USD value.
+    const value = bnum(props.data[seriesIndex].values[dataIndex][1]).toFixed(6);
+
     currentValue.value = fNum(
-      props.data[seriesIndex].values[dataIndex][1],
+      value,
       props.axisLabelFormatter.yAxis || {
         style: 'currency',
         currency: 'USD',
