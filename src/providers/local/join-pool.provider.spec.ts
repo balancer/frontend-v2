@@ -1,6 +1,5 @@
 import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import { Pool } from '@/services/pool/types';
-import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposable } from '@tests/mount-helpers';
 import { ref } from 'vue';
