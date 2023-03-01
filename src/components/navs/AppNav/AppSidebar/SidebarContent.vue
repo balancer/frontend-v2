@@ -120,7 +120,7 @@ watch(blockNumber, async () => {
     <div
       class="flex flex-col justify-center px-4 h-20 border-b border-gray-800"
     >
-      <AppLogo forceDark />
+      <AppLogo />
     </div>
 
     <div class="grid mt-2 text-lg grid-col-1">
