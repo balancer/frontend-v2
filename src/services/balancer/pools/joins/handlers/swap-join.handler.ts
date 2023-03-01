@@ -53,6 +53,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
       assets,
       funds,
       limits as string[],
+      params.transactionDeadline,
       options
     );
   }
