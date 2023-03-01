@@ -138,6 +138,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     test: {
+      deps: {
+        experimentalOptimizer: { enabled: true },
+      },
       globals: true,
       environment: 'happy-dom',
       setupFiles: [
