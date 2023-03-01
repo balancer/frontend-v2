@@ -158,7 +158,7 @@ function symbolFor(titleTokenIndex: number): string {
           {{ symbolFor(i) }}
         </span>
         <span
-          v-if="!isStableLikePool"
+          v-if="!isStableLikePool && !!weight && weight !== '0'"
           class="mt-px ml-1 text-xs font-medium text-gray-400"
         >
           {{

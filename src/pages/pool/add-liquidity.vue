@@ -49,7 +49,7 @@ useIntervalFn(poolDecorationQuery.refetch, oneSecondInMs * 20);
 <template>
   <div class="px-4 lg:px-0 mx-auto max-w-3xl">
     <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
-    <InvestPage v-else :pool="pool"></InvestPage>
+    <InvestPage v-else :pool="pool" />
   </div>
 </template>
 

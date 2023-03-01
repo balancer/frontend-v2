@@ -24,8 +24,10 @@ const PoolPage = () =>
   );
 const CreatePoolPage = () =>
   import(/* webpackChunkName: "CreatePoolPage" */ '@/pages/pool/create.vue');
-const PoolInvestPage = () =>
-  import(/* webpackChunkName: "PoolInvestPage" */ '@/pages/pool/invest.vue');
+const PoolAddLiquidityPage = () =>
+  import(
+    /* webpackChunkName: "PoolAddLiquidityPage" */ '@/pages/pool/add-liquidity.vue'
+  );
 const MigratePoolPage = () =>
   import(/* webpackChunkName: "MigratePoolPage" */ '@/pages/pool/migrate.vue');
 const PoolWithdrawPage = () =>
@@ -112,10 +114,27 @@ const routes: RouteRecordRaw[] = [
     component: PoolPage,
   },
   {
-    path: '/:networkSlug/pool/:id/invest',
-    name: 'invest',
-    component: PoolInvestPage,
+    path: '/pool/:id',
+    name: 'pool-redirect',
+    redirect: to => {
+      // Redirect old pool URLs to new structure. Only for mainnet, other
+      // networks handled in nav guards.
+      // e.g. app.balancer.fi/#/pool/0x... -> app.balancer.fi/#/ethereum/pool/0x...
+      return `/ethereum/pool/${to.params.id}`;
+    },
+  },
+  {
+    path: '/:networkSlug/pool/:id/add-liquidity',
+    name: 'add-liquidity',
+    component: PoolAddLiquidityPage,
     meta: { layout: 'FocusedLayout' },
+  },
+  {
+    path: '/:networkSlug/pool/:id/invest',
+    name: 'invest-redirect',
+    redirect: to => {
+      return `/${to.params.networkSlug}/pool/${to.params.id}/add-liquidity`;
+    },
   },
   {
     path: '/:networkSlug/pool/:id/withdraw',
