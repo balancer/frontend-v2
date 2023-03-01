@@ -114,6 +114,16 @@ const routes: RouteRecordRaw[] = [
     component: PoolPage,
   },
   {
+    path: '/pool/:id',
+    name: 'pool-redirect',
+    redirect: to => {
+      // Redirect old pool URLs to new structure. Only for mainnet, other
+      // networks handled in nav guards.
+      // e.g. app.balancer.fi/#/pool/0x... -> app.balancer.fi/#/ethereum/pool/0x...
+      return `/ethereum/pool/${to.params.id}`;
+    },
+  },
+  {
     path: '/:networkSlug/pool/:id/add-liquidity',
     name: 'add-liquidity',
     component: PoolAddLiquidityPage,
