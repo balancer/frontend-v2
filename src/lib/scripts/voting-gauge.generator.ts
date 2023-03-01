@@ -63,11 +63,11 @@ async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
 }
 
 function getBalancerAssetsURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
+  return `https://raw.githubusercontent.com/balancer/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
 }
 
 function getBalancerAssetsMultichainURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
+  return `https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
 }
 
 function isValidResponse(response: Response) {
