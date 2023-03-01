@@ -13,6 +13,8 @@ import StakePreviewModal from './StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
+import { deprecatedDetails } from '@/composables/usePool';
+
 type Props = {
   pool: Pool;
 };
@@ -53,6 +55,14 @@ const fiatValueOfUnstakedShares = computed(() => {
     .div(props.pool.totalShares)
     .times(balanceFor(getAddress(props.pool.address)))
     .toString();
+});
+
+const isStakeDisabled = computed(() => {
+  return (
+    deprecatedDetails(props.pool.id)?.stakingDisabled ||
+    fiatValueOfUnstakedShares.value === '0' ||
+    hasNonPrefGaugeBalance.value
+  );
 });
 
 /**
@@ -161,10 +171,7 @@ function handlePreviewClose() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    :disabled="
-                      fiatValueOfUnstakedShares === '0' ||
-                      hasNonPrefGaugeBalance
-                    "
+                    :disabled="isStakeDisabled"
                     @click="showStakePreview"
                   >
                     {{ $t('stake') }}
