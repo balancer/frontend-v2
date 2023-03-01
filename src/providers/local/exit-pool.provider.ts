@@ -1,4 +1,3 @@
-import { transactionsState } from './../../composables/useTransactions';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {

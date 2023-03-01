@@ -47,7 +47,6 @@ const {
   exitTokenInfo,
   fiatAmountsOut,
   fiatTotalOut,
-  transactionDeadline,
 } = useExitPool();
 const { t } = useI18n();
 
