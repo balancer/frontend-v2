@@ -1,5 +1,5 @@
 {
-  "name": "@balancer-labs/frontend-v2",
+  "name": "@balancer/frontend-v2",
   "version": "1.91.11",
   "engines": {
     "node": "=16",
@@ -152,5 +152,5 @@
     "*.{css,vue}": "stylelint --fix"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2"
+  "repository": "balancer/frontend-v2"
 }
