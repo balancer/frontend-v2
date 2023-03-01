@@ -24,6 +24,7 @@ export type ExitParams = {
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
+  transactionDeadline: number;
 };
 
 export type QueryOutput = {
