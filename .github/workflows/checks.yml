@@ -108,7 +108,7 @@ jobs:
         with:
           repository: balancer-labs/frontend-e2e
           # Checkout a specific branch
-          ref: feature/use-playwright
+          # ref: feature/some-feature-branch
           # Checkout to folder "frontend/e2e"
           path: e2e
       - name: Run Playwright
