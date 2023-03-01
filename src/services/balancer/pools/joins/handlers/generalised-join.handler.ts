@@ -55,7 +55,6 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
 
     const tokenAddresses: string[] = amountsIn.map(({ address }) => address);
     const signerAddress = await signer.getAddress();
-    const wrapLeafTokens = false;
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
 
@@ -64,7 +63,6 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
       tokenAddresses,
       evmAmountsIn,
       signerAddress,
-      wrapLeafTokens,
       slippage,
       signer,
       SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
