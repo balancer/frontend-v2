@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
         >
           {{ symbol }}
         </span>
-        <span class="pill-weight">
+        <span v-if="weight !== '0%'" class="pill-weight">
           {{ weight }}
         </span>
       </div>

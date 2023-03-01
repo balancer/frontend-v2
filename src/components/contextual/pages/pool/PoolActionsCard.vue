@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
-import { isJoinsDisabled, usePool } from '@/composables/usePool';
+import {
+  isJoinsDisabled,
+  usePool,
+  deprecatedDetails,
+} from '@/composables/usePool';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -36,6 +40,7 @@ const { networkSlug } = useNetwork();
  */
 const joinDisabled = computed(
   (): boolean =>
+    deprecatedDetails(props.pool.id)?.joinsDisabled ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
     (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id))
@@ -56,7 +61,7 @@ const joinDisabled = computed(
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
         :tag="joinDisabled ? 'div' : 'router-link'"
-        :to="{ name: 'invest', params: { networkSlug } }"
+        :to="{ name: 'add-liquidity', params: { networkSlug } }"
         :label="$t('addLiquidity')"
         color="gradient"
         :disabled="joinDisabled"

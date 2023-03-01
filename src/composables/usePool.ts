@@ -4,7 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS, APR_THRESHOLD } from '@/constants/pools';
+import { POOLS, APR_THRESHOLD, DeprecatedDetails } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -210,18 +210,21 @@ export function orderedTokenAddresses(pool: AnyPool): string[] {
   return sortedTokens.map(token => getAddress(token?.address || ''));
 }
 
-type TokenProperties = Pick<PoolToken, 'address' | 'weight'>;
-
 /**
  * @summary Orders pool tokens by weight if weighted pool
  */
-export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
+export function orderedPoolTokens(
   pool: Pool,
-  tokens: TPoolTokens[]
-): TPoolTokens[] {
-  if (isComposableStable(pool.poolType))
+  tokens: PoolToken[]
+): PoolToken[] {
+  if (isDeep(pool)) {
+    const leafs = tokenTreeLeafs(tokens);
+    const flatTokens = flatTokenTree(pool);
+    return flatTokens.filter(token => leafs.includes(token.address));
+  } else if (isComposableStable(pool.poolType)) {
     return tokens.filter(token => !isSameAddress(token.address, pool.address));
-  if (isStableLike(pool.poolType)) return tokens;
+  } else if (isStableLike(pool.poolType)) return tokens;
+
   return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0'));
@@ -560,6 +563,15 @@ export function isJoinsDisabled(id: string): boolean {
 }
 
 /**
+ * Checks if pool ID is included in the list of deprecated pools
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list
+ */
+export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
+  return POOLS.Deprecated?.[id.toLowerCase()];
+}
+
+/**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
@@ -657,6 +669,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       )
   );
 
+  const isDeprecatedPool = computed(() => {
+    return !!pool.value && !!POOLS.Deprecated?.[pool.value.id];
+  });
+
   return {
     // computed
     isStablePool,
@@ -677,6 +693,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
+    isDeprecatedPool,
     // methods
     isStable,
     isMetaStable,

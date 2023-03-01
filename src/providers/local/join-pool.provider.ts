@@ -37,6 +37,7 @@ import {
 } from 'vue';
 import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
+import { useApp } from '@/composables/useApp';
 
 /**
  * TYPES
@@ -97,6 +98,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
+  const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
@@ -261,6 +263,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
         prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
+        transactionDeadline,
       });
 
       bptOut.value = output.bptOut;
@@ -288,6 +291,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
+        transactionDeadline,
       });
     } catch (error) {
       txError.value = (error as Error).message;
