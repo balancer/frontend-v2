@@ -154,9 +154,23 @@ function getTrustWalletAssetsURI(
     [Network.POLYGON]: 'polygon',
     [Network.GOERLI]: 'goerli',
     [Network.OPTIMISM]: 'optimism',
+    [Network.GNOSIS]: 'xdai',
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
+}
+
+async function isValidLogo(uri: string | undefined): Promise<boolean> {
+  try {
+    if (!uri) return false;
+
+    const response = await fetch(uri);
+    if (response.status === 200) return true;
+    return false;
+  } catch (error) {
+    console.log('Failed to fetch', uri);
+    return false;
+  }
 }
 
 async function getTokenLogoURI(
@@ -165,35 +179,30 @@ async function getTokenLogoURI(
 ): Promise<string> {
   log(`getTokenLogoURI network: ${network} tokenAddress: ${tokenAddress}`);
   let logoUri = '';
-  let response;
 
   if (network === Network.MAINNET) {
     logoUri = getBalancerAssetsURI(tokenAddress);
-    response = await fetch(logoUri);
-    if (response.status === 200) return logoUri;
+    if (await isValidLogo(logoUri)) return logoUri;
   } else {
     logoUri = getBalancerAssetsMultichainURI(tokenAddress);
-    response = await fetch(logoUri);
-    if (response.status === 200) return logoUri;
+    if (await isValidLogo(logoUri)) return logoUri;
   }
 
   logoUri = getTrustWalletAssetsURI(tokenAddress, network);
-  response = await fetch(logoUri);
-  if (response.status === 200) return logoUri;
+  if (await isValidLogo(logoUri)) return logoUri;
 
   logoUri = await getAssetURIFromTokenlists(tokenAddress, network);
-  if (logoUri) response = await fetch(logoUri);
-  if (logoUri && response.status === 200) return logoUri;
+  if (await isValidLogo(logoUri)) return logoUri;
 
   if (
     network === Network.ARBITRUM ||
     network === Network.OPTIMISM ||
-    network === Network.POLYGON
+    network === Network.POLYGON ||
+    network === Network.GNOSIS
   ) {
     const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
     logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
-    response = await fetch(logoUri);
-    if (logoUri && response.status === 200) return logoUri;
+    if (await isValidLogo(logoUri)) return logoUri;
   }
 
   return '';
@@ -466,9 +475,12 @@ async function getGaugeInfo(
 (async () => {
   console.log('Generating voting-gauges.json...');
 
+  console.log('Fetching gauges info...');
+  console.time('getGaugeInfo');
   const gaugesInfo = await Promise.all(
     POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
   );
+  console.timeEnd('getGaugeInfo');
 
   const filteredGauges = gaugesInfo
     .flat()
@@ -478,13 +490,18 @@ async function getGaugeInfo(
     .filter(({ isKilled }) => isKilled)
     .map(({ address }) => address);
 
+  console.log('\n\nFetching killed gauges relative weight...');
+  console.time('getGaugeRelativeWeight');
   const killedGaugesWeight = await getGaugeRelativeWeight(killedGaugesList);
+  console.timeEnd('getGaugeRelativeWeight');
 
   const validGauges = filteredGauges.filter(
     ({ address, isKilled }) =>
       !isKilled || killedGaugesWeight[address] !== '0.0'
   );
 
+  console.log('\n\nFetching voting gauges info...');
+  console.time('getVotingGauges');
   let votingGauges = await Promise.all(
     validGauges.map(
       async ({
@@ -517,6 +534,7 @@ async function getGaugeInfo(
       }
     )
   );
+  console.timeEnd('getVotingGauges');
 
   votingGauges = [
     ...(vebalGauge as VotingGauge[]),
