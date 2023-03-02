@@ -580,6 +580,13 @@
   "missingPoolNameOrSymbolInfo": "There is a missing pool name or symbol, fill it in before creating the pool.",
   "menu": "Menu",
   "migrate": "Migrate",
+  "migrateCard": {
+    "title": "Migrate liquidity",
+    "description": "Liquidity mining incentives have expired for this pool. For future BAL incentives: unstake, withdraw and add liquidity to an incentivized pool.",
+    "viewBtn": "View incentivized pools",
+    "recommendedPool": "Recommended incentivized pools",
+    "upgradedPool": "Upgraded incentivized pool"
+  },
   "modals": {
     "veBalRedirectModal": {
       "title": "Proceed to mainnet",
