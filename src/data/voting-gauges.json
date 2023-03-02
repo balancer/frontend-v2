@@ -4043,7 +4043,7 @@
     },
     "tokenLogoURIs": {
       "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
-      "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png"
+      "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/assets/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png"
     }
   },
   {
@@ -4857,6 +4857,134 @@
     "tokenLogoURIs": {
       "0x296F55F8Fb28E498B858d0BcDA06D955B2Cb3f97": "https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/assets/0x296f55f8fb28e498b858d0bcda06d955b2cb3f97.png",
       "0xba7834bb3cd2DB888E6A06Fb45E82b4225Cd0C71": "https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/assets/0xba7834bb3cd2db888e6a06fb45e82b4225cd0c71.png"
+    }
+  },
+  {
+    "address": "0x56A65cC666bfe538c5a031942369F6F63eb42240",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677684467,
+    "pool": {
+      "id": "0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013",
+      "address": "0x66F33Ae36dD80327744207a48122F874634B3adA",
+      "poolType": "Weighted",
+      "symbol": "agUSD-agWETH-agWBTC",
+      "tokens": [
+        {
+          "address": "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-WETH"
+        },
+        {
+          "address": "0xd4015683b8153666190e0B2bEC352580EBC4CaCa",
+          "weight": "0.333333334",
+          "symbol": "bb-ag-WBTC"
+        },
+        {
+          "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50": "",
+      "0xd4015683b8153666190e0B2bEC352580EBC4CaCa": "",
+      "0xFEdb19Ec000d38d92Af4B21436870F115db22725": ""
+    }
+  },
+  {
+    "address": "0x3FB2975E00B3dbB97E8315a5ACbFF6B38026FDf3",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677684467,
+    "pool": {
+      "id": "0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012",
+      "address": "0xF48f01DCB2CbB3ee1f6AaB0e742c2D3941039d56",
+      "poolType": "Weighted",
+      "symbol": "50bbagGNO-50bbagWETH",
+      "tokens": [
+        {
+          "address": "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50",
+          "weight": "0.5",
+          "symbol": "bb-ag-WETH"
+        },
+        {
+          "address": "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0",
+          "weight": "0.5",
+          "symbol": "bb-ag-GNO"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50": "",
+      "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0": ""
+    }
+  },
+  {
+    "address": "0xd27671f057e9e72751106fBfbBBB33827D986546",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677684467,
+    "pool": {
+      "id": "0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011",
+      "address": "0xB973Ca96a3f0D61045f53255E319AEDb6ED49240",
+      "poolType": "Weighted",
+      "symbol": "50bbagGNO-50bbagUSD",
+      "tokens": [
+        {
+          "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
+          "weight": "0.5",
+          "symbol": "bb-ag-USD"
+        },
+        {
+          "address": "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0",
+          "weight": "0.5",
+          "symbol": "bb-ag-GNO"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xFEdb19Ec000d38d92Af4B21436870F115db22725": "",
+      "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0": ""
+    }
+  },
+  {
+    "address": "0x25D6F29429bccCc129d1A3e2a5642C8B929BCC07",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677684467,
+    "pool": {
+      "id": "0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010",
+      "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
+      "poolType": "ComposableStable",
+      "symbol": "bb-ag-USD",
+      "tokens": [
+        {
+          "address": "0x41211BBa6d37F5a74b22e667533F080C7C7f3F13",
+          "weight": "null",
+          "symbol": "bb-ag-WXDAI"
+        },
+        {
+          "address": "0xd16f72b02dA5f51231fDe542A8B9E2777a478c88",
+          "weight": "null",
+          "symbol": "bb-ag-USDT"
+        },
+        {
+          "address": "0xE7f88d7d4EF2eb18FCF9Dd7216BA7Da1c46f3dD6",
+          "weight": "null",
+          "symbol": "bb-ag-USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x41211BBa6d37F5a74b22e667533F080C7C7f3F13": "",
+      "0xd16f72b02dA5f51231fDe542A8B9E2777a478c88": "",
+      "0xE7f88d7d4EF2eb18FCF9Dd7216BA7Da1c46f3dD6": ""
     }
   }
 ]
