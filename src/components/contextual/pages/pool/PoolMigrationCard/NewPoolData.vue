@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
-import useNetwork from '@/composables/useNetwork';
 import {
-  deprecatedDetails,
-  isStableLike,
   orderedPoolTokens,
   orderedTokenAddresses,
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -21,28 +19,38 @@ type Props = {
 /**
  * PROPS
  */
-const props = defineProps<Props>();
+defineProps<Props>();
 
 function iconAddresses(pool: Pool) {
   return POOLS.Metadata[pool.id]?.hasIcon
     ? [pool.address]
     : orderedTokenAddresses(pool);
 }
+
+/**
+ * COMPOSABLES
+ */
+const { networkSlug } = useNetwork();
 </script>
 
 <template>
-  <div
-    class="flex justify-between items-center py-3 border-t border-gray-300 border-opacity-25"
+  <router-link
+    as="div"
+    :to="{
+      name: 'pool',
+      params: { id: pool.id, networkSlug },
+    }"
+    class="flex justify-between items-center py-3 border-t border-gray-300 border-opacity-25 cursor-pointer hover:bg-[#11182766]"
   >
     <div class="flex items-center">
-      <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
+      <BalAssetSet :addresses="iconAddresses(pool)" :width="60" />
       <TokenPills :tokens="orderedPoolTokens(pool, pool.tokens)" />
-      <BalChipNew v-if="true" class="mb-1" />
+      <BalChipNew v-if="pool.isNew" class="mb-1" />
     </div>
     <BalIcon
       name="arrow-right"
       size="sm"
-      class="mb-1 text-gray-300 group-hover:text-purple-600 dark:text-gray-600 dark:group-hover:text-yellow-500;"
+      class="mr-3 mb-1 text-gray-300 group-hover:text-white"
     />
-  </div>
+  </router-link>
 </template>
