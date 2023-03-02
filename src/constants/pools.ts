@@ -837,7 +837,7 @@ const POOLS_GENERIC: Pools = {
   DisabledJoins: [],
 };
 
-const POOLS_MAP = {
+export const POOLS_MAP = {
   [Network.GOERLI]: POOLS_GOERLI,
   [Network.MAINNET]: POOLS_MAINNET,
   [Network.POLYGON]: POOLS_POLYGON,

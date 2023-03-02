@@ -30,7 +30,7 @@ import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { POOLS } from '@/constants/pools';
+import { POOLS_MAP } from '@/constants/pools';
 
 /**
  * TYPES
@@ -250,10 +250,12 @@ function getPickedTokens(tokens: PoolToken[]) {
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="{ pool, address, addedTimestamp }">
+      <template
+        #poolCompositionCell="{ pool, address, addedTimestamp, network }"
+      >
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
-            {{ POOLS.Metadata[pool.id].name }}
+          <div v-if="POOLS_MAP[network]?.Metadata[pool.id]" class="text-left">
+            {{ POOLS_MAP[network].Metadata[pool.id].name }}
           </div>
           <TokenPills
             v-else
