@@ -8,7 +8,7 @@ import usePoolTransfers from './usePoolTransfers';
 import useNetwork from '@/composables/useNetwork';
 
 /**
- * This should only be used once at the highest level of the invest/withdraw flow
+ * This should only be used once at the highest level of the add-liquidity/withdraw flow
  * which is the PoolTransfersLayout.
  *
  * Before page mount it checks if the pool has been loaded and if so checks if transfers
