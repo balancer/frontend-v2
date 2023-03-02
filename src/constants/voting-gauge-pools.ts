@@ -732,6 +732,25 @@ export const OPTIMISM_POOLS: Pool[] = [
   },
 ];
 
+export const GNOSIS_POOLS: Pool[] = [
+  {
+    id: '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013',
+    network: Network.GNOSIS,
+  },
+  {
+    id: '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012',
+    network: Network.GNOSIS,
+  },
+  {
+    id: '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011',
+    network: Network.GNOSIS,
+  },
+  {
+    id: '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010',
+    network: Network.GNOSIS,
+  },
+];
+
 export const POOLS = [
   ...MAINNET_POOLS,
   ...ARBITRUM_POOLS,
