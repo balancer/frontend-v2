@@ -30,6 +30,7 @@ import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -251,7 +252,11 @@ function getPickedTokens(tokens: PoolToken[]) {
       </template>
       <template #poolCompositionCell="{ pool, address, addedTimestamp }">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
+          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
+            {{ POOLS.Metadata[pool.id].name }}
+          </div>
           <TokenPills
+            v-else
             :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
