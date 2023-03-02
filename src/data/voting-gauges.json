@@ -2154,7 +2154,7 @@
     },
     "tokenLogoURIs": {
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
-      "0xCdF7028ceAB81fA0C6971208e83fa7872994beE5": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xCdF7028ceAB81fA0C6971208e83fa7872994beE5/logo.png"
+      "0xCdF7028ceAB81fA0C6971208e83fa7872994beE5": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xcdf7028ceab81fa0c6971208e83fa7872994bee5.png"
     }
   },
   {
@@ -3041,8 +3041,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x4A82b580365Cff9B146281Ab72500957a849ABDC": "",
-      "0xe03aF00faBe8401560c1FF7d242d622a5b601573": ""
+      "0x4A82b580365Cff9B146281Ab72500957a849ABDC": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x4a82b580365cff9b146281ab72500957a849abdc.png",
+      "0xe03aF00faBe8401560c1FF7d242d622a5b601573": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xe03af00fabe8401560c1ff7d242d622a5b601573.png"
     }
   },
   {
@@ -3075,9 +3075,9 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x8E6eC57A822c2F527F2Df7C7D7D361dF3E7530a1": "",
-      "0x9B1c8407a360443A9E5ECA004713E4088FAB8AC0": "",
-      "0xD6E355036f41dC261B3f1ed3Bbc6003E87AAdB4f": ""
+      "0x8E6eC57A822c2F527F2Df7C7D7D361dF3E7530a1": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x8e6ec57a822c2f527f2df7c7d7d361df3e7530a1.png",
+      "0x9B1c8407a360443A9E5ECA004713E4088FAB8AC0": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x9b1c8407a360443a9e5eca004713e4088fab8ac0.png",
+      "0xD6E355036f41dC261B3f1ed3Bbc6003E87AAdB4f": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xd6e355036f41dc261b3f1ed3bbc6003e87aadb4f.png"
     }
   },
   {
@@ -3240,7 +3240,7 @@
   {
     "address": "0xF0ea3559Cf098455921d74173dA83fF2f6979495",
     "network": 42161,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "null",
     "addedTimestamp": 1650405644,
     "pool": {
@@ -3688,7 +3688,7 @@
   {
     "address": "0xFBf87D2C22d1d298298ab5b0Ec957583a2731d15",
     "network": 137,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "null",
     "addedTimestamp": 1650405699,
     "pool": {
@@ -3827,7 +3827,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x034b2090b579228482520c589dbD397c53Fc51cC": "https://s3-us-west-2.amazonaws.com/acf-uploads/apyvisionlogo200circle.png",
+      "0x034b2090b579228482520c589dbD397c53Fc51cC": "",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png"
     }
   },
