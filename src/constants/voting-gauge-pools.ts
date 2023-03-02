@@ -757,4 +757,5 @@ export const POOLS = [
   ...POLYGON_POOLS,
   ...GOERLI_POOLS,
   ...OPTIMISM_POOLS,
+  ...GNOSIS_POOLS,
 ];
