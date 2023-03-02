@@ -1,3 +1,9 @@
+/**
+ * Generates voting-gauges.json file.
+ *
+ * To run, ensure you have your own .env.development file with the following:
+ * VITE_RPC_URL_1=YOUR_MAINNET_RPC_URL
+ */
 import { Network } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 import debug from 'debug';
@@ -14,11 +20,11 @@ import vebalGauge from '../../../public/data/vebal-gauge.json';
 import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
 import config from '../config';
 import { isSameAddress } from '../utils';
-import { Multicaller } from '../utils/balancer/contract';
 import { formatUnits } from '@ethersproject/units';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { mapValues } from 'lodash';
 import { configService } from '@/services/config/config.service';
+import { Multicaller } from '@/services/multicalls/multicaller';
+import { StaticJsonRpcBatchProvider } from '@/services/rpc-provider/static-json-rpc-batch-provider';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -39,21 +45,23 @@ async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   const rpcUrl = configService.getNetworkRpc(Network.MAINNET);
   if (rpcUrl.includes('INFURA_KEY'))
     throw Error('VITE_INFURA_PROJECT_ID not found!');
-  const provider = new JsonRpcProvider(rpcUrl);
+
+  const provider = new StaticJsonRpcBatchProvider(rpcUrl);
 
   const multicaller = new Multicaller(
+    config[Network.MAINNET].addresses.multicall,
     config[Network.MAINNET].key,
-    provider,
-    VEBalHelpersABI
+    provider
   );
 
   for (const gaugeAddress of gaugeAddresses) {
-    multicaller.call(
-      getAddress(gaugeAddress),
-      config[Network.MAINNET].addresses.veBALHelpers,
-      'gauge_relative_weight',
-      [getAddress(gaugeAddress)]
-    );
+    multicaller.call({
+      key: gaugeAddress,
+      address: config[Network.MAINNET].addresses.veBALHelpers,
+      function: 'gauge_relative_weight',
+      abi: VEBalHelpersABI,
+      params: [getAddress(gaugeAddress)],
+    });
   }
 
   const result = await multicaller.execute();
