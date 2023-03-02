@@ -84,6 +84,12 @@ module.exports = {
           //   message:
           //     'Please import from src/dependencies to make this dependency more testable',
           // },
+          {
+            group: ['@ethersproject/providers'],
+            importNames: ['Web3Provider'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
         ],
       },
     ],

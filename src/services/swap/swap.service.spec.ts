@@ -9,16 +9,32 @@ import { AddressZero } from '@ethersproject/constants';
 
 import { configService } from '@/services/config/config.service';
 
-import { vaultService } from '@/services/contracts/vault.service';
+import { initEthersContract } from '@/dependencies/EthersContract';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
-import SwapService, { SwapToken, SwapTokenType } from './swap.service';
+import { vaultService } from '@/services/contracts/vault.service';
+import { walletService } from '@/services/web3/wallet.service';
+import {
+  defaultUserAddress,
+  walletProviderMock,
+} from '../contracts/vault.service.mocks';
 import { setUserAddress } from '../web3/__mocks__/web3.service';
+import SwapService, { SwapToken, SwapTokenType } from './swap.service';
 
 vi.mock('@/lib/utils/balancer/lido');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/services/contracts/vault.service');
 vi.mock('@/services/contracts/lido-relayer.service');
-vi.mock('@/services/web3/web3.service');
+
+class EthersContractWithSignerMock {
+  estimateGas = {
+    swap: () => Promise.resolve(BigNumber.from(2)),
+    batchSwap: () => Promise.resolve(BigNumber.from(1)),
+  };
+  batchSwap = vi.fn();
+  swap = vi.fn();
+}
+
+initEthersContract(EthersContractWithSignerMock);
+
+walletService.setUserProvider(ref(walletProviderMock));
 
 describe('swap.service', () => {
   const tokens: Record<string, SwapToken> = {};
@@ -30,8 +46,12 @@ describe('swap.service', () => {
   const PoolIdUSDCDAI =
     '6B15A01B5D46A5321B627BD7DEEF1AF57BC629070000000000000000000000D4';
 
+  // walletsService.
   beforeEach(() => {
+    //TODO: improve with helper
+    //Silence logs
     vi.spyOn(console, 'log').mockImplementation(() => ({}));
+
     vi.clearAllMocks();
     vaultService.batchSwap = vi.fn();
     tokens.USDC = {
@@ -71,7 +91,7 @@ describe('swap.service', () => {
       type: SwapTokenType.fixed,
     };
 
-    service = new SwapService();
+    service = new SwapService(configService, walletService);
   });
 
   it('Should initialize correctly', () => {
@@ -81,7 +101,6 @@ describe('swap.service', () => {
   describe('batchSwapV2', () => {
     let swaps: SwapV2[] = [];
     const amount = '1000000';
-    const userAddress = '0xddd0c9C1b6C8537BeD0487C3fd64CF6140bd4ddd';
     let tokenAddresses;
 
     beforeEach(() => {
@@ -95,11 +114,12 @@ describe('swap.service', () => {
           userData: '',
         },
       ];
-      setUserAddress(userAddress);
+      setUserAddress(defaultUserAddress);
     });
 
     describe('single swap', () => {
       it('Should call vault.swap when swapping a single token for another', async () => {
+        const swapSpy = vi.spyOn(vaultService, 'swap');
         tokens.USDC.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
         await service.batchSwapV2(
@@ -109,7 +129,7 @@ describe('swap.service', () => {
           tokenAddresses
         );
         //@ts-ignore
-        const vaultSwapArgs = vaultService.swap.mock.calls[0];
+        const vaultSwapArgs = swapSpy.mock.calls[0];
         const singleSwapArg: SingleSwap = vaultSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdUSDCDAI);
         expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
@@ -119,8 +139,8 @@ describe('swap.service', () => {
         expect(singleSwapArg.userData).toEqual('');
 
         const vaultSwapFundsArg: FundManagement = vaultSwapArgs[1];
-        expect(vaultSwapFundsArg.sender).toEqual(userAddress);
-        expect(vaultSwapFundsArg.recipient).toEqual(userAddress);
+        expect(vaultSwapFundsArg.sender).toEqual(defaultUserAddress);
+        expect(vaultSwapFundsArg.recipient).toEqual(defaultUserAddress);
         expect(vaultSwapFundsArg.fromInternalBalance).toEqual(false);
         expect(vaultSwapFundsArg.toInternalBalance).toEqual(false);
 
@@ -128,6 +148,7 @@ describe('swap.service', () => {
       });
 
       it('Should set options.value to tokenIn.amount when swapping a native asset', async () => {
+        const swapSpy = vi.spyOn(vaultService, 'swap');
         tokens.ETHv2.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
         tokenAddresses = [tokens.ETHv2.address, tokens.DAI.address];
@@ -138,7 +159,7 @@ describe('swap.service', () => {
           tokenAddresses
         );
         //@ts-ignore
-        const vaultSwapArgs = vaultService.swap.mock.calls[0];
+        const vaultSwapArgs = swapSpy.mock.calls[0];
         const singleSwapArg: SingleSwap = vaultSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdUSDCDAI);
         expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
@@ -148,8 +169,8 @@ describe('swap.service', () => {
         expect(singleSwapArg.userData).toEqual('');
 
         const vaultSwapFundsArg: FundManagement = vaultSwapArgs[1];
-        expect(vaultSwapFundsArg.sender).toEqual(userAddress);
-        expect(vaultSwapFundsArg.recipient).toEqual(userAddress);
+        expect(vaultSwapFundsArg.sender).toEqual(defaultUserAddress);
+        expect(vaultSwapFundsArg.recipient).toEqual(defaultUserAddress);
         expect(vaultSwapFundsArg.fromInternalBalance).toEqual(false);
         expect(vaultSwapFundsArg.toInternalBalance).toEqual(false);
 
@@ -186,8 +207,8 @@ describe('swap.service', () => {
         expect(singleSwapArg.userData).toEqual('');
 
         const fundsArg: FundManagement = lidoRelayerSwapArgs[1];
-        expect(fundsArg.sender).toEqual(userAddress);
-        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.sender).toEqual(defaultUserAddress);
+        expect(fundsArg.recipient).toEqual(defaultUserAddress);
         expect(fundsArg.fromInternalBalance).toEqual(false);
         expect(fundsArg.toInternalBalance).toEqual(false);
 
@@ -237,8 +258,8 @@ describe('swap.service', () => {
         expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
 
         const fundsArg: FundManagement = vaultBatchSwapArgs[3];
-        expect(fundsArg.sender).toEqual(userAddress);
-        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.sender).toEqual(defaultUserAddress);
+        expect(fundsArg.recipient).toEqual(defaultUserAddress);
         expect(fundsArg.fromInternalBalance).toEqual(false);
         expect(fundsArg.toInternalBalance).toEqual(false);
 
@@ -306,8 +327,8 @@ describe('swap.service', () => {
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
 
         const fundsArg: FundManagement = lidoBatchSwapArgs[3];
-        expect(fundsArg.sender).toEqual(userAddress);
-        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.sender).toEqual(defaultUserAddress);
+        expect(fundsArg.recipient).toEqual(defaultUserAddress);
         expect(fundsArg.fromInternalBalance).toEqual(false);
         expect(fundsArg.toInternalBalance).toEqual(false);
 
@@ -338,8 +359,8 @@ describe('swap.service', () => {
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
 
         const fundsArg: FundManagement = lidoBatchSwapArgs[3];
-        expect(fundsArg.sender).toEqual(userAddress);
-        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.sender).toEqual(defaultUserAddress);
+        expect(fundsArg.recipient).toEqual(defaultUserAddress);
         expect(fundsArg.fromInternalBalance).toEqual(false);
         expect(fundsArg.toInternalBalance).toEqual(false);
 
@@ -579,8 +600,8 @@ describe('swap.service', () => {
         expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
 
         const fundsArg: FundManagement = vaultBatchSwapArgs[3];
-        expect(fundsArg.sender).toEqual(userAddress);
-        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.sender).toEqual(defaultUserAddress);
+        expect(fundsArg.recipient).toEqual(defaultUserAddress);
         expect(fundsArg.fromInternalBalance).toEqual(false);
         expect(fundsArg.toInternalBalance).toEqual(false);
 

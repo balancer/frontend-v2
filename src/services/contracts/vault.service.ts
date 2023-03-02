@@ -12,14 +12,16 @@ import { calculateValidTo } from '../cowswap/utils';
 
 import ConfigService, { configService } from '@/services/config/config.service';
 
-import Web3Service, { web3Service } from '../web3/web3.service';
+import WalletService, {
+  walletService as walletServiceInstance,
+} from '@/services/web3/wallet.service';
 
 export default class VaultService {
   abi: ContractInterface;
 
   constructor(
     protected readonly config: ConfigService = configService,
-    private readonly web3: Web3Service = web3Service
+    private readonly walletService: WalletService = walletServiceInstance
   ) {
     this.abi = Vault__factory.abi;
   }
@@ -36,7 +38,7 @@ export default class VaultService {
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
     const deadline = calculateValidTo(transactionDeadline);
-    return this.web3.txBuilder.contract.sendTransaction({
+    return this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'swap',
@@ -55,7 +57,7 @@ export default class VaultService {
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
     const deadline = calculateValidTo(transactionDeadline);
-    return this.web3.txBuilder.contract.sendTransaction({
+    return this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'batchSwap',

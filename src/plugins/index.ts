@@ -1,5 +1,4 @@
 import { App } from 'vue';
-import Web3Plugin from '@/services/web3/web3.plugin';
 import i18n from '@/plugins/i18n';
 import router from '@/plugins/router';
 import blocknative from '@/plugins/blocknative';
@@ -12,7 +11,6 @@ export function registerPlugins(app: App) {
     .use(router)
     .use(VueQueryPlugin)
     .use(blocknative)
-    .use(Web3Plugin)
     .use(VueVirtualScroller);
   return app;
 }

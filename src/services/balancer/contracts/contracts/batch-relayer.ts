@@ -1,5 +1,6 @@
 import { FundManagement, TransactionData } from '@balancer-labs/sdk';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 import { Contract } from 'ethers';
 
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
@@ -67,7 +68,7 @@ export default class BatchRelayer {
 
   public async execute(
     txInfo: TransactionData,
-    userProvider: Web3Provider
+    userProvider: WalletProvider
   ): Promise<TransactionResponse> {
     const txBuilder = new TransactionBuilder(userProvider.getSigner());
     return await txBuilder.contract.sendTransaction({

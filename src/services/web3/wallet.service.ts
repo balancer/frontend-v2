@@ -1,11 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
-import {
-  JsonRpcProvider,
-  JsonRpcSigner,
-  Web3Provider,
-} from '@ethersproject/providers';
+import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
-import { ComputedRef } from 'vue';
 
 import ConfigService, { configService } from '@/services/config/config.service';
 import {
@@ -13,16 +8,17 @@ import {
   rpcProviderService,
 } from '../rpc-provider/rpc-provider.service';
 import { TransactionBuilder } from './transactions/transaction.builder';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 
 interface Web3Profile {
   ens: string | null;
   avatar: string | null;
 }
 
-export default class Web3Service {
+export default class WalletService {
   appProvider: JsonRpcProvider;
   ensProvider: JsonRpcProvider;
-  userProvider!: ComputedRef<Web3Provider>;
+  userProvider!: ComputedRef<WalletProvider>;
   txBuilder!: TransactionBuilder;
 
   constructor(
@@ -33,7 +29,7 @@ export default class Web3Service {
     this.ensProvider = this.rpcProviderService.getJsonProvider(Network.MAINNET);
   }
 
-  public setUserProvider(provider: ComputedRef<Web3Provider>) {
+  public setUserProvider(provider: ComputedRef<WalletProvider>) {
     this.userProvider = provider;
     this.setTxBuilder(provider.value.getSigner());
   }
@@ -76,4 +72,4 @@ export default class Web3Service {
   }
 }
 
-export const web3Service = new Web3Service();
+export const walletService = new WalletService();

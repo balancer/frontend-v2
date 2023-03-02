@@ -8,6 +8,11 @@ import { provideUserSettings } from '@/providers/user-settings.provider';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideTokens } from '@/providers/tokens.provider';
 import { provideUserData } from '@/providers/user-data.provider';
+import { provideWallet } from './providers/wallet.provider';
+import { createProviderComponent } from './providers/createProviderComponent';
+
+// The other providers call useWallet so we need to provide it in a higher level
+const WalletProvider = createProviderComponent(() => provideWallet());
 
 /**
  * GLOBAL PROVIDERS
@@ -19,5 +24,7 @@ provideUserData();
 </script>
 
 <template>
-  <App />
+  <WalletProvider>
+    <App />
+  </WalletProvider>
 </template>

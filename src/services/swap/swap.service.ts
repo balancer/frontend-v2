@@ -15,7 +15,7 @@ import ConfigService, { configService } from '@/services/config/config.service';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import { vaultService } from '@/services/contracts/vault.service';
 
-import Web3Service, { web3Service } from '../web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 
 export type Address = string;
 
@@ -34,7 +34,7 @@ export interface SwapToken {
 export default class SwapService {
   constructor(
     private readonly config: ConfigService = configService,
-    private readonly web3: Web3Service = web3Service
+    private readonly walletService = walletServiceInstance
   ) {}
 
   public async batchSwapV2(
@@ -251,7 +251,7 @@ export default class SwapService {
   }
 
   private async getFundManagement(): Promise<FundManagement> {
-    const userAddress = await this.web3.getUserAddress();
+    const userAddress = await this.walletService.getUserAddress();
     const funds: FundManagement = {
       sender: userAddress,
       recipient: userAddress,

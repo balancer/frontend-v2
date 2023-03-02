@@ -1,8 +1,12 @@
+import {
+  getMetamaskConnector,
+  initMetamaskConnector,
+} from '@/dependencies/wallets/metamask';
 import { safeInject } from '@/providers/inject';
 
 import symbolKeys from '@/constants/symbol.keys';
 import { getAddress } from '@ethersproject/address';
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { setTag } from '@sentry/browser';
 import axios from 'axios';
 
@@ -14,8 +18,56 @@ import { networkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { Connector } from '@/services/web3/connectors/connector';
-import { networkMap, Wallet } from '@/services/web3/web3.plugin';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService } from '@/services/web3/wallet.service';
+import { getWeb3Provider } from '@/dependencies/wallets/Web3Provider';
+import { Network } from '@balancer-labs/sdk';
+import {
+  getGnosisConnector,
+  initGnosisConnector,
+} from '@/dependencies/wallets/gnosis';
+import {
+  getTallyConnector,
+  initTallyConnector,
+} from '@/dependencies/wallets/tally';
+import {
+  getWalletLinkConnector,
+  initWalletLinkConnector,
+} from '@/dependencies/wallets/walletlink';
+import {
+  getWalletConnectConnector,
+  initWalletConnectConnector,
+} from '@/dependencies/wallets/walletConnect';
+
+export type Wallet =
+  | 'metamask'
+  | 'walletconnect'
+  | 'gnosis'
+  | 'walletlink'
+  | 'tally';
+
+export const SupportedWallets = [
+  'metamask',
+  'walletconnect',
+  'tally',
+  'gnosis',
+  'walletlink',
+] as Wallet[];
+
+export const WalletNameMap: Record<Wallet, string> = {
+  metamask: 'Metamask',
+  walletconnect: 'WalletConnect',
+  gnosis: 'Gnosis Safe',
+  walletlink: 'Coinbase Wallet',
+  tally: 'Tally',
+};
+
+export const networkMap = {
+  [Network.MAINNET]: 'mainnet',
+  [Network.GOERLI]: 'goerli',
+  [Network.POLYGON]: 'polygon',
+  [Network.ARBITRUM]: 'arbitrum-one',
+  [Network.GNOSIS]: 'gnosis-chain',
+};
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
 type PluginState = {
@@ -62,7 +114,7 @@ export async function verifyNetwork(signer: JsonRpcSigner) {
 
 export const isBlocked = ref(false);
 
-export const web3Connectors = () => {
+export const wallets = () => {
   const { trackGoal, Goals } = useFathom();
   const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
   const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
@@ -92,48 +144,50 @@ export const web3Connectors = () => {
   );
   const signer = computed(() => pluginState.connector?.provider?.getSigner());
   const userProvider = computed(() => {
+    const Web3Provider = getWeb3Provider();
     return new Web3Provider(pluginState.connector.provider as any, 'any'); // https://github.com/ethers-io/ethers.js/issues/866
   });
 
   async function getWalletConnector(wallet: Wallet): Promise<Connector | void> {
+    let Connector: Connector;
     if (wallet === 'metamask') {
-      const { MetamaskConnector } = await import(
-        '@/services/web3/connectors/metamask/metamask.connector'
-      );
-      return new MetamaskConnector(alreadyConnectedAccount.value);
+      await initMetamaskConnector();
+      Connector = getMetamaskConnector();
     }
 
     if (wallet === 'walletconnect') {
-      const { WalletConnectConnector } = await import(
-        '@/services/web3/connectors/trustwallet/walletconnect.connector'
-      );
-      return new WalletConnectConnector(alreadyConnectedAccount.value);
+      await initWalletConnectConnector();
+      Connector = getWalletConnectConnector();
     }
 
     if (wallet === 'gnosis') {
-      const { GnosisSafeConnector } = await import(
-        '@/services/web3/connectors/gnosis/gnosis.connector'
-      );
-      return new GnosisSafeConnector(alreadyConnectedAccount.value);
+      await initGnosisConnector();
+      Connector = getGnosisConnector();
     }
 
     if (wallet === 'walletlink') {
-      const { WalletLinkConnector } = await import(
-        '@/services/web3/connectors/walletlink/walletlink.connector'
-      );
-      return new WalletLinkConnector(alreadyConnectedAccount.value);
+      await initWalletLinkConnector();
+      Connector = getWalletLinkConnector();
     }
 
     if (wallet === 'tally') {
-      const { TallyConnector } = await import(
-        '@/services/web3/connectors/tally/tally.connector'
-      );
-      return new TallyConnector(alreadyConnectedAccount.value);
+      await initTallyConnector();
+      Connector = getTallyConnector();
     }
+    //@ts-ignore
+    return new Connector(alreadyConnectedAccount.value);
   }
 
-  // user supplied web3 provider. i.e. (web3, ethers)
-  const connectWallet = async (wallet: Wallet) => {
+  /**
+
+  @param wallet User supplied web3 provider. i.e. (web3, ethers)
+
+  It can be null because in wallet-provider we use:
+  const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
+  which is typed as any and it could return null
+
+  **/
+  const connectWallet = async (wallet: Wallet | null) => {
     pluginState.walletState = 'connecting';
 
     try {
@@ -164,7 +218,7 @@ export const web3Connectors = () => {
       pluginState.connector = connector;
 
       // Add the new provider to the web3 service
-      web3Service.setUserProvider(userProvider);
+      walletService.setUserProvider(userProvider);
 
       // for when user reloads the app on an already connected wallet
       // need to store address to pre-load that connection
@@ -190,6 +244,7 @@ export const web3Connectors = () => {
         'Cannot disconnect a wallet. No wallet currently connected.'
       );
     }
+
     const connector = pluginState.connector as Connector;
     connector.handleDisconnect();
     pluginState.connector = null;
@@ -215,17 +270,17 @@ export const web3Connectors = () => {
   };
 };
 
-export type Web3Response = ReturnType<typeof web3Connectors>;
-export const Web3ConnectorsProviderSymbol: InjectionKey<Web3Response> = Symbol(
-  symbolKeys.Providers.Web3Connectors
+export type WalletsResponse = ReturnType<typeof wallets>;
+export const WalletsProviderSymbol: InjectionKey<WalletsResponse> = Symbol(
+  symbolKeys.Providers.Wallets
 );
 
-export function provideWeb3Connectors(): Web3Response {
-  const web3 = web3Connectors();
-  provide(Web3ConnectorsProviderSymbol, web3);
-  return web3;
+export function provideWallet(): WalletsResponse {
+  const providedWallets = wallets();
+  provide(WalletsProviderSymbol, providedWallets);
+  return providedWallets;
 }
 
-export const useWeb3Connectors = (): Web3Response => {
-  return safeInject(Web3ConnectorsProviderSymbol);
+export const useWallets = (): WalletsResponse => {
+  return safeInject(WalletsProviderSymbol);
 };

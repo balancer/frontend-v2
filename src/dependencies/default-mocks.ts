@@ -4,6 +4,7 @@ import { initBalancerWithDefaultMocks } from './balancer-sdk.mocks';
 import { initOldMulticallerWithDefaultMocks } from './OldMulticaller.mocks';
 import { initEthersContractWithDefaultMocks } from './EthersContract.mocks';
 import { initMulticallerWithDefaultMocks } from './Multicaller.mocks';
+import { initWalletConnectorsWithDefaultMocks } from './wallets/default-mocks';
 
 export function initDependenciesWithDefaultMocks() {
   initMulticallWithDefaultMocks();
@@ -13,4 +14,5 @@ export function initDependenciesWithDefaultMocks() {
   initOldMulticallerWithDefaultMocks();
   initMulticallerWithDefaultMocks();
   initEthersContractWithDefaultMocks();
+  initWalletConnectorsWithDefaultMocks();
 }
