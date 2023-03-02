@@ -490,7 +490,7 @@ async function getGaugeInfo(
     .filter(({ isKilled }) => isKilled)
     .map(({ address }) => address);
 
-  console.log('\n\nFetching killed gauges relative weight...');
+  console.log('\nFetching killed gauges relative weight...');
   console.time('getGaugeRelativeWeight');
   const killedGaugesWeight = await getGaugeRelativeWeight(killedGaugesList);
   console.timeEnd('getGaugeRelativeWeight');
@@ -500,7 +500,7 @@ async function getGaugeInfo(
       !isKilled || killedGaugesWeight[address] !== '0.0'
   );
 
-  console.log('\n\nFetching voting gauges info...');
+  console.log('\nFetching voting gauges info...');
   console.time('getVotingGauges');
   let votingGauges = await Promise.all(
     validGauges.map(
