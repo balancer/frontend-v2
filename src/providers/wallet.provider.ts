@@ -34,9 +34,9 @@ import {
   initWalletLinkConnector,
 } from '@/dependencies/wallets/walletlink';
 import {
-  getWalletConnectConnector,
-  initWalletConnectConnector,
-} from '@/dependencies/wallets/walletConnect';
+  getWalletconnectConnector,
+  initWalletconnectConnector,
+} from '@/dependencies/wallets/walletconnect';
 
 export type Wallet =
   | 'metamask'
@@ -156,8 +156,8 @@ export const wallets = () => {
     }
 
     if (wallet === 'walletconnect') {
-      await initWalletConnectConnector();
-      Connector = getWalletConnectConnector();
+      await initWalletconnectConnector();
+      Connector = getWalletconnectConnector();
     }
 
     if (wallet === 'gnosis') {

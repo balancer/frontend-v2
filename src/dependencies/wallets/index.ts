@@ -1,11 +1,11 @@
 import { initGnosisConnector } from './gnosis';
 import { initMetamaskConnector } from './metamask';
 import { initTallyConnector } from './tally';
-import { initWalletConnectConnector } from './walletconnect';
+import { initWalletconnectConnector } from './walletconnect';
 import { initWalletLinkConnector } from './walletlink';
 
 export function initWalletConnectors() {
-  initWalletConnectConnector();
+  initWalletconnectConnector();
   initMetamaskConnector();
   initGnosisConnector();
   initWalletLinkConnector();

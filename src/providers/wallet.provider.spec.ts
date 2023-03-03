@@ -5,7 +5,7 @@ import {
   MetamaskConnectorMock,
   tallyAccount,
   TallyConnectorMock,
-  walletConnectAccount,
+  walletconnectAccount,
   WalletConnectConnectorMock,
   walletLinkAccount,
   WalletLinkConnectorMock,
@@ -16,7 +16,7 @@ import {
 import { initGnosisConnectorForTesting } from '@/dependencies/wallets/gnosis';
 import { initMetamaskConnectorForTesting } from '@/dependencies/wallets/metamask';
 import { initTallyConnectorForTesting } from '@/dependencies/wallets/tally';
-import { initWalletConnectConnectorForTesting } from '@/dependencies/wallets/walletConnect';
+import { initWalletconnectConnectorForTesting } from '@/dependencies/wallets/walletconnect';
 import { initWalletLinkConnectorForTesting } from '@/dependencies/wallets/walletlink';
 import { initWeb3Provider } from '@/dependencies/wallets/Web3Provider';
 import { lsGet } from '@/lib/utils';
@@ -114,10 +114,10 @@ describe('Connects to wallet and saves connection in local storage', async () =>
   });
 
   test.only('with walletconnect', async () => {
-    initWalletConnectConnectorForTesting(WalletConnectConnectorMock);
+    initWalletconnectConnectorForTesting(WalletConnectConnectorMock);
     await connectWallet('walletconnect');
 
-    expect(lsGet('connectedWallet')).toBe(walletConnectAccount);
+    expect(lsGet('connectedWallet')).toBe(walletconnectAccount);
     expect(lsGet('connectedProvider')).toBe('walletconnect');
     expect(walletState.value).toBe('connected');
   });

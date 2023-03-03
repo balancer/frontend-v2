@@ -14,7 +14,7 @@ import {
 import { mock } from 'vitest-mock-extended';
 
 export const fakeMetamaskAccount = 'agorer.eth';
-export const walletConnectAccount = 'vicentin.eth';
+export const walletconnectAccount = 'vicentin.eth';
 export const gnosisAccount = 'enjuto-mojamuto.eth';
 export const walletLinkAccount = 'pitikli.eth';
 export const tallyAccount = 'bonicodelto.eth';
@@ -32,7 +32,7 @@ export class WalletConnectConnectorMock extends WalletConnectConnector {
   registerListeners() {}
   // @ts-ignore
   connect() {
-    return Promise.resolve({ account: ref(walletConnectAccount) });
+    return Promise.resolve({ account: ref(walletconnectAccount) });
   }
   handleDisconnect = () => {};
 }

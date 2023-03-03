@@ -1,29 +1,29 @@
 import { handleDependencyError } from '..';
 
-let _walletConnectConnector;
+let _walletconnectConnector;
 
 /**
  * Uses the real walletconnect connector instance by default but allows injecting walletconnect connector mocks from tests
  */
-export async function initWalletConnectConnector() {
-  if (!_walletConnectConnector) {
+export async function initWalletconnectConnector() {
+  if (!_walletconnectConnector) {
     // Lazy load dependency to reduce initial bundle size
     const { WalletConnectConnector } = await import(
       '@/services/web3/connectors/trustwallet/walletconnect.connector'
     );
-    _walletConnectConnector = WalletConnectConnector;
+    _walletconnectConnector = WalletConnectConnector;
   }
 }
 
-export async function initWalletConnectConnectorForTesting(
-  walletConnectConnector
+export async function initWalletconnectConnectorForTesting(
+  walletconnectConnector
 ) {
-  _walletConnectConnector = walletConnectConnector;
+  _walletconnectConnector = walletconnectConnector;
 }
 
-export function getWalletConnectConnector() {
-  if (!_walletConnectConnector) {
-    handleDependencyError('WalletConnectConnector');
+export function getWalletconnectConnector() {
+  if (!_walletconnectConnector) {
+    handleDependencyError('Walletconnect Connector');
   }
-  return _walletConnectConnector;
+  return _walletconnectConnector;
 }
