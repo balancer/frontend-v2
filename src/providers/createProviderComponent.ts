@@ -1,9 +1,9 @@
 import { defineComponent } from 'vue';
 
-export function createProviderComponent(provideCb: () => any) {
+export function createProviderComponent(provider: () => any) {
   return defineComponent({
     setup() {
-      provideCb();
+      provider();
     },
     render() {
       return this.$slots?.default ? this.$slots.default() : [];

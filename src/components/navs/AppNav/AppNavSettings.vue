@@ -57,7 +57,7 @@ const connectorName = computed(() =>
 const connectorLogo = computed(() =>
   getConnectorLogo(connector.value?.id, provider.value)
 );
-const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
+const hideDisconnect = computed(() => connector.value?.id == 'safe');
 
 // METHODS
 function copyAddress() {

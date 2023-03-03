@@ -1,7 +1,7 @@
 import {
   fakeMetamaskAccount,
   gnosisAccount,
-  GnosisConnectorMock,
+  SafeConnectorMock,
   MetamaskConnectorMock,
   tallyAccount,
   TallyConnectorMock,
@@ -123,7 +123,7 @@ describe('Connects to wallet and saves connection in local storage', async () =>
   });
 
   test('with gnosis', async () => {
-    initSafeConnectorForTesting(GnosisConnectorMock);
+    initSafeConnectorForTesting(SafeConnectorMock);
 
     const { connectWallet, walletState } = await mountWalletProvider();
 

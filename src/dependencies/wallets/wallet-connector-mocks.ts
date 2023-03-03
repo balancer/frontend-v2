@@ -37,7 +37,7 @@ export class WalletConnectConnectorMock extends WalletConnectConnector {
   handleDisconnect = () => {};
 }
 
-export class GnosisConnectorMock extends SafeConnector {
+export class SafeConnectorMock extends SafeConnector {
   registerListeners() {}
   // @ts-ignore
   connect() {

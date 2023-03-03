@@ -1,3 +1,4 @@
+import { networkMap } from '@/providers/wallet.provider';
 import {
   getMetamaskConnector,
   initMetamaskConnector,
@@ -41,7 +42,7 @@ import {
 export type Wallet =
   | 'metamask'
   | 'walletconnect'
-  | 'gnosis'
+  | 'safe'
   | 'walletlink'
   | 'tally';
 
@@ -49,14 +50,14 @@ export const SupportedWallets = [
   'metamask',
   'walletconnect',
   'tally',
-  'gnosis',
+  'safe',
   'walletlink',
 ] as Wallet[];
 
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
-  gnosis: 'Gnosis Safe',
+  safe: 'Safe',
   walletlink: 'Coinbase Wallet',
   tally: 'Tally',
 };
@@ -66,12 +67,12 @@ export const networkMap = {
   [Network.GOERLI]: 'goerli',
   [Network.POLYGON]: 'polygon',
   [Network.ARBITRUM]: 'arbitrum-one',
-  [Network.GNOSIS]: 'gnosis-chain',
+  [Network.GNOSIS]: 'safe',
 };
-
+type ValueOf<T> = T[keyof T];
 type WalletState = 'connecting' | 'connected' | 'disconnected';
 type PluginState = {
-  connector: any;
+  connector: ValueOf<networkMap>;
   walletState: WalletState;
 };
 type WalletScreenResponse = { is_blocked: boolean };

@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['close']);
 
-const wallets = ref(SupportedWallets.filter(id => id !== 'gnosis'));
+const wallets = ref(SupportedWallets.filter(id => id !== 'safe'));
 </script>
 
 <template>

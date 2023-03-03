@@ -5,7 +5,7 @@ import { initMetamaskConnectorForTesting } from './metamask';
 import {
   WalletLinkConnectorMock,
   WalletConnectConnectorMock,
-  GnosisConnectorMock,
+  SafeConnectorMock,
   MetamaskConnectorMock,
   TallyConnectorMock,
 } from './wallet-connector-mocks';
@@ -14,7 +14,7 @@ import { initTallyConnectorForTesting } from './tally';
 export function initWalletConnectorsWithDefaultMocks() {
   initWalletconnectConnectorForTesting(WalletConnectConnectorMock);
   initMetamaskConnectorForTesting(MetamaskConnectorMock);
-  initSafeConnectorForTesting(GnosisConnectorMock);
+  initSafeConnectorForTesting(SafeConnectorMock);
   initWalletLinkConnectorForTesting(WalletLinkConnectorMock);
   initTallyConnectorForTesting(TallyConnectorMock);
 }
