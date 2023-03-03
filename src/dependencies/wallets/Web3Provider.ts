@@ -21,5 +21,4 @@ export function getWeb3Provider() {
   return _Web3Provider;
 }
 
-//TODO: EthersWeb3Provider?? (idea of interface implementation)
 export type WalletProvider = Web3Provider;
