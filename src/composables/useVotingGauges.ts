@@ -14,9 +14,11 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import { Pool, PoolToken } from '@/services/pool/types';
 
 export function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
+  const gaugePool = gauge.pool as Pool;
+  gaugePool.tokensList = gauge.pool.tokens.map(token => token.address);
   const sortedTokens = orderedPoolTokens(
-    gauge.pool as Pool,
-    gauge.pool.tokens as PoolToken[]
+    gaugePool,
+    gaugePool.tokens as PoolToken[]
   );
   return sortedTokens.map(
     token => gauge.tokenLogoURIs[token?.address || ''] || ''
