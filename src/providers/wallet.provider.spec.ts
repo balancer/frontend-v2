@@ -13,7 +13,7 @@ import {
 } from './../dependencies/wallets/wallet-connector-mocks';
 /* eslint-disable @typescript-eslint/no-empty-function */
 // eslint-disable-next-line no-restricted-imports
-import { initGnosisConnectorForTesting } from '@/dependencies/wallets/gnosis';
+import { initSafeConnectorForTesting } from '@/dependencies/wallets/safe';
 import { initMetamaskConnectorForTesting } from '@/dependencies/wallets/metamask';
 import { initTallyConnectorForTesting } from '@/dependencies/wallets/tally';
 import { initWalletconnectConnectorForTesting } from '@/dependencies/wallets/walletconnect';
@@ -123,7 +123,7 @@ describe('Connects to wallet and saves connection in local storage', async () =>
   });
 
   test('with gnosis', async () => {
-    initGnosisConnectorForTesting(GnosisConnectorMock);
+    initSafeConnectorForTesting(GnosisConnectorMock);
 
     const { connectWallet, walletState } = await mountWalletProvider();
 

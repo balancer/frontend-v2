@@ -1,6 +1,6 @@
 import { initWalletconnectConnectorForTesting } from '@/dependencies/wallets/walletconnect';
 import { initWalletLinkConnectorForTesting } from '@/dependencies/wallets/walletlink';
-import { initGnosisConnectorForTesting } from '@/dependencies/wallets/gnosis';
+import { initSafeConnectorForTesting } from '@/dependencies/wallets/safe';
 import { initMetamaskConnectorForTesting } from './metamask';
 import {
   WalletLinkConnectorMock,
@@ -14,7 +14,7 @@ import { initTallyConnectorForTesting } from './tally';
 export function initWalletConnectorsWithDefaultMocks() {
   initWalletconnectConnectorForTesting(WalletConnectConnectorMock);
   initMetamaskConnectorForTesting(MetamaskConnectorMock);
-  initGnosisConnectorForTesting(GnosisConnectorMock);
+  initSafeConnectorForTesting(GnosisConnectorMock);
   initWalletLinkConnectorForTesting(WalletLinkConnectorMock);
   initTallyConnectorForTesting(TallyConnectorMock);
 }

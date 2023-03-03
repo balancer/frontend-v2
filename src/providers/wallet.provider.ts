@@ -22,9 +22,9 @@ import { walletService } from '@/services/web3/wallet.service';
 import { getWeb3Provider } from '@/dependencies/wallets/Web3Provider';
 import { Network } from '@balancer-labs/sdk';
 import {
-  getGnosisConnector,
-  initGnosisConnector,
-} from '@/dependencies/wallets/gnosis';
+  getSafeConnector,
+  initSafeConnector,
+} from '@/dependencies/wallets/safe';
 import {
   getTallyConnector,
   initTallyConnector,
@@ -161,8 +161,8 @@ export const wallets = () => {
     }
 
     if (wallet === 'gnosis') {
-      await initGnosisConnector();
-      Connector = getGnosisConnector();
+      await initSafeConnector();
+      Connector = getSafeConnector();
     }
 
     if (wallet === 'walletlink') {

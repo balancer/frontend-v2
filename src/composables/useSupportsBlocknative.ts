@@ -1,4 +1,4 @@
-import { Network } from '@/lib/balancer-types.sdk';
+import { Network } from '@balancer-labs/sdk';
 import { computed } from 'vue';
 
 import useWeb3 from '@/services/web3/useWeb3';

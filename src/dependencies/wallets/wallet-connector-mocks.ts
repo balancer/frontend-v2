@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 // eslint-disable-next-line no-restricted-imports
-import { GnosisSafeConnector } from '@/services/web3/connectors/gnosis/gnosis.connector';
+import { SafeConnector } from '@/services/web3/connectors/gnosis/gnosis.connector';
 import { MetamaskConnector } from '@/services/web3/connectors/metamask/metamask.connector';
 import { TallyConnector } from '@/services/web3/connectors/tally/tally.connector';
 import { WalletConnectConnector } from '@/services/web3/connectors/trustwallet/walletconnect.connector';
@@ -37,7 +37,7 @@ export class WalletConnectConnectorMock extends WalletConnectConnector {
   handleDisconnect = () => {};
 }
 
-export class GnosisConnectorMock extends GnosisSafeConnector {
+export class GnosisConnectorMock extends SafeConnector {
   registerListeners() {}
   // @ts-ignore
   connect() {
