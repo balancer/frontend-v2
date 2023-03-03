@@ -148,11 +148,11 @@ function symbolFor(token: PoolToken): string {
 }
 
 .level-1 {
-  @apply pl-4;
+  @apply pl-4 z-20;
 }
 
 .level-2 {
-  @apply pl-12;
+  @apply pl-12 z-10;
 }
 
 .level-3 {
