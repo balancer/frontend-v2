@@ -108,19 +108,19 @@ function symbolFor(token: PoolToken): string {
     <div class="justify-self-end">
       {{ tokenData.getTokenPercentageLabel() }}
     </div>
-  </div>
 
-  <template v-if="isDeepPool">
-    <TokenBreakdown
-      v-for="nestedToken in token.token?.pool?.tokens"
-      :key="nestedToken.address"
-      :token="nestedToken"
-      :parentLevel="currentLevel"
-      :showUserShares="showUserShares"
-      :rootPool="rootPool"
-      :tokensData="tokensData"
-    />
-  </template>
+    <template v-if="isDeepPool">
+      <TokenBreakdown
+        v-for="nestedToken in token.token?.pool?.tokens"
+        :key="nestedToken.address"
+        :token="nestedToken"
+        :parentLevel="currentLevel"
+        :showUserShares="showUserShares"
+        :rootPool="rootPool"
+        :tokensData="tokensData"
+      />
+    </template>
+  </div>
 </template>
 <style scoped>
 .nested-token {
