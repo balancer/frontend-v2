@@ -127,7 +127,7 @@ describe('Connects to wallet and saves connection in local storage', async () =>
 
     const { connectWallet, walletState } = await mountWalletProvider();
 
-    await connectWallet('gnosis');
+    await connectWallet('safe');
 
     expect(lsGet('connectedWallet')).toBe(gnosisAccount);
     expect(lsGet('connectedProvider')).toBe('gnosis');

@@ -67,8 +67,7 @@ export class ContractConcern extends TransactionConcern {
 
       trackGoal(Goals.ContractTransactionSubmitted);
 
-      const result = await contractWithSigner[action](...params, txOptions);
-      return result;
+      return await contractWithSigner[action](...params, txOptions);
     } catch (err) {
       const error = err as WalletError;
 

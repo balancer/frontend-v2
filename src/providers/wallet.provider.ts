@@ -1,4 +1,3 @@
-import { networkMap } from '@/providers/wallet.provider';
 import {
   getMetamaskConnector,
   initMetamaskConnector,
@@ -67,12 +66,12 @@ export const networkMap = {
   [Network.GOERLI]: 'goerli',
   [Network.POLYGON]: 'polygon',
   [Network.ARBITRUM]: 'arbitrum-one',
-  [Network.GNOSIS]: 'safe',
+  [Network.GNOSIS]: 'gnosis-chain',
 };
-type ValueOf<T> = T[keyof T];
+
 type WalletState = 'connecting' | 'connected' | 'disconnected';
 type PluginState = {
-  connector: ValueOf<networkMap>;
+  connector: any;
   walletState: WalletState;
 };
 type WalletScreenResponse = { is_blocked: boolean };
@@ -161,7 +160,7 @@ export const wallets = () => {
       Connector = getWalletconnectConnector();
     }
 
-    if (wallet === 'gnosis') {
+    if (wallet === 'safe') {
       await initSafeConnector();
       Connector = getSafeConnector();
     }
