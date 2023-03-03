@@ -145,7 +145,9 @@ export default defineConfig(({ mode }) => {
         // https://github.com/jest-community/jest-extended/tree/main/examples/typescript/all
         'jest-extended/all',
       ],
-      coverage: { reporter: ['text', 'lcov'] }, // lcov reporter is used by IDE coverage extensions
+      coverage: {
+        reporter: process.env.SILENT_TESTS ? ['lcov'] : ['text', 'lcov'],
+      }, // lcov reporter is used by IDE coverage extensions
       include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
   };

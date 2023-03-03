@@ -2,6 +2,7 @@ import {
   PoolStakingProviderResponse,
   PoolStakingProviderSymbol,
 } from '@/providers/local/pool-staking.provider';
+import { wallets, WalletsProviderSymbol } from '@/providers/wallet.provider';
 import { render, RenderOptions } from '@testing-library/vue';
 import { RouterLinkStub } from '@vue/test-utils';
 import { mergeWith } from 'lodash';
@@ -11,6 +12,7 @@ import { registerTestPlugins } from './registerTestPlugins';
 const DefaultTestPlugins = {
   install(app) {
     registerTestPlugins(app);
+    app.provide(WalletsProviderSymbol, wallets());
     app.provide(PoolStakingProviderSymbol, {
       stakedShares: computed(() => '1000'),
     } as PoolStakingProviderResponse);

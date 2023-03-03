@@ -3,7 +3,7 @@ import { formatUnits } from '@ethersproject/units';
 import TokenAdminAbi from '@/lib/abi/TokenAdmin.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class BalancerTokenAdmin {
@@ -12,7 +12,7 @@ export class BalancerTokenAdmin {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = TokenAdminAbi,
     private readonly config = configService,
-    private readonly web3 = web3Service
+    private readonly walletService = walletServiceInstance
   ) {}
 
   async getInflationRate() {

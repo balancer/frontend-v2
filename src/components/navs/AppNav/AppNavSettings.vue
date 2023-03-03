@@ -6,12 +6,10 @@ import Avatar from '@/components/images/Avatar.vue';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import { ethereumTxTypeOptions } from '@/constants/options';
 import useWeb3 from '@/services/web3/useWeb3';
-import {
-  getConnectorLogo,
-  getConnectorName,
-} from '@/services/web3/web3.plugin';
 import { shorten } from '@/lib/utils';
 import useDarkMode from '@/composables/useDarkMode';
+import { getConnectorLogo } from '@/services/web3/wallet-logos';
+import { getConnectorName } from '@/services/web3/wallet-names';
 
 // COMPOSABLES
 const { darkMode, setDarkMode } = useDarkMode();
@@ -59,7 +57,7 @@ const connectorName = computed(() =>
 const connectorLogo = computed(() =>
   getConnectorLogo(connector.value?.id, provider.value)
 );
-const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
+const hideDisconnect = computed(() => connector.value?.id == 'safe');
 
 // METHODS
 function copyAddress() {
