@@ -21,7 +21,7 @@
       "@/*": ["src/*"],
       "@tests/*": ["tests/*"],
       // Stubbing vue-slider-component to ignore type errors from that module
-      "vue-slider-component": ["/src/types/vue-slider-component-stub.d.ts"],
+      "vue-slider-component": ["./src/types/vue-slider-component-stub.d.ts"],
       "button-options": ["./src/components/_global/BalBtn/button-options.js"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
