@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 
 import { toJsTimestamp } from '@/composables/useTime';
 import { PoolSwap } from '@/services/pool/types';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService } from '@/services/web3/wallet.service';
 import { QueryBuilder } from '@/types/subgraph';
 
 import Service from '../../balancer-subgraph.service';
@@ -27,11 +27,11 @@ export default class PoolSwaps {
   public async swaprDecoration(swaps: PoolSwap[]): Promise<PoolSwap[]> {
     const ensData = await Promise.all(
       swaps.map(async (poolSwap: PoolSwap) => {
-        const ensName = await web3Service.getEnsName(poolSwap.userAddress.id);
+        const ensName = await walletService.getEnsName(poolSwap.userAddress.id);
         let ensAvatar: null | string = null;
 
         if (ensName) {
-          ensAvatar = await web3Service.getEnsAvatar(ensName);
+          ensAvatar = await walletService.getEnsAvatar(ensName);
         }
 
         return {

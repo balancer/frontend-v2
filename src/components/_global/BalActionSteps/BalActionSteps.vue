@@ -127,7 +127,7 @@ const actions = computed((): TransactionAction[] => {
 });
 
 const currentAction = computed(
-  (): TransactionAction => actions.value[currentActionIndex.value]
+  (): TransactionAction | undefined => actions.value[currentActionIndex.value]
 );
 
 const currentActionState = computed(
@@ -173,7 +173,7 @@ async function submit(
     state.init = false;
     state.confirming = true;
 
-    if (currentAction.value.isSignAction) {
+    if (currentAction.value?.isSignAction) {
       handleSignAction(state);
       return;
     }
@@ -258,17 +258,17 @@ async function handleTransaction(
               : currentAction?.loadingLabel
           "
           block
-          @click="currentAction.promise()"
+          @click="currentAction?.promise()"
         >
           <div
             :class="{
               'flex grow justify-between items-center':
-                currentAction.isSignAction,
+                currentAction?.isSignAction,
             }"
           >
-            <img v-if="currentAction.isSignAction" :src="signature" />
+            <img v-if="currentAction?.isSignAction" :src="signature" />
             {{ currentAction?.label }}
-            <div v-if="currentAction.isSignAction" class="w-8"></div>
+            <div v-if="currentAction?.isSignAction" class="w-8"></div>
           </div>
         </BalBtn>
       </BalStack>

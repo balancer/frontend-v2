@@ -37,6 +37,8 @@ import {
 } from 'vue';
 import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
+import { useApp } from '@/composables/useApp';
 
 /**
  * TYPES
@@ -61,6 +63,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
+  const approvalActions = ref<TransactionActionInfo[]>([]);
   const isSingleAssetJoin = ref<boolean>(false);
 
   const debounceQueryJoin = debounce(queryJoin, 1000);
@@ -97,6 +100,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
+  const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
@@ -186,8 +190,15 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
 
-  const approvalActions = computed((): TransactionActionInfo[] =>
-    shouldSignRelayer.value ? [relayerApprovalAction.value] : []
+  const tokensToApprove = computed(() => {
+    return amountsIn.value.map(amountIn => amountIn.address);
+  });
+  const amountsToApprove = computed(() => {
+    return amountsIn.value.map(amountIn => amountIn.value);
+  });
+  const { getTokenApprovalActions } = useTokenApprovalActions(
+    tokensToApprove,
+    amountsToApprove
   );
 
   const isLoadingQuery = computed(
@@ -241,6 +252,14 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     queryJoinQuery.remove();
   }
 
+  // Updates the approval actions like relayer approval and token approvals.
+  function setApprovalActions() {
+    const tokenApprovalActions = getTokenApprovalActions();
+    approvalActions.value = shouldSignRelayer.value
+      ? [relayerApprovalAction.value, ...tokenApprovalActions]
+      : tokenApprovalActions;
+  }
+
   /**
    * Simulate join transaction to get expected output and calculate price impact.
    */
@@ -254,6 +273,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
 
     try {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      setApprovalActions();
 
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
@@ -261,6 +281,9 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
         prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
+        relayerSignature: relayerSignature.value,
+        approvalActions: approvalActions.value,
+        transactionDeadline,
       });
 
       bptOut.value = output.bptOut;
@@ -280,6 +303,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     try {
       txError.value = '';
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      setApprovalActions();
 
       return joinPoolService.join({
         amountsIn: amountsInWithValue.value,
@@ -288,6 +312,8 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
+        approvalActions: approvalActions.value,
+        transactionDeadline,
       });
     } catch (error) {
       txError.value = (error as Error).message;

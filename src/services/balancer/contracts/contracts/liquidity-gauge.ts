@@ -9,7 +9,7 @@ import { mapValues } from 'lodash';
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 const MAX_REWARD_TOKENS = 8;
@@ -30,13 +30,13 @@ export class LiquidityGauge {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = LiquidityGaugeAbi,
     private readonly config = configService,
-    private readonly web3 = web3Service
+    private readonly walletService = walletServiceInstance
   ) {
     this.instance = new Contract(this.address, this.abi, this.provider);
   }
 
   async stake(amount: BigNumber): Promise<TransactionResponse> {
-    return await this.web3.txBuilder.contract.sendTransaction({
+    return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'deposit(uint256)',
@@ -45,7 +45,7 @@ export class LiquidityGauge {
   }
 
   async unstake(amount: BigNumber): Promise<TransactionResponse> {
-    return await this.web3.txBuilder.contract.sendTransaction({
+    return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'withdraw(uint256)',
@@ -66,7 +66,7 @@ export class LiquidityGauge {
    * @summary Claim all user's reward tokens, e.g. everything that's not BAL
    */
   async claimRewards(): Promise<TransactionResponse> {
-    return await this.web3.txBuilder.contract.sendTransaction({
+    return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'claim_rewards()',

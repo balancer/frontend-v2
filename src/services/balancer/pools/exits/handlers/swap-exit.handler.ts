@@ -51,7 +51,8 @@ export class SwapExitHandler implements ExitPoolHandler {
       swaps,
       assets,
       funds,
-      limits as string[]
+      limits as string[],
+      params.transactionDeadline
     );
   }
 
