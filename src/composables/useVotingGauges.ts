@@ -12,10 +12,12 @@ import { isGoerli } from './useNetwork';
 import { orderedPoolTokens } from '@/composables/usePool';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { Pool, PoolToken } from '@/services/pool/types';
+import { cloneDeep } from 'lodash';
 
 export function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const gaugePool = gauge.pool as Pool;
+  const gaugePool = cloneDeep(gauge.pool as Pool);
   gaugePool.tokensList = gauge.pool.tokens.map(token => token.address);
+
   const sortedTokens = orderedPoolTokens(
     gaugePool,
     gaugePool.tokens as PoolToken[]
