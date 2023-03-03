@@ -1,6 +1,6 @@
 {
-  "name": "@balancer-labs/frontend-v2",
-  "version": "1.91.11",
+  "name": "@balancer/frontend-v2",
+  "version": "1.91.16",
   "engines": {
     "node": "=16",
     "npm": ">=8"
@@ -19,6 +19,7 @@
     "test:unit": "NODE_ENV=test vitest",
     "test:unit:watch": "NODE_ENV=test vitest -- --watch",
     "test:unit:coverage": "vitest --coverage",
+    "test:unit:silent:coverage": "SILENT_TESTS=true vitest --coverage",
     "lint": "eslint . --ext .js,.ts,.vue --max-warnings 0",
     "lint:fix": "npm run lint -- --fix",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
@@ -151,5 +152,5 @@
     "*.{css,vue}": "stylelint --fix"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2"
+  "repository": "balancer/frontend-v2"
 }

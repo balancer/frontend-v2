@@ -86,7 +86,7 @@ const socialLinks = {
   },
 
   GithubIcon: {
-    url: 'https://github.com/balancer-labs/',
+    url: 'https://github.com/balancer/',
     component: GithubIcon,
   },
 };
@@ -187,7 +187,7 @@ watch(blockNumber, async () => {
         </span>
       </div>
       <BalLink
-        :href="`https://github.com/balancer-labs/frontend-v2/releases/tag/${version}`"
+        :href="`https://github.com/balancer/frontend-v2/releases/tag/${version}`"
         class="flex items-center mt-2 text-gray-300"
         external
         noStyle

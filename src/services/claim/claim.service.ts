@@ -1,5 +1,7 @@
 import { getAddress } from '@ethersproject/address';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
+
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { chunk, flatten } from 'lodash';
@@ -90,7 +92,7 @@ export class ClaimService {
     };
   }
   public async multiTokenClaimRewards(
-    provider: Web3Provider,
+    provider: WalletProvider,
     account: string,
     multiTokenPendingClaims: MultiTokenPendingClaims[]
   ): Promise<TransactionResponse> {

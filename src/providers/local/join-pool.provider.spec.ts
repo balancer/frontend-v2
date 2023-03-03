@@ -23,6 +23,8 @@ async function mountJoinPoolProvider(pool: Pool) {
   return result;
 }
 
+// These tests are throwing an unhandled error:
+// TODO: review that error when we decide to complete the suite
 test('Throws error for weighted pools', async () => {
   let expectedError: Error = Error();
   try {

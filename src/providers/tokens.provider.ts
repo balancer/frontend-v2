@@ -169,7 +169,7 @@ export const tokensProvider = (
   const {
     data: balanceData,
     isSuccess: balanceQuerySuccess,
-    isLoading: balanceQueryLoading,
+    isInitialLoading: balanceQueryLoading,
     isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,

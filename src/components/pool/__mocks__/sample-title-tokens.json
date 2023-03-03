@@ -7,7 +7,7 @@
       "weight": 0.5,
       "symbol": "rETH",
       "name": "Rocket Pool ETH",
-      "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xae78736cd615f374d3085123a210448e74fc6393.png"
+      "logoURI": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xae78736cd615f374d3085123a210448e74fc6393.png"
     }
   ],
   [
@@ -18,7 +18,7 @@
       "weight": 0.5,
       "symbol": "RPL",
       "name": "Rocket Pool Protocol",
-      "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xd33526068d116ce69f19a9ee46f0bd304f21a51f.png"
+      "logoURI": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xd33526068d116ce69f19a9ee46f0bd304f21a51f.png"
     }
   ]
 ]
