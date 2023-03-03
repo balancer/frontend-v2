@@ -10,6 +10,7 @@ import {
   MyPoolBalancesCard,
   PoolCompositionCard,
   PoolContractDetails,
+  PoolDeprecatedWarning,
 } from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/staking/StakingIncentivesCard.vue';
 import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
@@ -22,10 +23,10 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
-  removeBptFrom,
   usePool,
   tokensListExclBpt,
   tokenTreeLeafs,
+  orderedPoolTokens,
 } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
@@ -35,6 +36,7 @@ import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
+import metaService from '@/services/meta/meta.service';
 
 /**
  * STATE
@@ -69,6 +71,7 @@ const {
   isStableLikePool,
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
+  isDeprecatedPool,
 } = usePool(poolQuery.data);
 //#endregion
 
@@ -155,10 +158,8 @@ const missingPrices = computed(() => {
 
 const titleTokens = computed<PoolToken[]>(() => {
   if (!pool.value || !pool.value.tokens) return [];
-  const { tokens } = removeBptFrom(pool.value);
-  if (!tokens) return [];
 
-  return [...tokens].sort((a, b) => Number(b.weight) - Number(a.weight));
+  return orderedPoolTokens(pool.value, pool.value.tokens);
 });
 
 const isStakablePool = computed((): boolean =>
@@ -192,6 +193,15 @@ watch(poolQuery.error, () => {
     removeAlert('pool-fetch-error');
   }
 });
+
+watch(
+  () => pool.value,
+  () => {
+    if (pool.value) {
+      metaService.setMeta(route, pool.value);
+    }
+  }
+);
 </script>
 
 <template>
@@ -271,6 +281,11 @@ watch(poolQuery.error, () => {
         v-else-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
+        <PoolDeprecatedWarning
+          v-if="pool && isWalletReady && isDeprecatedPool"
+          :pool="pool"
+        />
+
         <BalStack vertical>
           <BalLoadingBlock
             v-if="loadingPool || !pool"

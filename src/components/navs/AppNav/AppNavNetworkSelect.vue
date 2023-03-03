@@ -119,7 +119,13 @@ watch(chainId, (newChainId, oldChainId) => {
 
 // METHODS
 function getNetworkChangeUrl(network: NetworkOption): string {
-  const routes = ['pool', 'create-pool', 'invest', 'withdraw', 'migrate-pool'];
+  const routes = [
+    'pool',
+    'create-pool',
+    'add-liquidity',
+    'withdraw',
+    'migrate-pool',
+  ];
   if (routes.includes(router.currentRoute.value.name?.toString() ?? '')) {
     return `/#/${network.networkSlug}?poolNetworkAlert=true`;
   }

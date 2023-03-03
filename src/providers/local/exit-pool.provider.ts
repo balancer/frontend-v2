@@ -56,6 +56,7 @@ import { useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
+import { useApp } from '@/composables/useApp';
 
 /**
  * TYPES
@@ -102,6 +103,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   const { toFiat } = useNumbers();
   const { injectTokens, getTokens, prices, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
+  const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
@@ -349,6 +351,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        transactionDeadline,
       });
 
       priceImpact.value = output.priceImpact;
@@ -392,6 +395,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
         relayerSignature: '',
+        transactionDeadline: transactionDeadline,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -421,6 +425,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
         relayerSignature: relayerSignature.value,
+        transactionDeadline: transactionDeadline,
       });
     } catch (error) {
       txError.value = (error as Error).message;
@@ -506,6 +511,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     exitTokenInfo,
     queryExitQuery,
     approvalActions,
+    transactionDeadline,
 
     // methods
     setIsSingleAssetExit,

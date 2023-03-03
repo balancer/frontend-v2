@@ -342,7 +342,6 @@
   "delegateFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every swap utilizing the liquidity in this pool. Control has been delegated to the community, so fees could change in the future if this pool becomes actively managed.",
   "depositing": "depositing",
   "details": "Details",
-  "deprecatedPool": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
   "disconnect": "Disconnect",
   "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <span class='font-semibold'>{0}</span>",
   "docs": "Docs",
@@ -368,10 +367,22 @@
   "featuredProtocol": "Featured ecosystem protocol",
   "featuredProtocols": {
     "title": "Featured ecosystem protocols",
-    "Copper": "Fjord (formerly known as Copper Launch) is a community platform that connects inspired projects with passionate supporters via the power of Liquidity Bootstrapping Pools (LBPs).",
-    "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
-    "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
-    "Tracer": "Mycelium (formerly TracerDAO) is an open-source protocol for derivative markets. It utilizes Balancer for aggregated liquidity and creating a market for leveraged tokens."
+    "Copper": {
+      "description": "Fjord (formerly known as Copper Launch) is a community platform that connects inspired projects with passionate supporters via the power of Liquidity Bootstrapping Pools (LBPs).",
+      "linkText": "Fjord Foundry website"
+    },
+    "Element": {
+      "description": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
+      "linkText": "Element Finance website"
+    },
+    "Sense": {
+      "description": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
+      "linkText": "Sense Finance website"
+    },
+    "Tracer": {
+      "description": "Mycelium (formerly TracerDAO) is an open-source protocol for derivative markets. It utilizes Balancer for aggregated liquidity and creating a market for leveraged tokens.",
+      "linkText": "Mycelium website"
+    }
   },
   "fees": "fees",
   "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every swap utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
@@ -422,6 +433,17 @@
   "goToMigratedPool": "Go to migrated pool",
   "governance": "Governance",
   "grants": "Grants",
+  "deprecatedPool": {
+    "tooltip": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
+    "hasNewPool": {
+      "title": "Move your liquidity for future BAL incentives",
+      "description": "Liquidity mining incentives are being phased out for this pool, since the upgraded pool is now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the"
+    },
+    "generic": {
+      "title": "Move your liquidity for future BAL incentives",
+      "description": "Liquidity mining incentives are being phased out for this pool, since upgraded pools are now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the newly incentivized pools."
+    }
+  },
   "highPriceImpact": "High price impact",
   "highPriceImpactDetailed": "This swap is significantly moving the market price.",
   "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Foundation is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
@@ -429,6 +451,7 @@
   "hourAbbrev": "h",
   "incentives": "incentives",
   "incentiveToken": "Incentive token",
+  "incentivizedPool": "incentivized pool",
   "inclXInVeBal": "{0} in veBAL",
   "initialBPT": "Initial BPT",
   "initialWeight": "Initial weight",
