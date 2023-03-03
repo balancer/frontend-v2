@@ -30,7 +30,7 @@ const { isAffectedBy } = usePoolWarning(poolId);
  */
 const warningLabel = computed((): string => {
   if (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id)) {
-    return t('deprecatedPool');
+    return t('deprecatedPool.tooltip');
   }
 
   if (isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning)) {

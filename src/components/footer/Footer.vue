@@ -205,11 +205,12 @@
               </router-link>
             </p>
             <p>
-              <a
-                class="policy"
+              <span
+                class="cursor-pointer policy"
                 @click="isThirdPartyServicesModalVisible = true"
-                >{{ $t('policies.thirdPartyServices') }}</a
               >
+                {{ $t('policies.thirdPartyServices') }}
+              </span>
             </p>
           </div>
         </div>

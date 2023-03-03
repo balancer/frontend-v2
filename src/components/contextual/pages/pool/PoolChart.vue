@@ -400,7 +400,7 @@ function setCurrentChartValue(payload: {
 }) {
   currentChartValue.value.num = fNum(payload.chartValue, {
     style: 'currency',
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
     fixedFormat: true,
   });
   currentChartValue.value.isNegative = payload.chartValue < 0;
