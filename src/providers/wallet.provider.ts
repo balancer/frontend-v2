@@ -275,7 +275,7 @@ export const WalletsProviderSymbol: InjectionKey<WalletsResponse> = Symbol(
   symbolKeys.Providers.Wallets
 );
 
-export function provideWallet(): WalletsResponse {
+export function provideWallets(): WalletsResponse {
   const providedWallets = wallets();
   provide(WalletsProviderSymbol, providedWallets);
   return providedWallets;
