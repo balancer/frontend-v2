@@ -62,7 +62,7 @@ const fiatTotal = computed((): string =>
       <BalLink
         tag="router-link"
         :to="{
-          name: 'invest',
+          name: 'add-liquidity',
           params: { networkSlug, id: lockablePool.id },
         }"
         external
