@@ -1,3 +1,4 @@
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import {
   FundManagement,
   SingleSwap,
@@ -6,7 +7,6 @@ import {
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 
-import { initEthersContract } from '@/dependencies/EthersContract';
 import { walletService } from '@/services/web3/wallet.service';
 import { configService } from '../config/config.service';
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
@@ -18,16 +18,7 @@ walletService.setUserProvider(ref(walletProviderMock));
 
 const vaultService = new VaultService(configService, walletService);
 
-class EthersContractWithSignerMock {
-  estimateGas = {
-    swap: () => Promise.resolve(BigNumber.from(2)),
-    batchSwap: () => Promise.resolve(BigNumber.from(1)),
-  };
-  batchSwap = vi.fn();
-  swap = vi.fn();
-}
-
-initEthersContract(EthersContractWithSignerMock);
+initEthersContractWithDefaultMocks();
 
 const userAddress = '0xAAA00fB39c06E7b41bEdFf8A6a4e013666141d40';
 

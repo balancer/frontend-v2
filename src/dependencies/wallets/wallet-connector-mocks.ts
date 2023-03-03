@@ -20,17 +20,12 @@ export const walletLinkAccount = 'pitikli.eth';
 export const tallyAccount = 'bonicodelto.eth';
 
 export class MetamaskConnectorMock extends MetamaskConnector {
-  registerListeners() {
-    console.log('Registering listeners');
-  }
+  registerListeners() {}
   // @ts-ignore
   connect() {
     return Promise.resolve({ account: ref(fakeMetamaskAccount) });
   }
-  // Extending connector (super) member function:
-  handleDisconnect = () => {
-    console.log('Disconnecting');
-  };
+  handleDisconnect = () => {};
 }
 
 export class WalletConnectConnectorMock extends WalletConnectConnector {

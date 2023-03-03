@@ -9,7 +9,7 @@ import { AddressZero } from '@ethersproject/constants';
 
 import { configService } from '@/services/config/config.service';
 
-import { initEthersContract } from '@/dependencies/EthersContract';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import { vaultService } from '@/services/contracts/vault.service';
 import { walletService } from '@/services/web3/wallet.service';
@@ -23,18 +23,9 @@ import SwapService, { SwapToken, SwapTokenType } from './swap.service';
 vi.mock('@/lib/utils/balancer/lido');
 vi.mock('@/services/contracts/lido-relayer.service');
 
-class EthersContractWithSignerMock {
-  estimateGas = {
-    swap: () => Promise.resolve(BigNumber.from(2)),
-    batchSwap: () => Promise.resolve(BigNumber.from(1)),
-  };
-  batchSwap = vi.fn();
-  swap = vi.fn();
-}
+initEthersContractWithDefaultMocks();
 
-initEthersContract(EthersContractWithSignerMock);
-
-walletService.setUserProvider(ref(walletProviderMock));
+walletService.setUserProvider(computed(() => walletProviderMock));
 
 describe('swap.service', () => {
   const tokens: Record<string, SwapToken> = {};

@@ -1,6 +1,6 @@
 import { initEthersContract } from '@/dependencies/EthersContract';
+import { MockedContractWithSigner } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
-import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractConcern } from './concerns/contract.concern';
@@ -46,19 +46,14 @@ vi.mock('ethers', () => {
 
 const contractActionMock = vi.fn(() => 1e5);
 
-// TODO: Extract to mock file with defaults
-class EthersContractWithSignerMock {
-  estimateGas = {
-    swap: () => Promise.resolve(BigNumber.from(2)),
-    batchSwap: () => Promise.resolve(BigNumber.from(1)),
-  };
+class ContractMock extends MockedContractWithSigner {
   test = contractActionMock;
-  batchSwap = vi.fn();
-  swap = vi.fn();
 }
 
 initOldMulticallerWithDefaultMocks();
-initEthersContract(EthersContractWithSignerMock);
+
+//@ts-ignore
+initEthersContract(ContractMock);
 
 const SignerMock = JsonRpcSigner;
 
