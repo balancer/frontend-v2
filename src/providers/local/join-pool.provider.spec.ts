@@ -1,6 +1,5 @@
 import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import { Pool } from '@/services/pool/types';
-import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposable } from '@tests/mount-helpers';
 import { ref } from 'vue';
@@ -35,10 +34,4 @@ test('Throws error for weighted pools', async () => {
   }
 
   expect(expectedError.message).toStartWith('Pool type not handled:');
-});
-
-test('TBD', async () => {
-  const { amountsIn } = await mountJoinPoolProvider(BoostedPoolMock);
-
-  expect(amountsIn.value).toEqual([]);
 });

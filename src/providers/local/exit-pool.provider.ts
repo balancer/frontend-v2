@@ -351,6 +351,9 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
+        relayerSignature: relayerSignature.value,
         transactionDeadline,
       });
 
@@ -394,7 +397,9 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        relayerSignature: '',
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
+        relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline,
       });
       const newMax =
@@ -424,6 +429,8 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline,
       });

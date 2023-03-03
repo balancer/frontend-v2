@@ -49,6 +49,8 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     signer,
     slippageBsp,
     relayerSignature,
+    approvalActions,
+    bptInValid,
   }: ExitParams): Promise<QueryOutput> {
     const evmAmountIn = parseFixed(
       bptIn || '0',
@@ -60,15 +62,30 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
 
-    this.lastExitRes = await balancer.pools.generalisedExit(
-      this.pool.value.id,
-      evmAmountIn.toString(),
-      signerAddress,
-      slippage,
-      signer,
-      SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
-      relayerSignature
-    );
+    // Static call simulation is more accurate than VaultModel, but requires relayer approval and
+    // account to have enough BPT balance
+    const simulationType: SimulationType =
+      bptInValid && !approvalActions.length
+        ? SimulationType.Static
+        : SimulationType.VaultModel;
+
+    console.log({ simulationType });
+
+    this.lastExitRes = await balancer.pools
+      .generalisedExit(
+        this.pool.value.id,
+        evmAmountIn.toString(),
+        signerAddress,
+        slippage,
+        signer,
+        simulationType,
+        relayerSignature
+      )
+      .catch(err => {
+        console.error(err);
+        throw new Error('Failed to query exit.');
+      });
+
     if (!this.lastExitRes) throw new Error('Failed to query exit.');
 
     const priceImpact: number = bnum(

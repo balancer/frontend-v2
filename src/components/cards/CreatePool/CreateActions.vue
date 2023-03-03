@@ -56,8 +56,8 @@ const { explorerLinks } = useWeb3();
 const { networkConfig } = useConfig();
 const { isTxConfirmed } = useEthers();
 const { fetchTokenApprovalActions } = useTokenApprovalActions(
-  props.tokenAddresses,
-  ref(props.amounts)
+  toRef(props, 'tokenAddresses'),
+  toRef(props, 'amounts')
 );
 const {
   createPool,
@@ -70,9 +70,6 @@ const {
 } = usePoolCreation();
 const { networkSlug } = useNetwork();
 
-/**
- * COMPUTED
- */
 const actions = ref<TransactionActionInfo[]>([
   {
     label: t('createPool'),
@@ -90,6 +87,9 @@ const actions = ref<TransactionActionInfo[]>([
   },
 ]);
 
+/**
+ * COMPUTED
+ */
 const requiredActions = computed(() => {
   if (
     (hasRestoredFromSavedState.value && needsSeeding.value) ||
