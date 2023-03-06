@@ -283,7 +283,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
         approvalActions: approvalActions.value,
-        transactionDeadline,
+        transactionDeadline: transactionDeadline.value,
       });
 
       bptOut.value = output.bptOut;
@@ -313,7 +313,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
         approvalActions: approvalActions.value,
-        transactionDeadline,
+        transactionDeadline: transactionDeadline.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
