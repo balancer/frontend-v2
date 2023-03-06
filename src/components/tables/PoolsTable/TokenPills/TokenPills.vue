@@ -63,7 +63,7 @@ function weightFor(token: PoolToken): string {
   });
 }
 
-const MAX_PILLS = 11;
+const MAX_PILLS = 8;
 </script>
 
 <template>

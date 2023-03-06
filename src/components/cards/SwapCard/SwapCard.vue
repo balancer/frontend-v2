@@ -163,7 +163,7 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
+import { useSwapAssets } from '@/composables/swap/useSwapAssets';
 import SwapPreviewModal from '@/components/modals/SwapPreviewModal.vue';
 import SwapSettingsPopover, {
   SwapSettingsContext,
@@ -182,6 +182,7 @@ import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
 import SwapPair from './SwapPair.vue';
 import SwapRoute from './SwapRoute.vue';
+
 export default defineComponent({
   components: {
     SwapPair,
@@ -191,7 +192,7 @@ export default defineComponent({
   },
   setup() {
     // COMPOSABLES
-    const store = useStore();
+    const { inputAsset, outputAsset } = useSwapAssets();
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
@@ -386,8 +387,8 @@ export default defineComponent({
       } else if (isAddress(assetOut)) {
         assetOut = getAddress(assetOut);
       }
-      setTokenInAddress(assetIn || store.state.swap.inputAsset);
-      setTokenOutAddress(assetOut || store.state.swap.outputAsset);
+      setTokenInAddress(assetIn || inputAsset);
+      setTokenOutAddress(assetOut || outputAsset);
 
       let assetInAmount = router.currentRoute.value.query?.inAmount as string;
       let assetOutAmount = router.currentRoute.value.query?.outAmount as string;

@@ -19,7 +19,6 @@ type ConversionParams = {
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   if (!tokenInAddress || !tokenOutAddress || !stEthAddress) return false;
-  console.log('stETH: ', stEthAddress, ' is null: ', stEthAddress == null);
 
   return includesAddress([tokenInAddress, tokenOutAddress], stEthAddress);
 }

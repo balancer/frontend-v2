@@ -51,7 +51,7 @@ const tokenAddresses = computed((): string[] => {
 });
 
 const tokensForTotal = computed((): string[] => {
-  if (pageContext.value === 'invest' && props.useNativeAsset) {
+  if (pageContext.value === 'add-liquidity' && props.useNativeAsset) {
     return tokenAddresses.value.map(address => {
       if (isSameAddress(address, wrappedNativeAsset.value.address))
         return nativeAsset.address;
@@ -67,7 +67,7 @@ const tokensForTotal = computed((): string[] => {
 const fiatTotal = computed(() => {
   const fiatValue = tokensForTotal.value
     .map(address => {
-      if (pageContext.value === 'invest') {
+      if (pageContext.value === 'add-liquidity') {
         if (
           isSameAddress(address, nativeAsset.address) &&
           !props.useNativeAsset
@@ -128,7 +128,7 @@ function isSelectedNativeAsset(address: string): boolean {
                   <span class="lowercase">{{ $t('tokens') }}</span>
                 </span>
                 <BalTooltip
-                  v-if="pageContext === 'invest'"
+                  v-if="pageContext === 'add-liquidity'"
                   class="mt-1 ml-2"
                   iconSize="sm"
                   :text="
@@ -143,7 +143,9 @@ function isSelectedNativeAsset(address: string): boolean {
                 <AssetRow
                   :address="asset.address"
                   :selected="isSelectedNativeAsset(asset.address)"
-                  :class="[{ 'cursor-pointer': pageContext === 'invest' }]"
+                  :class="[
+                    { 'cursor-pointer': pageContext === 'add-liquidity' },
+                  ]"
                   @click="
                     emit(
                       'update:useNativeAsset',

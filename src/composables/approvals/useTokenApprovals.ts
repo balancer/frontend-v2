@@ -32,7 +32,7 @@ export type ApprovalOptions = {
 };
 
 export default function useTokenApprovals(
-  tokenAddresses: string[],
+  tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   actionType: ApprovalAction = ApprovalAction.AddLiquidity
 ) {
@@ -49,17 +49,18 @@ export default function useTokenApprovals(
   /**
    * STATE
    */
-  const vaultApprovalStateMap = ref<ApprovalStateMap>(
-    Object.fromEntries(
-      approvalsRequired(
-        tokenAddresses,
-        amounts.value,
-        appNetworkConfig.addresses.vault
-      ).map(address => [
-        address,
-        { init: false, confirming: false, approved: false },
-      ])
-    )
+  const vaultApprovalStateMap = computed(
+    (): ApprovalStateMap =>
+      Object.fromEntries(
+        approvalsRequired(
+          tokenAddresses.value,
+          amounts.value,
+          appNetworkConfig.addresses.vault
+        ).map(address => [
+          address,
+          { init: false, confirming: false, approved: false },
+        ])
+      )
   );
 
   // Depreciate with new investment flow
@@ -70,7 +71,7 @@ export default function useTokenApprovals(
    */
   const requiredApprovals = computed(() =>
     approvalsRequired(
-      tokenAddresses,
+      tokenAddresses.value,
       amounts.value,
       appNetworkConfig.addresses.vault
     )
@@ -155,7 +156,7 @@ export default function useTokenApprovals(
   async function getApprovalStateMapFor(
     spender: string
   ): Promise<ApprovalStateMap> {
-    const customTokenMap = getTokens(tokenAddresses);
+    const customTokenMap = getTokens(tokenAddresses.value);
 
     const allowances = await tokenService.allowances.get(
       account.value,
@@ -163,7 +164,7 @@ export default function useTokenApprovals(
       customTokenMap
     );
 
-    const requiredApprovals = tokenAddresses
+    const requiredApprovals = tokenAddresses.value
       .filter((tokenAddress, i) => {
         const allowance = bnum(
           allowances[getAddress(spender)][getAddress(tokenAddress)]

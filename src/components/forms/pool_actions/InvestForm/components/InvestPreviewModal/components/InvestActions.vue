@@ -17,7 +17,7 @@ import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalAct
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import useNetwork from '@/composables/useNetwork';
-import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
+import { useSwapper } from '@/composables/useSwapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
 import { Pool } from '@/services/pool/types';
@@ -80,8 +80,10 @@ const { lockablePoolId } = useVeBal();
 const { isStakablePool } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const { refetchBalances } = useTokens();
+const { boostedJoinBatchSwap } = useSwapper();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
+const tokenAddresses = computed(() => props.tokenAddresses);
 const {
   fullAmounts,
   batchSwapAmountMap,
@@ -93,7 +95,7 @@ const {
 } = toRefs(props.math);
 
 const { tokenApprovalActions } = useTokenApprovalActions(
-  props.tokenAddresses,
+  tokenAddresses,
   fullAmounts
 );
 

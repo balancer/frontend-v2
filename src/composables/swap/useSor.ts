@@ -26,7 +26,7 @@ import {
   SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { convertStEthWrap, isStEthAddress } from '@/lib/utils/balancer/lido';
-import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
+import { useSwapper } from '@/composables/useSwapper';
 import {
   getWrapOutput,
   unwrap,
@@ -144,6 +144,7 @@ export default function useSor({
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
   const { isUserRejected } = useTranasactionErrors();
+  const { swapIn, swapOut } = useSwapper();
 
   onMounted(async () => {
     const unknownAssets: string[] = [];

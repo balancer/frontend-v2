@@ -8,6 +8,7 @@ import {
   TokensProviderSymbol,
 } from '@/providers/tokens.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
+import { provideWallets } from '@/providers/wallet.provider';
 import { computed, provide, Ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
 import { mount, MountResult } from './mount-composable-tester';
@@ -27,6 +28,7 @@ export function mountComposable<R>(
 ): MountResult<R> {
   return mount<R>(callback, {
     provider: () => {
+      provideWallets();
       provideUserSettings();
       provideTokenLists();
       provide('store', {});

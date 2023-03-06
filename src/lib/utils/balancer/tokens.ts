@@ -1,11 +1,12 @@
 import { MaxUint256 } from '@ethersproject/constants';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 
 import { default as abi } from '@/lib/abi/ERC20.json';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 export async function approveToken(
-  web3: Web3Provider,
+  web3: WalletProvider,
   spender: string,
   token: string
 ): Promise<TransactionResponse> {
@@ -19,7 +20,7 @@ export async function approveToken(
 }
 
 export async function approveTokens(
-  web3: Web3Provider,
+  web3: WalletProvider,
   spender: string,
   tokens: string[]
 ): Promise<TransactionResponse[]> {
