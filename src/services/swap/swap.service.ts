@@ -165,6 +165,7 @@ export class SwapService {
           single,
           funds,
           tokenOut.amount.toString(),
+          this.transactionDeadline.value,
           overrides
         );
       }
