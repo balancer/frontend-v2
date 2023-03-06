@@ -31,8 +31,9 @@ export interface SwapToken {
   type: SwapTokenType;
 }
 
-export default class SwapService {
+export class SwapService {
   constructor(
+    private readonly transactionDeadline: Ref<number>,
     private readonly config: ConfigService = configService,
     private readonly walletService = walletServiceInstance
   ) {}
@@ -83,7 +84,13 @@ export default class SwapService {
             ? tokenOut.amount.toString()
             : tokenIn.amount.toString();
 
-        return vaultService.swap(single, funds, limit, overrides);
+        return vaultService.swap(
+          single,
+          funds,
+          limit,
+          this.transactionDeadline.value,
+          overrides
+        );
       }
 
       const limits: string[] = this.calculateLimits(
@@ -98,6 +105,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (e) {
@@ -173,6 +181,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (e) {
@@ -206,6 +215,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (error) {
@@ -242,6 +252,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (error) {
@@ -288,5 +299,3 @@ export default class SwapService {
     return limits;
   }
 }
-
-export const swapService = new SwapService();
