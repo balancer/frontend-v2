@@ -18,7 +18,7 @@ import {
   walletProviderMock,
 } from '../contracts/vault.service.mocks';
 import { setUserAddress } from '../web3/__mocks__/web3.service';
-import SwapService, { SwapToken, SwapTokenType } from './swap.service';
+import { SwapService, SwapToken, SwapTokenType } from './swap.service';
 
 vi.mock('@/lib/utils/balancer/lido');
 vi.mock('@/services/contracts/lido-relayer.service');
@@ -82,7 +82,7 @@ describe('swap.service', () => {
       type: SwapTokenType.fixed,
     };
 
-    service = new SwapService(configService, walletService);
+    service = new SwapService(ref(100), configService, walletService);
   });
 
   it('Should initialize correctly', () => {
