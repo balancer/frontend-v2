@@ -6,7 +6,7 @@ import { mapValues } from 'lodash';
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class GaugeController {
@@ -15,7 +15,7 @@ export class GaugeController {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = GaugeControllerAbi,
     private readonly config = configService,
-    private readonly web3 = web3Service
+    private readonly walletService = walletServiceInstance
   ) {}
 
   async getRelativeWeights(gaugeAddresses: string[], timestamp: number) {

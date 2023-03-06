@@ -46,6 +46,12 @@ Run unit tests with coverage:
 npm run test:unit:coverage
 ```
 
+Run unit tests with only lcov coverage (useful when doing exploratory testing):
+
+```bash
+npm run test:unit:silent:coverage
+```
+
 ### Build
 
 Run build:

@@ -54,6 +54,13 @@ export type NamedPools = {
   veBAL: string;
 };
 
+export type DeprecatedDetails = {
+  newPool?: string;
+  suggestedPools?: string[];
+  joinsDisabled?: boolean;
+  stakingDisabled?: boolean;
+};
+
 export type Pools = {
   IdsMap: Partial<NamedPools>;
   Pagination: {
@@ -81,6 +88,7 @@ export type Pools = {
   Metadata: Record<string, PoolMetadata>;
   DisabledJoins: string[];
   BrandedRedirect?: Record<string, string>;
+  Deprecated?: Record<string, DeprecatedDetails>;
 };
 
 const POOLS_GOERLI: Pools = {
@@ -364,6 +372,7 @@ const POOLS_MAINNET: Pools = {
       '0xd4f79ca0ac83192693bce4699d0c10c66aa6cf0f00020000000000000000047e',
       '0xb08885e6026bab4333a80024ec25a1a3e1ff2b8a000200000000000000000445',
       '0x384f67aa430376efc4f8987eabf7f3f84eb9ea5d00020000000000000000043d',
+      '0xe4010ef5e37dc23154680f23c4a0d48bfca91687000200000000000000000432',
     ],
   },
   Metadata: {
@@ -434,6 +443,38 @@ const POOLS_MAINNET: Pools = {
     '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
     '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
   ],
+  Deprecated: {
+    '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba': {
+      newPool:
+        '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396': {
+      newPool:
+        '0x1ee442b5326009bb18f2f472d3e0061513d1a0ff000200000000000000000464',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366': {
+      newPool:
+        '0x5f1f4e50ba51d723f12385a8a9606afc3a0555f5000200000000000000000465',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0x798b112420ad6391a4129ac25ef59663a44c88bb0002000000000000000003f4': {
+      newPool:
+        '0x36be1e97ea98ab43b4debf92742517266f5731a3000200000000000000000466',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367': {
+      newPool:
+        '0x9f9d900462492d4c21e9523ca95a7cd86142f298000200000000000000000462',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+  },
   BrandedRedirect: {
     '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce':
       'xave',
@@ -517,6 +558,7 @@ const POOLS_POLYGON: Pools = {
       '0x513cdee00251f39de280d9e5f771a6eafebcc88e000000000000000000000a6b', // 2eur/par
       '0x77e97d4908be63394bc5dff72c8c7bddf1699882000000000000000000000a6a', // augeur
       '0x3db543faf7a92052de7860c5c9debabee59ed5bd000000000000000000000a62', // 4usd
+      '0x65fe9314be50890fb01457be076fafd05ff32b9a000000000000000000000a96', // wsteth/eth
     ],
   },
   Investment: {
@@ -639,6 +681,7 @@ const POOLS_ARBITRUM: Pools = {
       '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316', // wsteth/weth stable
       '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bbrfusd
       '0x70ba7dc356b41c849e74c679932c852cc0331a90000000000000000000000357', // gdai/mai/usdc
+      '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
     ],
   },
   Investment: {

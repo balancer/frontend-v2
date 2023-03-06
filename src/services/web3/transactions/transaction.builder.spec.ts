@@ -1,8 +1,8 @@
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { initEthersContract } from '@/dependencies/EthersContract';
+import { MockedContractWithSigner } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Contract } from 'ethers';
 import { ContractConcern } from './concerns/contract.concern';
 import { RawConcern } from './concerns/raw.concern';
 import { TransactionBuilder } from './transaction.builder';
@@ -44,8 +44,16 @@ vi.mock('ethers', () => {
   };
 });
 
+const contractActionMock = vi.fn(() => 1e5);
+
+class ContractMock extends MockedContractWithSigner {
+  test = contractActionMock;
+}
+
 initOldMulticallerWithDefaultMocks();
-initEthersContractWithDefaultMocks();
+
+//@ts-ignore
+initEthersContract(ContractMock);
 
 const SignerMock = JsonRpcSigner;
 
@@ -87,10 +95,7 @@ describe('TransactionBuilder', () => {
         params: [1e18],
       });
 
-      // @ts-ignore
-      const contractMock = Contract.mock.results[0].value;
-
-      expect(contractMock.test).toBeCalledWith(1e18, {
+      expect(contractActionMock).toBeCalledWith(1e18, {
         gasLimit: 1e5,
       });
     });
