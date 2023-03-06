@@ -4,7 +4,13 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS, APR_THRESHOLD, DeprecatedDetails } from '@/constants/pools';
+import {
+  POOLS,
+  APR_THRESHOLD,
+  DeprecatedDetails,
+  PoolMetadata,
+  POOLS_MAP,
+} from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -20,6 +26,7 @@ import {
   appUrl,
   getNetworkSlug,
   isL2,
+  networkId,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
@@ -569,6 +576,16 @@ export function isJoinsDisabled(id: string): boolean {
  */
 export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
   return POOLS.Deprecated?.[id.toLowerCase()];
+}
+
+/**
+ * Get metadata for a pool if it exists
+ */
+export function poolMetadata(
+  id: string,
+  network = networkId.value
+): PoolMetadata | undefined {
+  return POOLS_MAP[network]?.Metadata[id.toLowerCase()];
 }
 
 /**

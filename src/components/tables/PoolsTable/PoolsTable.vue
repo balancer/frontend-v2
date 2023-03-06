@@ -26,10 +26,11 @@ import {
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
+  poolMetadata,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { POOLS, APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
+import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -272,7 +273,7 @@ function lockedUntil(lockEndDate?: number) {
 }
 
 function iconAddresses(pool: Pool) {
-  return POOLS.Metadata[pool.id]?.hasIcon
+  return poolMetadata(pool.id)?.hasIcon
     ? [pool.address]
     : orderedTokenAddresses(pool);
 }
@@ -317,8 +318,8 @@ function iconAddresses(pool: Pool) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
-            {{ POOLS.Metadata[pool.id].name }}
+          <div v-if="poolMetadata(pool.id)" class="text-left">
+            {{ poolMetadata(pool.id)?.name }}
           </div>
           <div v-else>
             <TokenPills

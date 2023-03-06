@@ -28,7 +28,7 @@ export type FactoryType =
   | 'composableStablePool'
   | 'fx';
 
-type PoolMetadata = {
+export type PoolMetadata = {
   name: string;
   hasIcon: boolean;
 };
