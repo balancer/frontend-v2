@@ -14,15 +14,17 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import { Pool, PoolToken } from '@/services/pool/types';
 import { cloneDeep } from 'lodash';
 
-export function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const gaugePool = cloneDeep(gauge.pool as Pool);
-  gaugePool.tokensList = gauge.pool.tokens.map(token => token.address);
+export function orderedGaugeTokens(
+  gaugePool: VotingGaugeWithVotes['pool']
+): PoolToken[] {
+  const _gaugePool = cloneDeep(gaugePool as Pool);
+  _gaugePool.tokensList = _gaugePool.tokens.map(token => token.address);
 
-  const sortedTokens = orderedPoolTokens(
-    gaugePool,
-    gaugePool.tokens as PoolToken[]
-  );
-  return sortedTokens.map(
+  return orderedPoolTokens(_gaugePool, _gaugePool.tokens as PoolToken[]);
+}
+
+export function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
+  return orderedGaugeTokens(gauge.pool).map(
     token => gauge.tokenLogoURIs[token?.address || ''] || ''
   );
 }
