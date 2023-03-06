@@ -20,7 +20,7 @@
       "https://gateway.thegraph.com/api/{{GRAPH_KEY}}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM"
     ],
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-beta",
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges",
     "blocks": "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks"
   },
   "supportsEIP1559": true,
