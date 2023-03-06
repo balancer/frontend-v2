@@ -31,6 +31,8 @@ function iconAddresses(pool: Pool) {
  * COMPOSABLES
  */
 const { networkSlug } = useNetwork();
+
+const isHovered = ref(false);
 </script>
 
 <template>
@@ -41,20 +43,34 @@ const { networkSlug } = useNetwork();
       params: { id: pool.id, networkSlug },
     }"
     class="flex justify-between items-center py-3 border-t border-gray-300 border-opacity-25 cursor-pointer hover:bg-[#11182766]"
+    @mouseleave="isHovered = false"
+    @mouseover="isHovered = true"
   >
     <div class="flex items-center">
       <BalAssetSet :addresses="iconAddresses(pool)" :width="60" />
       <TokenPills
         :tokens="orderedPoolTokens(pool, pool.tokens)"
-        pillsStyles="bg-gray-700"
-        pillWeightStyles="text-gray-400"
+        isOnMigrationCard
+        :isHovered="isHovered"
       />
       <BalChipNew v-if="pool.isNew" class="mb-1" />
     </div>
     <BalIcon
       name="arrow-right"
       size="sm"
-      class="mr-3 mb-1 text-gray-300 group-hover:text-white"
+      :class="['arrow', { 'arrow-hovered': isHovered }]"
     />
   </router-link>
 </template>
+
+<style scoped>
+.arrow {
+  @apply mr-3 mb-1;
+
+  color: rgb(255 255 255 / 50%);
+}
+
+.arrow-hovered {
+  @apply text-white;
+}
+</style>

@@ -9,16 +9,14 @@ type Props = {
   isSelected: boolean;
   isPicked: boolean;
   token: PoolToken;
-  pillsStyles?: string;
-  pillWeightStyles?: string;
+  isOnMigrationCard?: boolean;
+  isHovered?: boolean;
 };
 
 withDefaults(defineProps<Props>(), {
   hasBalance: false,
   isSelected: false,
   isPicked: false,
-  pillsStyles: '',
-  pillWeightStyles: '',
 });
 </script>
 
@@ -32,13 +30,14 @@ withDefaults(defineProps<Props>(), {
     <template #activator>
       <div
         :class="[
-          'flex items-center px-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative h-10 items-center',
+          'pill',
           {
             'pill-selected': isSelected,
             'pill-picked': isPicked,
             'pill-hoverable': hasBalance,
+            'pill-migration': isOnMigrationCard,
+            'pill-hovered': isHovered,
           },
-          pillsStyles,
         ]"
       >
         <div v-if="hasBalance" class="balance-indicator" />
@@ -54,8 +53,10 @@ withDefaults(defineProps<Props>(), {
         <span
           v-if="weight !== '0%'"
           :class="[
-            'font-medium text-gray-600 dark:text-gray-400 text-xs mt-px ml-1',
-            pillWeightStyles,
+            'pill-weight',
+            {
+              'pill-weight-migration': isOnMigrationCard,
+            },
           ]"
         >
           {{ weight }}
@@ -67,12 +68,34 @@ withDefaults(defineProps<Props>(), {
 </template>
 
 <style scoped>
+.pill {
+  @apply flex items-center px-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative h-10 items-center;
+}
+
+.pill-migration {
+  @apply cursor-pointer;
+
+  background-color: rgb(31 41 55 / 60%);
+}
+
+.pill-hovered {
+  @apply bg-gray-600;
+}
+
 .pill-selected {
   @apply ring-2 ring-blue-500 dark:ring-blue-400;
 }
 
 .pill-picked {
   @apply bg-blue-50 dark:bg-blue-500 dark:bg-opacity-20;
+}
+
+.pill-weight {
+  @apply font-medium text-gray-600 dark:text-gray-400 text-xs  mt-px ml-1;
+}
+
+.pill-weight-migration {
+  @apply text-gray-400;
 }
 
 .balance-indicator {
