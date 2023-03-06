@@ -18,7 +18,7 @@ import {
   walletProviderMock,
 } from '../contracts/vault.service.mocks';
 import { setUserAddress } from '../web3/__mocks__/web3.service';
-import SwapService, { SwapToken, SwapTokenType } from './swap.service';
+import { SwapService, SwapToken, SwapTokenType } from './swap.service';
 
 vi.mock('@/lib/utils/balancer/lido');
 vi.mock('@/services/contracts/lido-relayer.service');
@@ -82,7 +82,7 @@ describe('swap.service', () => {
       type: SwapTokenType.fixed,
     };
 
-    service = new SwapService(configService, walletService);
+    service = new SwapService(ref(100), configService, walletService);
   });
 
   it('Should initialize correctly', () => {
@@ -166,7 +166,7 @@ describe('swap.service', () => {
         expect(vaultSwapFundsArg.toInternalBalance).toEqual(false);
 
         expect(vaultSwapArgs[2]).toEqual(tokens.DAI.amount.toString());
-        expect(vaultSwapArgs[3]).toEqual({ value: tokens.ETHv2.amount });
+        expect(vaultSwapArgs[4]).toEqual({ value: tokens.ETHv2.amount });
       });
     });
 
@@ -204,7 +204,7 @@ describe('swap.service', () => {
         expect(fundsArg.toInternalBalance).toEqual(false);
 
         expect(lidoRelayerSwapArgs[2]).toEqual(tokens.stETH.amount.toString());
-        expect(lidoRelayerSwapArgs[3]).toEqual({ value: tokens.ETHv2.amount });
+        expect(lidoRelayerSwapArgs[4]).toEqual({ value: tokens.ETHv2.amount });
       });
     });
 
@@ -259,7 +259,7 @@ describe('swap.service', () => {
         expect(limitsArg[1]).toEqual('0');
         expect(limitsArg[2]).toEqual(tokens.DAI.amount.mul(-1).toString());
 
-        expect(vaultBatchSwapArgs[5]).toEqual({ value: tokens.ETHv2.amount });
+        expect(vaultBatchSwapArgs[6]).toEqual({ value: tokens.ETHv2.amount });
       });
 
       it('Should return a rejected promise if vault throws an error', async () => {
@@ -360,7 +360,7 @@ describe('swap.service', () => {
         expect(limitsArg[1]).toEqual('0');
         expect(limitsArg[2]).toEqual(tokens.stETH.amount.mul(-1).toString());
 
-        expect(lidoBatchSwapArgs[5]).toEqual({ value: tokens.ETHv2.amount });
+        expect(lidoBatchSwapArgs[6]).toEqual({ value: tokens.ETHv2.amount });
       });
 
       it('Should return a rejected promise if lido-relayer throws an error', async () => {

@@ -13,7 +13,7 @@ import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
-import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
+import { useSwapper } from '@/composables/useSwapper';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
@@ -66,6 +66,7 @@ const {
 } = useWithdrawalState(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 const { refetchBalances } = useTokens();
+const { boostedExitBatchSwap } = useSwapper();
 
 const {
   bptIn,
