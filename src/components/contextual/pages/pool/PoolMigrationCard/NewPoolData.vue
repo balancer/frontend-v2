@@ -44,7 +44,11 @@ const { networkSlug } = useNetwork();
   >
     <div class="flex items-center">
       <BalAssetSet :addresses="iconAddresses(pool)" :width="60" />
-      <TokenPills :tokens="orderedPoolTokens(pool, pool.tokens)" />
+      <TokenPills
+        :tokens="orderedPoolTokens(pool, pool.tokens)"
+        pillsStyles="bg-gray-700"
+        pillWeightStyles="text-gray-400"
+      />
       <BalChipNew v-if="pool.isNew" class="mb-1" />
     </div>
     <BalIcon

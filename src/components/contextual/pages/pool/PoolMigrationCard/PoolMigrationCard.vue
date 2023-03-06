@@ -33,6 +33,7 @@ if (poolDeprecatedDetails.value?.suggestedPools?.length) {
     {},
     {
       poolIds: ref(poolDeprecatedDetails.value.suggestedPools),
+      first: 1000,
     }
   );
 }

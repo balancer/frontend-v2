@@ -9,12 +9,16 @@ type Props = {
   isSelected: boolean;
   isPicked: boolean;
   token: PoolToken;
+  pillsStyles?: string;
+  pillWeightStyles?: string;
 };
 
 withDefaults(defineProps<Props>(), {
   hasBalance: false,
   isSelected: false,
   isPicked: false,
+  pillsStyles: '',
+  pillWeightStyles: '',
 });
 </script>
 
@@ -28,12 +32,13 @@ withDefaults(defineProps<Props>(), {
     <template #activator>
       <div
         :class="[
-          'pill',
+          'flex items-center px-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative h-10 items-center',
           {
             'pill-selected': isSelected,
             'pill-picked': isPicked,
             'pill-hoverable': hasBalance,
           },
+          pillsStyles,
         ]"
       >
         <div v-if="hasBalance" class="balance-indicator" />
@@ -46,7 +51,13 @@ withDefaults(defineProps<Props>(), {
         >
           {{ symbol }}
         </span>
-        <span v-if="weight !== '0%'" class="pill-weight">
+        <span
+          v-if="weight !== '0%'"
+          :class="[
+            'font-medium text-gray-600 dark:text-gray-400 text-xs mt-px ml-1',
+            pillWeightStyles,
+          ]"
+        >
           {{ weight }}
         </span>
       </div>
@@ -56,21 +67,12 @@ withDefaults(defineProps<Props>(), {
 </template>
 
 <style scoped>
-.pill {
-  @apply flex items-center px-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative h-10 items-center;
-}
-
 .pill-selected {
   @apply ring-2 ring-blue-500 dark:ring-blue-400;
 }
 
 .pill-picked {
   @apply bg-blue-50 dark:bg-blue-500 dark:bg-opacity-20;
-}
-
-.pill-weight {
-  @apply font-medium text-gray-600 dark:text-gray-400 text-xs;
-  @apply mt-px ml-1;
 }
 
 .balance-indicator {

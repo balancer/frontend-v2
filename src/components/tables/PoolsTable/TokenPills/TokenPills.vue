@@ -15,12 +15,15 @@ type Props = {
   isStablePool?: boolean;
   selectedTokens?: string[];
   pickedTokens?: string[];
+  pillsStyles?: string;
+  pillWeightStyles?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   isStablePool: false,
   selectedTokens: () => [],
   pickedTokens: () => [],
+  pillWeightStyles: '',
 });
 
 const { fNum } = useNumbers();
@@ -89,6 +92,8 @@ const MAX_PILLS = 8;
         :token="token"
         :isSelected="includesAddress(selectedTokens, token.address)"
         :isPicked="includesAddress(pickedTokens, token.address)"
+        :pillsStyles="pillsStyles"
+        :pillWeightStyles="pillWeightStyles"
       />
       <HiddenTokensPills
         v-if="hiddenTokens.length > 0"
