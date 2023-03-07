@@ -100,9 +100,9 @@ const suggestedPools = computed(() => {
           </div>
           <BalBtn
             v-else
-            color="blue"
+            color="transparent"
+            outline
             :label="$t('migrateCard.viewBtn')"
-            block
             @click="$router.push({ name: 'vebal', params: { networkSlug } })"
           />
         </div>
