@@ -11,7 +11,12 @@ import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { getNetworkSlug } from '@/composables/useNetwork';
-import { isStableLike, isUnknownType, poolURLFor } from '@/composables/usePool';
+import {
+  isStableLike,
+  isUnknownType,
+  poolMetadata,
+  poolURLFor,
+} from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -28,7 +33,6 @@ import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { POOLS_MAP } from '@/constants/pools';
 
 /**
  * TYPES
@@ -252,8 +256,8 @@ function getPickedTokens(tokens: PoolToken[]) {
         #poolCompositionCell="{ pool, address, addedTimestamp, network }"
       >
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="POOLS_MAP[network]?.Metadata[pool.id]" class="text-left">
-            {{ POOLS_MAP[network]?.Metadata[pool.id].name }}
+          <div v-if="poolMetadata(pool.id, network)" class="text-left">
+            {{ poolMetadata(pool.id, network)?.name }}
           </div>
           <TokenPills
             v-else
