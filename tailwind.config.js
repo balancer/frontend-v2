@@ -1,19 +1,15 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+const {
+  generateButtonClassSafelist,
+} = require('./src/components/_global/BalBtn/button-options.js');
 
 module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
 
   safelist: [
-    { pattern: /^shadow/ },
+    ...generateButtonClassSafelist(),
     // https://tailwindcss.com/docs/content-configuration#safelisting-classes
     // https://github.com/tailwindlabs/tailwindcss/discussions/10079
-    {
-      pattern: /(bg|border)-[^/]+$/,
-      variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
-    },
-    { pattern: /^text/ },
-    { pattern: /^from/ },
-    { pattern: /^to/ },
     { pattern: /^mr/ },
     { pattern: /^w/ },
   ],

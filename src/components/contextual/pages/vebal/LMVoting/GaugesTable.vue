@@ -33,6 +33,7 @@ import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
+import { POOLS_MAP } from '@/constants/pools';
 
 /**
  * TYPES
