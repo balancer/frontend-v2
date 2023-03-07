@@ -305,8 +305,8 @@ watch(
             class="pool-locking"
           />
           <PoolMigrationCard
-            v-if="pool && isWalletReady && isDeprecatedPool"
-            :pool="pool"
+            v-if="poolId && isWalletReady && isDeprecatedPool"
+            :poolId="poolId"
           />
         </BalStack>
       </div>
