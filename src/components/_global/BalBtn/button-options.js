@@ -9,6 +9,17 @@ const buttonColors = [
   'blue',
 ];
 
+const extraColors = ['pink', 'yellow'];
+
+// Using Set to remove duplicated colors
+// and filter to exclude gradient props as they are not valid colors but options
+const allColors = [...new Set([...buttonColors, ...extraColors])].filter(
+  color => !color.includes('gradient')
+);
+
+const gradientFrom = fromColor => `from-${fromColor}-600`;
+const gradientTo = toColor => `to-${toColor}-600`;
+
 const hoverFrom = fromColor => `hover:from-${fromColor}-700`;
 const hoverTo = toColor => `hover:to-${toColor}-700`;
 
@@ -47,9 +58,13 @@ const darkText = color => `dark:text-${color}-400`;
  * Using this function is unit tested and easier to maintain.
  */
 const generateButtonClassSafelist = () => {
-  return buttonColors.reduce((safelist, color) => {
+  return allColors.reduce((safelist, color) => {
     return [
       ...safelist,
+
+      gradientFrom(color),
+      gradientTo(color),
+
       hoverFrom(color),
       hoverTo(color),
 
@@ -82,6 +97,8 @@ const generateButtonClassSafelist = () => {
 
 module.exports = {
   buttonColors,
+  gradientFrom,
+  gradientTo,
   hoverFrom,
   hoverTo,
   loadingFrom,

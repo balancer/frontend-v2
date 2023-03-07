@@ -26,6 +26,8 @@ import {
   buttonColors,
   hoverFrom,
   hoverTo,
+  gradientFrom,
+  gradientTo,
   loadingFrom,
   loadingTo,
   backgroundFlat,
@@ -133,10 +135,9 @@ export default defineComponent({
           toColor
         )}`;
       }
-      return `
-        bg-gradient-to-tr from-${fromColor}-600 to-${toColor}-600
-        ${hoverFrom(fromColor)} ${hoverTo(toColor)} transition-colors
-      `;
+      return ` bg-gradient-to-tr ${gradientFrom(fromColor)} ${gradientTo(
+        toColor
+      )} ${hoverFrom(fromColor)} ${hoverTo(toColor)} transition-colors`;
     });
 
     const bgFlatClasses = computed(() => {
