@@ -1,3 +1,4 @@
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import {
   FundManagement,
   SingleSwap,
@@ -6,15 +7,27 @@ import {
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 
+import { walletService } from '@/services/web3/wallet.service';
+import { configService } from '../config/config.service';
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
-import { vaultService } from './vault.service';
-import { web3Service } from '@/services/web3/web3.service';
+import VaultService from './vault.service';
+import { walletProviderMock } from './vault.service.mocks';
 
-vi.mock('@/locales');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/services/web3/web3.service');
+// @ts-ignore
+walletService.setUserProvider(ref(walletProviderMock));
+
+const vaultService = new VaultService(configService, walletService);
+
+initEthersContractWithDefaultMocks();
 
 const userAddress = '0xAAA00fB39c06E7b41bEdFf8A6a4e013666141d40';
+
+//TODO: extract to helper that accepts rules callback
+// Silence Contract and Params debug
+vi.spyOn(console, 'log').mockImplementation(args => {
+  if (!args.startsWith('Contract') && !args.startsWith('Params'))
+    return console.warn(args);
+});
 
 describe('vault.service', () => {
   let swaps: SwapV2[] = [];
@@ -28,27 +41,33 @@ describe('vault.service', () => {
     toInternalBalance: false,
   };
 
+  tokens.USDC = {
+    address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
+    amount: BigNumber.from('1000000'),
+    type: SwapTokenType.fixed,
+  };
+  tokens.DAI = {
+    address: '0x04df6e4121c27713ed22341e7c7df330f56f289b',
+    amount: BigNumber.from('1000000'),
+    type: SwapTokenType.min,
+  };
+  swaps = [
+    {
+      poolId: poolId,
+      amount: '1000000',
+      assetInIndex: 0,
+      assetOutIndex: 1,
+      userData: '',
+    },
+  ];
+
+  const sendTransactionSpy = vi.spyOn(
+    walletService.txBuilder.contract,
+    'sendTransaction'
+  );
+
   beforeEach(() => {
     vi.clearAllMocks();
-    tokens.USDC = {
-      address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
-      amount: BigNumber.from('1000000'),
-      type: SwapTokenType.fixed,
-    };
-    tokens.DAI = {
-      address: '0x04df6e4121c27713ed22341e7c7df330f56f289b',
-      amount: BigNumber.from('1000000'),
-      type: SwapTokenType.min,
-    };
-    swaps = [
-      {
-        poolId: poolId,
-        amount: '1000000',
-        assetInIndex: 0,
-        assetOutIndex: 1,
-        userData: '',
-      },
-    ];
   });
 
   describe('swap', () => {
@@ -70,9 +89,7 @@ describe('vault.service', () => {
         tokenOutAmount,
         transactionDeadline
       );
-      const sendTransactionArgs =
-        // @ts-ignore
-        web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
+      const sendTransactionArgs = sendTransactionSpy.mock.calls[0];
       expect(sendTransactionArgs[0]).toEqual({
         contractAddress: vaultService.address,
         abi: vaultService.abi,
@@ -98,9 +115,8 @@ describe('vault.service', () => {
         limits,
         transactionDeadline
       );
-      const sendTransactionArgs =
-        // @ts-ignore
-        web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
+      const sendTransactionArgs = sendTransactionSpy.mock.calls[0];
+
       expect(sendTransactionArgs[0]).toEqual({
         contractAddress: vaultService.address,
         abi: vaultService.abi,

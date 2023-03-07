@@ -18,6 +18,7 @@ export function getInjectedProvider() {
 export function hasInjectedProvider(): boolean {
   return !!getInjectedProvider();
 }
+
 export class MetamaskConnector extends Connector {
   id = ConnectorId.InjectedMetaMask;
   async connect() {
@@ -76,3 +77,5 @@ export class MetamaskConnector extends Connector {
     };
   }
 }
+
+export const MetamaskConnectorType = typeof MetamaskConnector;

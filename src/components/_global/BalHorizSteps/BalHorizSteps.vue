@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useWeb3 from '@/services/web3/useWeb3';
-import { getConnectorLogo } from '@/services/web3/web3.plugin';
+import { getConnectorLogo } from '@/services/web3/wallet-logos';
 import { Step, StepState } from '@/types';
 
 const stepState = StepState;

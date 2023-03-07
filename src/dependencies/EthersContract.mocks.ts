@@ -1,10 +1,18 @@
-import { Contract } from '@ethersproject/contracts';
+import { BigNumber } from '@ethersproject/bignumber';
 import { initEthersContract } from './EthersContract';
 
 export const mockedOnchainTokenName = 'mocked onchain token name';
 
 export const defaultAdjustedBalance = '55555';
-export class EthersContractMock extends Contract {
+
+// We cannot extend Contract cause the checks in its constructor throw errors
+export class MockedContractWithSigner {
+  estimateGas = {
+    swap: () => Promise.resolve(BigNumber.from(2)),
+    batchSwap: () => Promise.resolve(BigNumber.from(1)),
+  };
+  batchSwap = vi.fn();
+  swap = vi.fn();
   hasApprovedRelayer() {
     return false;
   }
@@ -13,10 +21,7 @@ export class EthersContractMock extends Contract {
   }
 }
 
-export function generateEthersContractMock() {
-  return EthersContractMock;
-}
-
 export function initEthersContractWithDefaultMocks() {
-  initEthersContract(generateEthersContractMock());
+  //@ts-ignore
+  initEthersContract(MockedContractWithSigner);
 }

@@ -220,7 +220,7 @@ export function orderedPoolTokens(
   if (isDeep(pool)) {
     const leafs = tokenTreeLeafs(tokens);
     const flatTokens = flatTokenTree(pool);
-    return flatTokens.filter(token => leafs.includes(token.address));
+    return flatTokens.filter(token => includesAddress(leafs, token.address));
   } else if (isComposableStable(pool.poolType)) {
     return tokens.filter(token => !isSameAddress(token.address, pool.address));
   } else if (isStableLike(pool.poolType)) return tokens;

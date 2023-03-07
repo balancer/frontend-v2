@@ -7,6 +7,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { TransactionActionInfo } from '@/types/transactions';
 
 export type AmountsOut = Record<Address, string>;
 
@@ -24,6 +25,8 @@ export type ExitParams = {
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
+  bptInValid: boolean;
+  approvalActions: TransactionActionInfo[];
   transactionDeadline: number;
 };
 

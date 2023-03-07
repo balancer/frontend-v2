@@ -1,8 +1,7 @@
 import { Network } from '@balancer-labs/sdk';
-import { Web3Provider } from '@ethersproject/providers';
-import debounce from 'lodash/debounce';
-import { computed, inject, reactive, ref } from 'vue';
 import { useQuery } from '@tanstack/vue-query';
+import debounce from 'lodash/debounce';
+import { computed, reactive, ref } from 'vue';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -11,11 +10,12 @@ import {
   hasInjectedProvider,
 } from '@/services/web3/connectors/metamask/metamask.connector';
 
+import { getWeb3Provider } from '@/dependencies/wallets/Web3Provider';
+import { useWallets } from '@/providers/wallet.provider';
 import { configService } from '../config/config.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
-import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
-import { web3Service } from './web3.service';
+import { walletService } from './wallet.service';
 
 /** STATE */
 const blockNumber = ref(0);
@@ -45,7 +45,7 @@ export default function useWeb3() {
     disconnectWallet,
     connectWallet,
     isBlocked,
-  } = inject(Web3ProviderSymbol) as Web3Plugin;
+  } = useWallets();
   const appNetworkConfig = configService.network;
 
   const { networkId } = useNetwork();
@@ -102,6 +102,7 @@ export default function useWeb3() {
   };
 
   // METHODS
+  const Web3Provider = getWeb3Provider();
   const getProvider = () => new Web3Provider(provider.value as any, 'any'); // https://github.com/ethers-io/ethers.js/issues/866
   const getSigner = () => getProvider().getSigner();
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
@@ -130,7 +131,7 @@ export default function useWeb3() {
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
     QUERY_KEYS.Account.Profile(networkId, account, chainId),
-    () => web3Service.getProfile(account.value),
+    () => walletService.getProfile(account.value),
     reactive({
       enabled: canLoadProfile,
     })

@@ -6,9 +6,16 @@ import {
   TransactionRequest,
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/browser';
-import { Contract, ContractInterface } from 'ethers';
-import { verifyNetwork, verifyTransactionSender } from '../../web3.plugin';
+import { ContractInterface } from 'ethers';
+import {
+  verifyNetwork,
+  verifyTransactionSender,
+} from '@/providers/wallet.provider';
 import { TransactionConcern } from './transaction.concern';
+import {
+  EthersContract,
+  getEthersContract,
+} from '@/dependencies/EthersContract';
 
 type SendTransactionOpts = {
   contractAddress: string;
@@ -32,7 +39,12 @@ export class ContractConcern extends TransactionConcern {
     options = {},
     forceLegacyTxType = false,
   }: SendTransactionOpts): Promise<TransactionResponse> {
-    const contractWithSigner = new Contract(contractAddress, abi, this.signer);
+    const EthersContract = getEthersContract();
+    const contractWithSigner = new EthersContract(
+      contractAddress,
+      abi,
+      this.signer
+    );
 
     const block = await this.signer.provider.getBlockNumber();
     console.log(`Contract: ${contractAddress} Action: ${action}`);
@@ -54,6 +66,7 @@ export class ContractConcern extends TransactionConcern {
       ]);
 
       trackGoal(Goals.ContractTransactionSubmitted);
+
       return await contractWithSigner[action](...params, txOptions);
     } catch (err) {
       const error = err as WalletError;
@@ -91,13 +104,14 @@ export class ContractConcern extends TransactionConcern {
     console.log('Contract', contractAddress);
     console.log('Action', `"${action}"`);
     console.log('Params', params);
-    const contract = new Contract(contractAddress, abi, this.signer);
+    const EthersContract = getEthersContract();
+    const contract = new EthersContract(contractAddress, abi, this.signer);
     const contractWithSigner = contract.connect(this.signer);
     return await contractWithSigner.callStatic[action](...params, options);
   }
 
   private async logFailedTx(
-    contract: Contract,
+    contract: EthersContract,
     action: string,
     params: any,
     block: number,

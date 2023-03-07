@@ -6,7 +6,7 @@ export { version } from '../../package.json';
 const modalOpen = ref(false);
 const locale = ref(lsGet(LS_KEYS.App.Locale, 'en-US'));
 const defaultSwapDeadlineMinutes = 100;
-const transactionDeadline = ref(
+const transactionDeadline = ref<number>(
   lsGet(LS_KEYS.App.SwapDeadline, defaultSwapDeadlineMinutes)
 );
 

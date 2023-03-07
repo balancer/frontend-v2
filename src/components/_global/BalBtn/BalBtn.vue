@@ -22,6 +22,30 @@
 <script lang="ts">
 import BalLoadingIcon from '../BalLoadingIcon/BalLoadingIcon.vue';
 
+import {
+  buttonColors,
+  hoverFrom,
+  hoverTo,
+  loadingFrom,
+  loadingTo,
+  backgroundFlat,
+  darkBackgroundFlat,
+  darkHoverBackgroundFlat,
+  hoverBackgroundFlat,
+  hoverBackground,
+  loadingBackground,
+  loadingDarkBackground,
+  background,
+  darkHoverBackground,
+  darkBackground,
+  border,
+  darkBorder,
+  darkHoverBorder,
+  text,
+  darkText,
+  darkFocusBorder,
+} from 'button-options';
+
 export default defineComponent({
   name: 'BalBtn',
 
@@ -45,18 +69,7 @@ export default defineComponent({
     color: {
       type: String,
       default: 'primary',
-      validator: (val: string): boolean =>
-        [
-          'primary',
-          'gradient',
-          'gradient-reverse',
-          'gradient-pink-yellow',
-          'gray',
-          'red',
-          'white',
-          'blue',
-          'transparent',
-        ].includes(val),
+      validator: (val: string): boolean => buttonColors.includes(val),
     },
     label: { type: String, default: '' },
     block: { type: Boolean, default: false },
@@ -116,18 +129,22 @@ export default defineComponent({
         return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
       }
       if (props.loading) {
-        return `bg-gradient-to-tr from-${fromColor}-400 to-${toColor}-400`;
+        return `bg-gradient-to-tr ${loadingFrom(fromColor)} ${loadingTo(
+          toColor
+        )}`;
       }
       return `
         bg-gradient-to-tr from-${fromColor}-600 to-${toColor}-600
-        hover:from-${fromColor}-700 hover:to-${toColor}-700 transition-colors
+        ${hoverFrom(fromColor)} ${hoverTo(toColor)} transition-colors
       `;
     });
 
     const bgFlatClasses = computed(() => {
       return `
-        bg-${props.color}-50 hover:bg-${props.color}-100
-        dark:bg-${props.color}-800 dark:hover:bg-${props.color}-700
+        ${backgroundFlat(props.color)} ${hoverBackgroundFlat(props.color)}
+        ${darkBackgroundFlat(props.color)} ${darkHoverBackgroundFlat(
+        props.color
+      )}
       `;
     });
 
@@ -142,12 +159,14 @@ export default defineComponent({
           return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
         }
         if (props.loading) {
-          return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
+          return `${loadingBackground(props.color)} ${loadingDarkBackground(
+            props.color
+          )}`;
         }
 
         return `
-          bg-${props.color}-600 hover:bg-${props.color}-700
-          dark:bg-${props.color}-gray-400 dark:hover:bg-${props.color}-gray-600
+          ${background(props.color)} ${hoverBackground(props.color)}
+          ${darkBackground(props.color)} ${darkHoverBackground(props.color)}
         `;
       }
     });
@@ -156,7 +175,11 @@ export default defineComponent({
       if (props.outline) {
         if (props.disabled)
           return `border border-gray-200 dark:border-gray-700`;
-        return `border border-${props.color}-200 dark:border-${props.color}-700 dark:hover:border-${props.color}-600 dark:focus:border-${props.color}-600 hover:text-gray-600 dark:hover:text-gray-200 dark:focus:text-gray-200`;
+        return `border ${border(props.color)} dark:border-${darkBorder(
+          props.color
+        )} ${darkHoverBorder(props.color)} ${darkFocusBorder(
+          props.color
+        )} hover:text-gray-600 dark:hover:text-gray-200 dark:focus:text-gray-200`;
       }
       return 'border-none';
     });
@@ -171,7 +194,7 @@ export default defineComponent({
         else return 'text-gray-800 hover:text-blue-600 dark:text-gray-100';
       }
       if (props.outline || props.flat)
-        return `text-${props.color}-500 dark:text-${props.color}-400`;
+        return `${text(props.color)} ${darkText(props.color)}`;
       return 'text-white';
     });
 

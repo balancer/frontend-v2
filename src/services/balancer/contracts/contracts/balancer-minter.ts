@@ -1,12 +1,12 @@
 import BalancerMinterAbi from '@/lib/abi/BalancerMinter.json';
 import { configService } from '@/services/config/config.service';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 
 export class BalancerMinter {
   constructor(
     private readonly abi = BalancerMinterAbi,
     private readonly config = configService,
-    private readonly web3 = web3Service,
+    private readonly walletService = walletServiceInstance,
     public readonly address = config.network.addresses.balancerMinter
   ) {}
 
@@ -14,7 +14,7 @@ export class BalancerMinter {
    * @summary Claim BAL rewards for gauge
    */
   async mint(gaugeAddress: string) {
-    return await this.web3.txBuilder.contract.sendTransaction({
+    return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'mint',
@@ -26,7 +26,7 @@ export class BalancerMinter {
    * @summary Claim BAL rewards for multiple gauges in one transaction
    */
   async mintMany(gaugeAddresses: string[]) {
-    return await this.web3.txBuilder.contract.sendTransaction({
+    return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'mintMany',

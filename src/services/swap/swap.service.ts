@@ -15,7 +15,7 @@ import ConfigService, { configService } from '@/services/config/config.service';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import { vaultService } from '@/services/contracts/vault.service';
 
-import Web3Service, { web3Service } from '../web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 
 export type Address = string;
 
@@ -31,10 +31,11 @@ export interface SwapToken {
   type: SwapTokenType;
 }
 
-export default class SwapService {
+export class SwapService {
   constructor(
+    private readonly transactionDeadline: Ref<number>,
     private readonly config: ConfigService = configService,
-    private readonly web3: Web3Service = web3Service
+    private readonly walletService = walletServiceInstance
   ) {}
 
   public async batchSwapV2(
@@ -83,7 +84,13 @@ export default class SwapService {
             ? tokenOut.amount.toString()
             : tokenIn.amount.toString();
 
-        return vaultService.swap(single, funds, limit, overrides);
+        return vaultService.swap(
+          single,
+          funds,
+          limit,
+          this.transactionDeadline.value,
+          overrides
+        );
       }
 
       const limits: string[] = this.calculateLimits(
@@ -98,6 +105,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (e) {
@@ -157,6 +165,7 @@ export default class SwapService {
           single,
           funds,
           tokenOut.amount.toString(),
+          this.transactionDeadline.value,
           overrides
         );
       }
@@ -173,6 +182,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (e) {
@@ -206,6 +216,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (error) {
@@ -242,6 +253,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
+        this.transactionDeadline.value,
         overrides
       );
     } catch (error) {
@@ -251,7 +263,7 @@ export default class SwapService {
   }
 
   private async getFundManagement(): Promise<FundManagement> {
-    const userAddress = await this.web3.getUserAddress();
+    const userAddress = await this.walletService.getUserAddress();
     const funds: FundManagement = {
       sender: userAddress,
       recipient: userAddress,
@@ -288,5 +300,3 @@ export default class SwapService {
     return limits;
   }
 }
-
-export const swapService = new SwapService();

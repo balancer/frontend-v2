@@ -19,6 +19,9 @@ import StakeSummary from './StakeSummary.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { ApprovalAction } from '@/composables/approvals/types';
 
+/**
+ * TYPES
+ */
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
   pool: AnyPool;
@@ -28,13 +31,20 @@ const props = defineProps<Props>();
 const emit = defineEmits(['close', 'success']);
 
 /**
+ * STATE
+ */
+const isLoadingApprovalsForGauge = ref(false);
+const isActionConfirmed = ref(false);
+const confirmationReceipt = ref<TransactionReceipt>();
+const stakeActions = ref<TransactionActionInfo[]>([]);
+
+/**
  * COMPOSABLES
  */
 const { balanceFor, getToken, refetchBalances } = useTokens();
 const { fNum } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
-
 const {
   stake,
   unstake,
@@ -50,8 +60,8 @@ const currentShares =
     : stakedShares.value;
 
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
-  [props.pool.address],
-  ref([currentShares]),
+  ref<string[]>([props.pool.address]),
+  ref<string[]>([currentShares]),
   ApprovalAction.Staking
 );
 
@@ -75,28 +85,8 @@ const unstakeAction = {
 };
 
 /**
- * STATE
+ * COMPUTED
  */
-const isLoadingApprovalsForGauge = ref(false);
-const isActionConfirmed = ref(false);
-const confirmationReceipt = ref<TransactionReceipt>();
-const stakeActions = ref<TransactionActionInfo[]>([]);
-
-/**
- * WATCHERS
- */
-watch(
-  () => props.action,
-  () => {
-    if (props.action === 'stake') stakeActions.value = [stakeAction];
-    if (props.action === 'unstake') stakeActions.value = [unstakeAction];
-    if (props.action === 'restake')
-      stakeActions.value = [unstakeAction, stakeAction];
-  },
-  { immediate: true }
-);
-
-/* COMPUTED */
 const assetRowWidth = computed(
   () => (tokensListExclBpt(props.pool).length * 32) / 1.5
 );
@@ -115,13 +105,8 @@ const totalUserPoolSharePct = ref(
 );
 
 /**
- * LIFECYCLE
+ * METHODS
  */
-onBeforeMount(async () => {
-  if (props.action !== 'unstake') await loadApprovalsForGauge();
-});
-
-/** METHODS */
 async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
@@ -156,7 +141,9 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
 async function loadApprovalsForGauge() {
   const approvalActions = await trackLoading(async () => {
     if (!preferentialGaugeAddress.value) return;
-    return getTokenApprovalActionsForSpender(preferentialGaugeAddress.value);
+    return await getTokenApprovalActionsForSpender(
+      preferentialGaugeAddress.value
+    );
   }, isLoadingApprovalsForGauge);
 
   if (approvalActions) stakeActions.value.unshift(...approvalActions);
@@ -167,6 +154,32 @@ function handleClose() {
   confirmationReceipt.value = undefined;
   emit('close');
 }
+
+/**
+ * WATCHERS
+ */
+watch(
+  () => props.action,
+  () => {
+    if (props.action === 'stake') stakeActions.value = [stakeAction];
+    if (props.action === 'unstake') stakeActions.value = [unstakeAction];
+    if (props.action === 'restake')
+      stakeActions.value = [unstakeAction, stakeAction];
+  },
+  { immediate: true }
+);
+
+watch(preferentialGaugeAddress, async () => {
+  if (props.action === 'unstake') return;
+  await loadApprovalsForGauge();
+});
+
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(async () => {
+  if (props.action !== 'unstake') await loadApprovalsForGauge();
+});
 </script>
 
 <template>

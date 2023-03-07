@@ -351,7 +351,10 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        transactionDeadline,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
+        relayerSignature: relayerSignature.value,
+        transactionDeadline: transactionDeadline.value,
       });
 
       priceImpact.value = output.priceImpact;
@@ -394,8 +397,10 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
-        relayerSignature: '',
-        transactionDeadline: transactionDeadline,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
+        relayerSignature: relayerSignature.value,
+        transactionDeadline: transactionDeadline.value,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -424,8 +429,10 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
-        transactionDeadline: transactionDeadline,
+        transactionDeadline: transactionDeadline.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;

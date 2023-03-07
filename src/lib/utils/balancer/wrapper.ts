@@ -1,4 +1,4 @@
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
 
 import configs from '@/lib/config';
@@ -6,6 +6,7 @@ import { configService } from '@/services/config/config.service';
 
 import { convertStEthWrap } from './lido';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 
 export enum WrapType {
   NonWrap = 0,
@@ -55,7 +56,7 @@ export const getWrapOutput = async (
 
 export async function wrap(
   network: string,
-  web3: Web3Provider,
+  web3: WalletProvider,
   wrapper: string,
   amount: BigNumber
 ): Promise<TransactionResponse> {
@@ -74,7 +75,7 @@ export async function wrap(
 
 export async function unwrap(
   network: string,
-  web3: Web3Provider,
+  web3: WalletProvider,
   wrapper: string,
   amount: BigNumber
 ): Promise<TransactionResponse> {
@@ -93,7 +94,7 @@ export async function unwrap(
 
 const wrapNative = async (
   network: string,
-  web3: Web3Provider,
+  web3: WalletProvider,
   amount: BigNumber
 ): Promise<TransactionResponse> => {
   const txBuilder = new TransactionBuilder(web3.getSigner());
@@ -107,7 +108,7 @@ const wrapNative = async (
 
 const unwrapNative = async (
   network: string,
-  web3: Web3Provider,
+  web3: WalletProvider,
   amount: BigNumber
 ): Promise<TransactionResponse> => {
   const txBuilder = new TransactionBuilder(web3.getSigner());
@@ -121,7 +122,7 @@ const unwrapNative = async (
 
 const wrapLido = async (
   network: string,
-  web3: Web3Provider,
+  web3: WalletProvider,
   amount: BigNumber
 ): Promise<TransactionResponse> => {
   const txBuilder = new TransactionBuilder(web3.getSigner());
@@ -135,7 +136,7 @@ const wrapLido = async (
 
 const unwrapLido = async (
   network: string,
-  web3: Web3Provider,
+  web3: WalletProvider,
   amount: BigNumber
 ): Promise<TransactionResponse> => {
   const txBuilder = new TransactionBuilder(web3.getSigner());
