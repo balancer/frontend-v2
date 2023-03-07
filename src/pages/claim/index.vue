@@ -12,7 +12,7 @@ import ProtocolRewardsTable, {
   ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { isGnosis, isL2, isMainnet } from '@/composables/useNetwork';
+import { isL2, isMainnet } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
@@ -81,7 +81,7 @@ const networks: NetworkMetadata[] = [
  * COMPUTED
  */
 const loading = computed(
-  (): boolean => isClaimsLoading.value && isWalletReady.value && !isGnosis.value
+  (): boolean => isClaimsLoading.value && isWalletReady.value
 );
 
 const networkBtns = computed(() => {
@@ -91,7 +91,7 @@ const networkBtns = computed(() => {
 });
 
 const balRewardsData = computed((): RewardRow[] => {
-  if (!isWalletReady.value || isGnosis.value) return [];
+  if (!isWalletReady.value) return [];
   // Using reduce to filter out gauges we don't have corresponding pools for
   return gauges.value.reduce<RewardRow[]>((arr, gauge) => {
     const amount = formatUnits(gauge.claimableTokens, balToken.value.decimals);
@@ -182,7 +182,7 @@ function gaugeTitle(pool: GaugePool): string {
 }
 
 function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
-  if (!isWalletReady.value || !data || isGnosis.value) return [];
+  if (!isWalletReady.value || !data) return [];
 
   return Object.keys(data).map(tokenAddress => {
     const token = getToken(tokenAddress);
@@ -315,10 +315,6 @@ onBeforeMount(async () => {
             </div>
           </div>
         </template>
-
-        <BalBlankSlate v-else-if="isGnosis" class="px-4 xl:px-0 mt-4 mb-16">
-          {{ $t('noClaimableIncentivesOnThisChain') }}
-        </BalBlankSlate>
         <BalBlankSlate
           v-else-if="
             (!isClaimsLoading && gaugeTables.length === 0) || !isWalletReady

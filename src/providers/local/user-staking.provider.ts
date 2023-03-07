@@ -3,7 +3,6 @@
  */
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
-import { isGnosis } from '@/composables/useNetwork';
 import { fiatValueOf } from '@/composables/usePool';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
@@ -67,12 +66,12 @@ const provider = () => {
 
   // Is loading any user staking data?
   const isLoading = computed((): boolean => {
-    return isGnosis.value
-      ? isQueryLoading(stakedPoolsQuery)
-      : isQueryLoading(userGaugeSharesQuery) ||
-          isQueryLoading(stakedSharesQuery) ||
-          isQueryLoading(userBoostsQuery) ||
-          isQueryLoading(stakedPoolsQuery);
+    return (
+      isQueryLoading(userGaugeSharesQuery) ||
+      isQueryLoading(stakedSharesQuery) ||
+      isQueryLoading(userBoostsQuery) ||
+      isQueryLoading(stakedPoolsQuery)
+    );
   });
 
   /**

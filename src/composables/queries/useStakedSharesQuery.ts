@@ -7,7 +7,6 @@ import { GaugeShare } from './useUserGaugeSharesQuery';
 import { BigNumber } from '@ethersproject/bignumber';
 import { bnSum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
-import { isGnosis } from '../useNetwork';
 import { logFetchException } from '@/lib/utils/exceptions';
 import { getMulticaller } from '@/dependencies/Multicaller';
 
@@ -45,8 +44,7 @@ export default function useStakedSharesQuery(
    * COMPUTED
    */
   const enabled = computed(
-    (): boolean =>
-      !!userGaugeShares.value && isWalletReady.value && !isGnosis.value
+    (): boolean => !!userGaugeShares.value && isWalletReady.value
   );
 
   /**

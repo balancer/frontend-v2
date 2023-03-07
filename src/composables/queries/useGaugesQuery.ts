@@ -4,7 +4,6 @@ import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { gaugesSubgraphService } from '@/services/balancer/gauges/gauges-subgraph.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
-import { isGnosis } from '../useNetwork';
 
 /**
  * TYPES
@@ -37,7 +36,7 @@ export default function useGaugesQuery(options: QueryOptions = {}) {
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: !isGnosis.value,
+    enabled: true,
     ...options,
   });
 
