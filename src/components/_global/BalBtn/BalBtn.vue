@@ -38,13 +38,17 @@ type Props = {
     | 'gray'
     | 'red'
     | 'white'
-    | 'blue';
+    | 'blue'
+    | 'yellow'
+    | 'black';
   label?: string;
   block?: boolean;
   circle?: boolean;
   outline?: boolean;
   flat?: boolean;
   rounded?: boolean;
+  loading: boolean;
+  loadingLabel: string;
   disabled?: boolean;
 };
 
@@ -58,6 +62,8 @@ const props = withDefaults(defineProps<Props>(), {
   outline: false,
   flat: false,
   rounded: false,
+  loading: false,
+  loadingLabel: 'loading...',
   disabled: false,
 });
 
