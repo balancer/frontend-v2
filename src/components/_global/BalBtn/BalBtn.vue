@@ -47,8 +47,8 @@ type Props = {
   outline?: boolean;
   flat?: boolean;
   rounded?: boolean;
-  loading: boolean;
-  loadingLabel: string;
+  loading?: boolean;
+  loadingLabel?: string;
   disabled?: boolean;
 };
 
