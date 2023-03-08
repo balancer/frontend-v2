@@ -8,7 +8,6 @@ import { chunk, flatten } from 'lodash';
 
 import { networkId } from '@/composables/useNetwork';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
-import configs from '@/lib/config';
 import { bnum } from '@/lib/utils';
 import { multicall } from '@/lib/utils/balancer/contract';
 import { ipfsService } from '@/services/ipfs/ipfs.service';
@@ -38,6 +37,7 @@ export enum MerkleOrchardVersion {
 
 export class ClaimService {
   merkleOrchardConfig: any;
+  merkleOrchardAddress: string;
 
   constructor(
     public readonly merkleOrchardVersion: MerkleOrchardVersion = MerkleOrchardVersion.V1
@@ -45,9 +45,16 @@ export class ClaimService {
     switch (merkleOrchardVersion) {
       case MerkleOrchardVersion.V1:
         this.merkleOrchardConfig = MerkleOrchardV1Config;
+        this.merkleOrchardAddress =
+          configService.network.addresses.merkleOrchard;
         break;
       case MerkleOrchardVersion.V2:
+        if (!configService.network.addresses.merkleOrchardV2) {
+          throw new Error('Merkle Orchard V2 not deployed on this network');
+        }
         this.merkleOrchardConfig = MerkleOrchardV2Config;
+        this.merkleOrchardAddress = configService.network.addresses
+          .merkleOrchardV2 as string;
         break;
       default:
         throw new Error('Invalid Merkle Orchard version');
@@ -132,7 +139,7 @@ export class ClaimService {
 
       const txBuilder = new TransactionBuilder(provider.getSigner());
       return await txBuilder.contract.sendTransaction({
-        contractAddress: configs[networkId.value].addresses.merkleOrchard,
+        contractAddress: this.merkleOrchardAddress,
         abi: merkleOrchardAbi,
         action: 'claimDistributions',
         params: [account, flatten(multiTokenClaims), tokens],
@@ -211,13 +218,13 @@ export class ClaimService {
     const { token, distributor, weekStart } = tokenClaimInfo;
 
     const claimStatusCalls = Array.from({ length: totalWeeks }).map((_, i) => [
-      configService.network.addresses.merkleOrchard,
+      this.merkleOrchardAddress,
       'isClaimed',
       [token, distributor, weekStart + i, account],
     ]);
 
     const rootCalls = Array.from({ length: totalWeeks }).map((_, i) => [
-      configService.network.addresses.merkleOrchard,
+      this.merkleOrchardAddress,
       'getDistributionRoot',
       [token, distributor, weekStart + i],
     ]);
