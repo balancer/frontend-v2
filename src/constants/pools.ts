@@ -790,6 +790,18 @@ const POOLS_GNOSIS: Pools = {
       name: 'Balancer Boosted Agave USD',
       hasIcon: false,
     },
+    '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011': {
+      name: 'Balancer Agave Boosted GNO/USD',
+      hasIcon: false,
+    },
+    '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012': {
+      name: 'Balancer Agave Boosted GNO/WETH',
+      hasIcon: false,
+    },
+    '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013': {
+      name: 'Balancer Agave Boosted WETH/WBTC/USD',
+      hasIcon: false,
+    },
   },
   DisabledJoins: [],
 };
