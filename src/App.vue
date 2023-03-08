@@ -20,6 +20,7 @@ import { useSidebar } from './composables/useSidebar';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
+import { api } from './services/api/api.client';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -71,17 +72,30 @@ export default defineComponent({
       isThirdPartyServicesModalVisible.value = value;
     }
 
-    /**
-     * WATCHERS
-     */
-    watch(route, newRoute => {
-      updateBgColorFor(newRoute);
-      if (newRoute.meta.layout) {
-        layout.value = newRoute.meta.layout as string;
-      } else {
-        layout.value = 'DefaultLayout';
-      }
-    });
+    onMounted(async () => {
+      const prices = await api.get({
+        query: `
+          {
+            tokenGetCurrentPrices{
+              address
+              price
+            }
+          }
+        `,
+      });
+      console.log('prices', prices);
+    }),
+      /**
+       * WATCHERS
+       */
+      watch(route, newRoute => {
+        updateBgColorFor(newRoute);
+        if (newRoute.meta.layout) {
+          layout.value = newRoute.meta.layout as string;
+        } else {
+          layout.value = 'DefaultLayout';
+        }
+      });
 
     return {
       // state
