@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { claimService } from '@/services/claim/claim.service';
+import { ClaimService } from '@/services/claim/claim.service';
 import { MultiTokenPendingClaims } from '@/services/claim/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -13,13 +13,18 @@ type UserClaimsQueryResponse = {
 
 type QueryOptions = UseQueryOptions<UserClaimsQueryResponse>;
 
-export default function useUserClaimsQuery(options: QueryOptions = {}) {
+export default function useUserClaimsQuery(
+  claimService: ClaimService,
+  options: QueryOptions = {}
+) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
 
   // DATA
-  const queryKey = reactive(QUERY_KEYS.Claims.All(networkId, account));
+  const queryKey = reactive(
+    QUERY_KEYS.Claims.All(networkId, account, claimService.merkleOrchardVersion)
+  );
 
   // COMPUTED
   const enabled = computed(() => isWalletReady.value && account.value != null);
