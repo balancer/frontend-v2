@@ -30,6 +30,7 @@ async function getTokenPrices() {
   return { price, address };
 }
 
+//TODO: this is here so i could bypass the eslint :)
 getTokenPrices();
 
 // If you uncomment this code, you'll notice that there are type errors
