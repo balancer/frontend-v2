@@ -9,7 +9,7 @@
     },
     {
       "label": "BANK",
-      "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
+      "distributor": "0x9d20FE66eC5Dd15a3D3213556534C77cA20318bE",
       "token": "0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198",
       "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/master/reports/_current-bankless.json",
       "weekStart": 12
