@@ -16,7 +16,8 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 
 import { configService } from '../config/config.service';
 import { claimWorkerPoolService } from './claim-worker-pool.service';
-import MultiTokenClaim from './MultiTokenClaim.json';
+import MerkleOrchardV1Config from './MerkleOrchardV1Config.json';
+import MerkleOrchardV2Config from './MerkleOrchardV2Config.json';
 import TokenDecimals from './TokenDecimals.json';
 import {
   ClaimProofTuple,
@@ -30,7 +31,29 @@ import {
 } from './types';
 import { TransactionBuilder } from '../web3/transactions/transaction.builder';
 
+export enum MerkleOrchardVersion {
+  V1 = 'v1',
+  V2 = 'v2',
+}
+
 export class ClaimService {
+  merkleOrchardConfig: any;
+
+  constructor(
+    public readonly merkleOrchardVersion: MerkleOrchardVersion = MerkleOrchardVersion.V1
+  ) {
+    switch (merkleOrchardVersion) {
+      case MerkleOrchardVersion.V1:
+        this.merkleOrchardConfig = MerkleOrchardV1Config;
+        break;
+      case MerkleOrchardVersion.V2:
+        this.merkleOrchardConfig = MerkleOrchardV2Config;
+        break;
+      default:
+        throw new Error('Invalid Merkle Orchard version');
+    }
+  }
+
   public async getMultiTokensPendingClaims(
     account: string
   ): Promise<MultiTokenPendingClaims[]> {
@@ -154,7 +177,7 @@ export class ClaimService {
   }
 
   private getTokenClaimsInfo() {
-    const tokenClaims = MultiTokenClaim[networkId.value];
+    const tokenClaims = this.merkleOrchardConfig[networkId.value];
     const tokenDecimals = TokenDecimals[networkId.value];
 
     if (tokenClaims != null) {
@@ -236,5 +259,3 @@ export class ClaimService {
     return Object.fromEntries(reports.map((report, i) => [weeks[i], report]));
   }
 }
-
-export const claimService = new ClaimService();
