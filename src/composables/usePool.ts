@@ -30,8 +30,8 @@ import {
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
-import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
+import { hasBalEmissions } from './useAPR';
 
 /**
  * METHODS
