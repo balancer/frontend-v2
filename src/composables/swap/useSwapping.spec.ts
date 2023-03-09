@@ -9,7 +9,6 @@ import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
 import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
-import { noop } from 'lodash';
 import { mock, mockDeep } from 'vitest-mock-extended';
 import mockSorOutput from './__mocks__/mockSorOutput';
 import { TokensResponse } from '@/providers/tokens.provider';
@@ -39,8 +38,6 @@ vi.spyOn(useSor, 'default').mockImplementation(() => {
 
 const mockTokensOutput = { value: {} };
 const tokensProviderOverride: DeepPartial<TokensResponse> = {
-  injectTokens: vi.fn(noop),
-  priceFor: vi.fn(noop),
   getToken: () => mockTokenInfoIn,
   tokens: mockTokensOutput,
 };
