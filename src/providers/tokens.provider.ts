@@ -13,7 +13,9 @@ import {
 
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
-import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
+import useTokenPricesQuery, {
+  TokenPrices,
+} from '@/composables/queries/useTokenPricesQuery';
 import useConfig from '@/composables/useConfig';
 import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
@@ -23,11 +25,11 @@ import {
   getAddressFromPoolId,
   includesAddress,
   isSameAddress,
+  selectByAddress,
 } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { UserSettingsResponse } from '@/providers/user-settings.provider';
 import { TokenListsResponse } from '@/providers/token-lists.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
@@ -61,7 +63,6 @@ export const tokensProvider = (
    * COMPOSABLES
    */
   const { networkConfig } = useConfig();
-  const { currency } = userSettings;
   const { isWalletReady } = useWeb3();
   const {
     tokensListPromise,
@@ -377,9 +378,8 @@ export const tokensProvider = (
    * Fetch price for a token
    */
   function priceFor(address: string): number {
-    if (address) address = getAddress(address);
     try {
-      return prices.value[address][currency.value] || 0;
+      return selectByAddress(prices.value, address) || 0;
     } catch {
       return 0;
     }
@@ -389,9 +389,8 @@ export const tokensProvider = (
    * Fetch balance for a token
    */
   function balanceFor(address: string): string {
-    if (address) address = getAddress(address);
     try {
-      return balances.value[address] || '0';
+      return selectByAddress(balances.value, address) || '0';
     } catch {
       return '0';
     }
@@ -401,7 +400,7 @@ export const tokensProvider = (
    * Checks if token has a balance
    */
   function hasBalance(address: string): boolean {
-    return Number(balances.value[address]) > 0;
+    return Number(selectByAddress(balances.value, address) || '0') > 0;
   }
 
   /**
@@ -416,8 +415,7 @@ export const tokensProvider = (
    */
   function getToken(address: string): TokenInfo {
     address = getAddressFromPoolId(address); // In case pool ID has been passed
-    if (address) address = getAddress(address);
-    return tokens.value[address];
+    return selectByAddress(tokens.value, address) as TokenInfo;
   }
 
   /**

@@ -3,9 +3,9 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { NativeAsset, TokenInfo } from '@/types/TokenList';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
+import { TokenPrices } from '@/composables/queries/useTokenPricesQuery';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';

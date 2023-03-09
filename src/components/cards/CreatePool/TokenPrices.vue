@@ -4,6 +4,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import coingecko from '@/assets/images/icons/coingecko.svg';
+import { selectByAddress } from '@/lib/utils';
 
 type Props = {
   toggleUnknownPriceModal?: () => void;
@@ -25,12 +26,14 @@ const { fNum } = useNumbers();
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 const knownTokens = computed(() =>
   validTokens.value.filter(
-    token => priceFor(token) !== 0 && !injectedPrices.value[token]?.usd
+    token =>
+      priceFor(token) !== 0 && !selectByAddress(injectedPrices.value, token)
   )
 );
 const unknownTokens = computed(() =>
   validTokens.value.filter(
-    token => priceFor(token) === 0 || injectedPrices.value[token]?.usd
+    token =>
+      priceFor(token) === 0 || selectByAddress(injectedPrices.value, token)
   )
 );
 const hasUnknownPrice = computed(() =>
@@ -89,18 +92,24 @@ const hasUnknownPrice = computed(() =>
             <span
               :class="[
                 'w-1/2 text-left',
-                { 'font-medium': injectedPrices[token]?.usd === undefined },
+                {
+                  'font-medium':
+                    selectByAddress(injectedPrices, token) === undefined,
+                },
               ]"
               >{{ getToken(token)?.symbol }}</span
             >
             <BalStack
-              v-if="injectedPrices[token]?.usd !== undefined"
+              v-if="selectByAddress(injectedPrices, token) !== undefined"
               horizontal
               align="center"
               class="w-1/2 text-right"
             >
               <span class="w-4/5 break-words">{{
-                fNum(injectedPrices[token]?.usd, FNumFormats.fiat)
+                fNum(
+                  selectByAddress(injectedPrices, token) || 0,
+                  FNumFormats.fiat
+                )
               }}</span>
               <BalIcon size="sm" name="edit" class="mr-px" />
             </BalStack>

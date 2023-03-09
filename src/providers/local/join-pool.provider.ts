@@ -96,7 +96,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   /**
    * COMPOSABLES
    */
-  const { getTokens, prices, injectTokens, priceFor } = useTokens();
+  const { getTokens, injectTokens, priceFor } = useTokens();
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -278,7 +278,6 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
@@ -308,7 +307,6 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
       return joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,

@@ -1,15 +1,14 @@
 import { reactive, Ref, ref } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
-
 import QUERY_KEYS from '@/constants/queryKeys';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-
 import useNetwork from '../useNetwork';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { api } from '@/services/api/api.client';
+import { GqlTokenPrice } from '@/services/api/graphql/generated/api-types';
 
 /**
  * TYPES
  */
+export type TokenPrices = { [address: string]: number };
 type QueryResponse = TokenPrices;
 type QueryOptions = UseQueryOptions<QueryResponse>;
 
@@ -27,6 +26,13 @@ export default function useTokenPricesQuery(
     QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject)
   );
 
+  function priceArrayToMap(prices: GqlTokenPrice[]): TokenPrices {
+    return prices.reduce(
+      (obj, item) => ((obj[item.address] = item.price), obj),
+      {}
+    );
+  }
+
   function injectCustomTokens(
     prices: TokenPrices,
     pricesToInject: TokenPrices
@@ -37,23 +43,14 @@ export default function useTokenPricesQuery(
     return prices;
   }
 
-  const balancer = getBalancer();
   const queryFn = async () => {
-    const priceData = await Promise.all(
-      addresses.value.map(a => balancer.data.tokenPrices.find(a))
-    );
+    const { prices } = await api.GetCurrentTokenPrices();
 
-    let prices = addresses.value.reduce(
-      (obj, key, index) => ({
-        ...obj,
-        [key]: priceData[index],
-      }),
-      {}
-    );
-
-    prices = injectCustomTokens(prices, pricesToInject.value);
+    let pricesMap = priceArrayToMap(prices);
+    pricesMap = injectCustomTokens(pricesMap, pricesToInject.value);
     console.log('Fetching', Object.values(prices).length, 'prices');
-    return prices;
+
+    return pricesMap;
   };
 
   const queryOptions = reactive({
