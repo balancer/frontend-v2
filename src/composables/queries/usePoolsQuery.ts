@@ -139,7 +139,7 @@ export default function usePoolsQuery(
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
         poolType: { not_in: POOLS.ExcludedPoolTypes },
-        totalShares: { gt: 0.01 },
+        totalShares: { gt: 0.00001 },
         id: { not_in: POOLS.BlockList },
       },
     };
