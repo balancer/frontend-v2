@@ -243,6 +243,7 @@ const POOLS_MAINNET: Pools = {
       '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a', // gearbox stable
       '0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499', // yearn stable
       '0xdb3b48f27332c171869f2ae4160bc93a8eed347c00000000000000000000049b', // baoUSD USDC
+      '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
     ],
   },
   Investment: {
@@ -791,15 +792,15 @@ const POOLS_GNOSIS: Pools = {
       hasIcon: false,
     },
     '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011': {
-      name: 'Balancer Agave Boosted GNO/USD',
+      name: 'Balancer Boosted Agave GNO/USD',
       hasIcon: false,
     },
     '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012': {
-      name: 'Balancer Agave Boosted GNO/WETH',
+      name: 'Balancer Boosted Agave GNO/WETH',
       hasIcon: false,
     },
     '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013': {
-      name: 'Balancer Agave Boosted WETH/WBTC/USD',
+      name: 'Balancer Boosted Agave WETH/WBTC/USD',
       hasIcon: false,
     },
   },
