@@ -4,7 +4,13 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS, APR_THRESHOLD, DeprecatedDetails } from '@/constants/pools';
+import {
+  POOLS,
+  APR_THRESHOLD,
+  DeprecatedDetails,
+  PoolMetadata,
+  POOLS_MAP,
+} from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -20,6 +26,7 @@ import {
   appUrl,
   getNetworkSlug,
   isL2,
+  networkId,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
@@ -100,14 +107,15 @@ export function isDeep(pool: Pool): boolean {
     '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489', // bb-i-usd (mainnet)
     '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65', // tetu/qi (polygon)
     '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
-    // '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
-    // '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
+    '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
+    '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
     '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
     '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a', // bb-g-usd (mainnet)
     '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // agave stable (gnosis)
     '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto (gnosis)
     '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011', // agave gno/usdc (gnosis)
     '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012', // agave gno/weth (gnosis)
+    '0x3f7a7fd7f214be45ec26820fd01ac3be4fc75aa70002000000000000000004c5', // stg/bbeusd
   ];
 
   return treatAsDeep.includes(pool.id);
@@ -569,6 +577,16 @@ export function isJoinsDisabled(id: string): boolean {
  */
 export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
   return POOLS.Deprecated?.[id.toLowerCase()];
+}
+
+/**
+ * Get metadata for a pool if it exists
+ */
+export function poolMetadata(
+  id: string,
+  network = networkId.value
+): PoolMetadata | undefined {
+  return POOLS_MAP[network]?.Metadata[id.toLowerCase()];
 }
 
 /**

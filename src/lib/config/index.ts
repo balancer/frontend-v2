@@ -47,6 +47,7 @@ export interface Config {
   addresses: {
     merkleRedeem: string;
     merkleOrchard: string;
+    merkleOrchardV2?: string;
     multicall: string;
     vault: string;
     weightedPoolFactory: string;

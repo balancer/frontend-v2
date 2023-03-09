@@ -31,6 +31,7 @@ const networkFilters = [
   Network.POLYGON,
   Network.ARBITRUM,
   Network.OPTIMISM,
+  Network.GNOSIS,
 ];
 
 /**
