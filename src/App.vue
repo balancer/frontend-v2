@@ -73,18 +73,7 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      const { tokenGetCurrentPrices: prices } = await api.get<{
-        tokenGetCurrentPrices: { address: string; price: string }[];
-      }>({
-        query: `
-          {
-            tokenGetCurrentPrices{
-              address
-              price
-            }
-          }
-        `,
-      });
+      const { prices } = await api.GetCurrentTokenPrices();
       console.log('prices', prices);
     }),
       /**

@@ -1,34 +1,10 @@
-import { Network } from '@balancer-labs/sdk';
+import { GraphQLClient } from 'graphql-request';
+import { getSdk } from './graphql/generated/api-types';
 import { configService } from '../config/config.service';
 
-class ApiClient {
-  constructor(
-    public readonly baseUrl = configService.network.api,
-    public readonly appNetwork = configService.network.chainId
-  ) {}
+const graphQLClient = new GraphQLClient(configService.network.api, {
+  headers: { ChainId: configService.network.chainId.toString() },
+});
 
-  async get<T>({
-    query,
-    network = this.appNetwork,
-  }: {
-    query: string;
-    network?: Network;
-  }): Promise<T> {
-    if (!this.baseUrl) throw new Error('No API URL provided');
-
-    const res = await fetch(this.baseUrl, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        chainId: network.toString(),
-      },
-      body: JSON.stringify({ query }),
-    });
-    const { data }: { data: T } = await res.json();
-
-    return data;
-  }
-}
-
-export const api = new ApiClient();
+// getSdk creates a typed client that can be used to fetch data
+export const api = getSdk(graphQLClient);

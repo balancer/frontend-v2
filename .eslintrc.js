@@ -103,5 +103,11 @@ module.exports = {
         jest: true,
       },
     },
+    {
+      files: ['src/services/api/graphql/generated/**/*.ts'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
+      },
+    },
   ],
 };

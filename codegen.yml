@@ -1,6 +1,6 @@
 overwrite: true
 generates:
-  generated/balancer-api-types.ts:
+  src/services/api/graphql/generated/api-types.ts:
     schema: ${BALANCER_API_URL:https://test-api.balancer.fi/graphql}
     documents: 'src/**/*.graphql'
     plugins:
@@ -12,10 +12,10 @@ generates:
         BigInt: string
         Bytes: string
         BigDecimal: string
-  generated/balancer-api-schema.graphql:
+  src/services/api/graphql/generated/api-schema.graphql:
     schema: ${BALANCER_API_URL:https://test-api.balancer.fi/graphql}
     plugins:
       - schema-ast
 hooks:
   afterOneFileWrite:
-    - eslint --fix
+    - npm run lint:fix
