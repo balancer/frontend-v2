@@ -4,6 +4,7 @@ import { deprecatedDetails } from '@/composables/usePool';
 import NewPoolData from './NewPoolData.vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
+import GradientCard from '@/components/cards/GradientCard/GradientCard.vue';
 
 /**
  * TYPES
@@ -71,7 +72,12 @@ const suggestedPools = computed(() => {
     class="mb-4 h-60 pool-actions-card"
   />
   <BalStack v-else vertical>
-    <BalCard shadow="2xl" noPad class="rounded-xl migration-card" growContent>
+    <GradientCard
+      :imgUrls="[
+        '/images/migration/migration-bg.jpg',
+        '/images/migration/migration-bg.avif',
+      ]"
+    >
       <div class="flex flex-col items-center text-white">
         <div class="px-6 pt-7 pb-4">
           <div class="mb-4 text-3xl font-bold text-opacity-90">
@@ -107,7 +113,7 @@ const suggestedPools = computed(() => {
           />
         </div>
       </div>
-    </BalCard>
+    </GradientCard>
   </BalStack>
 </template>
 
