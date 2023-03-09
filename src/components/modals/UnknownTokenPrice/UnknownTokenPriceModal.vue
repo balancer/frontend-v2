@@ -25,33 +25,25 @@ const emit = defineEmits(['close']);
 const PRICE_CAP = 100000000;
 
 /**
- * STATE
- */
-
-/**
  * COMPOSABLES
  */
 const { seedTokens } = usePoolCreation();
-const { getToken, injectPrices, injectedPrices } = useTokens();
+const { getToken, injectPrices, priceFor } = useTokens();
 const { t } = useI18n();
 
 /**
- * LIFECYCLE
+ * COMPUTED
  */
 const unknownTokenPrices = computed((): TokenPrices => {
   const _unknownTokenPrices = {};
   for (const token of props.unknownTokens) {
     _unknownTokenPrices[token] = {
-      [FiatCurrency.usd]:
-        injectedPrices.value?.[token]?.[FiatCurrency.usd] || null,
+      [FiatCurrency.usd]: priceFor(token) || null,
     };
   }
   return _unknownTokenPrices;
 });
 
-/**
- * COMPUTED
- */
 const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
     tokenAddress => getToken(tokenAddress)?.symbol
