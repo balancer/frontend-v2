@@ -1,8 +1,6 @@
-import { mountComposable } from '@tests/mount-helpers';
+import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import BigNumber from 'bignumber.js';
 import useNumbers, { bspToDec, FNumFormats } from './useNumbers';
-
-vi.mock('@/providers/tokens.provider');
 
 describe('useNumbers', () => {
   const { result } = mountComposable(() => useNumbers());
