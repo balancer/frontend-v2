@@ -8,10 +8,11 @@ import { provideTokenLists } from '@/providers/token-lists.provider';
 import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
 import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { mountComposable } from '@tests/mount-helpers';
-import { noop } from 'lodash';
+import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { mock, mockDeep } from 'vitest-mock-extended';
 import mockSorOutput from './__mocks__/mockSorOutput';
+import { TokensResponse } from '@/providers/tokens.provider';
+import { DeepPartial } from '@tests/unit/types';
 
 initOldMulticallerWithDefaultMocks();
 initEthersContractWithDefaultMocks();
@@ -35,21 +36,11 @@ vi.spyOn(useSor, 'default').mockImplementation(() => {
   return mockSorOutput;
 });
 
-vi.mock('@/providers/tokens.provider', () => {
-  const mockTokensOutput = { value: {} };
-
-  return {
-    useTokens: () => {
-      return {
-        injectTokens: vi.fn(noop),
-        priceFor: vi.fn(noop),
-        useTokens: vi.fn(noop),
-        getToken: vi.fn(() => ({ value: mockTokenInfoIn })),
-        tokens: mockTokensOutput,
-      };
-    },
-  };
-});
+const mockTokensOutput = { value: {} };
+const tokensProviderOverride: DeepPartial<TokensResponse> = {
+  getToken: () => mockTokenInfoIn,
+  tokens: mockTokensOutput,
+};
 
 const swapInfoMock = mock<SwapInfo>();
 
@@ -103,14 +94,16 @@ const mockProps = {
 
 describe('useSwapping', () => {
   it('Should load', () => {
-    const { result } = mountComposable(() =>
-      useSwapping(
-        mockProps.exactIn,
-        mockProps.tokenInAddressInput,
-        mockProps.tokenInAmountInput,
-        mockProps.tokenOutAddressInput,
-        mockProps.tokenOutAmountInput
-      )
+    const { result } = mountComposable(
+      () =>
+        useSwapping(
+          mockProps.exactIn,
+          mockProps.tokenInAddressInput,
+          mockProps.tokenInAmountInput,
+          mockProps.tokenOutAddressInput,
+          mockProps.tokenOutAmountInput
+        ),
+      { tokensProviderOverride }
     );
     expect(result).toBeTruthy();
   });
@@ -135,6 +128,7 @@ describe('useSwapping', () => {
         provide(UserSettingsProviderSymbol, userSettingsResponse),
           provideTokenLists();
       },
+      tokensProviderOverride,
     });
     await result.joinExit.handleAmountChange();
 

@@ -12,11 +12,6 @@ vi.mock('@/providers/tokens.provider');
 vi.mock('@/composables/queries/useProtocolRewardsQuery');
 vi.mock('@/services/rpc-provider/rpc-provider.service');
 
-vi.mock('@/services/balancer/contracts/contracts/fee-distributor');
-vi.mock('@/providers/tokens.provider');
-vi.mock('@/composables/queries/useProtocolRewardsQuery');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-
 const mockClaimBalance = vi.fn().mockResolvedValue(txResponseMock);
 const mockClaimBalances = vi.fn().mockResolvedValue(txResponseMock);
 

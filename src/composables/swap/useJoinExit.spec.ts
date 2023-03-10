@@ -4,18 +4,7 @@ import { computed, ref } from 'vue';
 import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
-import { mountComposable } from '@tests/mount-helpers';
-
-vi.mock('@/providers/tokens.provider', () => ({
-  useTokens: () => {
-    return {
-      injectTokens: vi.fn(noop),
-      priceFor: vi.fn(noop),
-      useTokens: vi.fn(noop),
-      getToken: vi.fn(noop),
-    };
-  },
-}));
+import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 
 initBalancerWithDefaultMocks();
 
