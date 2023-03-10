@@ -45,3 +45,7 @@ export function getConnectorName(
   }
   return t('unknown');
 }
+
+export function isWalletConnectWallet(connectorId: ConnectorId) {
+  return connectorId === ConnectorId.WalletConnect;
+}
