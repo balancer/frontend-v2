@@ -8,5 +8,6 @@
 .gradients {
   background-image: url('/images/gradients/gradient-1.avif'),
     url('/images/gradients/gradients-1.jpg');
+  background-position: center;
 }
 </style>

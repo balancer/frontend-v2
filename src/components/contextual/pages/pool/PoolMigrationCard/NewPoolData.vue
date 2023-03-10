@@ -42,7 +42,7 @@ const isHovered = ref(false);
       name: 'pool',
       params: { id: pool.id, networkSlug },
     }"
-    class="flex justify-between items-center py-3 border-t border-gray-300 border-opacity-25 cursor-pointer hover:bg-[#11182766]"
+    class="flex justify-between items-center py-3 pl-1 border-t border-gray-300 border-opacity-25 transition-all duration-100 cursor-pointer hover:bg-[#11182766]"
     @mouseleave="isHovered = false"
     @mouseover="isHovered = true"
   >

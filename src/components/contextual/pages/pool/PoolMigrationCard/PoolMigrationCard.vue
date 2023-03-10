@@ -72,12 +72,7 @@ const suggestedPools = computed(() => {
     class="mb-4 h-60 pool-actions-card"
   />
   <BalStack v-else vertical>
-    <GradientCard
-      :imgUrls="[
-        '/images/migration/migration-bg.jpg',
-        '/images/migration/migration-bg.avif',
-      ]"
-    >
+    <GradientCard>
       <div class="flex flex-col items-center text-white">
         <div class="px-6 pt-7 pb-4">
           <div class="mb-4 text-3xl font-bold text-opacity-90">
