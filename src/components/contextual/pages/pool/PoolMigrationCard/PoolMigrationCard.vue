@@ -116,10 +116,3 @@ const suggestedPools = computed(() => {
     </GradientCard>
   </BalStack>
 </template>
-
-<style scoped>
-.migration-card {
-  background-image: url('/images/migration/migration-bg.avif'),
-    url('/images/migration/migration-bg.jpg');
-}
-</style>

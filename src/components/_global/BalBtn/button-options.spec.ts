@@ -1,7 +1,6 @@
 import { generateButtonClassSafelist } from './button-options.js';
 
 test('Generates tailwind safelist for dynamic button options', () => {
-  console.log(generateButtonClassSafelist());
   expect(generateButtonClassSafelist()).toMatchInlineSnapshot(`
     [
       "from-primary-600",

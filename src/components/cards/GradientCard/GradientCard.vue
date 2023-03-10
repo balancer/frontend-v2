@@ -1,33 +1,12 @@
-<script setup lang="ts">
-/**
- * TYPES
- */
-type Props = {
-  imgUrls: string[];
-};
-
-/**
- * PROPS
- */
-const props = defineProps<Props>();
-
-const bgImageStyles = computed(() => {
-  const bgStyle = props.imgUrls
-    .map(imgUrl => `bg-[url('${imgUrl}')]`)
-    .join(' ');
-  return {
-    [bgStyle]: true,
-  };
-});
-</script>
-
 <template>
-  <BalCard
-    shadow="2xl"
-    noPad
-    :class="['rounded-xl', bgImageStyles]"
-    growContent
-  >
+  <BalCard shadow="2xl" noPad class="rounded-xl gradients" growContent>
     <slot></slot>
   </BalCard>
 </template>
+
+<style scoped>
+.gradients {
+  background-image: url('/images/gradients/gradient-1.avif'),
+    url('/images/gradients/gradients-1.jpg');
+}
+</style>
