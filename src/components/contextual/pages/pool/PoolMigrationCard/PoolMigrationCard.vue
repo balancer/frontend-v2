@@ -25,22 +25,27 @@ const { networkSlug } = useNetwork();
 
 const poolDeprecatedDetails = computed(() => deprecatedDetails(props.poolId));
 
-let newPoolQuery;
-if (poolDeprecatedDetails.value?.newPool) {
-  newPoolQuery = usePoolQuery(poolDeprecatedDetails.value?.newPool);
-}
+const newPoolQueryEnabled = computed(
+  (): boolean => !!poolDeprecatedDetails.value?.newPool
+);
 
-let suggestedPoolsQuery;
-if (poolDeprecatedDetails.value?.suggestedPools?.length) {
-  suggestedPoolsQuery = usePoolsQuery(
-    ref([]),
-    {},
-    {
-      poolIds: ref(poolDeprecatedDetails.value.suggestedPools),
-      first: 1000,
-    }
-  );
-}
+const newPoolQuery = usePoolQuery(
+  poolDeprecatedDetails.value?.newPool as string,
+  newPoolQueryEnabled
+);
+
+const suggestPoolsQueryEnabled = computed(() => {
+  return !!poolDeprecatedDetails.value?.suggestedPools?.length;
+});
+
+const suggestedPoolsQuery = usePoolsQuery(
+  ref([]),
+  { enabled: suggestPoolsQueryEnabled },
+  {
+    poolIds: ref(poolDeprecatedDetails.value?.suggestedPools as string[]),
+    first: 1000,
+  }
+);
 
 /**
  * COMPUTED
@@ -64,11 +69,18 @@ const suggestedPools = computed(() => {
   }
   return suggestedPoolsQuery.data.value?.pages?.[0].pools;
 });
+
+const showLoadingBlock = computed(() => {
+  return (
+    (newPoolQueryEnabled.value && loadingNewPool.value) ||
+    (suggestPoolsQueryEnabled.value && loadingSuggestedPools.value)
+  );
+});
 </script>
 
 <template>
   <BalLoadingBlock
-    v-if="loadingSuggestedPools || loadingNewPool"
+    v-if="showLoadingBlock"
     class="mb-4 h-60 pool-actions-card"
   />
   <BalStack v-else vertical>
@@ -90,10 +102,12 @@ const suggestedPools = computed(() => {
             <NewPoolData :pool="newPool" />
           </div>
           <div v-else-if="suggestedPools" class="no-pad">
-            <div class="mb-3 font-bold">
+            <div
+              class="pb-3 mx-5 font-bold border-b border-gray-300 border-opacity-25 no-pad"
+            >
               {{ $t('migrateCard.recommendedPool') }}
             </div>
-            <div>
+            <div class="no-pad">
               <NewPoolData
                 v-for="sPool in suggestedPools"
                 :key="sPool.id"

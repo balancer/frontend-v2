@@ -449,10 +449,6 @@ const POOLS_MAINNET: Pools = {
         '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467',
       joinsDisabled: true,
       stakingDisabled: true,
-      suggestedPools: [
-        '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396',
-        '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366',
-      ],
     },
     '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396': {
       newPool:
