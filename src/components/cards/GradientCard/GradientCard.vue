@@ -1,5 +1,5 @@
 <template>
-  <BalCard shadow="2xl" noPad class="rounded-xl gradients" growContent>
+  <BalCard shadow="2xl" noPad class="bg-cover rounded-xl gradients" growContent>
     <slot></slot>
   </BalCard>
 </template>
@@ -8,6 +8,5 @@
 .gradients {
   background-image: url('/images/gradients/gradient-1.avif'),
     url('/images/gradients/gradients-1.jpg');
-  background-position: center;
 }
 </style>

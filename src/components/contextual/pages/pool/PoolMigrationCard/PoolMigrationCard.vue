@@ -74,24 +74,26 @@ const suggestedPools = computed(() => {
   <BalStack v-else vertical>
     <GradientCard>
       <div class="flex flex-col items-center text-white">
-        <div class="px-6 pt-7 pb-4">
-          <div class="mb-4 text-3xl font-bold text-opacity-90">
+        <div class="container pt-5">
+          <div class="mb-2 text-3xl font-bold text-opacity-90">
             {{ $t('migrateCard.title') }}
           </div>
-          <div class="mb-3 text-sm text-opacity-80">
+          <div class="mb-3 text-sm font-medium text-opacity-80">
             {{ $t('migrateCard.description') }}
           </div>
-          <div v-if="newPool">
-            <div class="mb-4 font-bold">
+          <div v-if="newPool" class="no-pad">
+            <div
+              class="pb-3 mx-5 font-bold border-b border-gray-300 border-opacity-25 no-pad pools"
+            >
               {{ $t('migrateCard.upgradedPool') }}
             </div>
             <NewPoolData :pool="newPool" />
           </div>
-          <div v-else-if="suggestedPools">
-            <div class="mb-4 font-bold">
+          <div v-else-if="suggestedPools" class="no-pad">
+            <div class="mb-3 font-bold">
               {{ $t('migrateCard.recommendedPool') }}
             </div>
-            <div class="flex flex-col">
+            <div>
               <NewPoolData
                 v-for="sPool in suggestedPools"
                 :key="sPool.id"
@@ -111,3 +113,8 @@ const suggestedPools = computed(() => {
     </GradientCard>
   </BalStack>
 </template>
+<style scoped>
+.container *:not(.no-pad) {
+  @apply px-5;
+}
+</style>

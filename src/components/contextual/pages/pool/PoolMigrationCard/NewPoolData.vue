@@ -42,11 +42,11 @@ const isHovered = ref(false);
       name: 'pool',
       params: { id: pool.id, networkSlug },
     }"
-    class="flex justify-between items-center py-3 pl-1 border-t border-gray-300 border-opacity-25 transition-all duration-100 cursor-pointer hover:bg-[#11182766]"
+    class="flex justify-between items-center py-3 pl-1 transition-all cursor-pointer hover:bg-[#11182766]"
     @mouseleave="isHovered = false"
     @mouseover="isHovered = true"
   >
-    <div class="flex items-center">
+    <div class="flex gap-2 items-center">
       <BalAssetSet :addresses="iconAddresses(pool)" :width="60" />
       <TokenPills
         :tokens="orderedPoolTokens(pool, pool.tokens)"
@@ -65,7 +65,7 @@ const isHovered = ref(false);
 
 <style scoped>
 .arrow {
-  @apply mr-3 mb-1;
+  @apply mb-1;
 
   color: rgb(255 255 255 / 50%);
 }
