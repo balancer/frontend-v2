@@ -563,6 +563,7 @@ const POOLS_POLYGON: Pools = {
       '0x77e97d4908be63394bc5dff72c8c7bddf1699882000000000000000000000a6a', // augeur
       '0x3db543faf7a92052de7860c5c9debabee59ed5bd000000000000000000000a62', // 4usd
       '0x65fe9314be50890fb01457be076fafd05ff32b9a000000000000000000000a96', // wsteth/eth
+      '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
     ],
   },
   Investment: {
