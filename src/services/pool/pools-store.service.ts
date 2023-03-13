@@ -15,6 +15,10 @@ export class PoolsStoreService implements IPoolsStoreService {
     this.pools.value = pools;
   }
 
+  public addPools(pools: Pool[]): void {
+    this.pools.value = [...(this.pools.value ?? []), ...pools];
+  }
+
   public findPool(id: string): Pool | void {
     return this.pools.value?.find(pool => pool.id === id);
   }
