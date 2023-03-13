@@ -6,6 +6,7 @@ const buttonColors = [
   'blue',
   'pink',
   'yellow',
+  'transparent',
 ];
 
 /**
