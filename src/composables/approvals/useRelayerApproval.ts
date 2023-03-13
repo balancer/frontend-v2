@@ -1,9 +1,8 @@
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, ref, watch } from 'vue';
 import useNetwork from '../useNetwork';
-import { Relayer } from '@balancer-labs/sdk';
+import { Relayer, Vault__factory } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
-import { Vault__factory } from '@balancer-labs/typechain';
 import { useI18n } from 'vue-i18n';
 import { TransactionActionInfo } from '@/types/transactions';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
