@@ -90,10 +90,19 @@ export default defineConfig(({ mode }) => {
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
         'tailwind.config.js': resolve(__dirname, 'tailwind.config.js'),
+        'button-options': resolve(
+          __dirname,
+          'src/components/_global/BalBtn/button-options'
+        ),
       },
     },
     optimizeDeps: {
-      include: ['tailwind.config.js', 'color', 'mersenne-twister'],
+      include: [
+        'tailwind.config.js',
+        'button-options',
+        'color',
+        'mersenne-twister',
+      ],
     },
     server: {
       port: 8080,
@@ -133,7 +142,12 @@ export default defineConfig(({ mode }) => {
       commonjsOptions: {
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
-        include: ['tailwind.config.js', 'node_modules/**'],
+        include: [
+          'tailwind.config.js',
+          'button-options',
+          'node_modules/**',
+          'src/components/_global/BalBtn/button-options.js',
+        ],
         transformMixedEsModules: true, // Enable @walletconnect/web3-provider which has some code in CommonJS
       },
     },
@@ -148,7 +162,7 @@ export default defineConfig(({ mode }) => {
       coverage: {
         reporter: process.env.SILENT_TESTS ? ['lcov'] : ['text', 'lcov'],
       }, // lcov reporter is used by IDE coverage extensions
-      include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+      include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
   };
 });

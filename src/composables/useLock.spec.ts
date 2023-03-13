@@ -1,4 +1,4 @@
-import { mountComposable } from '@tests/mount-helpers';
+import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import waitForExpect from 'wait-for-expect';
 
 import { useLock } from '@/composables/useLock';
@@ -7,8 +7,6 @@ import { defaultLockedAmount } from '@/dependencies/Multicaller.mocks';
 import { provideUserData } from '@/providers/user-data.provider';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { aVeBalPool } from '@tests/unit/builders/pool.builders';
-
-vi.mock('@/providers/tokens.provider');
 
 initDependenciesWithDefaultMocks();
 
