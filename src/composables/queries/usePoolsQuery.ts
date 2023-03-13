@@ -106,8 +106,8 @@ export default function usePoolsQuery(
 
         return decoratedPools;
       },
-      get skip(): number {
-        return balancerSubgraphService.pools.skip;
+      get skip(): undefined {
+        return undefined;
       },
     };
   }
@@ -205,11 +205,11 @@ export default function usePoolsQuery(
     try {
       const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
+      poolsStoreService.addPools(pools);
+
       skip = poolsRepository.currentProvider?.skip
         ? poolsRepository.currentProvider.skip
-        : 0;
-
-      poolsStoreService.setPools(pools);
+        : poolsStoreService.pools.value?.length || 0;
 
       return {
         pools,
@@ -224,7 +224,8 @@ export default function usePoolsQuery(
     }
   };
 
-  options.getNextPageParam = (lastPage: PoolsQueryResponse) => lastPage.skip;
+  options.getNextPageParam = (lastPage: PoolsQueryResponse) =>
+    lastPage.skip || 0;
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, options);
 }
