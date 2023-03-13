@@ -97,6 +97,8 @@ export default class ExchangeService {
       exactOut
     );
 
+    console.log('params', params);
+
     const txBuilder = new TransactionBuilder(signer);
     return await txBuilder.contract.callStatic({
       contractAddress: this.helpersAddress,

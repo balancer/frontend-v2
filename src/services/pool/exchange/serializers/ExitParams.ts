@@ -17,6 +17,7 @@ import { Pool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
 import { encodeExitComposableStablePool } from '@/lib/utils/balancer/composableStablePoolEncoding';
+import { BasePoolEncoder } from '@balancer-labs/sdk';
 
 export default class ExitParams {
   private pool: Ref<Pool>;
@@ -64,6 +65,11 @@ export default class ExitParams {
       amount.gt(0) ? amount.sub(1) : amount
     );
     const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
+    console.log(
+      'isComposableStable(this.pool.value.poolType)',
+      isComposableStable(this.pool.value.poolType)
+    );
+    console.log('poolTokenItselfIndex', poolTokenItselfIndex);
 
     if (
       isComposableStable(this.pool.value.poolType) &&
@@ -132,6 +138,8 @@ export default class ExitParams {
   ): string {
     const isSingleAssetOut = exitTokenIndex !== null;
 
+    // return BasePoolEncoder.recoveryModeExit(bptIn);
+
     if (isSingleAssetOut) {
       return this.dataEncodeFn({
         kind: 'ExactBPTInForOneTokenOut',
@@ -146,9 +154,9 @@ export default class ExitParams {
     } else {
       // Proportional exit
       if (isComposableStable(this.pool.value.poolType)) {
-        return this.dataEncodeFn({
-          amountsOut,
-          maxBPTAmountIn: bptIn,
+        return encodeExitStablePool({
+          kind: 'ExactBPTInForTokensOut',
+          bptAmountIn: bptIn,
         });
       }
       return this.dataEncodeFn({
