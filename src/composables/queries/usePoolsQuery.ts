@@ -21,6 +21,7 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
+import { bnum } from '@/lib/utils';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -178,6 +179,26 @@ export default function usePoolsQuery(
     return fetchArgs;
   }
 
+  function customSort(pools: Pool[]): Pool[] {
+    if (poolsSortField?.value === 'totalLiquidity') return pools;
+
+    if (poolsSortField?.value === 'apr') {
+      return pools.sort((a, b) => {
+        const aprA = a?.apr?.max ?? 0;
+        const aprB = b?.apr?.max ?? 0;
+        return aprB - aprA;
+      });
+    } else if (poolsSortField?.value === 'volume') {
+      return pools.sort((a, b) => {
+        const volumeA = bnum(a?.totalSwapVolume ?? 0);
+        const volumeB = bnum(b?.totalSwapVolume ?? 0);
+        return volumeB.minus(volumeA).toNumber();
+      });
+    }
+
+    return pools;
+  }
+
   /**
    *  When filterTokens changes, re-initialize the repositories as their queries
    *  need to change to filter for those tokens
@@ -208,7 +229,8 @@ export default function usePoolsQuery(
     const fetchOptions = getFetchOptions(pageParam);
     let skip = 0;
     try {
-      const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      let pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      if (!isBalancerApiDefined) pools = customSort(pools);
 
       poolsStoreService.addPools(pools);
 
