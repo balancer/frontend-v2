@@ -118,7 +118,7 @@ export function isDeep(pool: Pool): boolean {
     '0x3f7a7fd7f214be45ec26820fd01ac3be4fc75aa70002000000000000000004c5', // stg/bbeusd
   ];
 
-  return treatAsDeep.includes(pool.id);
+  return treatAsDeep.includes(pool.id) && !isJoinsDisabled(pool.id);
 }
 
 /**
