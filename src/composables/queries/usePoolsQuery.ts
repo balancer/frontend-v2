@@ -132,9 +132,14 @@ export default function usePoolsQuery(
     const tokenListFormatted = filterTokens.value.map(address =>
       address.toLowerCase()
     );
+
+    const orderBy = isBalancerApiDefined
+      ? poolsSortField?.value
+      : 'totalLiquidity';
+
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
-      orderBy: poolsSortField?.value || 'totalLiquidity',
+      orderBy,
       orderDirection: 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
