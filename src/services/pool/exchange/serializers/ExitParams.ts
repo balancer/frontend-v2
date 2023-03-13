@@ -138,7 +138,9 @@ export default class ExitParams {
   ): string {
     const isSingleAssetOut = exitTokenIndex !== null;
 
-    // return BasePoolEncoder.recoveryModeExit(bptIn);
+    if (this.pool.value.isInRecoveryMode) {
+      return BasePoolEncoder.recoveryModeExit(bptIn);
+    }
 
     if (isSingleAssetOut) {
       return this.dataEncodeFn({
