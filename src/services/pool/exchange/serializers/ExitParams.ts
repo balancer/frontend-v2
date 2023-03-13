@@ -65,11 +65,6 @@ export default class ExitParams {
       amount.gt(0) ? amount.sub(1) : amount
     );
     const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
-    console.log(
-      'isComposableStable(this.pool.value.poolType)',
-      isComposableStable(this.pool.value.poolType)
-    );
-    console.log('poolTokenItselfIndex', poolTokenItselfIndex);
 
     if (
       isComposableStable(this.pool.value.poolType) &&
