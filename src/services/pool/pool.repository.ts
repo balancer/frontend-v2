@@ -25,7 +25,7 @@ export default class PoolRepository {
   public async fetch(queryArgs: GraphQLArgs): Promise<Pool> {
     this.queryArgs = queryArgs;
     const [pool] = await this.repository.fetch();
-    return pool;
+    return pool as Pool;
   }
 
   private initializeDecoratedAPIRepository() {
