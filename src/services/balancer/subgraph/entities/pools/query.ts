@@ -91,6 +91,7 @@ const defaultAttrs = {
   priceRateProviders: priceRateProviderAttrs,
   tokens: tokenTreeAttrs,
   poolTypeVersion: true,
+  isInRecoveryMode: true,
 };
 
 export default (args = {}, attrs = {}) => ({

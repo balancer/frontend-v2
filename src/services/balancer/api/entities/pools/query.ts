@@ -93,6 +93,7 @@ export const defaultAttrs = {
     priceRateProviders: priceRateProviderAttrs,
     tokens: tokenTreeAttrs,
     isNew: true,
+    isInRecoveryMode: true,
     apr: {
       stakingApr: {
         min: true,
