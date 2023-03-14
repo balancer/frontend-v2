@@ -6,13 +6,16 @@ import { provideTokenLists } from '@/providers/token-lists.provider';
 import {
   tokensProvider,
   TokensProviderSymbol,
+  TokensResponse,
 } from '@/providers/tokens.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { provideWallets } from '@/providers/wallet.provider';
+import { fakeTokensProvider } from '@/providers/__mocks__/tokens.provider.fake';
 import { computed, provide, Ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
 import { mount, MountResult } from './mount-composable-tester';
 import { registerTestPlugins } from './registerTestPlugins';
+import { DeepPartial } from './unit/types';
 
 export const defaultStakedShares = '5';
 
@@ -48,6 +51,30 @@ export function mountComposableWithDefaultTokensProvider<R>(
       const userSettings = provideUserSettings();
       const tokenLists = provideTokenLists();
       provide(TokensProviderSymbol, tokensProvider(userSettings, tokenLists));
+      options?.extraProvidersCb?.();
+    },
+  });
+}
+
+export function mountComposableWithFakeTokensProvider<R>(
+  callback: () => R,
+  options?: {
+    extraProvidersCb?: () => void;
+    tokensProviderOverride?: DeepPartial<TokensResponse>;
+  }
+): MountResult<R> {
+  return mountComposable<R>(callback, {
+    extraProvidersCb: () => {
+      const userSettings = provideUserSettings();
+      const tokenLists = provideTokenLists();
+      provide(
+        TokensProviderSymbol,
+        fakeTokensProvider(
+          userSettings,
+          tokenLists,
+          options?.tokensProviderOverride
+        )
+      );
       options?.extraProvidersCb?.();
     },
   });

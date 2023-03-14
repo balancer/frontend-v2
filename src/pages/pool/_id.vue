@@ -10,7 +10,6 @@ import {
   MyPoolBalancesCard,
   PoolCompositionCard,
   PoolContractDetails,
-  PoolDeprecatedWarning,
 } from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/staking/StakingIncentivesCard.vue';
 import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
@@ -37,6 +36,7 @@ import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 import metaService from '@/services/meta/meta.service';
+import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
 
 /**
  * STATE
@@ -281,11 +281,6 @@ watch(
         v-else-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
-        <PoolDeprecatedWarning
-          v-if="pool && isWalletReady && isDeprecatedPool"
-          :pool="pool"
-        />
-
         <BalStack vertical>
           <BalLoadingBlock
             v-if="loadingPool || !pool"
@@ -308,6 +303,10 @@ watch(
             v-if="_isVeBalPool && !loadingPool && pool"
             :pool="pool"
             class="pool-locking"
+          />
+          <PoolMigrationCard
+            v-if="poolId && isWalletReady && isDeprecatedPool"
+            :poolId="poolId"
           />
         </BalStack>
       </div>
