@@ -33,6 +33,7 @@ type FilterOptions = {
   poolAddresses?: Ref<string[]>;
   isExactTokensList?: boolean;
   pageSize?: number;
+  first?: number;
 };
 
 export default function usePoolsQuery(
@@ -156,7 +157,7 @@ export default function usePoolsQuery(
       queryArgs.where.address = { in: filterOptions.poolAddresses.value };
     }
     if (options.first) {
-      queryArgs.first = options.first;
+      queryArgs.first = filterOptions?.first || options.first;
     }
     if (options.skip) {
       queryArgs.skip = options.skip;
