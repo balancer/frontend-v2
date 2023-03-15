@@ -160,10 +160,11 @@ function queryRecoveryExit(
   const evmBalances = balances.map(balance =>
     parseUnits(balance, pool.onchain?.decimals || 18)
   );
+  const bptRatio = evmBptIn.div(evmTotalSupply);
+
   console.log('balances', balances);
   console.log('parsedBptIn', evmBptIn.toString());
   console.log('totalSupply', evmTotalSupply.toString());
-  const bptRatio = evmBptIn.div(evmTotalSupply);
   console.log('bptRatio', bptRatio.toString());
 
   const output = {
