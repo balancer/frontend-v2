@@ -154,28 +154,19 @@ function queryRecoveryExit(
 ): { bptIn: BigNumber; amountsOut: BigNumber[] } {
   const evmBptIn = parseUnits(bptIn);
   const evmTotalSupply = parseUnits(pool?.onchain?.totalSupply || '0');
-  const balances = Object.values(pool?.onchain?.tokens || []).map(
-    t => t.balance
-  );
-  const evmBalances = balances.map(balance =>
-    parseUnits(balance, pool.onchain?.decimals || 18)
+  const balances = Object.values(pool?.onchain?.tokens || []).map(t => ({
+    balance: t.balance,
+    decimals: t.decimals,
+  }));
+  const evmBalances = balances.map(({ balance, decimals }) =>
+    parseUnits(balance, decimals || 18)
   );
   const bptRatio = evmBptIn.div(evmTotalSupply);
 
-  console.log('balances', balances);
-  console.log('parsedBptIn', evmBptIn.toString());
-  console.log('totalSupply', evmTotalSupply.toString());
-  console.log('bptRatio', bptRatio.toString());
-
-  const output = {
+  return {
     bptIn: evmBptIn,
     amountsOut: evmBalances.map(balance => {
       return balance.mul(bptRatio);
     }),
   };
-  console.log(
-    'amountsOut',
-    output.amountsOut.map(a => a.toString())
-  );
-  return output;
 }
