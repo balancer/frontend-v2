@@ -180,7 +180,10 @@ export default function useWithdrawMath(
 
   // To account for exact maths required in BPTInForExactTokensOut cases.
   const shouldUseBptBuffer = computed(
-    (): boolean => isProportional.value && isShallowComposableStablePool.value
+    (): boolean =>
+      isProportional.value &&
+      isShallowComposableStablePool.value &&
+      !pool.value.isInRecoveryMode
   );
 
   const bptBuffer = computed((): number =>
@@ -260,7 +263,11 @@ export default function useWithdrawMath(
   const amountsOut = computed(() => {
     return fullAmounts.value.map((amount, i) => {
       if (amount === '0' || exactOut.value) return amount;
-      if (isProportional.value && isShallowComposableStablePool.value)
+      if (
+        isProportional.value &&
+        isShallowComposableStablePool.value &&
+        !pool.value.isInRecoveryMode
+      )
         return amount;
 
       return minusSlippage(amount, withdrawalTokens.value[i].decimals);
@@ -287,7 +294,11 @@ export default function useWithdrawMath(
         return batchRelayerSwap.value?.outputs?.amountsIn || '0';
       }
       return batchSwap.value?.returnAmounts?.[0]?.toString() || '0';
-    } else if (isShallowComposableStablePool.value) return queryBptIn.value;
+    } else if (
+      isShallowComposableStablePool.value &&
+      !pool.value.isInRecoveryMode
+    )
+      return queryBptIn.value;
 
     return poolCalculator
       .bptInForExactTokenOut(tokenOutAmount.value, tokenOutIndex.value)
@@ -302,7 +313,11 @@ export default function useWithdrawMath(
    */
   const bptIn = computed((): string => {
     if (exactOut.value) return addSlippageScaled(fullBPTIn.value);
-    if (isShallowComposableStablePool.value && !singleAssetMaxed.value) {
+    if (
+      isShallowComposableStablePool.value &&
+      !pool.value.isInRecoveryMode &&
+      !singleAssetMaxed.value
+    ) {
       return addSlippageScaled(fullBPTIn.value);
     }
 
