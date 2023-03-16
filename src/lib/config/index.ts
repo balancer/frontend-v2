@@ -1,12 +1,13 @@
 import { Network } from '@balancer-labs/sdk';
+import { Pools } from '@/constants/pools';
 
-import arbitrum from './arbitrum.json';
-import docker from './docker.json';
-import goerli from './goerli.json';
-import homestead from './homestead.json';
-import optimism from './optimism.json';
-import polygon from './polygon.json';
-import gnosisChain from './gnosis-chain.json';
+import arbitrum from './arbitrum';
+import docker from './docker';
+import goerli from './goerli';
+import mainnet from './mainnet';
+import optimism from './optimism';
+import polygon from './polygon';
+import gnosisChain from './gnosis-chain';
 import test from './test.json';
 
 export interface Config {
@@ -73,7 +74,8 @@ export interface Config {
     faucet: string;
     gaugeRewardsHelper?: string;
   };
-  keys: {
+  pools?: Pools;
+  keys?: {
     infura: string;
     alchemy: string;
     graph?: string;
@@ -93,7 +95,7 @@ export interface Config {
 }
 
 const config: Record<Network | number, Config> = {
-  [Network.MAINNET]: homestead,
+  [Network.MAINNET]: mainnet,
   [Network.GOERLI]: goerli,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
