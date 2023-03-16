@@ -57,7 +57,7 @@
       {
         "address": "0x398106564948fEeb1fEdeA0709AE7D969D62a391",
         "chainId": 5,
-        "name": "miMATICEEEE",
+        "name": "miMATIC",
         "symbol": "miMATIC",
         "decimals": 18,
         "logoURI": "https://assets.coingecko.com/coins/images/15264/large/mimatic-red.png?1620281018"
