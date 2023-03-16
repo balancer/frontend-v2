@@ -10,8 +10,8 @@ import { aVeBalPool } from '@tests/unit/builders/pool.builders';
 
 initDependenciesWithDefaultMocks();
 
-function mountUseLock() {
-  const { result } = mountComposable(() => useLock(), {
+async function mountUseLock() {
+  const { result } = await mountComposable(() => useLock(), {
     extraProvidersCb: () => provideUserData(),
   });
   return result;
@@ -24,7 +24,7 @@ const veBalPool = aVeBalPool({
 poolsStoreService.setPools([veBalPool]);
 
 test('returns veBal locked amount', async () => {
-  const result = mountUseLock();
+  const result = await mountUseLock();
 
   expect(result.isLoadingLock.value).toBeTrue();
   await waitForExpect(() => expect(result.isLoadingLock.value).toBeFalse());
@@ -33,7 +33,7 @@ test('returns veBal locked amount', async () => {
 });
 
 test('returns totalLockedValue', async () => {
-  const result = mountUseLock();
+  const result = await mountUseLock();
 
   expect(result.isLoadingLock.value).toBeTrue();
 });

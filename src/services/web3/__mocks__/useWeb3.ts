@@ -24,5 +24,9 @@ export default function useWeb3Mock() {
       addressLink: (address: string) => `$test-explorer/address/${address}`,
     },
     blockNumber: defaultBlockNumber,
+    connector: ref('Test connector'),
+    getSigner: () => ({
+      getAddress: async () => '0xcd3b766ccdd6ae456741f452c550ca635964ce71',
+    }),
   };
 }
