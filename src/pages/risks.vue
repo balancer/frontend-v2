@@ -423,7 +423,7 @@
               Set a share of swap fees to be diverted to the protocol (hard
               capped at 50% of the swap fee)
             </li>
-            <li>Set a flash loan fee</li>
+            <li>Set a Flash Loan fee</li>
             <li>
               Extract from the vault collected protocol fees and/or excess
               balances (e.g. airdrops), to any destination
@@ -512,7 +512,7 @@
       <p>
         A Flash Loan is a type of loan where a user borrows assets with no
         upfront collateral and returns the borrowed assets within the same
-        blockchain transaction. Flash loans use smart contracts which requires
+        blockchain transaction. Flash Loans use smart contracts which requires
         that a borrower repays the loan before the transaction ends. They are
         typically used for arbitrage opportunities, collateral swaps and to
         lower transaction fees, across potentially multiple protocols. It’s a
@@ -533,15 +533,15 @@
       </ul>
       <p>
         While Flash Loans offer many benefits, they also comes with certain
-        risks. Flash loans have also been used for multiple DeFi exploits
-        resulting in losses worth millions of dollars. Flash loan exploits are
+        risks. Flash Loans have also been used for multiple DeFi exploits
+        resulting in losses worth millions of dollars. Flash Loan exploits are
         relatively new with the full range of attack surfaces still being
         discovered.
       </p>
       <h5>How Balancer aims to mitigate this risk:</h5>
       <ul>
         <li>
-          The Balancer Vault is non-reentrant, which blocks most Flash loan
+          The Balancer Vault is non-reentrant, which blocks most Flash Loan
           attacks.
         </li>
         <li>
@@ -916,8 +916,9 @@
     <div id="arbitrum" class="risk">
       <h4>Arbitrum One risks</h4>
       <p>
-        Arbitrum is a Layer 2 scaling solution for Ethereum that uses Optimistic
-        Rollups to improve transaction throughput and reduce fees.
+        <a class="link" href="https://arbitrum.io/">Arbitrum</a> is a Layer 2
+        scaling solution for Ethereum that uses Optimistic Rollups to improve
+        transaction throughput and reduce fees.
       </p>
       <p>
         View the risks of using Arbitrum on
@@ -930,10 +931,11 @@
     <div id="optimism" class="risk">
       <h4>Optimism risks</h4>
       <p>
-        Optimism is a Layer 2 scaling solution for Ethereum that uses Optimistic
-        Rollups to improve transaction throughput and reduce fees. Although, the
-        Balancer App UI doesn’t support Optimism, the Balancer Protocol smart
-        contracts are deployed on Optimism and currently used by
+        <a class="link" href="https://www.optimism.io/">Optimism</a> is a Layer
+        2 scaling solution for Ethereum that uses Optimistic Rollups to improve
+        transaction throughput and reduce fees. Although, the Balancer App UI
+        doesn’t support Optimism, the Balancer Protocol smart contracts are
+        deployed on Optimism and currently used by
         <a class="link" href="https://op.beets.fi/">Beethoven X</a>.
       </p>
       <p>
@@ -949,10 +951,10 @@
     <div id="polygon" class="risk">
       <h4>Polygon risks</h4>
       <p>
-        Polygon is proof-of-stake sidechain scaling solution that runs in
-        parallel to Ethereum Mainnet. It’s validators are solely responsible for
-        validating Polygon transactions. It does not derive security from
-        Ethereum Mainnet.
+        <a class="link" href="https://polygon.technology/">Polygon</a> is
+        proof-of-stake sidechain scaling solution that runs in parallel to
+        Ethereum Mainnet. It’s validators are solely responsible for validating
+        Polygon transactions. It does not derive security from Ethereum Mainnet.
       </p>
       <p>
         Polygon is subject to the same risks of other PoS chains. In particular,
@@ -964,11 +966,11 @@
     <div id="gnosis" class="risk">
       <h4>Gnosis chain risks</h4>
       <p>
-        Gnosis Chain, formerly known as xDai Chain, is a sidechain for Ethereum
-        focused on providing fast, stable, and cost-effective transactions. It
-        uses a Proof of Stake (PoS) consensus mechanism and is secured by a set
-        of independent validators. It does not derive security from Ethereum
-        Mainnet.
+        <a class="link" href="https://www.gnosis.io/">Gnosis Chain</a>, formerly
+        known as xDai Chain, is a sidechain for Ethereum focused on providing
+        fast, stable, and cost-effective transactions. It uses a Proof of Stake
+        (PoS) consensus mechanism and is secured by a set of independent
+        validators. It does not derive security from Ethereum Mainnet.
       </p>
       <p>
         The Gnosis chain is subject to the same risks of other PoS chains. In

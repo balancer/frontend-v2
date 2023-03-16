@@ -220,7 +220,7 @@ const router = createRouter({
     if (to.hash) {
       return { el: to.hash };
     }
-    return { x: 0, top: 100 };
+    return { x: 0, top: 0 };
   },
 });
 
