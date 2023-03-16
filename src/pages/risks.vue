@@ -214,7 +214,7 @@
       <p>
         These types of economic exploits are difficult to detect and prevent.
       </p>
-      <h5>How can LPs mitigate this risk?</h5>
+      <h5>How does Balancer mitigate this risk?</h5>
       <ul>
         <li>
           With careful economic modeling, rigorous mechanism design, testing and
