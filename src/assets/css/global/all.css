@@ -14,7 +14,7 @@ body {
 }
 
 html {
-  @apply text-sm sm:text-base transition-all;
+  @apply text-sm sm:text-base transition-all scroll-smooth;
 }
 
 * {

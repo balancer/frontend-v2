@@ -42,4 +42,8 @@ export const ROUTE_META_DATA = {
     metaTitle: 'Balancer Cookie Policy',
     metaDescription: 'How this website uses browser cookies',
   },
+  risks: {
+    metaTitle: 'Balancer Protocol Risks',
+    metaDescription: 'The risks of using the Balancer Protocol',
+  },
 };

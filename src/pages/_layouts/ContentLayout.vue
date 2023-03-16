@@ -22,6 +22,8 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
   @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white dark:bg-gray-900;
 
   min-height: calc(100vh - 140px);
+  scroll-behavior: smooth;
+  scroll-margin-top: 5em;
 }
 
 .content-container :deep(h1) {
@@ -34,7 +36,12 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 .content-container :deep(ul),
 .content-container :deep(ol),
 .content-container :deep(em) {
-  @apply pb-3;
+  @apply pb-4;
+}
+
+.content-container :deep(h4),
+.content-container :deep(h5) {
+  @apply pb-2;
 }
 
 .content-container :deep(.subsection) {
@@ -43,16 +50,15 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 
 .content-container :deep(h1),
 .content-container :deep(h2),
-.content-container :deep(h3) {
+.content-container :deep(h3),
+.content-container :deep(h4) {
   @apply font-body tracking-tight;
 
   font-variation-settings: 'wght' 700;
 }
 
-.content-container :deep(h3) {
+.content-container :deep(h5) {
   @apply font-body tracking-tight;
-
-  font-variation-settings: 'wght' 600;
 }
 
 .content-container :deep(li) {
@@ -63,10 +69,32 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
   @apply list-decimal;
 }
 
+.content-container :deep(.nav li > ul) {
+  padding-top: 0.375rem;
+}
+
+.content-container :deep(li > ul) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.content-container :deep(.nav ul) {
+  padding-bottom: 0;
+}
+
+.content-container :deep(li),
+.content-container :deep(p) {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
 .content-container :deep(em) {
   font-style: italic;
   font-variation-settings: 'ital' 1;
   font-synthesis: none;
+}
+
+.content-container :deep(.link) {
+  font-variation-settings: 'wght' 500;
 }
 
 .content-container :deep(em.font-medium) {
