@@ -4,9 +4,13 @@
       <h1>Balancer Protocol Risks</h1>
       <p>
         This page outlines some of the key risks associated with using DeFi and
-        the Balancer Protocol. However, it is important to note that this list
-        is not exhaustive, and there may be additional risks not explicitly
-        mentioned here.
+        the Balancer Protocol. However, this list is not exhaustive, and there
+        may be additional risks not explicitly mentioned here. Please also
+        review the
+        <router-link to="terms-of-use"
+          ><span class="link">Terms of Use</span></router-link
+        >
+        for more details on the usage terms for this Balancer App UI.
       </p>
     </div>
 
@@ -116,19 +120,6 @@
     </nav>
 
     <h2>Risks for Liquidity Providers (LPs)</h2>
-    <!-- <p>
-        There are numerous risks of providing liquidity, some of which are
-        outlined below.
-      </p> -->
-    <!-- <p>
-        Despite these risks, it’s important to note that when liquidity
-        providers deposit tokens into a liquidity pool, funds are locked into a
-        smart contract. No centralized entity or organization control these
-        funds. This means LPs always retain ownership and control over their
-        share of funds in the pool. Assuming no hacks or exploits, LPs can
-        recover their funds at any time at the smart contract level, even if
-        there is no front-end application UI available.
-      </p> -->
 
     <div id="general-risks" class="risk">
       <h3>General risks</h3>
@@ -259,7 +250,7 @@
       <ul>
         <li>
           Unsupported tokens on Balancer Protocol, including:
-          <ul>
+          <ul class="mt-2">
             <li>
               <router-link to="risks#rebasing-tokens"
                 ><span class="link">Rebasing tokens</span></router-link
@@ -274,7 +265,7 @@
 
         <li>
           Tokens that become toxic, including:
-          <ul>
+          <ul class="mt-2">
             <li>Tokens that are infinitely minted</li>
             <li>Tokens that become frozen or exploited in any other way</li>
             <li>Stablecoins that lose their peg</li>
@@ -323,8 +314,8 @@
         <li>
           Instead of including tokens which rebase, new DeFi liquidity pool
           compatible wrapped tokens which do not rebase may be utilized. An
-          example of this is <code>wstETH</code> which includes the accumulated
-          yield from Lido ETH staking and does not rebase like
+          example of this is <code>wstETH</code>—a wrapped token which includes
+          the accumulated yield from Lido ETH staking and does not rebase like
           <code>stETH</code>.
         </li>
         <li>
@@ -759,6 +750,17 @@
         scrutiny or even a regulatory crackdown, which could have negative
         consequences for the entire DeFi ecosystem.
       </p>
+      <p>
+        It's also possible that the Balancer App UI may be wholly or partially
+        suspended or terminated for any or no reason, which may limit your
+        access to your tokens via this website. In this scenario, you may be
+        able to recover funds by forking the open-source code on
+        <a class="link" href="https://github.com/balancer/frontend-v2/"
+          >Github</a
+        >
+        and running your own local instance, or by using a third party website,
+        like <a class="link" href="https://etherscan.io/">Etherscan</a>.
+      </p>
     </div>
 
     <div id="pool-type-risks" class="risk">
@@ -888,7 +890,9 @@
       <h5>Depegging risk</h5>
       <p>
         Individual stablecoin tokens within Boosted Pools are subject to
-        depegging risks, described above.
+        <router-link to="risks#stable-pools"
+          ><span class="link">depegging risks</span></router-link
+        >.
       </p>
     </div>
 
@@ -952,8 +956,8 @@
       <h4>Polygon risks</h4>
       <p>
         <a class="link" href="https://polygon.technology/">Polygon</a> is
-        proof-of-stake sidechain scaling solution that runs in parallel to
-        Ethereum Mainnet. It’s validators are solely responsible for validating
+        Proof-of-Stake (PoS) sidechain scaling solution that runs in parallel to
+        Ethereum Mainnet. Its validators are solely responsible for validating
         Polygon transactions. It does not derive security from Ethereum Mainnet.
       </p>
       <p>
@@ -968,9 +972,9 @@
       <p>
         <a class="link" href="https://www.gnosis.io/">Gnosis Chain</a>, formerly
         known as xDai Chain, is a sidechain for Ethereum focused on providing
-        fast, stable, and cost-effective transactions. It uses a Proof of Stake
-        (PoS) consensus mechanism and is secured by a set of independent
-        validators. It does not derive security from Ethereum Mainnet.
+        fast, stable, and cost-effective transactions. It uses a PoS consensus
+        mechanism and is secured by a set of independent validators. It does not
+        derive security from Ethereum Mainnet.
       </p>
       <p>
         The Gnosis chain is subject to the same risks of other PoS chains. In
@@ -987,26 +991,7 @@
 
 .risks {
   scroll-margin-top: 100px;
-
-  /* background-color: blueviolet; */
 }
-
-/* .risk {
-  display: block;
-  position: relative;
-  padding-top: 500px;
-}
-
-.risk {
-  margin-top: -450px;
-} */
-
-/* .anchor {
-  display: block;
-  position: relative;
-  padding-top: 500px;
-  background-color: aqua;
-} */
 
 .risk {
   padding-top: 100px;
