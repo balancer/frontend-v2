@@ -9,15 +9,11 @@ import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { configService } from '@/services/config/config.service';
 import { mountComposable } from '@tests/mount-helpers';
+import { silenceConsoleLog } from '@tests/unit/console';
 import waitForExpect from 'wait-for-expect';
 import { tokensProvider } from './tokens.provider';
 
-const originalConsoleLog = console.log;
-vi.spyOn(console, 'log').mockImplementation((message, optionalParams) => {
-  // Silence Fetching logs
-  if (message.startsWith('Fetching')) return;
-  originalConsoleLog(message, optionalParams);
-});
+silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 
 initDependenciesWithDefaultMocks();
 
