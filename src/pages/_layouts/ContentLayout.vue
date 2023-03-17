@@ -114,4 +114,8 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 .content-container :deep(table) {
   @apply mt-4 mb-8;
 }
+
+.content-container :deep(hr) {
+  @apply border-t border-gray-200 dark:border-gray-600 pb-12;
+}
 </style>

@@ -3,14 +3,12 @@
     <div class="pb-3">
       <h1>Balancer Protocol Risks</h1>
       <p>
-        This page outlines some of the key risks associated with using DeFi and
-        the Balancer Protocol. However, this list is not exhaustive, and there
-        may be additional risks not explicitly mentioned here. Please also
-        review the
-        <router-link to="terms-of-use"
-          ><span class="link">Terms of Use</span></router-link
-        >
-        for more details on the usage terms for this Balancer App UI.
+        There are many inherent risks developers accept when working in DeFi and
+        using the Balancer Protocol. This page aims to summarize the top risks
+        to help you with your risk decisions. It is important to note that this
+        list is not exhaustive, and there may be additional risks not explicitly
+        mentioned here. As the risk environment is fluid, we expect to
+        periodically update this summary.
       </p>
     </div>
 
@@ -25,52 +23,55 @@
             ><span class="font-semibold">General risks</span></router-link
           >
           <ul>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#general-risks"
                 >Smart contract risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#economic-risk"
                 >Mechamism / economic risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#toxic-token-risk"
                 >Toxic token risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#composability-risk"
                 >DeFi composability risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#governance-risk"
                 >DAO Governance risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#flash-loans-risk"
                 >Flash Loans risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#mutable-attributes-risk"
                 >Mutable pool attributes risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#join-exit-risk"
                 >Join/exit risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#impermanent-loss-risk"
                 >Impermanent loss risk</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
+              <router-link to="risks#ui-risk">User Interface risk</router-link>
+            </li>
+            <li class="text-sm toc-link">
               <router-link to="risks#regulatory-risk"
                 >Regulatory risk</router-link
               >
@@ -82,15 +83,15 @@
             ><span class="font-semibold">Pool type risks</span></router-link
           >
           <ul>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#weighted-pools"
                 >Weighted Pools</router-link
               >
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#stable-pools">Stable Pools</router-link>
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#boosted-pools">Boosted Pools</router-link>
             </li>
           </ul>
@@ -102,16 +103,16 @@
             ></router-link
           >
           <ul>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#arbitrum">Arbitrum</router-link>
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#optimism">Optimism</router-link>
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#polygon">Polygon</router-link>
             </li>
-            <li class="toc-link">
+            <li class="text-sm toc-link">
               <router-link to="risks#gnosis">Gnosis chain</router-link>
             </li>
           </ul>
@@ -155,7 +156,7 @@
         It has also been forked by other teams across different networks,
         including Beethoven X on Fantom, without issue.
       </p>
-      <h5>How does Balancer mitigate this risk?</h5>
+      <h5>How does Balancer work to mitigate this risk?</h5>
       <ul>
         <li>
           Development teams have engaged with top tier smart contract auditing
@@ -214,11 +215,11 @@
       <p>
         These types of economic exploits are difficult to detect and prevent.
       </p>
-      <h5>How does Balancer mitigate this risk?</h5>
+      <h5>How does Balancer work to mitigate this risk?</h5>
       <ul>
         <li>
-          With careful economic modeling, rigorous mechanism design, testing and
-          audits by top tier auditing firms.
+          Balancer strives to deliver careful economic modeling, rigorous
+          mechanism design, testing and audits by top tier auditing firms.
         </li>
       </ul>
       <h5>How can LPs mitigate this risk?</h5>
@@ -385,17 +386,6 @@
         developed in-house by Balancer Labs.
       </p>
       <p>
-        To enact these off-chain Snapshot votes, Balancer Protocol uses a
-        Multisig to execute these changes on-chain. Balancer’s Multisig signers
-        are a diverse set of widely respected community members. The multisig
-        does NOT have decision making power, as its role is to simply enact
-        on-chain the decisions BAL holders make via off-chain voting.
-      </p>
-      <p>
-        There is also an Emergency subDAO which was established to protect veBAL
-        from bad actors by killing gauges and pool factories.
-      </p>
-      <p>
         A summary of the immutability of the Balancer Protocol’s smart
         contracts:
       </p>
@@ -406,9 +396,7 @@
         </li>
         <li>
           Balancer V2 contracts do allow for some tweaking of core protocol
-          parameters, for instance, in turning on protocol fees. As a
-          placeholder for a future on-chain DAO, such limited admin powers has
-          been initially granted to a Multisig. The Multisig may:
+          parameters, including the ability to:
           <ul class="mt-2">
             <li>
               Set a share of swap fees to be diverted to the protocol (hard
@@ -431,15 +419,15 @@
               Gauntlet) that may change the swap fee for pools created by the
               dynamic-fee pool factory that will be deployed by Balancer Labs
             </li>
-            <li>Add and removal of veBAL gauges</li>
+            <li>Add and remove veBAL gauges</li>
           </ul>
         </li>
       </ul>
       <p>
-        The current Multisigs have proven themselves as reliable executors of
-        the wishes of veBAL voters. In the long run, BAL holders are expected to
-        retire the Multisig in favor of a full-fledged Balancer DAO, with full
-        governance executed on-chain by veBAL token holders.
+        Note: The system of Balancer Governance may change in the future. For
+        example, Balancer community members have expressed interest in moving
+        from the Multisig towards on-chain governance execution by veBAL token
+        holders.
       </p>
       <p>
         The main risk with this setup consisting of off-chain voting executed by
@@ -510,18 +498,9 @@
         powerful new financial primitive, native to DeFi.
       </p>
       <p>
-        The use of Flash Loans are particularly attractive on the Balancer
-        Protocol which offers:
+        Flash Loans may be used on Balancer and interact with the Balancer
+        Vault.
       </p>
-      <ul>
-        <li>
-          The single Balancer V2 Vault holds tokens for all pools in a single
-          contract making the consolidated token balances available for flash
-          loans.
-        </li>
-        <li>TVL on Ethereum Mainnet typically exceeds $1b.</li>
-        <li>Zero protocol fees (presently) for Flash Loans</li>
-      </ul>
       <p>
         While Flash Loans offer many benefits, they also comes with certain
         risks. Flash Loans have also been used for multiple DeFi exploits
@@ -536,8 +515,8 @@
           attacks.
         </li>
         <li>
-          With careful economic modeling, rigorous mechanism design, testing and
-          audits by top tier auditing firms.
+          Balancer strives to deliver careful economic modeling, rigorous
+          mechanism design, testing and audits by top tier auditing firms.
         </li>
       </ul>
     </div>
@@ -551,8 +530,8 @@
       </p>
       <p>
         For pools with immutable attributes, LPs can be assured that the rules
-        cannot change once they have provided liquidity since no pool attribute
-        can be changed by anyone at any time.
+        are designed so they cannot change once they have provided liquidity
+        since no pool attribute should be changed by anyone at any time.
       </p>
       <p>For pools with mutable attributes, LPs should understand:</p>
       <ul>
@@ -580,7 +559,7 @@
           </ul>
         </li>
       </ul>
-      <h5>How does Balancer mitigate this risk?</h5>
+      <h5>How does Balancer work to mitigate this risk?</h5>
       <ul>
         <li>
           For known pool types, the Balancer App UI transparently displays pool
@@ -697,7 +676,7 @@
         This risk is particularly relevant for pools with volatile assets where
         token prices are likely diverge over time.
       </p>
-      <h5>How does Balancer mitigate this risk?</h5>
+      <h5>How does Balancer work to mitigate this risk?</h5>
       <ul>
         <li>
           All AMMs either have impermanent loss or reduced yield to LPs.
@@ -739,6 +718,74 @@
       </ul>
     </div>
 
+    <div id="ui-risk" class="risk">
+      <h4>User Interface (UI) risk</h4>
+      <p>
+        DeFi users, including liquidity providers and swappers, typically
+        interact with front-end user interfaces to interact with a protocol’s
+        smart contracts. An example is the app.balancer.fi front-end UI instance
+        which interacts with Balancer Protocol smart contracts.
+      </p>
+
+      <p class="mb-0">
+        A few risks of using front-ends to manage liquidity positions in DeFi:
+      </p>
+      <ul>
+        <li>
+          UIs may not always display timely, accurate data. This may be due to
+          the use of third party data services experiencing periods of downtime
+          or network congestion.
+        </li>
+        <li>
+          UIs could be maliciously updated or exploited by rogue developers.
+        </li>
+        <li>UIs may be updated and remove certain feature sets.</li>
+        <li>
+          UIs may block certain wallet addresses or user’s in certain
+          jurisdictions to comply with their regulations.
+        </li>
+        <li>
+          UIs may experience periods of downtime or potentially be discontinued.
+          UIs may also be shut down or have access denied to users in certain
+          jurisdictions.
+        </li>
+      </ul>
+
+      <h5>How does Balancer work to mitigate this risk?</h5>
+      <ul>
+        <li>
+          Since the Balancer smart contracts can be interacted with by any
+          front-end UI, there is less reliance on any one single UI. The
+          Balancer App UI code is open source with an MIT License which allow
+          other third party developers to fork the code, make improvements and
+          compete for users.
+        </li>
+        <li>
+          Users or third party developers can keep track of changes and review
+          the open source repository on the Balancer Github for potential
+          malicious code.
+        </li>
+        <li>
+          The developers of the Balancer App UI have provided instructions on
+          how to clone and run local environments of the app. This allows people
+          to have the ability to keep deprecated features or modify the code to
+          add new features that they prefer.
+        </li>
+      </ul>
+      <h5>How can LPs mitigate this risk?</h5>
+      <ul>
+        <li>
+          LP’s can learn how to interact with Balancer smart contracts on third
+          party websites, like
+          <a class="link" href="https://etherscan.io/">Etherscan</a>.
+        </li>
+        <li>
+          To mitigate the risks of downtime or lack of access, users can fork
+          the open source code and run their own local instance.
+        </li>
+      </ul>
+    </div>
+
     <div id="regulatory-risk" class="risk">
       <h4>Regulatory risk</h4>
       <p>
@@ -748,7 +795,8 @@
         and their interactions can make it difficult to assess and regulate them
         effectively. This could potentially lead to increased regulatory
         scrutiny or even a regulatory crackdown, which could have negative
-        consequences for the entire DeFi ecosystem.
+        consequences for participants, our efforts to mitigate risks and the
+        entire DeFi ecosystem.
       </p>
       <p>
         It's also possible that the Balancer App UI may be wholly or partially
@@ -762,13 +810,13 @@
         like <a class="link" href="https://etherscan.io/">Etherscan</a>.
       </p>
     </div>
-
+    <hr />
     <div id="pool-type-risks" class="risk">
       <h3>Pool type risks</h3>
       <p>
-        Balancer is infinitely extendible to allow for any conceivable pool type
-        with custom curves, logic and parameters, and more. The general risks of
-        the most popular pool types are listed below.
+        Balancer is designed to be infinitely extendible to allow for any
+        conceivable pool type with custom curves, logic and parameters, and
+        more. The general risks of the most popular pool types are listed below.
       </p>
     </div>
     <div id="weighted-pools" class="risk">
@@ -811,7 +859,10 @@
       <p>
         Stablecoins are tokens whose value is intended to be pegged or tied to
         that of another asset, which could be a currency, commodity or financial
-        instrument. Some example types of stablecoins include:
+        instrument. There are many types of stablecoins, some are risky than
+        others depending on product design including evidence of reserves to
+        support the peg in times of stress. Some example types of stablecoins
+        include:
       </p>
       <ul>
         <li>
@@ -856,8 +907,8 @@
         Typically, only 10% or less of the liquidity deposited into an AMM pool
         is being utilized by traders because the trade sizes are much smaller
         than the available liquidity. Boosted Pools allow the remaining portion
-        of liquidity to be deposited into lending protocols where the liquidity
-        can earn additional yield.
+        of liquidity to be sent to lending protocols where the liquidity can
+        earn additional yield for accepting inherent risks.
       </p>
       <ul>
         <li>
@@ -892,10 +943,10 @@
         Individual stablecoin tokens within Boosted Pools are subject to
         <router-link to="risks#stable-pools"
           ><span class="link">depegging risks</span></router-link
-        >.
+        >, as described above.
       </p>
     </div>
-
+    <hr />
     <div id="network-risks" class="risk">
       <h3>Layer 2 network risks</h3>
       <p>
@@ -980,6 +1031,21 @@
         The Gnosis chain is subject to the same risks of other PoS chains. In
         particular, it has a smaller pool of capital and validator set to gain
         consensus compared to Ethereum Mainnet.
+      </p>
+    </div>
+    <hr />
+    <div>
+      <p>
+        Navigating these challenges calls for active engagement and open
+        communication within the community. Sharing insights, feedback, or
+        concerns can contribute to building a safer and more inclusive
+        environment for all. Please feel free to reach out with any questions,
+        suggestions or propose changes for this page directly via the
+        <a
+          class="link"
+          href="https://github.com/balancer/frontend-v2/blob/develop/src/pages/risks.vue"
+          >Balancer Github</a
+        >.
       </p>
     </div>
   </div>
