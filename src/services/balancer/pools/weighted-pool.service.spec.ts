@@ -190,8 +190,6 @@ describe('PoolCreator', () => {
         mockProvider,
         'hash'
       );
-      console.error(mockProvider);
-      console.error(poolDetails);
       expect(poolDetails?.address.toLowerCase()).toEqual(
         '0x92e244b931bd6c71c1db2e50326480a0ba530fc7'
       );
