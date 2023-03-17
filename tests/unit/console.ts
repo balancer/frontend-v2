@@ -8,7 +8,6 @@ export function silenceConsoleLog(
   return vi
     .spyOn(console, 'log')
     .mockImplementation((message, optionalParams) => {
-      // Silence Fetching logs
       if (isString(message) && silenceRulesCallback(message)) return;
 
       originalConsoleLog(message, optionalParams);
