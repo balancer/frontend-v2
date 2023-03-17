@@ -457,6 +457,16 @@ export const tokensProvider = (
   }
 
   /**
+   * Returns true if the token is the native asset or wrapped native asset
+   */
+  function isWethOrEth(tokenAddress: string): boolean {
+    return (
+      isSameAddress(tokenAddress, nativeAsset.address) ||
+      isSameAddress(tokenAddress, wrappedNativeAsset.value.address)
+    );
+  }
+
+  /**
    * LIFECYCLE
    */
   onBeforeMount(async () => {
@@ -500,6 +510,7 @@ export const tokensProvider = (
     getToken,
     injectPrices,
     getMaxBalanceFor,
+    isWethOrEth,
   };
 };
 

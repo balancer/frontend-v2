@@ -29,9 +29,18 @@ const pool = computed(() => props.pool);
  * COMPOSABLES
  */
 const { network } = configService;
-const { isDeepPool } = usePool(pool);
+const { isDeepPool, isWeightedLikePool, isStablePool, isMetaStablePool } =
+  usePool(pool);
 const { resetTabs } = useWithdrawPageTabs();
 provideExitPool(pool);
+
+const supportsExitPoolProvider = computed(
+  () =>
+    isWeightedLikePool.value ||
+    isDeepPool.value ||
+    isStablePool.value ||
+    isMetaStablePool.value
+);
 
 onMounted(() => resetTabs());
 </script>
@@ -47,10 +56,10 @@ onMounted(() => resetTabs());
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <WithdrawPageTabs v-if="isDeepPool" />
+        <WithdrawPageTabs v-if="supportsExitPoolProvider" />
       </div>
     </template>
-    <WithdrawFormV2 v-if="isDeepPool" />
+    <WithdrawFormV2 v-if="supportsExitPoolProvider" />
     <WithdrawForm v-else :pool="pool" />
   </BalCard>
 </template>

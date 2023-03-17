@@ -4,10 +4,12 @@ import {
   fiatValueOf,
   flatTokenTree,
   isDeep,
+  isMetaStable,
   isPreMintedBptType,
+  isStable,
+  isWeighted,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePool,
 } from '@/composables/usePool';
 import useRelayerApproval, {
   RelayerType,
@@ -111,8 +113,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     RelayerType.BATCH_V4
   );
 
-  const { isWeightedPool } = usePool(pool);
-
   const debounceQueryExit = debounce(queryExit, 1000);
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
     leading: true,
@@ -193,14 +193,20 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
       isPreMintedBptType(pool.value.poolType)
   );
 
+  const shouldUseGeneralisedExit = computed(
+    (): boolean => !isSingleAssetExit.value && isDeep(pool.value)
+  );
+
   const exitHandlerType = computed((): ExitHandler => {
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
-    if (isWeightedPool.value && isSingleAssetExit.value) {
-      if (singleAssetMaxed.value) return ExitHandler.ExactIn;
+    if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
+    if (isSingleAssetExit.value) {
+      if (singleAssetMaxed.value) {
+        return ExitHandler.ExactIn;
+      }
       return ExitHandler.ExactOut;
     }
-
-    return ExitHandler.Generalised;
+    return ExitHandler.ExactIn;
   });
 
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
@@ -441,7 +447,10 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   }
 
   function setInitialPropAmountsOut() {
-    const leafNodes = tokenTreeLeafs(pool.value.tokens);
+    const leafNodes: string[] = isDeepPool.value
+      ? tokenTreeLeafs(pool.value.tokens)
+      : pool.value.tokensList;
+
     propAmountsOut.value = leafNodes.map(address => ({
       address,
       value: '0',
@@ -531,7 +540,14 @@ export const ExitPoolProviderSymbol: InjectionKey<ExitPoolProviderResponse> =
   Symbol(symbolKeys.Providers.ExitPool);
 
 export function provideExitPool(pool: Ref<Pool>) {
-  const exitPoolResponse = isDeep(pool.value) ? exitPoolProvider(pool) : {};
+  const { poolType } = pool.value;
+  const exitPoolResponse =
+    isDeep(pool.value) ||
+    isWeighted(poolType) ||
+    isStable(poolType) ||
+    isMetaStable(poolType)
+      ? exitPoolProvider(pool)
+      : {};
 
   provide(ExitPoolProviderSymbol, exitPoolResponse);
   return exitPoolResponse;

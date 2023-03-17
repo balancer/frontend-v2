@@ -13,6 +13,7 @@ import useInvestPageTabs, {
 } from '@/composables/pools/useInvestPageTabs';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
 import { Pool } from '@balancer-labs/sdk';
+import { getSupportsJoinPoolProvider } from '@/providers/local/join-pool.provider';
 
 type Props = {
   pool: Pool;
@@ -41,6 +42,12 @@ watch(activeTab, value => {
   setIsSingleAssetJoin(value === Tab.SingleToken);
 });
 
+const supportsJoinPoolProvider = computed(() =>
+  getSupportsJoinPoolProvider(pool.value)
+);
+const supportsSwapJoins = computed(
+  () => isDeepPool.value && isPreMintedBptPool.value
+);
 /**
  * CALLBACKS
  */
@@ -59,7 +66,7 @@ onMounted(() => resetTabs());
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
         <BalTabs
-          v-if="isDeepPool && isPreMintedBptPool"
+          v-if="supportsSwapJoins"
           v-model="activeTab"
           :tabs="tabs"
           class="p-0 m-0 -mb-px whitespace-nowrap"
@@ -67,7 +74,7 @@ onMounted(() => resetTabs());
         />
       </div>
     </template>
-    <template v-if="isDeepPool">
+    <template v-if="supportsJoinPoolProvider">
       <InvestFormV2 :pool="pool" />
     </template>
     <template v-else>

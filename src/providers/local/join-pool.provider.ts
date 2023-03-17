@@ -3,7 +3,15 @@ import useRelayerApproval, {
 } from '@/composables/approvals/useRelayerApproval';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
-import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
+import {
+  fiatValueOf,
+  isComposableStableLike,
+  isDeep,
+  isMetaStable,
+  isStable,
+  isWeightedLike,
+  tokenTreeNodes,
+} from '@/composables/usePool';
 import { useTxState } from '@/composables/useTxState';
 import {
   HIGH_PRICE_IMPACT,
@@ -12,10 +20,13 @@ import {
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, removeAddress } from '@/lib/utils';
+import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { useTokens } from '@/providers/tokens.provider';
-import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
+import {
+  JoinHandler,
+  JoinPoolService,
+} from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -39,6 +50,7 @@ import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
+import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
 
 /**
  * TYPES
@@ -48,6 +60,16 @@ export type AmountIn = {
   value: string;
   valid: boolean;
 };
+
+export function getSupportsJoinPoolProvider(pool: Pool | undefined): boolean {
+  if (!pool) return false;
+  return (
+    isWeightedLike(pool.poolType) ||
+    isDeep(pool) ||
+    isMetaStable(pool.poolType) ||
+    isStable(pool.poolType)
+  );
+}
 
 /**
  *
@@ -96,7 +118,14 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   /**
    * COMPOSABLES
    */
-  const { getTokens, prices, injectTokens, priceFor } = useTokens();
+  const {
+    getTokens,
+    prices,
+    injectTokens,
+    priceFor,
+    nativeAsset,
+    wrappedNativeAsset,
+  } = useTokens();
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -209,6 +238,36 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     (): string | undefined => queryJoinQuery.error.value?.message
   );
 
+  const joinHandlerType = computed((): JoinHandler => {
+    if (isDeepPool.value) {
+      if (isSingleAssetJoin.value) {
+        return JoinHandler.Swap;
+      }
+      return JoinHandler.Generalised;
+    }
+    return JoinHandler.ExactIn;
+  });
+
+  const useNativeAsset = computed((): boolean => {
+    return amountsIn.value.some(amountIn =>
+      isSameAddress(amountIn.address, nativeAsset.address)
+    );
+  });
+
+  const supportsProportionalOptimization = computed(
+    (): boolean => !isComposableStableLike(pool.value.poolType)
+  );
+
+  const optimized = computed((): boolean => {
+    if (!supportsProportionalOptimization.value) return false;
+    const propMaxAmountsIn = getPropMax();
+    return amountsIn.value.every(
+      (item, i) => item.value === propMaxAmountsIn[i].value
+    );
+  });
+
+  const { getPropMax } = usePropMaxJoin(pool.value, tokensIn, useNativeAsset);
+
   /**
    * METHODS
    */
@@ -272,7 +331,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     }
 
     try {
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
 
       const output = await joinPoolService.queryJoin({
@@ -302,7 +361,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
 
       return joinPoolService.join({
@@ -326,15 +385,41 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   }
 
   /**
+   * Swap the native token address to wrapped token address
+   * or vice versa
+   */
+  function setJoinWithNativeAsset(joinWithNativeAsset: boolean): void {
+    const newAddress = joinWithNativeAsset
+      ? nativeAsset.address
+      : wrappedNativeAsset.value.address;
+
+    const prevAddress = joinWithNativeAsset
+      ? wrappedNativeAsset.value.address
+      : nativeAsset.address;
+
+    const amountIn = amountsIn.value.find(item =>
+      isSameAddress(prevAddress, item.address)
+    );
+    if (amountIn) {
+      amountIn.address = newAddress;
+    }
+  }
+
+  function setPropMax() {
+    const propMaxAmountsIn = getPropMax();
+    setAmountsIn(propMaxAmountsIn);
+  }
+
+  /**
    * WATCHERS
    */
 
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
   // setJoinHandler on the joinPoolService to update the join handler.
-  watch(isSingleAssetJoin, newVal => {
+  watch(isSingleAssetJoin, () => {
     resetQueryJoinState();
-    joinPoolService.setJoinHandler(newVal);
+    joinPoolService.setJoinHandler(joinHandlerType.value);
   });
 
   /**
@@ -373,6 +458,8 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     txInProgress,
     approvalActions,
     missingPricesIn,
+    supportsProportionalOptimization,
+    optimized,
 
     // Methods
     setAmountsIn,
@@ -381,7 +468,8 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
     join,
     resetTxState,
     setIsSingleAssetJoin,
-
+    setJoinWithNativeAsset,
+    setPropMax,
     // queries
     queryJoinQuery,
   };

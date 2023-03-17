@@ -6,60 +6,72 @@ import { usePool } from '@/composables/usePool';
 import { isSameAddress, indexOfAddress } from '@/lib/utils';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import { useTokens } from '@/providers/tokens.provider';
+
 import useInvestPageTabs, {
   Tab,
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
-import { useJoinPool } from '@/providers/local/join-pool.provider';
-import { Pool } from '@balancer-labs/sdk';
-
-type Props = {
-  pool: Pool;
-};
-
-/**
- * PROPS & EMITS
- */
-const props = defineProps<Props>();
-
-/**
- * COMPUTED
- */
-const pool = computed(() => props.pool);
-const excludedTokens = computed<string[]>(() => {
-  return pool.value?.address ? [pool.value.address] : [];
-});
+import {
+  getSupportsJoinPoolProvider,
+  AmountIn,
+  useJoinPool,
+} from '@/providers/local/join-pool.provider';
 
 /**
  * COMPOSABLES
  */
-const { useNativeAsset } = usePoolTransfers();
-const { isWethPool, isDeepPool } = usePool(pool);
+const { pool, loadingPool, transfersAllowed, useNativeAsset } =
+  usePoolTransfers();
+
+const { isWethPool } = usePool(pool);
 const { tokenAddresses, amounts } = useInvestState();
-const { setAmountsIn, isSingleAssetJoin, amountsIn } = useJoinPool();
+const { setAmountsIn, setJoinWithNativeAsset, isSingleAssetJoin, amountsIn } =
+  useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
 const { activeTab } = useInvestPageTabs();
+
+/**
+ * COMPUTED
+ */
+const excludedTokens = computed<string[]>(() => {
+  return pool.value?.address ? [pool.value.address] : [];
+});
+
+const supportsJoinPoolProvider = computed(() =>
+  getSupportsJoinPoolProvider(pool.value)
+);
 
 /**
  * METHODS
  */
 
-function setMaxAmount(tokenAddress: string, maxBalance: string) {
+function setMaxAmount(address: string, maxBalance: string) {
   if (isSingleAssetJoin.value) {
     // Set the new Token address, and set the input value to max token balance
     setAmountsIn([
       {
-        address: tokenAddress,
+        address: address,
         value: maxBalance,
         valid: true,
       },
     ]);
   } else {
-    const amountIn = amountsIn.value.find(item =>
-      isSameAddress(tokenAddress, item.address)
+    const isNativeAsset = isSameAddress(address, nativeAsset.address);
+    const isWrappedNativeAsset = isSameAddress(
+      address,
+      wrappedNativeAsset.value.address
     );
+    // If the token is ETH or WETH, we find the other one and switch the token address
+    if (isNativeAsset || isWrappedNativeAsset) {
+      setJoinWithNativeAsset(isNativeAsset);
+    }
+    // Find the token in the amounts array
+    let amountIn: AmountIn | undefined = amountsIn.value.find(item =>
+      isSameAddress(address, item.address)
+    );
+
+    // Update the amount in values
     if (amountIn) {
-      amountIn.address = tokenAddress;
       amountIn.valid = true;
       amountIn.value = maxBalance;
     }
@@ -67,35 +79,34 @@ function setMaxAmount(tokenAddress: string, maxBalance: string) {
 }
 
 // Set the input value to max token balance for lecacy invest state
-function setMaxAmountForLegacyInvestState(
-  tokenAddress: string,
-  maxBalance: string
-) {
-  const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
+function setMaxAmountForLegacyInvestState(address: string, maxBalance: string) {
+  const indexOfAsset = indexOfAddress(tokenAddresses.value, address);
 
   if (indexOfAsset >= 0) {
     amounts.value[indexOfAsset] = maxBalance;
   }
 }
 
-function handleMyWalletTokenClick(tokenAddress: string, isPoolToken: boolean) {
-  const maxBalance = getMaxBalanceFor(tokenAddress);
+function handleMyWalletTokenClick(address: string, isPoolToken: boolean) {
+  const maxBalance = getMaxBalanceFor(address);
 
-  if (isDeepPool.value) {
+  if (supportsJoinPoolProvider.value) {
     if (isPoolToken) {
-      setMaxAmount(tokenAddress, maxBalance);
+      setMaxAmount(address, maxBalance);
     } else {
       // If non pool token is clicked, switch to Single Token tab
       activeTab.value = tabs[Tab.SingleToken].value;
       // Wait for the tab to update, the set the max amount
       nextTick(() => {
-        setMaxAmount(tokenAddress, maxBalance);
+        setMaxAmount(address, maxBalance);
       });
     }
   } else if (isWethPool.value) {
-    const isNativeAsset = isSameAddress(tokenAddress, nativeAsset.address);
+    // For legacy invest state weth pools, swap the input token between weth and eth
+
+    const isNativeAsset = isSameAddress(address, nativeAsset.address);
     const isWrappedNativeAsset = isSameAddress(
-      tokenAddress,
+      address,
       wrappedNativeAsset.value?.address
     );
     if (isNativeAsset || isWrappedNativeAsset) {
@@ -107,21 +118,23 @@ function handleMyWalletTokenClick(tokenAddress: string, isPoolToken: boolean) {
     // Race condition when switching between 'native'/'wrapped native' assets,
     // and then setting the new input value
     setTimeout(() => {
-      setMaxAmountForLegacyInvestState(tokenAddress, maxBalance);
+      setMaxAmountForLegacyInvestState(address, maxBalance);
     }, 50);
   } else {
-    setMaxAmountForLegacyInvestState(tokenAddress, maxBalance);
+    setMaxAmountForLegacyInvestState(address, maxBalance);
   }
 }
 </script>
 
 <template>
+  <BalLoadingBlock
+    v-if="loadingPool || !pool || !transfersAllowed"
+    class="h-64"
+  />
   <MyWallet
-    includeNativeAsset
+    v-else
     :excludedTokens="excludedTokens"
     :pool="pool"
     @click:asset="handleMyWalletTokenClick"
   />
 </template>
-
-
