@@ -2,8 +2,8 @@ import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests
 import BigNumber from 'bignumber.js';
 import useNumbers, { bspToDec, FNumFormats } from './useNumbers';
 
-describe('useNumbers', () => {
-  const { result } = mountComposable(() => useNumbers());
+describe('useNumbers', async () => {
+  const { result } = await mountComposable(() => useNumbers());
 
   it('Should load', () => {
     expect(result).toBeTruthy();

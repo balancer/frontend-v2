@@ -18,13 +18,11 @@ type Props = {
   // If pool prop is provided, Tokens are grouped into:
   // 'Pool tokens in wallet' and 'Other tokens in wallet'
   pool?: AnyPool;
-  includeNativeAsset?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   excludedTokens: () => [],
   pool: undefined,
-  includeNativeAsset: false,
 });
 
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
