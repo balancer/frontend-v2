@@ -196,6 +196,7 @@ const POOLS_MAINNET: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
+    'FX',
   ],
   Stable: {
     AllowList: [
@@ -511,6 +512,7 @@ const POOLS_POLYGON: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
+    'FX',
   ],
   Stable: {
     AllowList: [
