@@ -299,9 +299,10 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
   // Checks if amountsIn has any values > 0.
-  const hasAmountsOut = computed(() =>
-    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
-  );
+  const hasAmountsOut = computed(() => {
+    console.log('amount', amountsOut.value);
+    return amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0));
+  });
 
   // Checks if BPT in is > 0
   const hasBptIn = computed(() => bnum(bptIn.value).gt(0));

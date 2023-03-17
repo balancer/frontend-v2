@@ -9,6 +9,7 @@ import {
   isDeep,
   isMetaStable,
   isStable,
+  isWeighted,
   isWeightedLike,
   tokenTreeNodes,
 } from '@/composables/usePool';
@@ -365,10 +366,15 @@ export const joinPoolProvider = (
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
+      console.log('koin', joinHandlerType.value);
+
       joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
-
-      return joinPoolService.join({
+      console.log({
+        amountsIn: amountsInWithValue.value,
+        tokensIn: tokensIn.value,
+      });
+      const joinRes = await joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
         prices: prices.value,
@@ -378,7 +384,10 @@ export const joinPoolProvider = (
         approvalActions: approvalActions.value,
         transactionDeadline: transactionDeadline.value,
       });
+      console.log('joinres', joinRes);
+      return joinRes;
     } catch (error) {
+      console.log(error);
       txError.value = (error as Error).message;
       throw new Error('Failed to submit join transaction.', { cause: error });
     }
@@ -484,7 +493,15 @@ export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
   Symbol(symbolKeys.Providers.JoinPool);
 
 export function provideJoinPool(pool: Ref<Pool>) {
-  const joinPoolResponse = isDeep(pool.value) ? joinPoolProvider(pool) : {};
+  const { poolType } = pool.value;
+
+  const joinPoolResponse =
+    isDeep(pool.value) ||
+    isWeighted(poolType) ||
+    isStable(poolType) ||
+    isMetaStable(poolType)
+      ? joinPoolProvider(pool)
+      : {};
   provide(JoinPoolProviderSymbol, joinPoolResponse);
   return joinPoolResponse;
 }

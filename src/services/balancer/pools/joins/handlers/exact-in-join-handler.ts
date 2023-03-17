@@ -29,13 +29,14 @@ export class ExactInJoinHandler implements JoinPoolHandler {
 
   async join(params: JoinParams): Promise<TransactionResponse> {
     await this.queryJoin(params);
-
+    console.log('his.lastJoinRes', this.lastJoinRes);
     if (!this.lastJoinRes) {
       throw new Error('Could not query generalised join');
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
     const { to, data, value } = this.lastJoinRes;
+    console.log('value', Number(value));
 
     // value property must be passed if joining with native asset
     return txBuilder.raw.sendTransaction({ to, data, value });

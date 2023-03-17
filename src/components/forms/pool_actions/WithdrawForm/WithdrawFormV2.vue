@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { onBeforeMount, computed } from 'vue';
-// import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
 import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
-import {
-  provideExitPool,
-  useExitPool,
-} from '@/providers/local/exit-pool.provider';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { useTokens } from '@/providers/tokens.provider';
@@ -44,11 +40,6 @@ const {
   hasAmountsOut,
   validAmounts,
 } = useExitPool();
-
-console.log({
-  useExitPool: useExitPool(),
-});
-provideExitPool(pool);
 
 const { isWethPool } = usePool(pool);
 /**

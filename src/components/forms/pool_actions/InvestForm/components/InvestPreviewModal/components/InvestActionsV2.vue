@@ -115,7 +115,7 @@ async function submit(): Promise<TransactionResponse> {
   txState.init = true;
   try {
     const tx = await join();
-
+    console.log('tx', tx);
     txState.confirming = true;
 
     handleTransaction(tx);

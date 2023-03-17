@@ -64,7 +64,6 @@ const {
 const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
   useMyWalletTokens({
     pool: props.pool,
-    includeNativeAsset: true,
   });
 
 /**
@@ -158,7 +157,7 @@ watch(
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
 
-    <InvestFormTotalsV2 />
+    <InvestFormTotalsV2 :pool="pool" />
 
     <div
       v-if="highPriceImpact"
