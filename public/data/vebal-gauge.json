@@ -52,7 +52,7 @@
     "pool": {
       "id": "0x9232a548dd9e81bac65500b5e0d918f8ba93675c000200000000000000000423",
       "address": "0x9232a548DD9E81BaC65500b5e0d918F8Ba93675C",
-      "poolType": "Weighted",
+      "poolType": "Stable",
       "symbol": "veBAL",
       "tokens": [
         {
