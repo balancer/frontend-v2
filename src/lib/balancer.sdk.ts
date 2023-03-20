@@ -15,8 +15,10 @@ const network = ((): BalancerNetworkConfig => {
     case '5':
       return BALANCER_NETWORK_CONFIG[Network.GOERLI];
     case '137': {
-      // StablePool with Convergence issues
-      let poolsToIgnore = ['0xc31a37105b94ab4efca1954a14f059af11fcd9bb'];
+      let poolsToIgnore = [
+        '0xc31a37105b94ab4efca1954a14f059af11fcd9bb', // StablePool with Convergence issues
+      ];
+      // Make sure to include `poolsToIgnore` already defined in SDK package
       if (BALANCER_NETWORK_CONFIG[Network.POLYGON].poolsToIgnore)
         poolsToIgnore = [
           ...poolsToIgnore,
