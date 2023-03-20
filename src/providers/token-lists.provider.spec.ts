@@ -28,6 +28,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 
@@ -41,6 +46,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 
@@ -54,6 +64,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 
@@ -67,6 +82,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 

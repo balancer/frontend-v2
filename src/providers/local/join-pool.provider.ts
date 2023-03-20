@@ -39,6 +39,7 @@ import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
+import { throwQueryError } from '@/lib/utils/queries';
 
 /**
  * TYPES
@@ -53,7 +54,10 @@ export type AmountIn = {
  *
  * Handles pool joining state and transaction execution.
  */
-export const joinPoolProvider = (pool: Ref<Pool>) => {
+export const joinPoolProvider = (
+  pool: Ref<Pool>,
+  queryJoinDebounceMillis = 1000
+) => {
   /**
    * STATE
    */
@@ -66,7 +70,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
   const approvalActions = ref<TransactionActionInfo[]>([]);
   const isSingleAssetJoin = ref<boolean>(false);
 
-  const debounceQueryJoin = debounce(queryJoin, 1000);
+  const debounceQueryJoin = debounce(queryJoin, queryJoinDebounceMillis);
 
   const queryEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
@@ -292,7 +296,7 @@ export const joinPoolProvider = (pool: Ref<Pool>) => {
       return output;
     } catch (error) {
       captureException(error);
-      throw new Error('Failed to construct join.', { cause: error });
+      throwQueryError('Failed to construct join.', error);
     }
   }
 
