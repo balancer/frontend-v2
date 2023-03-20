@@ -6,12 +6,14 @@ import {
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
-import { BigNumber } from '@ethersproject/bignumber';
-import { TransactionResponse } from '@ethersproject/providers';
+import { buildJoinParams } from '@tests/unit/builders/join-exit.builders';
+import {
+  defaultGasLimit,
+  defaultTransactionResponse,
+} from '@tests/unit/builders/signer';
 import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
 import { GeneralisedJoinHandler } from './generalised-join.handler';
-import { JoinParams } from './join-pool.handler';
 
 initBalancerWithDefaultMocks();
 
@@ -26,23 +28,16 @@ async function mountGeneralizedJoinHandler(pool: Pool) {
   );
 }
 
-const gasLimit = 2;
-const estimatedGas = BigNumber.from(gasLimit);
-const joinParams = mockDeep<JoinParams>();
-joinParams.signer.estimateGas.mockResolvedValue(estimatedGas);
-joinParams.signer.getChainId.mockResolvedValue(5);
-
-const transactionResponse = mockDeep<TransactionResponse>();
-joinParams.signer.sendTransaction.mockResolvedValue(transactionResponse);
+const joinParams = buildJoinParams();
 
 test('Successfully executes a generalized join transaction', async () => {
   const handler = await mountGeneralizedJoinHandler(BoostedPoolMock);
   const joinResult = await handler.join(joinParams);
 
-  expect(joinResult).toEqual(transactionResponse);
+  expect(joinResult).toEqual(defaultTransactionResponse);
   expect(joinParams.signer.sendTransaction).toHaveBeenCalledOnceWith({
     data: defaultGeneralizedJoinResponse.encodedCall,
     to: defaultGeneralizedJoinResponse.to,
-    gasLimit,
+    gasLimit: defaultGasLimit,
   });
 });

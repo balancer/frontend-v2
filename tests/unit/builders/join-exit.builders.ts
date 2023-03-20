@@ -1,5 +1,6 @@
 import { AmountOut } from '@/providers/local/exit-pool.provider';
 import { ExitParams } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
+import { JoinParams } from '@/services/balancer/pools/joins/handlers/join-pool.handler';
 import { aTokenInfo } from '@/types/TokenList.builders';
 import { mock } from 'vitest-mock-extended';
 import { wethAddress } from './address';
@@ -24,4 +25,14 @@ export function buildExitParams(...options: Partial<ExitParams>[]): ExitParams {
   defaultExitParams.signer = aSigner();
 
   return Object.assign(defaultExitParams, ...options);
+}
+
+export function buildJoinParams(...options: Partial<JoinParams>[]): JoinParams {
+  const defaultJoinParams = mock<JoinParams>();
+
+  defaultJoinParams.amountsIn = [];
+
+  defaultJoinParams.signer = aSigner();
+
+  return Object.assign(defaultJoinParams, ...options);
 }
