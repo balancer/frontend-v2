@@ -649,6 +649,10 @@ const POOLS_POLYGON: Pools = {
       name: 'Balancer Boosted Aave USD (Polygon)',
       hasIcon: true,
     },
+    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
+      name: 'Balancer Boosted Tetu USD (Polygon)',
+      hasIcon: true,
+    },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
