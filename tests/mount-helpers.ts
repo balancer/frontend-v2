@@ -56,17 +56,20 @@ export function mountComposableWithDefaultTokensProvider<R>(
   });
 }
 
-export function mountComposableWithFakeTokensProvider<R>(
+export async function mountComposableWithFakeTokensProvider<R>(
   callback: () => R,
   options?: {
     extraProvidersCb?: () => void;
     tokensProviderOverride?: DeepPartial<TokensResponse>;
   }
-): MountResult<R> {
+): Promise<MountResult<R>> {
+  const { result: tokenLists } = mount(() => provideTokenLists());
+  // Wait for token list json to be async loaded (GOERLI json is loaded in tests)
+  await tokenLists.tokensListPromise;
+
   return mountComposable<R>(callback, {
     extraProvidersCb: () => {
       const userSettings = provideUserSettings();
-      const tokenLists = provideTokenLists();
       provide(
         TokensProviderSymbol,
         fakeTokensProvider(
