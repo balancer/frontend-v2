@@ -129,13 +129,21 @@ export const defaultGeneralizedExitResponse = {
 };
 
 type ExitExactInResponse = ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
+type ExitExactOutResponse = ReturnType<
+  PoolWithMethods['buildExitExactTokensOut']
+>;
 
-export const defaultExitExact: ExitExactInResponse =
+export const defaultExactInExit: ExitExactInResponse =
   mock<ExitExactInResponse>();
-defaultExitExact.expectedAmountsOut = ['100', '200'];
-defaultExitExact.minAmountsOut = ['20'];
-defaultExitExact.to = 'test exact exit to';
-defaultExitExact.data = 'exact exit test encoded data';
+defaultExactInExit.expectedAmountsOut = ['100', '200'];
+defaultExactInExit.minAmountsOut = ['20'];
+defaultExactInExit.to = 'test exact exit to';
+defaultExactInExit.data = 'exact exit test encoded data';
+
+export const defaultExactOutExit: ExitExactOutResponse =
+  mock<ExitExactOutResponse>();
+defaultExactOutExit.to = 'test exact exit to';
+defaultExactOutExit.data = 'exact exit test encoded data';
 
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
@@ -165,7 +173,8 @@ export function generateBalancerSdkMock() {
   // Mock pool find for exact join/exits
   balancerMock.pools.find.mockResolvedValue(
     aPoolWithMethods({
-      buildExitExactBPTIn: vi.fn(() => defaultExitExact),
+      buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
+      buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
       calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
     })
   );

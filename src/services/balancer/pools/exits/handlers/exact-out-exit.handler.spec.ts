@@ -1,6 +1,6 @@
 import { getBalancer } from '@/dependencies/balancer-sdk';
 import {
-  defaultExactInExit,
+  defaultExactInExit as defaultExactInExit,
   initBalancerWithDefaultMocks,
 } from '@/dependencies/balancer-sdk.mocks';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
@@ -13,23 +13,23 @@ import {
 } from '@tests/unit/builders/signer';
 import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
-import { ExactInExitHandler } from './exact-in-exit.handler';
+import { ExactOutExitHandler } from './exact-out-exit.handler';
 
 initBalancerWithDefaultMocks();
 
 const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
   mockDeep<GasPriceService>();
 
-async function mountExactInExitHandler(pool: Pool) {
-  return new ExactInExitHandler(ref(pool), getBalancer(), gasPriceServiceMock);
+async function mountExactOutExitHandler(pool: Pool) {
+  return new ExactOutExitHandler(ref(pool), getBalancer(), gasPriceServiceMock);
 }
 
 const exitParams = buildExitParams({
   bptIn: '0.00000000000000001',
 });
 
-test('Successfully executes an exact-in exit transaction', async () => {
-  const handler = await mountExactInExitHandler(aWeightedPool());
+test('Successfully executes an exact-out exit transaction', async () => {
+  const handler = await mountExactOutExitHandler(aWeightedPool());
 
   const exitResult = await handler.exit(exitParams);
 
