@@ -1,22 +1,38 @@
-import { BalancerSDK, Network } from '@balancer-labs/sdk';
+import {
+  BalancerSDK,
+  Network,
+  BALANCER_NETWORK_CONFIG,
+  BalancerNetworkConfig,
+} from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import { ref } from 'vue';
 import { isTestMode } from '@/plugins/modes';
 
-const network = ((): Network => {
+const network = ((): BalancerNetworkConfig => {
   switch (configService.network.key) {
     case '1':
-      return Network.MAINNET;
+      return BALANCER_NETWORK_CONFIG[Network.MAINNET];
     case '5':
-      return Network.GOERLI;
-    case '137':
-      return Network.POLYGON;
+      return BALANCER_NETWORK_CONFIG[Network.GOERLI];
+    case '137': {
+      // StablePool with Convergence issues
+      let poolsToIgnore = ['0xc31a37105b94ab4efca1954a14f059af11fcd9bb'];
+      if (BALANCER_NETWORK_CONFIG[Network.POLYGON].poolsToIgnore)
+        poolsToIgnore = [
+          ...poolsToIgnore,
+          ...BALANCER_NETWORK_CONFIG[Network.POLYGON].poolsToIgnore,
+        ];
+      return {
+        ...BALANCER_NETWORK_CONFIG[Network.POLYGON],
+        poolsToIgnore,
+      };
+    }
     case '42161':
-      return Network.ARBITRUM;
+      return BALANCER_NETWORK_CONFIG[Network.ARBITRUM];
     case '100':
-      return Network.GNOSIS;
+      return BALANCER_NETWORK_CONFIG[Network.GNOSIS];
     default:
-      return Network.MAINNET;
+      return BALANCER_NETWORK_CONFIG[Network.MAINNET];
   }
 })();
 
