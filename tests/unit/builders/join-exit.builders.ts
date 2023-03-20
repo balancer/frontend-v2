@@ -1,0 +1,27 @@
+import { AmountOut } from '@/providers/local/exit-pool.provider';
+import { ExitParams } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
+import { aTokenInfo } from '@/types/TokenList.builders';
+import { mock } from 'vitest-mock-extended';
+import { wethAddress } from './address';
+import { aSigner } from './signer';
+
+export function anAmountOut(...options: Partial<AmountOut>[]): AmountOut {
+  const defaultAmountOut = mock<AmountOut>();
+  defaultAmountOut.address = wethAddress;
+  defaultAmountOut.valid = true;
+  defaultAmountOut.max = '100';
+  defaultAmountOut.value = '10';
+  return Object.assign(defaultAmountOut, ...options);
+}
+
+export function buildExitParams(...options: Partial<ExitParams>[]): ExitParams {
+  const defaultExitParams = mock<ExitParams>();
+
+  defaultExitParams.amountsOut = [anAmountOut({ address: wethAddress })];
+
+  defaultExitParams.tokenInfo = { [wethAddress]: aTokenInfo(wethAddress) };
+
+  defaultExitParams.signer = aSigner();
+
+  return Object.assign(defaultExitParams, ...options);
+}

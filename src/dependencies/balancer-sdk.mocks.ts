@@ -1,9 +1,14 @@
 import { initBalancer } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
-import { SubgraphPoolBase, SwapInfo } from '@balancer-labs/sdk';
+import {
+  PoolWithMethods,
+  SubgraphPoolBase,
+  SwapInfo,
+} from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { mockDeep } from 'vitest-mock-extended';
+import { aPoolWithMethods } from '@tests/unit/builders/pool.builders';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 type DeepPartial<T> = T extends object
   ? {
@@ -123,6 +128,15 @@ export const defaultGeneralizedExitResponse = {
   priceImpact: defaultPriceImpact.toString(),
 };
 
+type ExitExactInResponse = ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
+
+export const defaultExitExact: ExitExactInResponse =
+  mock<ExitExactInResponse>();
+defaultExitExact.expectedAmountsOut = ['100', '200'];
+defaultExitExact.minAmountsOut = ['20'];
+defaultExitExact.to = 'test exact exit to';
+defaultExitExact.data = 'exact exit test encoded data';
+
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
   balancerMock.data.tokenPrices.find.mockResolvedValue(mockedTokenPrice);
@@ -146,6 +160,14 @@ export function generateBalancerSdkMock() {
   // Mock generalized exit
   balancerMock.pools.generalisedExit.mockResolvedValue(
     defaultGeneralizedExitResponse
+  );
+
+  // Mock pool find for exact join/exits
+  balancerMock.pools.find.mockResolvedValue(
+    aPoolWithMethods({
+      buildExitExactBPTIn: vi.fn(() => defaultExitExact),
+      calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
+    })
   );
 
   return balancerMock;
