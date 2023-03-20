@@ -1,4 +1,5 @@
 import contracts from './contracts';
+import { EMPTY_POOLS } from '@/constants/pools';
 
 export default {
   key: '10',
@@ -62,4 +63,5 @@ export default {
     type: 5,
     weight: 0,
   },
+  pools: EMPTY_POOLS,
 };

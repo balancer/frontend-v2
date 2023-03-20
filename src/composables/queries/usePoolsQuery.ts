@@ -1,7 +1,6 @@
 import { Ref, ref, watch } from 'vue';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
-import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { Pool } from '@/services/pool/types';
 
@@ -145,9 +144,9 @@ export default function usePoolsQuery(
       orderDirection: 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
-        poolType: { in: POOLS.IncludedPoolTypes },
+        poolType: { in: configService.network.pools.IncludedPoolTypes },
         totalShares: { gt: 0.00001 },
-        id: { not_in: POOLS.BlockList },
+        id: { not_in: configService.network.pools.BlockList },
       },
     };
     if (queryArgs.where && filterOptions?.poolIds?.value) {
@@ -170,7 +169,9 @@ export default function usePoolsQuery(
 
     // Don't use a limit if there is a token list because the limit is applied pre-filter
     if (!filterTokens.value.length) {
-      fetchArgs.first = filterOptions?.pageSize || POOLS.Pagination.PerPage;
+      fetchArgs.first =
+        filterOptions?.pageSize ||
+        configService.network.pools.Pagination.PerPage;
     }
 
     if (pageParam && pageParam > 0) {

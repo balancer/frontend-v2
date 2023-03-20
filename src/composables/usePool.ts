@@ -5,11 +5,9 @@ import { computed, Ref } from 'vue';
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import {
-  POOLS,
   APR_THRESHOLD,
   DeprecatedDetails,
   PoolMetadata,
-  POOLS_MAP,
 } from '@/constants/pools';
 import {
   bnum,
@@ -19,6 +17,7 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
+import configs from '@/lib/config';
 
 import {
   isTestnet,
@@ -32,6 +31,8 @@ import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
+
+const POOLS = configService.network.pools;
 
 /**
  * METHODS
@@ -589,7 +590,7 @@ export function poolMetadata(
   id: string,
   network = networkId.value
 ): PoolMetadata | undefined {
-  return POOLS_MAP[network]?.Metadata[id.toLowerCase()];
+  return configs[network]?.pools.Metadata[id.toLowerCase()];
 }
 
 /**

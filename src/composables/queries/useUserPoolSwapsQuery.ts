@@ -1,11 +1,11 @@
 import { computed, reactive } from 'vue';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
-import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSwap } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { configService } from '@/services/config/config.service';
 
 import useNetwork from '../useNetwork';
 
@@ -33,7 +33,7 @@ export default function useUserPoolSwapsQuery(
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
     const poolSwaps = await balancerSubgraphService.poolSwaps.get({
-      first: POOLS.Pagination.PerPage,
+      first: configService.network.pools.Pagination.PerPage,
       skip: pageParam,
       where: {
         userAddress: account.value.toLowerCase(),
@@ -44,8 +44,8 @@ export default function useUserPoolSwapsQuery(
     return {
       poolSwaps,
       skip:
-        poolSwaps.length >= POOLS.Pagination.PerPage
-          ? pageParam + POOLS.Pagination.PerPage
+        poolSwaps.length >= configService.network.pools.Pagination.PerPage
+          ? pageParam + configService.network.pools.Pagination.PerPage
           : undefined,
     };
   };

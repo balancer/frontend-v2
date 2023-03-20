@@ -14,7 +14,6 @@ import { isBlocked, tokensListExclBpt, tokenTreeLeafs } from '../usePool';
 
 import PoolRepository from '@/services/pool/pool.repository';
 import { configService } from '@/services/config/config.service';
-import { POOLS } from '@/constants/pools';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type QueryOptions = QueryObserverOptions<Pool>;
@@ -53,7 +52,7 @@ export default function usePoolQuery(
       where: {
         id: { eq: id?.toLowerCase() },
         totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
-        poolType: { in: POOLS.IncludedPoolTypes },
+        poolType: { in: configService.network.pools.IncludedPoolTypes },
       },
     };
     return queryArgs;

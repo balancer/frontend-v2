@@ -8,7 +8,7 @@ import mainnet from './mainnet';
 import optimism from './optimism';
 import polygon from './polygon';
 import gnosisChain from './gnosis-chain';
-import test from './test.json';
+import test from './test';
 
 export interface Config {
   key: string;
@@ -74,7 +74,7 @@ export interface Config {
     faucet: string;
     gaugeRewardsHelper?: string;
   };
-  pools?: Pools;
+  pools: Pools;
   keys?: {
     infura: string;
     alchemy: string;

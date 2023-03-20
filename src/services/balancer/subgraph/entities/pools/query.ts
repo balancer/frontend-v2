@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 
-import { POOLS } from '@/constants/pools';
 import { GraphQLArgs } from '@balancer-labs/sdk';
+import { configService } from '@/services/config/config.service';
 
 const defaultArgs: GraphQLArgs = {
   first: 1000,
@@ -12,7 +12,7 @@ const defaultArgs: GraphQLArgs = {
       gt: 0.00001,
     },
     id: {
-      not_in: POOLS.BlockList,
+      not_in: configService.network.pools.BlockList,
     },
   },
 };

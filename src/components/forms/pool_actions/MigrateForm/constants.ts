@@ -1,11 +1,13 @@
 import { networkId } from '@/composables/useNetwork';
-import { POOLS } from '@/constants/pools';
+import { configService } from '@/services/config/config.service';
 import { Network } from '@balancer-labs/sdk';
 import { keyBy } from 'lodash';
 
 import { PoolMigrationInfo, PoolMigrationType } from './types';
 
 const riskI18nLabelPrefix = 'migratePool.previewModal.riskWarnings.risks';
+
+const POOLS = configService.network.pools;
 
 const GOERLI_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {

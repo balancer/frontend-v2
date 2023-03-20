@@ -4,10 +4,11 @@ import { EmptyPoolMock } from '@/__mocks__/pool';
 import APRTooltip from './APRTooltip.vue';
 import { Pool } from '@/services/pool/types';
 import { configService } from '@/services/config/config.service';
-import { POOLS } from '@/constants/pools';
 import { renderComponent } from '@tests/renderComponent';
 
 vi.mock('@/providers/tokens.provider');
+
+const POOLS = configService.network.pools;
 
 const EmptyAprBreakdownMock: AprBreakdown = {
   swapFees: 0,
