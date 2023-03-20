@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import Footer from '@/components/footer/Footer.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
+
+onMounted(() => {
+  document.documentElement.classList.add('scroll-smooth');
+});
+
+onUnmounted(() => {
+  document.documentElement.classList.remove('scroll-smooth');
+});
 </script>
 
 <template>
@@ -19,10 +27,10 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 
 <style scoped>
 .content-container {
-  @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white dark:bg-gray-900;
+  @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white dark:bg-gray-900 transition-all;
 
   min-height: calc(100vh - 140px);
-  scroll-behavior: smooth;
+  scroll-behavior: smooth !important;
   scroll-margin-top: 5em;
 }
 
