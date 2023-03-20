@@ -52,8 +52,8 @@
     "pool": {
       "id": "0x9232a548dd9e81bac65500b5e0d918f8ba93675c000200000000000000000423",
       "address": "0x9232a548DD9E81BaC65500b5e0d918F8Ba93675C",
-      "poolType": "Weighted",
-      "symbol": "veBAL",
+      "poolType": "Stable",
+      "symbol": "veLIT",
       "tokens": [
         {
           "address": "0xf17d23136B4FeAd139f54fB766c8795faae09660",
@@ -63,7 +63,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0xf17d23136B4FeAd139f54fB766c8795faae09660": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x9232a548dd9e81bac65500b5e0d918f8ba93675c.png"
+      "0xf17d23136B4FeAd139f54fB766c8795faae09660": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xfd0205066521550d7d7ab19da8f72bb004b4c341.png"
     }
   },
   {
@@ -242,7 +242,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xae78736cd615f374d3085123a210448e74fc6393.png",
+      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xae78736cd615f374d3085123a210448e74fc6393.png",
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
@@ -329,7 +329,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
@@ -387,7 +387,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321/logo.png",
+      "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x81f8f0bb1cb2a06649e51913a151f0e7ef6fa321.png",
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
