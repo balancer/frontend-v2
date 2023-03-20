@@ -31,6 +31,10 @@ const wallets = ref(SupportedWallets.filter(id => id !== 'safe'));
         <span className="link">{{ $t('policies.termsOfUse') }}</span
         >,
       </router-link>
+      <router-link :to="{ name: 'risks' }" target="_blank">
+        <span className="link">{{ $t('policies.risks') }}</span
+        >,
+      </router-link>
       <router-link :to="{ name: 'cookies-policy' }" target="_blank">
         <span className="link">{{
           $t('policies.cookiesPolicy')
