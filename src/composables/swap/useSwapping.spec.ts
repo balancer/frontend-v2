@@ -93,8 +93,8 @@ const mockProps = {
 };
 
 describe('useSwapping', () => {
-  it('Should load', () => {
-    const { result } = mountComposable(
+  it('Should load', async () => {
+    const { result } = await mountComposable(
       () =>
         useSwapping(
           mockProps.exactIn,
@@ -123,7 +123,7 @@ describe('useSwapping', () => {
         mockProps.tokenOutAddressInput,
         mockProps.tokenOutAmountInput
       );
-    const { result } = mountComposable(callbackUnderTest, {
+    const { result } = await mountComposable(callbackUnderTest, {
       extraProvidersCb: () => {
         provide(UserSettingsProviderSymbol, userSettingsResponse),
           provideTokenLists();

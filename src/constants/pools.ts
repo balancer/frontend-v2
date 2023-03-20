@@ -74,7 +74,7 @@ export type Pools = {
     Gauntlet: string[];
   };
   BlockList: string[];
-  ExcludedPoolTypes: string[];
+  IncludedPoolTypes: string[];
   Stable: {
     AllowList: string[];
   };
@@ -114,18 +114,14 @@ const POOLS_GOERLI: Pools = {
   BlockList: [
     '0x22d398c68030ef6b1c55321cca6e0cecc5c93b2f000200000000000000000678',
   ],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
@@ -192,17 +188,15 @@ const POOLS_MAINNET: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
+    'FX',
   ],
   Stable: {
     AllowList: [
@@ -520,17 +514,15 @@ const POOLS_POLYGON: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
+    'FX',
   ],
   Stable: {
     AllowList: [
@@ -678,18 +670,14 @@ const POOLS_ARBITRUM: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
@@ -776,18 +764,14 @@ const POOLS_GNOSIS: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
@@ -844,18 +828,14 @@ const POOLS_GENERIC: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
