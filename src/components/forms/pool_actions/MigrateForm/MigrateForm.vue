@@ -38,6 +38,7 @@ const { data: poolsResponse, isLoading: isLoadingPools } = usePoolsQuery(
       props.poolMigrationInfo.fromPoolId,
       props.poolMigrationInfo.toPoolId,
     ]),
+    first: 1000,
   }
 );
 
