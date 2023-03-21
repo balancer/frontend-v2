@@ -81,6 +81,9 @@ watch(
   () => [props.actions, props.isLoading],
   () => {
     _actions.value = props.actions;
+    actionStates.value = _actions.value.map(() => ({
+      ...defaultActionState,
+    }));
   },
   {
     deep: true,
@@ -165,7 +168,9 @@ async function submit(
     state.init = true;
     state.error = null;
 
+    console.log('Triggering action');
     const tx = await action();
+    console.log('triggered action');
 
     state.init = false;
     state.confirming = true;
@@ -204,7 +209,7 @@ async function handleTransaction(
       // need to explicity wait for a number of confirmations
       // on polygon
       if (Number(configService.network.chainId) === ChainId.polygon) {
-        await tx.wait(10);
+        await tx.wait(5);
       }
 
       const confirmedAt = await getTxConfirmedAt(receipt);
