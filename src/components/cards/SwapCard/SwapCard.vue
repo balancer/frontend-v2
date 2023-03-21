@@ -151,7 +151,6 @@
       :swapping="swapping"
       :error="error"
       :warning="warning"
-      @swap="swap"
       @close="handlePreviewModalClose"
     />
   </teleport>
@@ -354,12 +353,6 @@ export default defineComponent({
     });
 
     // METHODS
-    function swap() {
-      swapping.swap(() => {
-        swapping.resetAmounts();
-        modalSwapPreviewIsOpen.value = false;
-      });
-    }
 
     function handleErrorButtonClick() {
       if (swapping.sor.validationErrors.value.highPriceImpact) {
@@ -441,7 +434,6 @@ export default defineComponent({
       handlePreviewButton,
       handlePreviewModalClose,
       // methods
-      swap,
       switchToWETH,
       handleErrorButtonClick,
     };
