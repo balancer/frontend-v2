@@ -205,6 +205,11 @@
               </router-link>
             </p>
             <p>
+              <router-link class="policy" :to="{ name: 'risks' }">
+                {{ $t('policies.risks') }}
+              </router-link>
+            </p>
+            <p>
               <span
                 class="cursor-pointer policy"
                 @click="isThirdPartyServicesModalVisible = true"

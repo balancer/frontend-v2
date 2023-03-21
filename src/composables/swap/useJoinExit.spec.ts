@@ -70,14 +70,16 @@ describe('useJoinExit', () => {
     vi.spyOn(console, 'timeEnd').mockImplementation(noop);
   });
 
-  it('Should load', () => {
+  it('Should load', async () => {
     vi.spyOn(console, 'time').mockImplementation(noop);
-    const { result } = mountComposable(() => useJoinExit(mockProps));
+    const { result } = await mountComposable(() => useJoinExit(mockProps));
     expect(result).toBeTruthy();
   });
 
   it('Should return an available joinExit swap', async () => {
-    const { result: joinExit } = mountComposable(() => useJoinExit(mockProps));
+    const { result: joinExit } = await mountComposable(() =>
+      useJoinExit(mockProps)
+    );
     await joinExit.handleAmountChange();
     expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(
       Number(mockAmount)
