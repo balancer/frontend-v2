@@ -13,6 +13,7 @@ import {
 } from '@tests/unit/builders/signer';
 import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
+
 import { GeneralisedExitHandler } from './generalised-exit.handler';
 
 initBalancerWithDefaultMocks();

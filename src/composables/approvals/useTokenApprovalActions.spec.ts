@@ -1,8 +1,7 @@
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { initMulticallWithDefaultMocks } from '@/dependencies/multicall.mocks';
 import { mountComposableWithFakeTokensProvider } from '@tests/mount-helpers';
-import { daiAddress } from '@tests/unit/builders/address';
-import { ref } from 'vue';
+import { daiAddress, randomAddress } from '@tests/unit/builders/address';
 
 initMulticallWithDefaultMocks();
 
@@ -29,7 +28,7 @@ test('Shows correct labels', async () => {
   );
 });
 
-const spender = daiAddress;
+const spender = randomAddress();
 
 test('Gets approval actions for spender', async () => {
   const { getTokenApprovalActions } = await mountUseTokenApprovalActions();
