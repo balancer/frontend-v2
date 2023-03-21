@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
+import pools from '@/lib/config/pools';
 import { isSameAddress, scale } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';

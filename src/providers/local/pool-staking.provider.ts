@@ -13,6 +13,7 @@ import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
+import pools from '@/lib/config/pools';
 
 /**
  * PoolStakingProvider

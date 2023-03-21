@@ -1,12 +1,12 @@
 import { computed, reactive } from 'vue';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
+import pools from '@/lib/config/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '../useNetwork';
-import pools from '@/lib/config/pools';
 
 type UserPoolActivitiesQueryResponse = {
   poolActivities: PoolActivity[];

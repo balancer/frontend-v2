@@ -1,3 +1,4 @@
+import pools from '@/lib/config/pools';
 import { Pool } from '@balancer-labs/sdk';
 import { RouteLocationNormalized } from 'vue-router';
 import { configService } from '../config/config.service';

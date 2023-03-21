@@ -5,6 +5,7 @@ import { GraphQLArgs } from '@balancer-labs/sdk';
 
 import { useTokens } from '@/providers/tokens.provider';
 import QUERY_KEYS from '@/constants/queryKeys';
+import pools from '@/lib/config/pools';
 
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';

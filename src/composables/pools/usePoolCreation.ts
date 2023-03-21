@@ -6,6 +6,7 @@ import { computed, reactive, ref, toRefs } from 'vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
+import pools from '@/lib/config/pools';
 import {
   bnum,
   includesAddress,
