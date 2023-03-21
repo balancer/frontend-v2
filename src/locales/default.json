@@ -4,6 +4,14 @@
   "account": "Account",
   "action": "Action",
   "actions": "Actions",
+  "actionSteps": {
+    "approve": {
+      "loadingLabel": "Confirm approval in wallet"
+    },
+    "swap": {
+      "loadingLabel": "Confirm swap in wallet"
+    }
+  },
   "activity": "Activity",
   "addLiquidity": "Add liquidity",
   "addToken": "Add a token",

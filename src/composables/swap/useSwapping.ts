@@ -226,7 +226,7 @@ export default function useSwapping(
   );
 
   // METHODS
-  function swap(successCallback?: () => void) {
+  async function swap(successCallback?: () => void) {
     if (isCowswapSwap.value) {
       return cowswap.swap(() => {
         if (successCallback) {
