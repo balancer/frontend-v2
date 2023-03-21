@@ -40,6 +40,8 @@ const PrivacyPolicyPage = () =>
   );
 const TermsOfUsePage = () =>
   import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
+const RisksPage = () =>
+  import(/* webpackChunkName: "RisksPage" */ '@/pages/risks.vue');
 const SwapPage = () =>
   import(
     /* webpackChunkName: "SwapPage" */ /* webpackPrefetch: true */ '@/pages/swap.vue'
@@ -88,6 +90,12 @@ const routes: RouteRecordRaw[] = [
     path: '/cookies-policy',
     name: 'cookies-policy',
     component: CookiesPolicyPage,
+    meta: { layout: 'ContentLayout' },
+  },
+  {
+    path: '/risks',
+    name: 'risks',
+    component: RisksPage,
     meta: { layout: 'ContentLayout' },
   },
   {
@@ -205,8 +213,11 @@ if (isGoerli.value) {
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-  scrollBehavior() {
-    return { top: 0 };
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.hash) return { el: to.hash };
+
+    return { x: 0, top: 0 };
   },
 });
 

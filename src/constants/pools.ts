@@ -74,7 +74,7 @@ export type Pools = {
     Gauntlet: string[];
   };
   BlockList: string[];
-  ExcludedPoolTypes: string[];
+  IncludedPoolTypes: string[];
   Stable: {
     AllowList: string[];
   };
@@ -114,18 +114,14 @@ const POOLS_GOERLI: Pools = {
   BlockList: [
     '0x22d398c68030ef6b1c55321cca6e0cecc5c93b2f000200000000000000000678',
   ],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
@@ -197,17 +193,15 @@ const POOLS_MAINNET: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
+    'FX',
   ],
   Stable: {
     AllowList: [
@@ -251,6 +245,7 @@ const POOLS_MAINNET: Pools = {
       '0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499', // yearn stable
       '0xdb3b48f27332c171869f2ae4160bc93a8eed347c00000000000000000000049b', // baoUSD USDC
       '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
+      '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // morpho usd
     ],
   },
   Investment: {
@@ -381,6 +376,7 @@ const POOLS_MAINNET: Pools = {
       '0xb08885e6026bab4333a80024ec25a1a3e1ff2b8a000200000000000000000445',
       '0x384f67aa430376efc4f8987eabf7f3f84eb9ea5d00020000000000000000043d',
       '0xe4010ef5e37dc23154680f23c4a0d48bfca91687000200000000000000000432',
+      '0xf16aee6a71af1a9bc8f56975a4c2705ca7a782bc0002000000000000000004bb',
     ],
   },
   Metadata: {
@@ -523,17 +519,15 @@ const POOLS_POLYGON: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
+    'FX',
   ],
   Stable: {
     AllowList: [
@@ -576,6 +570,10 @@ const POOLS_POLYGON: Pools = {
       '0x3db543faf7a92052de7860c5c9debabee59ed5bd000000000000000000000a62', // 4usd
       '0x65fe9314be50890fb01457be076fafd05ff32b9a000000000000000000000a96', // wsteth/eth
       '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
+      '0x9a020bdc2faff5bd24c6acc2020d01ff9f2c627a000000000000000000000ae2', // overnight davos usd
+      '0x19017f2919a5fb7eca1f0d142330644dc2045423000000000000000000000af9', // 2EUR (EURe)
+      '0x02559a4fa0f3dae55820a65eb48b7a2fcd82f361000000000000000000000af8', // 2EUR (EURs)
+      '0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a', // ankMatic/Matic
     ],
   },
   Investment: {
@@ -650,6 +648,10 @@ const POOLS_POLYGON: Pools = {
       name: 'Balancer Boosted Aave USD (Polygon)',
       hasIcon: true,
     },
+    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
+      name: 'Balancer Boosted Tetu USD (Polygon)',
+      hasIcon: true,
+    },
   },
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
@@ -674,18 +676,14 @@ const POOLS_ARBITRUM: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
@@ -747,6 +745,7 @@ const POOLS_ARBITRUM: Pools = {
       '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316',
       '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316',
       '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352',
+      '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382',
     ],
   },
   Metadata: {
@@ -771,22 +770,19 @@ const POOLS_GNOSIS: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
       '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // bb-ag-usd
+      '0x9949f1884b61a8265e12056650c1ac4677a75403000000000000000000000014', // 2EUR (EURe)
     ],
   },
   Investment: {
@@ -838,18 +834,14 @@ const POOLS_GENERIC: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: [
-    'Element',
-    'AaveLinear',
-    'EulerLinear',
-    'GearboxLinear',
-    'Linear',
-    'ERC4626Linear',
-    'FX',
-    'Gyro2',
-    'Gyro3',
-    'GyroE',
-    'HighAmpComposableStable',
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'LiquidityBootstrapping',
+    'Investment',
+    'StablePhantom',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
