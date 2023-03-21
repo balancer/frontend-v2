@@ -75,9 +75,9 @@ export interface Config {
     gaugeRewardsHelper?: string;
   };
   pools: Pools;
-  keys?: {
-    infura: string;
-    alchemy: string;
+  keys: {
+    infura?: string;
+    alchemy?: string;
     graph?: string;
     balancerApi?: string;
   };

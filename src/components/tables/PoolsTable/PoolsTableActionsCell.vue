@@ -3,7 +3,7 @@ import { computed, toRef } from 'vue';
 
 import { isVeBalPool, usePool } from '@/composables/usePool';
 import useNetwork from '@/composables/useNetwork';
-import { POOLS } from '@/constants/pools';
+import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 
 /**
@@ -33,7 +33,9 @@ const { isMigratablePool } = usePool(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 
 /** COMPUTED */
-const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
+const stakablePoolIds = computed(
+  (): string[] => configService.network.pools.Stakable.AllowList
+);
 const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
 </script>
 

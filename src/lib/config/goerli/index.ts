@@ -1,5 +1,6 @@
 import contracts from './contracts';
 import pools from './pools';
+import keys from './keys';
 
 export default {
   key: '5',
@@ -10,8 +11,8 @@ export default {
   slug: 'goerli',
   network: 'goerli',
   unknown: false,
-  rpc: 'https://goerli.infura.io/v3/{{INFURA_KEY}}',
-  ws: 'wss://goerli.infura.io/ws/v3/{{INFURA_KEY}}',
+  rpc: `https://goerli.infura.io/v3/${keys.infura}`,
+  ws: `wss://goerli.infura.io/ws/v3/${keys.infura}`,
   explorer: 'https://goerli.etherscan.io',
   explorerName: 'Etherscan',
   subgraph:
@@ -42,10 +43,7 @@ export default {
     ...contracts,
   },
   pools,
-  keys: {
-    infura: 'daaa68ec242643719749dd1caba2fc66',
-    alchemy: 'oGLgncMVHNWltnK0nTfiryxQ6gYemKQO',
-  },
+  keys,
   strategies: {
     '0': {
       type: '0',

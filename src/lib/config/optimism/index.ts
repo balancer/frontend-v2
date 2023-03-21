@@ -1,5 +1,4 @@
 import contracts from './contracts';
-import { EMPTY_POOLS } from '@/constants/pools';
 
 export default {
   key: '10',
@@ -63,5 +62,32 @@ export default {
     type: 5,
     weight: 0,
   },
-  pools: EMPTY_POOLS,
+  pools: {
+    IdsMap: {},
+    Pagination: {
+      PerPage: 10,
+      PerPool: 10,
+      PerPoolInitial: 5,
+    },
+    DelegateOwner: '',
+    ZeroAddress: '',
+    DynamicFees: {
+      Gauntlet: [],
+    },
+    BlockList: [],
+    IncludedPoolTypes: [],
+    Stable: {
+      AllowList: [],
+    },
+    Investment: {
+      AllowList: [],
+    },
+    Factories: {},
+    Stakable: {
+      AllowList: [],
+    },
+    Metadata: {},
+    DisabledJoins: [],
+    BrandedRedirect: {},
+  },
 };

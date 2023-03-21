@@ -8,13 +8,13 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import { bnum, scale } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { Address, WalletError } from '@/types';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useVotingGauges from '@/composables/useVotingGauges';
 import VoteInput from './VoteInput.vue';
 import SubmitVoteBtn from '../SubmitVoteBtn.vue';
-import { POOLS } from '@/constants/pools';
 import useActionState, { State } from '@/composables/useActionState';
 
 /**
@@ -109,7 +109,7 @@ async function submitVote() {
   );
 
   const zeroAddresses: string[] = new Array(8 - gaugeAddresses.length).fill(
-    POOLS.ZeroAddress
+    configService.network.pools.ZeroAddress
   );
   const zeroWeights: BigNumber[] = new Array(8 - gaugeAddresses.length).fill(
     BigNumber.from(0)

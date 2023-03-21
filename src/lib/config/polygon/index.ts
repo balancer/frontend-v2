@@ -1,3 +1,4 @@
+import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
 
@@ -10,8 +11,8 @@ export default {
   slug: 'polygon',
   network: 'polygon',
   unknown: false,
-  rpc: 'https://polygon-mainnet.infura.io/v3/{{INFURA_KEY}}',
-  ws: 'wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}',
+  rpc: `https://polygon-mainnet.infura.io/v3/${keys.infura}`,
+  ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.infura}`,
   publicRpc: 'https://polygon-rpc.com',
   explorer: 'https://polygonscan.com',
   explorerName: 'Polygonscan',
@@ -44,11 +45,7 @@ export default {
     ...contracts,
   },
   pools,
-  keys: {
-    infura: 'daaa68ec242643719749dd1caba2fc66',
-    alchemy: 'ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2',
-    balancerApi: 'da2-7a3ukmnw7bexndpx5x522uafui',
-  },
+  keys,
   strategies: {
     '0': {
       type: '0',

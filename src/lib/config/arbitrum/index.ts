@@ -47,6 +47,7 @@ export default {
     ...contracts,
   },
   pools,
+  keys,
   strategies: {
     '0': {
       type: '0',

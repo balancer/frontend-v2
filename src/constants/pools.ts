@@ -88,32 +88,3 @@ export type Pools = {
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;
 };
-
-export const EMPTY_POOLS: Pools = {
-  IdsMap: {},
-  Pagination: {
-    PerPage: 10,
-    PerPool: 10,
-    PerPoolInitial: 5,
-  },
-  DelegateOwner: '',
-  ZeroAddress: '',
-  DynamicFees: {
-    Gauntlet: [],
-  },
-  BlockList: [],
-  IncludedPoolTypes: [],
-  Stable: {
-    AllowList: [],
-  },
-  Investment: {
-    AllowList: [],
-  },
-  Factories: {},
-  Stakable: {
-    AllowList: [],
-  },
-  Metadata: {},
-  DisabledJoins: [],
-  BrandedRedirect: {},
-};
