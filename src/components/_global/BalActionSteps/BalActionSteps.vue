@@ -81,9 +81,6 @@ watch(
   () => [props.actions, props.isLoading],
   () => {
     _actions.value = props.actions;
-    actionStates.value = _actions.value.map(() => ({
-      ...defaultActionState,
-    }));
   },
   {
     deep: true,
