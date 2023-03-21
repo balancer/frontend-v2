@@ -4,6 +4,7 @@ import { balancer } from '@/lib/balancer.sdk';
 import {
   PoolWithMethods,
   SubgraphPoolBase,
+  SwapAttributes,
   SwapInfo,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -102,6 +103,7 @@ defaultSwapInfo.swaps = [
     returnAmount: '132200045154243418753',
   },
 ];
+export const defaultSwapAttributes = mock<SwapAttributes>();
 
 defaultSwapInfo.tokenAddresses = [
   '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -178,6 +180,14 @@ export function generateBalancerSdkMock() {
       calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
     })
   );
+
+  balancerMock.swaps.findRouteGivenIn.mockResolvedValue(defaultSwapInfo);
+  balancerMock.swaps.buildSwap.mockImplementation(({ deadline }) => {
+    defaultSwapAttributes.attributes.deadline = deadline;
+    return defaultSwapAttributes;
+  });
+
+  balancerMock.swaps.fetchPools.mockResolvedValue(true);
 
   return balancerMock;
 }

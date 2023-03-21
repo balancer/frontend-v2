@@ -20,7 +20,11 @@ export function buildExitParams(...options: Partial<ExitParams>[]): ExitParams {
 
   defaultExitParams.amountsOut = [anAmountOut({ address: wethAddress })];
 
-  defaultExitParams.tokenInfo = { [wethAddress]: aTokenInfo(wethAddress) };
+  defaultExitParams.tokenInfo = {
+    // This will be parametrized in incoming PRs:
+    ['0x702605F43471183158938C1a3e5f5A359d7b31ba']: aTokenInfo(wethAddress),
+    [wethAddress]: aTokenInfo(wethAddress),
+  };
 
   defaultExitParams.signer = aSigner();
 

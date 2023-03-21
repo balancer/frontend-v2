@@ -12,10 +12,14 @@ export function aSigner(...options: Partial<JsonRpcSigner>[]): JsonRpcSigner {
   const defaultSigner = mock<JsonRpcSigner>();
   defaultSigner.getAddress.mockResolvedValue(randomAddress());
   defaultSigner.getChainId.mockResolvedValue(5);
+  // @ts-ignore
+  defaultSigner.provider = { getBlockNumber: () => 25 };
 
   defaultSigner.sendTransaction.mockResolvedValue(defaultTransactionResponse);
 
   defaultSigner.estimateGas.mockResolvedValue(defaultEstimatedGas);
+
+  defaultSigner.getGasPrice.mockResolvedValue(defaultEstimatedGas);
 
   return Object.assign(defaultSigner, ...options);
 }
