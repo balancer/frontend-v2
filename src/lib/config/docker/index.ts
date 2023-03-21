@@ -70,6 +70,13 @@ const config: Config = {
   },
   keys: {},
   supportsElementPools: false,
+  tokenlists: {
+    Balancer: {
+      Default: '',
+      Vetted: '',
+    },
+    External: [],
+  },
 };
 
 export default config;

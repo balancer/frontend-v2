@@ -5,6 +5,7 @@ import { TokenList, TokenListMap } from '@/types/TokenList';
 
 import { configService } from '../config/config.service';
 import { ipfsService } from '../ipfs/ipfs.service';
+import { Network } from '@balancer-labs/sdk';
 
 interface TokenListUris {
   All: string[];
@@ -21,6 +22,7 @@ interface TokenListUris {
 
 export default class TokenListService {
   constructor(
+    private readonly appNetwork: Network = configService.network.chainId,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly ipfs = ipfsService
   ) {}
@@ -30,7 +32,9 @@ export default class TokenListService {
    * a structured object.
    */
   public get uris(): TokenListUris {
-    const { Balancer, External } = configService.network.tokenlists;
+    const { Balancer, External } = configService.getNetworkConfig(
+      this.appNetwork
+    ).tokenlists;
 
     const balancerLists = [Balancer.Default, Balancer.Vetted];
     const All = [...balancerLists, ...External];
