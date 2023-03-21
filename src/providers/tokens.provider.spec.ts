@@ -1,7 +1,4 @@
-import {
-  defaultTokenUSDPrice,
-  mockedTokenPrice,
-} from '@/dependencies/balancer-sdk.mocks';
+import { defaultTokenUSDPrice } from '@/dependencies/balancer-sdk.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
 import { mockedOnchainTokenName } from '@/dependencies/OldMulticaller.mocks';
