@@ -366,7 +366,6 @@ export const joinPoolProvider = (
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
-      console.log('koin', joinHandlerType.value);
 
       joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
