@@ -2,6 +2,7 @@ import { Config } from '../types';
 import contracts from './contracts';
 import keys from './keys';
 import pools from './pools';
+import tokenlists from './tokenlists';
 
 const config: Config = {
   key: '1',
@@ -52,6 +53,7 @@ const config: Config = {
     type: 2,
     weight: 100,
   },
+  tokenlists,
 };
 
 export default config;

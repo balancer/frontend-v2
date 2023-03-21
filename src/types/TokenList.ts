@@ -41,3 +41,11 @@ export interface TokenList {
 
 export type TokenListMap = { [address: string]: TokenList };
 export type TokenInfoMap = Record<string, TokenInfo>;
+
+export interface TokenListURLMap {
+  Balancer: {
+    Default: string;
+    Vetted: string;
+  };
+  External: string[];
+}

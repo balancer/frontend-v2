@@ -1,5 +1,6 @@
 import { Config } from '../types';
 import contracts from './contracts';
+import tokenlists from './tokenlists';
 
 const config: Config = {
   key: '10',
@@ -77,6 +78,7 @@ const config: Config = {
     DisabledJoins: [],
     BrandedRedirect: {},
   },
+  tokenlists,
 };
 
 export default config;
