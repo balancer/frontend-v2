@@ -1,8 +1,8 @@
 import { wethAddress } from '@tests/unit/builders/address';
 import { TokenInfo } from './TokenList';
 
-export const aTokenInfo = (): TokenInfo => ({
-  address: wethAddress,
+export const aTokenInfo = (tokenAddress = wethAddress): TokenInfo => ({
+  address: tokenAddress,
   chainId: 5,
   name: 'test token name',
   symbol: 'TEST',
