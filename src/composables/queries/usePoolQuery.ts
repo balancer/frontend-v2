@@ -53,7 +53,7 @@ export default function usePoolQuery(
       where: {
         id: { eq: id?.toLowerCase() },
         totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
-        poolType: { not_in: POOLS.ExcludedPoolTypes },
+        poolType: { in: POOLS.IncludedPoolTypes },
       },
     };
     return queryArgs;

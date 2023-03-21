@@ -101,6 +101,7 @@ function applyNetworkPathRedirects(router: Router): Router {
           '/terms-of-use',
           '/privacy-policy',
           '/cookies-policy',
+          '/risks',
         ];
         const routerHandledRedirects = ['not-found', 'trade-redirect'];
         if (
