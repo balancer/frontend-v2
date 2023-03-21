@@ -6,14 +6,14 @@ import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import {
   balAddress,
   daiAddress,
-  zeroAddress,
+  nativeAssetAddress,
 } from '@tests/unit/builders/address';
 import { Ref, ref } from 'vue';
 import useAllowancesQuery from './useAllowancesQuery';
 
 test('Returns token allowances from balancer SDK', async () => {
   const tokens: Ref<TokenInfoMap> = ref({
-    [zeroAddress]: aTokenInfo(zeroAddress),
+    [nativeAssetAddress]: aTokenInfo(nativeAssetAddress),
     [daiAddress]: aTokenInfo(daiAddress),
     [balAddress]: aTokenInfo(balAddress),
   });
