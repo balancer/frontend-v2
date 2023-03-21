@@ -16,8 +16,10 @@ import { flatTokenTree } from '@/composables/usePool';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-const balancer = getBalancer();
-type ExitResponse = Awaited<ReturnType<typeof balancer.pools.generalisedExit>>;
+type BalancerSdkType = ReturnType<typeof getBalancer>;
+type ExitResponse = Awaited<
+  ReturnType<BalancerSdkType['pools']['generalisedExit']>
+>;
 
 /**
  * Handles exits using SDK's generalisedExit function.
@@ -71,6 +73,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
 
     console.log({ simulationType });
 
+    const balancer = getBalancer();
     this.lastExitRes = await balancer.pools
       .generalisedExit(
         this.pool.value.id,

@@ -14,13 +14,12 @@ type DeepPartial<T> = T extends object
 export const defaultTokenUSDPrice = '1';
 export const defaultTokenEthPrice = '0.005';
 
-export const mockedTokenPrice = {
+export const defaultTokenPrice = {
   usd: '1',
   eth: '0.005',
 };
 
-// TODO: move to sor mocks to subfile
-//TODO: Improve builder to avoid DeepPartial
+// TODO: Improve builder to avoid DeepPartial and move to sor mocks to subfile
 export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
   {
     id: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
@@ -64,7 +63,6 @@ export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
 
 export const defaultCostOfSwapInToken = BigNumber.from(1);
 
-//TODO: why mock is not working
 // export const defaultSwapInfo = mock<SwapInfo>();
 export const defaultSwapInfo: SwapInfo = {} as SwapInfo;
 defaultSwapInfo.returnAmount = BigNumber.from('10');
@@ -106,9 +104,28 @@ defaultSwapInfo.tokenAddresses = [
   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
 ];
 
+export const defaultPriceImpact = BigNumber.from(10).pow(18);
+
+export const defaultGeneralizedJoinResponse = {
+  to: 'test generalized join to',
+  encodedCall: 'generalized test encoded call',
+  minOut: '20',
+  expectedOut: '10',
+  priceImpact: defaultPriceImpact.toString(),
+};
+
+export const defaultGeneralizedExitResponse = {
+  to: 'test generalized exit to',
+  encodedCall: 'generalized test encoded call',
+  tokensOut: [],
+  expectedAmountsOut: [],
+  minAmountsOut: [],
+  priceImpact: defaultPriceImpact.toString(),
+};
+
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
-  balancerMock.data.tokenPrices.find.mockResolvedValue(mockedTokenPrice);
+  balancerMock.data.tokenPrices.find.mockResolvedValue(defaultTokenPrice);
   balancerMock.sor.fetchPools.mockResolvedValue(true);
 
   balancerMock.sor.getPools.mockReturnValue(
@@ -120,6 +137,16 @@ export function generateBalancerSdkMock() {
   );
 
   balancerMock.sor.getSwaps.mockResolvedValue(defaultSwapInfo);
+
+  // Mock generalized join
+  balancerMock.pools.generalisedJoin.mockResolvedValue(
+    defaultGeneralizedJoinResponse
+  );
+
+  // Mock generalized exit
+  balancerMock.pools.generalisedExit.mockResolvedValue(
+    defaultGeneralizedExitResponse
+  );
 
   return balancerMock;
 }
