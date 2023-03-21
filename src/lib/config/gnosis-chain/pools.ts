@@ -25,6 +25,7 @@ const pools: Pools = {
   Stable: {
     AllowList: [
       '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // bb-ag-usd
+      '0x9949f1884b61a8265e12056650c1ac4677a75403000000000000000000000014', // 2EUR (EURe)
     ],
   },
   Investment: {
