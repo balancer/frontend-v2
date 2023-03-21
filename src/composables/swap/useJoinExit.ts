@@ -260,6 +260,7 @@ export default function useJoinExit({
       }
       swapping.value = false;
       confirming.value = false;
+      throw error;
     }
   }
 
