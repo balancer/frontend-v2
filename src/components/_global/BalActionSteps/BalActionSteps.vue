@@ -168,9 +168,7 @@ async function submit(
     state.init = true;
     state.error = null;
 
-    console.log('Triggering action');
     const tx = await action();
-    console.log('triggered action');
 
     state.init = false;
     state.confirming = true;
