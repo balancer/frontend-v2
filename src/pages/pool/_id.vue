@@ -29,8 +29,9 @@ import {
 } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { includesAddress } from '@/lib/utils';
+import pools from '@/lib/config/pools';
+
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
-import { configService } from '@/services/config/config.service';
 import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -163,7 +164,7 @@ const titleTokens = computed<PoolToken[]>(() => {
 });
 
 const isStakablePool = computed((): boolean =>
-  configService.network.pools.Stakable.AllowList.includes(poolId)
+  pools.Stakable.AllowList.includes(poolId)
 );
 
 const poolPremintedBptIndex = computed(() => {
@@ -172,7 +173,7 @@ const poolPremintedBptIndex = computed(() => {
 });
 
 const showBrandedRedirectCard = computed(() => {
-  return configService.network.pools.BrandedRedirect?.[poolId] || false;
+  return pools.BrandedRedirect?.[poolId] || false;
 });
 
 /**

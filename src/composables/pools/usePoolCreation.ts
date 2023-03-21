@@ -253,7 +253,7 @@ export default function usePoolCreation() {
 
   const poolOwner = computed(() => {
     if (poolCreationState.feeManagementType === 'governance') {
-      return configService.network.pools.DelegateOwner;
+      return pools.DelegateOwner;
     } else {
       if (poolCreationState.feeController === 'self') {
         return account.value;

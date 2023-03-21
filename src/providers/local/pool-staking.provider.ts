@@ -73,7 +73,7 @@ const provider = (_poolId?: string) => {
     (): boolean =>
       !!poolId.value &&
       poolGauges.value?.liquidityGauges?.[0]?.id !== undefined &&
-      configService.network.pools.Stakable.AllowList.includes(poolId.value)
+      pools.Stakable.AllowList.includes(poolId.value)
   );
 
   // User's staked shares for pool (onchain data).

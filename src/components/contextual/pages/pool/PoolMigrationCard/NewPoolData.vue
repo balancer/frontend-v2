@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
-import { configService } from '@/services/config/config.service';
 import {
   orderedPoolTokens,
   orderedTokenAddresses,
 } from '@/composables/usePool';
+import { hasIcon } from '@/lib/utils/pools';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import useNetwork from '@/composables/useNetwork';
@@ -22,9 +22,7 @@ type Props = {
 defineProps<Props>();
 
 function iconAddresses(pool: Pool) {
-  return configService.network.pools.Metadata[pool.id]?.hasIcon
-    ? [pool.address]
-    : orderedTokenAddresses(pool);
+  return hasIcon(pool.id) ? [pool.address] : orderedTokenAddresses(pool);
 }
 
 /**

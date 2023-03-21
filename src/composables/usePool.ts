@@ -4,11 +4,8 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import {
-  APR_THRESHOLD,
-  DeprecatedDetails,
-  PoolMetadata,
-} from '@/constants/pools';
+import { APR_THRESHOLD } from '@/constants/pools';
+import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 import {
   bnum,
   includesAddress,

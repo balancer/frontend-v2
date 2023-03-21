@@ -26,9 +26,7 @@ class MetaService implements IMetaService {
     if (route.name === 'pool' && pool) {
       metaTitle = metaTitle.replace(
         '[pool_symbol]',
-        configService.network.pools.Metadata[pool.id]?.name ||
-          pool.symbol ||
-          'Pool'
+        pools.Metadata[pool.id]?.name || pool.symbol || 'Pool'
       );
       metaDescription = metaDescription
         .replace('[pool_type]', pool.poolType)

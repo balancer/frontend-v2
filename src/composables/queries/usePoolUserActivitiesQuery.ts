@@ -5,9 +5,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
-
 import useNetwork from '../useNetwork';
+import pools from '@/lib/config/pools';
 
 type UserPoolActivitiesQueryResponse = {
   poolActivities: PoolActivity[];
@@ -36,8 +35,8 @@ export default function usePoolUserActivitiesQuery(
   const queryFn = async ({ pageParam = 0 }) => {
     const pagination =
       pageParam === 0
-        ? configService.network.pools.Pagination.PerPoolInitial
-        : configService.network.pools.Pagination.PerPool;
+        ? pools.Pagination.PerPoolInitial
+        : pools.Pagination.PerPool;
 
     const poolActivities = await balancerSubgraphService.poolActivities.get({
       first: pagination,

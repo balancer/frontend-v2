@@ -1,4 +1,4 @@
-import { Pools } from '@/constants/pools';
+import { Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {

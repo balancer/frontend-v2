@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { shortenLabel } from '@/lib/utils';
 import { Pool, PoolType } from '@/services/pool/types';
-import { configService } from '@/services/config/config.service';
+import pools from '@/lib/config/pools';
+
+import { metadata } from '@/lib/utils/pools';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
 import { computed } from 'vue';
@@ -26,11 +28,11 @@ const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 
 function formSwapFeesHint(owner: string): string {
-  if (owner === configService.network.pools.ZeroAddress) {
+  if (owner === pools.ZeroAddress) {
     return t('poolAttrs.feesFixed');
   }
 
-  if (owner === configService.network.pools.DelegateOwner) {
+  if (owner === pools.DelegateOwner) {
     return t('poolAttrs.feesEditableGovernance');
   }
 
@@ -59,7 +61,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: configService.network.pools.Metadata[id]?.name || name,
+      value: metadata(id)?.name || name,
     },
     {
       title: t('poolSymbol'),
@@ -105,11 +107,11 @@ const data = computed(() => {
 
 const poolOwnerData = computed(() => {
   const { owner } = props.pool;
-  if (owner === configService.network.pools.ZeroAddress) {
+  if (owner === pools.ZeroAddress) {
     return { title: t('noOwner'), link: '' };
   }
 
-  if (owner === configService.network.pools.DelegateOwner) {
+  if (owner === pools.DelegateOwner) {
     return { title: t('delegateOwner.title'), link: '' };
   }
 
@@ -120,7 +122,7 @@ const poolOwnerData = computed(() => {
 });
 
 const poolOwnerTooltip = computed(() => {
-  if (props.pool.owner === configService.network.pools.DelegateOwner) {
+  if (props.pool.owner === pools.DelegateOwner) {
     return t('delegateOwner.tooltip');
   }
 
@@ -132,11 +134,11 @@ const poolManagementText = computed(() => {
     return t('');
   }
 
-  if (props.pool.owner === configService.network.pools.ZeroAddress) {
+  if (props.pool.owner === pools.ZeroAddress) {
     return t('poolAttrs.immutable');
   }
 
-  if (props.pool.owner === configService.network.pools.DelegateOwner) {
+  if (props.pool.owner === pools.DelegateOwner) {
     return t('poolAttrs.immutableFeesEditableByGovernance');
   }
 

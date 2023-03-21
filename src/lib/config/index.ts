@@ -1,5 +1,5 @@
 import { Network } from '@balancer-labs/sdk';
-import { Pools } from '@/constants/pools';
+import { Pools } from '@/types/pools';
 
 import arbitrum from './arbitrum';
 import docker from './docker';

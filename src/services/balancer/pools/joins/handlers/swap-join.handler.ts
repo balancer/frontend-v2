@@ -2,12 +2,13 @@ import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import pools from '@/lib/config/pools';
+
 import { bnum, isSameAddress } from '@/lib/utils';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { configService } from '@/services/config/config.service';
 import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import {
   TransactionRequest,
@@ -157,7 +158,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
   private formatAddressForSor(address: string): string {
     return isSameAddress(address, NATIVE_ASSET_ADDRESS)
-      ? configService.network.pools.ZeroAddress
+      ? pools.ZeroAddress
       : address;
   }
 }

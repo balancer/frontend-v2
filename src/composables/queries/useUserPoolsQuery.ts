@@ -4,7 +4,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { bnum } from '@/lib/utils';
-import { configService } from '@/services/config/config.service';
+import { pools as poolsConfig } from '@/lib/config/pools';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { PoolWithShares } from '@/services/pool/types';
@@ -61,7 +61,7 @@ export default function useUserPoolsQuery(options: QueryOptions = {}) {
     const pools = await balancerSubgraphService.pools.get({
       where: {
         id: { in: poolSharesIds },
-        poolType: { in: configService.network.pools.IncludedPoolTypes },
+        poolType: { in: poolsConfig.IncludedPoolTypes },
       },
     });
 

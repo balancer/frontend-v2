@@ -4,7 +4,7 @@ import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSwap } from '@/services/pool/types';
-import { configService } from '@/services/config/config.service';
+import pools from '@/lib/config/pools';
 
 import useNetwork from '../useNetwork';
 
@@ -32,8 +32,8 @@ export default function usePoolSwapsQuery(
   const queryFn = async ({ pageParam = 0 }) => {
     const pagination =
       pageParam === 0
-        ? configService.network.pools.Pagination.PerPoolInitial
-        : configService.network.pools.Pagination.PerPool;
+        ? pools.Pagination.PerPoolInitial
+        : pools.Pagination.PerPool;
 
     const poolSwaps = await balancerSubgraphService.poolSwaps.get({
       first: pagination,

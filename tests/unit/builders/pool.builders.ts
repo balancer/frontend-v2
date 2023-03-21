@@ -12,7 +12,7 @@ export function aPool(...options: Partial<Pool>[]): Pool {
 
 export function aVeBalPool(...options: Partial<Pool>[]): Pool {
   const pool = mock<Pool>();
-  const veBalPoolId = configService.network.pools.IdsMap.veBAL as string;
+  const veBalPoolId = pools.IdsMap.veBAL as string;
   const defaults: Partial<Pool> = aPool({ id: veBalPoolId });
   return Object.assign(pool, defaults, ...options);
 }

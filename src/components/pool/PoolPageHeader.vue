@@ -14,7 +14,8 @@ import { EXTERNAL_LINKS } from '@/constants/links';
 import { includesAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
+import pools from '@/lib/config/pools';
+
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
@@ -60,17 +61,15 @@ const isRestakePreviewVisible = ref(false);
 /**
  * COMPUTED
  */
-const feesFixed = computed(
-  () => props.pool?.owner == configService.network.pools.ZeroAddress
-);
+const feesFixed = computed(() => props.pool?.owner == pools.ZeroAddress);
 
 const communityManagedFees = computed(
-  () => props.pool?.owner == configService.network.pools.DelegateOwner
+  () => props.pool?.owner == pools.DelegateOwner
 );
 const feesManagedByGauntlet = computed(
   () =>
     communityManagedFees.value &&
-    configService.network.pools.DynamicFees.Gauntlet.includes(props.pool.id)
+    pools.DynamicFees.Gauntlet.includes(props.pool.id)
 );
 const swapFeeToolTip = computed(() => {
   if (feesManagedByGauntlet.value) {
@@ -117,14 +116,12 @@ const hasCustomToken = computed(() => {
 
 const poolTypeLabel = computed(() => {
   if (!props.pool?.factory) return '';
-  const key = configService.network.pools.Factories[props.pool.factory];
+  const key = pools.Factories[props.pool.factory];
 
   return key ? t(key) : t('unknownPoolType');
 });
 
-const poolMetadata = computed(
-  () => configService.network.pools.Metadata[props.pool?.id]
-);
+const poolMetadata = computed(() => pools.Metadata[props.pool?.id]);
 const hasMetadata = computed((): boolean => !!poolMetadata.value);
 
 /**

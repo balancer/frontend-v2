@@ -18,7 +18,7 @@ import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/composables/useClaimsData';
 
 import { Gauge } from '@/services/balancer/gauges/types';
-import { configService } from '@/services/config/config.service';
+import { metadata } from '@/lib/utils/pools';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import useNetwork from '@/composables/useNetwork';
 
@@ -146,11 +146,8 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
       </template>
       <template #pillsColumnCell="{ pool }">
         <div class="flex items-center py-4 px-6">
-          <div
-            v-if="configService.network.pools.Metadata[pool.id]"
-            class="text-left"
-          >
-            {{ configService.network.pools.Metadata[pool.id].name }}
+          <div v-if="metadata(pool.id)" class="text-left">
+            {{ metadata(pool.id)!.name }}
           </div>
 
           <TokenPills
