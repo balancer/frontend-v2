@@ -1,4 +1,7 @@
-import { defaultTokenUSDPrice } from '@/dependencies/balancer-sdk.mocks';
+import {
+  defaultTokenPrice,
+  defaultTokenUSDPrice,
+} from '@/dependencies/balancer-sdk.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { initMulticallerWithDefaultMocks } from '@/dependencies/Multicaller.mocks';
 import { mockedOnchainTokenName } from '@/dependencies/OldMulticaller.mocks';
@@ -46,7 +49,7 @@ describe('Tokens provider', () => {
 
     expect(allowances.value[contractAddress][balTokenAddress]).toEqual('0.0');
 
-    expect(prices.value[balTokenAddress]).toEqual(mockedTokenPrice);
+    expect(prices.value[balTokenAddress]).toEqual(defaultTokenPrice);
 
     expect(balances.value[balTokenAddress]).toEqual('0.000000000000000025');
   });
