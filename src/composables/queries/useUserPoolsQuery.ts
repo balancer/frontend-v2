@@ -61,7 +61,7 @@ export default function useUserPoolsQuery(options: QueryOptions = {}) {
     const pools = await balancerSubgraphService.pools.get({
       where: {
         id: { in: poolSharesIds },
-        poolType: { not_in: POOLS.ExcludedPoolTypes },
+        poolType: { in: POOLS.IncludedPoolTypes },
       },
     });
 

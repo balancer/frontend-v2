@@ -1,7 +1,7 @@
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, ref, watch } from 'vue';
 import useNetwork from '../useNetwork';
-import { Relayer } from '@balancer-labs/sdk';
+import { Relayer, Vault } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { useI18n } from 'vue-i18n';
@@ -73,7 +73,10 @@ export default function useRelayerApproval(relayerType: RelayerType) {
       relayerAddress,
       signerAddress,
       signer,
-      Vault__factory.connect(configService.network.addresses.vault, signer)
+      Vault__factory.connect(
+        configService.network.addresses.vault,
+        signer
+      ) as unknown as Vault
     );
     relayerSignature.value = signature;
   }

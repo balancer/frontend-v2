@@ -351,29 +351,7 @@ const showPriceUpdateError = computed(
     !requiresApproval.value && priceUpdated.value && !priceUpdateAccepted.value
 );
 
-const actionStepsLoading = computed(
-  () =>
-    cowswapRelayerApproval.init.value ||
-    cowswapRelayerApproval.approving.value ||
-    lidoRelayerApproval.init.value ||
-    lidoRelayerApproval.approving.value ||
-    tokenApproval.approving.value ||
-    props.swapping.isConfirming.value
-);
-
-const actionStepsLoadingLabel = computed(() =>
-  requiresCowswapRelayerApproval.value
-    ? `${t('approvingCowswapRelayer')}...`
-    : requiresLidoRelayerApproval.value
-    ? `${t('approvingLidoRelayer')}...`
-    : requiresBatchRelayerApproval.value
-    ? `${t('approvingBatchRelayer')}...`
-    : requiresTokenApproval.value
-    ? `${t('approving')} ${props.swapping.tokenIn.value.symbol}...`
-    : t('confirming')
-);
-
-const actions = computed((): TransactionActionInfo[] => [
+const actions = ref<TransactionActionInfo[]>([
   ...(showCowswapRelayerApprovalStep.value
     ? [
         {
@@ -406,13 +384,11 @@ const actions = computed((): TransactionActionInfo[] => [
   ...(showTokenApprovalStep.value
     ? [
         {
-          label: `${t('approve')} ${props.swapping.tokenIn.value.symbol}`,
-          loadingLabel: `${t('approving')} ${
-            props.swapping.tokenIn.value.symbol
-          }...`,
-          confirmingLabel: `${t('confirming')} ${
-            props.swapping.tokenIn.value.symbol
-          }`,
+          label: t('transactionSummary.approveForSwapping', [
+            props.swapping.tokenIn.value.symbol,
+          ]),
+          loadingLabel: t('actionSteps.approve.loadingLabel'),
+          confirmingLabel: t('confirming'),
           action: approveToken,
           stepTooltip: t(
             'swapSummary.transactionTypesTooltips.tokenApproval.content'
@@ -422,7 +398,7 @@ const actions = computed((): TransactionActionInfo[] => [
     : []),
   {
     label: labels.value.confirmSwap,
-    loadingLabel: `${t('approving')} ${props.swapping.tokenIn.value.symbol}...`,
+    loadingLabel: t('actionSteps.swap.loadingLabel'),
     confirmingLabel: t('confirming'),
     action: swap as () => Promise<any>,
     stepTooltip:
@@ -433,8 +409,11 @@ const actions = computed((): TransactionActionInfo[] => [
 ]);
 
 // METHODS
-function swap() {
-  emit('swap');
+async function swap() {
+  return props.swapping.swap(() => {
+    props.swapping.resetAmounts();
+    emit('close');
+  });
 }
 
 function onClose() {
@@ -741,8 +720,6 @@ watch(blockNumber, () => {
       <BalActionSteps
         v-else
         :actions="actions"
-        :isLoading="actionStepsLoading"
-        :loadingLabel="actionStepsLoadingLabel"
         :disabled="disableSubmitButton || showPriceUpdateError"
       />
       <BalAlert

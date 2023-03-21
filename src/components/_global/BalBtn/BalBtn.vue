@@ -40,7 +40,8 @@ type Props = {
     | 'white'
     | 'blue'
     | 'yellow'
-    | 'black';
+    | 'black'
+    | 'transparent';
   label?: string;
   block?: boolean;
   circle?: boolean;
