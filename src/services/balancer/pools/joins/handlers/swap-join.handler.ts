@@ -1,9 +1,8 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
+import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import pools from '@/lib/config/pools';
-
 import { bnum, isSameAddress } from '@/lib/utils';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { vaultService } from '@/services/contracts/vault.service';
@@ -158,7 +157,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
   private formatAddressForSor(address: string): string {
     return isSameAddress(address, NATIVE_ASSET_ADDRESS)
-      ? pools.ZeroAddress
+      ? POOLS.ZeroAddress
       : address;
   }
 }

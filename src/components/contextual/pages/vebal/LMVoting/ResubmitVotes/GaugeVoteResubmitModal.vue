@@ -14,8 +14,7 @@ import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useVotingGauges from '@/composables/useVotingGauges';
 import VoteInput from './VoteInput.vue';
 import SubmitVoteBtn from '../SubmitVoteBtn.vue';
-import pools from '@/lib/config/pools';
-
+import { POOLS } from '@/constants/pools';
 import useActionState, { State } from '@/composables/useActionState';
 
 /**
@@ -110,7 +109,7 @@ async function submitVote() {
   );
 
   const zeroAddresses: string[] = new Array(8 - gaugeAddresses.length).fill(
-    pools.ZeroAddress
+    POOLS.ZeroAddress
   );
   const zeroWeights: BigNumber[] = new Array(8 - gaugeAddresses.length).fill(
     BigNumber.from(0)

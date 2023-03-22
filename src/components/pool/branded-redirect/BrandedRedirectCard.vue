@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { BRANDED_REDIRECT_DATA } from './constants';
 import xave from '@/assets/images/branded-redirect-logos/xave.png';
-import pools from '@/lib/config/pools';
+import { POOLS } from '@/constants/pools';
 
 const props = defineProps<{
   poolId: string;
 }>();
 
 const redirectData = computed(() => {
-  const brand = pools.BrandedRedirect?.[props.poolId];
+  const brand = POOLS.BrandedRedirect?.[props.poolId];
   if (!brand) return;
   return BRANDED_REDIRECT_DATA[brand];
 });

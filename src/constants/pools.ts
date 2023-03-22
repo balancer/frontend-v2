@@ -1,4 +1,6 @@
 import { isMainnet } from '@/composables/useNetwork';
+import { Pools } from '@/types/pools';
+import { configService } from '@/services/config/config.service';
 
 export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
 
@@ -15,3 +17,5 @@ export const VOLUME_THRESHOLD = 1_000_000_000;
  * when calculating the ExactTokensOut. The variable below is that "little bit".
  */
 export const SHALLOW_COMPOSABLE_STABLE_BUFFER = 1e9; // EVM scale, so this is 1 Gwei
+
+export const POOLS: Pools = configService.network.pools;

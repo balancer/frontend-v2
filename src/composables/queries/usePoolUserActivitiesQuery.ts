@@ -1,11 +1,12 @@
 import { computed, reactive } from 'vue';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
-import pools from '@/lib/config/pools';
+import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+
 import useNetwork from '../useNetwork';
 
 type UserPoolActivitiesQueryResponse = {
@@ -35,8 +36,8 @@ export default function usePoolUserActivitiesQuery(
   const queryFn = async ({ pageParam = 0 }) => {
     const pagination =
       pageParam === 0
-        ? pools.Pagination.PerPoolInitial
-        : pools.Pagination.PerPool;
+        ? POOLS.Pagination.PerPoolInitial
+        : POOLS.Pagination.PerPool;
 
     const poolActivities = await balancerSubgraphService.poolActivities.get({
       first: pagination,

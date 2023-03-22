@@ -6,7 +6,7 @@ import { computed, reactive, ref, toRefs } from 'vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
-import pools from '@/lib/config/pools';
+import { POOLS } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -254,7 +254,7 @@ export default function usePoolCreation() {
 
   const poolOwner = computed(() => {
     if (poolCreationState.feeManagementType === 'governance') {
-      return pools.DelegateOwner;
+      return POOLS.DelegateOwner;
     } else {
       if (poolCreationState.feeController === 'self') {
         return account.value;

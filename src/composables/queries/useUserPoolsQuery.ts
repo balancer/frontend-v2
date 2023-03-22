@@ -2,9 +2,9 @@ import { flatten, keyBy } from 'lodash';
 import { computed, reactive } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
+import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { bnum } from '@/lib/utils';
-import { pools as poolsConfig } from '@/lib/config/pools';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { PoolWithShares } from '@/services/pool/types';
@@ -61,7 +61,7 @@ export default function useUserPoolsQuery(options: QueryOptions = {}) {
     const pools = await balancerSubgraphService.pools.get({
       where: {
         id: { in: poolSharesIds },
-        poolType: { in: poolsConfig.IncludedPoolTypes },
+        poolType: { in: POOLS.IncludedPoolTypes },
       },
     });
 

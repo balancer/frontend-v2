@@ -9,11 +9,11 @@ import { parseUnits } from '@ethersproject/units';
 import { useTokens } from '../tokens.provider';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useWeb3 from '@/services/web3/useWeb3';
+import { POOLS } from '@/constants/pools';
 import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
-import pools from '@/lib/config/pools';
 
 /**
  * PoolStakingProvider
@@ -74,7 +74,7 @@ const provider = (_poolId?: string) => {
     (): boolean =>
       !!poolId.value &&
       poolGauges.value?.liquidityGauges?.[0]?.id !== undefined &&
-      pools.Stakable.AllowList.includes(poolId.value)
+      POOLS.Stakable.AllowList.includes(poolId.value)
   );
 
   // User's staked shares for pool (onchain data).

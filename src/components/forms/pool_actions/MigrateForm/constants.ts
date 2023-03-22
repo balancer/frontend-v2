@@ -1,6 +1,5 @@
 import { networkId } from '@/composables/useNetwork';
-import pools from '@/lib/config/pools';
-
+import { POOLS } from '@/constants/pools';
 import { Network } from '@balancer-labs/sdk';
 import { keyBy } from 'lodash';
 
@@ -11,8 +10,8 @@ const riskI18nLabelPrefix = 'migratePool.previewModal.riskWarnings.risks';
 const GOERLI_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {
     type: PoolMigrationType.AAVE_BOOSTED_POOL,
-    fromPoolId: pools.IdsMap.bbAaveUSD?.v1 as string,
-    toPoolId: pools.IdsMap.bbAaveUSD?.v2 as string,
+    fromPoolId: POOLS.IdsMap.bbAaveUSD?.v1 as string,
+    toPoolId: POOLS.IdsMap.bbAaveUSD?.v2 as string,
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,
@@ -21,8 +20,8 @@ const GOERLI_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   },
   {
     type: PoolMigrationType.STABAL3_POOL,
-    fromPoolId: pools.IdsMap.staBAL as string,
-    toPoolId: pools.IdsMap.bbAaveUSD?.v2 as string,
+    fromPoolId: POOLS.IdsMap.staBAL as string,
+    toPoolId: POOLS.IdsMap.bbAaveUSD?.v2 as string,
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,
@@ -44,8 +43,8 @@ const GOERLI_POOL_MIGRATIONS: PoolMigrationInfo[] = [
 const MAINNET_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {
     type: PoolMigrationType.AAVE_BOOSTED_POOL,
-    fromPoolId: pools.IdsMap.bbAaveUSD?.v1 as string,
-    toPoolId: pools.IdsMap.bbAaveUSD?.v2 as string,
+    fromPoolId: POOLS.IdsMap.bbAaveUSD?.v1 as string,
+    toPoolId: POOLS.IdsMap.bbAaveUSD?.v2 as string,
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,
@@ -54,8 +53,8 @@ const MAINNET_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   },
   {
     type: PoolMigrationType.STABAL3_POOL,
-    fromPoolId: pools.IdsMap.staBAL as string,
-    toPoolId: pools.IdsMap.bbAaveUSD?.v2 as string,
+    fromPoolId: POOLS.IdsMap.staBAL as string,
+    toPoolId: POOLS.IdsMap.bbAaveUSD?.v2 as string,
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,
@@ -67,20 +66,20 @@ const MAINNET_POOL_MIGRATIONS: PoolMigrationInfo[] = [
 const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {
     type: PoolMigrationType.XMATIC_POOL,
-    fromPoolId: pools.IdsMap.xMatic?.v1 as string,
-    toPoolId: pools.IdsMap.xMatic?.v2 as string,
+    fromPoolId: POOLS.IdsMap.xMatic?.v1 as string,
+    toPoolId: POOLS.IdsMap.xMatic?.v2 as string,
     showOldVHint: true,
   },
   {
     type: PoolMigrationType.STMATIC_POOL,
-    fromPoolId: pools.IdsMap.stMatic?.v1 as string,
-    toPoolId: pools.IdsMap.stMatic?.v2 as string,
+    fromPoolId: POOLS.IdsMap.stMatic?.v1 as string,
+    toPoolId: POOLS.IdsMap.stMatic?.v2 as string,
     showOldVHint: true,
   },
   {
     type: PoolMigrationType.MAI_POOL,
-    fromPoolId: pools.IdsMap.mai4?.mai4 as string, // mai4
-    toPoolId: pools.IdsMap.mai4?.maiBbaUsd as string, // bbaMai
+    fromPoolId: POOLS.IdsMap.mai4?.mai4 as string, // mai4
+    toPoolId: POOLS.IdsMap.mai4?.maiBbaUsd as string, // bbaMai
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,
@@ -88,7 +87,7 @@ const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   },
 ];
 
-const SOFT_MIGRATABLE_POOLS = [pools.IdsMap.mai4?.mai4];
+const SOFT_MIGRATABLE_POOLS = [POOLS.IdsMap.mai4?.mai4];
 
 /**
  * @description

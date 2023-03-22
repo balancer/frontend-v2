@@ -2,6 +2,7 @@ import { differenceInSeconds, formatDistanceToNow, sub } from 'date-fns';
 import { computed, ref } from 'vue';
 
 import { isGoerli, isMainnet } from '@/composables/useNetwork';
+import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
 import useConfig from './useConfig';
@@ -93,7 +94,7 @@ export default function useVeBal() {
     balanceFor(networkConfig.addresses.veBAL)
   );
 
-  const lockablePoolId = computed(() => networkConfig.pools.IdsMap?.veBAL);
+  const lockablePoolId = computed(() => POOLS.IdsMap?.veBAL);
 
   return {
     // computed

@@ -5,7 +5,6 @@ import { GraphQLArgs } from '@balancer-labs/sdk';
 
 import { useTokens } from '@/providers/tokens.provider';
 import QUERY_KEYS from '@/constants/queryKeys';
-import pools from '@/lib/config/pools';
 
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
@@ -15,6 +14,7 @@ import { isBlocked, tokensListExclBpt, tokenTreeLeafs } from '../usePool';
 
 import PoolRepository from '@/services/pool/pool.repository';
 import { configService } from '@/services/config/config.service';
+import { POOLS } from '@/constants/pools';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type QueryOptions = QueryObserverOptions<Pool>;
@@ -53,7 +53,7 @@ export default function usePoolQuery(
       where: {
         id: { eq: id?.toLowerCase() },
         totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
-        poolType: { in: pools.IncludedPoolTypes },
+        poolType: { in: POOLS.IncludedPoolTypes },
       },
     };
     return queryArgs;

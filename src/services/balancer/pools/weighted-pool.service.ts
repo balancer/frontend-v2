@@ -13,11 +13,11 @@ import BigNumber from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
-import pools from '@/lib/config/pools';
 import { isSameAddress, scale } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
+import { POOLS } from '@/constants/pools';
 import WeightedPoolFactoryV3Abi from '@/lib/abi/WeightedPoolFactoryV3.json';
 
 type Address = string;
@@ -53,7 +53,7 @@ export default class WeightedPoolService {
 
     const seedTokens = this.calculateTokenWeights(tokens);
     const swapFeeScaled = scale(new BigNumber(swapFee), 18);
-    const rateProviders = Array(tokenAddresses.length).fill(pools.ZeroAddress);
+    const rateProviders = Array(tokenAddresses.length).fill(POOLS.ZeroAddress);
 
     const params = [
       name,

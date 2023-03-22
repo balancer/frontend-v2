@@ -1,7 +1,7 @@
 import { computed, reactive } from 'vue';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
-import pools from '@/lib/config/pools';
+import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSwap } from '@/services/pool/types';
@@ -33,7 +33,7 @@ export default function useUserPoolSwapsQuery(
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
     const poolSwaps = await balancerSubgraphService.poolSwaps.get({
-      first: pools.Pagination.PerPage,
+      first: POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {
         userAddress: account.value.toLowerCase(),
@@ -44,8 +44,8 @@ export default function useUserPoolSwapsQuery(
     return {
       poolSwaps,
       skip:
-        poolSwaps.length >= pools.Pagination.PerPage
-          ? pageParam + pools.Pagination.PerPage
+        poolSwaps.length >= POOLS.Pagination.PerPage
+          ? pageParam + POOLS.Pagination.PerPage
           : undefined,
     };
   };

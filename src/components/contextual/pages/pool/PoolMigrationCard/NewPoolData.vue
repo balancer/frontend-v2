@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
 import {
+  hasIcon,
   orderedPoolTokens,
   orderedTokenAddresses,
 } from '@/composables/usePool';
-import { hasIcon } from '@/lib/utils/pools';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import useNetwork from '@/composables/useNetwork';

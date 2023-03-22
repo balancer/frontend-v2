@@ -11,11 +11,10 @@ import { usePoolWarning } from '@/composables/usePoolWarning';
 import { usePool } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { EXTERNAL_LINKS } from '@/constants/links';
+import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import pools from '@/lib/config/pools';
-
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
@@ -61,15 +60,15 @@ const isRestakePreviewVisible = ref(false);
 /**
  * COMPUTED
  */
-const feesFixed = computed(() => props.pool?.owner == pools.ZeroAddress);
+const feesFixed = computed(() => props.pool?.owner == POOLS.ZeroAddress);
 
 const communityManagedFees = computed(
-  () => props.pool?.owner == pools.DelegateOwner
+  () => props.pool?.owner == POOLS.DelegateOwner
 );
 const feesManagedByGauntlet = computed(
   () =>
     communityManagedFees.value &&
-    pools.DynamicFees.Gauntlet.includes(props.pool.id)
+    POOLS.DynamicFees.Gauntlet.includes(props.pool.id)
 );
 const swapFeeToolTip = computed(() => {
   if (feesManagedByGauntlet.value) {
@@ -116,12 +115,12 @@ const hasCustomToken = computed(() => {
 
 const poolTypeLabel = computed(() => {
   if (!props.pool?.factory) return '';
-  const key = pools.Factories[props.pool.factory];
+  const key = POOLS.Factories[props.pool.factory];
 
   return key ? t(key) : t('unknownPoolType');
 });
 
-const poolMetadata = computed(() => pools.Metadata[props.pool?.id]);
+const poolMetadata = computed(() => POOLS.Metadata[props.pool?.id]);
 const hasMetadata = computed((): boolean => !!poolMetadata.value);
 
 /**
