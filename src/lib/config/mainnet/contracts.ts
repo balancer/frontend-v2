@@ -1,7 +1,6 @@
-export default {
-  bFactory: '0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd',
-  bActions: '0xde4A25A0b9589689945d842c5ba0CF4f0D4eB3ac',
-  dsProxyRegistry: '0x4678f0a6958e4D2Bc4F1BAF7Bc52E8F3564f3fE4',
+import { Contracts } from '../types';
+
+const contracts: Contracts = {
   merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',
   merkleOrchard: '0xdAE7e32ADc5d490a43cCba1f0c736033F2b4eFca',
   merkleOrchardV2: '0xE3881627B8DeeBCCF9c23B291430a549Fc0bE5F7',
@@ -10,14 +9,12 @@ export default {
   vault: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
   weightedPoolFactory: '0x5Dd94Da3644DDD055fcf6B3E1aa310Bb7801EB8b',
   stablePoolFactory: '0xc66Ba2B6595D3613CCab350C886aCE23866EDe24',
-  tokenFactory: '',
   weth: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   rETH: '0xae78736Cd615f374D3085123A210448E74Fc6393',
   stMATIC: '',
   stETH: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
   wstETH: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
   lidoRelayer: '0xdcdbf71A870cc60C6F9B621E28a7D3Ffd6Dd4965',
-  MockFlashLoanReceiver: '',
   balancerHelpers: '0x5aDDCCa35b7A0D07C74063c48700C8590E87864E',
   batchRelayer: '0x886A3Ec7bcC508B8795990B60Fa21f85F9dB7948',
   batchRelayerV4: '0x2536dfeeCB7A0397CF98eDaDA8486254533b1aFA',
@@ -32,3 +29,5 @@ export default {
   feeDistributorDeprecated: '0x26743984e3357eFC59f2fd6C1aFDC310335a61c9',
   faucet: '',
 };
+
+export default contracts;

@@ -1,6 +1,7 @@
+import { Config } from '../types';
 import contracts from './contracts';
 
-export default {
+const config: Config = {
   key: '10',
   chainId: 10,
   chainName: 'Optimism',
@@ -91,3 +92,5 @@ export default {
     BrandedRedirect: {},
   },
 };
+
+export default config;

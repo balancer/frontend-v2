@@ -1,8 +1,9 @@
+import { Config } from '../types';
 import contracts from './contracts';
 import keys from './keys';
 import pools from './pools';
 
-export default {
+const config: Config = {
   key: '1',
   chainId: 1,
   chainName: 'Ethereum',
@@ -66,3 +67,5 @@ export default {
     weight: 100,
   },
 };
+
+export default config;

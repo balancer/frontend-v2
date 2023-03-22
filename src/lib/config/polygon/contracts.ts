@@ -1,4 +1,6 @@
-export default {
+import { Contracts } from '../types';
+
+const contracts: Contracts = {
   merkleRedeem: '',
   merkleOrchard: '0x0F3e0c4218b7b0108a3643cFe9D3ec0d4F57c54e',
   merkleOrchardV2: '0xc3ccacE87f6d3A81724075ADcb5ddd85a8A1bB68',
@@ -28,3 +30,5 @@ export default {
   faucet: '',
   gaugeRewardsHelper: '0xaEb406b0E430BF5Ea2Dc0B9Fe62E4E53f74B3a33',
 };
+
+export default contracts;

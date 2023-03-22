@@ -1,8 +1,9 @@
 import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
+import { Config } from '../types';
 
-export default {
+const config: Config = {
   key: '137',
   chainId: 137,
   chainName: 'Polygon',
@@ -65,3 +66,5 @@ export default {
     weight: 0,
   },
 };
+
+export default config;

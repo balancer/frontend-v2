@@ -1,7 +1,8 @@
+import { Config } from '../types';
 import contracts from './contracts';
 import pools from './pools';
 
-export default {
+const config: Config = {
   key: '100',
   chainId: 100,
   chainName: 'Gnosis Chain',
@@ -13,7 +14,6 @@ export default {
   rpc: 'https://poa-xdai.gateway.pokt.network/v1/lb/91bc0e12a76e7a84dd76189d',
   ws: 'wss://rpc.gnosischain.com/wss',
   publicRpc: 'https://rpc.gnosis.gateway.fm',
-  loggingRpc: 'https://rpc.gnosis.gateway.fm',
   explorer: 'https://gnosisscan.io',
   explorerName: 'Gnosisscan',
   balancerApi: 'https://api.balancer.fi',
@@ -68,3 +68,5 @@ export default {
     weight: 100,
   },
 };
+
+export default config;

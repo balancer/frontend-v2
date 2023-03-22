@@ -1,8 +1,9 @@
 import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
+import { Config } from '../types';
 
-export default {
+const config: Config = {
   key: '42161',
   chainId: 42161,
   chainName: 'Arbitrum',
@@ -19,7 +20,6 @@ export default {
   subgraph:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
   balancerApi: 'https://api.balancer.fi',
-  poolsUrlV1: '',
   poolsUrlV2: '',
   subgraphs: {
     main: [
@@ -67,3 +67,5 @@ export default {
     weight: 0,
   },
 };
+
+export default config;

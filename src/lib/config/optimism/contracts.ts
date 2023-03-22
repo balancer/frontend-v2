@@ -1,4 +1,6 @@
-export default {
+import { Contracts } from '../types';
+
+const contracts: Contracts = {
   merkleRedeem: '',
   merkleOrchard: '',
   multicall: '',
@@ -26,3 +28,5 @@ export default {
   feeDistributorDeprecated: '',
   faucet: '',
 };
+
+export default contracts;

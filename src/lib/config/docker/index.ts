@@ -1,4 +1,7 @@
-export default {
+import { Config } from '../types';
+import contracts from './contracts';
+
+const config: Config = {
   key: '17',
   chainId: 17,
   chainName: 'Ethereum',
@@ -12,7 +15,6 @@ export default {
   explorer: '',
   explorerName: '',
   subgraph: 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
-  poolsUrlV1: '',
   poolsUrlV2: '',
   subgraphs: {
     main: ['http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2'],
@@ -32,29 +34,39 @@ export default {
     minTransactionBuffer: '0.05',
   },
   addresses: {
-    multicall: '0xfe17B701A8F44D9D18D4f83dB71Bf9442D0003f1',
-    authorizer: '0x6Bff77238256fFF717e5Cc9A96640dC0D068b14D',
-    vault: '0x293f6758Fe4a4343E367Ac8E6A697eC6315fBEd7',
-    weightedPoolFactory: '0xE48Aae4178612fdF77af25C83fa1099491A8AD1B',
-    stablePoolFactory: '0xb4F97F452D71C3bba3c30c554305A7250c08b23A',
-    oneToOneSwapValidator: '0x2e7950e645CbA3eD9B376df081F2FA0fE53d30f0',
-    tokenFactory: '0xc9d340Bc37C57e70383b217De2c07FB252E36D55',
-    weth: '0x6c37Fa9557C135dF4323004D3f0549f3e94F112D',
-    stETH: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
-    wstETH: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-    lidoRelayer: '',
-    MockFlashLoanReceiver: '',
-    balancerHelpers: '',
-    batchRelayerV4: '',
-    merkleOrchard: '',
-    batchRelayer: '',
-    veBAL: '',
-    balancerMinter: '',
-    veDelegationProxy: '',
-    veBALHelpers: '',
-    feeDistributor: '',
-    feeDistributorDeprecated: '',
-    faucet: '',
+    ...contracts,
+  },
+  gauges: {
+    type: 1,
+    weight: 100,
+  },
+  pools: {
+    IdsMap: {},
+    Pagination: {
+      PerPage: 10,
+      PerPool: 10,
+      PerPoolInitial: 5,
+    },
+    DelegateOwner: '',
+    ZeroAddress: '',
+    DynamicFees: {
+      Gauntlet: [],
+    },
+    BlockList: [],
+    IncludedPoolTypes: [],
+    Stable: {
+      AllowList: [],
+    },
+    Investment: {
+      AllowList: [],
+    },
+    Factories: {},
+    Stakable: {
+      AllowList: [],
+    },
+    Metadata: {},
+    DisabledJoins: [],
+    BrandedRedirect: {},
   },
   keys: {},
   strategies: {
@@ -73,3 +85,5 @@ export default {
   },
   supportsElementPools: false,
 };
+
+export default config;
