@@ -1,5 +1,5 @@
 import { Vault__factory } from '@balancer-labs/typechain';
-import { Contract } from '@ethersproject/contracts';
+import { getEthersContract } from '@/dependencies/EthersContract';
 import { computed, reactive, Ref } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
@@ -32,9 +32,10 @@ export default function useRelayerApprovalQuery(
    */
   const enabled = computed(() => isWalletReady.value);
 
+  const EthersContract = getEthersContract();
   const vaultContract = computed(
     () =>
-      new Contract(
+      new EthersContract(
         configService.network.addresses.vault,
         Vault__factory.abi,
         rpcProviderService.jsonProvider
