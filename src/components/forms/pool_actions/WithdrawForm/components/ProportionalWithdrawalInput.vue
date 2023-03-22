@@ -17,7 +17,6 @@ import useWithdrawalState from '../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
-import { debounce } from 'lodash';
 
 /**
  * TYPES
@@ -43,7 +42,6 @@ const {
   fiatTotalLabel,
   fiatAmounts,
   proportionalAmounts,
-  shouldFetchBatchSwap,
   loadingData,
 } = toRefs(props.math);
 
@@ -93,15 +91,7 @@ function handleSliderChange(newVal: number): void {
     .times(fractionBasisPoints)
     .div(10000)
     .toFixed(props.pool?.onchain?.decimals || 18);
-
-  if (shouldFetchBatchSwap.value) {
-    delayedExitDataFetch();
-  }
 }
-
-const delayedExitDataFetch = debounce(() => {
-  void props.math.fetchExitData();
-}, 500);
 
 /**
  * WATCHERS
