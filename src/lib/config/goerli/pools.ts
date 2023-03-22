@@ -73,7 +73,12 @@ const pools: Pools = {
       hasIcon: false,
     },
   },
-  DisabledJoins: [],
+  DisabledJoins: [
+    'testaddresswithdisabledjoins', //Used for unit testing
+  ],
+  Deprecated: {
+    deprecatedid: {}, //Used for unit testing
+  },
 };
 
 export default pools;
