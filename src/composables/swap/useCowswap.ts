@@ -243,6 +243,7 @@ export default function useCowswap({
         captureException(new Error(state.submissionError, { cause: error }));
       }
       confirming.value = false;
+      throw error;
     }
   }
 
