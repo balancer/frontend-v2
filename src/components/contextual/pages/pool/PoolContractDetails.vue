@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { POOLS } from '@/constants/pools';
-import { metadata } from '@/composables/usePool';
+import { poolMetadata } from '@/composables/usePool';
 import { shortenLabel } from '@/lib/utils';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -60,7 +60,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: metadata(id)?.name || name,
+      value: poolMetadata(id)?.name || name,
     },
     {
       title: t('poolSymbol'),

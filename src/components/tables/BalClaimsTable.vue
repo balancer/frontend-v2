@@ -11,7 +11,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   isStableLike,
-  metadata,
+  poolMetadata,
   orderedPoolTokens,
   orderedTokenAddresses,
 } from '@/composables/usePool';
@@ -146,8 +146,8 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
       </template>
       <template #pillsColumnCell="{ pool }">
         <div class="flex items-center py-4 px-6">
-          <div v-if="metadata(pool.id)" class="text-left">
-            {{ metadata(pool.id)!.name }}
+          <div v-if="poolMetadata(pool.id)" class="text-left">
+            {{ poolMetadata(pool.id)!.name }}
           </div>
 
           <TokenPills

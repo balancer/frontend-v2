@@ -38,12 +38,8 @@ export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42));
 }
 
-export function metadata(poolId: string): PoolMetadata | undefined {
-  return POOLS.Metadata[poolId];
-}
-
 export function hasIcon(poolId: string): boolean {
-  return !!metadata(poolId)?.hasIcon;
+  return !!poolMetadata(poolId)?.hasIcon;
 }
 
 export function isLinear(poolType: PoolType): boolean {
