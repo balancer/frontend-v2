@@ -33,7 +33,9 @@ const { isMigratablePool } = usePool(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 
 /** COMPUTED */
-const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
+const stakablePoolIds = computed((): string[] =>
+  POOLS.Stakable.VotingAllowed.concat(POOLS.Stakable.VotingDisabled)
+);
 const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
 </script>
 

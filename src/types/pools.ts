@@ -67,7 +67,8 @@ export type Pools = {
   };
   Factories: Record<string, FactoryType>;
   Stakable: {
-    AllowList: string[];
+    VotingAllowed: string[];
+    VotingDisabled: string[];
   };
   Metadata: Record<string, PoolMetadata>;
   Deep: string[];
