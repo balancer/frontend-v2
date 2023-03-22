@@ -1,7 +1,5 @@
 import { reactive, toRefs } from 'vue';
 
-import { getBalancer } from '@/dependencies/balancer-sdk';
-
 type InvestState = {
   amounts: string[];
   tokenAddresses: string[];
@@ -9,7 +7,6 @@ type InvestState = {
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
   submitting: boolean;
-  sorReady: boolean;
 };
 
 /**
@@ -22,10 +19,7 @@ const state = reactive<InvestState>({
   validInputs: [],
   highPriceImpactAccepted: false,
   submitting: false,
-  sorReady: false,
 });
-
-const sor = getBalancer().sor;
 
 /**
  * METHODS
@@ -37,7 +31,6 @@ function resetAmounts(): void {
 export default function useInvestState() {
   return {
     ...toRefs(state),
-    sor,
     resetAmounts,
   };
 }
