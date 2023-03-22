@@ -1,11 +1,11 @@
 import { getBalancer } from '@/dependencies/balancer-sdk';
 import {
-  defaultGeneralizedExitResponse,
+  defaultExactInExit as defaultExactInExit,
   initBalancerWithDefaultMocks,
 } from '@/dependencies/balancer-sdk.mocks';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
+import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { buildExitParams } from '@tests/unit/builders/join-exit.builders';
 import {
   defaultGasLimit,
@@ -13,32 +13,30 @@ import {
 } from '@tests/unit/builders/signer';
 import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
-
-import { GeneralisedExitHandler } from './generalised-exit.handler';
+import { ExactOutExitHandler } from './exact-out-exit.handler';
 
 initBalancerWithDefaultMocks();
 
 const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
   mockDeep<GasPriceService>();
 
-async function mountGeneralizedExitHandler(pool: Pool) {
-  return new GeneralisedExitHandler(
-    ref(pool),
-    getBalancer(),
-    gasPriceServiceMock
-  );
+async function mountExactOutExitHandler(pool: Pool) {
+  return new ExactOutExitHandler(ref(pool), getBalancer(), gasPriceServiceMock);
 }
 
-const exitParams = buildExitParams({ bptIn: '1' });
+const exitParams = buildExitParams({
+  bptIn: '0.00000000000000001',
+});
 
-test('Successfully executes a generalized exit transaction', async () => {
-  const handler = await mountGeneralizedExitHandler(BoostedPoolMock);
-  const joinResult = await handler.exit(exitParams);
+test('Successfully executes an exact-out exit transaction', async () => {
+  const handler = await mountExactOutExitHandler(aWeightedPool());
 
-  expect(joinResult).toEqual(defaultTransactionResponse);
+  const exitResult = await handler.exit(exitParams);
+
+  expect(exitResult).toEqual(defaultTransactionResponse);
   expect(exitParams.signer.sendTransaction).toHaveBeenCalledOnceWith({
-    data: defaultGeneralizedExitResponse.encodedCall,
-    to: defaultGeneralizedExitResponse.to,
+    data: defaultExactInExit.data,
+    to: defaultExactInExit.to,
     gasLimit: defaultGasLimit,
   });
 });

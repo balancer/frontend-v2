@@ -11,6 +11,7 @@ import {
   // eslint-disable-next-line no-restricted-imports
   Web3Provider,
 } from '@ethersproject/providers';
+import { aSigner } from '@tests/unit/builders/signer';
 import { mock } from 'vitest-mock-extended';
 
 export const fakeMetamaskAccount = 'agorer.eth';
@@ -73,6 +74,6 @@ export class Web3ProviderMock extends Web3Provider {
 
   registerListeners() {}
   getSigner(): JsonRpcSigner {
-    return mock<JsonRpcSigner>();
+    return aSigner();
   }
 }
