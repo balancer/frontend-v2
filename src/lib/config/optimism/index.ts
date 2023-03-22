@@ -45,20 +45,6 @@ const config: Config = {
     infura: '',
     alchemy: '',
   },
-  strategies: {
-    '0': {
-      type: '0',
-      name: 'stablePool',
-    },
-    '1': {
-      type: '1',
-      name: 'weightedPool',
-    },
-    '2': {
-      type: '2',
-      name: 'weightedPool',
-    },
-  },
   gauges: {
     type: 5,
     weight: 0,

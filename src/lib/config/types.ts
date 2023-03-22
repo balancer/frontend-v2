@@ -77,13 +77,6 @@ export interface Config {
   addresses: Contracts;
   pools: Pools;
   keys: Keys;
-  strategies: Record<
-    string,
-    {
-      type: string;
-      name: string;
-    }
-  >;
   gauges: {
     type: number;
     weight: number;

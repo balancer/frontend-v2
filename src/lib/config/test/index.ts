@@ -64,20 +64,6 @@ const config: Config = {
     faucet: '',
   },
   keys,
-  strategies: {
-    '0': {
-      type: '0',
-      name: 'stablePool',
-    },
-    '1': {
-      type: '1',
-      name: 'weightedPool',
-    },
-    '2': {
-      type: '2',
-      name: 'weightedPool',
-    },
-  },
   gauges: {
     type: 1,
     weight: 100,

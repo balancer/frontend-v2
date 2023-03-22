@@ -69,20 +69,6 @@ const config: Config = {
     BrandedRedirect: {},
   },
   keys: {},
-  strategies: {
-    '0': {
-      type: '0',
-      name: 'stablePool',
-    },
-    '1': {
-      type: '1',
-      name: 'weightedPool',
-    },
-    '2': {
-      type: '2',
-      name: 'weightedPool',
-    },
-  },
   supportsElementPools: false,
 };
 
