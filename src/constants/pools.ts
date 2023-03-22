@@ -164,7 +164,12 @@ const POOLS_GOERLI: Pools = {
       hasIcon: false,
     },
   },
-  DisabledJoins: [],
+  DisabledJoins: [
+    'testaddresswithdisabledjoins', //Used for unit testing
+  ],
+  Deprecated: {
+    deprecatedid: {}, //Used for unit testing
+  },
 };
 
 const POOLS_MAINNET: Pools = {

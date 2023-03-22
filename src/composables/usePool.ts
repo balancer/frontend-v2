@@ -287,7 +287,7 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
     return '-';
   }
   if (boost) {
-    numF(absMaxApr(aprs, boost), FNumFormats.bp);
+    return numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
   if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
     const minAPR = numF(aprs.min, FNumFormats.bp);
