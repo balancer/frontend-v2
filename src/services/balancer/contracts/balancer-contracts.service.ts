@@ -12,7 +12,7 @@ import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
 // import { getBalancer } from '@/dependencies/balancer-sdk';
-import { Config } from '@/lib/config';
+import { Config } from '@/lib/config/types';
 import { configService as _configService } from '@/services/config/config.service';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import Vault from './contracts/vault';
