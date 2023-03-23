@@ -78,15 +78,15 @@ const actionStates = ref(
  * WATCHERS
  */
 watch(
-  () => [props.actions, props.isLoading],
-  () => {
-    _actions.value = props.actions;
-    actionStates.value = _actions.value.map(() => ({
-      ...defaultActionState,
-    }));
-  },
-  {
-    deep: true,
+  () => props.actions,
+  newActions => {
+    // If new action has been injected reset all action states.
+    if (newActions.length !== _actions.value.length) {
+      _actions.value = props.actions;
+      actionStates.value = _actions.value.map(() => ({
+        ...defaultActionState,
+      }));
+    }
   }
 );
 

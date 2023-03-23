@@ -75,6 +75,7 @@
   "approveBatchRelayer": "Approve Batch relayer",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
+  "approveRelayerTooltip": "Your permission is required to use the relayer.",
   "approveTokens": "Approve tokens",
   "approving": "Approving",
   "approvingCowswapRelayer": "Approving Cowswap relayer",
