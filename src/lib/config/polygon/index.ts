@@ -3,6 +3,7 @@ import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
 import tokenlists from './tokenlists';
+import tokens from './tokens';
 
 const config: Config = {
   key: '137',
@@ -47,6 +48,7 @@ const config: Config = {
     ...contracts,
   },
   pools,
+  tokens,
   keys,
   gauges: {
     type: 4,

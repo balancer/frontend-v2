@@ -2,6 +2,7 @@ import { Config } from '../types';
 import contracts from './contracts';
 import pools from './pools';
 import tokenlists from './tokenlists';
+import tokens from './tokens';
 
 const config: Config = {
   key: '100',
@@ -46,6 +47,7 @@ const config: Config = {
     ...contracts,
   },
   pools,
+  tokens,
   keys: {
     infura: 'daaa68ec242643719749dd1caba2fc66',
     alchemy: 'oGLgncMVHNWltnK0nTfiryxQ6gYemKQO',
