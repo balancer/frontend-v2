@@ -3,7 +3,6 @@ import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 import {
@@ -687,8 +686,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       isWeighted(pool.value.poolType) &&
       !pool.value?.priceRateProviders?.every(
         provider =>
-          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
-          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
+          configService.network.rateProviders['*'][provider.address] ||
+          configService.network.rateProviders[provider.token?.address]?.[
+            provider.address
+          ]
       )
   );
 

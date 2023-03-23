@@ -114,6 +114,7 @@ const config: Config = {
     },
     External: [],
   },
+  rateProviders: {},
 };
 
 export default config;
