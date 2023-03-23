@@ -4,7 +4,6 @@ import {
   WeightedPool__factory,
 } from '@balancer-labs/typechain';
 import { JsonRpcProvider } from '@ethersproject/providers';
-
 import ERC20_ABI from '@/lib/abi/ERC20.json';
 import IERC4626 from '@/lib/abi/IERC4626.json';
 import LinearPoolAbi from '@/lib/abi/LinearPool.json';
@@ -13,17 +12,14 @@ import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
 // import { getBalancer } from '@/dependencies/balancer-sdk';
-import { Config } from '@/lib/config';
+import { Config } from '@/lib/config/types';
 import { configService as _configService } from '@/services/config/config.service';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-
-import BatchRelayer from './contracts/batch-relayer';
 import Vault from './contracts/vault';
 import veBAL from './contracts/veBAL';
 
 export default class BalancerContractsService {
   vault: Vault;
-  batchRelayer: BatchRelayer;
   config: Config;
   provider: JsonRpcProvider;
   veBAL: veBAL;
@@ -40,7 +36,6 @@ export default class BalancerContractsService {
 
     // Init contracts
     this.vault = new Vault(this);
-    this.batchRelayer = new BatchRelayer(this);
     this.veBAL = new veBAL(this);
   }
 

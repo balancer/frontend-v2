@@ -1,8 +1,8 @@
-import { POOLS } from '@/constants/pools';
 import { Pool } from '@balancer-labs/sdk';
 import { RouteLocationNormalized } from 'vue-router';
 import { configService } from '../config/config.service';
 import { ROUTE_META_DATA } from './meta.constants';
+import { poolMetadata } from '@/composables/usePool';
 
 interface IMetaService {
   setMeta(route: RouteLocationNormalized | string): void;
@@ -27,7 +27,7 @@ class MetaService implements IMetaService {
     if (route.name === 'pool' && pool) {
       metaTitle = metaTitle.replace(
         '[pool_symbol]',
-        POOLS.Metadata[pool.id]?.name || pool.symbol || 'Pool'
+        poolMetadata(pool.id)?.name || pool.symbol || 'Pool'
       );
       metaDescription = metaDescription
         .replace('[pool_type]', pool.poolType)
