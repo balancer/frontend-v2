@@ -1,4 +1,6 @@
-export default {
+import { TokenListURLMap } from '@/types/TokenList';
+
+const tokenlists: TokenListURLMap = {
   Balancer: {
     Default:
       'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/arbitrum.listed.tokenlist.json',
@@ -7,3 +9,5 @@ export default {
   },
   External: [],
 };
+
+export default tokenlists;

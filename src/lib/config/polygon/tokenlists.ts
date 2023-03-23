@@ -1,4 +1,6 @@
-export default {
+import { TokenListURLMap } from '@/types/TokenList';
+
+const tokenlists: TokenListURLMap = {
   Balancer: {
     Default:
       'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/polygon.listed.tokenlist.json',
@@ -9,3 +11,5 @@ export default {
     'https://unpkg.com/quickswap-default-token-list@1.0.67/build/quickswap-default.tokenlist.json',
   ],
 };
+
+export default tokenlists;

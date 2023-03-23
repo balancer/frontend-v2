@@ -1,4 +1,6 @@
-export default {
+import { TokenListURLMap } from '@/types/TokenList';
+
+const tokenlists: TokenListURLMap = {
   Balancer: {
     Default:
       'https://raw.githubusercontent.com/balancer/assets/master/generated/listed.tokenlist.json',
@@ -10,3 +12,5 @@ export default {
     'https://www.gemini.com/uniswap/manifest.json',
   ],
 };
+
+export default tokenlists;

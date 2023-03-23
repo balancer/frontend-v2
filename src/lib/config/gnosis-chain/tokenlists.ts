@@ -1,4 +1,6 @@
-export default {
+import { TokenListURLMap } from '@/types/TokenList';
+
+const tokenlists: TokenListURLMap = {
   Balancer: {
     Default:
       'https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/gnosis.listed.tokenlist.json',
@@ -9,3 +11,5 @@ export default {
     'https://unpkg.com/@1hive/default-token-list@latest/build/honeyswap-default.tokenlist.json',
   ],
 };
+
+export default tokenlists;
