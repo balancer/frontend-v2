@@ -1,4 +1,6 @@
-export default {
+import { TokenConstants } from '../types';
+
+const tokens: TokenConstants = {
   Popular: {
     Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
   },
@@ -9,3 +11,5 @@ export default {
     BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8',
   },
 };
+
+export default tokens;
