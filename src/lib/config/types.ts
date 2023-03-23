@@ -101,4 +101,5 @@ export interface Config {
     weight: number;
   };
   tokenlists: TokenListURLMap;
+  rateProviders: Record<string, Record<string, boolean>>;
 }

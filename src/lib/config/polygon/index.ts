@@ -4,6 +4,7 @@ import contracts from './contracts';
 import pools from './pools';
 import tokenlists from './tokenlists';
 import tokens from './tokens';
+import rateProviders from './rateProviders';
 
 const config: Config = {
   key: '137',
@@ -55,6 +56,7 @@ const config: Config = {
     weight: 0,
   },
   tokenlists,
+  rateProviders,
 };
 
 export default config;

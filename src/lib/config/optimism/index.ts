@@ -81,6 +81,7 @@ const config: Config = {
   },
   tokenlists,
   tokens,
+  rateProviders: {},
 };
 
 export default config;
