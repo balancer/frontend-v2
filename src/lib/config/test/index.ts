@@ -96,6 +96,17 @@ const config: Config = {
     DisabledJoins: [],
     BrandedRedirect: {},
   },
+  tokens: {
+    Popular: {
+      Symbols: [],
+    },
+    Addresses: {
+      nativeAsset: '',
+      wNativeAsset: '',
+      WETH: '',
+      BAL: '',
+    },
+  },
   tokenlists: {
     Balancer: {
       Default: '',

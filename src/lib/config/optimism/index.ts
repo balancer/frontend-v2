@@ -1,6 +1,7 @@
 import { Config } from '../types';
 import contracts from './contracts';
 import tokenlists from './tokenlists';
+import tokens from './tokens';
 
 const config: Config = {
   key: '10',
@@ -79,6 +80,7 @@ const config: Config = {
     BrandedRedirect: {},
   },
   tokenlists,
+  tokens,
 };
 
 export default config;
