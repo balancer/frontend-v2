@@ -1,5 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
 import { Pools } from '@/types/pools';
+import { TokenListURLMap } from '@/types/TokenList';
 
 export interface Contracts {
   merkleRedeem: string;
@@ -81,4 +82,5 @@ export interface Config {
     type: number;
     weight: number;
   };
+  tokenlists: TokenListURLMap;
 }

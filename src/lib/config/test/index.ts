@@ -96,6 +96,13 @@ const config: Config = {
     DisabledJoins: [],
     BrandedRedirect: {},
   },
+  tokenlists: {
+    Balancer: {
+      Default: '',
+      Vetted: '',
+    },
+    External: [],
+  },
 };
 
 export default config;
