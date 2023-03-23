@@ -1,4 +1,6 @@
-export default {
+import { RateProviders } from '../types';
+
+const rateProviders: RateProviders = {
   '*': {
     '0x0000000000000000000000000000000000000000': true,
   },
@@ -27,3 +29,5 @@ export default {
     '0x80a94f458491ca88f09767e58a92fd23cbf1196f': true,
   },
 };
+
+export default rateProviders;

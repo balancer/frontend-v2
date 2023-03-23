@@ -50,6 +50,12 @@ export interface Contracts {
   gaugeRewardsHelper?: string;
 }
 
+export interface RateProviders {
+  [tokenAddress: string]: {
+    [providerAddress: string]: boolean;
+  };
+}
+
 export interface Keys {
   infura?: string;
   alchemy?: string;
