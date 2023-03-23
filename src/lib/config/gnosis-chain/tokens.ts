@@ -2,7 +2,7 @@ import { TokenConstants } from '../types';
 
 const tokens: TokenConstants = {
   Popular: {
-    Symbols: ['xDAI', 'WXDAI', 'WETH', 'BAL'],
+    Symbols: ['WXDAI', 'WETH', 'BAL'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
