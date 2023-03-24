@@ -119,7 +119,7 @@ export function isDeep(pool: Pool): boolean {
     '0x3f7a7fd7f214be45ec26820fd01ac3be4fc75aa70002000000000000000004c5', // stg/bbeusd
     '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
     '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
-    '0x10b040038f87219d9b42e025e3bd9b8095c87dd9000000000000000000000b11', // bb-t-MATIC (tetu managed boosted pool)
+    '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
   ];
 
   return treatAsDeep.includes(pool.id);
