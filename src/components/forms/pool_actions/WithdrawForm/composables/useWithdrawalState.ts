@@ -23,7 +23,6 @@ type WithdrawalState = {
   validInput: boolean;
   highPriceImpactAccepted: boolean;
   submitting: boolean;
-  sorReady: boolean;
   tx: {
     init: boolean;
     confirming: boolean;
@@ -49,7 +48,6 @@ const state = reactive<WithdrawalState>({
   validInput: true,
   highPriceImpactAccepted: false,
   submitting: false,
-  sorReady: false,
   tx: {
     init: false,
     confirming: false,

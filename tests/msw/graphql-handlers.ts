@@ -44,4 +44,7 @@ export const graphqlHandlers = [
   graphql.query('Gauges', (req, res, ctx) => {
     return res(ctx.data(gaugesResponse));
   }),
+  graphql.query('AllPools', (req, res, ctx) => {
+    return res(ctx.data([]));
+  }),
 ];

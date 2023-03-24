@@ -169,7 +169,7 @@ export const tokensProvider = (
   const {
     data: balanceData,
     isSuccess: balanceQuerySuccess,
-    isLoading: balanceQueryLoading,
+    isInitialLoading: balanceQueryLoading,
     isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
@@ -449,7 +449,7 @@ export const tokensProvider = (
       // Subtract buffer for gas
       maxAmount = tokenBalanceBN.gt(nativeAsset.minTransactionBuffer)
         ? tokenBalanceBN.minus(nativeAsset.minTransactionBuffer).toString()
-        : '0';
+        : tokenBalance.toString();
     } else {
       maxAmount = tokenBalance;
     }

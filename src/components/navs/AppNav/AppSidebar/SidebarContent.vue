@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import AppLogo from '@/components/images/AppLogo.vue';
-import useApp from '@/composables/useApp';
+import { version } from '@/composables/useApp';
 import useConfig from '@/composables/useConfig';
 import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
@@ -28,7 +28,6 @@ const emit = defineEmits(['close']);
 const { darkMode, toggleDarkMode } = useDarkMode();
 const { blockNumber } = useWeb3();
 const { networkConfig } = useConfig();
-const { version } = useApp();
 const { networkSlug } = useNetwork();
 const { t } = useI18n();
 const router = useRouter();
@@ -87,7 +86,7 @@ const socialLinks = {
   },
 
   GithubIcon: {
-    url: 'https://github.com/balancer-labs/',
+    url: 'https://github.com/balancer/',
     component: GithubIcon,
   },
 };
@@ -188,7 +187,7 @@ watch(blockNumber, async () => {
         </span>
       </div>
       <BalLink
-        :href="`https://github.com/balancer-labs/frontend-v2/releases/tag/${version}`"
+        :href="`https://github.com/balancer/frontend-v2/releases/tag/${version}`"
         class="flex items-center mt-2 text-gray-300"
         external
         noStyle

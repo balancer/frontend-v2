@@ -156,12 +156,6 @@ export default function useJoinExit({
       return;
     }
 
-    if (amountToExchange.isZero()) {
-      tokenInAmountInput.value = '0';
-      tokenOutAmountInput.value = '0';
-      return;
-    }
-
     await getSwapInfo();
 
     const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
@@ -260,6 +254,7 @@ export default function useJoinExit({
       }
       swapping.value = false;
       confirming.value = false;
+      throw error;
     }
   }
 

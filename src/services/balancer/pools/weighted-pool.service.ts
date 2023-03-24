@@ -7,11 +7,8 @@ import {
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
-import {
-  JsonRpcProvider,
-  TransactionResponse,
-  Web3Provider,
-} from '@ethersproject/providers';
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 import BigNumber from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 
@@ -41,7 +38,7 @@ export interface JoinPoolRequest {
 
 export default class WeightedPoolService {
   public async create(
-    provider: Web3Provider,
+    provider: WalletProvider,
     name: string,
     symbol: string,
     swapFee: string,
@@ -78,7 +75,7 @@ export default class WeightedPoolService {
   }
 
   public async retrievePoolIdAndAddress(
-    provider: Web3Provider | JsonRpcProvider,
+    provider: WalletProvider | JsonRpcProvider,
     createHash: string
   ): Promise<CreatePoolReturn | null> {
     const receipt = await provider.getTransactionReceipt(createHash);
@@ -114,7 +111,7 @@ export default class WeightedPoolService {
   }
 
   public async retrievePoolDetails(
-    provider: Web3Provider | JsonRpcProvider,
+    provider: WalletProvider | JsonRpcProvider,
     hash: string
   ) {
     if (!hash) return;
@@ -151,7 +148,7 @@ export default class WeightedPoolService {
   }
 
   public async initJoin(
-    provider: Web3Provider,
+    provider: WalletProvider,
     poolId: string,
     sender: Address,
     receiver: Address,

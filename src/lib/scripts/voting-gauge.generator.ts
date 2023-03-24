@@ -1,3 +1,9 @@
+/**
+ * Generates voting-gauges.json file.
+ *
+ * To run, ensure you have your own .env.development file with the following:
+ * VITE_RPC_URL_1=YOUR_MAINNET_RPC_URL
+ */
 import { Network } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 import debug from 'debug';
@@ -5,7 +11,6 @@ import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
-import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { POOLS } from '@/constants/voting-gauge-pools';
 import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
@@ -14,11 +19,11 @@ import vebalGauge from '../../../public/data/vebal-gauge.json';
 import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
 import config from '../config';
 import { isSameAddress } from '../utils';
-import { Multicaller } from '../utils/balancer/contract';
 import { formatUnits } from '@ethersproject/units';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { mapValues } from 'lodash';
 import { configService } from '@/services/config/config.service';
+import { Multicaller } from '@/services/multicalls/multicaller';
+import { StaticJsonRpcBatchProvider } from '@/services/rpc-provider/static-json-rpc-batch-provider';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -39,21 +44,23 @@ async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   const rpcUrl = configService.getNetworkRpc(Network.MAINNET);
   if (rpcUrl.includes('INFURA_KEY'))
     throw Error('VITE_INFURA_PROJECT_ID not found!');
-  const provider = new JsonRpcProvider(rpcUrl);
+
+  const provider = new StaticJsonRpcBatchProvider(rpcUrl);
 
   const multicaller = new Multicaller(
+    config[Network.MAINNET].addresses.multicall,
     config[Network.MAINNET].key,
-    provider,
-    VEBalHelpersABI
+    provider
   );
 
   for (const gaugeAddress of gaugeAddresses) {
-    multicaller.call(
-      getAddress(gaugeAddress),
-      config[Network.MAINNET].addresses.veBALHelpers,
-      'gauge_relative_weight',
-      [getAddress(gaugeAddress)]
-    );
+    multicaller.call({
+      key: gaugeAddress,
+      address: config[Network.MAINNET].addresses.veBALHelpers,
+      function: 'gauge_relative_weight',
+      abi: VEBalHelpersABI,
+      params: [getAddress(gaugeAddress)],
+    });
   }
 
   const result = await multicaller.execute();
@@ -63,11 +70,11 @@ async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
 }
 
 function getBalancerAssetsURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
+  return `https://raw.githubusercontent.com/balancer/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
 }
 
 function getBalancerAssetsMultichainURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
+  return `https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
 }
 
 function isValidResponse(response: Response) {
@@ -85,7 +92,7 @@ async function getAssetURIFromTokenlists(
   log(
     `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`
   );
-  const tokenListURIs = TOKEN_LIST_MAP[network.toString()];
+  const tokenListURIs = configService.getNetworkConfig(network).tokenlists;
   const allURIs = [
     ...Object.values(tokenListURIs.Balancer),
     ...tokenListURIs.External,
@@ -146,9 +153,23 @@ function getTrustWalletAssetsURI(
     [Network.POLYGON]: 'polygon',
     [Network.GOERLI]: 'goerli',
     [Network.OPTIMISM]: 'optimism',
+    [Network.GNOSIS]: 'xdai',
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
+}
+
+async function isValidLogo(uri: string | undefined): Promise<boolean> {
+  try {
+    if (!uri) return false;
+
+    const response = await fetch(uri);
+    if (response.status === 200) return true;
+    return false;
+  } catch (error) {
+    console.log('Failed to fetch', uri);
+    return false;
+  }
 }
 
 async function getTokenLogoURI(
@@ -157,35 +178,30 @@ async function getTokenLogoURI(
 ): Promise<string> {
   log(`getTokenLogoURI network: ${network} tokenAddress: ${tokenAddress}`);
   let logoUri = '';
-  let response;
 
   if (network === Network.MAINNET) {
     logoUri = getBalancerAssetsURI(tokenAddress);
-    response = await fetch(logoUri);
-    if (response.status === 200) return logoUri;
+    if (await isValidLogo(logoUri)) return logoUri;
   } else {
     logoUri = getBalancerAssetsMultichainURI(tokenAddress);
-    response = await fetch(logoUri);
-    if (response.status === 200) return logoUri;
+    if (await isValidLogo(logoUri)) return logoUri;
   }
 
   logoUri = getTrustWalletAssetsURI(tokenAddress, network);
-  response = await fetch(logoUri);
-  if (response.status === 200) return logoUri;
+  if (await isValidLogo(logoUri)) return logoUri;
 
   logoUri = await getAssetURIFromTokenlists(tokenAddress, network);
-  if (logoUri) response = await fetch(logoUri);
-  if (logoUri && response.status === 200) return logoUri;
+  if (await isValidLogo(logoUri)) return logoUri;
 
   if (
     network === Network.ARBITRUM ||
     network === Network.OPTIMISM ||
-    network === Network.POLYGON
+    network === Network.POLYGON ||
+    network === Network.GNOSIS
   ) {
     const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
     logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
-    response = await fetch(logoUri);
-    if (logoUri && response.status === 200) return logoUri;
+    if (await isValidLogo(logoUri)) return logoUri;
   }
 
   return '';
@@ -458,9 +474,12 @@ async function getGaugeInfo(
 (async () => {
   console.log('Generating voting-gauges.json...');
 
+  console.log('Fetching gauges info...');
+  console.time('getGaugeInfo');
   const gaugesInfo = await Promise.all(
     POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
   );
+  console.timeEnd('getGaugeInfo');
 
   const filteredGauges = gaugesInfo
     .flat()
@@ -470,13 +489,18 @@ async function getGaugeInfo(
     .filter(({ isKilled }) => isKilled)
     .map(({ address }) => address);
 
+  console.log('\nFetching killed gauges relative weight...');
+  console.time('getGaugeRelativeWeight');
   const killedGaugesWeight = await getGaugeRelativeWeight(killedGaugesList);
+  console.timeEnd('getGaugeRelativeWeight');
 
   const validGauges = filteredGauges.filter(
     ({ address, isKilled }) =>
       !isKilled || killedGaugesWeight[address] !== '0.0'
   );
 
+  console.log('\nFetching voting gauges info...');
+  console.time('getVotingGauges');
   let votingGauges = await Promise.all(
     validGauges.map(
       async ({
@@ -509,6 +533,7 @@ async function getGaugeInfo(
       }
     )
   );
+  console.timeEnd('getVotingGauges');
 
   votingGauges = [
     ...(vebalGauge as VotingGauge[]),

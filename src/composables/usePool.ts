@@ -3,8 +3,8 @@ import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
-import { POOLS, APR_THRESHOLD } from '@/constants/pools';
+import { APR_THRESHOLD } from '@/constants/pools';
+import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 import {
   bnum,
   includesAddress,
@@ -13,6 +13,7 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
+import configs from '@/lib/config';
 
 import {
   isTestnet,
@@ -20,17 +21,24 @@ import {
   appUrl,
   getNetworkSlug,
   isL2,
+  networkId,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
 
+const POOLS = configService.network.pools;
+
 /**
  * METHODS
  */
 export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42));
+}
+
+export function hasIcon(poolId: string): boolean {
+  return !!poolMetadata(poolId)?.hasIcon;
 }
 
 export function isLinear(poolType: PoolType): boolean {
@@ -92,14 +100,14 @@ export function isDeep(pool: Pool): boolean {
     // '0x53bc3cba3832ebecbfa002c12023f8ab1aa3a3a0000000000000000000000411', // TUSD/bb-a-usd (mainnet)
     '0x4c8d2e60863e8d7e1033eda2b3d84e92a641802000000000000000000000040f', // FRAX/aave-usdc (mainnet)
     '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467', // wstETH/sfrxETH/rETH (mainnet)
-    '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f', // euler usd (mainnet)
-    '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // dola/bb-e-usd (mainnet)
-    '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477', // euler frax/euler usdc (mainnet)
+    // '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f', // euler usd (mainnet)
+    // '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // dola/bb-e-usd (mainnet)
+    // '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477', // euler frax/euler usdc (mainnet)
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
-    '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488', // tusd/bb-e-usd (mainnet)
+    // '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488', // tusd/bb-e-usd (mainnet)
     '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489', // bb-i-usd (mainnet)
     '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65', // tetu/qi (polygon)
-    '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
+    // '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
     // '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
     // '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
     '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
@@ -108,6 +116,10 @@ export function isDeep(pool: Pool): boolean {
     '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto (gnosis)
     '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011', // agave gno/usdc (gnosis)
     '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012', // agave gno/weth (gnosis)
+    '0x3f7a7fd7f214be45ec26820fd01ac3be4fc75aa70002000000000000000004c5', // stg/bbeusd
+    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
+    '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
+    '0x10b040038f87219d9b42e025e3bd9b8095c87dd9000000000000000000000b11', // bb-t-MATIC (tetu managed boosted pool)
   ];
 
   return treatAsDeep.includes(pool.id);
@@ -220,7 +232,7 @@ export function orderedPoolTokens(
   if (isDeep(pool)) {
     const leafs = tokenTreeLeafs(tokens);
     const flatTokens = flatTokenTree(pool);
-    return flatTokens.filter(token => leafs.includes(token.address));
+    return flatTokens.filter(token => includesAddress(leafs, token.address));
   } else if (isComposableStable(pool.poolType)) {
     return tokens.filter(token => !isSameAddress(token.address, pool.address));
   } else if (isStableLike(pool.poolType)) return tokens;
@@ -276,7 +288,7 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
     return '-';
   }
   if (boost) {
-    numF(absMaxApr(aprs, boost), FNumFormats.bp);
+    return numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
   if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
     const minAPR = numF(aprs.min, FNumFormats.bp);
@@ -563,6 +575,25 @@ export function isJoinsDisabled(id: string): boolean {
 }
 
 /**
+ * Checks if pool ID is included in the list of deprecated pools
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list
+ */
+export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
+  return POOLS.Deprecated?.[id.toLowerCase()];
+}
+
+/**
+ * Get metadata for a pool if it exists
+ */
+export function poolMetadata(
+  id: string,
+  network = networkId.value
+): PoolMetadata | undefined {
+  return configs[network]?.pools.Metadata[id.toLowerCase()];
+}
+
+/**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
@@ -655,10 +686,16 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       isWeighted(pool.value.poolType) &&
       !pool.value?.priceRateProviders?.every(
         provider =>
-          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
-          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
+          configService.network.rateProviders['*'][provider.address] ||
+          configService.network.rateProviders[provider.token?.address]?.[
+            provider.address
+          ]
       )
   );
+
+  const isDeprecatedPool = computed(() => {
+    return !!pool.value && !!POOLS.Deprecated?.[pool.value.id];
+  });
 
   return {
     // computed
@@ -680,6 +717,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
+    isDeprecatedPool,
     // methods
     isStable,
     isMetaStable,

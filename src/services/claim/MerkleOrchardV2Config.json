@@ -1,0 +1,99 @@
+{
+  "1": [
+    {
+      "label": "BAL",
+      "distributor": "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f",
+      "token": "0xba100000625a3754423978a60c9317c58a424e3d",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-bal.json",
+      "weekStart": 1
+    },
+    {
+      "label": "UNN",
+      "distributor": "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f",
+      "token": "0x226f7b842E0F0120b7E194D05432b3fd14773a9D",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-union.json",
+      "weekStart": 1
+    },
+    {
+      "label": "BANK",
+      "distributor": "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f",
+      "token": "0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-bankless.json",
+      "weekStart": 1
+    },
+    {
+      "label": "NOTE",
+      "distributor": "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f",
+      "token": "0xcfeaead4947f0705a14ec42ac3d44129e1ef3ed5",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-note.json",
+      "weekStart": 1
+    },
+    {
+      "label": "LIDO",
+      "distributor": "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f",
+      "token": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-lido.json",
+      "weekStart": 1
+    },
+    {
+      "label": "D2D",
+      "distributor": "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f",
+      "token": "0x43D4A3cd90ddD2F8f4f693170C9c8098163502ad",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-d2d.json",
+      "weekStart": 1
+    }
+  ],
+  "137": [
+    {
+      "label": "BAL",
+      "distributor": "0xeE071f4B516F69a1603dA393CdE8e76C40E5Be85",
+      "token": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-polygon.json",
+      "weekStart": 1
+    },
+    {
+      "label": "WMATIC",
+      "distributor": "0xeE071f4B516F69a1603dA393CdE8e76C40E5Be85",
+      "token": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-wmatic-polygon.json",
+      "weekStart": 1
+    },
+    {
+      "label": "TUSD",
+      "distributor": "0xeE071f4B516F69a1603dA393CdE8e76C40E5Be85",
+      "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-tusd-polygon.json",
+      "weekStart": 1
+    },
+    {
+      "label": "QI",
+      "distributor": "0xeE071f4B516F69a1603dA393CdE8e76C40E5Be85",
+      "token": "0x580a84c73811e1839f75d86d75d88cca0c241ff4",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-qi-polygon.json",
+      "weekStart": 1
+    },
+    {
+      "label": "LDO",
+      "distributor": "0xeE071f4B516F69a1603dA393CdE8e76C40E5Be85",
+      "token": "0xC3C7d422809852031b44ab29EEC9F1EfF2A58756",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-ldo-polygon.json",
+      "weekStart": 1
+    }
+  ],
+  "42161": [
+    {
+      "label": "BAL",
+      "distributor": "0xaF23DC5983230E9eEAf93280e312e57539D098D0",
+      "token": "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-arbitrum.json",
+      "weekStart": 1
+    },
+    {
+      "label": "PICKLE",
+      "distributor": "0xaF23DC5983230E9eEAf93280e312e57539D098D0",
+      "token": "0x965772e0e9c84b6f359c8597c891108dcf1c5b1a",
+      "manifest": "https://raw.githubusercontent.com/balancer/bal-mining-scripts/incident-response/reports/_incident-response/_current-pickle-arbitrum.json",
+      "weekStart": 1
+    }
+  ]
+}

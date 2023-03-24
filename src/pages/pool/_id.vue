@@ -36,6 +36,7 @@ import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 import metaService from '@/services/meta/meta.service';
+import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
 
 /**
  * STATE
@@ -70,6 +71,7 @@ const {
   isStableLikePool,
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
+  isDeprecatedPool,
 } = usePool(poolQuery.data);
 //#endregion
 
@@ -301,6 +303,10 @@ watch(
             v-if="_isVeBalPool && !loadingPool && pool"
             :pool="pool"
             class="pool-locking"
+          />
+          <PoolMigrationCard
+            v-if="poolId && isWalletReady && isDeprecatedPool"
+            :poolId="poolId"
           />
         </BalStack>
       </div>

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import WalletButton from '@/components/web3/WalletButton.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { SupportedWallets } from '@/services/web3/web3.plugin';
+import { SupportedWallets } from '@/providers/wallet.provider';
 
 interface Props {
   isVisible?: boolean;
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['close']);
 
-const wallets = ref(SupportedWallets.filter(id => id !== 'gnosis'));
+const wallets = ref(SupportedWallets.filter(id => id !== 'safe'));
 </script>
 
 <template>
@@ -29,6 +29,10 @@ const wallets = ref(SupportedWallets.filter(id => id !== 'gnosis'));
       {{ $t('byConnectingWallet') }}
       <router-link :to="{ name: 'terms-of-use' }" target="_blank">
         <span className="link">{{ $t('policies.termsOfUse') }}</span
+        >,
+      </router-link>
+      <router-link :to="{ name: 'risks' }" target="_blank">
+        <span className="link">{{ $t('policies.risks') }}</span
         >,
       </router-link>
       <router-link :to="{ name: 'cookies-policy' }" target="_blank">

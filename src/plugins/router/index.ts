@@ -40,6 +40,8 @@ const PrivacyPolicyPage = () =>
   );
 const TermsOfUsePage = () =>
   import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
+const RisksPage = () =>
+  import(/* webpackChunkName: "RisksPage" */ '@/pages/risks.vue');
 const SwapPage = () =>
   import(
     /* webpackChunkName: "SwapPage" */ /* webpackPrefetch: true */ '@/pages/swap.vue'
@@ -91,6 +93,12 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'ContentLayout' },
   },
   {
+    path: '/risks',
+    name: 'risks',
+    component: RisksPage,
+    meta: { layout: 'ContentLayout' },
+  },
+  {
     path: '/:networkSlug/swap/:assetIn?/:assetOut?',
     name: 'swap',
     component: SwapPage,
@@ -112,16 +120,6 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id',
     name: 'pool',
     component: PoolPage,
-  },
-  {
-    path: '/pool/:id',
-    name: 'pool-redirect',
-    redirect: to => {
-      // Redirect old pool URLs to new structure. Only for mainnet, other
-      // networks handled in nav guards.
-      // e.g. app.balancer.fi/#/pool/0x... -> app.balancer.fi/#/ethereum/pool/0x...
-      return `/ethereum/pool/${to.params.id}`;
-    },
   },
   {
     path: '/:networkSlug/pool/:id/add-liquidity',
@@ -215,8 +213,11 @@ if (isGoerli.value) {
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-  scrollBehavior() {
-    return { top: 0 };
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.hash) return { el: to.hash };
+
+    return { x: 0, top: 0 };
   },
 });
 

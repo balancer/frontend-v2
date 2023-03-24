@@ -101,9 +101,16 @@ function applyNetworkPathRedirects(router: Router): Router {
           '/terms-of-use',
           '/privacy-policy',
           '/cookies-policy',
+          '/risks',
         ];
         const routerHandledRedirects = ['not-found', 'trade-redirect'];
         if (
+          to.redirectedFrom?.fullPath &&
+          to.redirectedFrom?.fullPath.includes('/pool')
+        ) {
+          const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
+          router.push({ path: `/${config[Network.MAINNET].slug}${newPath}` });
+        } else if (
           !to.redirectedFrom ||
           routerHandledRedirects.includes(to.redirectedFrom?.name as string) ||
           networkAgnosticRoutes.includes(to.fullPath)

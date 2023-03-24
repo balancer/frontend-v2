@@ -17,6 +17,7 @@ import { Pool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
 import { encodeExitComposableStablePool } from '@/lib/utils/balancer/composableStablePoolEncoding';
+import { BasePoolEncoder } from '@balancer-labs/sdk';
 
 export default class ExitParams {
   private pool: Ref<Pool>;
@@ -131,6 +132,10 @@ export default class ExitParams {
     exactOut: boolean
   ): string {
     const isSingleAssetOut = exitTokenIndex !== null;
+
+    if (this.pool.value.isInRecoveryMode) {
+      return BasePoolEncoder.recoveryModeExit(bptIn);
+    }
 
     if (isSingleAssetOut) {
       return this.dataEncodeFn({

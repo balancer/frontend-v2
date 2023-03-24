@@ -1,12 +1,13 @@
 import { getAddress } from '@ethersproject/address';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
+
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { chunk, flatten } from 'lodash';
 
 import { networkId } from '@/composables/useNetwork';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
-import configs from '@/lib/config';
 import { bnum } from '@/lib/utils';
 import { multicall } from '@/lib/utils/balancer/contract';
 import { ipfsService } from '@/services/ipfs/ipfs.service';
@@ -14,7 +15,8 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 
 import { configService } from '../config/config.service';
 import { claimWorkerPoolService } from './claim-worker-pool.service';
-import MultiTokenClaim from './MultiTokenClaim.json';
+import MerkleOrchardV1Config from './MerkleOrchardV1Config.json';
+import MerkleOrchardV2Config from './MerkleOrchardV2Config.json';
 import TokenDecimals from './TokenDecimals.json';
 import {
   ClaimProofTuple,
@@ -28,7 +30,37 @@ import {
 } from './types';
 import { TransactionBuilder } from '../web3/transactions/transaction.builder';
 
+export enum MerkleOrchardVersion {
+  V1 = 'v1',
+  V2 = 'v2',
+}
+
 export class ClaimService {
+  merkleOrchardConfig: any;
+  merkleOrchardAddress: string;
+
+  constructor(
+    public readonly merkleOrchardVersion: MerkleOrchardVersion = MerkleOrchardVersion.V1
+  ) {
+    switch (merkleOrchardVersion) {
+      case MerkleOrchardVersion.V1:
+        this.merkleOrchardConfig = MerkleOrchardV1Config;
+        this.merkleOrchardAddress =
+          configService.network.addresses.merkleOrchard;
+        break;
+      case MerkleOrchardVersion.V2:
+        if (!configService.network.addresses.merkleOrchardV2) {
+          throw new Error('Merkle Orchard V2 not deployed on this network');
+        }
+        this.merkleOrchardConfig = MerkleOrchardV2Config;
+        this.merkleOrchardAddress = configService.network.addresses
+          .merkleOrchardV2 as string;
+        break;
+      default:
+        throw new Error('Invalid Merkle Orchard version');
+    }
+  }
+
   public async getMultiTokensPendingClaims(
     account: string
   ): Promise<MultiTokenPendingClaims[]> {
@@ -90,7 +122,7 @@ export class ClaimService {
     };
   }
   public async multiTokenClaimRewards(
-    provider: Web3Provider,
+    provider: WalletProvider,
     account: string,
     multiTokenPendingClaims: MultiTokenPendingClaims[]
   ): Promise<TransactionResponse> {
@@ -107,7 +139,7 @@ export class ClaimService {
 
       const txBuilder = new TransactionBuilder(provider.getSigner());
       return await txBuilder.contract.sendTransaction({
-        contractAddress: configs[networkId.value].addresses.merkleOrchard,
+        contractAddress: this.merkleOrchardAddress,
         abi: merkleOrchardAbi,
         action: 'claimDistributions',
         params: [account, flatten(multiTokenClaims), tokens],
@@ -152,7 +184,7 @@ export class ClaimService {
   }
 
   private getTokenClaimsInfo() {
-    const tokenClaims = MultiTokenClaim[networkId.value];
+    const tokenClaims = this.merkleOrchardConfig[networkId.value];
     const tokenDecimals = TokenDecimals[networkId.value];
 
     if (tokenClaims != null) {
@@ -186,13 +218,13 @@ export class ClaimService {
     const { token, distributor, weekStart } = tokenClaimInfo;
 
     const claimStatusCalls = Array.from({ length: totalWeeks }).map((_, i) => [
-      configService.network.addresses.merkleOrchard,
+      this.merkleOrchardAddress,
       'isClaimed',
       [token, distributor, weekStart + i, account],
     ]);
 
     const rootCalls = Array.from({ length: totalWeeks }).map((_, i) => [
-      configService.network.addresses.merkleOrchard,
+      this.merkleOrchardAddress,
       'getDistributionRoot',
       [token, distributor, weekStart + i],
     ]);
@@ -234,5 +266,3 @@ export class ClaimService {
     return Object.fromEntries(reports.map((report, i) => [weeks[i], report]));
   }
 }
-
-export const claimService = new ClaimService();

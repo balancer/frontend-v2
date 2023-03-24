@@ -3,10 +3,10 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Ref } from 'vue';
 
 export type JoinParams = {
   amountsIn: AmountIn[];
@@ -15,6 +15,8 @@ export type JoinParams = {
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
+  approvalActions: TransactionActionInfo[];
+  transactionDeadline: number;
 };
 
 export type QueryOutput = {

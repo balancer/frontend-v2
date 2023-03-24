@@ -14,7 +14,7 @@ import { getNetworkSlug } from '@/composables/useNetwork';
 import {
   isStableLike,
   isUnknownType,
-  orderedPoolTokens,
+  poolMetadata,
   poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
@@ -25,7 +25,10 @@ import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
-import { orderedTokenURIs } from '@/composables/useVotingGauges';
+import {
+  orderedTokenURIs,
+  orderedGaugeTokens,
+} from '@/composables/useVotingGauges';
 import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
@@ -249,10 +252,16 @@ function getPickedTokens(tokens: PoolToken[]) {
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="{ pool, address, addedTimestamp }">
+      <template
+        #poolCompositionCell="{ pool, address, addedTimestamp, network }"
+      >
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
+          <div v-if="poolMetadata(pool.id, network)" class="text-left">
+            {{ poolMetadata(pool.id, network)?.name }}
+          </div>
           <TokenPills
-            :tokens="orderedPoolTokens(pool, pool.tokens)"
+            v-else
+            :tokens="orderedGaugeTokens(pool)"
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "

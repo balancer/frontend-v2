@@ -414,6 +414,10 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0xd4f79ca0ac83192693bce4699d0c10c66aa6cf0f00020000000000000000047e',
     network: Network.MAINNET,
   },
+  {
+    id: '0xf16aee6a71af1a9bc8f56975a4c2705ca7a782bc0002000000000000000004bb',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -510,6 +514,10 @@ export const ARBITRUM_POOLS: Pool[] = [
   },
   {
     id: '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382',
     network: Network.ARBITRUM,
   },
 ];
@@ -732,10 +740,30 @@ export const OPTIMISM_POOLS: Pool[] = [
   },
 ];
 
+export const GNOSIS_POOLS: Pool[] = [
+  {
+    id: '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013',
+    network: Network.GNOSIS,
+  },
+  {
+    id: '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012',
+    network: Network.GNOSIS,
+  },
+  {
+    id: '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011',
+    network: Network.GNOSIS,
+  },
+  {
+    id: '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010',
+    network: Network.GNOSIS,
+  },
+];
+
 export const POOLS = [
   ...MAINNET_POOLS,
   ...ARBITRUM_POOLS,
   ...POLYGON_POOLS,
   ...GOERLI_POOLS,
   ...OPTIMISM_POOLS,
+  ...GNOSIS_POOLS,
 ];

@@ -1,6 +1,5 @@
+import { useSwapAssets } from '@/composables/swap/useSwapAssets';
 import { parseFixed } from '@ethersproject/bignumber';
-import { computed, onMounted, Ref, ref, watch } from 'vue';
-import { useStore } from 'vuex';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
@@ -39,11 +38,11 @@ export default function useSwapping(
   tokenOutAmountInput: Ref<string>
 ) {
   // COMPOSABLES
-  const store = useStore();
   const { fNum } = useNumbers();
   const { getToken, tokens } = useTokens();
   const { blockNumber } = useWeb3();
   const { slippage } = useUserSettings();
+  const { setInputAsset, setOutputAsset } = useSwapAssets();
 
   // COMPUTED
   const slippageBufferRate = computed(() => parseFloat(slippage.value));
@@ -227,7 +226,7 @@ export default function useSwapping(
   );
 
   // METHODS
-  function swap(successCallback?: () => void) {
+  async function swap(successCallback?: () => void) {
     if (isCowswapSwap.value) {
       return cowswap.swap(() => {
         if (successCallback) {
@@ -309,13 +308,13 @@ export default function useSwapping(
 
   // WATCHERS
   watch(tokenInAddressInput, async () => {
-    store.commit('swap/setInputAsset', tokenInAddressInput.value);
+    setInputAsset(tokenInAddressInput.value);
 
     handleAmountChange();
   });
 
   watch(tokenOutAddressInput, () => {
-    store.commit('swap/setOutputAsset', tokenOutAddressInput.value);
+    setOutputAsset(tokenOutAddressInput.value);
 
     handleAmountChange();
   });

@@ -19,7 +19,7 @@ RUN npm ci
 FROM dependencies AS build
 
 COPY . .
-RUN npm run build:docker -- --mode docker
+RUN npm run build:docker
 
 FROM nginx:1.23.3-alpine as release
 

@@ -1,5 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
@@ -10,6 +10,7 @@ import { WeightedPool__factory } from '@balancer-labs/typechain';
 import WeightedPoolsService from './weighted-pool.service';
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 
 const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();
@@ -83,7 +84,7 @@ describe('PoolCreator', () => {
     };
   });
 
-  const mockProvider: Web3Provider = {
+  const mockProvider: WalletProvider = {
     _isProvider: true,
     // @ts-ignore
     getTransactionReceipt: async () => polygonCreatePoolReceipt,
@@ -189,8 +190,6 @@ describe('PoolCreator', () => {
         mockProvider,
         'hash'
       );
-      console.error(mockProvider);
-      console.error(poolDetails);
       expect(poolDetails?.address.toLowerCase()).toEqual(
         '0x92e244b931bd6c71c1db2e50326480a0ba530fc7'
       );

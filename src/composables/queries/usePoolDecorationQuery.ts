@@ -4,6 +4,7 @@ import { Pool } from '@/services/pool/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { useTokens } from '@/providers/tokens.provider';
+import { cloneDeep } from 'lodash';
 
 /**
  * TYPES
@@ -39,7 +40,8 @@ export default function usePoolDecorationQuery(
    */
   const queryFn = async () => {
     if (!pool.value) return undefined;
-    const poolDecorator = new PoolDecorator([pool.value]);
+    const _pool = cloneDeep(pool.value);
+    const poolDecorator = new PoolDecorator([_pool]);
     // Decorate pool updating only the onchain attributes.
     const [decoratedPool] = await poolDecorator.decorate(tokens.value, false);
     return decoratedPool;

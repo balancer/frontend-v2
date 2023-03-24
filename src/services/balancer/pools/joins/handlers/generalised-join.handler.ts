@@ -43,6 +43,7 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     signer,
     slippageBsp,
     relayerSignature,
+    approvalActions,
   }: JoinParams): Promise<QueryOutput> {
     const evmAmountsIn: string[] = amountsIn.map(({ address, value }) => {
       const token = selectByAddress(tokensIn, address);
@@ -57,6 +58,16 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
+    const hasInvalidAmounts = amountsIn.some(item => !item.valid);
+
+    // Static call simulation is more accurate than VaultModel, but requires relayer approval,
+    // token approvals, and account to have enought token balance.
+    const simulationType: SimulationType =
+      !hasInvalidAmounts && !approvalActions.length
+        ? SimulationType.Static
+        : SimulationType.VaultModel;
+
+    console.log({ simulationType });
 
     this.lastJoinRes = await this.sdk.pools.generalisedJoin(
       poolId,
@@ -65,7 +76,7 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
       signerAddress,
       slippage,
       signer,
-      SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
+      simulationType,
       relayerSignature
     );
 

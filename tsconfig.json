@@ -20,11 +20,9 @@
     "paths": {
       "@/*": ["src/*"],
       "@tests/*": ["tests/*"],
-      // Stubbing react types
-      // https://github.com/johnsoncodehk/volar/discussions/592#discussioncomment-2163786
-      "react": ["src/types/empty-stub.d.ts"],
       // Stubbing vue-slider-component to ignore type errors from that module
-      "vue-slider-component": ["src/types/vue-slider-component-stub.d.ts"]
+      "vue-slider-component": ["./src/types/vue-slider-component-stub.d.ts"],
+      "button-options": ["./src/components/_global/BalBtn/button-options.js"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },

@@ -67,18 +67,11 @@ const {
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
-  sor,
 } = useInvestState();
 
 const pool = computed(() => props.pool);
 
-const investMath = useInvestMath(
-  pool,
-  tokenAddresses,
-  amounts,
-  useNativeAsset,
-  sor
-);
+const investMath = useInvestMath(pool, tokenAddresses, amounts, useNativeAsset);
 
 const {
   hasAmounts,

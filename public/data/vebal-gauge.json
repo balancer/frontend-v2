@@ -19,7 +19,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0xc128a9954e6c874ea3d62ce62b468ba073093f25": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+      "0xc128a9954e6c874ea3d62ce62b468ba073093f25": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
     }
   },
   {
@@ -41,7 +41,29 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x33A99Dcc4C85C014cf12626959111D5898bbCAbF": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+      "0x33A99Dcc4C85C014cf12626959111D5898bbCAbF": "https://raw.githubusercontent.com/balancer/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+    }
+  },
+  {
+    "address": "0x56124eb16441A1eF12A4CCAeAbDD3421281b795A",
+    "network": 1,
+    "addedTimestamp": 1679160753,
+    "relativeWeightCap": "null",
+    "pool": {
+      "id": "0x9232a548dd9e81bac65500b5e0d918f8ba93675c000200000000000000000423",
+      "address": "0x9232a548DD9E81BaC65500b5e0d918F8Ba93675C",
+      "poolType": "Stable",
+      "symbol": "veLIT",
+      "tokens": [
+        {
+          "address": "0xf17d23136B4FeAd139f54fB766c8795faae09660",
+          "weight": "null",
+          "symbol": "veLIT"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xf17d23136B4FeAd139f54fB766c8795faae09660": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xfd0205066521550d7d7ab19da8f72bb004b4c341.png"
     }
   }
 ]
