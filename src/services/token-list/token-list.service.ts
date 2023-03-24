@@ -6,6 +6,8 @@ import { TokenList, TokenListMap } from '@/types/TokenList';
 import tokensList from '@/lib/config/tokens-list';
 import { ipfsService } from '../ipfs/ipfs.service';
 
+import { Network } from '@balancer-labs/sdk';
+
 interface TokenListUris {
   All: string[];
   Balancer: {
@@ -45,6 +47,20 @@ export default class TokenListService {
       Approved,
       External,
     };
+  }
+
+  public static filterTokensList(
+    tokensList: TokenListMap,
+    networkId: Network
+  ): TokenListMap {
+    return Object.keys(tokensList).reduce((acc: TokenListMap, key) => {
+      const data = tokensList[key];
+      acc[key] = {
+        ...data,
+        tokens: data.tokens.filter(token => token.chainId === networkId),
+      };
+      return acc;
+    }, {});
   }
 
   /**

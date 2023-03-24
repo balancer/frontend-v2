@@ -14,8 +14,10 @@ import useNetwork from '@/composables/useNetwork';
 import localStorageKeys from '@/constants/local-storage.keys';
 import symbolKeys from '@/constants/symbol.keys';
 import { lsSet } from '@/lib/utils';
-import { tokenListService } from '@/services/token-list/token-list.service';
-import { TokenInfo, TokenList, TokenListMap } from '@/types/TokenList';
+import TokenListService, {
+  tokenListService,
+} from '@/services/token-list/token-list.service';
+import { TokenList, TokenListMap } from '@/types/TokenList';
 
 /** TYPES */
 export interface TokenListsState {
@@ -107,24 +109,16 @@ function isActiveList(uri: string): boolean {
 export const tokenListsProvider = () => {
   onBeforeMount(async () => {
     const module = await tokensListPromise;
-    const tokenLists = module.default;
+    const tokenLists = module.default as TokenListMap;
+
     if (isTestMode) {
       allTokenLists.value = tokenLists;
     }
 
     // filter token lists by network id
-    allTokenLists.value = Object.keys(tokenLists).reduce(
-      (acc: Record<string, TokenListMap>, key) => {
-        const data = tokenLists[key];
-        acc[key] = {
-          ...data,
-          tokens: data.tokens.filter(
-            (token: TokenInfo) => token.chainId === networkId.value
-          ),
-        };
-        return acc;
-      },
-      {}
+    allTokenLists.value = TokenListService.filterTokensList(
+      tokenLists,
+      networkId.value
     );
   });
 

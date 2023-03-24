@@ -17,7 +17,7 @@ export async function generateCommon() {
   const tokenlists = await tokenListService.getAll();
 
   fs.writeFileSync(
-    `./src/assets/data/tokenlists/tokens-commomn.json`,
+    `./src/assets/data/tokenlists/tokens-common.json`,
     JSON.stringify(tokenlists)
   );
 }

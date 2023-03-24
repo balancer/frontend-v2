@@ -24,6 +24,7 @@ import { mapValues } from 'lodash';
 import { configService } from '@/services/config/config.service';
 import { Multicaller } from '@/services/multicalls/multicaller';
 import { StaticJsonRpcBatchProvider } from '@/services/rpc-provider/static-json-rpc-batch-provider';
+import tokenListURIs from '@/lib/config/tokens-list';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -92,7 +93,7 @@ async function getAssetURIFromTokenlists(
   log(
     `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`
   );
-  const tokenListURIs = configService.getNetworkConfig(network).tokenlists;
+
   const allURIs = [
     ...Object.values(tokenListURIs.Balancer),
     ...tokenListURIs.External,
@@ -104,7 +105,10 @@ async function getAssetURIFromTokenlists(
   const tokenLists = await Promise.all(
     validResponses.map(response => response.json())
   );
-  const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
+  const allTokens = tokenLists
+    .map(tokenList => tokenList.tokens)
+    .flat()
+    .filter(token => token.chainId === network);
 
   log('getAssetURIFromTokenlists finding token');
   const token = allTokens.find(token =>
