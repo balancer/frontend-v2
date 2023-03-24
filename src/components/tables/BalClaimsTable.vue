@@ -11,6 +11,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   isStableLike,
+  poolMetadata,
   orderedPoolTokens,
   orderedTokenAddresses,
 } from '@/composables/usePool';
@@ -18,7 +19,6 @@ import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/composables/useClaimsData';
 
 import { Gauge } from '@/services/balancer/gauges/types';
-import { POOLS } from '@/constants/pools';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import useNetwork from '@/composables/useNetwork';
 
@@ -146,8 +146,8 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
       </template>
       <template #pillsColumnCell="{ pool }">
         <div class="flex items-center py-4 px-6">
-          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
-            {{ POOLS.Metadata[pool.id].name }}
+          <div v-if="poolMetadata(pool.id)" class="text-left">
+            {{ poolMetadata(pool.id)!.name }}
           </div>
 
           <TokenPills
