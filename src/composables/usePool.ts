@@ -119,6 +119,7 @@ export function isDeep(pool: Pool): boolean {
     '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
     '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
     '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
+    '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // ma usdc/usdt/dai (morpho boosted)
   ];
 
   return treatAsDeep.includes(pool.id);
