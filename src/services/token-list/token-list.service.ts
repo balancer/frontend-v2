@@ -3,9 +3,8 @@ import axios from 'axios';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { TokenList, TokenListMap } from '@/types/TokenList';
 
-import { configService } from '../config/config.service';
+import tokensList from '@/lib/config/tokens-list';
 import { ipfsService } from '../ipfs/ipfs.service';
-import { Network } from '@balancer-labs/sdk';
 
 interface TokenListUris {
   All: string[];
@@ -22,19 +21,16 @@ interface TokenListUris {
 
 export default class TokenListService {
   constructor(
-    private readonly appNetwork: Network = configService.network.chainId,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly ipfs = ipfsService
   ) {}
 
   /**
-   * Return all token list URIs for the app network in
+   * Return all token list URIs for the all app networks in
    * a structured object.
    */
   public get uris(): TokenListUris {
-    const { Balancer, External } = configService.getNetworkConfig(
-      this.appNetwork
-    ).tokenlists;
+    const { Balancer, External } = tokensList;
 
     const balancerLists = [Balancer.Default, Balancer.Vetted];
     const All = [...balancerLists, ...External];

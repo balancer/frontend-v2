@@ -15,7 +15,7 @@ import localStorageKeys from '@/constants/local-storage.keys';
 import symbolKeys from '@/constants/symbol.keys';
 import { lsSet } from '@/lib/utils';
 import { tokenListService } from '@/services/token-list/token-list.service';
-import { TokenList, TokenListMap } from '@/types/TokenList';
+import { TokenInfo, TokenList, TokenListMap } from '@/types/TokenList';
 
 /** TYPES */
 export interface TokenListsState {
@@ -34,12 +34,12 @@ const state: TokenListsState = reactive({
 
 const allTokenLists = ref({});
 
-const tokensListPromise =
-  import.meta.env.MODE === 'test'
-    ? // Only use this file in testing mode (vitest)
-      import('@tests/tokenlists/tokens-5.json')
-    : // Use generated file in development/production mode
-      import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`);
+const isTestMode = import.meta.env.MODE === 'test';
+const tokensListPromise = isTestMode
+  ? // Only use this file in testing mode (vitest)
+    import('@tests/tokenlists/tokens-5.json')
+  : // Use generated file in development/production mode
+    import('@/assets/data/tokenlists/tokens-common.json');
 
 /**
  * All active (toggled) tokenlists
@@ -107,7 +107,25 @@ function isActiveList(uri: string): boolean {
 export const tokenListsProvider = () => {
   onBeforeMount(async () => {
     const module = await tokensListPromise;
-    allTokenLists.value = module.default;
+    const tokenLists = module.default;
+    if (isTestMode) {
+      allTokenLists.value = tokenLists;
+    }
+
+    // filter token lists by network id
+    allTokenLists.value = Object.keys(tokenLists).reduce(
+      (acc: Record<string, TokenListMap>, key) => {
+        const data = tokenLists[key];
+        acc[key] = {
+          ...data,
+          tokens: data.tokens.filter(
+            (token: TokenInfo) => token.chainId === networkId.value
+          ),
+        };
+        return acc;
+      },
+      {}
+    );
   });
 
   return {
