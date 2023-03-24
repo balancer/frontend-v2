@@ -11,7 +11,6 @@ import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
-import { POOLS } from '@/constants/voting-gauge-pools';
 import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
