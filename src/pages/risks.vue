@@ -30,7 +30,7 @@
             </li>
             <li class="text-sm toc-link">
               <router-link to="risks#economic-risk"
-                >Mechamism / economic risk</router-link
+                >Mechanism / economic risk</router-link
               >
             </li>
             <li class="text-sm toc-link">
