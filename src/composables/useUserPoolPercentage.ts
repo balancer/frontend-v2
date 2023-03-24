@@ -5,7 +5,7 @@ import useNumbers from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useLock } from './useLock';
-import { isVeBalPool } from './usePool';
+import { isVeBalPool } from './usePoolHelpers';
 
 export function useUserPoolPercentage(pool: Ref<Pool>) {
   const { balanceFor } = useTokens();

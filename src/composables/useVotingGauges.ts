@@ -9,7 +9,7 @@ import {
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
 import { isGoerli } from './useNetwork';
-import { orderedPoolTokens } from '@/composables/usePool';
+import { orderedPoolTokens } from '@/composables/usePoolHelpers';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { Pool, PoolToken } from '@/services/pool/types';
 import { cloneDeep } from 'lodash';

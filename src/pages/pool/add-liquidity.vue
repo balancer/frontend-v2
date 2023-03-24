@@ -1,32 +1,21 @@
 <script setup lang="ts">
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import InvestPage from '@/components/contextual/pages/pool/invest/InvestPage.vue';
+import Page from '@/components/contextual/pages/pool/add-liquidity/Page.vue';
 import { useIntervalFn } from '@vueuse/core';
 import { oneSecondInMs } from '@/composables/useTime';
-import { providePoolStaking } from '@/providers/local/pool-staking.provider';
-import { useRoute } from 'vue-router';
-import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { usePool } from '@/composables/usePool';
-
-/**
- * STATE
- */
-const route = useRoute();
-const poolId = (route.params.id as string).toLowerCase();
-
-/**
- * PROVIDERS
- */
-providePoolStaking(poolId);
-usePoolTransfersGuard();
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
+import { useJoinExitGuard } from '@/composables/contextual/pool-transfers/useJoinExitGuard';
+import { usePool } from '@/providers/local/pool.provider';
+import Col2Layout from '@/components/layouts/Col2Layout.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
  * COMPOSABLES
  */
-const { pool, poolDecorationQuery, loadingPool, transfersAllowed } =
-  usePoolTransfers();
-const { isDeepPool } = usePool(pool);
+const { pool, isLoadingPool, refetchOnchainPoolData } = usePool();
+const { transfersAllowed } = useJoinExitGuard(pool);
+const { isDeepPool } = usePoolHelpers(pool);
+const { isMobile } = useBreakpoints();
 
 /**
  * COMPUTED
@@ -38,18 +27,25 @@ const isLoadingSor = computed(
 
 const isLoading = computed(
   (): boolean =>
-    loadingPool.value && !transfersAllowed.value && isLoadingSor.value
+    isLoadingPool.value && !transfersAllowed.value && isLoadingSor.value
 );
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent
 // overfetching a request on short blocktime networks like Polygon.
-useIntervalFn(poolDecorationQuery.refetch, oneSecondInMs * 20);
+useIntervalFn(refetchOnchainPoolData, oneSecondInMs * 20);
 </script>
 
 <template>
-  <div class="px-4 lg:px-0 mx-auto max-w-3xl">
-    <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
-    <InvestPage v-else :pool="pool" />
+  <div>
+    <Col2Layout v-if="isLoading || !pool" leftSpan="5" rightSpan="7">
+      <template v-if="!isMobile" #left>
+        <BalLoadingBlock class="h-24" />
+      </template>
+      <template #right>
+        <BalLoadingBlock class="h-96" />
+      </template>
+    </Col2Layout>
+    <Page v-else :pool="pool" />
   </div>
 </template>
 

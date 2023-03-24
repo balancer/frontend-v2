@@ -24,17 +24,12 @@ export class RawConcern extends TransactionConcern {
     console.log('sendTransaction', options);
 
     try {
-      console.log({
-        signer: this.signer,
-        options,
-        forceLegacyTxType,
-      });
       const gasSettings = await this.gasPrice.settings(
         this.signer,
         options,
         forceLegacyTxType
       );
-      console.log('gas', gasSettings);
+
       const txOptions = { ...options, ...gasSettings };
 
       await Promise.all([

@@ -40,7 +40,7 @@ export default defineComponent({
     /**
      * STATE
      */
-    const layout = ref('DefaultLayout');
+    const layout = ref('BlankLayout');
     /**
      * COMPOSABLES
      */

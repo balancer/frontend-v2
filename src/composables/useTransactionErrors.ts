@@ -34,6 +34,7 @@ export default function useTranasactionErrors() {
   }
 
   function isUserRejected(error): boolean {
+    console.log('cause', error.cause);
     return (
       (error?.code && error.code === 4001) ||
       (error?.message && error.message.includes('user rejected transaction')) ||

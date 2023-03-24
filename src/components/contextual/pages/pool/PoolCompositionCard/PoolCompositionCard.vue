@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
-import { removeBptFrom } from '@/composables/usePool';
+import { removeBptFrom } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 import { computed, nextTick, onMounted, ref, toRefs } from 'vue';
 
-import { isWeightedLike } from '@/composables/usePool';
+import { isWeightedLike } from '@/composables/usePoolHelpers';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import { useI18n } from 'vue-i18n';
 import TokenBreakdown from './components/TokenBreakdown.vue';

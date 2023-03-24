@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
-import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
+import { onMounted, watch } from 'vue';
 import SwapSettingsPopover, {
   SwapSettingsContext,
 } from '@/components/popovers/SwapSettingsPopover.vue';
-import { usePool } from '@/composables/usePool';
 import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
+import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import useInvestPageTabs, {
   Tab,
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
 import { Pool } from '@balancer-labs/sdk';
-import { getSupportsJoinPoolProvider } from '@/providers/local/join-pool.provider';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 
+/**
+ * TYPES
+ */
 type Props = {
   pool: Pool;
 };
@@ -23,35 +25,27 @@ type Props = {
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
-
-/**
- * COMPUTED
- */
-const pool = computed(() => props.pool);
+const pool = toRef(props, 'pool');
 
 /**
  * COMPOSABLES
  */
 const { network } = configService;
 const { activeTab, resetTabs } = useInvestPageTabs();
-const { isDeepPool, isPreMintedBptPool } = usePool(pool);
-
 const { setIsSingleAssetJoin } = useJoinPool();
+const { isDeepPool, isPreMintedBptPool } = usePoolHelpers(pool);
 
+/**
+ * LIFCYCLE
+ */
+onMounted(() => resetTabs());
+
+/**
+ * WATCHERS
+ */
 watch(activeTab, value => {
   setIsSingleAssetJoin(value === Tab.SingleToken);
 });
-
-const supportsJoinPoolProvider = computed(() =>
-  getSupportsJoinPoolProvider(pool.value)
-);
-const supportsSwapJoins = computed(
-  () => isDeepPool.value && isPreMintedBptPool.value
-);
-/**
- * CALLBACKS
- */
-onMounted(() => resetTabs());
 </script>
 
 <template>
@@ -66,7 +60,7 @@ onMounted(() => resetTabs());
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
         <BalTabs
-          v-if="supportsSwapJoins"
+          v-if="isDeepPool && isPreMintedBptPool"
           v-model="activeTab"
           :tabs="tabs"
           class="p-0 m-0 -mb-px whitespace-nowrap"
@@ -74,12 +68,9 @@ onMounted(() => resetTabs());
         />
       </div>
     </template>
-    <template v-if="supportsJoinPoolProvider">
-      <InvestFormV2 :pool="pool" />
-    </template>
-    <template v-else>
-      <InvestForm :pool="pool" />
-    </template>
+    <InvestFormV2 v-if="true" :pool="pool" />
+    <!-- Temp support in case we need to re-enable old flow -->
+    <InvestForm v-else :pool="pool" />
   </BalCard>
 </template>
 

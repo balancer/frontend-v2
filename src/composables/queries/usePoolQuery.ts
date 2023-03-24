@@ -10,7 +10,11 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { isBlocked, tokensListExclBpt, tokenTreeLeafs } from '../usePool';
+import {
+  isBlocked,
+  tokensListExclBpt,
+  tokenTreeLeafs,
+} from '../usePoolHelpers';
 
 import PoolRepository from '@/services/pool/pool.repository';
 import { configService } from '@/services/config/config.service';

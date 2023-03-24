@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useNetwork from '@/composables/useNetwork';
-import { deprecatedDetails } from '@/composables/usePool';
+import { deprecatedDetails } from '@/composables/usePoolHelpers';
 import NewPoolData from './NewPoolData.vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';

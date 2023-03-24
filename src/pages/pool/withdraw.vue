@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { oneSecondInMs } from '@/composables/useTime';
 import { useIntervalFn } from '@vueuse/core';
 import { computed } from 'vue';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import WithdrawPage from '@/components/contextual/pages/pool/withdraw/WithdrawPage.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
+import { useJoinExitGuard } from '@/composables/contextual/pool-transfers/useJoinExitGuard';
+import { usePool } from '@/providers/local/pool.provider';
 
 /**
  * COMPOSABLES
  */
-const { pool, poolDecorationQuery, loadingPool, transfersAllowed } =
-  usePoolTransfers();
-const { isDeepPool } = usePool(pool);
+const { pool, isLoadingPool, refetchOnchainPoolData } = usePool();
+const { isDeepPool } = usePoolHelpers(pool);
 const { balanceQueryLoading } = useTokens();
-usePoolTransfersGuard();
+const { transfersAllowed } = useJoinExitGuard(pool);
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent
 // overfetching a request on short blocktime networks like Polygon.
-useIntervalFn(poolDecorationQuery.refetch, oneSecondInMs * 20);
+useIntervalFn(refetchOnchainPoolData, oneSecondInMs * 20);
 
 /**
  * COMPUTED
@@ -32,7 +31,7 @@ const isLoadingSor = computed(
 
 const isLoading = computed(
   (): boolean =>
-    loadingPool.value ||
+    isLoadingPool.value ||
     !transfersAllowed.value ||
     isLoadingSor.value ||
     balanceQueryLoading.value

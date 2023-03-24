@@ -12,7 +12,7 @@ import {
 import { getBalancer } from '@/dependencies/balancer-sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, isSameAddress } from '@/lib/utils';
-import { flatTokenTree } from '@/composables/usePool';
+import { flatTokenTree } from '@/composables/usePoolHelpers';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 

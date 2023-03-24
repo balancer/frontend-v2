@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
 
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import {
+  tokensListExclBpt,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -34,7 +37,7 @@ const selectedOption = ref(props.initToken);
  */
 const { getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
-const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
+const { isWethPool, isDeepPool } = usePoolHelpers(toRef(props, 'pool'));
 
 /**
  * COMPUTED

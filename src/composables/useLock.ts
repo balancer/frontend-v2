@@ -5,7 +5,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { useUserData } from '@/providers/user-data.provider';
 import usePoolQuery from './queries/usePoolQuery';
 import { isL2 } from './useNetwork';
-import { fiatValueOf } from './usePool';
+import { fiatValueOf } from './usePoolHelpers';
 import useVeBal from './useVeBAL';
 
 interface Options {

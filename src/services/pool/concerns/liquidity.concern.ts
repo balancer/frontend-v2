@@ -1,7 +1,11 @@
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 
-import { isStableLike, isWeightedLike, isDeep } from '@/composables/usePool';
+import {
+  isStableLike,
+  isWeightedLike,
+  isDeep,
+} from '@/composables/usePoolHelpers';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isMigratablePool } from '@/composables/usePool';
+import { isMigratablePool } from '@/composables/usePoolHelpers';
 import { PoolWarning, usePoolWarning } from '@/composables/usePoolWarning';
 import { Pool } from '@/services/pool/types';
 import { computed } from 'vue';

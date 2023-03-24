@@ -7,7 +7,7 @@ import { bnum } from '@/lib/utils';
 
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
-import { tokensListExclBpt } from '@/composables/usePool';
+import { tokensListExclBpt } from '@/composables/usePoolHelpers';
 
 export default class Weighted {
   calc: Calculator;

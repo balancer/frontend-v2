@@ -5,7 +5,7 @@ import {
   networkFromSlug,
   networkSlug,
 } from '@/composables/useNetwork';
-import { isJoinsDisabled } from '@/composables/usePool';
+import { isJoinsDisabled } from '@/composables/usePoolHelpers';
 import config from '@/lib/config';
 import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';

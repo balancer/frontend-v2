@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import {
+  tokensListExclBpt,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 // Composables
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
@@ -30,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { tokens, balances, balanceFor } = useTokens();
 const { fNum, toFiat } = useNumbers();
-const { isDeepPool } = usePool(toRef(props, 'pool'));
+const { isDeepPool } = usePoolHelpers(toRef(props, 'pool'));
 const { stakedShares } = usePoolStaking();
 
 /**

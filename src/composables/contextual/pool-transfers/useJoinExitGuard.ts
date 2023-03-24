@@ -1,12 +1,3 @@
-import { onBeforeMount, watch } from 'vue';
-import { useRouter } from 'vue-router';
-
-import { usePool } from '@/composables/usePool';
-import { Pool } from '@/services/pool/types';
-
-import usePoolTransfers from './usePoolTransfers';
-import useNetwork from '@/composables/useNetwork';
-
 /**
  * This should only be used once at the highest level of the add-liquidity/withdraw flow
  * which is the PoolTransfersLayout.
@@ -17,13 +8,23 @@ import useNetwork from '@/composables/useNetwork';
  * When the pool has a value, i.e. it's loaded, it then checks if transfers are allowed
  * and redirects if not.
  */
-export default function usePoolTransfersGuard() {
+import { onBeforeMount, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
+import { Pool } from '@/services/pool/types';
+import useNetwork from '@/composables/useNetwork';
+
+/**
+ * STATE
+ */
+const transfersAllowed = ref(true);
+
+export function useJoinExitGuard(pool: Ref<Pool | undefined>) {
   /**
    * COMPOSABLES
    */
   const router = useRouter();
-  const { pool, transfersAllowed } = usePoolTransfers();
-  const { noInitLiquidity } = usePool(pool);
+  const { noInitLiquidity } = usePoolHelpers(pool);
   const { networkSlug } = useNetwork();
 
   /**
@@ -55,4 +56,6 @@ export default function usePoolTransfersGuard() {
       transfersAllowed.value = true;
     }
   });
+
+  return { transfersAllowed };
 }

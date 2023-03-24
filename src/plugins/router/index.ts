@@ -114,7 +114,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/create/:tx?',
     name: 'create-pool',
     component: CreatePoolPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/pool/:id',
@@ -125,7 +125,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/add-liquidity',
     name: 'add-liquidity',
     component: PoolAddLiquidityPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'JoinExitLayout' },
   },
   {
     path: '/:networkSlug/pool/:id/invest',
@@ -138,13 +138,13 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/withdraw',
     name: 'withdraw',
     component: PoolWithdrawPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'JoinExitLayout' },
   },
   {
     path: '/:networkSlug/pool/migrate/:from/:to',
     name: 'migrate-pool',
     component: MigratePoolPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/vebal',
@@ -155,13 +155,13 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/get-vebal',
     name: 'get-vebal',
     component: GetVeBalPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/unlock',
     name: 'unlock',
     component: UnlockVeBalPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/claim',

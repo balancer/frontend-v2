@@ -15,7 +15,7 @@ import {
 import { GeneralisedJoinHandler } from './handlers/generalised-join.handler';
 
 import { BalancerSDK } from '@balancer-labs/sdk';
-import { ExactInJoinHandler } from './handlers/exact-in-join-handler';
+import { ExactInJoinHandler } from './handlers/exact-in-join.handler';
 
 export enum JoinHandler {
   Swap = 'Swap',

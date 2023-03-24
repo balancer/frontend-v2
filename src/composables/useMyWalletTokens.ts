@@ -4,7 +4,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress, includesAddress, removeAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
-import { tokenTreeNodes, usePool } from '@/composables/usePool';
+import { tokenTreeNodes, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { Pool } from '@balancer-labs/sdk';
 
 type Props = {
@@ -28,7 +28,7 @@ export default function useMyWalletTokens({
 
   const poolRef = computed(() => pool);
 
-  const { isWethPool, isDeepPool } = usePool(poolRef);
+  const { isWethPool, isDeepPool } = usePoolHelpers(poolRef);
 
   function isExcludedToken(tokenAddress: Address) {
     return excludedTokens.some(excludedAddress =>

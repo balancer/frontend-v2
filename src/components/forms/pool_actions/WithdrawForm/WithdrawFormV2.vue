@@ -9,7 +9,10 @@ import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import { isPreMintedBptType, usePool } from '@/composables/usePool';
+import {
+  isPreMintedBptType,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useI18n } from 'vue-i18n';
 
 /**
@@ -41,7 +44,7 @@ const {
   validAmounts,
 } = useExitPool();
 
-const { isWethPool } = usePool(pool);
+const { isWethPool } = usePoolHelpers(pool);
 /**
  * COMPUTED
  */

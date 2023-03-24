@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
+import { isVeBalPool, totalAprLabel } from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';

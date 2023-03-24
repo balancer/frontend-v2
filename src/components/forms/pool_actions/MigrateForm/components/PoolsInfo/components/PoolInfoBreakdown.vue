@@ -5,7 +5,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 import { POOL_MIGRATIONS_MAP } from '../../../constants';
-import { tokensListExclBpt } from '@/composables/usePool';
+import { tokensListExclBpt } from '@/composables/usePoolHelpers';
 
 type Props = {
   pool: Pool;

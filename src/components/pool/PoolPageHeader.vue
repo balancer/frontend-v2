@@ -8,7 +8,7 @@ import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
@@ -45,7 +45,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  * COMPOSABLES
  */
 const { isAffected, warnings } = usePoolWarning(poolId);
-const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
+const { hasNonApprovedRateProviders } = usePoolHelpers(toRef(props, 'pool'));
 const { fNum } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();

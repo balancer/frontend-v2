@@ -7,12 +7,8 @@ import {
   fiatValueOf,
   isComposableStableLike,
   isDeep,
-  isMetaStable,
-  isStable,
-  isWeighted,
-  isWeightedLike,
   tokenTreeNodes,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { useTxState } from '@/composables/useTxState';
 import {
   HIGH_PRICE_IMPACT,
@@ -62,16 +58,6 @@ export type AmountIn = {
   value: string;
   valid: boolean;
 };
-
-export function getSupportsJoinPoolProvider(pool: Pool | undefined): boolean {
-  if (!pool) return false;
-  return (
-    isWeightedLike(pool.poolType) ||
-    isDeep(pool) ||
-    isMetaStable(pool.poolType) ||
-    isStable(pool.poolType)
-  );
-}
 
 /**
  *
@@ -369,10 +355,7 @@ export const joinPoolProvider = (
 
       joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
-      console.log({
-        amountsIn: amountsInWithValue.value,
-        tokensIn: tokensIn.value,
-      });
+
       const joinRes = await joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
@@ -383,12 +366,12 @@ export const joinPoolProvider = (
         approvalActions: approvalActions.value,
         transactionDeadline: transactionDeadline.value,
       });
-      console.log('joinres', joinRes);
+
       return joinRes;
     } catch (error) {
       console.log(error);
       txError.value = (error as Error).message;
-      throw new Error('Failed to submit join transaction.', { cause: error });
+      throw error;
     }
   }
 
@@ -492,15 +475,7 @@ export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
   Symbol(symbolKeys.Providers.JoinPool);
 
 export function provideJoinPool(pool: Ref<Pool>) {
-  const { poolType } = pool.value;
-
-  const joinPoolResponse =
-    isDeep(pool.value) ||
-    isWeighted(poolType) ||
-    isStable(poolType) ||
-    isMetaStable(poolType)
-      ? joinPoolProvider(pool)
-      : {};
+  const joinPoolResponse = joinPoolProvider(pool);
   provide(JoinPoolProviderSymbol, joinPoolResponse);
   return joinPoolResponse;
 }

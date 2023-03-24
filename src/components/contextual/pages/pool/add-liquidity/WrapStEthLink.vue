@@ -2,7 +2,7 @@
 import { computed, toRef } from 'vue';
 
 import useConfig from '@/composables/useConfig';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
@@ -22,7 +22,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { isMainnetWstETHPool } = usePool(toRef(props, 'pool'));
+const { isMainnetWstETHPool } = usePoolHelpers(toRef(props, 'pool'));
 const { networkConfig } = useConfig();
 const { getToken } = useTokens();
 const { networkSlug } = useNetwork();

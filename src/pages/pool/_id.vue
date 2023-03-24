@@ -22,11 +22,11 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
-  usePool,
+  usePoolHelpers,
   tokensListExclBpt,
   tokenTreeLeafs,
   orderedPoolTokens,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
@@ -72,7 +72,7 @@ const {
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
   isDeprecatedPool,
-} = usePool(poolQuery.data);
+} = usePoolHelpers(poolQuery.data);
 //#endregion
 
 //#region pool snapshot query

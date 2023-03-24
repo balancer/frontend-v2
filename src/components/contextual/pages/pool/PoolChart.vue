@@ -13,7 +13,7 @@ import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
-import { isFx } from '@/composables/usePool';
+import { isFx } from '@/composables/usePoolHelpers';
 import FxPoolWarning from './FxPoolWarning.vue';
 
 /**

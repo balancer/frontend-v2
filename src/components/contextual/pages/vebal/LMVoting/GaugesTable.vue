@@ -16,7 +16,7 @@ import {
   isUnknownType,
   poolMetadata,
   poolURLFor,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { isSameAddress } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';

@@ -7,7 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { useTokens } from '@/providers/tokens.provider';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import { Pool } from '@/services/pool/types';
-import { isWeth } from '@/composables/usePool';
+import { isWeth } from '@/composables/usePoolHelpers';
 
 type Props = {
   pool: Pool;

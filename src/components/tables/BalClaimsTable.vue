@@ -14,7 +14,7 @@ import {
   poolMetadata,
   orderedPoolTokens,
   orderedTokenAddresses,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/composables/useClaimsData';
 

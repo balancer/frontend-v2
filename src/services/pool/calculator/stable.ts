@@ -8,7 +8,7 @@ import { bnum, selectByAddress, isSameAddress } from '@/lib/utils';
 
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
-import { tokensListExclBpt } from '@/composables/usePool';
+import { tokensListExclBpt } from '@/composables/usePoolHelpers';
 
 /**
  * The stableMathEvm works with all values scaled to 18 decimals,

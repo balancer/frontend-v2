@@ -11,8 +11,8 @@ import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
-import { tokensListExclBpt } from '../usePool';
-import { tokenTreeLeafs } from '../usePool';
+import { tokensListExclBpt } from '../usePoolHelpers';
+import { tokenTreeLeafs } from '../usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import useGaugesQuery from './useGaugesQuery';
 

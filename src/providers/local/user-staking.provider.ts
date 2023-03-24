@@ -3,7 +3,7 @@
  */
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
-import { fiatValueOf } from '@/composables/usePool';
+import { fiatValueOf } from '@/composables/usePoolHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
 import { computed, InjectionKey, provide, reactive, ref } from 'vue';

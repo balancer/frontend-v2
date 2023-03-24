@@ -6,7 +6,7 @@ import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useDebouncedRef from '@/composables/useDebouncedRed';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { poolURLFor } from '@/composables/usePool';
+import { poolURLFor } from '@/composables/usePoolHelpers';
 import useVotingGauges from '@/composables/useVotingGauges';
 import { bnum, isSameAddress, scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';

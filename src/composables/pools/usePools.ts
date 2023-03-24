@@ -5,7 +5,7 @@ import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
-import { tokenTreeLeafs } from '../usePool';
+import { tokenTreeLeafs } from '../usePoolHelpers';
 
 export default function usePools(
   filterTokens: Ref<string[]> = ref([]),
