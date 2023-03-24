@@ -777,9 +777,9 @@ export const GNOSIS_POOLS: Pool[] = [
 
 export const POOLS = [
   ...MAINNET_POOLS,
+  ...ARBITRUM_POOLS,
+  ...POLYGON_POOLS,
   ...GOERLI_POOLS,
   ...OPTIMISM_POOLS,
   ...GNOSIS_POOLS,
-  ...POLYGON_POOLS,
-  ...ARBITRUM_POOLS,
 ];
