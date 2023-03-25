@@ -241,6 +241,7 @@ const POOLS_MAINNET: Pools = {
       '0xdb3b48f27332c171869f2ae4160bc93a8eed347c00000000000000000000049b', // baoUSD USDC
       '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
       '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // morpho usd
+      '0x79c58f70905f734641735bc61e45c19dd9ad60bc0000000000000000000004e7', // stable3
     ],
   },
   Investment: {
@@ -570,6 +571,7 @@ const POOLS_POLYGON: Pools = {
       '0x02559a4fa0f3dae55820a65eb48b7a2fcd82f361000000000000000000000af8', // 2EUR (EURs)
       '0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a', // ankMatic/Matic
       '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
+      '0x511a0fb938bb4aee2a3a9d74f68e37bac8318fbf000000000000000000000b18', // rmatic/wmatic
     ],
   },
   Investment: {
