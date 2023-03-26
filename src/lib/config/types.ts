@@ -86,6 +86,7 @@ export interface Config {
     gauge: string;
     blocks: string;
   };
+  bridgeUrl: string;
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
   blockTime: number;

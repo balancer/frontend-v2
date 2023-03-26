@@ -34,6 +34,7 @@ const config: Config = {
     blocks:
       'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
   },
+  bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,
   supportsElementPools: false,
   blockTime: 2,

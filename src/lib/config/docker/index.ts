@@ -23,6 +23,7 @@ const config: Config = {
     gauge: '',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: false,
   blockTime: 12,
   nativeAsset: {
