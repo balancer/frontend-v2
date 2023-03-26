@@ -46,6 +46,7 @@ const { isWalletReady } = useWeb3();
 const {
   gauges,
   gaugePools,
+  networkHasProtocolRewards,
   protocolRewards,
   isLoading: isClaimsLoading,
 } = useClaimsData();
@@ -263,6 +264,8 @@ onBeforeMount(async () => {
               :isLoading="loading"
             />
           </div>
+        </template>
+        <template v-if="networkHasProtocolRewards">
           <div class="mb-16">
             <h3 class="inline-block xl:px-0 pl-4 mt-8 mr-1.5 mb-3 text-xl">
               {{ $t('protocolIncentives') }}
