@@ -21,7 +21,7 @@ export function useLock({ enabled = true }: Options = {}) {
    * QUERIES
    */
   const shouldFetchLockPool = computed(
-    (): boolean => !isVeBalSupported.value && enabled
+    (): boolean => isVeBalSupported.value && enabled
   );
   const lockPoolQuery = usePoolQuery(
     lockablePoolId.value as string,
