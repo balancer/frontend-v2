@@ -33,6 +33,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
     blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
   },
+  bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,
   supportsElementPools: false,
   blockTime: 4,

@@ -34,6 +34,7 @@ const config: Config = {
     blocks:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
   },
+  bridgeUrl: '',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 12,
