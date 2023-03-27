@@ -17,6 +17,7 @@ const config: Record<Network | number, Config> = {
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,
   [Network.GNOSIS]: gnosisChain,
+  // @ts-ignore
   12345: test,
   // @ts-ignore
   17: docker,

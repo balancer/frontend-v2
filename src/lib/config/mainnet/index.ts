@@ -2,6 +2,9 @@ import { Config } from '../types';
 import contracts from './contracts';
 import keys from './keys';
 import pools from './pools';
+import tokenlists from './tokenlists';
+import tokens from './tokens';
+import rateProviders from './rateProviders';
 
 const config: Config = {
   key: '1',
@@ -31,6 +34,7 @@ const config: Config = {
     blocks:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
   },
+  bridgeUrl: '',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 12,
@@ -47,11 +51,14 @@ const config: Config = {
     ...contracts,
   },
   pools,
+  tokens,
   keys,
   gauges: {
     type: 2,
     weight: 100,
   },
+  tokenlists,
+  rateProviders,
 };
 
 export default config;

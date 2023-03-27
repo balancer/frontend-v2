@@ -7,11 +7,11 @@ const { t } = useI18n();
 
 const featuredProtocols = [
   {
-    title: 'Element Finance',
-    description: t('featuredProtocols.Element.description'),
-    linkText: t('featuredProtocols.Element.linkText'),
-    imgSrc: '/images/banners/element.jpg',
-    link: EXTERNAL_LINKS.Element.Home,
+    title: 'Xave',
+    description: t('featuredProtocols.Xave.description'),
+    linkText: t('featuredProtocols.Xave.linkText'),
+    imgSrc: '/images/banners/xave.jpg',
+    link: EXTERNAL_LINKS.Xave.Home,
   },
   {
     title: 'Fjord Foundry',
@@ -21,18 +21,19 @@ const featuredProtocols = [
     link: EXTERNAL_LINKS.Copper.Home,
   },
   {
-    title: 'Mycelium',
-    description: t('featuredProtocols.Tracer.description'),
-    linkText: t('featuredProtocols.Tracer.linkText'),
-    imgSrc: '/images/banners/mycelium.jpg',
-    link: EXTERNAL_LINKS.Tracer.Home,
+    title: 'Gyroscope',
+    description: t('featuredProtocols.Gyroscope.description'),
+    linkText: t('featuredProtocols.Gyroscope.linkText'),
+    imgSrc: '/images/banners/gyroscope.jpg',
+    link: EXTERNAL_LINKS.Gyroscope.Home,
   },
+
   {
-    title: 'Sense Finance',
-    description: t('featuredProtocols.Sense.description'),
-    linkText: t('featuredProtocols.Sense.linkText'),
-    imgSrc: '/images/banners/sense.png',
-    link: EXTERNAL_LINKS.Sense.Home,
+    title: 'Beethoven X',
+    description: t('featuredProtocols.Beets.description'),
+    linkText: t('featuredProtocols.Beets.linkText'),
+    imgSrc: '/images/banners/beets.jpg',
+    link: EXTERNAL_LINKS.Beets.Home,
   },
 ];
 </script>
@@ -61,12 +62,12 @@ const featuredProtocols = [
           hFull
           growContent
         >
-          <p>
+          <p class="text-sm leading-5">
             {{ description }}
           </p>
           <template #footer>
             <BalLink :href="link" external>
-              <span>{{ linkText }}</span>
+              <span class="text-sm font-medium">{{ linkText }}</span>
               <BalIcon
                 name="arrow-up-right"
                 size="sm"
@@ -87,5 +88,9 @@ const featuredProtocols = [
 
 .featured-protocols :deep(.feature) {
   height: 8rem;
+}
+
+.featured-protocols :deep(.content) {
+  @apply pt-1;
 }
 </style>

@@ -6,6 +6,7 @@ import { Pool } from '@/services/pool/types';
 import { anEmptyPool, BoostedPoolMock } from '@/__mocks__/pool';
 import { aPoolToken, aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposable } from '@tests/mount-helpers';
+import { wethAddress } from '@tests/unit/builders/address';
 import { zeroAddress } from 'ethereumjs-util';
 import { ref } from 'vue';
 import { useTokenBreakdown } from './useTokenBreakdown';
@@ -156,7 +157,6 @@ test('recalculates data when pool changes', async () => {
   pool.tokens[1].balance = '50000';
 
   const rootPool = ref(pool);
-  const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
   const { result } = mountComposable(() => useTokenBreakdown(rootPool), {
     extraProvidersCb: () => provideUserData(),

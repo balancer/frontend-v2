@@ -3,7 +3,6 @@ import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 import {
@@ -120,7 +119,9 @@ export function isDeep(pool: Pool): boolean {
     '0x3f7a7fd7f214be45ec26820fd01ac3be4fc75aa70002000000000000000004c5', // stg/bbeusd
     '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
     '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
-    '0x10b040038f87219d9b42e025e3bd9b8095c87dd9000000000000000000000b11', // bb-t-MATIC (tetu managed boosted pool)
+    '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
+    '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // ma usdc/usdt/dai (morpho boosted)
+    '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
   ];
 
   return treatAsDeep.includes(pool.id);
@@ -687,8 +688,10 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
       isWeighted(pool.value.poolType) &&
       !pool.value?.priceRateProviders?.every(
         provider =>
-          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
-          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
+          configService.network.rateProviders['*'][provider.address] ||
+          configService.network.rateProviders[provider.token?.address]?.[
+            provider.address
+          ]
       )
   );
 

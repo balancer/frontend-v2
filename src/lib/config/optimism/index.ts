@@ -1,5 +1,7 @@
 import { Config } from '../types';
 import contracts from './contracts';
+import tokenlists from './tokenlists';
+import tokens from './tokens';
 
 const config: Config = {
   key: '10',
@@ -27,6 +29,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: false,
   supportsElementPools: false,
   nativeAsset: {
@@ -77,6 +80,9 @@ const config: Config = {
     DisabledJoins: [],
     BrandedRedirect: {},
   },
+  tokenlists,
+  tokens,
+  rateProviders: {},
 };
 
 export default config;

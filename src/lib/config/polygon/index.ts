@@ -1,7 +1,10 @@
+import { Config } from '../types';
 import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
-import { Config } from '../types';
+import tokenlists from './tokenlists';
+import tokens from './tokens';
+import rateProviders from './rateProviders';
 
 const config: Config = {
   key: '137',
@@ -13,7 +16,7 @@ const config: Config = {
   network: 'polygon',
   unknown: false,
   rpc: `https://polygon-mainnet.infura.io/v3/${keys.infura}`,
-  ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.infura}`,
+  ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://polygon-rpc.com',
   explorer: 'https://polygonscan.com',
   explorerName: 'Polygonscan',
@@ -30,6 +33,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
     blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
   },
+  bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,
   supportsElementPools: false,
   blockTime: 4,
@@ -46,11 +50,14 @@ const config: Config = {
     ...contracts,
   },
   pools,
+  tokens,
   keys,
   gauges: {
     type: 4,
     weight: 0,
   },
+  tokenlists,
+  rateProviders,
 };
 
 export default config;

@@ -1,10 +1,13 @@
+import { POOLS } from '@/constants/pools';
 import { OnchainTokenData, Pool, PoolType } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
+import {
+  AprBreakdown,
+  PoolWithMethods,
+  PriceRateProvider,
+} from '@balancer-labs/sdk';
 import { mock } from 'vitest-mock-extended';
-import { POOLS } from '@/constants/pools';
-import { AmountIn } from '@/providers/local/join-pool.provider';
-import { wethAddress } from './address';
-import { AprBreakdown, PriceRateProvider } from '@balancer-labs/sdk';
+import { randomAddress, wethAddress } from './address';
 
 export function aPool(...options: Partial<Pool>[]): Pool {
   const pool = mock<Pool>();
@@ -19,14 +22,13 @@ export function aVeBalPool(...options: Partial<Pool>[]): Pool {
   return Object.assign(pool, defaults, ...options);
 }
 
-// TODO: move builder to a proper file dealing with join/exit builders (that's being done in a parallel PR)
-export function anAmountIn(...options: Partial<AmountIn>[]): AmountIn {
-  const defaultAmountIn: AmountIn = {
-    address: wethAddress,
-    value: '10',
-    valid: true,
-  };
-  return Object.assign(defaultAmountIn, ...options);
+export function aPoolWithMethods(
+  ...options: Partial<PoolWithMethods>[]
+): PoolWithMethods {
+  const pool = mock<PoolWithMethods>();
+  pool.address = randomAddress();
+  pool.tokensList = [wethAddress];
+  return Object.assign(pool, ...options);
 }
 
 export function aStablePool(...options: Partial<Pool>[]): Pool {

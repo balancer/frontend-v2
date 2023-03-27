@@ -110,11 +110,11 @@ onMounted(async () => {
       </div>
     </template>
 
-    <div class="grid gap-y-4 py-4">
+    <div class="grid">
       <div
         v-for="token in rootPool.tokens"
         :key="token.address"
-        class="grid gap-y-4"
+        class="grid nested-group"
       >
         <TokenBreakdown
           :token="token"
@@ -126,3 +126,12 @@ onMounted(async () => {
     </div>
   </BalCard>
 </template>
+<style scoped>
+:deep(.card-container) {
+  min-width: 600px;
+}
+
+.nested-group:has(.level-2) {
+  @apply dark:border-gray-900 border-t first:border-0;
+}
+</style>

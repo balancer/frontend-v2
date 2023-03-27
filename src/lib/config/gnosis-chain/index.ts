@@ -1,6 +1,9 @@
 import { Config } from '../types';
 import contracts from './contracts';
 import pools from './pools';
+import tokenlists from './tokenlists';
+import tokens from './tokens';
+import rateProviders from './rateProviders';
 
 const config: Config = {
   key: '100',
@@ -29,6 +32,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-b',
     blocks: '',
   },
+  bridgeUrl: 'https://bridge.gnosischain.com/',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 5,
@@ -45,6 +49,7 @@ const config: Config = {
     ...contracts,
   },
   pools,
+  tokens,
   keys: {
     infura: 'daaa68ec242643719749dd1caba2fc66',
     alchemy: 'oGLgncMVHNWltnK0nTfiryxQ6gYemKQO',
@@ -53,6 +58,8 @@ const config: Config = {
     type: 2,
     weight: 100,
   },
+  tokenlists,
+  rateProviders,
 };
 
 export default config;

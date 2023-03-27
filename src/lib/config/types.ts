@@ -1,5 +1,23 @@
 import { Network } from '@balancer-labs/sdk';
 import { Pools } from '@/types/pools';
+import { TokenListURLMap } from '@/types/TokenList';
+
+export type CommonTokens = {
+  nativeAsset: string;
+  wNativeAsset: string;
+  WETH: string;
+  BAL: string;
+  bbaUSD?: string;
+  bbaUSDv2?: string;
+};
+
+export type TokenConstants = {
+  Popular: {
+    Symbols: string[];
+  };
+  Addresses: CommonTokens;
+  PriceChainMap?: Record<string, string>;
+};
 
 export interface Contracts {
   merkleRedeem: string;
@@ -32,6 +50,12 @@ export interface Contracts {
   gaugeRewardsHelper?: string;
 }
 
+export interface RateProviders {
+  [tokenAddress: string]: {
+    [providerAddress: string]: boolean;
+  };
+}
+
 export interface Keys {
   infura?: string;
   alchemy?: string;
@@ -62,6 +86,7 @@ export interface Config {
     gauge: string;
     blocks: string;
   };
+  bridgeUrl: string;
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
   blockTime: number;
@@ -76,9 +101,12 @@ export interface Config {
   };
   addresses: Contracts;
   pools: Pools;
+  tokens: TokenConstants;
   keys: Keys;
   gauges: {
     type: number;
     weight: number;
   };
+  tokenlists: TokenListURLMap;
+  rateProviders: Record<string, Record<string, boolean>>;
 }

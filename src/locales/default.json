@@ -75,6 +75,7 @@
   "approveBatchRelayer": "Approve Batch relayer",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
+  "approveRelayerTooltip": "Your permission is required to use the relayer.",
   "approveTokens": "Approve tokens",
   "approving": "Approving",
   "approvingCowswapRelayer": "Approving Cowswap relayer",
@@ -376,20 +377,20 @@
   "featuredProtocols": {
     "title": "Featured ecosystem protocols",
     "Copper": {
-      "description": "Fjord (formerly known as Copper Launch) is a community platform that connects inspired projects with passionate supporters via the power of Liquidity Bootstrapping Pools (LBPs).",
+      "description": "Fjord (formerly, “Copper Launch”) is a community platform that connects inspired projects with passionate supporters via the power of Liquidity Bootstrapping Pools (LBPs). Also check out their new fair launch NFT drop platform.",
       "linkText": "Fjord Foundry website"
     },
-    "Element": {
-      "description": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
-      "linkText": "Element Finance website"
+    "Beets": {
+      "description": "Powered by Balancer technology, Beethoven X provides a composable liquidity base layer on Fantom and Optimism. From Boosted Pools to Maturity Adjusted fNFTs, the DEX offers a suite of powerful financial primitives.",
+      "linkText": "Beethoven X website"
     },
-    "Sense": {
-      "description": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
-      "linkText": "Sense Finance website"
+    "Xave": {
+      "description": "Xave Finance enables real time remittance transfers and high yield consumer savings for Fintechs, with capital efficient liquid FX markets (via custom FXPools) integrated with the Balancer Vault.",
+      "linkText": "Xave website"
     },
-    "Tracer": {
-      "description": "Mycelium (formerly TracerDAO) is an open-source protocol for derivative markets. It utilizes Balancer for aggregated liquidity and creating a market for leveraged tokens.",
-      "linkText": "Mycelium website"
+    "Gyroscope": {
+      "description": "Gyroscope is a new stablecoin that, like a physical gyroscope, aims to remain stable as the surrounding environment changes. Gyroscope AMMs—Concentrated Liquidity Pools (CLPs)—leverage Balancer's customizable AMM logic.",
+      "linkText": "Gyroscope website"
     }
   },
   "fees": "fees",

@@ -82,7 +82,8 @@ const pools: Pools = {
       '0x19017f2919a5fb7eca1f0d142330644dc2045423000000000000000000000af9', // 2EUR (EURe)
       '0x02559a4fa0f3dae55820a65eb48b7a2fcd82f361000000000000000000000af8', // 2EUR (EURs)
       '0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a', // ankMatic/Matic
-      '0x10b040038f87219d9b42e025e3bd9b8095c87dd9000000000000000000000b11', // bb-t-MATIC (tetu managed boosted pool)
+      '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
+      '0x511a0fb938bb4aee2a3a9d74f68e37bac8318fbf000000000000000000000b18', // rmatic/wmatic
     ],
   },
   Investment: {
@@ -161,7 +162,7 @@ const pools: Pools = {
       name: 'Balancer Boosted Tetu USD (Polygon)',
       hasIcon: true,
     },
-    '0x10b040038f87219d9b42e025e3bd9b8095c87dd9000000000000000000000b11': {
+    '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15': {
       name: 'Balancer Boosted Tetu MATIC (Polygon)',
       hasIcon: true,
     },

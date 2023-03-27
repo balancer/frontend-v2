@@ -67,27 +67,33 @@ const defaultActionState: TransactionActionState = {
  */
 const currentActionIndex = ref(0);
 const _actions = ref<TransactionActionInfo[]>(props.actions);
+const actionStates = ref<TransactionActionState[]>([]);
 
-const actionStates = ref(
-  _actions.value.map(() => ({
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(() => {
+  actionStates.value = props.actions.map(() => ({
     ...defaultActionState,
-  }))
-);
+  }));
+});
 
 /**
  * WATCHERS
  */
 watch(
-  () => [props.actions, props.isLoading],
-  () => {
-    _actions.value = props.actions;
-    actionStates.value = _actions.value.map(() => ({
-      ...defaultActionState,
-    }));
+  () => props.actions,
+  newActions => {
+    newActions.forEach((action, i) => {
+      _actions.value[i] = action;
+      if (!actionStates.value[i]) {
+        actionStates.value[i] = {
+          ...defaultActionState,
+        };
+      }
+    });
   },
-  {
-    deep: true,
-  }
+  { deep: true }
 );
 
 watch(

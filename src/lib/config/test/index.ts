@@ -23,6 +23,7 @@ const config: Config = {
     gauge: '',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 12,
@@ -96,6 +97,25 @@ const config: Config = {
     DisabledJoins: [],
     BrandedRedirect: {},
   },
+  tokens: {
+    Popular: {
+      Symbols: [],
+    },
+    Addresses: {
+      nativeAsset: '',
+      wNativeAsset: '',
+      WETH: '',
+      BAL: '',
+    },
+  },
+  tokenlists: {
+    Balancer: {
+      Default: '',
+      Vetted: '',
+    },
+    External: [],
+  },
+  rateProviders: {},
 };
 
 export default config;

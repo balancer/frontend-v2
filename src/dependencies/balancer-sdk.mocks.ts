@@ -1,9 +1,15 @@
 import { initBalancer } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
-import { SubgraphPoolBase, SwapInfo } from '@balancer-labs/sdk';
+import {
+  PoolWithMethods,
+  SubgraphPoolBase,
+  SwapAttributes,
+  SwapInfo,
+} from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { mockDeep } from 'vitest-mock-extended';
+import { aPoolWithMethods } from '@tests/unit/builders/pool.builders';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 type DeepPartial<T> = T extends object
   ? {
@@ -97,6 +103,7 @@ defaultSwapInfo.swaps = [
     returnAmount: '132200045154243418753',
   },
 ];
+export const defaultSwapAttributes = mock<SwapAttributes>();
 
 defaultSwapInfo.tokenAddresses = [
   '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -123,6 +130,23 @@ export const defaultGeneralizedExitResponse = {
   priceImpact: defaultPriceImpact.toString(),
 };
 
+type ExitExactInResponse = ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
+type ExitExactOutResponse = ReturnType<
+  PoolWithMethods['buildExitExactTokensOut']
+>;
+
+export const defaultExactInExit: ExitExactInResponse =
+  mock<ExitExactInResponse>();
+defaultExactInExit.expectedAmountsOut = ['100', '200'];
+defaultExactInExit.minAmountsOut = ['20'];
+defaultExactInExit.to = 'test exact exit to';
+defaultExactInExit.data = 'exact exit test encoded data';
+
+export const defaultExactOutExit: ExitExactOutResponse =
+  mock<ExitExactOutResponse>();
+defaultExactOutExit.to = 'test exact exit to';
+defaultExactOutExit.data = 'exact exit test encoded data';
+
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
   balancerMock.data.tokenPrices.find.mockResolvedValue(defaultTokenPrice);
@@ -147,6 +171,23 @@ export function generateBalancerSdkMock() {
   balancerMock.pools.generalisedExit.mockResolvedValue(
     defaultGeneralizedExitResponse
   );
+
+  // Mock pool find for exact join/exits
+  balancerMock.pools.find.mockResolvedValue(
+    aPoolWithMethods({
+      buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
+      buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
+      calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
+    })
+  );
+
+  balancerMock.swaps.findRouteGivenIn.mockResolvedValue(defaultSwapInfo);
+  balancerMock.swaps.buildSwap.mockImplementation(({ deadline }) => {
+    defaultSwapAttributes.attributes.deadline = deadline;
+    return defaultSwapAttributes;
+  });
+
+  balancerMock.swaps.fetchPools.mockResolvedValue(true);
 
   return balancerMock;
 }

@@ -1,7 +1,10 @@
+import { Config } from '../types';
 import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
-import { Config } from '../types';
+import tokenlists from './tokenlists';
+import tokens from './tokens';
+import rateProviders from './rateProviders';
 
 const config: Config = {
   key: '42161',
@@ -31,6 +34,7 @@ const config: Config = {
     blocks:
       'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
   },
+  bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,
   supportsElementPools: false,
   blockTime: 2,
@@ -47,11 +51,14 @@ const config: Config = {
     ...contracts,
   },
   pools,
+  tokens,
   keys,
   gauges: {
     type: 3,
     weight: 0,
   },
+  tokenlists,
+  rateProviders,
 };
 
 export default config;

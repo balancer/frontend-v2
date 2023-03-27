@@ -1,5 +1,6 @@
 import { Config } from '../types';
 import contracts from './contracts';
+import tokens from './tokens';
 
 const config: Config = {
   key: '17',
@@ -22,6 +23,7 @@ const config: Config = {
     gauge: '',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: false,
   blockTime: 12,
   nativeAsset: {
@@ -68,8 +70,17 @@ const config: Config = {
     DisabledJoins: [],
     BrandedRedirect: {},
   },
+  tokens,
   keys: {},
   supportsElementPools: false,
+  tokenlists: {
+    Balancer: {
+      Default: '',
+      Vetted: '',
+    },
+    External: [],
+  },
+  rateProviders: {},
 };
 
 export default config;

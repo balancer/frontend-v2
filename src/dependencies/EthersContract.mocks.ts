@@ -5,13 +5,25 @@ export const mockedOnchainTokenName = 'mocked onchain token name';
 
 export const defaultAdjustedBalance = '55555';
 
-// We cannot extend Contract cause the checks in its constructor throw errors
-export class MockedContractWithSigner {
+export const defaultBatchSwapResponse = 'Batch Swap response';
+
+interface IContract {
+  // Equivalent to readonly estimateGas property in Contract
+  estimateGas: {
+    [key: string]: () => Promise<BigNumber>;
+  };
+  batchSwap: () => Promise<string>;
+}
+// We cannot extend Contract due to read-only properties, but we can mimic its type implementing IContract
+export class MockedContractWithSigner implements IContract {
   estimateGas = {
     swap: () => Promise.resolve(BigNumber.from(2)),
-    batchSwap: () => Promise.resolve(BigNumber.from(1)),
+    batchSwap: () => {
+      return Promise.resolve(BigNumber.from(1));
+    },
   };
-  batchSwap = vi.fn();
+
+  batchSwap = vi.fn(async () => defaultBatchSwapResponse);
   swap = vi.fn();
   hasApprovedRelayer() {
     return false;

@@ -51,10 +51,10 @@ export default function useRelayerApprovalTx(
 
   const action = computed(
     (): TransactionActionInfo => ({
-      label: t('approveBatchRelayer'),
-      loadingLabel: t('checkWallet'),
-      confirmingLabel: t('approvingBatchRelayer'),
-      stepTooltip: t('approveBatchRelayerTooltip'),
+      label: t('transactionSummary.approveRelayer', [relayer]),
+      loadingLabel: t('actionSteps.approve.loadingLabel'),
+      confirmingLabel: t('confirming'),
+      stepTooltip: t('approveRelayerTooltip'),
       action: approve,
     })
   );

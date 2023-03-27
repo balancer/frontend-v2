@@ -1,7 +1,10 @@
-import contracts from './contracts';
-import pools from './pools';
-import keys from './keys';
 import { Config } from '../types';
+import contracts from './contracts';
+import keys from './keys';
+import tokenlists from './tokenlists';
+import tokens from './tokens';
+import pools from './pools';
+import rateProviders from './rateProviders';
 
 const config: Config = {
   key: '5',
@@ -28,6 +31,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-goerli',
     blocks: 'https://api.thegraph.com/subgraphs/name/blocklytics/goerli-blocks',
   },
+  bridgeUrl: '',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 12,
@@ -44,11 +48,14 @@ const config: Config = {
     ...contracts,
   },
   pools,
+  tokens,
   keys,
   gauges: {
     type: 2,
     weight: 100,
   },
+  tokenlists,
+  rateProviders,
 };
 
 export default config;
