@@ -152,7 +152,7 @@ export const tokensProvider = (
   const {
     data: priceData,
     isSuccess: priceQuerySuccess,
-    isLoading: priceQueryLoading,
+    isInitialLoading: priceQueryLoading,
     isRefetching: priceQueryRefetching,
     isError: priceQueryError,
     refetch: refetchPrices,
@@ -178,7 +178,7 @@ export const tokensProvider = (
   const {
     data: allowanceData,
     isSuccess: allowanceQuerySuccess,
-    isLoading: allowanceQueryLoading,
+    isInitialLoading: allowanceQueryLoading,
     isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
