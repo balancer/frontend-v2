@@ -42,7 +42,7 @@ const noPoolsLabel = computed(() => {
 
 const hiddenColumns = computed(() => {
   const _hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
-  if (isPoolBoostsEnabled.value) _hiddenColumns.push('myBoost');
+  if (!isPoolBoostsEnabled.value) _hiddenColumns.push('myBoost');
 
   return _hiddenColumns;
 });
@@ -85,7 +85,7 @@ async function handleUnstakeSuccess() {
         :isLoading="isWalletReady && isLoading"
         showPoolShares
         showActions
-        :showBoost="!isPoolBoostsEnabled"
+        :showBoost="isPoolBoostsEnabled"
         @trigger-unstake="handleUnstake"
       />
     </BalStack>

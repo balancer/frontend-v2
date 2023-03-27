@@ -57,7 +57,7 @@ export default function useUserBoostsQuery(
       if (!gaugeShares.value || gaugeShares.value.length === 0) return {};
       // We don't have boosts on L2s. Adding this to the enabled conditional
       // causes permanent loading states, so instead just return empty.
-      if (isPoolBoostsEnabled.value) return {};
+      if (!isPoolBoostsEnabled.value) return {};
 
       return await stakingRewardsService.getUserBoosts({
         userAddress: account.value,
