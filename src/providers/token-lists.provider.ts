@@ -114,14 +114,12 @@ export const tokenListsProvider = () => {
       allTokenLists.value = tokenLists;
       return;
     }
-    console.log('non filtered token lists', tokenLists);
+
     // filter token lists by network id
     allTokenLists.value = TokenListService.filterTokensList(
       tokenLists,
       networkId.value
     );
-
-    console.log('alltokens', allTokenLists.value);
   });
 
   return {
