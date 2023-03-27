@@ -147,7 +147,7 @@ function symbolFor(titleTokenIndex: number): string {
         {{ poolTypeLabel }}
       </h3>
     </div>
-    <div class="flex items-center">
+    <div class="flex flex-wrap items-center">
       <div
         v-for="({ address, weight }, i) in titleTokens"
         :key="i"

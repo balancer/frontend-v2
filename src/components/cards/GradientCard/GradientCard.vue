@@ -7,6 +7,6 @@
 <style scoped>
 .gradients {
   background-image: url('/images/gradients/gradient-1.avif'),
-    url('/images/gradients/gradients-1.jpg');
+    url('/images/gradients/gradient-1.jpg');
 }
 </style>

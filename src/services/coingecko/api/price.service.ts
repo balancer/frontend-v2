@@ -35,7 +35,6 @@ export class PriceService {
   platformId: string;
   nativeAssetId: string;
   nativeAssetAddress: string;
-  appAddresses: { [key: string]: string };
 
   constructor(
     service: CoingeckoService,
@@ -47,7 +46,6 @@ export class PriceService {
     this.platformId = getPlatformId(this.appNetwork);
     this.nativeAssetId = getNativeAssetId(this.appNetwork);
     this.nativeAssetAddress = this.configService.network.nativeAsset.address;
-    this.appAddresses = this.configService.network.addresses;
   }
 
   async getNativeAssetPrice(): Promise<Price> {
