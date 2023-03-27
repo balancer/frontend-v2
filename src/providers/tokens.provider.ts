@@ -195,22 +195,27 @@ export const tokensProvider = (
       allowanceData.value ? allowanceData.value : {}
   );
 
+  const onchainDataLoading = computed(
+    (): boolean =>
+      isWalletReady.value &&
+      (balanceQueryLoading.value ||
+        balanceQueryRefetching.value ||
+        allowanceQueryLoading.value ||
+        allowanceQueryRefetching.value)
+  );
+
   const dynamicDataLoaded = computed(
-    () =>
+    (): boolean =>
       priceQuerySuccess.value &&
       balanceQuerySuccess.value &&
       allowanceQuerySuccess.value
   );
 
   const dynamicDataLoading = computed(
-    () =>
+    (): boolean =>
       (pricesQueryEnabled.value &&
         (priceQueryLoading.value || priceQueryRefetching.value)) ||
-      (isWalletReady.value &&
-        (balanceQueryLoading.value ||
-          balanceQueryRefetching.value ||
-          allowanceQueryLoading.value ||
-          allowanceQueryRefetching.value))
+      onchainDataLoading.value
   );
 
   /**
@@ -276,7 +281,7 @@ export const tokensProvider = (
 
     // Wait for balances/allowances/prices to be fetched for newly injected tokens.
     await nextTick();
-    await forChange(dynamicDataLoading, false);
+    await forChange(onchainDataLoading, false);
   }
 
   /**
