@@ -281,7 +281,7 @@ export const tokensProvider = (
 
     // Wait for balances/allowances/prices to be fetched for newly injected tokens.
     await nextTick();
-    await forChange(onchainDataLoading, false);
+    await forChange(dynamicDataLoading, false);
   }
 
   /**
