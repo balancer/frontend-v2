@@ -15,6 +15,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
+  BoostsEnabled: true,
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {

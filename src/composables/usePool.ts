@@ -20,8 +20,8 @@ import {
   isMainnet,
   appUrl,
   getNetworkSlug,
-  isL2,
   networkId,
+  isPoolBoostsEnabled,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
@@ -292,7 +292,10 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
     return numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
-  if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
+  if (
+    (hasBalEmissions(aprs) && isPoolBoostsEnabled.value) ||
+    aprs.protocolApr > 0
+  ) {
     const minAPR = numF(aprs.min, FNumFormats.bp);
     const maxAPR = numF(aprs.max, FNumFormats.bp);
     return `${minAPR} - ${maxAPR}`;
