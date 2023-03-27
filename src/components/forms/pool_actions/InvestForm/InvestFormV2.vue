@@ -90,7 +90,7 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
 
 function getTokenInputLabel(address: string): string | undefined {
   const token = getToken(address);
-  return token?.symbol || undefined;
+  return token?.symbol;
 }
 
 /**
