@@ -29,6 +29,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: false,
   supportsElementPools: false,
   nativeAsset: {
