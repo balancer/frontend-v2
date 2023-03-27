@@ -19,8 +19,7 @@ const showRedirectModal = ref(false);
  * COMPUTED
  */
 export const isVeBalSupported = computed<boolean>(
-  () =>
-    configService.network.addresses.veBAL !== '' && POOLS.IdsMap?.veBAL !== ''
+  () => configService.network.addresses.veBAL !== ''
 );
 
 /**
