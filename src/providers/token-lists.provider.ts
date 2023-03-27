@@ -37,11 +37,10 @@ const state: TokenListsState = reactive({
 const allTokenLists = ref({});
 
 const isTestMode = import.meta.env.MODE === 'test';
-const tokensListPromise = isTestMode
-  ? // Only use this file in testing mode (vitest)
-    import('@tests/tokenlists/tokens-5.json')
+const tokensListPromise = isTestMode // Only use this file in testing mode (vitest)
+  ? import('@tests/tokenlists/tokens-5.json')
   : // Use generated file in development/production mode
-    import('@/assets/data/tokenlists/tokens-common.json');
+    import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`);
 
 /**
  * All active (toggled) tokenlists
@@ -113,13 +112,16 @@ export const tokenListsProvider = () => {
 
     if (isTestMode) {
       allTokenLists.value = tokenLists;
+      return;
     }
-
+    console.log('non filtered token lists', tokenLists);
     // filter token lists by network id
     allTokenLists.value = TokenListService.filterTokensList(
       tokenLists,
       networkId.value
     );
+
+    console.log('alltokens', allTokenLists.value);
   });
 
   return {
