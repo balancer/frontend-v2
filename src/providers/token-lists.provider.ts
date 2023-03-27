@@ -120,6 +120,8 @@ export const tokenListsProvider = () => {
       tokenLists,
       networkId.value
     );
+
+    console.log('activeTokenLists', activeTokenLists.value);
   });
 
   return {
