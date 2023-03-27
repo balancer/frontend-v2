@@ -68,6 +68,8 @@ const config: Config = {
       AllowList: [],
     },
     Metadata: {},
+    Deep: [],
+    BoostedApr: [],
     DisabledJoins: [],
     BrandedRedirect: {},
   },
