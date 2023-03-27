@@ -48,6 +48,7 @@ export type Pools = {
     PerPool: number;
     PerPoolInitial: number;
   };
+  BoostsEnabled: boolean;
   DelegateOwner: string;
   ZeroAddress: string;
   DynamicFees: {

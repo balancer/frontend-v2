@@ -54,6 +54,9 @@ export const isL2 = computed(
 export const hasBridge = computed<boolean>(() => !!networkConfig.bridgeUrl);
 export const isTestnet = computed(() => isGoerli.value);
 
+export const isPoolBoostsEnabled = computed<boolean>(
+  () => configService.network.pools.BoostsEnabled
+);
 /**
  * METHODS
  */

@@ -49,6 +49,7 @@ const config: Config = {
       PerPool: 10,
       PerPoolInitial: 5,
     },
+    BoostsEnabled: false,
     DelegateOwner: '',
     ZeroAddress: '',
     DynamicFees: {
