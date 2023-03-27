@@ -1,5 +1,7 @@
 <template>
   <div
+    role="alert"
+    aria-live="polite"
     class="overflow-hidden relative p-3 w-64 text-sm dark:text-white bg-white dark:bg-gray-800 rounded dark:border-gray-850 shadow-lg"
   >
     <div class="group justify-between">
