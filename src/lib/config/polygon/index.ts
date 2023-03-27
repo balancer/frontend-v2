@@ -16,7 +16,7 @@ const config: Config = {
   network: 'polygon',
   unknown: false,
   rpc: `https://polygon-mainnet.infura.io/v3/${keys.infura}`,
-  ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.infura}`,
+  ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://polygon-rpc.com',
   explorer: 'https://polygonscan.com',
   explorerName: 'Polygonscan',
