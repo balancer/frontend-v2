@@ -107,6 +107,7 @@ export interface Config {
     nativeAssetId: string;
     platformId: string;
   };
+  apyVisionNetworkName?: string;
   addresses: Contracts;
   pools: Pools;
   tokens: TokenConstants;

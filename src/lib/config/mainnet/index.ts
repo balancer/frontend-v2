@@ -51,6 +51,7 @@ const config: Config = {
     nativeAssetId: 'ethereum',
     platformId: 'ethereum',
   },
+  apyVisionNetworkName: 'eth',
   addresses: {
     ...contracts,
   },

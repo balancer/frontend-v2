@@ -45,6 +45,7 @@ const config: Config = {
     logoURI: 'tokens/xdai.png',
     minTransactionBuffer: '0.05',
   },
+  apyVisionNetworkName: 'xdai',
   coingecko: {
     nativeAssetId: 'xdai',
     platformId: 'xdai',

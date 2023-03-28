@@ -50,6 +50,7 @@ const config: Config = {
     nativeAssetId: 'matic-network',
     platformId: 'polygon-pos',
   },
+  apyVisionNetworkName: 'matic',
   addresses: {
     ...contracts,
   },

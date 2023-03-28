@@ -51,6 +51,7 @@ const config: Config = {
     nativeAssetId: 'ethereum',
     platformId: 'arbitrum-one',
   },
+  apyVisionNetworkName: 'arbitrum',
   addresses: {
     ...contracts,
   },
