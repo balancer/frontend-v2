@@ -4,7 +4,7 @@ import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import WrapStEthLink from '@/components/contextual/pages/pool/add-liquidity/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { usePoolHelpers } from '@/composables/usePoolHelpers';
+import { tokenWeight, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
@@ -138,6 +138,7 @@ watch(
       :description="$t('investment.warning.lowLiquidity.description')"
       class="mb-5"
     />
+
     <TokenInput
       v-for="amountIn in amountsIn"
       :key="amountIn.address"
@@ -145,6 +146,7 @@ watch(
       v-model:address="amountIn.address"
       v-model:amount="amountIn.value"
       :name="amountIn.address"
+      :weight="tokenWeight(pool, amountIn.address)"
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
