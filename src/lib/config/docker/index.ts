@@ -11,6 +11,8 @@ const config: Config = {
   slug: 'docker',
   network: 'docker localhost',
   unknown: false,
+  inNetworkSelector: false,
+  testNetwork: true,
   rpc: 'http://localhost:8545',
   ws: 'ws://localhost:8546',
   explorer: '',

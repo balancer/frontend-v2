@@ -12,6 +12,8 @@ const config: Config = {
   slug: 'optimism',
   network: 'optimism',
   unknown: false,
+  inNetworkSelector: false,
+  testNetwork: false,
   rpc: 'https://mainnet.optimism.io',
   ws: 'wss://ws-mainnet.optimism.io',
   blockTime: 13,

@@ -15,6 +15,8 @@ const config: Config = {
   slug: 'goerli',
   network: 'goerli',
   unknown: false,
+  inNetworkSelector: true,
+  testNetwork: true,
   rpc: `https://goerli.infura.io/v3/${keys.infura}`,
   ws: `wss://goerli.infura.io/ws/v3/${keys.infura}`,
   explorer: 'https://goerli.etherscan.io',
