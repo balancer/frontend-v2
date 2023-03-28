@@ -47,9 +47,14 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
-  coingecko: {
-    nativeAssetId: 'ethereum',
-    platformId: 'arbitrum-one',
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'arbitrum-one',
+    },
+    apyVision: {
+      networkName: 'arbitrum',
+    },
   },
   addresses: {
     ...contracts,

@@ -7,7 +7,7 @@ import config from '@/lib/config';
 export const getNativeAssetId = (chainId: string): string => {
   const mapping = Object.fromEntries(
     Object.values(config).map(c => {
-      return [c.chainId.toString(), c.coingecko.nativeAssetId];
+      return [c.chainId.toString(), c.thirdParty.coingecko.nativeAssetId];
     })
   );
 
@@ -17,7 +17,7 @@ export const getNativeAssetId = (chainId: string): string => {
 export const getPlatformId = (chainId: string): string => {
   const mapping = Object.fromEntries(
     Object.values(config).map(c => {
-      return [c.chainId.toString(), c.coingecko.platformId];
+      return [c.chainId.toString(), c.thirdParty.coingecko.platformId];
     })
   );
 
