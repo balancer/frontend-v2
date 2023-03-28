@@ -12,7 +12,7 @@ import ProtocolRewardsTable, {
   ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { isL2, isMainnet } from '@/composables/useNetwork';
+import { networkHasNativeGauges } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
@@ -201,11 +201,13 @@ function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
  * @summary Fetches bb-a-USD rate as an appoximation of USD price.
  */
 async function getBBaUSDPrice() {
-  if (isMainnet.value) {
-    const appoxPrice = bnum(await bbAUSDToken.getRate()).toNumber();
+  if (TOKENS.Addresses.bbaUSD) {
+    const approxPrice = bnum(await bbAUSDToken.getRate()).toNumber();
     injectPrices({
-      [TOKENS.Addresses.bbaUSD as string]: { [FiatCurrency.usd]: appoxPrice },
-      [TOKENS.Addresses.bbaUSDv2 as string]: { [FiatCurrency.usd]: appoxPrice },
+      [TOKENS.Addresses.bbaUSD as string]: { [FiatCurrency.usd]: approxPrice },
+      [TOKENS.Addresses.bbaUSDv2 as string]: {
+        [FiatCurrency.usd]: approxPrice,
+      },
     });
   }
 }
@@ -225,7 +227,7 @@ watch(gaugePools, async newPools => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  if (!isL2.value) await getBBaUSDPrice();
+  await getBBaUSDPrice();
 });
 </script>
 
@@ -241,7 +243,7 @@ onBeforeMount(async () => {
           {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
         </h2>
 
-        <template v-if="!isL2">
+        <template v-if="networkHasNativeGauges">
           <div class="mb-16">
             <div class="px-4 xl:px-0">
               <div class="flex items-center mt-6 mb-2">
@@ -291,7 +293,7 @@ onBeforeMount(async () => {
             />
           </div>
         </template>
-        <div v-if="!isL2">
+        <div v-if="networkHasNativeGauges">
           <h3 class="inline-block px-4 xl:px-0 mt-8 mr-1.5 text-xl">
             {{ $t('otherTokenIncentives') }}
           </h3>
