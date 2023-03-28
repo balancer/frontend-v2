@@ -310,6 +310,7 @@ export const joinPoolProvider = (
       joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
 
+      console.log('joinHandler:', joinHandlerType.value);
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
@@ -341,6 +342,7 @@ export const joinPoolProvider = (
       joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
 
+      console.log('joinHandler:', joinHandlerType.value);
       const joinRes = await joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,

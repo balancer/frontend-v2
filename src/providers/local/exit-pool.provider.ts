@@ -348,7 +348,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
-    console.log('exitHandler', exitHandlerType.value);
+    console.log('exitHandler:', exitHandlerType.value);
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
@@ -428,6 +428,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
       txError.value = '';
       exitPoolService.setExitHandler(exitHandlerType.value);
 
+      console.log('exitHandler:', exitHandlerType.value);
       return exitPoolService.exit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
