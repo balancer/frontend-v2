@@ -99,6 +99,10 @@ export interface Config {
     logoURI: string;
     minTransactionBuffer: string;
   };
+  coingecko: {
+    nativeAssetId: string;
+    platformId: string;
+  };
   addresses: Contracts;
   pools: Pools;
   tokens: TokenConstants;
