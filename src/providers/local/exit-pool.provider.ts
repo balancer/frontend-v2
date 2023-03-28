@@ -300,7 +300,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
   // Checks if amountsIn has any values > 0.
   const hasAmountsOut = computed(() => {
-    console.log('amount', amountsOut.value);
     return amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0));
   });
 
@@ -349,6 +348,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
+    console.log('exitHandler', exitHandlerType.value);
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
