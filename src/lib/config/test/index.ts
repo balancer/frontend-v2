@@ -2,8 +2,8 @@ import { Config } from '../types';
 import keys from './keys';
 
 const config: Config = {
-  key: '1',
-  chainId: 1,
+  key: '12345',
+  chainId: 12345,
   chainName: 'test',
   name: 'test',
   shortName: 'test',
