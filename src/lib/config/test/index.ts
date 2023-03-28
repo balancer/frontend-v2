@@ -102,6 +102,10 @@ const config: Config = {
     Popular: {
       Symbols: [],
     },
+    InitialSwapTokens: {
+      input: '',
+      output: '',
+    },
     Addresses: {
       nativeAsset: '',
       wNativeAsset: '',

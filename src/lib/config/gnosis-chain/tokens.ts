@@ -4,6 +4,10 @@ const tokens: TokenConstants = {
   Popular: {
     Symbols: ['WXDAI', 'WETH', 'BAL'],
   },
+  InitialSwapTokens: {
+    input: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    output: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
+  },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d',

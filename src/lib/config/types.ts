@@ -16,6 +16,10 @@ export type TokenConstants = {
     Symbols: string[];
   };
   Addresses: CommonTokens;
+  InitialSwapTokens: {
+    input: string;
+    output: string;
+  };
   PriceChainMap?: Record<string, string>;
 };
 
