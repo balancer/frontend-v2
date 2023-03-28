@@ -77,7 +77,9 @@ function amountShare(address: string): string {
             <span class="font-numeric">
               {{ fNum(token.amount, FNumFormats.token) }}
             </span>
-            {{ tokenMap[token.address]?.symbol }}
+            <span class="ml-2 font-normal text-secondary">
+              {{ tokenMap[token.address]?.symbol }}
+            </span>
           </div>
           <div
             v-if="Number(token.fiatAmount) > 0"
