@@ -46,6 +46,10 @@ const config: Config = {
     logoURI: 'tokens/matic.svg',
     minTransactionBuffer: '0.1',
   },
+  coingecko: {
+    nativeAssetId: 'matic-network',
+    platformId: 'polygon-pos',
+  },
   addresses: {
     ...contracts,
   },

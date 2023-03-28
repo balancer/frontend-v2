@@ -45,6 +45,10 @@ const config: Config = {
     logoURI: 'tokens/xdai.png',
     minTransactionBuffer: '0.05',
   },
+  coingecko: {
+    nativeAssetId: 'xdai',
+    platformId: 'xdai',
+  },
   addresses: {
     ...contracts,
   },

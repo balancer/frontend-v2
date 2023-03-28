@@ -36,6 +36,10 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
+  coingecko: {
+    nativeAssetId: 'ethereum',
+    platformId: 'ethereum',
+  },
   addresses: {
     merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',
     merkleOrchard: '',
