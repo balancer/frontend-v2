@@ -5,8 +5,8 @@ import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
-  isComposableStableLike,
   isDeep,
+  isStableLike,
   tokenTreeNodes,
 } from '@/composables/usePoolHelpers';
 import { useTxState } from '@/composables/useTxState';
@@ -47,7 +47,6 @@ import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
-import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
 import { throwQueryError } from '@/lib/utils/queries';
 
 /**
@@ -213,9 +212,11 @@ export const joinPoolProvider = (
   const tokensToApprove = computed(() => {
     return amountsIn.value.map(amountIn => amountIn.address);
   });
+
   const amountsToApprove = computed(() => {
     return amountsIn.value.map(amountIn => amountIn.value);
   });
+
   const { getTokenApprovalActions } = useTokenApprovalActions(
     tokensToApprove,
     amountsToApprove
@@ -239,25 +240,9 @@ export const joinPoolProvider = (
     return JoinHandler.ExactIn;
   });
 
-  const useNativeAsset = computed((): boolean => {
-    return amountsIn.value.some(amountIn =>
-      isSameAddress(amountIn.address, nativeAsset.address)
-    );
-  });
-
   const supportsProportionalOptimization = computed(
-    (): boolean => !isComposableStableLike(pool.value.poolType)
+    (): boolean => !isStableLike(pool.value.poolType)
   );
-
-  const optimized = computed((): boolean => {
-    if (!supportsProportionalOptimization.value) return false;
-    const propMaxAmountsIn = getPropMax();
-    return amountsIn.value.every(
-      (item, i) => item.value === propMaxAmountsIn[i].value
-    );
-  });
-
-  const { getPropMax } = usePropMaxJoin(pool.value, tokensIn, useNativeAsset);
 
   /**
    * METHODS
@@ -400,11 +385,6 @@ export const joinPoolProvider = (
     }
   }
 
-  function setPropMax() {
-    const propMaxAmountsIn = getPropMax();
-    setAmountsIn(propMaxAmountsIn);
-  }
-
   /**
    * WATCHERS
    */
@@ -453,8 +433,8 @@ export const joinPoolProvider = (
     txInProgress,
     approvalActions,
     missingPricesIn,
+    tokensIn,
     supportsProportionalOptimization,
-    optimized,
 
     // Methods
     setAmountsIn,
@@ -464,7 +444,7 @@ export const joinPoolProvider = (
     resetTxState,
     setIsSingleAssetJoin,
     setJoinWithNativeAsset,
-    setPropMax,
+
     // queries
     queryJoinQuery,
   };

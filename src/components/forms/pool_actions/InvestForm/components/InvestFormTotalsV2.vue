@@ -7,15 +7,13 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { useTokens } from '@/providers/tokens.provider';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import { Pool } from '@/services/pool/types';
-import { isWeth } from '@/composables/usePoolHelpers';
+import { isWrappedNativeAsset } from '@/composables/usePoolHelpers';
+import { bnum, isSameAddress } from '@/lib/utils';
+import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
 
 type Props = {
   pool: Pool;
 };
-
-const emit = defineEmits<{
-  (e: 'optimize'): void;
-}>();
 
 const props = defineProps<Props>();
 
@@ -27,15 +25,26 @@ const {
   highPriceImpact,
   isLoadingQuery,
   priceImpact,
-  optimized,
   supportsProportionalOptimization,
+  fiatValueIn,
+  amountsIn,
+  tokensIn,
+  setAmountsIn,
 } = useJoinPool();
 const { isWalletReady } = useWeb3();
-const { isWethOrEth } = useTokens();
+const { isWethOrEth, nativeAsset, balanceFor } = useTokens();
 const { poolTokensWithoutBalance, poolTokensWithBalance } = useMyWalletTokens({
   pool: props.pool,
   excludedTokens: [props.pool.address],
 });
+
+const useNativeAsset = computed((): boolean => {
+  return amountsIn.value.some(amountIn =>
+    isSameAddress(amountIn.address, nativeAsset.address)
+  );
+});
+
+const { getPropMax } = usePropMaxJoin(props.pool, tokensIn, useNativeAsset);
 
 /**
  * COMPUTED
@@ -50,13 +59,13 @@ const optimizeBtnClasses = computed(() => ({
   'text-red-500 px-2 py-1 bg-white rounded-lg': highPriceImpact.value,
 }));
 
-const hasAllTokens = computed((): boolean => {
+const hasBalanceForAllTokens = computed((): boolean => {
   const hasBalanceForAll =
     poolTokensWithoutBalance.value.filter(address => !isWethOrEth(address))
       .length === 0;
 
-  // If the pool is WETH, user might have balance for just one of theem
-  if (isWeth(props.pool)) {
+  // If the pool contains the wrapped native asset, user might have balance for just one of them
+  if (isWrappedNativeAsset(props.pool)) {
     const hasWethOrEthBalance = poolTokensWithBalance.value.some(address =>
       isWethOrEth(address)
     );
@@ -64,10 +73,88 @@ const hasAllTokens = computed((): boolean => {
   }
   return hasBalanceForAll;
 });
+
+const hasBalanceForSomeTokens = computed((): boolean => {
+  const hasBalanceForSome =
+    poolTokensWithBalance.value.filter(address => !isWethOrEth(address))
+      .length > 0;
+
+  // If the pool contains the wrapped native asset, user might have balance for just one of them
+  if (isWrappedNativeAsset(props.pool)) {
+    const hasWethOrEthBalance = poolTokensWithBalance.value.some(address =>
+      isWethOrEth(address)
+    );
+    return hasBalanceForSome || hasWethOrEthBalance;
+  }
+  return hasBalanceForSome;
+});
+
+const maximized = computed(() =>
+  amountsIn.value.every(amount => {
+    if (isSameAddress(amount.address, nativeAsset.address)) {
+      const balance = balanceFor(amount.address);
+      return (
+        amount.value ===
+        bnum(balance).minus(nativeAsset.minTransactionBuffer).toString()
+      );
+    } else {
+      return amount.value === balanceFor(amount.address);
+    }
+  })
+);
+
+/**
+ * METHODS
+ */
+const optimized = computed((): boolean => {
+  if (!supportsProportionalOptimization.value) return false;
+  const propMaxAmountsIn = getPropMax();
+  return amountsIn.value.every(
+    (item, i) => item.value === propMaxAmountsIn[i].value
+  );
+});
+
+function maximizeAmounts(): void {
+  amountsIn.value.forEach(amount => {
+    if (isSameAddress(amount.address, nativeAsset.address)) {
+      const balance = balanceFor(amount.address);
+      amount.value = bnum(balance).gt(nativeAsset.minTransactionBuffer)
+        ? bnum(balance).minus(nativeAsset.minTransactionBuffer).toString()
+        : '0';
+    } else {
+      amount.value = balanceFor(amount.address);
+    }
+  });
+}
+
+function optimizeAmounts() {
+  const propMaxAmountsIn = getPropMax();
+  setAmountsIn(propMaxAmountsIn);
+}
 </script>
 
 <template>
   <div class="data-table">
+    <div class="data-table-row total-row">
+      <div class="p-2">
+        {{ $t('total') }}
+      </div>
+      <div class="data-table-number-col">
+        {{ fNum(fiatValueIn, FNumFormats.fiat) }}
+        <div v-if="isWalletReady && hasBalanceForSomeTokens" class="text-sm">
+          <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
+            {{ $t('maxed') }}
+          </span>
+          <span
+            v-else
+            class="text-blue-500 cursor-pointer"
+            @click="maximizeAmounts"
+          >
+            {{ $t('max') }}
+          </span>
+        </div>
+      </div>
+    </div>
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
       <div class="p-2">
         {{ $t('priceImpact') }}
@@ -98,20 +185,22 @@ const hasAllTokens = computed((): boolean => {
         </div>
         <div
           v-if="
-            isWalletReady && hasAllTokens && supportsProportionalOptimization
+            isWalletReady &&
+            hasBalanceForAllTokens &&
+            supportsProportionalOptimization
           "
           class="text-sm font-semibold"
         >
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>
-          <button
+          <span
             v-else
             :class="['cursor-pointer', optimizeBtnClasses]"
-            @click="emit('optimize')"
+            @click="optimizeAmounts"
           >
             {{ $t('optimize') }}
-          </button>
+          </span>
         </div>
       </div>
     </div>
