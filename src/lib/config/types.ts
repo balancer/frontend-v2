@@ -103,11 +103,15 @@ export interface Config {
     logoURI: string;
     minTransactionBuffer: string;
   };
-  coingecko: {
-    nativeAssetId: string;
-    platformId: string;
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: string;
+      platformId: string;
+    };
+    apyVision?: {
+      networkName: string;
+    };
   };
-  apyVisionNetworkName?: string;
   addresses: Contracts;
   pools: Pools;
   tokens: TokenConstants;

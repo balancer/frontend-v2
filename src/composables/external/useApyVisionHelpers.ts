@@ -10,7 +10,7 @@ export function poolPathSymbolSegment(tokens: PoolToken[]) {
 
 export function useApyVisionHelpers() {
   const apyVisionNetworkName = computed(() => {
-    return configService.network.apyVisionNetworkName;
+    return configService.network.thirdParty.apyVision?.networkName;
   });
 
   return {

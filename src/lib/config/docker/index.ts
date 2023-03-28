@@ -35,9 +35,11 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
-  coingecko: {
-    nativeAssetId: 'ethereum',
-    platformId: 'ethereum',
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
   },
   addresses: {
     ...contracts,
