@@ -88,7 +88,6 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
 describe('Given a weighted pool (GRO-WETH)', () => {
   const rootPool = aWeightedPool();
   const groAddress = '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7';
-  const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
   it('works for GRO token', () => {
     const data = mountTokenBreakdown(rootPool);

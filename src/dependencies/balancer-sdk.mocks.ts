@@ -8,6 +8,7 @@ import {
   SwapInfo,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { wethAddress } from '@tests/unit/builders/address';
 import { aPoolWithMethods } from '@tests/unit/builders/pool.builders';
 import { mock, mockDeep } from 'vitest-mock-extended';
 
@@ -134,6 +135,7 @@ type ExitExactInResponse = ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
 type ExitExactOutResponse = ReturnType<
   PoolWithMethods['buildExitExactTokensOut']
 >;
+type BuildJoinResponse = ReturnType<PoolWithMethods['buildJoin']>;
 
 export const defaultExactInExit: ExitExactInResponse =
   mock<ExitExactInResponse>();
@@ -141,11 +143,21 @@ defaultExactInExit.expectedAmountsOut = ['100', '200'];
 defaultExactInExit.minAmountsOut = ['20'];
 defaultExactInExit.to = 'test exact exit to';
 defaultExactInExit.data = 'exact exit test encoded data';
+defaultExactInExit.attributes.exitPoolRequest = {
+  assets: [wethAddress],
+  minAmountsOut: ['3'],
+  userData: 'test user data',
+  toInternalBalance: false,
+};
 
 export const defaultExactOutExit: ExitExactOutResponse =
   mock<ExitExactOutResponse>();
 defaultExactOutExit.to = 'test exact exit to';
 defaultExactOutExit.data = 'exact exit test encoded data';
+
+const defaultExpectedBptOut = '10';
+export const defaultBuildJoin: BuildJoinResponse = mock<BuildJoinResponse>();
+defaultBuildJoin.expectedBPTOut = defaultExpectedBptOut;
 
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
@@ -178,6 +190,7 @@ export function generateBalancerSdkMock() {
       buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
       buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
       calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
+      buildJoin: vi.fn(() => defaultBuildJoin),
     })
   );
 

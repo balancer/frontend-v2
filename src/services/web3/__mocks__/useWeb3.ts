@@ -1,4 +1,7 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
+
+import { txResponseMock } from '@/__mocks__/transactions';
 
 import { configService } from '@/services/config/config.service';
 import { ref } from 'vue';
@@ -27,6 +30,9 @@ export default function useWeb3Mock() {
     connector: ref('Test connector'),
     getSigner: () => ({
       getAddress: async () => '0xcd3b766ccdd6ae456741f452c550ca635964ce71',
+      estimateGas: async () => BigNumber.from(2),
+      getChainId: async () => 5,
+      sendTransaction: vi.fn().mockResolvedValue(txResponseMock),
     }),
   };
 }

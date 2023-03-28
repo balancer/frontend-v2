@@ -1,5 +1,6 @@
 import { sleep } from '@/lib/utils';
 import { mount } from '@tests/mount-composable-tester';
+import { daiAddress, wethAddress } from '@tests/unit/builders/address';
 import {
   customFakeTokensProvider,
   defaultBalance,
@@ -33,10 +34,10 @@ test('Fakes provided state', async () => {
   expect(Object.keys(tokens.value)).toEqual([
     '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47', //BAL
-    '0x8c9e6c40d3402480ACE624730524fACC5482798c', //DAI
+    daiAddress,
     '0x1f1f156E0317167c11Aa412E3d1435ea29Dc3cCE', //USDT
     '0xe0C9275E44Ea80eF17579d33c55136b7DA269aEb', //USDC
-    '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1', //WETH
+    wethAddress,
     '0x37f03a12241E9FD3658ad6777d289c3fb8512Bc9', //WBTC
     '0x398106564948fEeb1fEdeA0709AE7D969D62a391', //miMATIC
     '0xA13a9247ea42D743238089903570127DdA72fE44', //bb-a-USD
@@ -45,9 +46,7 @@ test('Fakes provided state', async () => {
     '0xae37D54Ae477268B9997d4161B96b8200755935c', //b-a-DAI
   ]);
 
-  expect(wrappedNativeAsset.value.address).toBe(
-    '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1' //WETH
-  );
+  expect(wrappedNativeAsset.value.address).toBe(wethAddress);
 
   expect(Object.keys(activeTokenListTokens.value)).toEqual([
     '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
@@ -91,9 +90,6 @@ test('Fakes provided state', async () => {
   expect(Object.keys(allowances.value)).toEqual([]);
 });
 
-const daiAddress = '0x8c9e6c40d3402480ACE624730524fACC5482798c';
-const wethAddress = '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1';
-
 test('Fakes provided methods', async () => {
   const {
     injectTokens,
@@ -114,9 +110,7 @@ test('Fakes provided methods', async () => {
   injectTokens(['0x811151066392fd641Fe74A9B55a712670572D161']);
 
   const foundTokens = await searchTokens('WETH', {});
-  expect(Object.keys(foundTokens)).toEqual([
-    '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
-  ]);
+  expect(Object.keys(foundTokens)).toEqual([wethAddress]);
 
   expect(hasBalance('any address')).toBeFalse();
 

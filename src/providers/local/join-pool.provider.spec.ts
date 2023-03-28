@@ -3,6 +3,7 @@ import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContrac
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { anAmountIn } from '@tests/unit/builders/join-exit.builders';
 import { ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
 import { joinPoolProvider } from './join-pool.provider';
@@ -29,8 +30,7 @@ test('join a weighted pool', async () => {
   expect(result.amountsIn.value).toEqual([]);
   expect(result.approvalActions.value).toEqual([]);
 
-  // result.setAmountsIn([anAmountIn({ value: '23' })]);
+  result.setAmountsIn([anAmountIn({ value: '23' })]);
 
-  // This test will be finished once we merge test-swap-and-exact-exit-handlers PR (containing helpers)
-  // await result.join();
+  await result.join();
 });
