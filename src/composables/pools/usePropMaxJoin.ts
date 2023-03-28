@@ -19,7 +19,7 @@ export default function usePropMaxJoin(
   /**
    * COMPOSABLES
    */
-  const { balances } = useTokens();
+  const { balanceFor } = useTokens();
 
   /**
    * COMPUTED
@@ -28,7 +28,9 @@ export default function usePropMaxJoin(
     const tokensList = Object.keys(tokensIn.value);
     if (useNativeAsset.value) {
       return tokensList.map(address => {
-        if (isSameAddress(address, config.network.addresses.weth))
+        if (
+          isSameAddress(address, config.network.tokens.Addresses.wNativeAsset)
+        )
           return config.network.nativeAsset.address;
         return address;
       });
@@ -43,16 +45,17 @@ export default function usePropMaxJoin(
 
   const poolTokenBalances = computed((): Record<string, BigNumber> => {
     if (!pool.onchain?.tokens) return {};
-    const weth = selectByAddress(
+
+    const wNativeAsset = selectByAddress(
       poolTokens.value,
-      config.network.addresses.weth
+      config.network.tokens.Addresses.wNativeAsset
     );
 
     // Set pool native asset balance to be the same as its WETH balance
     const balancesMap = {
       [config.network.nativeAsset.address]: parseUnits(
-        weth?.balance || '0',
-        weth?.decimals || 18
+        wNativeAsset?.balance || '0',
+        wNativeAsset?.decimals || 18
       ),
     };
 
@@ -74,55 +77,72 @@ export default function usePropMaxJoin(
    * METHODS
    */
 
-  function tokenOf(index: number) {
-    return getAddress(tokenAddresses.value[index]);
-  }
+  /**
+   * Calculates the proportional amount for a pool token given a fixed amount of
+   * another pool token.
+   *
+   * @param {string} address - The address of the token to calculate the
+   * proportional amount for.
+   * @param {AmountIn} fixedAmountIn - The fixed amount in.
+   * @returns {string} - The proportional amount.
+   */
+  function calcProportionalValue(
+    address: string,
+    fixedAmountIn: AmountIn
+  ): string {
+    if (isSameAddress(address, fixedAmountIn.address))
+      return fixedAmountIn.value;
 
-  function ratioOf(address: string): BigNumber {
-    const poolBalance = selectByAddress(poolTokenBalances.value, address);
-    if (!poolBalance) {
-      throw new Error(
-        `Balance for token: ${address} was not found in pool token balances`
-      );
-    }
-    return poolBalance;
+    // Token to calculate proportional amount for
+    const token = selectByAddress(tokensIn.value, address);
+    const poolTokenBalance =
+      selectByAddress(poolTokenBalances.value, address) || parseUnits('0');
+
+    // Token with fixed amount
+    const fixedTokenData = selectByAddress(
+      tokensIn.value,
+      fixedAmountIn.address
+    );
+    const evmFixedAmount = parseUnits(
+      fixedAmountIn.value,
+      fixedTokenData?.decimals
+    );
+    const fixedTokenPoolBalance =
+      selectByAddress(poolTokenBalances.value, fixedAmountIn.address) ||
+      parseUnits('0');
+
+    const amount = evmFixedAmount
+      .mul(poolTokenBalance)
+      .div(fixedTokenPoolBalance);
+    return formatUnits(amount, token?.decimals);
   }
 
   /**
-   * Calculates proportional amounts in/out given a fixed amount out/in based on
-   * the balances and totalSupply of the pool.
+   * Calculates proportional amounts in given a fixed amount of one of the input
+   * tokens and the balances of the pool tokens in the pool.
    *
-   * @param {string} fixedAmount - The fixed amount in/out.
+   * @param {string} fixedAmount - The fixed amount in.
    * @param {number} index - The pool token index for the fixedAmount.
    */
-  function propAmountsGiven(fixedAmount: string, index: number): AmountIn[] {
-    if (fixedAmount.trim() === '') return [];
+  function propAmountsGiven(amountIn: AmountIn): AmountIn[] {
+    if (amountIn.value.trim() === '') return [];
 
-    const fixedTokenAddress = tokenOf(index);
-    const fixedToken = selectByAddress(tokensIn.value, fixedTokenAddress);
-    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals);
-    const fixedRatio = ratioOf(fixedTokenAddress);
-    const amounts: AmountIn[] = tokenAddresses.value.map(token => {
+    return tokenAddresses.value.map(address => {
       return {
-        address: token,
+        address,
         valid: true,
-        value: '0',
+        value: calcProportionalValue(address, amountIn),
       };
     });
-
-    amounts[index].value = fixedAmount;
-
-    Object.values(tokensIn.value).forEach((token, i) => {
-      const ratio = ratioOf(token.address);
-      if (i !== index) {
-        const amount = fixedDenormAmount.mul(ratio).div(fixedRatio);
-        amounts[i].value = formatUnits(amount, token?.decimals);
-      }
-    });
-
-    return amounts;
   }
 
+  /**
+   * Calculates the proportional maximum amounts in given the user's token balances.
+   * i.e. it finds the limiting token balance and uses it to calculate the
+   * proportional amounts for the other tokens.
+   *
+   * @returns {AmountIn[]} - The proportional maximum amounts.
+   */
   function getPropMax(): AmountIn[] {
     let maxAmounts: AmountIn[] = tokenAddresses.value.map(address => {
       return {
@@ -132,35 +152,53 @@ export default function usePropMaxJoin(
       };
     });
 
-    tokenAddresses.value.forEach((token, tokenIndex) => {
+    tokenAddresses.value.forEach(address => {
       let hasBalance = true;
       let balance: string;
-      if (isSameAddress(token, config.network.nativeAsset.address)) {
-        const _balance = selectByAddress(balances.value, token);
+
+      // Fetch balance for current token, subtracting a buffer for gas if it's the
+      // native token.
+      if (isSameAddress(address, config.network.nativeAsset.address)) {
+        const _balance = balanceFor(address);
         balance = _balance
           ? bnum(_balance)
               .minus(config.network.nativeAsset.minTransactionBuffer)
               .toString()
           : '0';
       } else {
-        balance = selectByAddress(balances.value, token) || '0';
+        balance = balanceFor(address);
       }
-      const amounts: AmountIn[] = propAmountsGiven(balance, tokenIndex);
 
-      amounts.forEach((amount, amountIndex) => {
-        const greaterThanBalance = bnum(amount.value).gt(
-          balances.value[tokenOf(amountIndex)]
+      // Calculate proportional amounts of the other tokens given the current
+      // token as the fixed amount.
+      const proportionalAmountsIn: AmountIn[] = propAmountsGiven({
+        address,
+        value: balance,
+        valid: true,
+      });
+
+      // Check if for the calculated proportional amounts, the user has a
+      // sufficient balance. If not, set hasBalance to false.
+      proportionalAmountsIn.forEach(proportionalAmountIn => {
+        const greaterThanBalance = bnum(proportionalAmountIn.value).gt(
+          balanceFor(proportionalAmountIn.address)
         );
         if (greaterThanBalance) hasBalance = false;
       });
 
+      // If the user has a sufficient balance inject the amount into the
+      // maxAmounts array.
       if (hasBalance) {
-        const currentMaxAmount = parseFloat(
-          maxAmounts[tokenIndex].value || '0'
-        );
-        const thisAmount = parseFloat(amounts[tokenIndex].value);
-        if (thisAmount > currentMaxAmount) {
-          maxAmounts = amounts;
+        const currentMaxAmount =
+          maxAmounts.find(amountIn => isSameAddress(amountIn.address, address))
+            ?.value || '0';
+        const thisAmount =
+          proportionalAmountsIn.find(amountIn =>
+            isSameAddress(amountIn.address, address)
+          )?.value || '0';
+
+        if (bnum(thisAmount).gt(currentMaxAmount)) {
+          maxAmounts = proportionalAmountsIn;
         }
       }
     });
