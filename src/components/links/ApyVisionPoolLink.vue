@@ -22,7 +22,7 @@ defineProps<Props>();
 const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
 </script>
 
-<template>
+<template v-if="apyVisionNetworkName">
   <div class="group flex items-center mt-6 w-fit h-fit">
     <BalLink
       :href="
