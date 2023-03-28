@@ -313,7 +313,7 @@ describe('APRTooltip', () => {
       };
       const poolMock: Pool = {
         ...EmptyPoolMock,
-        id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+        id: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
         tokensList: [
           '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb',
           '0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83',
@@ -361,7 +361,7 @@ describe('APRTooltip', () => {
         tokenAprs: {
           total: 28,
           breakdown: {
-            '0xa13a9247ea42d743238089903570127dda72fe44': 28,
+            '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd': 28,
           },
         },
         stakingApr: {

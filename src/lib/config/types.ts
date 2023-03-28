@@ -16,6 +16,10 @@ export type TokenConstants = {
     Symbols: string[];
   };
   Addresses: CommonTokens;
+  InitialSwapTokens: {
+    input: string;
+    output: string;
+  };
   PriceChainMap?: Record<string, string>;
 };
 
@@ -98,6 +102,10 @@ export interface Config {
     deeplinkId: string;
     logoURI: string;
     minTransactionBuffer: string;
+  };
+  coingecko: {
+    nativeAssetId: string;
+    platformId: string;
   };
   addresses: Contracts;
   pools: Pools;

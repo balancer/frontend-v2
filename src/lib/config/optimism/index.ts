@@ -41,6 +41,10 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
+  coingecko: {
+    nativeAssetId: 'ethereum',
+    platformId: 'optimism',
+  },
   addresses: {
     ...contracts,
   },
@@ -59,6 +63,7 @@ const config: Config = {
       PerPool: 10,
       PerPoolInitial: 5,
     },
+    BoostsEnabled: false,
     DelegateOwner: '',
     ZeroAddress: '',
     DynamicFees: {
@@ -76,6 +81,8 @@ const config: Config = {
     Stakable: {
       AllowList: [],
     },
+    Deep: [],
+    BoostedApr: [],
     Metadata: {},
     DisabledJoins: [],
     BrandedRedirect: {},
