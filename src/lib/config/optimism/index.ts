@@ -77,6 +77,8 @@ const config: Config = {
     Stakable: {
       AllowList: [],
     },
+    Deep: [],
+    BoostedApr: [],
     Metadata: {},
     DisabledJoins: [],
     BrandedRedirect: {},
