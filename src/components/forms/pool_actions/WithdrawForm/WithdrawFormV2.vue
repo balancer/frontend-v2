@@ -44,7 +44,7 @@ const {
   validAmounts,
 } = useExitPool();
 
-const { isWethPool } = usePoolHelpers(pool);
+const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
 /**
  * COMPUTED
  */
@@ -59,7 +59,8 @@ const hasValidInputs = computed(
 // Limit token select modal to a subset.
 const subsetTokens = computed((): string[] => {
   if (isPreMintedBptType(pool.value.poolType)) return [];
-  if (isWethPool.value) return [nativeAsset.address, ...pool.value.tokensList];
+  if (isWrappedNativeAssetPool.value)
+    return [nativeAsset.address, ...pool.value.tokensList];
 
   return pool.value.tokensList;
 });

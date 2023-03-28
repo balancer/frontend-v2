@@ -327,8 +327,8 @@ describe('usePool composable', () => {
       isStablePool,
       isWeightedLikePool,
       isWeightedPool,
-      isWeth,
-      isWethPool,
+      isWrappedNativeAsset,
+      isWrappedNativeAssetPool,
       managedPoolWithSwappingHalted,
       noInitLiquidity,
       noInitLiquidityPool,
@@ -354,8 +354,8 @@ describe('usePool composable', () => {
     expect(isWeightedPool.value).toBeFalse();
     expect(isWeightedLikePool.value).toBeFalse();
     expect(isStablePhantomPool.value).toBeFalse();
-    expect(isWeth(weightedPool)).toBeFalse();
-    expect(isWethPool.value).toBeFalse();
+    expect(isWrappedNativeAsset(weightedPool)).toBeFalse();
+    expect(isWrappedNativeAssetPool.value).toBeFalse();
 
     expect(managedPoolWithSwappingHalted.value).toBeFalse();
     expect(noInitLiquidity(weightedPool)).toBeFalse();

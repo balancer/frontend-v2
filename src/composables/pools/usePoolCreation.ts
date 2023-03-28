@@ -245,10 +245,10 @@ export default function usePoolCreation() {
     return similarPool;
   });
 
-  const isWethPool = computed((): boolean => {
+  const isWrappedNativeAssetPool = computed((): boolean => {
     return includesAddress(
       tokensList.value,
-      configService.network.addresses.weth
+      configService.network.tokens.Addresses.wNativeAsset
     );
   });
 
@@ -603,7 +603,7 @@ export default function usePoolCreation() {
     poolLiquidity,
     poolTypeString,
     tokenColors,
-    isWethPool,
+    isWrappedNativeAssetPool,
     hasInjectedToken,
     hasRestoredFromSavedState,
   };

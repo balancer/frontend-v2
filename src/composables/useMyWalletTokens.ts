@@ -28,7 +28,7 @@ export default function useMyWalletTokens({
 
   const poolRef = computed(() => pool);
 
-  const { isWethPool, isDeepPool } = usePoolHelpers(poolRef);
+  const { isWrappedNativeAssetPool, isDeepPool } = usePoolHelpers(poolRef);
 
   function isExcludedToken(tokenAddress: Address) {
     return excludedTokens.some(excludedAddress =>
@@ -60,7 +60,9 @@ export default function useMyWalletTokens({
     const tokensList = pool?.tokensList || [];
 
     // for WETH pools, add native asset to pool tokens
-    return isWethPool.value ? [nativeAsset.address, ...tokensList] : tokensList;
+    return isWrappedNativeAssetPool.value
+      ? [nativeAsset.address, ...tokensList]
+      : tokensList;
   });
 
   const poolTokensWithBalance = computed((): string[] => {

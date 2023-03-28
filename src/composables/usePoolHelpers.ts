@@ -10,6 +10,7 @@ import {
   includesAddress,
   isSameAddress,
   removeAddress,
+  selectByAddress,
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
@@ -194,10 +195,10 @@ export function isSwappingHaltable(poolType: PoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
-export function isWeth(pool: AnyPool): boolean {
+export function isWrappedNativeAsset(pool: AnyPool): boolean {
   return includesAddress(
     pool.tokensList || [],
-    configService.network.addresses.weth
+    configService.network.tokens.Addresses.wNativeAsset
   );
 }
 
@@ -596,6 +597,27 @@ export function poolMetadata(
 }
 
 /**
+ * Gets weight of token in pool if relevant, e.g if it's a weighted pool.
+ * If not, returns 0.
+ *
+ * @param {Pool} pool - The pool to check
+ * @param {string} tokenAddress - The address of the token to check
+ * @returns {number} The weight of the token in the pool
+ */
+export function tokenWeight(pool: Pool, tokenAddress: string): number {
+  if (isStableLike(pool.poolType)) return 0;
+  if (!pool?.onchain?.tokens) return 0;
+
+  const { nativeAsset, wNativeAsset } = configService.network.tokens.Addresses;
+
+  if (isSameAddress(tokenAddress, nativeAsset)) {
+    return selectByAddress(pool.onchain.tokens, wNativeAsset)?.weight || 1;
+  }
+
+  return selectByAddress(pool.onchain.tokens, tokenAddress)?.weight || 1;
+}
+
+/**
  * COMPOSABLE
  */
 export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
@@ -670,8 +692,8 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean =>
       !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
   );
-  const isWethPool = computed(
-    (): boolean => !!pool.value && isWeth(pool.value)
+  const isWrappedNativeAssetPool = computed(
+    (): boolean => !!pool.value && isWrappedNativeAsset(pool.value)
   );
   const isMainnetWstETHPool = computed(
     (): boolean =>
@@ -715,7 +737,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isManagedPool,
     isLiquidityBootstrappingPool,
     managedPoolWithSwappingHalted,
-    isWethPool,
+    isWrappedNativeAssetPool,
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
@@ -730,7 +752,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeightedLike,
     isSwappingHaltable,
     isPreMintedBptType,
-    isWeth,
+    isWrappedNativeAsset,
     noInitLiquidity,
     isMigratablePool,
     poolWeightsLabel,

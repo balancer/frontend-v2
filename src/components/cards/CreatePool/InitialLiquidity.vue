@@ -37,7 +37,7 @@ const {
   manuallySetToken,
   autoOptimiseBalances,
   currentLiquidity,
-  isWethPool,
+  isWrappedNativeAssetPool,
   useNativeAsset,
   poolLiquidity,
   createPoolTxHash,
@@ -97,7 +97,7 @@ const hasZeroAmount = computed(() => {
  */
 onBeforeMount(() => {
   tokenAddresses.value = [...seedTokens.value.map(token => token.tokenAddress)];
-  if (isWethPool.value) setNativeAssetIfRequired();
+  if (isWrappedNativeAssetPool.value) setNativeAssetIfRequired();
 });
 
 onMounted(() => {
