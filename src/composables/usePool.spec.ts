@@ -31,6 +31,7 @@ import {
   totalAprLabel,
   absMaxApr,
   poolURLFor,
+  after29March,
 } from './usePool';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
@@ -331,6 +332,7 @@ describe('usePool composable', () => {
       isWethPool,
       managedPoolWithSwappingHalted,
       noInitLiquidity,
+      createdBeforeMar29,
       noInitLiquidityPool,
       poolWeightsLabel,
     } = mountUsePool(undefined);
@@ -360,6 +362,7 @@ describe('usePool composable', () => {
     expect(managedPoolWithSwappingHalted.value).toBeFalse();
     expect(noInitLiquidity(weightedPool)).toBeFalse();
     expect(noInitLiquidityPool.value).toBeFalse();
+    expect(createdBeforeMar29.value).toBeFalse();
     expect(isMigratablePool(weightedPool)).toBeFalse();
 
     expect(poolWeightsLabel(weightedPool)).toBe('');
@@ -692,4 +695,24 @@ test('poolURLFor Arbitrum', async () => {
   ).toBe(
     'https://localhost:8080/#/arbitrum/pool/0x9f19a375709baf0e8e35c2c5c68aca646c4c719100000000000000000000006e'
   );
+});
+
+test('Detects creation after 29 March', async () => {
+  expect(
+    after29March(
+      aPool({
+        createTime: Date.parse('2023-03-30'),
+      })
+    )
+  ).toBeTrue();
+});
+
+test('Detects creation before 29 March', async () => {
+  expect(
+    after29March(
+      aPool({
+        createTime: Date.parse('2023-03-28'),
+      })
+    )
+  ).toBeFalse();
 });

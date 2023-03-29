@@ -23,7 +23,7 @@ export default function usePoolTransfersGuard() {
    */
   const router = useRouter();
   const { pool, transfersAllowed } = usePoolTransfers();
-  const { noInitLiquidity } = usePool(pool);
+  const { noInitLiquidity, createdAfter29Mar } = usePool(pool);
   const { networkSlug } = useNetwork();
 
   /**
@@ -31,6 +31,7 @@ export default function usePoolTransfersGuard() {
    */
   function shouldBlockAccess(pool: Pool): boolean {
     if (noInitLiquidity(pool)) return true;
+    if (createdAfter29Mar.value) return true;
     return false;
   }
 
@@ -55,4 +56,6 @@ export default function usePoolTransfersGuard() {
       transfersAllowed.value = true;
     }
   });
+
+  return { transfersAllowed };
 }

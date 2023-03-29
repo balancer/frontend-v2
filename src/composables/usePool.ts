@@ -158,11 +158,14 @@ export function isMigratablePool(pool: AnyPool) {
 export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.totalShares || '0').eq(0);
 }
-
 export function preMintedBptIndex(pool: Pool): number | void {
   return pool.tokensList.findIndex(address =>
     isSameAddress(address, pool.address)
   );
+}
+
+export function after29March(pool: AnyPool): boolean {
+  return (pool?.createTime || '0') > Date.parse('2023-03-29');
 }
 
 /**
@@ -633,6 +636,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)
   );
+  const createdAfter29Mar = computed(
+    () => !!pool.value && after29March(pool.value)
+  );
 
   // pool is "Weighted" and some of the rate providers are not on our approved list
   const hasNonApprovedRateProviders = computed(
@@ -685,6 +691,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isPreMintedBptType,
     isWeth,
     noInitLiquidity,
+    createdAfter29Mar,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

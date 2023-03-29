@@ -2,6 +2,9 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import { wethAddress } from '@tests/unit/builders/address';
 import { mock } from 'vitest-mock-extended';
 
+export const defaultWeightedPoolId =
+  '0x45a0623ab66f985effc1c69d05f1af4badb01b00000200000000001230000060';
+
 const pool: Pool = mock<Pool>();
 
 type DeepPartial<T> = {
@@ -9,7 +12,7 @@ type DeepPartial<T> = {
 };
 
 const defaults: DeepPartial<Pool> = {
-  id: 'test pool id',
+  id: defaultWeightedPoolId,
   totalLiquidity: '100000000',
   address: '0x702605F43471183158938C1a3e5f5A359d7b31ba',
   owner: '0xb794f5ea0ba39494ce839613fffba74279579268',
