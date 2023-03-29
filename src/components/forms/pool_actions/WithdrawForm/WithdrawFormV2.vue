@@ -72,7 +72,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div>
+  <div data-testid="withdraw-form">
     <ProportionalWithdrawalInputV2 v-if="!isSingleAssetExit" :pool="pool" />
     <template v-else>
       <template v-if="isDeep(pool)">

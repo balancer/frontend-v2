@@ -23,6 +23,7 @@ const config: Config = {
     gauge: '',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: false,
   blockTime: 12,
   nativeAsset: {
@@ -33,6 +34,12 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
   },
   addresses: {
     ...contracts,
@@ -48,6 +55,7 @@ const config: Config = {
       PerPool: 10,
       PerPoolInitial: 5,
     },
+    BoostsEnabled: false,
     DelegateOwner: '',
     ZeroAddress: '',
     DynamicFees: {
@@ -66,6 +74,8 @@ const config: Config = {
       AllowList: [],
     },
     Metadata: {},
+    Deep: [],
+    BoostedApr: [],
     DisabledJoins: [],
     BrandedRedirect: {},
   },

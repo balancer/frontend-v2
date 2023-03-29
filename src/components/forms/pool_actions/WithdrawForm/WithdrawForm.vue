@@ -118,7 +118,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div>
+  <div data-testid="withdraw-form">
     <ProportionalWithdrawalInput
       v-if="isProportional"
       :pool="pool"
