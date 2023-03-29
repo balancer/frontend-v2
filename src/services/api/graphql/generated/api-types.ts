@@ -1054,7 +1054,9 @@ export type Mutation = {
   poolReloadAllPoolAprs: Scalars['String'];
   poolReloadAllTokenNestedPoolIds: Scalars['String'];
   poolReloadPoolNestedTokens: Scalars['String'];
+  poolReloadPoolTokenIndexes: Scalars['String'];
   poolReloadStakingForAllPools: Scalars['String'];
+  poolSetPoolsWithPreferredGaugesAsIncentivized: Scalars['String'];
   poolSyncAllPoolsFromSubgraph: Array<Scalars['String']>;
   poolSyncLatestSnapshotsForAllPools: Scalars['String'];
   poolSyncNewPoolsFromSubgraph: Array<Scalars['String']>;
@@ -1099,6 +1101,10 @@ export type MutationPoolLoadSnapshotsForPoolsArgs = {
 };
 
 export type MutationPoolReloadPoolNestedTokensArgs = {
+  poolId: Scalars['String'];
+};
+
+export type MutationPoolReloadPoolTokenIndexesArgs = {
   poolId: Scalars['String'];
 };
 
@@ -1170,6 +1176,7 @@ export type Query = {
   tokenGetCurrentPrices: Array<GqlTokenPrice>;
   tokenGetHistoricalPrices: Array<GqlHistoricalTokenPrice>;
   tokenGetPriceChartData: Array<GqlTokenPriceChartDataItem>;
+  tokenGetProtocolTokenPrice: Scalars['AmountHumanReadable'];
   tokenGetRelativePriceChartData: Array<GqlTokenPriceChartDataItem>;
   tokenGetTokenData?: Maybe<GqlTokenData>;
   tokenGetTokenDynamicData?: Maybe<GqlTokenDynamicData>;

@@ -1,4 +1,3 @@
-import { TokenPrices } from '@/composables/queries/useTokenPricesQuery';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
