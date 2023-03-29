@@ -10,6 +10,8 @@ const config: Config = {
   slug: 'test',
   network: 'test',
   unknown: false,
+  visibleInUI: false,
+  testNetwork: true,
   rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
   ws: 'ws://balancer.fi:1234',
   explorer: 'https://etherscan.io',

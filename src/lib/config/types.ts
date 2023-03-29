@@ -76,6 +76,8 @@ export interface Config {
   slug: string;
   network: string;
   unknown: boolean;
+  visibleInUI: boolean;
+  testNetwork: boolean;
   rpc: string;
   publicRpc?: string;
   ws: string;
