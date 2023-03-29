@@ -201,7 +201,7 @@ function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
  * @summary Fetches bb-a-USD rate as an appoximation of USD price.
  */
 async function getBBaUSDPrice() {
-  if (TOKENS.Addresses.bbaUSD) {
+  if (TOKENS.Addresses.bbaUSDv2) {
     const approxPrice = bnum(await bbAUSDToken.getRate()).toNumber();
     injectPrices({
       [TOKENS.Addresses.bbaUSD as string]: { [FiatCurrency.usd]: approxPrice },
