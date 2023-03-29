@@ -89,6 +89,42 @@ type Props = {
 
 export type UseSor = ReturnType<typeof useSor>;
 
+/**
+ * Calculates the difference between the price the user is receiving
+ * and the market price of the token.
+ * The variable token is the token has it's amount calculated by SOR
+ *  - If the swap type is ExactIn, this is the output token
+ *  - If the swap type is ExactOut, this is the input token
+ * The fixed token is the token that has a fixed amount the user set.
+ * This is the opposite of the variable token.
+ * @param variableTokenDecimals - The variable token decimals
+ * @param variableTokenAmount - The variable token amount (not scaled by decimals, so $25 of USDC = 25)
+ * @param fixedTokenAmountScaled - The fixed token amount scaled up by it's decimals (so $25 of USDC = 25000000, as it's 6 decimals)
+ * @param swapReturn - The SOR swap details
+ * @returns
+ */
+export function calcPriceImpact(
+  variableTokenDecimals: number,
+  variableTokenAmount: BigNumber,
+  fixedTokenAmountScaled: BigNumber,
+  marketSp: string
+): BigNumber {
+  // 10 scaled up to the number of decimals of the variable token
+  const divScale = BigNumber.from(10).pow(variableTokenDecimals);
+  // A wad is 10e18
+  const wadScale = BigNumber.from(10).pow(18);
+
+  // The price of the output token (the variable token)
+  const effectivePrice = fixedTokenAmountScaled
+    .mul(divScale)
+    .div(variableTokenAmount);
+
+  return effectivePrice
+    .mul(wadScale)
+    .div(parseUnits(Number(marketSp).toFixed(18)))
+    .sub(ONE);
+}
+
 export default function useSor({
   exactIn,
   tokenInAddressInput,
@@ -401,7 +437,7 @@ export default function useSor({
           tokenOutDecimals,
           tokenOutAmount,
           tokenInAmountScaled,
-          swapReturn
+          swapReturn.marketSpNormalised
         );
 
         priceImpact.value = Math.max(
@@ -453,7 +489,7 @@ export default function useSor({
           tokenInDecimals,
           tokenInAmount,
           tokenOutAmountScaled,
-          swapReturn
+          swapReturn.marketSpNormalised
         );
 
         priceImpact.value = Math.max(
@@ -467,21 +503,6 @@ export default function useSor({
 
     state.validationErrors.highPriceImpact =
       priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
-  }
-
-  function calcPriceImpact(
-    tokenDecimals: number,
-    tokenAmount: BigNumber,
-    tokenAmountScaled: BigNumber,
-    swapReturn: SorReturn
-  ): BigNumber {
-    const divScale = BigNumber.from(10).pow(tokenDecimals);
-    const wadScale = BigNumber.from(10).pow(18);
-    const effectivePrice = tokenAmountScaled.mul(divScale).div(tokenAmount);
-    return effectivePrice
-      .mul(wadScale)
-      .div(parseUnits(Number(swapReturn.marketSpNormalised).toFixed(18)))
-      .sub(ONE);
   }
 
   function txHandler(tx: TransactionResponse, action: TransactionAction): void {
