@@ -1,14 +1,10 @@
-import { BalancerSDK, Network } from '@balancer-labs/sdk';
+import { BalancerSDK } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import { ref } from 'vue';
 import { isTestMode } from '@/plugins/modes';
 
-const network = ((): Network => {
-  return configService.network.chainId;
-})();
-
 export const balancer = new BalancerSDK({
-  network,
+  network: configService.network.chainId,
   rpcUrl: configService.rpc,
   customSubgraphUrl: configService.network.subgraph,
 });

@@ -34,6 +34,7 @@ vi.mock('@/services/config/config.service', () => {
     default: vi.fn().mockImplementation(() => {}),
     configService: {
       network: {
+        chainId: 5,
         nativeAsset: {
           address: '0x0000000000000000000000000000000000000000',
         },
@@ -46,6 +47,7 @@ vi.mock('@/services/config/config.service', () => {
   };
 });
 vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
+vi.mock('@/lib/balancer.sdk');
 
 vi.mock('@/providers/tokens.provider');
 
