@@ -4,6 +4,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import useNetwork from '../useNetwork';
 import { api } from '@/services/api/api.client';
 import { GqlTokenPrice } from '@/services/api/graphql/generated/api-types';
+import { oneMinInMs } from '../useTime';
 
 /**
  * TYPES
@@ -16,14 +17,12 @@ type QueryOptions = UseQueryOptions<QueryResponse>;
  * Fetches token prices for all provided addresses.
  */
 export default function useTokenPricesQuery(
-  addresses: Ref<string[]> = ref([]),
   pricesToInject: Ref<TokenPrices> = ref({}),
-  enabled: Ref<boolean> = ref(false),
   options: QueryOptions = {}
 ) {
   const { networkId } = useNetwork();
   const queryKey = reactive(
-    QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject)
+    QUERY_KEYS.Tokens.Prices(networkId, pricesToInject)
   );
 
   function priceArrayToMap(prices: GqlTokenPrice[]): TokenPrices {
@@ -54,7 +53,10 @@ export default function useTokenPricesQuery(
   };
 
   const queryOptions = reactive({
-    enabled,
+    enabled: true,
+    refetchInterval: oneMinInMs * 5,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
     ...options,
   });
 

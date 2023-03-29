@@ -49,6 +49,8 @@ export default function useBalancesQuery(
 
   const queryOptions = reactive({
     enabled,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
     ...options,
   });
 

@@ -183,11 +183,11 @@ const QUERY_KEYS = {
         wrappedNativeAsset,
       },
     ],
-    Prices: (
-      networkId: Ref<Network>,
-      tokens: Ref<string[]>,
-      pricesToInject: Ref<TokenPrices>
-    ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
+    Prices: (networkId: Ref<Network>, pricesToInject: Ref<TokenPrices>) => [
+      'tokens',
+      'prices',
+      { networkId, pricesToInject },
+    ],
     AllPrices: ['tokens', 'prices'],
     VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [
       'tokens',

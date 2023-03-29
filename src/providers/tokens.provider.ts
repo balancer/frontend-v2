@@ -133,8 +133,6 @@ export const tokensProvider = (
     })
   );
 
-  const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
-
   const wrappedNativeAsset = computed(
     (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset)
   );
@@ -145,11 +143,6 @@ export const tokensProvider = (
    * The prices, balances and allowances maps provide dynamic
    * metadata for each token in the tokens state array.
    ****************************************************************/
-
-  // Prevent prices fetching initally until we inject default tokens like veBAL.
-  // This helps reduce coingecko API calls.
-  const pricesQueryEnabled = computed(() => !state.loading);
-
   const {
     data: priceData,
     isSuccess: priceQuerySuccess,
@@ -157,15 +150,7 @@ export const tokensProvider = (
     isRefetching: priceQueryRefetching,
     isError: priceQueryError,
     refetch: refetchPrices,
-  } = useTokenPricesQuery(
-    tokenAddresses,
-    toRef(state, 'injectedPrices'),
-    pricesQueryEnabled,
-    {
-      keepPreviousData: true,
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = useTokenPricesQuery(toRef(state, 'injectedPrices'));
 
   const {
     data: balanceData,
@@ -174,7 +159,7 @@ export const tokensProvider = (
     isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
-  } = useBalancesQuery(tokens, { keepPreviousData: true });
+  } = useBalancesQuery(tokens);
 
   const {
     data: allowanceData,
@@ -214,8 +199,8 @@ export const tokensProvider = (
 
   const dynamicDataLoading = computed(
     (): boolean =>
-      (pricesQueryEnabled.value &&
-        (priceQueryLoading.value || priceQueryRefetching.value)) ||
+      priceQueryLoading.value ||
+      priceQueryRefetching.value ||
       onchainDataLoading.value
   );
 
