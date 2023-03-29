@@ -25,6 +25,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { lsGet } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { StepState } from '@/types';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * STATE
@@ -54,6 +55,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const { priceFor, getToken, injectTokens, injectedPrices } = useTokens();
 const route = useRoute();
 const { isWalletReady } = useWeb3();
+const { networkSlug } = useNetwork();
 
 /**
  * LIFECYCLE
@@ -206,7 +208,28 @@ watch(
 </script>
 
 <template>
-  <div>
+  <BalModal v-if="true" show @close="$router.push({ name: 'home' })">
+    <template #header>
+      <div class="mt-2 text-xl font-bold">
+        Pool creation is temporarily disabled
+      </div>
+    </template>
+    <div class="flex flex-col">
+      <div class="mb-6">
+        The pool creation UI has been temporarily disabled while it is upgraded
+        to work with the new V4 factory
+      </div>
+      <router-link
+        as="div"
+        class="flex mb-2 font-semibold w-100"
+        :to="{ name: 'home', params: { networkSlug } }"
+      >
+        <BalBtn class="flex-grow w-100" outline> Return to home page </BalBtn>
+      </router-link>
+    </div>
+  </BalModal>
+
+  <div v-else>
     <Col3Layout offsetGutters mobileHideGutters class="mt-8">
       <template #gutterLeft>
         <div v-if="!upToLargeBreakpoint" class="col-span-3">
