@@ -15,7 +15,7 @@ const config: Config = {
   slug: 'ethereum',
   network: 'homestead',
   unknown: false,
-  inNetworkSelector: true,
+  visibleInUI: true,
   testNetwork: false,
   rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://mainnet.infura.io/ws/v3/${keys.infura}`,

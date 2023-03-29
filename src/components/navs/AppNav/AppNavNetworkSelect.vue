@@ -38,13 +38,13 @@ function convertConfigToNetworkOption(config: Config): NetworkOption {
 }
 
 const prodNetworks: NetworkOption[] = Object.values(config)
-  .filter(config => config.inNetworkSelector && !config.testNetwork)
+  .filter(config => config.visibleInUI && !config.testNetwork)
   .map(convertConfigToNetworkOption);
 
 const networks = ref(prodNetworks);
 
 const testNetworks: NetworkOption[] = Object.values(config)
-  .filter(config => config.inNetworkSelector && config.testNetwork)
+  .filter(config => config.visibleInUI && config.testNetwork)
   .map(convertConfigToNetworkOption);
 
 const networksDev = ref(testNetworks);

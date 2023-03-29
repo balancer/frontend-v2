@@ -15,7 +15,7 @@ const config: Config = {
   slug: 'arbitrum',
   network: 'arbitrum-one',
   unknown: false,
-  inNetworkSelector: true,
+  visibleInUI: true,
   testNetwork: false,
   rpc: `https://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,

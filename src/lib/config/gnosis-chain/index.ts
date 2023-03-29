@@ -14,7 +14,7 @@ const config: Config = {
   slug: 'gnosis-chain',
   network: 'gnosis-chain',
   unknown: false,
-  inNetworkSelector: true,
+  visibleInUI: true,
   testNetwork: false,
   rpc: 'https://poa-xdai.gateway.pokt.network/v1/lb/91bc0e12a76e7a84dd76189d',
   ws: 'wss://rpc.gnosischain.com/wss',

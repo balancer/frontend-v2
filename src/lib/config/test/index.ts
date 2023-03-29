@@ -10,7 +10,7 @@ const config: Config = {
   slug: 'test',
   network: 'test',
   unknown: false,
-  inNetworkSelector: false,
+  visibleInUI: false,
   testNetwork: true,
   rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
   ws: 'ws://balancer.fi:1234',
