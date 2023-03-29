@@ -266,6 +266,10 @@ const pools: Pools = {
       name: 'Euler Boosted USD/wstETH',
       hasIcon: false,
     },
+    '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db': {
+      name: 'Balancer Boosted Morpho-Aave USD',
+      hasIcon: false,
+    },
     // '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472': {
     //   name: 'APE/wstETH',
     //   hasIcon: false,
