@@ -224,7 +224,9 @@ watch(
         class="flex mb-2 font-semibold w-100"
         :to="{ name: 'home', params: { networkSlug } }"
       >
-        <BalBtn class="flex-grow w-100" outline> Return to home page </BalBtn>
+        <BalBtn class="flex-grow dark:text-white w-100" outline>
+          Return to home page
+        </BalBtn>
       </router-link>
     </div>
   </BalModal>
