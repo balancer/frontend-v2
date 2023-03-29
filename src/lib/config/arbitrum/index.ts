@@ -34,6 +34,7 @@ const config: Config = {
     blocks:
       'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
   },
+  bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,
   supportsElementPools: false,
   blockTime: 2,
@@ -45,6 +46,15 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'arbitrum-one',
+    },
+    apyVision: {
+      networkName: 'arbitrum',
+    },
   },
   addresses: {
     ...contracts,

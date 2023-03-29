@@ -32,6 +32,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-b',
     blocks: '',
   },
+  bridgeUrl: 'https://bridge.gnosischain.com/',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 5,
@@ -43,6 +44,12 @@ const config: Config = {
     deeplinkId: 'xdai',
     logoURI: 'tokens/xdai.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'xdai',
+      platformId: 'xdai',
+    },
   },
   addresses: {
     ...contracts,

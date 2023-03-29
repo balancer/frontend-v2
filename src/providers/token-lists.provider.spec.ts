@@ -20,6 +20,7 @@ describe('Token lists provider should', () => {
   test('provide active TokenList', async () => {
     const { result } = mountComposableWithTokenLists();
     await result.tokensListPromise;
+
     expect(firstTokenListSymbols(result.activeTokenLists.value)).toEqual([
       'BAL',
       'DAI',
