@@ -6,6 +6,7 @@ import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { NativeAsset, TokenInfo } from '@/types/TokenList';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
 import { TokenPrices } from '@/composables/queries/useTokenPricesQuery';
+import { MerkleOrchardVersion } from '@/services/claim/claim.service';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -152,10 +153,11 @@ const QUERY_KEYS = {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],
   },
   Claims: {
-    All: (networkId: Ref<Network>, account: Ref<string>) => [
-      CLAIMS_ROOT_KEY,
-      { networkId, account },
-    ],
+    All: (
+      networkId: Ref<Network>,
+      account: Ref<string>,
+      merkleOrchardVersion: MerkleOrchardVersion
+    ) => [CLAIMS_ROOT_KEY, { networkId, account, merkleOrchardVersion }],
     Protocol: (networkId: Ref<Network>, account: Ref<string>) => [
       CLAIMS_ROOT_KEY,
       'protocol',

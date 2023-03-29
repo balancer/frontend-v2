@@ -59,7 +59,7 @@ const showStakeModal = ref(false);
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { balanceFor, nativeAsset, wrappedNativeAsset, getToken } = useTokens();
 const { useNativeAsset } = usePoolTransfers();
 const {
   tokenAddresses,
@@ -67,18 +67,11 @@ const {
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
-  sor,
 } = useInvestState();
 
 const pool = computed(() => props.pool);
 
-const investMath = useInvestMath(
-  pool,
-  tokenAddresses,
-  amounts,
-  useNativeAsset,
-  sor
-);
+const investMath = useInvestMath(pool, tokenAddresses, amounts, useNativeAsset);
 
 const {
   hasAmounts,
@@ -207,6 +200,11 @@ function setNativeAsset(to: NativeAsset): void {
   }
 }
 
+function getTokenInputLabel(address: string): string | undefined {
+  const token = getToken(address);
+  return token?.symbol || undefined;
+}
+
 /**
  * CALLBACKS
  */
@@ -229,7 +227,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 </script>
 
 <template>
-  <div>
+  <div data-testid="add-liquidity-form">
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
@@ -261,6 +259,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       class="mb-4"
       fixedToken
       :options="tokenOptions(i)"
+      :aria-label="'Amount of: ' + getTokenInputLabel(tokenAddresses[i])"
       @update:amount="handleAmountChange($event, i)"
       @update:address="handleAddressChange($event)"
     />

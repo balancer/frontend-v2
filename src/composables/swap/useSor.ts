@@ -749,6 +749,7 @@ export default function useSor({
     }
     swapping.value = false;
     confirming.value = false;
+    throw error;
   }
 
   return {

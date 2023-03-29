@@ -11,7 +11,6 @@ import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
-import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { POOLS } from '@/constants/voting-gauge-pools';
 import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
@@ -93,7 +92,8 @@ async function getAssetURIFromTokenlists(
   log(
     `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`
   );
-  const tokenListURIs = TOKEN_LIST_MAP[network.toString()];
+
+  const tokenListURIs = configService.getNetworkConfig(network).tokenlists;
   const allURIs = [
     ...Object.values(tokenListURIs.Balancer),
     ...tokenListURIs.External,
@@ -105,7 +105,10 @@ async function getAssetURIFromTokenlists(
   const tokenLists = await Promise.all(
     validResponses.map(response => response.json())
   );
-  const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
+  const allTokens = tokenLists
+    .map(tokenList => tokenList.tokens)
+    .flat()
+    .filter(token => token.chainId === network);
 
   log('getAssetURIFromTokenlists finding token');
   const token = allTokens.find(token =>

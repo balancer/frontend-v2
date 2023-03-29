@@ -22,8 +22,8 @@ const PoolPage = () =>
   import(
     /* webpackChunkName: "PoolPage" */ /* webpackPrefetch: true */ '@/pages/pool/_id.vue'
   );
-const CreatePoolPage = () =>
-  import(/* webpackChunkName: "CreatePoolPage" */ '@/pages/pool/create.vue');
+// const CreatePoolPage = () =>
+//   import(/* webpackChunkName: "CreatePoolPage" */ '@/pages/pool/create.vue');
 const PoolAddLiquidityPage = () =>
   import(
     /* webpackChunkName: "PoolAddLiquidityPage" */ '@/pages/pool/add-liquidity.vue'
@@ -40,6 +40,8 @@ const PrivacyPolicyPage = () =>
   );
 const TermsOfUsePage = () =>
   import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
+const RisksPage = () =>
+  import(/* webpackChunkName: "RisksPage" */ '@/pages/risks.vue');
 const SwapPage = () =>
   import(
     /* webpackChunkName: "SwapPage" */ /* webpackPrefetch: true */ '@/pages/swap.vue'
@@ -91,6 +93,12 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'ContentLayout' },
   },
   {
+    path: '/risks',
+    name: 'risks',
+    component: RisksPage,
+    meta: { layout: 'ContentLayout' },
+  },
+  {
     path: '/:networkSlug/swap/:assetIn?/:assetOut?',
     name: 'swap',
     component: SwapPage,
@@ -102,12 +110,12 @@ const routes: RouteRecordRaw[] = [
       return `/${to.params.networkSlug}/swap${to.path.split('/trade')[1]}`;
     },
   },
-  {
-    path: '/:networkSlug/pool/create/:tx?',
-    name: 'create-pool',
-    component: CreatePoolPage,
-    meta: { layout: 'FocusedLayout' },
-  },
+  // {
+  //   path: '/:networkSlug/pool/create/:tx?',
+  //   name: 'create-pool',
+  //   component: CreatePoolPage,
+  //   meta: { layout: 'FocusedLayout' },
+  // },
   {
     path: '/:networkSlug/pool/:id',
     name: 'pool',
@@ -205,8 +213,11 @@ if (isGoerli.value) {
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-  scrollBehavior() {
-    return { top: 0 };
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.hash) return { el: to.hash };
+
+    return { x: 0, top: 0 };
   },
 });
 

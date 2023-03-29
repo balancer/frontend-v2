@@ -153,7 +153,7 @@ export const tokensProvider = (
   const {
     data: priceData,
     isSuccess: priceQuerySuccess,
-    isLoading: priceQueryLoading,
+    isInitialLoading: priceQueryLoading,
     isRefetching: priceQueryRefetching,
     isError: priceQueryError,
     refetch: refetchPrices,
@@ -179,7 +179,7 @@ export const tokensProvider = (
   const {
     data: allowanceData,
     isSuccess: allowanceQuerySuccess,
-    isLoading: allowanceQueryLoading,
+    isInitialLoading: allowanceQueryLoading,
     isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
@@ -196,22 +196,27 @@ export const tokensProvider = (
       allowanceData.value ? allowanceData.value : {}
   );
 
+  const onchainDataLoading = computed(
+    (): boolean =>
+      isWalletReady.value &&
+      (balanceQueryLoading.value ||
+        balanceQueryRefetching.value ||
+        allowanceQueryLoading.value ||
+        allowanceQueryRefetching.value)
+  );
+
   const dynamicDataLoaded = computed(
-    () =>
+    (): boolean =>
       priceQuerySuccess.value &&
       balanceQuerySuccess.value &&
       allowanceQuerySuccess.value
   );
 
   const dynamicDataLoading = computed(
-    () =>
+    (): boolean =>
       (pricesQueryEnabled.value &&
         (priceQueryLoading.value || priceQueryRefetching.value)) ||
-      (isWalletReady.value &&
-        (balanceQueryLoading.value ||
-          balanceQueryRefetching.value ||
-          allowanceQueryLoading.value ||
-          allowanceQueryRefetching.value))
+      onchainDataLoading.value
   );
 
   /**
@@ -317,8 +322,8 @@ export const tokensProvider = (
       const tokensArray = Object.entries(tokensToSearch);
       const results = tokensArray.filter(
         ([, token]) =>
-          token.name.toLowerCase().includes(query.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(query.toLowerCase())
+          token.name?.toLowerCase().includes(query.toLowerCase()) ||
+          token.symbol?.toLowerCase().includes(query.toLowerCase())
       );
       return removeExcluded(Object.fromEntries(results), excluded);
     }
@@ -447,7 +452,7 @@ export const tokensProvider = (
       // Subtract buffer for gas
       maxAmount = tokenBalanceBN.gt(nativeAsset.minTransactionBuffer)
         ? tokenBalanceBN.minus(nativeAsset.minTransactionBuffer).toString()
-        : '0';
+        : tokenBalance.toString();
     } else {
       maxAmount = tokenBalance;
     }

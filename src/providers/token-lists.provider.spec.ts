@@ -20,6 +20,7 @@ describe('Token lists provider should', () => {
   test('provide active TokenList', async () => {
     const { result } = mountComposableWithTokenLists();
     await result.tokensListPromise;
+
     expect(firstTokenListSymbols(result.activeTokenLists.value)).toEqual([
       'BAL',
       'DAI',
@@ -28,6 +29,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 
@@ -41,6 +47,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 
@@ -54,6 +65,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 
@@ -67,6 +83,11 @@ describe('Token lists provider should', () => {
       'WETH',
       'WBTC',
       'miMATIC',
+      // Explicitly added to test tokens-5.json to simplify testing:
+      'bb-a-USD',
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-DAI',
     ]);
   });
 

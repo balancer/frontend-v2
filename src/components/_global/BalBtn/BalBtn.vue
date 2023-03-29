@@ -40,7 +40,8 @@ type Props = {
     | 'white'
     | 'blue'
     | 'yellow'
-    | 'black';
+    | 'black'
+    | 'transparent';
   label?: string;
   block?: boolean;
   circle?: boolean;
@@ -155,7 +156,7 @@ const bgColorClasses = computed(() => {
 const borderClasses = computed(() => {
   if (props.outline) {
     if (props.disabled) return `border border-gray-200 dark:border-gray-700`;
-    return `border ${border(props.color)} dark:border-${darkBorder(
+    return `border ${border(props.color)} ${darkBorder(
       props.color
     )} ${darkHoverBorder(props.color)} ${darkFocusBorder(
       props.color
