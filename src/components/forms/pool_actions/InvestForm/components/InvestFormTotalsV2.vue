@@ -5,11 +5,11 @@ import { useJoinPool } from '@/providers/local/join-pool.provider';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { useTokens } from '@/providers/tokens.provider';
-import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import { Pool } from '@/services/pool/types';
 import { isWrappedNativeAsset } from '@/composables/usePoolHelpers';
 import { bnum, isSameAddress } from '@/lib/utils';
 import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
+import { useUserTokens } from '@/providers/local/user-tokens.provider';
 
 type Props = {
   pool: Pool;
@@ -22,6 +22,7 @@ const props = defineProps<Props>();
  */
 const { fNum } = useNumbers();
 const {
+  poolJoinTokens,
   highPriceImpact,
   isLoadingQuery,
   priceImpact,
@@ -33,10 +34,7 @@ const {
 } = useJoinPool();
 const { isWalletReady } = useWeb3();
 const { isWethOrEth, nativeAsset, balanceFor } = useTokens();
-const { poolTokensWithoutBalance, poolTokensWithBalance } = useMyWalletTokens({
-  pool: props.pool,
-  excludedTokens: [props.pool.address],
-});
+const { tokensWithBalanceFrom, tokensWithoutBalanceFrom } = useUserTokens();
 
 const useNativeAsset = computed((): boolean => {
   return amountsIn.value.some(amountIn =>
@@ -61,14 +59,15 @@ const optimizeBtnClasses = computed(() => ({
 
 const hasBalanceForAllTokens = computed((): boolean => {
   const hasBalanceForAll =
-    poolTokensWithoutBalance.value.filter(address => !isWethOrEth(address))
-      .length === 0;
+    tokensWithoutBalanceFrom(poolJoinTokens.value).filter(
+      address => !isWethOrEth(address)
+    ).length === 0;
 
   // If the pool contains the wrapped native asset, user might have balance for just one of them
   if (isWrappedNativeAsset(props.pool)) {
-    const hasWethOrEthBalance = poolTokensWithBalance.value.some(address =>
-      isWethOrEth(address)
-    );
+    const hasWethOrEthBalance = tokensWithBalanceFrom(
+      poolJoinTokens.value
+    ).some(address => isWethOrEth(address));
     return hasBalanceForAll && hasWethOrEthBalance;
   }
   return hasBalanceForAll;
@@ -76,14 +75,15 @@ const hasBalanceForAllTokens = computed((): boolean => {
 
 const hasBalanceForSomeTokens = computed((): boolean => {
   const hasBalanceForSome =
-    poolTokensWithBalance.value.filter(address => !isWethOrEth(address))
-      .length > 0;
+    tokensWithBalanceFrom(poolJoinTokens.value).filter(
+      address => !isWethOrEth(address)
+    ).length > 0;
 
   // If the pool contains the wrapped native asset, user might have balance for just one of them
   if (isWrappedNativeAsset(props.pool)) {
-    const hasWethOrEthBalance = poolTokensWithBalance.value.some(address =>
-      isWethOrEth(address)
-    );
+    const hasWethOrEthBalance = tokensWithBalanceFrom(
+      poolJoinTokens.value
+    ).some(address => isWethOrEth(address));
     return hasBalanceForSome || hasWethOrEthBalance;
   }
   return hasBalanceForSome;

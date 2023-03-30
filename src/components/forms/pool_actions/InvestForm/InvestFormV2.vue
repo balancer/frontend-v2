@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { tokenWeight, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum, includesAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -15,11 +15,11 @@ import useVeBal from '@/composables/useVeBAL';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 
-import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { isEqual } from 'lodash';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
+import { useUserTokens } from '@/providers/local/user-tokens.provider';
 
 /**
  * TYPES
@@ -42,8 +42,12 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { managedPoolWithSwappingHalted, isDeepPool, isPreMintedBptPool } =
-  usePoolHelpers(toRef(props, 'pool'));
+const {
+  managedPoolWithSwappingHalted,
+  isDeepPool,
+  isPreMintedBptPool,
+  poolJoinTokens,
+} = usePoolHelpers(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -61,10 +65,7 @@ const {
   addTokensIn,
 } = useJoinPool();
 
-const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
-  useMyWalletTokens({
-    pool: props.pool,
-  });
+const { tokensWithBalance } = useUserTokens();
 
 /**
  * COMPUTED
@@ -77,13 +78,27 @@ const poolHasLowLiquidity = computed((): boolean =>
   bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
 
+const joinTokensWithBalance = computed<string[]>(() =>
+  poolJoinTokens.value.filter(address =>
+    includesAddress(tokensWithBalance.value, address)
+  )
+);
+
+const joinTokensWithoutBalance = computed<string[]>(() =>
+  poolJoinTokens.value.filter(
+    address => !includesAddress(tokensWithBalance.value, address)
+  )
+);
+
 async function initializeTokensForm(isSingleAssetJoin: boolean) {
   setAmountsIn([]);
   if (isSingleAssetJoin) {
+    // Single asset joins are only relevant for Composable pools where swap
+    // joins are possible. In this case we want to default to the wrapped native
+    // asset.
     addTokensIn([wrappedNativeAsset.value.address]);
   } else {
-    await forChange(isLoadingBalances, false);
-    addTokensIn(poolTokensWithBalance.value);
+    addTokensIn(joinTokensWithBalance.value);
   }
 }
 
@@ -103,18 +118,18 @@ onBeforeMount(() => {
  * WATCHERS
  */
 watch(
-  [isSingleAssetJoin, poolTokensWithBalance],
+  [isSingleAssetJoin, joinTokensWithBalance],
   (
-    [isSingleAsset, newPoolTokensWithBalance],
-    [prevIsSingleAsset, prevPoolTokensWithBalance]
+    [isSingleAsset, newJoinTokensWithBalance],
+    [prevIsSingleAsset, prevJoinTokensWithBalance]
   ) => {
     // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
     // only if preview modal is not open
     if (!showInvestPreview.value) {
       const hasTabChanged = prevIsSingleAsset !== isSingleAsset;
       const hasUserTokensChanged = !isEqual(
-        prevPoolTokensWithBalance,
-        newPoolTokensWithBalance
+        prevJoinTokensWithBalance,
+        newJoinTokensWithBalance
       );
       if (hasUserTokensChanged || hasTabChanged) {
         initializeTokensForm(isSingleAsset);
@@ -161,8 +176,8 @@ watch(
     <MissingPoolTokensAlert
       v-if="!isSingleAssetJoin"
       :showSingleTokenSuggestion="isDeepPool && isPreMintedBptPool"
-      :poolTokensWithBalance="poolTokensWithBalance"
-      :poolTokensWithoutBalance="poolTokensWithoutBalance"
+      :poolTokensWithBalance="joinTokensWithBalance"
+      :poolTokensWithoutBalance="joinTokensWithoutBalance"
     />
 
     <InvestFormTotalsV2 :pool="pool" />
