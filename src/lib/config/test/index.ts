@@ -51,7 +51,6 @@ const config: Config = {
     lidoRelayer: '',
     balancerHelpers: '0x5aDDCCa35b7A0D07C74063c48700C8590E87864E',
     batchRelayer: '',
-    batchRelayerV4: '',
     gaugeFactory: '',
     balancerMinter: '',
     gaugeController: '',
