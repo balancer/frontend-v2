@@ -48,6 +48,7 @@ export type Pools = {
     PerPool: number;
     PerPoolInitial: number;
   };
+  BoostsEnabled: boolean;
   DelegateOwner: string;
   ZeroAddress: string;
   DynamicFees: {
@@ -66,6 +67,8 @@ export type Pools = {
     AllowList: string[];
   };
   Metadata: Record<string, PoolMetadata>;
+  Deep: string[];
+  BoostedApr: string[];
   DisabledJoins: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;

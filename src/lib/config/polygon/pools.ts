@@ -21,6 +21,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
+  BoostsEnabled: false,
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
@@ -168,6 +169,17 @@ const pools: Pools = {
       hasIcon: true,
     },
   },
+  Deep: [
+    '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
+    '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
+    '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65', // tetu/qi (polygon)
+    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
+    '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
+  ],
+  BoostedApr: [
+    '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
+    '0xb54b2125b711cd183edd3dd09433439d53961652', // miMATIC/bb-am-USD
+  ],
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',

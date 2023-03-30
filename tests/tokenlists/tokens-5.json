@@ -1,5 +1,5 @@
 {
-  "https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/goerli.listed.tokenlist.json": {
+  "https://raw.githubusercontent.com/balancer/tokenlists/main/generated/listed-old.tokenlist.json": {
     "name": "Balancer",
     "timestamp": "2022-08-02T00:00:00.000Z",
     "logoURI": "https://raw.githubusercontent.com/balancer/pebbles/master/images/pebbles-pad.256w.png",
@@ -96,7 +96,7 @@
       }
     ]
   },
-  "https://raw.githubusercontent.com/balancer/assets/refactor-for-multichain/generated/goerli.vetted.tokenlist.json": {
+  "https://raw.githubusercontent.com/balancer/tokenlists/main/generated/balancer.tokenlist.json": {
     "name": "Balancer",
     "timestamp": "2022-06-09T00:00:00.000Z",
     "logoURI": "https://raw.githubusercontent.com/balancer/pebbles/master/images/pebbles-pad.256w.png",
