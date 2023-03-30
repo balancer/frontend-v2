@@ -2,6 +2,7 @@
 import FocussedLayout from '@/components/layouts/FocussedLayout.vue';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { providePool } from '@/providers/local/pool.provider';
+import { provideUserTokens } from '@/providers/local/user-tokens.provider';
 
 /**
  * STATE
@@ -14,6 +15,7 @@ const poolId = (route.params.id as string).toLowerCase();
  */
 providePool(poolId);
 providePoolStaking(poolId);
+provideUserTokens();
 </script>
 
 <template>

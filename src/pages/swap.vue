@@ -8,6 +8,12 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import BridgeLink from '@/components/links/BridgeLink.vue';
 import { hasBridge } from '@/composables/useNetwork';
+import { provideUserTokens } from '@/providers/local/user-tokens.provider';
+
+/**
+ * PROVIDERS
+ */
+provideUserTokens();
 
 /**
  * COMPOSABLES
