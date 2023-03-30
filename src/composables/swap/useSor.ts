@@ -1,5 +1,10 @@
-import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
-import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import {
+  SubgraphPoolBase,
+  SwapType,
+  SwapTypes,
+  parseFixed,
+} from '@balancer-labs/sdk';
+import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import {
   AddressZero,
   WeiPerEther as ONE,
@@ -104,25 +109,52 @@ export type UseSor = ReturnType<typeof useSor>;
  * @returns
  */
 export function calcPriceImpact(
-  variableTokenDecimals: number,
-  variableTokenAmount: BigNumber,
-  fixedTokenAmountScaled: BigNumber,
+  sellTokenAmount: BigNumber,
+  sellTokenDecimals: number,
+  buyTokenAmount: BigNumber,
+  buyTokenDecimals: number,
+  swapType: SwapType,
   marketSp: string
 ): BigNumber {
-  // 10 scaled up to the number of decimals of the variable token
-  const divScale = BigNumber.from(10).pow(variableTokenDecimals);
-  // A wad is 10e18
-  const wadScale = BigNumber.from(10).pow(18);
+  // Scale the sellToken by the buyToken decimals and vice versa so they are both the same scale
+  const sellTokenScaled = parseFixed(
+    sellTokenAmount.toString(),
+    buyTokenDecimals
+  );
+  const buyTokenScaled = parseFixed(
+    buyTokenAmount.toString(),
+    sellTokenDecimals
+  );
 
-  // The price of the output token (the variable token)
-  const effectivePrice = fixedTokenAmountScaled
-    .mul(divScale)
-    .div(variableTokenAmount);
+  const SCALE = 18;
+  const scalingFactor = BigNumber.from(10).pow(SCALE);
 
-  return effectivePrice
-    .mul(wadScale)
-    .div(parseUnits(Number(marketSp).toFixed(18)))
-    .sub(ONE);
+  const effectivePrice = sellTokenScaled.mul(scalingFactor).div(buyTokenScaled);
+  const marketSpScaled = parseFixed(marketSp, SCALE);
+
+  let priceRatio;
+  if (swapType == SwapType.SwapExactIn) {
+    // If we are swapping exact in the buy token is the variable one so we need
+    // to divide the market spot price by it to get the ratio of expectedPrice:actualPrice
+    priceRatio = marketSpScaled.mul(scalingFactor).div(effectivePrice);
+  } else {
+    // If we are swapping exact out the sell token is the variable one so we need
+    // to divide it by the market spot price to get the ratio of expectedPrice:actualPrice
+    priceRatio = effectivePrice.mul(scalingFactor).div(marketSpScaled);
+  }
+
+  // We don't care about > 4 decimal places for price impacts and sometimes
+  // there are rounding errors with repeating numbers so we round to 4 decimal places
+  const maxDecimalPlaces = 4;
+  const priceRatioRounded = Math.round(
+    priceRatio.div(BigNumber.from(10).pow(SCALE - maxDecimalPlaces))
+  );
+  priceRatio = BigNumber.from(priceRatioRounded).mul(
+    BigNumber.from(10).pow(SCALE - maxDecimalPlaces)
+  );
+
+  const priceImpact = ONE.sub(priceRatio);
+  return priceImpact;
 }
 
 export default function useSor({
@@ -434,9 +466,11 @@ export default function useSor({
           isInputToken: false,
         });
         const priceImpactCalc = calcPriceImpact(
-          tokenOutDecimals,
-          tokenOutAmount,
           tokenInAmountScaled,
+          tokenInDecimals,
+          tokenOutAmount,
+          tokenOutDecimals,
+          SwapType.SwapExactIn,
           swapReturn.marketSpNormalised
         );
 
@@ -486,9 +520,11 @@ export default function useSor({
           isInputToken: false,
         });
         const priceImpactCalc = calcPriceImpact(
-          tokenInDecimals,
           tokenInAmount,
+          tokenInDecimals,
           tokenOutAmountScaled,
+          tokenOutDecimals,
+          SwapType.SwapExactIn,
           swapReturn.marketSpNormalised
         );
 
