@@ -571,6 +571,20 @@ export function tokenWeight(pool: Pool, tokenAddress: string): number {
 }
 
 /**
+ * Gets all pool token addresses that can possibly be used to join a pool.
+ *
+ * @param {Pool} pool - The pool to check
+ * @returns {string[]} The addresses of the tokens that can be used to join the pool
+ */
+export function joinTokens(pool: Pool): string[] {
+  let addresses: string[] = [];
+
+  addresses = isDeep(pool) ? tokenTreeNodes(pool.tokens) : pool.tokensList;
+
+  return removeAddress(pool.address, addresses);
+}
+
+/**
  * COMPOSABLE
  */
 export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
@@ -656,6 +670,10 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     () => !!pool.value && noInitLiquidity(pool.value)
   );
 
+  const poolJoinTokens = computed((): string[] =>
+    pool.value ? joinTokens(pool.value) : []
+  );
+
   // pool is "Weighted" and some of the rate providers are not on our approved list
   const hasNonApprovedRateProviders = computed(
     () =>
@@ -695,6 +713,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
+    poolJoinTokens,
     // methods
     isStable,
     isMetaStable,
@@ -711,5 +730,6 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     poolWeightsLabel,
     orderedTokenAddresses,
     orderedPoolTokens,
+    joinTokens,
   };
 }

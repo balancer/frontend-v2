@@ -4,10 +4,10 @@ import useRelayerApproval, {
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
+  joinTokens,
   fiatValueOf,
   isDeep,
   isStableLike,
-  tokenTreeNodes,
 } from '@/composables/usePoolHelpers';
 import { useTxState } from '@/composables/useTxState';
 import {
@@ -17,7 +17,7 @@ import {
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
+import { bnSum, bnum, isSameAddress } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { useTokens } from '@/providers/tokens.provider';
 import {
@@ -131,16 +131,8 @@ export const joinPoolProvider = (
    */
   const isDeepPool = computed((): boolean => isDeep(pool.value));
 
-  // All tokens in the pool token tree that can be used in join functions.
-  const joinTokens = computed((): string[] => {
-    let addresses: string[] = [];
-
-    addresses = isDeepPool.value
-      ? tokenTreeNodes(pool.value.tokens)
-      : pool.value.tokensList;
-
-    return removeAddress(pool.value.address, addresses);
-  });
+  // List of token addresses that can be used to join the pool.
+  const poolJoinTokens = computed((): string[] => joinTokens(pool.value));
 
   // Token meta data for amountsIn tokens.
   const tokensIn = computed((): TokenInfoMap => {
@@ -405,7 +397,7 @@ export const joinPoolProvider = (
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
-    injectTokens(joinTokens.value);
+    injectTokens(poolJoinTokens.value);
   });
 
   onMounted(() => (isMounted.value = true));
@@ -422,9 +414,9 @@ export const joinPoolProvider = (
     txError: readonly(txError),
 
     //  Computed
+    poolJoinTokens,
     isLoadingQuery,
     queryError,
-    joinTokens,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,
