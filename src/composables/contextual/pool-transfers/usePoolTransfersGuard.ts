@@ -7,6 +7,12 @@ import { Pool } from '@/services/pool/types';
 import usePoolTransfers from './usePoolTransfers';
 import useNetwork from '@/composables/useNetwork';
 
+export function shouldBlockAccess(pool: Pool): boolean {
+  if (noInitLiquidity(pool)) return true;
+  if (after29March(pool)) return true;
+  return false;
+}
+
 /**
  * This should only be used once at the highest level of the add-liquidity/withdraw flow
  * which is the PoolTransfersLayout.
@@ -24,15 +30,6 @@ export default function usePoolTransfersGuard() {
   const router = useRouter();
   const { pool, transfersAllowed } = usePoolTransfers();
   const { networkSlug } = useNetwork();
-
-  /**
-   * METHODS
-   */
-  function shouldBlockAccess(pool: Pool): boolean {
-    if (noInitLiquidity(pool)) return true;
-    if (after29March(pool)) return true;
-    return false;
-  }
 
   /**
    * WATCHERS

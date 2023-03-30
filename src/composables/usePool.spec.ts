@@ -31,7 +31,6 @@ import {
   totalAprLabel,
   absMaxApr,
   poolURLFor,
-  after29March,
   noInitLiquidity,
 } from './usePool';
 
@@ -691,36 +690,4 @@ test('poolURLFor Arbitrum', async () => {
   ).toBe(
     'https://localhost:8080/#/arbitrum/pool/0x9f19a375709baf0e8e35c2c5c68aca646c4c719100000000000000000000006e'
   );
-});
-
-describe('Successfully controls creation date when pool', () => {
-  it('created after 29 March', async () => {
-    expect(
-      after29March(
-        aPool({
-          createTime: Date.parse('2023-03-30'),
-        })
-      )
-    ).toBeTrue();
-  });
-
-  it('created before 29 March', async () => {
-    expect(
-      after29March(
-        aPool({
-          createTime: Date.parse('2023-03-28'),
-        })
-      )
-    ).toBeFalse();
-  });
-
-  it('does not have creation date', async () => {
-    expect(
-      after29March(
-        aPool({
-          createTime: undefined,
-        })
-      )
-    ).toBeFalse();
-  });
 });
