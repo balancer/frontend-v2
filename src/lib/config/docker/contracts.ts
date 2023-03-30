@@ -17,7 +17,6 @@ const contracts: Contracts = {
   lidoRelayer: '',
   balancerHelpers: '',
   batchRelayer: '',
-  batchRelayerV4: '',
   veBAL: '',
   gaugeController: '',
   gaugeFactory: '',
