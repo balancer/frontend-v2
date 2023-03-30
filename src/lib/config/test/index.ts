@@ -2,14 +2,16 @@ import { Config } from '../types';
 import keys from './keys';
 
 const config: Config = {
-  key: '1',
-  chainId: 1,
+  key: '12345',
+  chainId: 12345,
   chainName: 'test',
   name: 'test',
   shortName: 'test',
   slug: 'test',
   network: 'test',
   unknown: false,
+  visibleInUI: false,
+  testNetwork: true,
   rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
   ws: 'ws://balancer.fi:1234',
   explorer: 'https://etherscan.io',
@@ -23,6 +25,7 @@ const config: Config = {
     gauge: '',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 12,
@@ -34,6 +37,12 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
   },
   addresses: {
     merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',
@@ -75,6 +84,7 @@ const config: Config = {
       PerPool: 10,
       PerPoolInitial: 5,
     },
+    BoostsEnabled: true,
     DelegateOwner: '',
     ZeroAddress: '',
     DynamicFees: {
@@ -92,6 +102,8 @@ const config: Config = {
     Stakable: {
       AllowList: [],
     },
+    Deep: [],
+    BoostedApr: [],
     Metadata: {},
     DisabledJoins: [],
     BrandedRedirect: {},
@@ -99,6 +111,10 @@ const config: Config = {
   tokens: {
     Popular: {
       Symbols: [],
+    },
+    InitialSwapTokens: {
+      input: '',
+      output: '',
     },
     Addresses: {
       nativeAsset: '',

@@ -15,6 +15,8 @@ const config: Config = {
   slug: 'polygon',
   network: 'polygon',
   unknown: false,
+  visibleInUI: true,
+  testNetwork: false,
   rpc: `https://polygon-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://polygon-rpc.com',
@@ -33,6 +35,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
     blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
   },
+  bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,
   supportsElementPools: false,
   blockTime: 4,
@@ -44,6 +47,15 @@ const config: Config = {
     deeplinkId: 'matic',
     logoURI: 'tokens/matic.svg',
     minTransactionBuffer: '0.1',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'matic-network',
+      platformId: 'polygon-pos',
+    },
+    apyVision: {
+      networkName: 'matic',
+    },
   },
   addresses: {
     ...contracts,
