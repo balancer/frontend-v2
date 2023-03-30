@@ -102,10 +102,12 @@ export type UseSor = ReturnType<typeof useSor>;
  *  - If the swap type is ExactOut, this is the input token
  * The fixed token is the token that has a fixed amount the user set.
  * This is the opposite of the variable token.
- * @param variableTokenDecimals - The variable token decimals
- * @param variableTokenAmount - The variable token amount (not scaled by decimals, so $25 of USDC = 25)
- * @param fixedTokenAmountScaled - The fixed token amount scaled up by it's decimals (so $25 of USDC = 25000000, as it's 6 decimals)
- * @param swapReturn - The SOR swap details
+ * @param sellTokenAmount - The amount of the token being sold in native amounts (so 25 USDC = 25000000)
+ * @param sellTokenDecimals - The number of decimals the sell token has
+ * @param buyTokenAmount - The amount of the token being bought in native amounts (so 25 USDC = 25000000)
+ * @param buyTokenDecimals - The number of decimals the buy token has
+ * @param swapType - The type of swap we are doing
+ * @param marketSp - The market spot price of the token pair
  * @returns
  */
 export function calcPriceImpact(
