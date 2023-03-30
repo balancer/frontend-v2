@@ -32,6 +32,7 @@ import {
   absMaxApr,
   poolURLFor,
   after29March,
+  noInitLiquidity,
 } from './usePool';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
@@ -331,9 +332,6 @@ describe('usePool composable', () => {
       isWeth,
       isWethPool,
       managedPoolWithSwappingHalted,
-      noInitLiquidity,
-      createdBeforeMar29,
-      noInitLiquidityPool,
       poolWeightsLabel,
     } = mountUsePool(undefined);
 
@@ -361,8 +359,6 @@ describe('usePool composable', () => {
 
     expect(managedPoolWithSwappingHalted.value).toBeFalse();
     expect(noInitLiquidity(weightedPool)).toBeFalse();
-    expect(noInitLiquidityPool.value).toBeFalse();
-    expect(createdBeforeMar29.value).toBeFalse();
     expect(isMigratablePool(weightedPool)).toBeFalse();
 
     expect(poolWeightsLabel(weightedPool)).toBe('');
@@ -697,22 +693,34 @@ test('poolURLFor Arbitrum', async () => {
   );
 });
 
-test('Detects creation after 29 March', async () => {
-  expect(
-    after29March(
-      aPool({
-        createTime: Date.parse('2023-03-30'),
-      })
-    )
-  ).toBeTrue();
-});
+describe('Successfully controls creation date when pool', () => {
+  it('created after 29 March', async () => {
+    expect(
+      after29March(
+        aPool({
+          createTime: Date.parse('2023-03-30'),
+        })
+      )
+    ).toBeTrue();
+  });
 
-test('Detects creation before 29 March', async () => {
-  expect(
-    after29March(
-      aPool({
-        createTime: Date.parse('2023-03-28'),
-      })
-    )
-  ).toBeFalse();
+  it('created before 29 March', async () => {
+    expect(
+      after29March(
+        aPool({
+          createTime: Date.parse('2023-03-28'),
+        })
+      )
+    ).toBeFalse();
+  });
+
+  it('does not have creation date', async () => {
+    expect(
+      after29March(
+        aPool({
+          createTime: undefined,
+        })
+      )
+    ).toBeFalse();
+  });
 });

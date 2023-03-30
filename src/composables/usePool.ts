@@ -636,9 +636,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)
   );
-  const createdAfter29Mar = computed(
-    () => !!pool.value && after29March(pool.value)
-  );
 
   // pool is "Weighted" and some of the rate providers are not on our approved list
   const hasNonApprovedRateProviders = computed(
@@ -690,8 +687,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isSwappingHaltable,
     isPreMintedBptType,
     isWeth,
-    noInitLiquidity,
-    createdAfter29Mar,
+    after29March,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

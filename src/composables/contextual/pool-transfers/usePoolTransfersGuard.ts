@@ -1,7 +1,7 @@
 import { onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { usePool } from '@/composables/usePool';
+import { after29March, noInitLiquidity } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
 
 import usePoolTransfers from './usePoolTransfers';
@@ -23,7 +23,6 @@ export default function usePoolTransfersGuard() {
    */
   const router = useRouter();
   const { pool, transfersAllowed } = usePoolTransfers();
-  const { noInitLiquidity, createdAfter29Mar } = usePool(pool);
   const { networkSlug } = useNetwork();
 
   /**
@@ -31,7 +30,7 @@ export default function usePoolTransfersGuard() {
    */
   function shouldBlockAccess(pool: Pool): boolean {
     if (noInitLiquidity(pool)) return true;
-    if (createdAfter29Mar.value) return true;
+    if (after29March(pool)) return true;
     return false;
   }
 
