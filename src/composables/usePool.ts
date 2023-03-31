@@ -2,7 +2,6 @@ import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
-import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 import {
@@ -202,7 +201,7 @@ export function isWeth(pool: AnyPool): boolean {
 }
 
 export function isMigratablePool(pool: AnyPool) {
-  return POOL_MIGRATIONS.some(migration => migration.fromPoolId === pool.id);
+  return !!POOLS.Migrations?.[pool.id];
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {

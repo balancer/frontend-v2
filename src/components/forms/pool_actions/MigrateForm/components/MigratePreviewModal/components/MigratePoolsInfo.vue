@@ -2,7 +2,7 @@
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 import { computed } from 'vue';
-import { POOL_MIGRATIONS_MAP } from '../../../constants';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -22,7 +22,8 @@ const props = defineProps<Props>();
  * COMPUTED
  */
 const showOldVHint = computed(
-  () => POOL_MIGRATIONS_MAP[props.fromPool.id]?.showOldVHint
+  () =>
+    configService.network.pools.Migrations?.[props.fromPool.id]?.showOldVHint
 );
 </script>
 

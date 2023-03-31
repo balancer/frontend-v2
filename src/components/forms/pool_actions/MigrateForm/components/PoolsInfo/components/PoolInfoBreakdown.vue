@@ -4,7 +4,8 @@ import { computed, ref } from 'vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
-import { POOL_MIGRATIONS_MAP } from '../../../constants';
+import { configService } from '@/services/config/config.service';
+
 import { tokensListExclBpt } from '@/composables/usePool';
 
 type Props = {
@@ -31,7 +32,7 @@ const { getToken } = useTokens();
  * COMPUTED
  */
 const showOldVHint = computed(
-  () => POOL_MIGRATIONS_MAP[props.pool.id]?.showOldVHint
+  () => configService.network.pools.Migrations?.[props.pool.id]?.showOldVHint
 );
 </script>
 

@@ -9,9 +9,10 @@ import { Pool } from '@/services/pool/types';
 import MigrateExplainer from './components/MigrateExplainer.vue';
 import PoolsInfo from './components/PoolsInfo/PoolsInfo.vue';
 import PoolStats from './components/PoolStats.vue';
-import { PoolMigrationInfo } from './types';
+
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { RelayerType } from '@/composables/approvals/useRelayerApproval';
+import { PoolMigrationInfo } from '@/types/pools';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;

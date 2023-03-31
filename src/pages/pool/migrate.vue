@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 
-import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import MigrateForm from '@/components/forms/pool_actions/MigrateForm/MigrateForm.vue';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+import { configService } from '@/services/config/config.service';
 
 /**
  * COMPOSABLES
@@ -14,12 +14,7 @@ const route = useRoute();
  * STATE
  */
 const fromPoolId = route.params.from as string;
-const toPoolId = route.params.to as string;
-const poolMigrationInfo = POOL_MIGRATIONS.find(
-  poolMigrationInfo =>
-    poolMigrationInfo.fromPoolId === fromPoolId &&
-    poolMigrationInfo.toPoolId === toPoolId
-);
+const poolMigrationInfo = configService.network.pools.Migrations?.[fromPoolId];
 
 providePoolStaking(fromPoolId);
 </script>

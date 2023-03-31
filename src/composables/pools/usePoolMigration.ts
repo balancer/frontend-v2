@@ -6,8 +6,6 @@ import {
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import { getBalancer } from '@/dependencies/balancer-sdk';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { configService } from '@/services/config/config.service';
@@ -25,6 +23,7 @@ import useNumbers, { FNumFormats } from '../useNumbers';
 import useSlippage from '../useSlippage';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { PoolMigrationType } from '@/types/pools';
 
 export type MigratePoolState = {
   init: boolean;
@@ -129,9 +128,7 @@ export function usePoolMigration(
   });
 
   const migrationType = computed(() => {
-    return POOL_MIGRATIONS.find(
-      migration => migration.fromPoolId === fromPool.id
-    );
+    return configService.network.pools.Migrations?.[fromPool.id];
   });
 
   const migrationFn = computed(() => {
