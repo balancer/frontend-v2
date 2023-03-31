@@ -512,6 +512,12 @@
         "title": "You have no pool tokens to join with",
         "paragraph1": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact.",
         "paragraph2": "However, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens."
+      },
+      "blockedPool": {
+        "title": "This pool contains one or more tokens that have not been vetted by the Balancer community: {0}.",
+        "here": "here",
+        "description": "For the protection of LPs, adding liquidity to the pool has been disabled. Click",
+        "description2": "to submit the token(s) for review."
       }
     },
     "error": {

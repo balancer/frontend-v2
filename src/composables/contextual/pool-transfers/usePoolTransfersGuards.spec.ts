@@ -9,6 +9,7 @@ import waitForExpect from 'wait-for-expect';
 import usePoolTransfersGuard, {
   shouldBlockAccess,
 } from './usePoolTransfersGuard';
+import { toEpochTimestamp } from '@/lib/utils/time';
 
 //TODO: setup https://github.com/posva/vue-router-mock
 const mockRouter = createRouter({
@@ -84,7 +85,7 @@ describe('When checking pool blocks', () => {
     expect(
       shouldBlockAccess(
         aPool({
-          createTime: Date.parse('2023-03-30'),
+          createTime: toEpochTimestamp('2023-03-30'),
         })
       )
     ).toBeTrue();
@@ -94,20 +95,20 @@ describe('When checking pool blocks', () => {
     expect(
       shouldBlockAccess(
         aPool({
-          createTime: Date.parse('2023-03-28'),
+          createTime: toEpochTimestamp('2023-03-28'),
         })
       )
     ).toBeFalse();
   });
 
-  it('does not block pool without creation date', async () => {
+  it('blocks pool without creation date', async () => {
     expect(
       shouldBlockAccess(
         aPool({
           createTime: undefined,
         })
       )
-    ).toBeFalse();
+    ).toBeTrue();
   });
 
   it('blocks pool without init liquidity (AKA totalShares 0)', async () => {

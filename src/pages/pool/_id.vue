@@ -72,6 +72,7 @@ const {
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
   isDeprecatedPool,
+  noInitLiquidityPool,
 } = usePool(poolQuery.data);
 //#endregion
 
@@ -140,10 +141,7 @@ onBeforeUnmount(() => {
 //#endregion
 
 const noInitLiquidity = computed(
-  () =>
-    !loadingPool.value &&
-    pool.value &&
-    Number(pool.value?.totalShares || '0') === 0
+  () => !loadingPool.value && noInitLiquidityPool.value
 );
 
 const missingPrices = computed(() => {

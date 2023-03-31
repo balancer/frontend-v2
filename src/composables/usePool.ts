@@ -27,6 +27,7 @@ import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
+import { toEpochTimestamp } from '@/lib/utils/time';
 
 const POOLS = configService.network.pools;
 
@@ -164,8 +165,15 @@ export function preMintedBptIndex(pool: Pool): number | void {
   );
 }
 
-export function after29March(pool: AnyPool): boolean {
-  return (pool?.createTime || '0') > Date.parse('2023-03-29');
+export function createdAfter29March(pool: AnyPool): boolean {
+  // Pools should always have valid createTime so, for safety, we block the pool in case we don't get it
+  // (createTime should probably not be treated as optional in the SDK types)
+  if (!pool.createTime) return true;
+
+  // const creationTimestampLimit = toEpochTimestamp('2021-08-29'');
+  const creationTimestampLimit = toEpochTimestamp('2021-08-13'); //DEBUG DATE
+  // Epoch timestamp is bigger if the date is older
+  return pool.createTime > creationTimestampLimit;
 }
 
 /**
@@ -402,6 +410,8 @@ export function flatTokenTree(
  * @returns tokensList excluding pre-minted BPT address.
  */
 export function tokensListExclBpt(pool: Pool): string[] {
+  // console.log('YEYEEYEYEY', pool);
+  // console.log('YEYEEYEYEY address', pool.address);
   return removeAddress(pool.address, pool.tokensList);
 }
 
@@ -687,7 +697,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isSwappingHaltable,
     isPreMintedBptType,
     isWeth,
-    after29March,
+    after29March: createdAfter29March,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

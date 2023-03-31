@@ -17,6 +17,7 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { useHasBlockedJoins } from '@/composables/useHasBlockedJoins';
 
 /**
  * TYPES
@@ -51,6 +52,9 @@ const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { balancerTokenListTokens, getToken } = useTokens();
 const { hasNonPrefGaugeBalance } = usePoolStaking();
+const { hasBlockedJoins, nonVettedTokenSymbols } = useHasBlockedJoins(
+  props.pool
+);
 
 /**
  * STATE
@@ -215,6 +219,22 @@ function symbolFor(titleTokenIndex: number): string {
   </div>
 
   <BalAlert
+    v-if="hasBlockedJoins"
+    type="warning"
+    :title="$t('investment.warning.blockedPool.title', [nonVettedTokenSymbols])"
+    class="mt-2"
+    block
+  >
+    {{ $t('investment.warning.blockedPool.description') }}
+    <a
+      href="https://github.com/balancer/tokenlists"
+      target="_blank"
+      class="underline"
+      >{{ $t('investment.warning.blockedPool.here') }}</a
+    >
+    {{ $t('investment.warning.blockedPool.description2') }}
+  </BalAlert>
+  <BalAlert
     v-if="hasNonApprovedRateProviders"
     type="warning"
     :title="$t('hasNonApprovedRateProviders')"
@@ -271,6 +291,14 @@ function symbolFor(titleTokenIndex: number): string {
       </template>
     </BalAlert>
   </template>
+  <BalAlert
+    v-if="noInitLiquidity"
+    type="warning"
+    :title="$t('noInitLiquidity')"
+    :description="$t('noInitLiquidityDetail')"
+    class="mt-2"
+    block
+  />
   <BalAlert
     v-if="noInitLiquidity"
     type="warning"

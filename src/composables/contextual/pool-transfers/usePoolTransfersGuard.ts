@@ -1,16 +1,15 @@
 import { onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { after29March, noInitLiquidity } from '@/composables/usePool';
+import { noInitLiquidity } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
 
-import usePoolTransfers from './usePoolTransfers';
+import { useHasBlockedJoins } from '@/composables/useHasBlockedJoins';
 import useNetwork from '@/composables/useNetwork';
+import usePoolTransfers from './usePoolTransfers';
 
-export function shouldBlockAccess(pool: Pool): boolean {
-  if (noInitLiquidity(pool)) return true;
-  if (after29March(pool)) return true;
-  return false;
+export function shouldRedirect(pool: Pool): boolean {
+  return noInitLiquidity(pool);
 }
 
 /**
@@ -31,13 +30,24 @@ export default function usePoolTransfersGuard() {
   const { pool, transfersAllowed } = usePoolTransfers();
   const { networkSlug } = useNetwork();
 
+  function shouldBlockAccess(pool: Pool) {
+    const { hasBlockedJoins } = useHasBlockedJoins(computed(() => pool));
+    return noInitLiquidity(pool) || hasBlockedJoins.value;
+  }
+
   /**
    * WATCHERS
    */
   watch(pool, loadedPool => {
-    if (loadedPool && shouldBlockAccess(loadedPool)) {
+    if (loadedPool && noInitLiquidity(loadedPool)) {
       transfersAllowed.value = false;
-      router.push({ name: 'pool', params: { id: loadedPool.id, networkSlug } });
+      if (shouldRedirect(loadedPool)) {
+        // Redirect to pool detail
+        router.push({
+          name: 'pool',
+          params: { id: loadedPool.id, networkSlug },
+        });
+      }
     }
   });
 
@@ -47,7 +57,13 @@ export default function usePoolTransfersGuard() {
   onBeforeMount(() => {
     transfersAllowed.value = false;
     if (pool.value && shouldBlockAccess(pool.value)) {
-      router.push({ name: 'pool', params: { id: pool.value.id, networkSlug } });
+      if (shouldRedirect(pool.value)) {
+        // Redirect to pool detail
+        router.push({
+          name: 'pool',
+          params: { id: pool.value.id, networkSlug },
+        });
+      }
     } else {
       transfersAllowed.value = true;
     }
