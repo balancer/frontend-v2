@@ -157,6 +157,12 @@ export function isMigratablePool(pool: AnyPool) {
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
+  //DEBUG
+  if (
+    pool.id ===
+    '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014'
+  )
+    return true;
   return bnum(pool?.totalShares || '0').eq(0);
 }
 export function preMintedBptIndex(pool: Pool): number | void {
@@ -170,8 +176,15 @@ export function createdAfter29March(pool: AnyPool): boolean {
   // (createTime should probably not be treated as optional in the SDK types)
   if (!pool.createTime) return true;
 
-  // const creationTimestampLimit = toEpochTimestamp('2021-08-29'');
-  const creationTimestampLimit = toEpochTimestamp('2021-08-13'); //DEBUG DATE
+  let creationTimestampLimit = toEpochTimestamp('2021-08-29');
+
+  //DEBUG
+  if (
+    pool.id ===
+    '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080'
+  )
+    creationTimestampLimit = toEpochTimestamp('2021-08-13'); //DEBUG DATE
+
   // Epoch timestamp is bigger if the date is older
   return pool.createTime > creationTimestampLimit;
 }

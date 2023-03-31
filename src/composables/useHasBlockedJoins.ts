@@ -4,14 +4,12 @@ import { computed } from 'vue';
 import { Pool } from '@/services/pool/types';
 import { flatTokenTree } from './usePool';
 
-export function useHasBlockedJoins(pool: ComputedRef<Pool | undefined>) {
+export function useHasBlockedJoins(pool: Pool) {
   //TODO: WE need to discover how to get this list
   const allowedVettedTokenAddresses: string[] = [];
   //return token addresses that are not in the vetted list
   const nonVettedTokens = computed(() => {
-    if (!pool?.value) return [];
-
-    const poolTokens = flatTokenTree(pool.value);
+    const poolTokens = flatTokenTree(pool);
     return poolTokens.filter(
       token =>
         token.address && !allowedVettedTokenAddresses.includes(token.address)
@@ -23,9 +21,7 @@ export function useHasBlockedJoins(pool: ComputedRef<Pool | undefined>) {
   });
 
   const hasBlockedJoins = computed(() => {
-    if (!pool?.value) return false;
-
-    return createdAfter29March(pool.value) && nonVettedTokens.value.length > 0;
+    return createdAfter29March(pool) && nonVettedTokens.value.length > 0;
   });
 
   return {

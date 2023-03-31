@@ -299,14 +299,6 @@ function symbolFor(titleTokenIndex: number): string {
     class="mt-2"
     block
   />
-  <BalAlert
-    v-if="noInitLiquidity"
-    type="warning"
-    :title="$t('noInitLiquidity')"
-    :description="$t('noInitLiquidityDetail')"
-    class="mt-2"
-    block
-  />
   <StakePreviewModal
     v-if="!!pool"
     :isVisible="isRestakePreviewVisible"

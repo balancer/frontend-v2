@@ -35,7 +35,7 @@ const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
-const { hasBlockedJoins } = useHasBlockedJoins(computed(() => props.pool));
+const { hasBlockedJoins } = useHasBlockedJoins(props.pool);
 
 /**
  * COMPUTED

@@ -1,16 +1,8 @@
 import { onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { noInitLiquidity } from '@/composables/usePool';
-import { Pool } from '@/services/pool/types';
-
-import { useHasBlockedJoins } from '@/composables/useHasBlockedJoins';
 import useNetwork from '@/composables/useNetwork';
 import usePoolTransfers from './usePoolTransfers';
-
-export function shouldRedirect(pool: Pool): boolean {
-  return noInitLiquidity(pool);
-}
 
 /**
  * This should only be used once at the highest level of the add-liquidity/withdraw flow
@@ -27,47 +19,36 @@ export default function usePoolTransfersGuard() {
    * COMPOSABLES
    */
   const router = useRouter();
-  const { pool, transfersAllowed } = usePoolTransfers();
+  const { pool, shouldBeRedirected } = usePoolTransfers();
   const { networkSlug } = useNetwork();
-
-  function shouldBlockAccess(pool: Pool) {
-    const { hasBlockedJoins } = useHasBlockedJoins(computed(() => pool));
-    return noInitLiquidity(pool) || hasBlockedJoins.value;
-  }
 
   /**
    * WATCHERS
    */
   watch(pool, loadedPool => {
-    if (loadedPool && noInitLiquidity(loadedPool)) {
-      transfersAllowed.value = false;
-      if (shouldRedirect(loadedPool)) {
-        // Redirect to pool detail
-        router.push({
-          name: 'pool',
-          params: { id: loadedPool.id, networkSlug },
-        });
-      }
-    }
+    redirectIfNeeded(loadedPool);
   });
 
   /**
    * CALLBACKS
    */
   onBeforeMount(() => {
-    transfersAllowed.value = false;
-    if (pool.value && shouldBlockAccess(pool.value)) {
-      if (shouldRedirect(pool.value)) {
-        // Redirect to pool detail
-        router.push({
-          name: 'pool',
-          params: { id: pool.value.id, networkSlug },
-        });
-      }
-    } else {
-      transfersAllowed.value = true;
-    }
+    redirectIfNeeded(pool);
   });
 
-  return { transfersAllowed };
+  /**
+   * HELPERS
+   */
+  function redirectIfNeeded(pool) {
+    if (pool && shouldBeRedirected.value) {
+      redirectToPoolDetail(pool.id);
+    }
+  }
+
+  function redirectToPoolDetail(poolId) {
+    router.push({
+      name: 'pool',
+      params: { id: poolId, networkSlug },
+    });
+  }
 }
