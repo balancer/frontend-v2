@@ -9,17 +9,19 @@ import {
   bnum,
   findByAddress,
   formatAddressForSor,
+  includesAddress,
   isSameAddress,
   selectByAddress,
 } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
-import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import { tokensListExclBpt } from '@/composables/usePoolHelpers';
+import { configService } from '@/services/config/config.service';
 
 /**
  * Handles joins with pool tokens using SDK functions.
  */
 export class ExactInJoinHandler implements JoinPoolHandler {
-  private lastJoinRes?: ReturnType<PoolWithMethods['buildJoin']>;
+  private joinRes?: ReturnType<PoolWithMethods['buildJoin']>;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -30,12 +32,12 @@ export class ExactInJoinHandler implements JoinPoolHandler {
   async join(params: JoinParams): Promise<TransactionResponse> {
     await this.queryJoin(params);
 
-    if (!this.lastJoinRes) {
+    if (!this.joinRes) {
       throw new Error('Could not query generalised join');
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, data, value } = this.lastJoinRes;
+    const { to, data, value } = this.joinRes;
 
     // value property must be passed if joining with native asset
     return txBuilder.raw.sendTransaction({ to, data, value });
@@ -48,11 +50,8 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     slippageBsp,
   }: JoinParams): Promise<QueryOutput> {
     const addressesIn = amountsIn.map(({ address }) => address);
-    const tokensList: string[] = this.swapEthAddressToWeth(
-      addressesIn,
-      this.pool.value.tokensList
-    );
-    const evmAmountsIn: string[] = tokensList.map(address => {
+    const tokensList: string[] = this.formatPoolTokensList(addressesIn);
+    const _amountsIn: string[] = tokensList.map(address => {
       const token = selectByAddress(tokensIn, address);
 
       if (!token) return '0';
@@ -66,22 +65,20 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     const sdkPool = await this.sdk.pools.find(this.pool.value.id);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
-    const tokensListForSor = tokensList.map(address =>
-      formatAddressForSor(address)
-    );
+    const _tokensIn = tokensList.map(address => formatAddressForSor(address));
 
-    this.lastJoinRes = await sdkPool.buildJoin(
+    this.joinRes = await sdkPool.buildJoin(
       signerAddress,
-      tokensListForSor,
-      evmAmountsIn,
+      _tokensIn,
+      _amountsIn,
       slippage
     );
 
-    if (!this.lastJoinRes) {
+    if (!this.joinRes) {
       throw new Error('Failed to fetch expected output.');
     }
 
-    const { expectedBPTOut } = this.lastJoinRes;
+    const { expectedBPTOut } = this.joinRes;
     if (bnum(expectedBPTOut).eq(0))
       throw new Error('Failed to fetch expected output.');
 
@@ -91,7 +88,7 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     );
 
     const evmPriceImpact = await sdkPool.calcPriceImpact(
-      evmAmountsIn,
+      _amountsIn,
       expectedBPTOut,
       true
     );
@@ -104,23 +101,30 @@ export class ExactInJoinHandler implements JoinPoolHandler {
     };
   }
 
-  // If tokenAddressesIn contains NATIVE_ASSET_ADDRESS, replace it with the wrapped native asset address
-  // while keeping the original poolTokens order
-  private swapEthAddressToWeth(
-    tokenAddressesIn: string[],
-    poolTokens: string[]
-  ): string[] {
-    const hasNativeAsset = tokenAddressesIn.some(address =>
-      isSameAddress(address, NATIVE_ASSET_ADDRESS)
+  /**
+   * If amountsInAddresses contains the native asset, replace the wrapped native
+   * asset address in the pool.tokensList with the native asset address.
+   *
+   * @param {string[]} amountsInAddresses - Addresses of tokens being joined with
+   * @returns The pool tokens list or a modified version of it containing the
+   * native asset address instead of the wrapped native asset address.
+   */
+  private formatPoolTokensList(amountsInAddresses: string[]): string[] {
+    const { nativeAsset, wNativeAsset } =
+      configService.network.tokens.Addresses;
+    const includesNativeAsset = includesAddress(
+      amountsInAddresses,
+      nativeAsset
     );
-    if (hasNativeAsset) {
+    const poolTokensList = tokensListExclBpt(this.pool.value);
+
+    if (includesNativeAsset) {
       // Switch the wrapped native asset address for the native asset address
-      return poolTokens.map(address =>
-        isSameAddress(address, TOKENS.Addresses.wNativeAsset)
-          ? NATIVE_ASSET_ADDRESS
-          : address
+      return poolTokensList.map(address =>
+        isSameAddress(address, wNativeAsset) ? nativeAsset : address
       );
     }
-    return poolTokens;
+
+    return poolTokensList;
   }
 }
