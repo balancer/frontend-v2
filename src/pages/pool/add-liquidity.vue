@@ -24,7 +24,7 @@ usePoolTransfersGuard();
 /**
  * COMPOSABLES
  */
-const { pool, poolDecorationQuery, loadingPool, transfersAllowed } =
+const { pool, poolDecorationQuery, loadingPool, joinsDisabled } =
   usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 
@@ -37,8 +37,7 @@ const isLoadingSor = computed(
 );
 
 const isLoading = computed(
-  (): boolean =>
-    loadingPool.value && !transfersAllowed.value && isLoadingSor.value
+  (): boolean => loadingPool.value || joinsDisabled.value || isLoadingSor.value
 );
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent

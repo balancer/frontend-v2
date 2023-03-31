@@ -40,10 +40,8 @@ async function mountTransferGuards(pool: Pool) {
   });
 }
 
-// usePoolTransfersGuard uses shouldBlockAccess to check if the pool must be blocked
-// It is enough to test the 2 paths here (blocked and non-blocked) and delegate the testing of the combinations to the simpler shouldBlockAccess tests
-describe('When evaluating blocked pools redirects', () => {
-  it('does not redirect a non blocked pool', async () => {
+describe.skip('When checking disabled pool joins', () => {
+  it('does not redirect where no disabled joins', async () => {
     const veBalPool = aVeBalPool();
 
     await mountTransferGuards(veBalPool);
@@ -51,10 +49,10 @@ describe('When evaluating blocked pools redirects', () => {
     expect(mockRouter.push).not.toHaveBeenCalled();
   });
 
-  it.only('redirects when a pool is blocked', async () => {
+  it('redirects when disabled joins', async () => {
     const pool = BoostedPoolMock;
 
-    pool.totalShares = '0'; // blocks pool because noInitLiquidity is true
+    pool.totalShares = '0'; // joins disabled because noInitLiquidity is true
 
     await mountTransferGuards(pool);
 

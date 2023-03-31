@@ -3,17 +3,13 @@ import { useRoute } from 'vue-router';
 
 // Composables
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import {
-  isDeep,
-  noInitLiquidity,
-  tokensListExclBpt,
-} from '@/composables/usePool';
+import { isDeep, tokensListExclBpt } from '@/composables/usePool';
 import { useTokens } from '@/providers/tokens.provider';
 import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import usePoolDecorationQuery from '@/composables/queries/usePoolDecorationQuery';
-import { useBlockedPool } from '@/composables/useBlockedPool';
+import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
 /**
  * STATE
@@ -70,10 +66,10 @@ export default function usePoolTransfers() {
     );
   });
 
-  const transfersAllowed = computed(() => {
+  const joinsDisabled = computed(() => {
     if (!pool.value) return false;
-    const { shouldBlockPool: hasBlockedJoins } = useBlockedPool(pool.value);
-    return !hasBlockedJoins.value && !noInitLiquidity(pool.value);
+    const { shouldDisableJoins } = useDisabledJoinPool(pool.value);
+    return shouldDisableJoins.value;
   });
 
   return {
@@ -83,6 +79,6 @@ export default function usePoolTransfers() {
     loadingPool,
     useNativeAsset,
     missingPrices,
-    transfersAllowed,
+    joinsDisabled,
   };
 }

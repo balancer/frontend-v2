@@ -11,6 +11,7 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { Goals, trackGoal } from '@/composables/useFathom';
+import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
 /**
  * TYPES
@@ -34,6 +35,7 @@ const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
+const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
 
 /**
  * COMPUTED
@@ -65,7 +67,7 @@ const joinDisabled = computed(
           :to="{ name: 'add-liquidity', params: { networkSlug } }"
           :label="$t('addLiquidity')"
           color="gradient"
-          :disabled="joinDisabled"
+          :disabled="joinDisabled || shouldDisableJoins"
           block
           @click="trackGoal(Goals.ClickAddLiquidity)"
         />

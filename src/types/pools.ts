@@ -62,6 +62,9 @@ export type Pools = {
   Investment: {
     AllowList: string[];
   };
+  Weighted: {
+    AllowList: string[];
+  };
   Factories: Record<string, FactoryType>;
   Stakable: {
     AllowList: string[];

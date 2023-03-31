@@ -69,12 +69,9 @@ export async function mountComposableWithFakeTokensProvider<R>(
     routerMock?: Router;
   }
 ): Promise<MountResult<R>> {
-  const { result: tokenLists } = mount(() => provideTokenLists());
-  // Wait for token list json to be async loaded (GOERLI json is loaded in tests)
-  await tokenLists.tokensListPromise;
-
   return mountComposable<R>(callback, {
     extraProvidersCb: () => {
+      const tokenLists = provideTokenLists();
       const userSettings = provideUserSettings();
       provide(
         TokensProviderSymbol,

@@ -19,6 +19,7 @@ const defaults: DeepPartial<Pool> = {
   tokens: [
     aPoolToken({
       address: '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7', //GRO address
+      symbol: 'GRO',
       balance: '408784.606604112667634055',
       weight: '0.8',
       token: {
@@ -28,6 +29,7 @@ const defaults: DeepPartial<Pool> = {
     }),
     aPoolToken({
       address: wethAddress,
+      symbol: 'WETH',
       balance: '95.094102533755196937',
       weight: '0.2',
       token: {

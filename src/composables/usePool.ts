@@ -1,10 +1,10 @@
-import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
-import { isAddress, getAddress } from '@ethersproject/address';
+import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
+import { getAddress } from '@ethersproject/address';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
+import configs from '@/lib/config';
 import {
   bnum,
   includesAddress,
@@ -13,21 +13,20 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import configs from '@/lib/config';
+import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 
-import {
-  isTestnet,
-  isMainnet,
-  appUrl,
-  getNetworkSlug,
-  networkId,
-  isPoolBoostsEnabled,
-} from './useNetwork';
-import useNumbers, { FNumFormats, numF } from './useNumbers';
+import { toDateTimestamp } from '@/lib/utils/time';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
-import { uniq, uniqWith, cloneDeep } from 'lodash';
-import { toDateTimestamp } from '@/lib/utils/time';
+import { cloneDeep, uniq, uniqWith } from 'lodash';
+import {
+  appUrl,
+  getNetworkSlug,
+  isMainnet,
+  isPoolBoostsEnabled,
+  networkId,
+} from './useNetwork';
+import useNumbers, { FNumFormats, numF } from './useNumbers';
 
 const POOLS = configService.network.pools;
 
@@ -176,7 +175,7 @@ export function createdAfter29March(pool: AnyPool): boolean {
   // (createTime should probably not be treated as optional in the SDK types)
   if (!pool.createTime) return true;
 
-  let creationTimestampLimit = toDateTimestamp('2021-08-29');
+  let creationTimestampLimit = toDateTimestamp('2023-03-29');
 
   //DEBUG
   if (
@@ -423,8 +422,6 @@ export function flatTokenTree(
  * @returns tokensList excluding pre-minted BPT address.
  */
 export function tokensListExclBpt(pool: Pool): string[] {
-  // console.log('YEYEEYEYEY', pool);
-  // console.log('YEYEEYEYEY address', pool.address);
   return removeAddress(pool.address, pool.tokensList);
 }
 
@@ -508,20 +505,14 @@ export function findTokenInTree(
 }
 
 /**
- * @summary Check if pool should be accessible in UI
+ * Returns an array with the tokens from the given pool whose addresses are included in the given addresses.
+ *
+ * @param {Pool} pool - A pool
+ * @param {string[]} addresses - An address list.
  */
-export function isBlocked(pool: Pool, account: string): boolean {
-  const requiresAllowlisting =
-    (isStableLike(pool.poolType) && !isFx(pool.poolType)) ||
-    isManaged(pool.poolType);
-  const isOwnedByUser =
-    pool.owner && isAddress(account) && isSameAddress(pool.owner, account);
-  const isAllowlisted =
-    POOLS.Stable.AllowList.includes(pool.id) ||
-    POOLS.Investment.AllowList.includes(pool.id);
-
-  return (
-    !isTestnet.value && requiresAllowlisting && !isAllowlisted && !isOwnedByUser
+export function filterTokensInList(pool: Pool, addresses: string[]) {
+  return flatTokenTree(pool).filter(
+    token => token.address && !includesAddress(addresses, token.address)
   );
 }
 

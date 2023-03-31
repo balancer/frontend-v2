@@ -20,7 +20,7 @@ export default function usePoolTransfersGuard() {
    * COMPOSABLES
    */
   const router = useRouter();
-  const { pool, transfersAllowed } = usePoolTransfers();
+  const { pool, joinsDisabled } = usePoolTransfers();
   const { networkSlug } = useNetwork();
 
   /**
@@ -41,7 +41,7 @@ export default function usePoolTransfersGuard() {
    * HELPERS
    */
   function redirectIfNeeded(pool: Pool | undefined) {
-    if (pool && !transfersAllowed.value) {
+    if (pool && joinsDisabled.value) {
       redirectToPoolDetail(pool.id);
     }
   }

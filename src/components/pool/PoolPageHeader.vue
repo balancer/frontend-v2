@@ -6,7 +6,6 @@ import BalChipNew from '@/components/chips/BalChipNew.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
-import { useBlockedPool } from '@/composables/useBlockedPool';
 import useNumbers from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import { usePoolWarning } from '@/composables/usePoolWarning';
@@ -18,6 +17,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
+import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
 /**
  * TYPES
@@ -50,8 +50,9 @@ const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { balancerTokenListTokens, getToken } = useTokens();
 const { hasNonPrefGaugeBalance } = usePoolStaking();
-const { nonVettedTokensBlock, noInitLiquidityBlock, nonVettedTokenSymbols } =
-  useBlockedPool(props.pool);
+const { disableJoinsReason, nonAllowedSymbols } = useDisabledJoinPool(
+  props.pool
+);
 
 /**
  * STATE
@@ -272,7 +273,7 @@ function symbolFor(titleTokenIndex: number): string {
     </BalAlert>
   </template>
   <BalAlert
-    v-if="noInitLiquidityBlock"
+    v-if="disableJoinsReason.notInitialLiquidity"
     type="warning"
     :title="$t('noInitLiquidity')"
     :description="$t('noInitLiquidityDetail')"
@@ -280,9 +281,9 @@ function symbolFor(titleTokenIndex: number): string {
     block
   />
   <BalAlert
-    v-if="nonVettedTokensBlock"
+    v-if="disableJoinsReason.nonVettedTokensAfter20March"
     type="warning"
-    :title="$t('investment.warning.blockedPool.title', [nonVettedTokenSymbols])"
+    :title="$t('investment.warning.blockedPool.title', [nonAllowedSymbols])"
     class="mt-2"
     block
   >
@@ -295,6 +296,13 @@ function symbolFor(titleTokenIndex: number): string {
     >
     {{ $t('investment.warning.blockedPool.description2') }}
   </BalAlert>
+  <BalAlert
+    v-if="disableJoinsReason.requiresAllowListing"
+    type="warning"
+    :title="$t('requiresAllowListing')"
+    class="mt-2"
+    block
+  />
 
   <StakePreviewModal
     v-if="!!pool"
