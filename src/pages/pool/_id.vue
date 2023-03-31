@@ -72,7 +72,6 @@ const {
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
   isDeprecatedPool,
-  noInitLiquidityPool,
 } = usePool(poolQuery.data);
 //#endregion
 
@@ -139,10 +138,6 @@ onBeforeUnmount(() => {
   observer?.disconnect();
 });
 //#endregion
-
-const noInitLiquidity = computed(
-  () => !loadingPool.value && noInitLiquidityPool.value
-);
 
 const missingPrices = computed(() => {
   if (pool.value && prices.value && !priceQueryLoading.value) {
@@ -218,7 +213,6 @@ watch(
           :pool="pool"
           :poolApr="poolApr"
           :isStableLikePool="isStableLikePool"
-          :noInitLiquidity="noInitLiquidity"
           :titleTokens="titleTokens"
           :missingPrices="missingPrices"
           :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
@@ -285,7 +279,7 @@ watch(
             class="mb-4 h-60 pool-actions-card"
           />
           <MyPoolBalancesCard
-            v-else-if="!noInitLiquidity"
+            v-if="pool"
             :pool="pool"
             :missingPrices="missingPrices"
             class="mb-4"

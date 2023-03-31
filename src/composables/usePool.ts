@@ -27,7 +27,7 @@ import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
-import { toEpochTimestamp } from '@/lib/utils/time';
+import { toDateTimestamp } from '@/lib/utils/time';
 
 const POOLS = configService.network.pools;
 
@@ -176,14 +176,14 @@ export function createdAfter29March(pool: AnyPool): boolean {
   // (createTime should probably not be treated as optional in the SDK types)
   if (!pool.createTime) return true;
 
-  let creationTimestampLimit = toEpochTimestamp('2021-08-29');
+  let creationTimestampLimit = toDateTimestamp('2021-08-29');
 
   //DEBUG
   if (
     pool.id ===
     '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080'
   )
-    creationTimestampLimit = toEpochTimestamp('2021-08-13'); //DEBUG DATE
+    creationTimestampLimit = toDateTimestamp('2021-08-13'); //DEBUG DATE
 
   // Epoch timestamp is bigger if the date is older
   return pool.createTime > creationTimestampLimit;
@@ -656,9 +656,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean =>
       !!pool.value && includesWstEth(pool.value.tokensList) && isMainnet.value
   );
-  const noInitLiquidityPool = computed(
-    () => !!pool.value && noInitLiquidity(pool.value)
-  );
 
   // pool is "Weighted" and some of the rate providers are not on our approved list
   const hasNonApprovedRateProviders = computed(
@@ -696,7 +693,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     managedPoolWithSwappingHalted,
     isWethPool,
     isMainnetWstETHPool,
-    noInitLiquidityPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
     // methods

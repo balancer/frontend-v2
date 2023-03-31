@@ -1,30 +1,29 @@
 <script lang="ts" setup>
-import { computed, toRef, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
-import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
+import { useBlockedPool } from '@/composables/useBlockedPool';
 import useNumbers from '@/composables/useNumbers';
-import { usePoolWarning } from '@/composables/usePoolWarning';
 import { usePool } from '@/composables/usePool';
-import { useTokens } from '@/providers/tokens.provider';
+import { usePoolWarning } from '@/composables/usePoolWarning';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { useTokens } from '@/providers/tokens.provider';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
-import { usePoolStaking } from '@/providers/local/pool-staking.provider';
-import { useHasBlockedJoins } from '@/composables/useHasBlockedJoins';
 
 /**
  * TYPES
  */
 type Props = {
   loadingApr: boolean;
-  noInitLiquidity: boolean;
   isStableLikePool: boolean;
   pool: Pool;
   poolApr?: AprBreakdown;
@@ -36,7 +35,6 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   loadingApr: true,
-  noInitLiquidity: false,
   poolApr: undefined,
 });
 
@@ -52,9 +50,8 @@ const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { balancerTokenListTokens, getToken } = useTokens();
 const { hasNonPrefGaugeBalance } = usePoolStaking();
-const { hasBlockedJoins, nonVettedTokenSymbols } = useHasBlockedJoins(
-  props.pool
-);
+const { nonVettedTokensBlock, noInitLiquidityBlock, nonVettedTokenSymbols } =
+  useBlockedPool(props.pool);
 
 /**
  * STATE
@@ -217,23 +214,6 @@ function symbolFor(titleTokenIndex: number): string {
       </BalTooltip>
     </div>
   </div>
-
-  <BalAlert
-    v-if="hasBlockedJoins"
-    type="warning"
-    :title="$t('investment.warning.blockedPool.title', [nonVettedTokenSymbols])"
-    class="mt-2"
-    block
-  >
-    {{ $t('investment.warning.blockedPool.description') }}
-    <a
-      href="https://github.com/balancer/tokenlists"
-      target="_blank"
-      class="underline"
-      >{{ $t('investment.warning.blockedPool.here') }}</a
-    >
-    {{ $t('investment.warning.blockedPool.description2') }}
-  </BalAlert>
   <BalAlert
     v-if="hasNonApprovedRateProviders"
     type="warning"
@@ -292,13 +272,30 @@ function symbolFor(titleTokenIndex: number): string {
     </BalAlert>
   </template>
   <BalAlert
-    v-if="noInitLiquidity"
+    v-if="noInitLiquidityBlock"
     type="warning"
     :title="$t('noInitLiquidity')"
     :description="$t('noInitLiquidityDetail')"
     class="mt-2"
     block
   />
+  <BalAlert
+    v-if="nonVettedTokensBlock"
+    type="warning"
+    :title="$t('investment.warning.blockedPool.title', [nonVettedTokenSymbols])"
+    class="mt-2"
+    block
+  >
+    {{ $t('investment.warning.blockedPool.description') }}
+    <a
+      href="https://github.com/balancer/tokenlists"
+      target="_blank"
+      class="underline"
+      >{{ $t('investment.warning.blockedPool.here') }}</a
+    >
+    {{ $t('investment.warning.blockedPool.description2') }}
+  </BalAlert>
+
   <StakePreviewModal
     v-if="!!pool"
     :isVisible="isRestakePreviewVisible"

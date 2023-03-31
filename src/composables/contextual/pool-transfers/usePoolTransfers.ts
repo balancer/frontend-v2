@@ -13,7 +13,7 @@ import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import usePoolDecorationQuery from '@/composables/queries/usePoolDecorationQuery';
-import { useHasBlockedJoins } from '@/composables/useHasBlockedJoins';
+import { useBlockedPool } from '@/composables/useBlockedPool';
 
 /**
  * STATE
@@ -72,7 +72,7 @@ export default function usePoolTransfers() {
 
   const transfersAllowed = computed(() => {
     if (!pool.value) return false;
-    const { hasBlockedJoins } = useHasBlockedJoins(pool.value);
+    const { shouldBlockPool: hasBlockedJoins } = useBlockedPool(pool.value);
     return !hasBlockedJoins.value && !noInitLiquidity(pool.value);
   });
 

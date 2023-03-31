@@ -14,6 +14,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import PoolActionsCard from './PoolActionsCard.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useLock } from '@/composables/useLock';
+import { useBlockedPool } from '@/composables/useBlockedPool';
 
 /**
  * TYPES
@@ -39,6 +40,7 @@ const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
 const { totalLockedValue } = useLock();
+const { shouldBlockPool } = useBlockedPool(props.pool);
 
 /**
  * COMPUTED
@@ -78,7 +80,7 @@ function navigateToPoolMigration(pool: Pool) {
 </script>
 
 <template>
-  <BalCard shadow="2xl" noPad class="rounded-xl">
+  <BalCard v-if="!shouldBlockPool" shadow="2xl" noPad class="rounded-xl">
     <template #header>
       <div class="card-header">
         <h5>
