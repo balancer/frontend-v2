@@ -1,3 +1,4 @@
+import { Pool } from '@/services/pool/types';
 import { onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -19,7 +20,7 @@ export default function usePoolTransfersGuard() {
    * COMPOSABLES
    */
   const router = useRouter();
-  const { pool, shouldBeRedirected } = usePoolTransfers();
+  const { pool, transfersAllowed } = usePoolTransfers();
   const { networkSlug } = useNetwork();
 
   /**
@@ -33,14 +34,14 @@ export default function usePoolTransfersGuard() {
    * CALLBACKS
    */
   onBeforeMount(() => {
-    redirectIfNeeded(pool);
+    redirectIfNeeded(pool.value);
   });
 
   /**
    * HELPERS
    */
-  function redirectIfNeeded(pool) {
-    if (pool && shouldBeRedirected.value) {
+  function redirectIfNeeded(pool: Pool | undefined) {
+    if (pool && !transfersAllowed.value) {
       redirectToPoolDetail(pool.id);
     }
   }

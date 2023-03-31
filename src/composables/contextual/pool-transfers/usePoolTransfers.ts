@@ -70,14 +70,10 @@ export default function usePoolTransfers() {
     );
   });
 
-  const shouldBeRedirected = computed(
-    () => pool.value && noInitLiquidity(pool.value)
-  );
-
   const transfersAllowed = computed(() => {
     if (!pool.value) return false;
     const { hasBlockedJoins } = useHasBlockedJoins(pool.value);
-    return !hasBlockedJoins.value || !shouldBeRedirected.value;
+    return !hasBlockedJoins.value && !noInitLiquidity(pool.value);
   });
 
   return {
@@ -88,6 +84,5 @@ export default function usePoolTransfers() {
     useNativeAsset,
     missingPrices,
     transfersAllowed,
-    shouldBeRedirected,
   };
 }
