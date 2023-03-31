@@ -71,6 +71,9 @@ const config: Config = {
     Investment: {
       AllowList: [],
     },
+    Weighted: {
+      AllowList: [],
+    },
     Factories: {},
     Stakable: {
       AllowList: [],

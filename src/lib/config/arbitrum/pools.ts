@@ -42,6 +42,9 @@ const pools: Pools = {
   Investment: {
     AllowList: [''],
   },
+  Weighted: {
+    AllowList: [''],
+  },
   Factories: {
     '0x7dfdef5f355096603419239ce743bfaf1120312b': 'weightedPool', // Arbitrum Weighted
     '0xcf0a32bbef8f064969f21f7e02328fb577382018': 'weightedPool', // Arbitrum WeightedOracle
