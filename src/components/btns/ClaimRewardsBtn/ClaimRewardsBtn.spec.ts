@@ -20,7 +20,32 @@ vi.mock('@/composables/useTransactions');
 vi.mock('@/composables/useEthers');
 vi.mock('@/composables/queries/useGaugesQuery');
 vi.mock('@/composables/queries/useGaugesDecorationQuery');
+vi.mock('@/constants/pools.ts', () => {
+  return {
+    POOLS: {
+      IdsMap: {},
+    },
+  };
+});
 vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/config/config.service', () => {
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    default: vi.fn().mockImplementation(() => {}),
+    configService: {
+      network: {
+        chainId: 5,
+        nativeAsset: {
+          address: '0x0000000000000000000000000000000000000000',
+        },
+        addresses: {
+          gaugeRewardsHelper: '',
+          vault: '0x0000000000000000000000000000000000000000',
+        },
+      },
+    },
+  };
+});
 vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
 
 vi.mock('@/providers/tokens.provider');

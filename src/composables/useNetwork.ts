@@ -57,6 +57,9 @@ export const isTestnet = computed(() => isGoerli.value);
 export const isPoolBoostsEnabled = computed<boolean>(
   () => configService.network.pools.BoostsEnabled
 );
+export const networkHasNativeGauges = computed<boolean>(() => {
+  return networkConfig.addresses.gaugeController !== '';
+});
 /**
  * METHODS
  */
