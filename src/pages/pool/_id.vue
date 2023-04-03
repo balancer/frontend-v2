@@ -157,8 +157,8 @@ const titleTokens = computed<PoolToken[]>(() => {
 
 const isStakablePool = computed(
   (): boolean =>
-    POOLS.Stakable.VotingAllowed.includes(poolId) ||
-    POOLS.Stakable.VotingDisabled.includes(poolId)
+    POOLS.Stakable.VotingGaugePools.includes(poolId) ||
+    POOLS.Stakable.AllowList.includes(poolId)
 );
 
 const poolPremintedBptIndex = computed(() => {

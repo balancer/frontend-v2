@@ -103,8 +103,8 @@ const config: Config = {
     },
     Factories: {},
     Stakable: {
-      VotingAllowed: [],
-      VotingDisabled: [],
+      VotingGaugePools: [],
+      AllowList: [],
     },
     Deep: [],
     BoostedApr: [],

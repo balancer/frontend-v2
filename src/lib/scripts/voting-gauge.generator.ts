@@ -482,7 +482,7 @@ async function getGaugeInfo(
 
   const POOLS = flatten(
     Object.entries(config).map(([network, networkConfig]) => {
-      return networkConfig.pools.Stakable.VotingAllowed.map(id => {
+      return networkConfig.pools.Stakable.VotingGaugePools.map(id => {
         return {
           id,
           network: Number(network) as Network,

@@ -107,7 +107,7 @@ const pools: Pools = {
     '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx', // fx
   },
   Stakable: {
-    VotingAllowed: [
+    VotingGaugePools: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
       '0x072f14b85add63488ddad88f855fda4a99d6ac9b000200000000000000000027',
       '0x0b09dea16768f0799065c475be02919503cb2a3500020000000000000000001a',
@@ -217,7 +217,7 @@ const pools: Pools = {
       '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db',
       '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7',
     ],
-    VotingDisabled: [],
+    AllowList: [],
   },
   Metadata: {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {

@@ -34,7 +34,7 @@ const { networkSlug } = useNetwork();
 
 /** COMPUTED */
 const stakablePoolIds = computed((): string[] =>
-  POOLS.Stakable.VotingAllowed.concat(POOLS.Stakable.VotingDisabled)
+  POOLS.Stakable.VotingGaugePools.concat(POOLS.Stakable.AllowList)
 );
 const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
 </script>

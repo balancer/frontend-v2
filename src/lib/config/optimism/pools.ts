@@ -26,7 +26,7 @@ const pools: Pools = {
   },
   Factories: {},
   Stakable: {
-    VotingAllowed: [
+    VotingGaugePools: [
       '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
       '0xde45f101250f2ca1c0f8adfc172576d10c12072d00000000000000000000003f',
       '0x981fb05b738e981ac532a99e77170ecb4bc27aef00010000000000000000004b',
@@ -37,7 +37,7 @@ const pools: Pools = {
       '0x785f08fb77ec934c01736e30546f87b4daccbe50000200000000000000000041',
       '0x05e7732bf9ae5592e6aa05afe8cd80f7ab0a7bea00020000000000000000005a',
     ],
-    VotingDisabled: [],
+    AllowList: [],
   },
   Deep: [],
   BoostedApr: [],

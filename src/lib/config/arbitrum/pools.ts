@@ -63,7 +63,7 @@ const pools: Pools = {
     '0xf1665e19bc105be4edd3739f88315cc699cc5b65': 'weightedPool', // Weighted Pool V3
   },
   Stakable: {
-    VotingAllowed: [
+    VotingGaugePools: [
       '0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002',
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
       '0x0adeb25cb5920d4f7447af4a0428072edc2cee2200020000000000000000004a',
@@ -90,7 +90,7 @@ const pools: Pools = {
       '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382',
       '0x32df62dc3aed2cd6224193052ce665dc181658410002000000000000000003bd',
     ],
-    VotingDisabled: [],
+    AllowList: [],
   },
   Metadata: {
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
