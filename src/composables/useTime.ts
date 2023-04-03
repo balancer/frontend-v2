@@ -39,6 +39,16 @@ export function toUnixTimestamp(jsTimestamp: number): number {
   return Math.round(jsTimestamp / oneSecondInMs);
 }
 
+/**
+ * Converts a the given string (format 2022-03-30) into a UNIX timestamp
+ *
+ * @param {string} date - Date string in format 2022-03-30
+ * @returns {number} - Unix timestamp in seconds
+ */
+export function dateToUnixTimestamp(date: string): number {
+  return Date.parse(date) / oneSecondInMs;
+}
+
 export function toUtcTime(date: Date) {
   return Date.UTC(
     date.getUTCFullYear(),

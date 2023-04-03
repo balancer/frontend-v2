@@ -321,8 +321,8 @@ export const tokensProvider = (
       const tokensArray = Object.entries(tokensToSearch);
       const results = tokensArray.filter(
         ([, token]) =>
-          token.name.toLowerCase().includes(query.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(query.toLowerCase())
+          token.name?.toLowerCase().includes(query.toLowerCase()) ||
+          token.symbol?.toLowerCase().includes(query.toLowerCase())
       );
       return removeExcluded(Object.fromEntries(results), excluded);
     }

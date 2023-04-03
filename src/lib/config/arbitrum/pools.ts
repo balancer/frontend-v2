@@ -7,6 +7,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
+  BoostsEnabled: false,
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
@@ -40,6 +41,11 @@ const pools: Pools = {
   },
   Investment: {
     AllowList: [''],
+  },
+  Weighted: {
+    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
+    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    AllowList: [],
   },
   Factories: {
     '0x7dfdef5f355096603419239ce743bfaf1120312b': 'weightedPool', // Arbitrum Weighted
@@ -92,6 +98,11 @@ const pools: Pools = {
       hasIcon: true,
     },
   },
+  Deep: [
+    '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
+    '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
+  ],
+  BoostedApr: [],
   DisabledJoins: [],
 };
 

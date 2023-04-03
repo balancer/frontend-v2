@@ -2,22 +2,12 @@
 import useNetwork from '@/composables/useNetwork';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
 import { computed } from 'vue';
 
 const { networkId } = useNetwork();
 
 const bridgeUrl = computed((): string => {
-  switch (networkId.value) {
-    case Network.POLYGON:
-      return 'https://wallet.polygon.technology/polygon/bridge';
-    case Network.ARBITRUM:
-      return 'https://bridge.arbitrum.io/';
-    case Network.GNOSIS:
-      return 'https://bridge.gnosischain.com/';
-    default:
-      return '';
-  }
+  return configService.network.bridgeUrl;
 });
 
 const label = computed((): string => {

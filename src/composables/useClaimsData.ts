@@ -7,10 +7,10 @@ import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery from './queries/useGraphQuery';
 import useProtocolRewardsQuery, {
+  networkHasProtocolRewards,
   ProtocolRewardsQueryResponse,
 } from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
-import { isGoerli, isL2 } from './useNetwork';
 import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
 import { PoolType } from '@balancer-labs/sdk';
 
@@ -81,12 +81,13 @@ export function useClaimsData() {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(gaugePoolQuery) ||
-      (!isL2.value && !isGoerli.value && isQueryLoading(protocolRewardsQuery))
+      (networkHasProtocolRewards.value && isQueryLoading(protocolRewardsQuery))
   );
 
   return {
     gauges,
     gaugePools,
+    networkHasProtocolRewards,
     protocolRewards,
     isLoading,
   };
