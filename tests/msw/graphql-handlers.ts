@@ -1,5 +1,6 @@
 import { graphql } from 'msw';
 import gaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
+import { mockedTokenPrices } from './token-prices';
 
 export const defaultPoolId =
   '0xe053685f16968a350c8dea6420281a41f72ce3aa00020000000000000000006b';
@@ -46,5 +47,13 @@ export const graphqlHandlers = [
   }),
   graphql.query('AllPools', (req, res, ctx) => {
     return res(ctx.data([]));
+  }),
+
+  graphql.query('GetCurrentTokenPrices', (req, res, ctx) => {
+    return res(
+      ctx.data({
+        prices: mockedTokenPrices,
+      })
+    );
   }),
 ];
