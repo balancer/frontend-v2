@@ -36,24 +36,27 @@ export function useDisabledJoinPool(pool: Pool) {
   const { account } = useWeb3();
   const { vettedTokenList } = useTokenLists();
 
-  const notAllowedTokens = computed(() => {
+  const notVettedTokens = computed(() => {
     const vettedTokenAddresses = vettedTokenList.value.tokens.map(
       t => t.address
     );
 
     // Returns tokens whose addresses are not included inside vetted token list or inside allowed list
-    return filterTokensInList(pool, [
-      ...vettedTokenAddresses,
-      ...POOLS.Weighted.AllowList,
-    ]);
+    return filterTokensInList(pool, vettedTokenAddresses);
   });
 
-  const nonAllowedTokensAfter29March = computed(() => {
-    return createdAfter29March(pool) && notAllowedTokens.value.length > 0;
+  const nonVettedTokensAfter29March = computed(() => {
+    return createdAfter29March(pool) && notVettedTokens.value.length > 0;
+  });
+
+  const nonAllowedWeightedPoolAfter29March = computed(() => {
+    return (
+      createdAfter29March(pool) && !POOLS.Weighted.AllowList.includes(pool.id)
+    );
   });
 
   const nonAllowedSymbols = computed(() => {
-    return notAllowedTokens.value.map(token => token.symbol).join(',');
+    return notVettedTokens.value.map(token => token.symbol).join(',');
   });
 
   const notInitialLiquidity = computed(() => {
@@ -66,8 +69,10 @@ export function useDisabledJoinPool(pool: Pool) {
 
   const disableJoinsReason = computed(() => ({
     notInitialLiquidity: notInitialLiquidity.value,
-    nonVettedTokensAfter20March: nonAllowedTokensAfter29March.value,
+    nonVettedTokensAfter20March: nonVettedTokensAfter29March.value,
     requiresAllowListing: requiresAllowListing.value,
+    nonAllowedWeightedPoolAfter29March:
+      nonAllowedWeightedPoolAfter29March.value,
   }));
 
   const shouldDisableJoins = computed(() => {

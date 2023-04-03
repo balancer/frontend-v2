@@ -20,7 +20,7 @@ async function mountVettedTokensInPool(pool: Pool) {
   return result;
 }
 
-it('blocks pools with no initial liquidity', async () => {
+it('disables joins for pools with no initial liquidity', async () => {
   const pool = BoostedPoolMock;
   pool.totalShares = '0';
   const { disableJoinsReason, shouldDisableJoins } =
@@ -30,7 +30,7 @@ it('blocks pools with no initial liquidity', async () => {
   expect(disableJoinsReason.value.notInitialLiquidity).toBeTrue();
 });
 
-it('blocks pools created after 29 march with non vetted tokens', async () => {
+it('disables joins for pools created after 29 march with non vetted tokens', async () => {
   const pool = BoostedPoolMock;
   pool.createTime = toDateTimestamp('2023-03-30'); //Created after 29 March
   const { disableJoinsReason, shouldDisableJoins, nonAllowedSymbols } =
@@ -45,7 +45,21 @@ it('blocks pools created after 29 march with non vetted tokens', async () => {
   );
 });
 
-it('does not block pools created before 29 march', async () => {
+it('disables joins for weigthed pools created after 29 march that are not in the weighted allow list', async () => {
+  const pool = BoostedPoolMock;
+  pool.createTime = toDateTimestamp('2023-03-30'); //Created after 29 March
+  const { disableJoinsReason, shouldDisableJoins } =
+    await mountVettedTokensInPool(pool);
+
+  pool.tokens[0].address = randomAddress();
+
+  expect(shouldDisableJoins.value).toBeTrue();
+  expect(
+    disableJoinsReason.value.nonAllowedWeightedPoolAfter29March
+  ).toBeTrue();
+});
+
+it('does not disables joins for pools created before 29 march', async () => {
   const pool = BoostedPoolMock;
   pool.createTime = toDateTimestamp('2023-03-28'); //Created before 29 March
   pool.totalShares = '100';
@@ -56,7 +70,7 @@ it('does not block pools created before 29 march', async () => {
   expect(shouldDisableJoins.value).toBeFalse();
 });
 
-it('blocks pools FX pool', async () => {
+it('disabled joins for pools FX pool', async () => {
   const pool = aPool({
     totalShares: '100',
     createTime: toDateTimestamp('2023-03-28'),
