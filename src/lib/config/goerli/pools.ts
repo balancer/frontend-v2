@@ -49,6 +49,11 @@ const pools: Pools = {
   Investment: {
     AllowList: [],
   },
+  Weighted: {
+    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
+    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    AllowList: [],
+  },
   Factories: {
     '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
     '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool',

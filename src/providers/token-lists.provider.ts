@@ -18,6 +18,7 @@ import TokenListService, {
   tokenListService,
 } from '@/services/token-list/token-list.service';
 import { TokenList, TokenListMap } from '@/types/TokenList';
+import testTokenList from '@tests/tokenlists/tokens-5.json';
 
 /** TYPES */
 export interface TokenListsState {
@@ -37,10 +38,9 @@ const state: TokenListsState = reactive({
 const allTokenLists = ref({});
 
 const isTestMode = import.meta.env.MODE === 'test';
-const tokensListPromise = isTestMode // Only use this file in testing mode (vitest)
-  ? import('@tests/tokenlists/tokens-5.json')
-  : // Use generated file in development/production mode
-    import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`);
+const tokensListPromise = isTestMode // Return empty promise only in tests (vitest)
+  ? Promise.resolve()
+  : import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`);
 
 /**
  * All active (toggled) tokenlists
@@ -106,21 +106,20 @@ function isActiveList(uri: string): boolean {
 }
 
 export const tokenListsProvider = () => {
-  onBeforeMount(async () => {
-    const module = await tokensListPromise;
-    const tokenLists = module.default as TokenListMap;
+  if (!isTestMode) {
+    onBeforeMount(async () => {
+      const module = await tokensListPromise;
+      const tokenLists = module.default as TokenListMap;
 
-    if (isTestMode) {
-      allTokenLists.value = tokenLists;
-      return;
-    }
-
-    // filter token lists by network id
-    allTokenLists.value = TokenListService.filterTokensList(
-      tokenLists,
-      networkId.value
-    );
-  });
+      // filter token lists by network id
+      allTokenLists.value = TokenListService.filterTokensList(
+        tokenLists,
+        networkId.value
+      );
+    });
+  } else {
+    allTokenLists.value = testTokenList;
+  }
 
   return {
     // state
