@@ -62,17 +62,15 @@ const joinDisabled = computed(
       @click="startConnectWithInjectedProvider"
     />
     <div v-else class="grid grid-cols-2 gap-2">
-      <div>
-        <BalBtn
-          :tag="joinDisabled ? 'div' : 'router-link'"
-          :to="{ name: 'add-liquidity', params: { networkSlug } }"
-          :label="$t('addLiquidity')"
-          color="gradient"
-          :disabled="joinDisabled"
-          block
-          @click="trackGoal(Goals.ClickAddLiquidity)"
-        />
-      </div>
+      <BalBtn
+        :tag="joinDisabled ? 'div' : 'router-link'"
+        :to="{ name: 'add-liquidity', params: { networkSlug } }"
+        :label="$t('addLiquidity')"
+        color="gradient"
+        :disabled="joinDisabled"
+        block
+        @click="trackGoal(Goals.ClickAddLiquidity)"
+      />
 
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
