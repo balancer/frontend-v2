@@ -317,7 +317,6 @@ function iconAddresses(pool: Pool) {
         </div>
       </template>
       <template #poolNameCell="pool">
-        CO
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <div v-if="poolMetadata(pool.id)" class="text-left">
             {{ poolMetadata(pool.id)?.name }}
