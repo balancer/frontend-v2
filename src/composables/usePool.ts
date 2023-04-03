@@ -1,6 +1,5 @@
 import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
-import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { APR_THRESHOLD } from '@/constants/pools';
@@ -697,7 +696,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isSwappingHaltable,
     isPreMintedBptType,
     isWeth,
-    after29March: createdAfter29March,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';

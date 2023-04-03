@@ -38,9 +38,9 @@ const state: TokenListsState = reactive({
 const allTokenLists = ref({});
 
 const isTestMode = import.meta.env.MODE === 'test';
-const tokensListPromise = import(
-  `@/assets/data/tokenlists/tokens-${networkId.value}.json`
-);
+const tokensListPromise = isTestMode
+  ? import(`@/assets/data/tokenlists/tokens-${networkId.value}.json`)
+  : Promise.resolve();
 
 /**
  * All active (toggled) tokenlists
