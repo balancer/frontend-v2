@@ -291,7 +291,7 @@ function symbolFor(titleTokenIndex: number): string {
       href="https://github.com/balancer/tokenlists"
       target="_blank"
       class="underline"
-      >{{ $t('investment.warning.blockedPool.here') }}</a
+      >{{ $t('here') }}</a
     >
     {{ $t('investment.warning.blockedPool.description2') }}
   </BalAlert>
@@ -302,10 +302,19 @@ function symbolFor(titleTokenIndex: number): string {
       disableJoinsReason.nonAllowedWeightedPoolAfterTimestamp
     "
     type="warning"
-    :title="$t('requiresAllowListing')"
+    :title="$t('requiresAllowListing1')"
     class="mt-2"
     block
-  />
+  >
+    {{ $t('Click') }}
+    <a
+      href="https://github.com/balancer/frontend-v2/"
+      target="_blank"
+      class="underline"
+      >{{ $t('here') }}</a
+    >
+    {{ $t('requiresAllowListing2') }}
+  </BalAlert>
 
   <StakePreviewModal
     v-if="!!pool"

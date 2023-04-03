@@ -515,7 +515,6 @@
       },
       "blockedPool": {
         "title": "This pool contains one or more tokens that have not been vetted by the Balancer community: {0}.",
-        "here": "here",
         "description": "For the protection of LPs, adding liquidity to the pool has been disabled. Click",
         "description2": "to submit the token(s) for review."
       }
@@ -646,7 +645,10 @@
   "noData": "No data available",
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before liquidity provision is supported.",
-  "requiresAllowListing": "This pool is not in the allow list",
+  "requiresAllowListing1": "This pool has not been added to our allowlist.",
+  "requiresAllowListing2": " to submit the pool for review.",
+  "Click": "Click",
+  "here": "here",
   "noInvestments": "No liquidity",
   "noUnstakedInvestments": "You have no unstaked liquidity on {0}",
   "noStakedInvestments": "You have no staked liquidity on {0}",
