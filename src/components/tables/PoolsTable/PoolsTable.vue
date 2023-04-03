@@ -312,11 +312,12 @@ function iconAddresses(pool: Pool) {
         </div>
       </template>
       <template #iconColumnCell="pool">
-        <div v-if="!isLoading" class="py-4 px-6">
+        <div v-if="!isLoading" class="py-4 px-6" :data-testid="pool.id">
           <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
         </div>
       </template>
       <template #poolNameCell="pool">
+        CO
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <div v-if="poolMetadata(pool.id)" class="text-left">
             {{ poolMetadata(pool.id)?.name }}
