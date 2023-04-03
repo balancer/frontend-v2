@@ -14,7 +14,6 @@ import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 
-import { toDateTimestamp } from '@/lib/utils/time';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { cloneDeep, uniq, uniqWith } from 'lodash';
@@ -26,6 +25,7 @@ import {
   networkId,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
+import { dateToUnixTimestamp } from './useTime';
 
 const POOLS = configService.network.pools;
 
@@ -174,14 +174,14 @@ export function createdAfterTimestamp(pool: AnyPool): boolean {
   // (createTime should probably not be treated as optional in the SDK types)
   if (!pool.createTime) return true;
 
-  const creationTimestampLimit = toDateTimestamp('2023-03-29');
+  let creationTimestampLimit = dateToUnixTimestamp('2023-03-29');
 
   // // Uncomment to debug
-  // if (
-  //   pool.id ===
-  //   '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080'
-  // )
-  //   creationTimestampLimit = toDateTimestamp('2021-08-13'); //DEBUG DATE
+  if (
+    pool.id ===
+    '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080'
+  )
+    creationTimestampLimit = dateToUnixTimestamp('2021-08-13'); //DEBUG DATE
 
   // Epoch timestamp is bigger if the date is older
   return pool.createTime > creationTimestampLimit;

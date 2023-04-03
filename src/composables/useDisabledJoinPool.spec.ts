@@ -1,5 +1,4 @@
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { toDateTimestamp } from '@/lib/utils/time';
 import { Pool, PoolType } from '@/services/pool/types';
 import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
 import { aPoolToken } from '@/__mocks__/weighted-pool';
@@ -12,6 +11,7 @@ import {
 import { aPool } from '@tests/unit/builders/pool.builders';
 import { useDisabledJoinPool } from './useDisabledJoinPool';
 import useNetwork from './useNetwork';
+import { dateToUnixTimestamp } from './useTime';
 
 initDependenciesWithDefaultMocks();
 
@@ -32,7 +32,7 @@ it('disables joins for pools with no initial liquidity', async () => {
 
 it('disables joins for pools created after timestamp (2023-03-29) with non vetted tokens', async () => {
   const pool = BoostedPoolMock;
-  pool.createTime = toDateTimestamp('2023-03-30'); //Created after 29 March
+  pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
   const { disableJoinsReason, shouldDisableJoins, nonAllowedSymbols } =
     await mountVettedTokensInPool(pool);
 
@@ -47,7 +47,7 @@ it('disables joins for pools created after timestamp (2023-03-29) with non vette
 
 it('disables joins for weigthed pools created after timestamp (2023-03-29) that are not in the weighted allow list', async () => {
   const pool = BoostedPoolMock;
-  pool.createTime = toDateTimestamp('2023-03-30'); //Created after 29 March
+  pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
   const { disableJoinsReason, shouldDisableJoins } =
     await mountVettedTokensInPool(pool);
 
@@ -61,7 +61,7 @@ it('disables joins for weigthed pools created after timestamp (2023-03-29) that 
 
 it('does not disables joins for pools created before 29 march', async () => {
   const pool = BoostedPoolMock;
-  pool.createTime = toDateTimestamp('2023-03-28'); //Created before 29 March
+  pool.createTime = dateToUnixTimestamp('2023-03-28'); //Created before 29 March
   pool.totalShares = '100';
   const { shouldDisableJoins, disableJoinsReason } =
     await mountVettedTokensInPool(pool);
@@ -73,7 +73,7 @@ it('does not disables joins for pools created before 29 march', async () => {
 it('disabled joins for pools FX pool', async () => {
   const pool = aPool({
     totalShares: '100',
-    createTime: toDateTimestamp('2023-03-28'),
+    createTime: dateToUnixTimestamp('2023-03-28'),
     owner: randomAddress(),
     poolType: PoolType.Investment, // Requires Allow listing
     tokens: [
