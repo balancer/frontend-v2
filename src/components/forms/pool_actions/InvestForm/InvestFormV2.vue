@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { tokenWeight, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, includesAddress } from '@/lib/utils';
+import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -51,7 +51,7 @@ const {
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
-const { wrappedNativeAsset, getToken } = useTokens();
+const { wrappedNativeAsset, nativeAsset, getToken } = useTokens();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
@@ -105,6 +105,16 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
 function getTokenInputLabel(address: string): string | undefined {
   const token = getToken(address);
   return token?.symbol;
+}
+
+/**
+ * If the address is the wrapped native asset, we want to give the option to use
+ * the native asset instead.
+ */
+function tokenOptions(address: string): string[] {
+  return isSameAddress(address, wrappedNativeAsset.value.address)
+    ? [wrappedNativeAsset.value.address, nativeAsset.address]
+    : [];
 }
 
 /**
@@ -167,6 +177,7 @@ watch(
       v-model:amount="amountIn.value"
       :name="amountIn.address"
       :weight="tokenWeight(pool, amountIn.address)"
+      :options="tokenOptions(amountIn.address)"
       :aria-label="'Amount of: ' + getTokenInputLabel(amountIn.address)"
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
