@@ -279,7 +279,7 @@ watch(
             class="mb-4 h-60 pool-actions-card"
           />
           <MyPoolBalancesCard
-            v-if="pool"
+            v-else
             :pool="pool"
             :missingPrices="missingPrices"
             class="mb-4"
