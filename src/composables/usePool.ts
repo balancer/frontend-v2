@@ -169,7 +169,7 @@ export function preMintedBptIndex(pool: Pool): number | void {
   );
 }
 
-export function createdAfter29March(pool: AnyPool): boolean {
+export function createdAfterTimestamp(pool: AnyPool): boolean {
   // Pools should always have valid createTime so, for safety, we block the pool in case we don't get it
   // (createTime should probably not be treated as optional in the SDK types)
   if (!pool.createTime) return true;

@@ -30,7 +30,7 @@ it('disables joins for pools with no initial liquidity', async () => {
   expect(disableJoinsReason.value.notInitialLiquidity).toBeTrue();
 });
 
-it('disables joins for pools created after 29 march with non vetted tokens', async () => {
+it('disables joins for pools created after timestamp (2023-03-29) with non vetted tokens', async () => {
   const pool = BoostedPoolMock;
   pool.createTime = toDateTimestamp('2023-03-30'); //Created after 29 March
   const { disableJoinsReason, shouldDisableJoins, nonAllowedSymbols } =
@@ -39,13 +39,13 @@ it('disables joins for pools created after 29 march with non vetted tokens', asy
   pool.tokens[0].address = randomAddress();
 
   expect(shouldDisableJoins.value).toBeTrue();
-  expect(disableJoinsReason.value.nonVettedTokensAfter20March).toBeTrue();
+  expect(disableJoinsReason.value.nonVettedTokensAfterTimestamp).toBeTrue();
   expect(nonAllowedSymbols.value).toMatchInlineSnapshot(
     '"bb-a-USDT,USDT,bb-a-USDC,USDC,bb-a-DAI,DAI"'
   );
 });
 
-it('disables joins for weigthed pools created after 29 march that are not in the weighted allow list', async () => {
+it('disables joins for weigthed pools created after timestamp (2023-03-29) that are not in the weighted allow list', async () => {
   const pool = BoostedPoolMock;
   pool.createTime = toDateTimestamp('2023-03-30'); //Created after 29 March
   const { disableJoinsReason, shouldDisableJoins } =
@@ -55,7 +55,7 @@ it('disables joins for weigthed pools created after 29 march that are not in the
 
   expect(shouldDisableJoins.value).toBeTrue();
   expect(
-    disableJoinsReason.value.nonAllowedWeightedPoolAfter29March
+    disableJoinsReason.value.nonAllowedWeightedPoolAfterTimestamp
   ).toBeTrue();
 });
 
@@ -66,7 +66,7 @@ it('does not disables joins for pools created before 29 march', async () => {
   const { shouldDisableJoins, disableJoinsReason } =
     await mountVettedTokensInPool(pool);
 
-  expect(disableJoinsReason.value.nonVettedTokensAfter20March).toBeFalse();
+  expect(disableJoinsReason.value.nonVettedTokensAfterTimestamp).toBeFalse();
   expect(shouldDisableJoins.value).toBeFalse();
 });
 
@@ -90,6 +90,6 @@ it('disabled joins for pools FX pool', async () => {
 
   expect(disableJoinsReason.value.requiresAllowListing).toBeTrue();
   expect(shouldDisableJoins.value).toBeTrue();
-  expect(disableJoinsReason.value.nonVettedTokensAfter20March).toBeFalse();
+  expect(disableJoinsReason.value.nonVettedTokensAfterTimestamp).toBeFalse();
   expect(disableJoinsReason.value.notInitialLiquidity).toBeFalse();
 });

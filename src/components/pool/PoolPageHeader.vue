@@ -280,7 +280,7 @@ function symbolFor(titleTokenIndex: number): string {
     block
   />
   <BalAlert
-    v-if="disableJoinsReason.nonVettedTokensAfter20March"
+    v-if="disableJoinsReason.nonVettedTokensAfterTimestamp"
     type="warning"
     :title="$t('investment.warning.blockedPool.title', [nonAllowedSymbols])"
     class="mt-2"
@@ -295,8 +295,12 @@ function symbolFor(titleTokenIndex: number): string {
     >
     {{ $t('investment.warning.blockedPool.description2') }}
   </BalAlert>
+
   <BalAlert
-    v-if="disableJoinsReason.requiresAllowListing"
+    v-if="
+      disableJoinsReason.requiresAllowListing ||
+      disableJoinsReason.nonAllowedWeightedPoolAfterTimestamp
+    "
     type="warning"
     :title="$t('requiresAllowListing')"
     class="mt-2"

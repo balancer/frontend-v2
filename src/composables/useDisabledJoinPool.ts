@@ -1,5 +1,5 @@
 import {
-  createdAfter29March,
+  createdAfterTimestamp,
   filterTokensInList,
   isFx,
   isManaged,
@@ -45,13 +45,13 @@ export function useDisabledJoinPool(pool: Pool) {
     return filterTokensInList(pool, vettedTokenAddresses);
   });
 
-  const nonVettedTokensAfter29March = computed(() => {
-    return createdAfter29March(pool) && notVettedTokens.value.length > 0;
+  const nonVettedTokensAfterTimestamp = computed(() => {
+    return createdAfterTimestamp(pool) && notVettedTokens.value.length > 0;
   });
 
-  const nonAllowedWeightedPoolAfter29March = computed(() => {
+  const nonAllowedWeightedPoolAfterTimestamp = computed(() => {
     return (
-      createdAfter29March(pool) && !POOLS.Weighted.AllowList.includes(pool.id)
+      createdAfterTimestamp(pool) && !POOLS.Weighted.AllowList.includes(pool.id)
     );
   });
 
@@ -69,10 +69,10 @@ export function useDisabledJoinPool(pool: Pool) {
 
   const disableJoinsReason = computed(() => ({
     notInitialLiquidity: notInitialLiquidity.value,
-    nonVettedTokensAfter20March: nonVettedTokensAfter29March.value,
     requiresAllowListing: requiresAllowListing.value,
-    nonAllowedWeightedPoolAfter29March:
-      nonAllowedWeightedPoolAfter29March.value,
+    nonVettedTokensAfterTimestamp: nonVettedTokensAfterTimestamp.value,
+    nonAllowedWeightedPoolAfterTimestamp:
+      nonAllowedWeightedPoolAfterTimestamp.value,
   }));
 
   const shouldDisableJoins = computed(() => {
