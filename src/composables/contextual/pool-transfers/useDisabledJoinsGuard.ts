@@ -8,9 +8,9 @@ export default function useDisabledJoinsGuard(pool: Pool) {
   const router = useRouter();
   const { networkSlug } = useNetwork();
   const { shouldDisableJoins } = useDisabledJoinPool(pool);
-  if (shouldDisableJoins.value) redirectToPoolDetail(pool.id);
+  if (shouldDisableJoins.value) redirectToPoolPage(pool.id);
 
-  function redirectToPoolDetail(poolId) {
+  function redirectToPoolPage(poolId) {
     router.push({
       name: 'pool',
       params: { id: poolId, networkSlug },
