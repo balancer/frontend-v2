@@ -46,7 +46,7 @@ export function toUnixTimestamp(jsTimestamp: number): number {
  * @returns {number} - Unix timestamp in seconds
  */
 export function dateToUnixTimestamp(date: string): number {
-  return Date.parse(date) / 1000;
+  return Date.parse(date) / oneSecondInMs;
 }
 
 export function toUtcTime(date: Date) {
