@@ -41,7 +41,7 @@ export function useDisabledJoinPool(pool: Pool) {
       t => t.address
     );
 
-    // Returns tokens whose addresses are not included inside vetted token list or inside allowed list
+    // Returns tokens whose addresses are not included inside vetted token list
     return filterTokensInList(pool, vettedTokenAddresses);
   });
 
