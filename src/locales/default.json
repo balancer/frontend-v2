@@ -646,7 +646,7 @@
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before liquidity provision is supported.",
   "requiresAllowListing1": "This pool has not been added to our allowlist.",
-  "requiresAllowListing2": " to submit the pool for review.",
+  "requiresAllowListing2": "to submit the pool for review.",
   "Click": "Click",
   "here": "here",
   "noInvestments": "No liquidity",
