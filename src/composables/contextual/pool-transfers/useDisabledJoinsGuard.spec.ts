@@ -2,11 +2,11 @@ import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
-import { mountComposableWithFakeTokensProvider } from '@tests/mount-helpers';
+import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { aVeBalPool } from '@tests/unit/builders/pool.builders';
 import { createRouter, createWebHistory } from 'vue-router';
 import waitForExpect from 'wait-for-expect';
-import usePoolTransfersGuard from './usePoolTransfersGuard';
+import useDisabledJoinsGuard from './useDisabledJoinsGuard';
 
 //TODO: setup https://github.com/posva/vue-router-mock
 const mockRouter = createRouter({
@@ -35,12 +35,12 @@ async function mountTransferGuards(pool: Pool) {
     id: pool.id,
   };
   mockRouter.push = vi.fn();
-  await mountComposableWithFakeTokensProvider(() => usePoolTransfersGuard(), {
+  await mountComposable(() => useDisabledJoinsGuard(pool), {
     routerMock: mockRouter,
   });
 }
 
-describe.skip('When checking disabled pool joins', () => {
+describe('When checking disabled pool joins', () => {
   it('does not redirect where no disabled joins', async () => {
     const veBalPool = aVeBalPool();
 

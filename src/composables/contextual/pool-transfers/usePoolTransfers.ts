@@ -9,7 +9,6 @@ import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import usePoolDecorationQuery from '@/composables/queries/usePoolDecorationQuery';
-import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
 /**
  * STATE
@@ -66,12 +65,6 @@ export default function usePoolTransfers() {
     );
   });
 
-  const joinsDisabled = computed(() => {
-    if (!pool.value) return false;
-    const { shouldDisableJoins } = useDisabledJoinPool(pool.value);
-    return shouldDisableJoins.value;
-  });
-
   return {
     pool,
     poolQuery,
@@ -79,6 +72,5 @@ export default function usePoolTransfers() {
     loadingPool,
     useNativeAsset,
     missingPrices,
-    joinsDisabled,
   };
 }

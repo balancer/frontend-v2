@@ -45,7 +45,8 @@ const joinDisabled = computed(
     deprecatedDetails(props.pool.id)?.joinsDisabled ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
-    (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id))
+    (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id)) ||
+    shouldDisableJoins.value
 );
 </script>
 
@@ -67,7 +68,7 @@ const joinDisabled = computed(
           :to="{ name: 'add-liquidity', params: { networkSlug } }"
           :label="$t('addLiquidity')"
           color="gradient"
-          :disabled="joinDisabled || shouldDisableJoins"
+          :disabled="joinDisabled"
           block
           @click="trackGoal(Goals.ClickAddLiquidity)"
         />
