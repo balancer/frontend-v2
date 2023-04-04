@@ -1,12 +1,18 @@
 import { networkId } from '@/composables/useNetwork';
-import initialTokens from '@/constants/initialTokens.json';
 import { lsGet, lsSet } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
 
 const inputAsset = ref(
-  lsGet(`inputAsset.${networkId.value}`, initialTokens[networkId.value].input)
+  lsGet(
+    `inputAsset.${networkId.value}`,
+    configService.network.tokens.InitialSwapTokens.input
+  )
 );
 const outputAsset = ref(
-  lsGet(`outputAsset.${networkId.value}`, initialTokens[networkId.value].output)
+  lsGet(
+    `outputAsset.${networkId.value}`,
+    configService.network.tokens.InitialSwapTokens.output
+  )
 );
 
 function setInputAsset(asset: string): void {

@@ -2,6 +2,10 @@ import {
   PoolStakingProviderResponse,
   PoolStakingProviderSymbol,
 } from '@/providers/local/pool-staking.provider';
+import {
+  tokenListsProvider,
+  TokenListsProviderSymbol,
+} from '@/providers/token-lists.provider';
 import { wallets, WalletsProviderSymbol } from '@/providers/wallet.provider';
 import { render, RenderOptions } from '@testing-library/vue';
 import { RouterLinkStub } from '@vue/test-utils';
@@ -12,6 +16,7 @@ import { registerTestPlugins } from './registerTestPlugins';
 const DefaultTestPlugins = {
   install(app) {
     registerTestPlugins(app);
+    app.provide(TokenListsProviderSymbol, tokenListsProvider());
     app.provide(WalletsProviderSymbol, wallets());
     app.provide(PoolStakingProviderSymbol, {
       stakedShares: computed(() => '1000'),

@@ -16,6 +16,10 @@ export type TokenConstants = {
     Symbols: string[];
   };
   Addresses: CommonTokens;
+  InitialSwapTokens: {
+    input: string;
+    output: string;
+  };
   PriceChainMap?: Record<string, string>;
 };
 
@@ -71,6 +75,8 @@ export interface Config {
   slug: string;
   network: string;
   unknown: boolean;
+  visibleInUI: boolean;
+  testNetwork: boolean;
   rpc: string;
   publicRpc?: string;
   ws: string;
@@ -85,6 +91,7 @@ export interface Config {
     gauge: string;
     blocks: string;
   };
+  bridgeUrl: string;
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
   blockTime: number;
@@ -96,6 +103,15 @@ export interface Config {
     deeplinkId: string;
     logoURI: string;
     minTransactionBuffer: string;
+  };
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: string;
+      platformId: string;
+    };
+    apyVision?: {
+      networkName: string;
+    };
   };
   addresses: Contracts;
   pools: Pools;

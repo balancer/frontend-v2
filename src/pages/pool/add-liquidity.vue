@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import InvestPage from '@/components/contextual/pages/pool/invest/InvestPage.vue';
-import { useIntervalFn } from '@vueuse/core';
-import { oneSecondInMs } from '@/composables/useTime';
-import { providePoolStaking } from '@/providers/local/pool-staking.provider';
-import { useRoute } from 'vue-router';
-import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
-import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
+import { oneSecondInMs } from '@/composables/useTime';
+import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+import { useIntervalFn } from '@vueuse/core';
+import { useRoute } from 'vue-router';
 
 /**
  * STATE
@@ -19,13 +18,11 @@ const poolId = (route.params.id as string).toLowerCase();
  * PROVIDERS
  */
 providePoolStaking(poolId);
-usePoolTransfersGuard();
 
 /**
  * COMPOSABLES
  */
-const { pool, poolDecorationQuery, loadingPool, transfersAllowed } =
-  usePoolTransfers();
+const { pool, poolDecorationQuery, loadingPool } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 
 /**
@@ -37,8 +34,7 @@ const isLoadingSor = computed(
 );
 
 const isLoading = computed(
-  (): boolean =>
-    loadingPool.value && !transfersAllowed.value && isLoadingSor.value
+  (): boolean => loadingPool.value || isLoadingSor.value
 );
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent

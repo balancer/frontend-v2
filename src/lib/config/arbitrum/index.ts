@@ -15,6 +15,8 @@ const config: Config = {
   slug: 'arbitrum',
   network: 'arbitrum-one',
   unknown: false,
+  visibleInUI: true,
+  testNetwork: false,
   rpc: `https://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://arb1.arbitrum.io/rpc',
@@ -34,6 +36,7 @@ const config: Config = {
     blocks:
       'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
   },
+  bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,
   supportsElementPools: false,
   blockTime: 2,
@@ -45,6 +48,15 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'arbitrum-one',
+    },
+    apyVision: {
+      networkName: 'arbitrum',
+    },
   },
   addresses: {
     ...contracts,

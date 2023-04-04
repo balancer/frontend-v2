@@ -7,6 +7,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
+  BoostsEnabled: false,
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
@@ -29,6 +30,11 @@ const pools: Pools = {
     ],
   },
   Investment: {
+    AllowList: [],
+  },
+  Weighted: {
+    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
+    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
     AllowList: [],
   },
   Factories: {
@@ -61,6 +67,13 @@ const pools: Pools = {
       hasIcon: false,
     },
   },
+  Deep: [
+    '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // agave stable
+    '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto
+    '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011', // agave gno/usdc
+    '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012', // agave gno/weth
+  ],
+  BoostedApr: [],
   DisabledJoins: [],
 };
 

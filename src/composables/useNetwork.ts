@@ -51,8 +51,15 @@ export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 export const isL2 = computed(
   () => isPolygon.value || isArbitrum.value || isGnosis.value
 );
+export const hasBridge = computed<boolean>(() => !!networkConfig.bridgeUrl);
 export const isTestnet = computed(() => isGoerli.value);
 
+export const isPoolBoostsEnabled = computed<boolean>(
+  () => configService.network.pools.BoostsEnabled
+);
+export const networkHasNativeGauges = computed<boolean>(() => {
+  return networkConfig.addresses.gaugeController !== '';
+});
 /**
  * METHODS
  */

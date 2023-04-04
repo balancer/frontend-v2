@@ -20,7 +20,6 @@ describe('PoolPageHeader', () => {
       },
       props: {
         loadingApr: true,
-        noInitLiquidity: false,
         pool: {
           ...samplePool,
           id: '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387',
@@ -56,7 +55,6 @@ describe('PoolPageHeader', () => {
       },
       props: {
         loadingApr: true,
-        noInitLiquidity: false,
         pool: samplePool,
         poolApr: undefined,
         isStableLikePool: false,

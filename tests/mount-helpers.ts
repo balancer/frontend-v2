@@ -16,6 +16,7 @@ import waitForExpect from 'wait-for-expect';
 import { mount, MountResult } from './mount-composable-tester';
 import { registerTestPlugins } from './registerTestPlugins';
 import { DeepPartial } from './unit/types';
+import { Router } from 'vue-router';
 
 export const defaultStakedShares = '5';
 
@@ -27,7 +28,7 @@ export function provideFakePoolStaking(stackedShares = defaultStakedShares) {
 
 export function mountComposable<R>(
   callback: () => R,
-  options?: { extraProvidersCb?: () => void }
+  options?: { extraProvidersCb?: () => void; routerMock?: Router }
 ): MountResult<R> {
   return mount<R>(callback, {
     provider: () => {
@@ -38,7 +39,11 @@ export function mountComposable<R>(
       provideFakePoolStaking();
       options?.extraProvidersCb?.();
     },
-    configApp: app => registerTestPlugins(app),
+    configApp: app => {
+      if (options?.routerMock) app.use(options.routerMock);
+
+      return registerTestPlugins(app);
+    },
   });
 }
 
@@ -61,14 +66,12 @@ export async function mountComposableWithFakeTokensProvider<R>(
   options?: {
     extraProvidersCb?: () => void;
     tokensProviderOverride?: DeepPartial<TokensResponse>;
+    routerMock?: Router;
   }
 ): Promise<MountResult<R>> {
-  const { result: tokenLists } = mount(() => provideTokenLists());
-  // Wait for token list json to be async loaded (GOERLI json is loaded in tests)
-  await tokenLists.tokensListPromise;
-
   return mountComposable<R>(callback, {
     extraProvidersCb: () => {
+      const tokenLists = provideTokenLists();
       const userSettings = provideUserSettings();
       provide(
         TokensProviderSymbol,
@@ -80,6 +83,7 @@ export async function mountComposableWithFakeTokensProvider<R>(
       );
       options?.extraProvidersCb?.();
     },
+    routerMock: options?.routerMock,
   });
 }
 

@@ -31,6 +31,8 @@ import {
   totalAprLabel,
   absMaxApr,
   poolURLFor,
+  noInitLiquidity,
+  filterTokensInList,
 } from './usePool';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
@@ -47,7 +49,7 @@ describe('tokenTreeNodes', () => {
       '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83', // bb-a-USDC
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
       '0xd093fa4fb80d09bb30817fdcd442d4d02ed3e5de', // aUSDC
-      '0xa13a9247ea42d743238089903570127dda72fe44', // bb-a-USD
+      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd', // bb-a-USD
       '0xae37d54ae477268b9997d4161b96b8200755935c', // bb-a-DAI
       '0x02d60b84491589974263d922d9cc7a3152618ef6', // aDAI
       '0x6b175474e89094c44da98b954eedeac495271d0f', // DAI
@@ -61,7 +63,7 @@ describe('tokenTreeNodes', () => {
       '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
       '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83', // bb-a-USDC
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
-      '0xa13a9247ea42d743238089903570127dda72fe44', // bb-a-USD
+      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd', // bb-a-USD
       '0xae37d54ae477268b9997d4161b96b8200755935c', // bb-a-DAI
       '0x6b175474e89094c44da98b954eedeac495271d0f', // DAI
     ]);
@@ -194,7 +196,7 @@ describe('removeBptFrom should', () => {
     expect(BoostedPoolMock.tokensList).toEqual([
       '0x2f4eb100552ef93840d5adc30560e5513dfffacb',
       '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83',
-      '0xa13a9247ea42d743238089903570127dda72fe44', //Preminted token address to be deleted
+      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd', //Preminted token address to be deleted
       '0xae37d54ae477268b9997d4161b96b8200755935c',
     ]);
 
@@ -330,8 +332,6 @@ describe('usePool composable', () => {
       isWeth,
       isWethPool,
       managedPoolWithSwappingHalted,
-      noInitLiquidity,
-      noInitLiquidityPool,
       poolWeightsLabel,
     } = mountUsePool(undefined);
 
@@ -359,7 +359,6 @@ describe('usePool composable', () => {
 
     expect(managedPoolWithSwappingHalted.value).toBeFalse();
     expect(noInitLiquidity(weightedPool)).toBeFalse();
-    expect(noInitLiquidityPool.value).toBeFalse();
     expect(isMigratablePool(weightedPool)).toBeFalse();
 
     expect(poolWeightsLabel(weightedPool)).toBe('');
@@ -692,4 +691,17 @@ test('poolURLFor Arbitrum', async () => {
   ).toBe(
     'https://localhost:8080/#/arbitrum/pool/0x9f19a375709baf0e8e35c2c5c68aca646c4c719100000000000000000000006e'
   );
+});
+
+test('filters tokens in list', async () => {
+  const addresses = [
+    '0x2f4eb100552ef93840d5adc30560e5513dfffacb',
+    '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83',
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    '0xae37d54ae477268b9997d4161b96b8200755935c',
+  ];
+  expect(
+    filterTokensInList(BoostedPoolMock, addresses).map(token => token.address)
+  ).toEqual(['0x6b175474e89094c44da98b954eedeac495271d0f']);
 });
