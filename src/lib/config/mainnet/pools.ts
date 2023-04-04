@@ -253,10 +253,6 @@ const pools: Pools = {
       name: 'Euler Boosted USD/DOLA',
       hasIcon: false,
     },
-    // '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477': {
-    //   name: 'FRAX/USDC',
-    //   hasIcon: false,
-    // },
     '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488': {
       name: 'Euler Boosted USD/TUSD',
       hasIcon: false,
@@ -273,14 +269,14 @@ const pools: Pools = {
       name: 'Euler Boosted USD/wstETH',
       hasIcon: false,
     },
+    '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7': {
+      name: 'Balancer Boosted Sturdy USD',
+      hasIcon: false,
+    },
     '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db': {
       name: 'Balancer Boosted Morpho-Aave USD',
       hasIcon: false,
     },
-    // '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472': {
-    //   name: 'APE/wstETH',
-    //   hasIcon: false,
-    // },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
