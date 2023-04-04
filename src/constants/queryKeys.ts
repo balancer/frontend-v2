@@ -163,6 +163,11 @@ const QUERY_KEYS = {
       'protocol',
       { networkId, account },
     ],
+    GaugePools: (poolIds: Ref<string[]>) => [
+      CLAIMS_ROOT_KEY,
+      'gaugePools',
+      { poolIds },
+    ],
   },
   Tokens: {
     PairPriceData: (

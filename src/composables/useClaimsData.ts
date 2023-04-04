@@ -13,6 +13,7 @@ import useProtocolRewardsQuery, {
 import { isQueryLoading } from './queries/useQueryHelpers';
 import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
 import { PoolType } from '@balancer-labs/sdk';
+import QUERY_KEYS from '@/constants/queryKeys';
 
 export type GaugePool = {
   id: string;
@@ -42,7 +43,7 @@ export function useClaimsData() {
   const gaugesQuery = useGaugesDecorationQuery(subgraphGaugesQuery.data);
   const gauges = computed((): Gauge[] => gaugesQuery.data.value || []);
   const gaugePoolIds = computed((): string[] => {
-    return gauges.value.map(gauge => gauge.poolId);
+    return gauges.value.map(gauge => gauge.poolId).filter(id => !!id);
   });
 
   // Fetch pools associated with gauges
@@ -51,7 +52,7 @@ export function useClaimsData() {
   );
   const gaugePoolQuery = useGraphQuery<GaugePoolQueryResponse>(
     subgraphFallbackService.url.value,
-    ['claim', 'gauge', 'pools'],
+    QUERY_KEYS.Claims.GaugePools(gaugePoolIds),
     () => ({
       pools: {
         __args: {
@@ -80,6 +81,7 @@ export function useClaimsData() {
 
   const isLoading = computed(
     (): boolean =>
+      gaugePools.value.length === 0 ||
       isQueryLoading(gaugePoolQuery) ||
       (networkHasProtocolRewards.value && isQueryLoading(protocolRewardsQuery))
   );
