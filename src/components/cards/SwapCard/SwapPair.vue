@@ -166,6 +166,7 @@ onMounted(() => {
       :amount="_tokenInAmount"
       :address="_tokenInAddress"
       name="tokenIn"
+      :aria-label="$t('inputLabels.tokenIn')"
       :excludedTokens="[veBalTokenInfo?.address]"
       :ignoreWalletBalance="swapLoading"
       autoFocus
@@ -190,6 +191,7 @@ onMounted(() => {
       :amount="_tokenOutAmount"
       :address="_tokenOutAddress"
       name="tokenOut"
+      :aria-label="$t('inputLabels.tokenOut')"
       :priceImpact="priceImpact"
       noRules
       noMax

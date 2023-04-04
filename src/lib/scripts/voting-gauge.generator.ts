@@ -92,6 +92,7 @@ async function getAssetURIFromTokenlists(
   log(
     `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`
   );
+
   const tokenListURIs = configService.getNetworkConfig(network).tokenlists;
   const allURIs = [
     ...Object.values(tokenListURIs.Balancer),
@@ -104,7 +105,10 @@ async function getAssetURIFromTokenlists(
   const tokenLists = await Promise.all(
     validResponses.map(response => response.json())
   );
-  const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
+  const allTokens = tokenLists
+    .map(tokenList => tokenList.tokens)
+    .flat()
+    .filter(token => token.chainId === network);
 
   log('getAssetURIFromTokenlists finding token');
   const token = allTokens.find(token =>

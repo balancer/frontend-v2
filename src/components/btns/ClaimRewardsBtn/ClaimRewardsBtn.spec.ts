@@ -16,12 +16,7 @@ vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
     }),
   };
 });
-vi.mock('@/composables/useTransactions');
-vi.mock('@/composables/useEthers');
-vi.mock('@/composables/queries/useGaugesQuery');
 vi.mock('@/composables/queries/useGaugesDecorationQuery');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
 
 vi.mock('@/providers/tokens.provider');
 

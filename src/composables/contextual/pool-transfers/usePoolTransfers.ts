@@ -14,7 +14,6 @@ import usePoolDecorationQuery from '@/composables/queries/usePoolDecorationQuery
  * STATE
  */
 const useNativeAsset = ref(false);
-const transfersAllowed = ref(true);
 
 export default function usePoolTransfers() {
   const route = useRoute();
@@ -73,6 +72,5 @@ export default function usePoolTransfers() {
     loadingPool,
     useNativeAsset,
     missingPrices,
-    transfersAllowed,
   };
 }

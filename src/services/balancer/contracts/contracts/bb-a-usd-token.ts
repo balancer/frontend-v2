@@ -8,7 +8,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 export class BBAUSDToken {
   constructor(
     private readonly abi = StablePhantomAbi,
-    public readonly address = TOKENS.Addresses.bbaUSD,
+    public readonly address = TOKENS.Addresses.bbaUSDv2,
     private readonly provider = rpcProviderService.jsonProvider
   ) {}
 

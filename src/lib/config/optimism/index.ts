@@ -12,6 +12,8 @@ const config: Config = {
   slug: 'optimism',
   network: 'optimism',
   unknown: false,
+  visibleInUI: false,
+  testNetwork: false,
   rpc: 'https://mainnet.optimism.io',
   ws: 'wss://ws-mainnet.optimism.io',
   blockTime: 13,
@@ -29,6 +31,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: false,
   supportsElementPools: false,
   nativeAsset: {
@@ -39,6 +42,12 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'optimism',
+    },
   },
   addresses: {
     ...contracts,
@@ -58,6 +67,7 @@ const config: Config = {
       PerPool: 10,
       PerPoolInitial: 5,
     },
+    BoostsEnabled: false,
     DelegateOwner: '',
     ZeroAddress: '',
     DynamicFees: {
@@ -71,10 +81,15 @@ const config: Config = {
     Investment: {
       AllowList: [],
     },
+    Weighted: {
+      AllowList: [],
+    },
     Factories: {},
     Stakable: {
       AllowList: [],
     },
+    Deep: [],
+    BoostedApr: [],
     Metadata: {},
     DisabledJoins: [],
     BrandedRedirect: {},
