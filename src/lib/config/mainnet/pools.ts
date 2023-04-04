@@ -325,6 +325,14 @@ const pools: Pools = {
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // Euler Boosted USD/dola
   ],
   Deprecated: {
+    '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
     '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba': {
       newPool:
         '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467',
