@@ -229,8 +229,8 @@ function symbolFor(titleTokenIndex: number): string {
     block
   />
   <BalAlert
-    v-if="hasCustomToken"
-    type="error"
+    v-if="!disableJoinsReason.nonVettedTokensAfterTimestamp && hasCustomToken"
+    type="warning"
     :title="$t('highRiskPool')"
     class="mt-2"
     block
@@ -288,7 +288,7 @@ function symbolFor(titleTokenIndex: number): string {
   >
     {{ $t('investment.warning.blockedPool.description') }}
     <a
-      href="https://github.com/balancer/tokenlists"
+      href="https://github.com/balancer/frontend-v2/wiki/How-tos#add-a-new-pool"
       target="_blank"
       class="underline"
       >{{ $t('here') }}</a
@@ -308,7 +308,7 @@ function symbolFor(titleTokenIndex: number): string {
   >
     {{ $t('Click') }}
     <a
-      href="https://github.com/balancer/frontend-v2/"
+      href="https://github.com/balancer/frontend-v2/wiki/How-tos#add-a-new-pool"
       target="_blank"
       class="underline"
       >{{ $t('here') }}</a
