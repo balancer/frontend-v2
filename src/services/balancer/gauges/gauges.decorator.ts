@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 
-import { isL2 } from '@/composables/useNetwork';
+import { networkHasNativeGauges } from '@/composables/useNetwork';
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
 import LiquidityGaugeRewardHelperAbi from '@/lib/abi/LiquidityGaugeHelperAbi.json';
 import { configService } from '@/services/config/config.service';
@@ -43,7 +43,7 @@ export class GaugesDecorator {
 
     let gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>();
 
-    if (isL2.value) {
+    if (!networkHasNativeGauges.value) {
       this.multicaller = this.resetMulticaller(this.rewardsHelperAbi);
     }
     this.callClaimableRewards(subgraphGauges, userAddress, gaugesDataMap);
@@ -124,19 +124,21 @@ export class GaugesDecorator {
     userAddress: string,
     gaugesDataMap: OnchainGaugeDataMap
   ) {
-    const methodName = isL2.value ? 'getPendingRewards' : 'claimable_reward';
+    const methodName = networkHasNativeGauges.value
+      ? 'claimable_reward'
+      : 'getPendingRewards';
 
     subgraphGauges.forEach(gauge => {
       gaugesDataMap[gauge.id].rewardTokens.forEach(rewardToken => {
         if (rewardToken === AddressZero) return;
 
-        const callArgs = isL2.value
-          ? [gauge.id, userAddress, rewardToken]
-          : [userAddress, rewardToken];
+        const callArgs = networkHasNativeGauges.value
+          ? [userAddress, rewardToken]
+          : [gauge.id, userAddress, rewardToken];
 
-        const contractAddress = isL2.value
-          ? configService.network.addresses.gaugeRewardsHelper
-          : gauge.id;
+        const contractAddress = networkHasNativeGauges.value
+          ? gauge.id
+          : configService.network.addresses.gaugeRewardsHelper;
 
         this.multicaller.call(
           `${gauge.id}.claimableRewards.${rewardToken}`,
