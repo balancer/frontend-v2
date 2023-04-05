@@ -14,6 +14,18 @@ import {
   usePoolHelpers,
 } from '@/composables/usePoolHelpers';
 import { useI18n } from 'vue-i18n';
+import { Pool } from '@/services/pool/types';
+
+type Props = {
+  pool: Pool;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
+
+const pool = toRef(props, 'pool');
 
 /**
  * STATE
@@ -30,7 +42,6 @@ const { wrappedNativeAsset, nativeAsset } = useTokens();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 const {
-  pool,
   isSingleAssetExit,
   singleAmountOut,
   isLoadingMax,
@@ -45,6 +56,7 @@ const {
 } = useExitPool();
 
 const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
+
 /**
  * COMPUTED
  */

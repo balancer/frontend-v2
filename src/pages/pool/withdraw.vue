@@ -36,6 +36,6 @@ const isLoading = computed(
 <template>
   <div class="px-4 sm:px-0 mx-auto max-w-md">
     <BalLoadingBlock v-if="isLoading || !pool" class="h-96" />
-    <WithdrawPage v-else :pool="pool"></WithdrawPage>
+    <WithdrawPage v-else :pool="pool" />
   </div>
 </template>

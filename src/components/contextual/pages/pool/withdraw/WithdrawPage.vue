@@ -20,27 +20,19 @@ type Props = {
  */
 const props = defineProps<Props>();
 
+const pool = toRef(props, 'pool');
+
 /**
- * COMPUTED
+ * PROVIDERS
  */
-const pool = computed(() => props.pool);
+provideExitPool(pool);
 
 /**
  * COMPOSABLES
  */
 const { network } = configService;
-const { isDeepPool, isWeightedLikePool, isStablePool, isMetaStablePool } =
-  usePoolHelpers(pool);
+const { isPreMintedBptPool } = usePoolHelpers(pool);
 const { resetTabs } = useWithdrawPageTabs();
-provideExitPool(pool);
-
-const supportsExitPoolProvider = computed(
-  () =>
-    isWeightedLikePool.value ||
-    isDeepPool.value ||
-    isStablePool.value ||
-    isMetaStablePool.value
-);
 
 onMounted(() => resetTabs());
 </script>
@@ -56,10 +48,11 @@ onMounted(() => resetTabs());
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <WithdrawPageTabs v-if="supportsExitPoolProvider" />
+        <WithdrawPageTabs v-if="isPreMintedBptPool" />
       </div>
     </template>
-    <WithdrawFormV2 v-if="supportsExitPoolProvider" />
+    <WithdrawFormV2 v-if="true" :pool="pool" />
+    <!-- Temp support in case we need to re-enable old flow -->
     <WithdrawForm v-else :pool="pool" />
   </BalCard>
 </template>

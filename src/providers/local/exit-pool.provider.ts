@@ -4,10 +4,7 @@ import {
   fiatValueOf,
   flatTokenTree,
   isDeep,
-  isMetaStable,
   isPreMintedBptType,
-  isStable,
-  isWeighted,
   tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePoolHelpers';
@@ -76,6 +73,7 @@ export type AmountOut = {
  * Handles pool exiting state and transaction execution.
  */
 export const exitPoolProvider = (pool: Ref<Pool>) => {
+  console.log('exitPoolProvider', pool.value);
   /**
    * STATE
    */
@@ -542,15 +540,7 @@ export const ExitPoolProviderSymbol: InjectionKey<ExitPoolProviderResponse> =
   Symbol(symbolKeys.Providers.ExitPool);
 
 export function provideExitPool(pool: Ref<Pool>) {
-  const { poolType } = pool.value;
-  const exitPoolResponse =
-    isDeep(pool.value) ||
-    isWeighted(poolType) ||
-    isStable(poolType) ||
-    isMetaStable(poolType)
-      ? exitPoolProvider(pool)
-      : {};
-
+  const exitPoolResponse = exitPoolProvider(pool);
   provide(ExitPoolProviderSymbol, exitPoolResponse);
   return exitPoolResponse;
 }
