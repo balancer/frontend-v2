@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { tokenWeight, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
+import { bnum, includesAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -112,7 +112,10 @@ function getTokenInputLabel(address: string): string | undefined {
  * the native asset instead.
  */
 function tokenOptions(address: string): string[] {
-  return isSameAddress(address, wrappedNativeAsset.value.address)
+  return includesAddress(
+    [wrappedNativeAsset.value.address, nativeAsset.address],
+    address
+  )
     ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
 }
