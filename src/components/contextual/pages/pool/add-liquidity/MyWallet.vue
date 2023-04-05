@@ -9,14 +9,12 @@ import useInvestPageTabs, {
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
 import { AmountIn, useJoinPool } from '@/providers/local/join-pool.provider';
-import { useJoinExitGuard } from '@/composables/contextual/pool-transfers/useJoinExitGuard';
 import { usePool } from '@/providers/local/pool.provider';
 
 /**
  * COMPOSABLES
  */
 const { pool, isLoadingPool } = usePool();
-const { transfersAllowed } = useJoinExitGuard(pool);
 const { setAmountsIn, setJoinWithNativeAsset, isSingleAssetJoin, amountsIn } =
   useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
@@ -83,10 +81,7 @@ function handleMyWalletTokenClick(address: string, isPoolToken: boolean) {
 </script>
 
 <template>
-  <BalLoadingBlock
-    v-if="isLoadingPool || !pool || !transfersAllowed"
-    class="h-64"
-  />
+  <BalLoadingBlock v-if="isLoadingPool || !pool" class="h-64" />
   <MyWallet
     v-else
     :excludedTokens="excludedTokens"
