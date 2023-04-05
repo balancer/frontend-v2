@@ -350,8 +350,15 @@ export default function useSor({
   }
 
   function resetInputAmounts(amount: string): void {
-    tokenInAmountInput.value = amount;
-    tokenOutAmountInput.value = amount;
+    if (exactIn.value && bnum(amount).isZero()) {
+      tokenOutAmountInput.value = '';
+    } else if (!exactIn.value && bnum(amount).isZero()) {
+      tokenInAmountInput.value = '';
+    } else {
+      tokenInAmountInput.value = amount;
+      tokenOutAmountInput.value = amount;
+    }
+
     priceImpact.value = 0;
     sorReturn.value.hasSwaps = false;
     sorReturn.value.returnAmount = Zero;
