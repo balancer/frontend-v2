@@ -65,6 +65,10 @@ export function isComposableStable(poolType: PoolType): boolean {
   return poolType === PoolType.ComposableStable;
 }
 
+export function isComposableStableV1(pool: Pool): boolean {
+  return isComposableStable(pool.poolType) && pool.poolTypeVersion === 1;
+}
+
 export function isComposableStableLike(poolType: PoolType): boolean {
   return isStablePhantom(poolType) || isComposableStable(poolType);
 }

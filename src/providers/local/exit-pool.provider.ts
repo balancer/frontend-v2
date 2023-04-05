@@ -3,6 +3,7 @@ import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
   flatTokenTree,
+  isComposableStableV1,
   isDeep,
   isPreMintedBptType,
   tokenTreeLeafs,
@@ -192,7 +193,9 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   );
 
   const shouldUseGeneralisedExit = computed(
-    (): boolean => !isSingleAssetExit.value && isDeep(pool.value)
+    (): boolean =>
+      !isSingleAssetExit.value &&
+      (isDeep(pool.value) || isComposableStableV1(pool.value))
   );
 
   const exitHandlerType = computed((): ExitHandler => {
