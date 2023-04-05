@@ -213,7 +213,7 @@ async function handleTransaction(
       // need to explicity wait for a number of confirmations
       // on polygon
       if (Number(configService.network.chainId) === ChainId.polygon) {
-        await tx.wait(5);
+        await tx.wait(10);
       }
 
       const confirmedAt = await getTxConfirmedAt(receipt);
