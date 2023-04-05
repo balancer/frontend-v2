@@ -215,6 +215,14 @@ function symbolFor(titleTokenIndex: number): string {
     </div>
   </div>
   <BalAlert
+    v-if="pool.isInRecoveryMode"
+    type="warning"
+    :title="$t('recoveryMode')"
+    :description="$t('recoveryModeDescription')"
+    class="mt-2"
+    block
+  />
+  <BalAlert
     v-if="hasNonApprovedRateProviders"
     type="warning"
     :title="$t('hasNonApprovedRateProviders')"
