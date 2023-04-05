@@ -1,10 +1,9 @@
-import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
-import { isAddress, getAddress } from '@ethersproject/address';
-import { computed, Ref } from 'vue';
+import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
+import { getAddress } from '@ethersproject/address';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
+import configs from '@/lib/config';
 import {
   bnum,
   includesAddress,
@@ -14,20 +13,20 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import configs from '@/lib/config';
+import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 
-import {
-  isTestnet,
-  isMainnet,
-  appUrl,
-  getNetworkSlug,
-  networkId,
-  isPoolBoostsEnabled,
-} from './useNetwork';
-import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
-import { uniq, uniqWith, cloneDeep } from 'lodash';
+import { cloneDeep, uniq, uniqWith } from 'lodash';
+import {
+  appUrl,
+  getNetworkSlug,
+  isMainnet,
+  isPoolBoostsEnabled,
+  networkId,
+} from './useNetwork';
+import useNumbers, { FNumFormats, numF } from './useNumbers';
+import { dateToUnixTimestamp } from './useTime';
 
 const POOLS = configService.network.pools;
 
@@ -157,13 +156,36 @@ export function isMigratablePool(pool: AnyPool) {
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
+  // Uncomment to DEBUG
+  // if (
+  //   pool.id ===
+  //   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014'
+  // )
+  //   return true;
   return bnum(pool?.totalShares || '0').eq(0);
 }
-
 export function preMintedBptIndex(pool: Pool): number | void {
   return pool.tokensList.findIndex(address =>
     isSameAddress(address, pool.address)
   );
+}
+
+export function createdAfterTimestamp(pool: AnyPool): boolean {
+  // Pools should always have valid createTime so, for safety, we block the pool in case we don't get it
+  // (createTime should probably not be treated as optional in the SDK types)
+  if (!pool.createTime) return true;
+
+  const creationTimestampLimit = dateToUnixTimestamp('2023-03-29');
+
+  // // Uncomment to debug
+  // if (
+  //   pool.id ===
+  //   '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080'
+  // )
+  //   creationTimestampLimit = dateToUnixTimestamp('2021-08-13'); //DEBUG DATE
+
+  // Epoch timestamp is bigger if the date is older
+  return pool.createTime > creationTimestampLimit;
 }
 
 /**
@@ -483,20 +505,14 @@ export function findTokenInTree(
 }
 
 /**
- * @summary Check if pool should be accessible in UI
+ * Returns an array with the tokens from the given pool whose addresses are included in the given addresses.
+ *
+ * @param {Pool} pool - A pool
+ * @param {string[]} addresses - An address list.
  */
-export function isBlocked(pool: Pool, account: string): boolean {
-  const requiresAllowlisting =
-    (isStableLike(pool.poolType) && !isFx(pool.poolType)) ||
-    isManaged(pool.poolType);
-  const isOwnedByUser =
-    pool.owner && isAddress(account) && isSameAddress(pool.owner, account);
-  const isAllowlisted =
-    POOLS.Stable.AllowList.includes(pool.id) ||
-    POOLS.Investment.AllowList.includes(pool.id);
-
-  return (
-    !isTestnet.value && requiresAllowlisting && !isAllowlisted && !isOwnedByUser
+export function filterTokensInList(pool: Pool, addresses: string[]) {
+  return flatTokenTree(pool).filter(
+    token => token.address && !includesAddress(addresses, token.address)
   );
 }
 
@@ -666,9 +682,6 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean =>
       !!pool.value && includesWstEth(pool.value.tokensList) && isMainnet.value
   );
-  const noInitLiquidityPool = computed(
-    () => !!pool.value && noInitLiquidity(pool.value)
-  );
 
   const poolJoinTokens = computed((): string[] =>
     pool.value ? joinTokens(pool.value) : []
@@ -710,7 +723,6 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     managedPoolWithSwappingHalted,
     isWrappedNativeAssetPool,
     isMainnetWstETHPool,
-    noInitLiquidityPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
     poolJoinTokens,

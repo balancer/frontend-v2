@@ -7,6 +7,7 @@ import AddLiquidityCard from './AddLiquidityCard.vue';
 import { Pool } from '@balancer-labs/sdk';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
 import Col2Layout from '@/components/layouts/Col2Layout.vue';
+import useDisabledJoinsGuard from '@/composables/contextual/pool-transfers/useDisabledJoinsGuard';
 
 type Props = {
   pool: Pool;
@@ -27,6 +28,7 @@ provideJoinPool(pool);
 /**
  * COMPOSABLES
  */
+useDisabledJoinsGuard(props.pool);
 const { isDeepPool } = usePoolHelpers(pool);
 const { isMobile } = useBreakpoints();
 </script>

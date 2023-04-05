@@ -108,9 +108,9 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
-    RelayerType.BATCH_V4
+    RelayerType.BATCH
   );
 
   const debounceQueryExit = debounce(queryExit, 1000);

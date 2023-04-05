@@ -6,6 +6,8 @@ import {
   SubgraphPoolBase,
   SwapAttributes,
   SwapInfo,
+  Pool,
+  PoolType,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { wethAddress } from '@tests/unit/builders/address';
@@ -27,7 +29,7 @@ export const defaultTokenPrice = {
 };
 
 // TODO: Improve builder to avoid DeepPartial and move to sor mocks to subfile
-export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
+export const defaultSorPools: DeepPartial<Pool[]> = [
   {
     id: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
     address: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5',
@@ -43,9 +45,10 @@ export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
         managedBalance: '0',
         weight: '0.3334',
         priceRate: '1',
-        isExemptFromYieldProtocolFee: null,
+        isExemptFromYieldProtocolFee: undefined,
         token: {
           latestUSDPrice: '2.134056945116554709831454942129998',
+          latestFXPrice: '',
           pool: null,
         },
       },
@@ -54,17 +57,17 @@ export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
   {
     id: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
     address: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5',
-    poolType: 'Weighted',
+    poolType: PoolType.Weighted,
   },
   {
     id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
     address: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
-    poolType: 'Weighted',
+    poolType: PoolType.Weighted,
   },
   {
     id: '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249',
     address: '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd',
-    poolType: 'Stable',
+    poolType: PoolType.Stable,
   },
 ];
 

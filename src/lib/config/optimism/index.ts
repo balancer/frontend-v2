@@ -1,5 +1,6 @@
 import { Config } from '../types';
 import contracts from './contracts';
+import pools from './pools';
 import tokenlists from './tokenlists';
 import tokens from './tokens';
 
@@ -12,6 +13,8 @@ const config: Config = {
   slug: 'optimism',
   network: 'optimism',
   unknown: false,
+  visibleInUI: false,
+  testNetwork: false,
   rpc: 'https://mainnet.optimism.io',
   ws: 'wss://ws-mainnet.optimism.io',
   blockTime: 13,
@@ -41,9 +44,11 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
-  coingecko: {
-    nativeAssetId: 'ethereum',
-    platformId: 'optimism',
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'optimism',
+    },
   },
   addresses: {
     ...contracts,
@@ -56,37 +61,7 @@ const config: Config = {
     type: 5,
     weight: 0,
   },
-  pools: {
-    IdsMap: {},
-    Pagination: {
-      PerPage: 10,
-      PerPool: 10,
-      PerPoolInitial: 5,
-    },
-    BoostsEnabled: false,
-    DelegateOwner: '',
-    ZeroAddress: '',
-    DynamicFees: {
-      Gauntlet: [],
-    },
-    BlockList: [],
-    IncludedPoolTypes: [],
-    Stable: {
-      AllowList: [],
-    },
-    Investment: {
-      AllowList: [],
-    },
-    Factories: {},
-    Stakable: {
-      AllowList: [],
-    },
-    Deep: [],
-    BoostedApr: [],
-    Metadata: {},
-    DisabledJoins: [],
-    BrandedRedirect: {},
-  },
+  pools,
   tokenlists,
   tokens,
   rateProviders: {},

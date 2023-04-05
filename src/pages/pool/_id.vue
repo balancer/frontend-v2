@@ -139,13 +139,6 @@ onBeforeUnmount(() => {
 });
 //#endregion
 
-const noInitLiquidity = computed(
-  () =>
-    !loadingPool.value &&
-    pool.value &&
-    Number(pool.value?.totalShares || '0') === 0
-);
-
 const missingPrices = computed(() => {
   if (pool.value && prices.value && !priceQueryLoading.value) {
     const tokensWithPrice = Object.keys(prices.value);
@@ -162,8 +155,10 @@ const titleTokens = computed<PoolToken[]>(() => {
   return orderedPoolTokens(pool.value, pool.value.tokens);
 });
 
-const isStakablePool = computed((): boolean =>
-  POOLS.Stakable.AllowList.includes(poolId)
+const isStakablePool = computed(
+  (): boolean =>
+    POOLS.Stakable.VotingGaugePools.includes(poolId) ||
+    POOLS.Stakable.AllowList.includes(poolId)
 );
 
 const poolPremintedBptIndex = computed(() => {
@@ -220,7 +215,6 @@ watch(
           :pool="pool"
           :poolApr="poolApr"
           :isStableLikePool="isStableLikePool"
-          :noInitLiquidity="noInitLiquidity"
           :titleTokens="titleTokens"
           :missingPrices="missingPrices"
           :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
@@ -287,7 +281,7 @@ watch(
             class="mb-4 h-60 pool-actions-card"
           />
           <MyPoolBalancesCard
-            v-else-if="!noInitLiquidity"
+            v-else
             :pool="pool"
             :missingPrices="missingPrices"
             class="mb-4"

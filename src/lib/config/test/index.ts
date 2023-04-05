@@ -10,6 +10,8 @@ const config: Config = {
   slug: 'test',
   network: 'test',
   unknown: false,
+  visibleInUI: false,
+  testNetwork: true,
   rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
   ws: 'ws://balancer.fi:1234',
   explorer: 'https://etherscan.io',
@@ -36,9 +38,11 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
-  coingecko: {
-    nativeAssetId: 'ethereum',
-    platformId: 'ethereum',
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
   },
   addresses: {
     merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',
@@ -56,7 +60,6 @@ const config: Config = {
     lidoRelayer: '',
     balancerHelpers: '0x5aDDCCa35b7A0D07C74063c48700C8590E87864E',
     batchRelayer: '',
-    batchRelayerV4: '',
     gaugeFactory: '',
     balancerMinter: '',
     gaugeController: '',
@@ -94,8 +97,12 @@ const config: Config = {
     Investment: {
       AllowList: [],
     },
+    Weighted: {
+      AllowList: [],
+    },
     Factories: {},
     Stakable: {
+      VotingGaugePools: [],
       AllowList: [],
     },
     Deep: [],

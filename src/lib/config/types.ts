@@ -40,7 +40,6 @@ export interface Contracts {
   lidoRelayer: string;
   balancerHelpers: string;
   batchRelayer: string;
-  batchRelayerV4: string;
   veBAL: string;
   gaugeController: string;
   gaugeFactory: string;
@@ -76,6 +75,8 @@ export interface Config {
   slug: string;
   network: string;
   unknown: boolean;
+  visibleInUI: boolean;
+  testNetwork: boolean;
   rpc: string;
   publicRpc?: string;
   ws: string;
@@ -103,9 +104,14 @@ export interface Config {
     logoURI: string;
     minTransactionBuffer: string;
   };
-  coingecko: {
-    nativeAssetId: string;
-    platformId: string;
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: string;
+      platformId: string;
+    };
+    apyVision?: {
+      networkName: string;
+    };
   };
   addresses: Contracts;
   pools: Pools;

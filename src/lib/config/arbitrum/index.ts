@@ -15,6 +15,8 @@ const config: Config = {
   slug: 'arbitrum',
   network: 'arbitrum-one',
   unknown: false,
+  visibleInUI: true,
+  testNetwork: false,
   rpc: `https://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://arb1.arbitrum.io/rpc',
@@ -47,9 +49,14 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
-  coingecko: {
-    nativeAssetId: 'ethereum',
-    platformId: 'arbitrum-one',
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'arbitrum-one',
+    },
+    apyVision: {
+      networkName: 'arbitrum',
+    },
   },
   addresses: {
     ...contracts,

@@ -115,13 +115,15 @@ const showLoadingBlock = computed(() => {
               />
             </div>
           </div>
-          <BalBtn
-            v-else
-            color="transparent"
-            outline
-            :label="$t('migrateCard.viewBtn')"
-            @click="$router.push({ name: 'vebal', params: { networkSlug } })"
-          />
+          <div v-else class="flex py-3">
+            <BalBtn
+              class="flex-grow hover:!text-white"
+              color="transparent"
+              outline
+              :label="$t('migrateCard.viewBtn')"
+              @click="$router.push({ name: 'vebal', params: { networkSlug } })"
+            />
+          </div>
         </div>
       </div>
     </GradientCard>

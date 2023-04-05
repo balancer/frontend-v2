@@ -4,16 +4,27 @@ import { useIntervalFn } from '@vueuse/core';
 import { oneSecondInMs } from '@/composables/useTime';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
-import { useJoinExitGuard } from '@/composables/contextual/pool-transfers/useJoinExitGuard';
 import { usePool } from '@/providers/local/pool.provider';
 import Col2Layout from '@/components/layouts/Col2Layout.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+import { useRoute } from 'vue-router';
+
+/**
+ * STATE
+ */
+const route = useRoute();
+const poolId = (route.params.id as string).toLowerCase();
+
+/**
+ * PROVIDERS
+ */
+providePoolStaking(poolId);
 
 /**
  * COMPOSABLES
  */
 const { pool, isLoadingPool, refetchOnchainPoolData } = usePool();
-const { transfersAllowed } = useJoinExitGuard(pool);
 const { isDeepPool } = usePoolHelpers(pool);
 const { isMobile } = useBreakpoints();
 
@@ -26,8 +37,7 @@ const isLoadingSor = computed(
 );
 
 const isLoading = computed(
-  (): boolean =>
-    isLoadingPool.value && !transfersAllowed.value && isLoadingSor.value
+  (): boolean => isLoadingPool.value || isLoadingSor.value
 );
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent

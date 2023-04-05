@@ -11,6 +11,8 @@ const config: Config = {
   slug: 'docker',
   network: 'docker localhost',
   unknown: false,
+  visibleInUI: false,
+  testNetwork: true,
   rpc: 'http://localhost:8545',
   ws: 'ws://localhost:8546',
   explorer: '',
@@ -35,9 +37,11 @@ const config: Config = {
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
   },
-  coingecko: {
-    nativeAssetId: 'ethereum',
-    platformId: 'ethereum',
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
   },
   addresses: {
     ...contracts,
@@ -67,8 +71,12 @@ const config: Config = {
     Investment: {
       AllowList: [],
     },
+    Weighted: {
+      AllowList: [],
+    },
     Factories: {},
     Stakable: {
+      VotingGaugePools: [],
       AllowList: [],
     },
     Metadata: {},
