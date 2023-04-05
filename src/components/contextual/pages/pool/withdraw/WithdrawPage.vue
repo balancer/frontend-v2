@@ -5,7 +5,6 @@ import SwapSettingsPopover, {
   SwapSettingsContext,
 } from '@/components/popovers/SwapSettingsPopover.vue';
 import { configService } from '@/services/config/config.service';
-import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import useWithdrawPageTabs from '@/composables/pools/useWithdrawPageTabs';
 import { Pool } from '@balancer-labs/sdk';
 import WithdrawPageTabs from './WithdrawPageTabs.vue';
@@ -31,7 +30,6 @@ provideExitPool(pool);
  * COMPOSABLES
  */
 const { network } = configService;
-const { isPreMintedBptPool } = usePoolHelpers(pool);
 const { resetTabs } = useWithdrawPageTabs();
 
 onMounted(() => resetTabs());
@@ -48,7 +46,7 @@ onMounted(() => resetTabs());
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <WithdrawPageTabs v-if="isPreMintedBptPool" />
+        <WithdrawPageTabs v-if="!pool.isInRecoveryMode" />
       </div>
     </template>
     <WithdrawFormV2 v-if="true" :pool="pool" />
