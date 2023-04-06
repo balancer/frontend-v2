@@ -76,6 +76,7 @@ const pools: Pools = {
       '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
       '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // morpho usd
       '0x79c58f70905f734641735bc61e45c19dd9ad60bc0000000000000000000004e7', // stable3
+      '0x793f2d5cd52dfafe7a1a1b0b3988940ba2d6a63d0000000000000000000004f8', // Bifrost vETH stableswap
     ],
   },
   Investment: {
@@ -90,6 +91,7 @@ const pools: Pools = {
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
     AllowList: [
       '0x67f117350eab45983374f4f83d275d8a5d62b1bf0001000000000000000004f2',
+      '0x0fadd10f606554fec1574f28398469d98d68d297000200000000000000000503', // 80XEX/20USDC
     ],
   },
   Factories: {
