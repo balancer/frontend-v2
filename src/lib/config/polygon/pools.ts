@@ -84,6 +84,8 @@ const pools: Pools = {
       '0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a', // ankMatic/Matic
       '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
       '0x511a0fb938bb4aee2a3a9d74f68e37bac8318fbf000000000000000000000b18', // rmatic/wmatic
+      '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b', // bb-a-matic / maticx
+      '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c', // stmatic / bb-a-matic
     ],
   },
   Investment: {
