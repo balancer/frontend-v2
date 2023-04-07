@@ -279,43 +279,6 @@ function symbolFor(titleTokenIndex: number): string {
     class="mt-2"
     block
   />
-  <BalAlert
-    v-if="disableJoinsReason.nonVettedTokensAfterTimestamp"
-    type="warning"
-    :title="$t('investment.warning.blockedPool.title', [nonAllowedSymbols])"
-    class="mt-2"
-    block
-  >
-    {{ $t('investment.warning.blockedPool.description') }}
-    <a
-      href="https://github.com/balancer/frontend-v2/wiki/How-tos#add-a-new-pool"
-      target="_blank"
-      class="underline"
-      >{{ $t('here') }}</a
-    >
-    {{ $t('investment.warning.blockedPool.description2') }}
-  </BalAlert>
-
-  <BalAlert
-    v-if="
-      disableJoinsReason.requiresAllowListing ||
-      disableJoinsReason.nonAllowedWeightedPoolAfterTimestamp
-    "
-    type="warning"
-    :title="$t('requiresAllowListing1')"
-    class="mt-2"
-    block
-  >
-    {{ $t('Click') }}
-    <a
-      href="https://github.com/balancer/frontend-v2/wiki/How-tos#add-a-new-pool"
-      target="_blank"
-      class="underline"
-      >{{ $t('here') }}</a
-    >
-    {{ $t('requiresAllowListing2') }}
-  </BalAlert>
-
   <StakePreviewModal
     v-if="!!pool"
     :isVisible="isRestakePreviewVisible"
