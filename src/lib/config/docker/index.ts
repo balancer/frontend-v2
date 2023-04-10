@@ -11,6 +11,8 @@ const config: Config = {
   slug: 'docker',
   network: 'docker localhost',
   unknown: false,
+  visibleInUI: false,
+  testNetwork: true,
   rpc: 'http://localhost:8545',
   ws: 'ws://localhost:8546',
   explorer: '',
@@ -23,6 +25,7 @@ const config: Config = {
     gauge: '',
     blocks: '',
   },
+  bridgeUrl: '',
   supportsEIP1559: false,
   blockTime: 12,
   nativeAsset: {
@@ -33,6 +36,12 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
   },
   addresses: {
     ...contracts,
@@ -48,6 +57,7 @@ const config: Config = {
       PerPool: 10,
       PerPoolInitial: 5,
     },
+    BoostsEnabled: false,
     DelegateOwner: '',
     ZeroAddress: '',
     DynamicFees: {
@@ -61,11 +71,17 @@ const config: Config = {
     Investment: {
       AllowList: [],
     },
+    Weighted: {
+      AllowList: [],
+    },
     Factories: {},
     Stakable: {
+      VotingGaugePools: [],
       AllowList: [],
     },
     Metadata: {},
+    Deep: [],
+    BoostedApr: [],
     DisabledJoins: [],
     BrandedRedirect: {},
   },

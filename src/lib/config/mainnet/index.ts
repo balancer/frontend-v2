@@ -15,6 +15,8 @@ const config: Config = {
   slug: 'ethereum',
   network: 'homestead',
   unknown: false,
+  visibleInUI: true,
+  testNetwork: false,
   rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://mainnet.infura.io/ws/v3/${keys.infura}`,
   explorer: 'https://etherscan.io',
@@ -34,6 +36,7 @@ const config: Config = {
     blocks:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
   },
+  bridgeUrl: '',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 12,
@@ -45,6 +48,15 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
+    apyVision: {
+      networkName: 'eth',
+    },
   },
   addresses: {
     ...contracts,

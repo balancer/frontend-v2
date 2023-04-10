@@ -51,6 +51,20 @@ export default class TokenListService {
     };
   }
 
+  public static filterTokensList(
+    tokensList: TokenListMap,
+    networkId: Network
+  ): TokenListMap {
+    return Object.keys(tokensList).reduce((acc: TokenListMap, key) => {
+      const data = tokensList[key];
+      acc[key] = {
+        ...data,
+        tokens: data.tokens.filter(token => token.chainId === networkId),
+      };
+      return acc;
+    }, {});
+  }
+
   /**
    * Fetch all token list json and return mapped to URI
    */
@@ -75,15 +89,17 @@ export default class TokenListService {
 
       if (uri.endsWith('.eth')) {
         return await this.getByEns(uri);
-      } else if (protocol === 'https') {
+      }
+      if (protocol === 'https') {
         const { data } = await axios.get<TokenList>(uri);
         return data;
-      } else if (protocol === 'ipns') {
-        return await this.ipfs.get<TokenList>(path, protocol);
-      } else {
-        console.error('Unhandled TokenList protocol', uri);
-        throw new Error('Unhandled TokenList protocol');
       }
+      if (protocol === 'ipns') {
+        return await this.ipfs.get<TokenList>(path, protocol);
+      }
+
+      console.error('Unhandled TokenList protocol', uri);
+      throw new Error('Unhandled TokenList protocol');
     } catch (error) {
       console.error('Failed to load TokenList', uri, error);
       throw error;

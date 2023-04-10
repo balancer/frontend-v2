@@ -2,20 +2,20 @@
 import { computed, ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import i18n from '@/plugins/i18n';
-
+import { useI18n } from 'vue-i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import useNotifications from '@/composables/useNotifications';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+import config from '@/lib/config';
+import { Config } from '@/lib/config/types';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { hardRedirectTo } from '@/plugins/router/nav-guards';
 
 export interface NetworkOption {
   id: string;
   name: string;
-  subdomain?: string;
   networkSlug?: string;
   key?: string;
 }
@@ -26,42 +26,28 @@ const { networkId, networkConfig } = useNetwork();
 const { chainId } = useWeb3();
 const router = useRouter();
 const { addNotification } = useNotifications();
+const { t } = useI18n();
 
-const networks = ref([
-  {
-    id: 'ethereum',
-    name: 'Ethereum',
-    networkSlug: 'ethereum',
-    key: '1',
-  },
-  {
-    id: 'polygon',
-    name: 'Polygon',
-    networkSlug: 'polygon',
-    key: '137',
-  },
-  {
-    id: 'arbitrum',
-    name: 'Arbitrum',
-    networkSlug: 'arbitrum',
-    key: '42161',
-  },
-  {
-    id: 'gnosis-chain',
-    name: 'Gnosis Chain',
-    networkSlug: 'gnosis-chain',
-    key: '100',
-  },
-]);
+function convertConfigToNetworkOption(config: Config): NetworkOption {
+  return {
+    id: config.slug,
+    name: config.chainName,
+    networkSlug: config.slug,
+    key: config.key,
+  };
+}
 
-const networksDev = ref([
-  {
-    id: 'goerli',
-    name: 'Goerli',
-    networkSlug: 'goerli',
-    key: '5',
-  },
-]);
+const prodNetworks: NetworkOption[] = Object.values(config)
+  .filter(config => config.visibleInUI && !config.testNetwork)
+  .map(convertConfigToNetworkOption);
+
+const networks = ref(prodNetworks);
+
+const testNetworks: NetworkOption[] = Object.values(config)
+  .filter(config => config.visibleInUI && config.testNetwork)
+  .map(convertConfigToNetworkOption);
+
+const networksDev = ref(testNetworks);
 
 // COMPUTED
 const allNetworks = computed(() => {
@@ -93,7 +79,7 @@ onMounted(async () => {
     addNotification({
       type: 'error',
       title: '',
-      message: `${i18n.global.t('poolDoesntExist')} ${networkConfig.chainName}`,
+      message: `${t('poolDoesntExist')} ${networkConfig.chainName}`,
     });
     router.replace({ query: {} });
   }
@@ -161,7 +147,7 @@ function isActive(network: NetworkOption): boolean {
         </template>
       </BalBtn>
     </template>
-    <div class="flex overflow-hidden flex-col w-48 rounded-lg">
+    <div role="menu" class="flex overflow-hidden flex-col w-48 rounded-lg">
       <div
         class="py-2 px-3 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
       >

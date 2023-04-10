@@ -7,6 +7,7 @@ import InvestPageInvestBlock from './InvestPageInvestBlock.vue';
 import { Pool } from '@balancer-labs/sdk';
 import { computed } from 'vue';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
+import useDisabledJoinsGuard from '@/composables/contextual/pool-transfers/useDisabledJoinsGuard';
 
 type Props = {
   pool: Pool;
@@ -24,6 +25,7 @@ const pool = computed(() => props.pool);
 /**
  * COMPOSABLES
  */
+useDisabledJoinsGuard(props.pool);
 const { isDeepPool } = usePool(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
 

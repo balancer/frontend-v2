@@ -1,9 +1,8 @@
-import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
-import { isAddress, getAddress } from '@ethersproject/address';
-import { computed, Ref } from 'vue';
+import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
+import { getAddress } from '@ethersproject/address';
 
 import { APR_THRESHOLD } from '@/constants/pools';
-import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
+import configs from '@/lib/config';
 import {
   bnum,
   includesAddress,
@@ -12,20 +11,20 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import configs from '@/lib/config';
+import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 
+import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
+import { hasBalEmissions } from '@/services/staking/utils';
+import { cloneDeep, uniq, uniqWith } from 'lodash';
 import {
-  isTestnet,
-  isMainnet,
   appUrl,
   getNetworkSlug,
-  isL2,
+  isMainnet,
+  isPoolBoostsEnabled,
   networkId,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
-import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
-import { hasBalEmissions } from '@/services/staking/utils';
-import { uniq, uniqWith, cloneDeep } from 'lodash';
+import { dateToUnixTimestamp } from './useTime';
 
 const POOLS = configService.network.pools;
 
@@ -84,46 +83,7 @@ export function isPreMintedBptType(poolType: PoolType): boolean {
  * This is used to enable the generalised deep pool join/exit flow for example.
  */
 export function isDeep(pool: Pool): boolean {
-  const treatAsDeep = [
-    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f', // bb-a-USD1 (goerli)
-    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
-    '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
-    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
-    '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD2 (mainnet)
-    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
-    // '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387', // wstETH/bb-a-USD (mainnet)
-    '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // dola/bb-a-USD (mainnet)
-    '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
-    // '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b', // STG/bba-usd (mainnet)
-    // '0x334c96d792e4b26b841d28f53235281cec1be1f200020000000000000000038a', // rETH/bba-usd (mainnet)
-    // '0x53bc3cba3832ebecbfa002c12023f8ab1aa3a3a0000000000000000000000411', // TUSD/bb-a-usd (mainnet)
-    '0x4c8d2e60863e8d7e1033eda2b3d84e92a641802000000000000000000000040f', // FRAX/aave-usdc (mainnet)
-    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467', // wstETH/sfrxETH/rETH (mainnet)
-    // '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f', // euler usd (mainnet)
-    // '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // dola/bb-e-usd (mainnet)
-    // '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477', // euler frax/euler usdc (mainnet)
-    '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
-    // '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488', // tusd/bb-e-usd (mainnet)
-    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489', // bb-i-usd (mainnet)
-    '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65', // tetu/qi (polygon)
-    // '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474', // reth/bb-e-usd (mainnet)
-    // '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // temple/bb-e-usd (mainnet)
-    // '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // wsteth/bb-e-usd (mainnet)
-    '0x959216bb492b2efa72b15b7aacea5b5c984c3cca000200000000000000000472', // stakedape/wsteth (mainnet)
-    '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a', // bb-g-usd (mainnet)
-    '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // agave stable (gnosis)
-    '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto (gnosis)
-    '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011', // agave gno/usdc (gnosis)
-    '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012', // agave gno/weth (gnosis)
-    '0x3f7a7fd7f214be45ec26820fd01ac3be4fc75aa70002000000000000000004c5', // stg/bbeusd
-    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace', // bb-t-USD (tetu managed boosted pool)
-    '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
-    '0xf22a66046b5307842f21b311ecb4c462c24c0635000000000000000000000b15', // bb-t-MATIC (tetu managed boosted pool)
-    '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // ma usdc/usdt/dai (morpho boosted)
-    '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
-  ];
-
-  return treatAsDeep.includes(pool.id);
+  return configService.network.pools.Deep.includes(pool.id);
 }
 
 /**
@@ -131,18 +91,7 @@ export function isDeep(pool: Pool): boolean {
  * for APR display only.
  */
 export function hasBoostedAPR(address: string): boolean {
-  const boostedPoolAddresses = [
-    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd', // bb-a-USD1 (goerli)
-    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e', // bb-a-USD2 (goerli)
-    '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD (polygon)
-    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
-    '0xa13a9247ea42d743238089903570127dda72fe44', // bb-a-USD2 (mainnet)
-    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e', // bb-a-USD2 (goerli)
-    '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a', // wstETH/bb-a-USD (mainnet)
-    '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e64', // dola/bb-a-USD (mainnet)
-    '0xb54b2125b711cd183edd3dd09433439d53961652', // miMATIC/bb-am-USD (polygon)
-  ];
-
+  const boostedPoolAddresses = configService.network.pools.BoostedApr;
   return includesAddress(boostedPoolAddresses, address);
 }
 
@@ -205,13 +154,36 @@ export function isMigratablePool(pool: AnyPool) {
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
+  // Uncomment to DEBUG
+  // if (
+  //   pool.id ===
+  //   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014'
+  // )
+  //   return true;
   return bnum(pool?.totalShares || '0').eq(0);
 }
-
 export function preMintedBptIndex(pool: Pool): number | void {
   return pool.tokensList.findIndex(address =>
     isSameAddress(address, pool.address)
   );
+}
+
+export function createdAfterTimestamp(pool: AnyPool): boolean {
+  // Pools should always have valid createTime so, for safety, we block the pool in case we don't get it
+  // (createTime should probably not be treated as optional in the SDK types)
+  if (!pool.createTime) return true;
+
+  const creationTimestampLimit = dateToUnixTimestamp('2023-03-29');
+
+  // // Uncomment to debug
+  // if (
+  //   pool.id ===
+  //   '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080'
+  // )
+  //   creationTimestampLimit = dateToUnixTimestamp('2021-08-13'); //DEBUG DATE
+
+  // Epoch timestamp is bigger if the date is older
+  return pool.createTime > creationTimestampLimit;
 }
 
 /**
@@ -291,7 +263,10 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
     return numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
-  if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
+  if (
+    (hasBalEmissions(aprs) && isPoolBoostsEnabled.value) ||
+    aprs.protocolApr > 0
+  ) {
     const minAPR = numF(aprs.min, FNumFormats.bp);
     const maxAPR = numF(aprs.max, FNumFormats.bp);
     return `${minAPR} - ${maxAPR}`;
@@ -528,20 +503,14 @@ export function findTokenInTree(
 }
 
 /**
- * @summary Check if pool should be accessible in UI
+ * Returns an array with the tokens from the given pool whose addresses are included in the given addresses.
+ *
+ * @param {Pool} pool - A pool
+ * @param {string[]} addresses - An address list.
  */
-export function isBlocked(pool: Pool, account: string): boolean {
-  const requiresAllowlisting =
-    (isStableLike(pool.poolType) && !isFx(pool.poolType)) ||
-    isManaged(pool.poolType);
-  const isOwnedByUser =
-    pool.owner && isAddress(account) && isSameAddress(pool.owner, account);
-  const isAllowlisted =
-    POOLS.Stable.AllowList.includes(pool.id) ||
-    POOLS.Investment.AllowList.includes(pool.id);
-
-  return (
-    !isTestnet.value && requiresAllowlisting && !isAllowlisted && !isOwnedByUser
+export function filterTokensInList(pool: Pool, addresses: string[]) {
+  return flatTokenTree(pool).filter(
+    token => token.address && !includesAddress(addresses, token.address)
   );
 }
 
@@ -676,9 +645,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean =>
       !!pool.value && includesWstEth(pool.value.tokensList) && isMainnet.value
   );
-  const noInitLiquidityPool = computed(
-    () => !!pool.value && noInitLiquidity(pool.value)
-  );
 
   // pool is "Weighted" and some of the rate providers are not on our approved list
   const hasNonApprovedRateProviders = computed(
@@ -716,7 +682,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     managedPoolWithSwappingHalted,
     isWethPool,
     isMainnetWstETHPool,
-    noInitLiquidityPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
     // methods
@@ -730,7 +695,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isSwappingHaltable,
     isPreMintedBptType,
     isWeth,
-    noInitLiquidity,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

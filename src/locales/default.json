@@ -512,6 +512,11 @@
         "title": "You have no pool tokens to join with",
         "paragraph1": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact.",
         "paragraph2": "However, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens."
+      },
+      "blockedPool": {
+        "title": "This pool contains one or more tokens that have not been vetted by the Balancer community: {0}.",
+        "description": "For the protection of LPs, adding liquidity to the pool has been disabled. Click",
+        "description2": "to learn how to submit the token(s) for review."
       }
     },
     "error": {
@@ -640,6 +645,10 @@
   "noData": "No data available",
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before liquidity provision is supported.",
+  "requiresAllowListing1": "This pool has not been added to our allowlist.",
+  "requiresAllowListing2": "to learn how to enable a new pool.",
+  "Click": "Click",
+  "here": "here",
   "noInvestments": "No liquidity",
   "noUnstakedInvestments": "You have no unstaked liquidity on {0}",
   "noStakedInvestments": "You have no staked liquidity on {0}",
@@ -841,6 +850,8 @@
   "receipt": "Receipt",
   "receive": "Receive",
   "recentActivityTitle": "Recent activity",
+  "recoveryMode": "Recovery mode",
+  "recoveryModeDescription": "This pool is in recovery mode. It does not pay protocol fees and the only available exit is proportional. The pool remains safe to use.",
   "redeem": "Redeem",
   "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
   "restoring": "Restoring...",
@@ -1573,5 +1584,9 @@
     }
   },
   "poolActivity": "Pool activity",
-  "legacyClaims": "Legacy claims"
+  "legacyClaims": "Legacy claims",
+  "inputLabels": {
+    "tokenOut": "Token out",
+    "tokenIn": "Token in"
+  }
 }

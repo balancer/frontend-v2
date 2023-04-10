@@ -367,7 +367,7 @@ export const fakeTokensProvider = (
    * @param disableNativeAssetBuffer Optionally disable native asset buffer
    */
   function getMaxBalanceFor(
-    tokenAddress,
+    tokenAddress: string,
     disableNativeAssetBuffer = false
   ): string {
     let maxAmount;

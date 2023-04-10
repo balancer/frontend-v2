@@ -47,7 +47,7 @@ const { managedPoolWithSwappingHalted, isDeepPool, isPreMintedBptPool } =
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
-const { wrappedNativeAsset } = useTokens();
+const { wrappedNativeAsset, getToken } = useTokens();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
@@ -88,6 +88,11 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
   }
 }
 
+function getTokenInputLabel(address: string): string | undefined {
+  const token = getToken(address);
+  return token?.symbol;
+}
+
 /**
  * CALLBACKS
  */
@@ -121,7 +126,7 @@ watch(
 </script>
 
 <template>
-  <div>
+  <div data-testid="add-liquidity-form">
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
@@ -146,6 +151,7 @@ watch(
       v-model:address="amountIn.address"
       v-model:amount="amountIn.value"
       :name="amountIn.address"
+      :aria-label="'Amount of: ' + getTokenInputLabel(amountIn.address)"
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"

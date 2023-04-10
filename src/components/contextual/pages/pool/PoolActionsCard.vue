@@ -11,6 +11,7 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { Goals, trackGoal } from '@/composables/useFathom';
+import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
 /**
  * TYPES
@@ -34,6 +35,7 @@ const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
+const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
 
 /**
  * COMPUTED
@@ -43,7 +45,8 @@ const joinDisabled = computed(
     deprecatedDetails(props.pool.id)?.joinsDisabled ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
-    isMigratablePool(props.pool)
+    isMigratablePool(props.pool) ||
+    shouldDisableJoins.value
 );
 </script>
 
@@ -68,6 +71,7 @@ const joinDisabled = computed(
         block
         @click="trackGoal(Goals.ClickAddLiquidity)"
       />
+
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
         :to="{ name: 'withdraw', params: { networkSlug } }"

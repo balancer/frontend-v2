@@ -64,6 +64,7 @@ export type Pools = {
     PerPool: number;
     PerPoolInitial: number;
   };
+  BoostsEnabled: boolean;
   DelegateOwner: string;
   ZeroAddress: string;
   DynamicFees: {
@@ -77,11 +78,19 @@ export type Pools = {
   Investment: {
     AllowList: string[];
   };
+  Weighted: {
+    AllowList: string[];
+  };
   Factories: Record<string, FactoryType>;
   Stakable: {
+    // Pools to be included in the voting gauges list.
+    VotingGaugePools: string[];
+    // Pools that have additional rewards and therefore should be stakable but are not included in the VotingGaugePools list.
     AllowList: string[];
   };
   Metadata: Record<string, PoolMetadata>;
+  Deep: string[];
+  BoostedApr: string[];
   DisabledJoins: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;

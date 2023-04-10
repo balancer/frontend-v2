@@ -56,7 +56,7 @@ defineExpose({ hide });
 </script>
 
 <template>
-  <div v-if="show" class="bal-modal" @keyup.esc="hide">
+  <div v-if="show" class="bal-modal" role="dialog" @keyup.esc="hide">
     <transition name="overlay" appear @after-enter="showContent = true">
       <div class="modal-bg" @click="hide">
         <div v-if="fireworks" class="fireworks">

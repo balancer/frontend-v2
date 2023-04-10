@@ -15,6 +15,8 @@ const config: Config = {
   slug: 'goerli',
   network: 'goerli',
   unknown: false,
+  visibleInUI: true,
+  testNetwork: true,
   rpc: `https://goerli.infura.io/v3/${keys.infura}`,
   ws: `wss://goerli.infura.io/ws/v3/${keys.infura}`,
   explorer: 'https://goerli.etherscan.io',
@@ -31,6 +33,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-goerli',
     blocks: 'https://api.thegraph.com/subgraphs/name/blocklytics/goerli-blocks',
   },
+  bridgeUrl: '',
   supportsEIP1559: true,
   supportsElementPools: true,
   blockTime: 12,
@@ -42,6 +45,12 @@ const config: Config = {
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'ethereum',
+      platformId: 'ethereum',
+    },
   },
   addresses: {
     ...contracts,

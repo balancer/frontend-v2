@@ -4,12 +4,13 @@ import { useRouter } from 'vue-router';
 
 import AppHero from '@/components/heros/AppHero.vue';
 import { useLock } from '@/composables/useLock';
-import useNetwork, { isL2 } from '@/composables/useNetwork';
+import useNetwork from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
 import { useUserPools } from '@/providers/local/user-pools.provider';
+import { isVeBalSupported } from '@/composables/useVeBAL';
 
 /**
  * COMPOSABLES
@@ -56,7 +57,7 @@ const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
       <div v-else class="mb-1 text-3xl font-semibold text-white">
         {{ totalInvestedLabel }}
       </div>
-      <div v-if="!isL2" class="inline-block relative mt-2">
+      <div v-if="!isVeBalSupported" class="inline-block relative mt-2">
         <BalLoadingBlock
           v-if="isLoadingTotalValue"
           class="mx-auto w-40 h-8"

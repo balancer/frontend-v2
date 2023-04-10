@@ -6,7 +6,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import { GaugeShare } from './useUserGaugeSharesQuery';
-import { isL2 } from '../useNetwork';
+import { isPoolBoostsEnabled } from '../useNetwork';
 
 /**
  * TYPES
@@ -57,7 +57,7 @@ export default function useUserBoostsQuery(
       if (!gaugeShares.value || gaugeShares.value.length === 0) return {};
       // We don't have boosts on L2s. Adding this to the enabled conditional
       // causes permanent loading states, so instead just return empty.
-      if (isL2.value) return {};
+      if (!isPoolBoostsEnabled.value) return {};
 
       return await stakingRewardsService.getUserBoosts({
         userAddress: account.value,

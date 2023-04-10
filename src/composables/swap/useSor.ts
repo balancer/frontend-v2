@@ -350,8 +350,15 @@ export default function useSor({
   }
 
   function resetInputAmounts(amount: string): void {
-    tokenInAmountInput.value = amount;
-    tokenOutAmountInput.value = amount;
+    if (exactIn.value && bnum(amount).isZero()) {
+      tokenOutAmountInput.value = '';
+    } else if (!exactIn.value && bnum(amount).isZero()) {
+      tokenInAmountInput.value = '';
+    } else {
+      tokenInAmountInput.value = amount;
+      tokenOutAmountInput.value = amount;
+    }
+
     priceImpact.value = 0;
     sorReturn.value.hasSwaps = false;
     sorReturn.value.returnAmount = Zero;
@@ -366,11 +373,13 @@ export default function useSor({
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping swap
-    const zeroValueSwap = amount === '' || amount === '0';
+    const zeroValueSwap = amount === '' || bnum(amount).isZero();
     if (zeroValueSwap) {
       resetInputAmounts(amount);
       return;
     }
+
+    amount = bnum(amount).toString();
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;

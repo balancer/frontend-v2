@@ -8,12 +8,13 @@ type DeepPartial<T> = {
 const pool: Pool = mock<Pool>();
 
 const defaults: DeepPartial<Pool> = {
-  id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
-  address: '0xa13a9247ea42d743238089903570127dda72fe44',
+  id: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
+  owner: '0x0000000000000000000000000000000000000000',
+  address: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd',
   tokensList: [
     '0x2f4eb100552ef93840d5adc30560e5513dfffacb',
     '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83',
-    '0xa13a9247ea42d743238089903570127dda72fe44',
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd',
     '0xae37d54ae477268b9997d4161b96b8200755935c',
   ],
   symbol: 'bb-a-USD',
@@ -82,11 +83,11 @@ const defaults: DeepPartial<Pool> = {
     },
     {
       // Root BPT
-      address: '0xa13a9247ea42d743238089903570127dda72fe44',
+      address: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd',
       symbol: 'bb-a-USD',
       token: {
         pool: {
-          address: '0xa13a9247ea42d743238089903570127dda72fe44',
+          address: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd',
           poolType: PoolType.ComposableStable,
           mainIndex: 0,
         },
