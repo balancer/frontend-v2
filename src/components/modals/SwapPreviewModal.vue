@@ -266,9 +266,9 @@ const tokenApproval = useTokenApproval(
 const {
   relayerSignature: batchRelayerSignature,
   relayerApprovalAction: batchRelayerApprovalAction,
-} = useRelayerApproval(RelayerType.BATCH_V4);
+} = useRelayerApproval(RelayerType.BATCH);
 
-const batchRelayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+const batchRelayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
 
 const cowswapRelayerApproval = useRelayerApprovalTx(
   RelayerType.COWSWAP,

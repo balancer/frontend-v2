@@ -14,6 +14,7 @@ const tokens: TokenConstants = {
     WETH: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
     BAL: '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
     bbaUSD: '0x13ACD41C585d7EbB4a9460f7C8f50BE60DC080Cd',
+    bbaUSDv2: '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e',
   },
   PriceChainMap: {
     /**

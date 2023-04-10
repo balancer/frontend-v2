@@ -11,7 +11,6 @@ import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
-import { POOLS } from '@/constants/voting-gauge-pools';
 import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
@@ -20,7 +19,7 @@ import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
 import config from '../config';
 import { isSameAddress } from '../utils';
 import { formatUnits } from '@ethersproject/units';
-import { mapValues } from 'lodash';
+import { flatten, mapValues } from 'lodash';
 import { configService } from '@/services/config/config.service';
 import { Multicaller } from '@/services/multicalls/multicaller';
 import { StaticJsonRpcBatchProvider } from '@/services/rpc-provider/static-json-rpc-batch-provider';
@@ -480,6 +479,18 @@ async function getGaugeInfo(
 
   console.log('Fetching gauges info...');
   console.time('getGaugeInfo');
+
+  const POOLS = flatten(
+    Object.entries(config).map(([network, networkConfig]) => {
+      return networkConfig.pools.Stakable.VotingGaugePools.map(id => {
+        return {
+          id,
+          network: Number(network) as Network,
+        };
+      });
+    })
+  );
+
   const gaugesInfo = await Promise.all(
     POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
   );

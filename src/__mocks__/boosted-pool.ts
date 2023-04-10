@@ -9,6 +9,7 @@ const pool: Pool = mock<Pool>();
 
 const defaults: DeepPartial<Pool> = {
   id: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
+  owner: '0x0000000000000000000000000000000000000000',
   address: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd',
   tokensList: [
     '0x2f4eb100552ef93840d5adc30560e5513dfffacb',

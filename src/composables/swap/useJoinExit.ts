@@ -95,9 +95,9 @@ export default function useJoinExit({
   // COMPOSABLES
   const { account, getSigner } = useWeb3();
   const { injectTokens, getToken } = useTokens();
-  const { relayerSignature } = useRelayerApproval(RelayerType.BATCH_V4);
+  const { relayerSignature } = useRelayerApproval(RelayerType.BATCH);
   const relayerApprovalQuery = useRelayerApprovalQuery(
-    ref(configService.network.addresses.batchRelayerV4)
+    ref(configService.network.addresses.batchRelayer)
   );
   const { addTransaction } = useTransactions();
   const { txListener } = useEthers();

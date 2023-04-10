@@ -7,16 +7,13 @@ import { computed } from 'vue';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import WithdrawPage from '@/components/contextual/pages/pool/withdraw/WithdrawPage.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 
 /**
  * COMPOSABLES
  */
-const { pool, poolDecorationQuery, loadingPool, transfersAllowed } =
-  usePoolTransfers();
+const { pool, poolDecorationQuery, loadingPool } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { balanceQueryLoading } = useTokens();
-usePoolTransfersGuard();
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent
 // overfetching a request on short blocktime networks like Polygon.
@@ -32,10 +29,7 @@ const isLoadingSor = computed(
 
 const isLoading = computed(
   (): boolean =>
-    loadingPool.value ||
-    !transfersAllowed.value ||
-    isLoadingSor.value ||
-    balanceQueryLoading.value
+    loadingPool.value || isLoadingSor.value || balanceQueryLoading.value
 );
 </script>
 

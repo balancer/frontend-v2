@@ -62,8 +62,14 @@ export type Pools = {
   Investment: {
     AllowList: string[];
   };
+  Weighted: {
+    AllowList: string[];
+  };
   Factories: Record<string, FactoryType>;
   Stakable: {
+    // Pools to be included in the voting gauges list.
+    VotingGaugePools: string[];
+    // Pools that have additional rewards and therefore should be stakable but are not included in the VotingGaugePools list.
     AllowList: string[];
   };
   Metadata: Record<string, PoolMetadata>;
