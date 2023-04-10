@@ -158,7 +158,7 @@ function addIntersectionObserver(): void {
   }
 
   const options = {
-    rootMargin: '-100px',
+    rootMargin: '300px',
   };
 
   const callback = (entries: IntersectionObserverEntry[]): void => {
