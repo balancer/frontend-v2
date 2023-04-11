@@ -102,6 +102,7 @@ const config: Config = {
     },
     Factories: {},
     Stakable: {
+      VotingGaugePools: [],
       AllowList: [],
     },
     Deep: [],

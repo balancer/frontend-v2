@@ -850,6 +850,8 @@
   "receipt": "Receipt",
   "receive": "Receive",
   "recentActivityTitle": "Recent activity",
+  "recoveryMode": "Recovery mode",
+  "recoveryModeDescription": "This pool is in recovery mode. It does not pay protocol fees and the only available exit is proportional. The pool remains safe to use.",
   "redeem": "Redeem",
   "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
   "restoring": "Restoring...",
