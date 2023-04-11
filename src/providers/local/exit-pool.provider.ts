@@ -395,6 +395,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     exitPoolService.setExitHandler(singleAssetMaxedExitHandler);
     singleAmountOut.max = '';
 
+    console.log('exitHandler:', exitHandlerType.value);
     try {
       const output = await exitPoolService.queryExit({
         exitType: ExitType.GivenIn,
