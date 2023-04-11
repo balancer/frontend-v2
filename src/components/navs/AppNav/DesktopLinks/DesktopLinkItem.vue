@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import PrefetchLinks from './PrefetchLinks.vue';
 import { RouterLinkProps } from 'vue-router';
+import PrefetchLinks from '@/components/links/PrefetchLinks.vue';
 
 interface Props extends RouterLinkProps {
   active: boolean;
