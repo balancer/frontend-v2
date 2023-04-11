@@ -34,6 +34,7 @@ function isActive(page: string): boolean {
     <DesktopLinkItem
       :to="{ name: 'swap', params: { networkSlug } }"
       :active="isActive('swap')"
+      prefetch
       @click="trackGoal(Goals.ClickNavSwap)"
     >
       {{ $t('swap') }}
@@ -57,6 +58,7 @@ function isActive(page: string): boolean {
     <DesktopLinkItem
       :to="{ name: 'portfolio', params: { networkSlug } }"
       :active="isActive('portfolio')"
+      prefetch
       @click="trackGoal(Goals.ClickNavPortfolio)"
     >
       {{ $t('portfolio') }}
