@@ -9,7 +9,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
+
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -31,6 +31,7 @@ import {
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
+import { configService } from '@/services/config/config.service';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -246,7 +247,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
+      to: configService.network.pools.Migrations?.[pool.id].toPoolId,
     },
     query: { returnRoute: 'home' },
   });

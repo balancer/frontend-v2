@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  PoolMigrationInfo,
-  PoolMigrationType,
-} from '@/components/forms/pool_actions/MigrateForm/types';
+import { PoolMigrationInfo, PoolMigrationType } from '@/types/pools';
 import { computed } from 'vue';
 
 type Props = {

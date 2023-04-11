@@ -41,6 +41,22 @@ export type DeprecatedDetails = {
   stakingDisabled?: boolean;
 };
 
+export enum PoolMigrationType {
+  AAVE_BOOSTED_POOL = 'aaveBoostedPool',
+  STABAL3_POOL = 'stabal3Pool',
+  MAI_POOL = 'maiPool',
+  STMATIC_POOL = 'stmaticPool',
+  XMATIC_POOL = 'xmaticPool',
+}
+
+export type PoolMigrationInfo = {
+  type: PoolMigrationType;
+  fromPoolId: string;
+  toPoolId: string;
+  riskI18nLabels?: string[];
+  showOldVHint?: boolean;
+};
+
 export type Pools = {
   IdsMap: Partial<NamedPools>;
   Pagination: {
@@ -78,4 +94,5 @@ export type Pools = {
   DisabledJoins: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;
+  Migrations?: Record<string, PoolMigrationInfo>;
 };
