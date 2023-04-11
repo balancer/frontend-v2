@@ -74,7 +74,6 @@ export type AmountOut = {
  * Handles pool exiting state and transaction execution.
  */
 export const exitPoolProvider = (pool: Ref<Pool>) => {
-  console.log('exitPoolProvider', pool.value);
   /**
    * STATE
    */
