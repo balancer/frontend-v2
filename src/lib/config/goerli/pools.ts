@@ -66,10 +66,12 @@ const pools: Pools = {
     '0x94f68b54191f62f781fe8298a8a5fa3ed772d227': 'weightedPool', // weighted pool v2
   },
   Stakable: {
-    AllowList: [
+    VotingGaugePools: [
       '0x16faf9f73748013155b7bc116a3008b57332d1e600020000000000000000005b',
       '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
       '0xdcdd4a3d36dec8d57594e89763d069a7e9b223e2000000000000000000000062',
+    ],
+    AllowList: [
       '0x67f8fcb9d3c463da05de1392efdbb2a87f8599ea000200000000000000000059',
     ],
   },
