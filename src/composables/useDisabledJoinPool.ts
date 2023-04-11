@@ -4,6 +4,7 @@ import {
   isFx,
   isManaged,
   isStableLike,
+  isWeighted,
   noInitLiquidity,
 } from '@/composables/usePoolHelpers';
 import { computed } from 'vue';
@@ -51,7 +52,9 @@ export function useDisabledJoinPool(pool: Pool) {
 
   const nonAllowedWeightedPoolAfterTimestamp = computed(() => {
     return (
-      createdAfterTimestamp(pool) && !POOLS.Weighted.AllowList.includes(pool.id)
+      isWeighted(pool.poolType) &&
+      createdAfterTimestamp(pool) &&
+      !POOLS.Weighted.AllowList.includes(pool.id)
     );
   });
 

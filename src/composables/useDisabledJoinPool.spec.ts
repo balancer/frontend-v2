@@ -48,6 +48,7 @@ it('disables joins for pools created after timestamp (2023-03-29) with non vette
 it('disables joins for weigthed pools created after timestamp (2023-03-29) that are not in the weighted allow list', async () => {
   const pool = BoostedPoolMock;
   pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
+  pool.poolType = PoolType.Weighted;
   const { disableJoinsReason, shouldDisableJoins } =
     await mountVettedTokensInPool(pool);
 
