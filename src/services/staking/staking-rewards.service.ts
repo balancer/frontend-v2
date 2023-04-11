@@ -4,7 +4,7 @@ import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { isNil, mapValues } from 'lodash';
 
-import { isL2 } from '@/composables/useNetwork';
+import { networkHasNativeGauges } from '@/composables/useNetwork';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
@@ -101,7 +101,7 @@ export class StakingRewardsService {
     gauges: SubgraphGauge[];
     pools: Pool[];
   }): Promise<GaugeBalAprs> {
-    if (isL2.value) return {};
+    if (!networkHasNativeGauges.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const balAddress = TOKENS.Addresses.BAL;
     const [inflationRate, relativeWeights, workingSupplies, totalSupplies] =
