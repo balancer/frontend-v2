@@ -77,8 +77,8 @@ const pools: Pools = {
       '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // morpho usd
       '0x79c58f70905f734641735bc61e45c19dd9ad60bc0000000000000000000004e7', // stable3
       '0x793f2d5cd52dfafe7a1a1b0b3988940ba2d6a63d0000000000000000000004f8', // Bifrost vETH stableswap
-      '0xFEBB0BBF162E64FB9D0DFE186E517D84C395F016000000000000000000000502', //bb-a-usd v3
-      '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504', //bb-a-eth / wsteth
+      '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502', // bb-a-usd v3
+      '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504', // bb-a-eth / wsteth
     ],
   },
   Investment: {
@@ -92,9 +92,10 @@ const pools: Pools = {
     // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
     AllowList: [
-      '0x67f117350eab45983374f4f83d275d8a5d62b1bf0001000000000000000004f2',
+      '0x67f117350eab45983374f4f83d275d8a5d62b1bf0001000000000000000004f2', // GRAIN/OATH/USDC/WETH
       '0x0fadd10f606554fec1574f28398469d98d68d297000200000000000000000503', // 80XEX/20USDC
-      '0x42fbd9f666aacc0026ca1b88c94259519e03dd67000200000000000000000507', // COIL/USDC
+      '0x42FBD9F666AACC0026CA1B88C94259519E03DD67000200000000000000000507', // COIL/USDC
+      '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505', // STG/bb-a-usd
     ],
   },
   Factories: {
@@ -313,6 +314,7 @@ const pools: Pools = {
     '0x3f7a7fd7f214be45ec26820fd01ac3be4fc75aa70002000000000000000004c5', // stg/bbeusd
     '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // ma usdc/usdt/dai (morpho boosted)
     '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
+    '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505', // stg/bb-a-usd
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
