@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BigNumber from 'bignumber.js';
-import { computed, onBeforeMount, reactive, watch } from 'vue';
+import { computed, onBeforeMount, reactive } from 'vue';
 import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
@@ -88,13 +88,6 @@ function handleAmountChange(value: string): void {
 function getPoolToken(address: string): PoolToken | undefined {
   return exitTokens.value.find(token => isSameAddress(token.address, address));
 }
-
-/**
- * WATCHERS
- */
-watch(bptBalance, () => {
-  bptIn.value = bptBalance.value;
-});
 
 /**
  * CALLBACKS
