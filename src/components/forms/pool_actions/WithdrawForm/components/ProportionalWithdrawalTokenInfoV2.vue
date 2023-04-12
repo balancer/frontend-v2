@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, isStableLike } from '@/composables/usePoolHelpers';
-import { Pool } from '@/services/pool/types';
+import { isDeep, isLinear, isStableLike } from '@/composables/usePoolHelpers';
+import { findByAddress } from '@/lib/utils';
+import { Pool, PoolToken } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -26,6 +27,13 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum } = useNumbers();
+
+/**
+ * COMPUTED
+ */
+const poolToken = computed((): PoolToken | undefined => {
+  return findByAddress(props.pool.tokens, props.address);
+});
 </script>
 
 <template>
@@ -34,8 +42,14 @@ const { fNum } = useNumbers();
       <BalAsset :address="address" class="mr-2" />
       <div class="flex flex-col leading-none">
         <div class="text-lg font-medium">
-          {{ props.token?.symbol }}
-          <span v-if="!isStableLike(pool.poolType) && !isDeep(pool)">
+          {{ props.token?.symbol || poolToken?.symbol }}
+          <span
+            v-if="
+              !isStableLike(pool.poolType) &&
+              !isDeep(pool) &&
+              !isLinear(pool.poolType)
+            "
+          >
             {{
               fNum(weight, {
                 style: 'percent',
