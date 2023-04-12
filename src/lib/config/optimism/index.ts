@@ -1,5 +1,6 @@
 import { Config } from '../types';
 import contracts from './contracts';
+import pools from './pools';
 import tokenlists from './tokenlists';
 import tokens from './tokens';
 
@@ -60,37 +61,7 @@ const config: Config = {
     type: 5,
     weight: 0,
   },
-  pools: {
-    IdsMap: {},
-    Pagination: {
-      PerPage: 10,
-      PerPool: 10,
-      PerPoolInitial: 5,
-    },
-    BoostsEnabled: false,
-    DelegateOwner: '',
-    ZeroAddress: '',
-    DynamicFees: {
-      Gauntlet: [],
-    },
-    BlockList: [],
-    IncludedPoolTypes: [],
-    Stable: {
-      AllowList: [],
-    },
-    Investment: {
-      AllowList: [],
-    },
-    Factories: {},
-    Stakable: {
-      AllowList: [],
-    },
-    Deep: [],
-    BoostedApr: [],
-    Metadata: {},
-    DisabledJoins: [],
-    BrandedRedirect: {},
-  },
+  pools,
   tokenlists,
   tokens,
   rateProviders: {},

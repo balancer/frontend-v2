@@ -7,7 +7,7 @@ import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { isL2, isGoerli, networkId } from '../useNetwork';
+import { networkId } from '../useNetwork';
 
 /**
  * TYPES
@@ -29,6 +29,12 @@ const feeDistributorV2 = new FeeDistributor(
   configService.network.addresses.feeDistributor
 );
 
+export const networkHasProtocolRewards = computed<boolean>(
+  () =>
+    configService.network.addresses.feeDistributorDeprecated != '' ||
+    configService.network.addresses.feeDistributor != ''
+);
+
 /**
  * @summary Fetches claimable protocol reward balances.
  */
@@ -45,8 +51,7 @@ export default function useProtocolRewardsQuery(options: QueryOptions = {}) {
     () =>
       isWalletReady.value &&
       account.value != null &&
-      !isL2.value &&
-      !isGoerli.value
+      networkHasProtocolRewards.value
   );
 
   /**

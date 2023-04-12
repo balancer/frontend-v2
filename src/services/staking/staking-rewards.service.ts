@@ -1,6 +1,7 @@
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
+
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import BalancerContractsService from '../balancer/contracts/balancer-contracts.service';

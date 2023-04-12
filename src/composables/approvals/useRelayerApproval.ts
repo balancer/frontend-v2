@@ -18,14 +18,12 @@ export enum RelayerType {
   COWSWAP = 'Cowswap',
   LIDO = 'Lido',
   BATCH = 'Batch',
-  BATCH_V4 = 'BATCH_V4',
 }
 
 export const relayerAddressMap = {
   [RelayerType.COWSWAP]: COW_RELAYER_CONTRACT_ADDRESS,
   [RelayerType.LIDO]: configService.network.addresses.lidoRelayer,
   [RelayerType.BATCH]: configService.network.addresses.batchRelayer,
-  [RelayerType.BATCH_V4]: configService.network.addresses.batchRelayerV4,
 };
 
 /**

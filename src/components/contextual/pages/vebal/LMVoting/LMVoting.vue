@@ -103,24 +103,28 @@ const gaugesFilteredByExpiring = computed(() => {
 
 const filteredVotingGauges = computed(() => {
   // put filter by expiring in separate computed to maintain readability
-  return gaugesFilteredByExpiring.value.filter(gauge => {
-    let showByNetwork = true;
-    if (
-      activeNetworkFilters.value.length > 0 &&
-      !activeNetworkFilters.value.includes(gauge.network)
-    ) {
-      showByNetwork = false;
-    }
+  return gaugesFilteredByExpiring.value
+    .filter((_, index) => {
+      return index + 1 < showingGaugesNum.value;
+    })
+    .filter(gauge => {
+      let showByNetwork = true;
+      if (
+        activeNetworkFilters.value.length > 0 &&
+        !activeNetworkFilters.value.includes(gauge.network)
+      ) {
+        showByNetwork = false;
+      }
 
-    return (
-      showByNetwork &&
-      gauge.pool.tokens.some(token => {
-        return token.symbol
-          ?.toLowerCase()
-          .includes(tokenFilter.value.toLowerCase());
-      })
-    );
-  });
+      return (
+        showByNetwork &&
+        gauge.pool.tokens.some(token => {
+          return token.symbol
+            ?.toLowerCase()
+            .includes(tokenFilter.value.toLowerCase());
+        })
+      );
+    });
 });
 
 /**
@@ -138,6 +142,49 @@ function handleModalClose() {
 function handleVoteSuccess() {
   refetchVotingGauges();
 }
+
+const intersectionSentinel = ref<HTMLDivElement | null>(null);
+const showingGaugesNum = ref(40);
+let observer: IntersectionObserver | undefined;
+
+function addIntersectionObserver(): void {
+  if (
+    !('IntersectionObserver' in window) ||
+    !('IntersectionObserverEntry' in window) ||
+    !intersectionSentinel.value
+  ) {
+    showingGaugesNum.value = votingGauges.value.length;
+    return;
+  }
+
+  const options = {
+    rootMargin: '300px',
+  };
+
+  const callback = (entries: IntersectionObserverEntry[]): void => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        showingGaugesNum.value += 40;
+      }
+    });
+  };
+  observer = new IntersectionObserver(callback, options);
+  observer.observe(intersectionSentinel.value);
+}
+onMounted(() => {
+  addIntersectionObserver();
+});
+onBeforeUnmount(() => {
+  observer?.disconnect();
+});
+
+watch(
+  () => [showExpiredGauges.value, activeNetworkFilters.value],
+  () => {
+    showingGaugesNum.value = votingGauges.value.length;
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -264,6 +311,7 @@ function handleVoteSuccess() {
       class="mb-8"
       @clicked-vote="setActiveGaugeVote"
     />
+    <div ref="intersectionSentinel" />
   </div>
   <teleport to="#modal">
     <GaugeVoteModal
