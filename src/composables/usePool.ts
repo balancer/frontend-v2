@@ -1,7 +1,6 @@
 import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
-import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { APR_THRESHOLD } from '@/constants/pools';
 import configs from '@/lib/config';
 import {
@@ -151,7 +150,7 @@ export function isWeth(pool: AnyPool): boolean {
 }
 
 export function isMigratablePool(pool: AnyPool) {
-  return POOL_MIGRATIONS.some(migration => migration.fromPoolId === pool.id);
+  return !!POOLS.Migrations?.[pool.id];
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
