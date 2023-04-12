@@ -22,10 +22,7 @@ type DeepPartial<T> = T extends object
 export const defaultTokenUSDPrice = '1';
 export const defaultTokenEthPrice = '0.005';
 
-export const defaultTokenPrice = {
-  usd: '1',
-  eth: '0.005',
-};
+export const defaultTokenPrice = 1;
 
 // TODO: Improve builder to avoid DeepPartial and move to sor mocks to subfile
 export const defaultSorPools: DeepPartial<Pool[]> = [
@@ -152,7 +149,6 @@ defaultExactOutExit.data = 'exact exit test encoded data';
 
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
-  balancerMock.data.tokenPrices.find.mockResolvedValue(defaultTokenPrice);
   balancerMock.sor.fetchPools.mockResolvedValue(true);
 
   balancerMock.sor.getPools.mockReturnValue(

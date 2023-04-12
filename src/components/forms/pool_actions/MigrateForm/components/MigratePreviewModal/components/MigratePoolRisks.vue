@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PoolMigrationInfo } from '../../../types';
+import { PoolMigrationInfo } from '@/types/pools';
 
 /**
  * TYPES

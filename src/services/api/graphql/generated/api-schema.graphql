@@ -1,0 +1,1039 @@
+scalar AmountHumanReadable
+
+scalar BigDecimal
+
+scalar BigInt
+
+scalar Bytes
+
+scalar Date
+
+type GqlBalancePoolAprItem {
+  apr: BigDecimal!
+  id: ID!
+  subItems: [GqlBalancePoolAprSubItem!]
+  title: String!
+}
+
+type GqlBalancePoolAprSubItem {
+  apr: BigDecimal!
+  id: ID!
+  title: String!
+}
+
+scalar GqlBigNumber
+
+enum GqlChain {
+  ARBITRUM
+  FANTOM
+  MAINNET
+  OPTIMISM
+  POLYGON
+}
+
+type GqlContentNewsItem {
+  discussionUrl: String
+  id: ID!
+  image: String
+  source: GqlContentNewsItemSource!
+  text: String!
+  timestamp: String!
+  url: String!
+}
+
+enum GqlContentNewsItemSource {
+  discord
+  medium
+  twitter
+}
+
+type GqlFeaturePoolGroupItemExternalLink {
+  buttonText: String!
+  buttonUrl: String!
+  id: ID!
+  image: String!
+}
+
+type GqlHistoricalTokenPrice {
+  address: String!
+  prices: [GqlHistoricalTokenPriceEntry!]!
+}
+
+type GqlHistoricalTokenPriceEntry {
+  price: Float!
+  timestamp: String!
+}
+
+type GqlLatestSyncedBlocks {
+  poolSyncBlock: BigInt!
+  userStakeSyncBlock: BigInt!
+  userWalletSyncBlock: BigInt!
+}
+
+type GqlLge {
+  address: String!
+  adminAddress: String!
+  adminIsMultisig: Boolean!
+  bannerImageUrl: String!
+  collateralAmount: String!
+  collateralEndWeight: Int!
+  collateralStartWeight: Int!
+  collateralTokenAddress: String!
+  description: String!
+  discordUrl: String!
+  endDate: String!
+  id: ID!
+  mediumUrl: String!
+  name: String!
+  startDate: String!
+  swapFeePercentage: String!
+  telegramUrl: String!
+  tokenAmount: String!
+  tokenContractAddress: String!
+  tokenEndWeight: Int!
+  tokenIconUrl: String!
+  tokenStartWeight: Int!
+  twitterUrl: String!
+  websiteUrl: String!
+}
+
+input GqlLgeCreateInput {
+  address: String!
+  bannerImageUrl: String!
+  collateralAmount: String!
+  collateralEndWeight: Int!
+  collateralStartWeight: Int!
+  collateralTokenAddress: String!
+  description: String!
+  discordUrl: String!
+  endDate: String!
+  id: ID!
+  mediumUrl: String!
+  name: String!
+  startDate: String!
+  swapFeePercentage: String!
+  telegramUrl: String!
+  tokenAmount: String!
+  tokenContractAddress: String!
+  tokenEndWeight: Int!
+  tokenIconUrl: String!
+  tokenStartWeight: Int!
+  twitterUrl: String!
+  websiteUrl: String!
+}
+
+input GqlLgeUpdateInput {
+  description: String!
+  discordUrl: String!
+  id: ID!
+  mediumUrl: String!
+  name: String!
+  telegramUrl: String!
+  tokenIconUrl: String!
+  twitterUrl: String!
+  websiteUrl: String!
+}
+
+type GqlPoolApr {
+  hasRewardApr: Boolean!
+  items: [GqlBalancePoolAprItem!]!
+  max: BigDecimal
+  min: BigDecimal
+  nativeRewardApr: BigDecimal!
+  swapApr: BigDecimal!
+  thirdPartyApr: BigDecimal!
+  total: BigDecimal!
+}
+
+type GqlPoolAprItem {
+  apr: BigDecimal!
+  subItems: [GqlBalancePoolAprSubItem!]
+  title: String!
+}
+
+type GqlPoolAprSubItem {
+  apr: BigDecimal!
+  title: String!
+}
+
+interface GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  name: String!
+  owner: Bytes
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolBatchSwap {
+  id: ID!
+  swaps: [GqlPoolBatchSwapSwap!]!
+  timestamp: Int!
+  tokenAmountIn: String!
+  tokenAmountOut: String!
+  tokenIn: String!
+  tokenInPrice: Float!
+  tokenOut: String!
+  tokenOutPrice: Float!
+  tx: String!
+  userAddress: String!
+  valueUSD: Float!
+}
+
+type GqlPoolBatchSwapPool {
+  id: ID!
+  tokens: [String!]!
+}
+
+type GqlPoolBatchSwapSwap {
+  id: ID!
+  pool: GqlPoolMinimal!
+  timestamp: Int!
+  tokenAmountIn: String!
+  tokenAmountOut: String!
+  tokenIn: String!
+  tokenOut: String!
+  tx: String!
+  userAddress: String!
+  valueUSD: Float!
+}
+
+type GqlPoolDynamicData {
+  apr: GqlPoolApr!
+  fees24h: BigDecimal!
+  fees24hAth: BigDecimal!
+  fees24hAthTimestamp: Int!
+  fees24hAtl: BigDecimal!
+  fees24hAtlTimestamp: Int!
+  fees48h: BigDecimal!
+  holdersCount: BigInt!
+  lifetimeSwapFees: BigDecimal!
+  lifetimeVolume: BigDecimal!
+  poolId: ID!
+  sharePriceAth: BigDecimal!
+  sharePriceAthTimestamp: Int!
+  sharePriceAtl: BigDecimal!
+  sharePriceAtlTimestamp: Int!
+  swapEnabled: Boolean!
+  swapFee: BigDecimal!
+  swapsCount: BigInt!
+  totalLiquidity: BigDecimal!
+  totalLiquidity24hAgo: BigDecimal!
+  totalLiquidityAth: BigDecimal!
+  totalLiquidityAthTimestamp: Int!
+  totalLiquidityAtl: BigDecimal!
+  totalLiquidityAtlTimestamp: Int!
+  totalShares: BigDecimal!
+  totalShares24hAgo: BigDecimal!
+  volume24h: BigDecimal!
+  volume24hAth: BigDecimal!
+  volume24hAthTimestamp: Int!
+  volume24hAtl: BigDecimal!
+  volume24hAtlTimestamp: Int!
+  volume48h: BigDecimal!
+}
+
+type GqlPoolElement implements GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  baseToken: Bytes!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  name: String!
+  owner: Bytes!
+  principalToken: Bytes!
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  tokens: [GqlPoolToken!]!
+  unitSeconds: BigInt!
+  withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolFeaturedPoolGroup {
+  icon: String!
+  id: ID!
+  items: [GqlPoolFeaturedPoolGroupItem!]!
+  title: String!
+}
+
+union GqlPoolFeaturedPoolGroupItem = GqlFeaturePoolGroupItemExternalLink | GqlPoolMinimal
+
+input GqlPoolFilter {
+  categoryIn: [GqlPoolFilterCategory!]
+  categoryNotIn: [GqlPoolFilterCategory!]
+  chainIn: [GqlChain!]
+  chainNotIn: [GqlChain!]
+  filterIn: [String!]
+  filterNotIn: [String!]
+  idIn: [String!]
+  idNotIn: [String!]
+  poolTypeIn: [GqlPoolFilterType!]
+  poolTypeNotIn: [GqlPoolFilterType!]
+  tokensIn: [String!]
+  tokensNotIn: [String!]
+}
+
+enum GqlPoolFilterCategory {
+  BLACK_LISTED
+  INCENTIVIZED
+}
+
+type GqlPoolFilterDefinition {
+  id: ID!
+  title: String!
+}
+
+enum GqlPoolFilterType {
+  ELEMENT
+  INVESTMENT
+  LINEAR
+  LIQUIDITY_BOOTSTRAPPING
+  META_STABLE
+  PHANTOM_STABLE
+  STABLE
+  UNKNOWN
+  WEIGHTED
+}
+
+type GqlPoolInvestConfig {
+  options: [GqlPoolInvestOption!]!
+  proportionalEnabled: Boolean!
+  singleAssetEnabled: Boolean!
+}
+
+type GqlPoolInvestOption {
+  poolTokenAddress: String!
+  poolTokenIndex: Int!
+  tokenOptions: [GqlPoolToken!]!
+}
+
+type GqlPoolJoinExit {
+  amounts: [GqlPoolJoinExitAmount!]!
+  id: ID!
+  poolId: String!
+  sender: String!
+  timestamp: Int!
+  tx: String!
+  type: GqlPoolJoinExitType!
+  valueUSD: String
+}
+
+type GqlPoolJoinExitAmount {
+  address: String!
+  amount: String!
+}
+
+input GqlPoolJoinExitFilter {
+  poolIdIn: [String!]
+}
+
+enum GqlPoolJoinExitType {
+  Exit
+  Join
+}
+
+type GqlPoolLinear implements GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  bptPriceRate: BigDecimal!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  lowerTarget: BigInt!
+  mainIndex: Int!
+  name: String!
+  owner: Bytes!
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  tokens: [GqlPoolToken!]!
+  upperTarget: BigInt!
+  withdrawConfig: GqlPoolWithdrawConfig!
+  wrappedIndex: Int!
+}
+
+type GqlPoolLinearNested {
+  address: Bytes!
+  bptPriceRate: BigDecimal!
+  createTime: Int!
+  factory: Bytes
+  id: ID!
+  lowerTarget: BigInt!
+  mainIndex: Int!
+  name: String!
+  owner: Bytes!
+  symbol: String!
+  tokens: [GqlPoolToken!]!
+  totalLiquidity: BigDecimal!
+  totalShares: BigDecimal!
+  upperTarget: BigInt!
+  wrappedIndex: Int!
+}
+
+type GqlPoolLinearPoolData {
+  address: String!
+  balance: String!
+  id: ID!
+  mainToken: GqlPoolLinearPoolMainToken!
+  mainTokenTotalBalance: String!
+  poolToken: String!
+  priceRate: String!
+  symbol: String!
+  totalSupply: String!
+  unwrappedTokenAddress: String!
+  wrappedToken: GqlPoolLinearPoolWrappedToken!
+}
+
+type GqlPoolLinearPoolMainToken {
+  address: String!
+  balance: String!
+  decimals: Int!
+  index: Int!
+  name: String!
+  symbol: String!
+  totalSupply: String!
+}
+
+type GqlPoolLinearPoolWrappedToken {
+  address: String!
+  balance: String!
+  decimals: Int!
+  index: Int!
+  name: String!
+  priceRate: String!
+  symbol: String!
+  totalSupply: String!
+}
+
+type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  name: String!
+  nestingType: GqlPoolNestingType!
+  owner: Bytes!
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  tokens: [GqlPoolTokenUnion!]!
+  withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolMetaStable implements GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  amp: BigInt!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  name: String!
+  owner: Bytes!
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  tokens: [GqlPoolToken!]!
+  withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolMinimal {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  name: String!
+  owner: Bytes
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  type: GqlPoolMinimalType!
+}
+
+enum GqlPoolMinimalType {
+  ELEMENT
+  INVESTMENT
+  LINEAR
+  LIQUIDITY_BOOTSTRAPPING
+  META_STABLE
+  PHANTOM_STABLE
+  STABLE
+  UNKNOWN
+  WEIGHTED
+}
+
+union GqlPoolNestedUnion = GqlPoolLinearNested | GqlPoolPhantomStableNested
+
+enum GqlPoolNestingType {
+  HAS_ONLY_PHANTOM_BPT
+  HAS_SOME_PHANTOM_BPT
+  NO_NESTING
+}
+
+enum GqlPoolOrderBy {
+  apr
+  fees24h
+  totalLiquidity
+  totalShares
+  volume24h
+}
+
+enum GqlPoolOrderDirection {
+  asc
+  desc
+}
+
+type GqlPoolPhantomStable implements GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  amp: BigInt!
+  bptPriceRate: BigDecimal!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  name: String!
+  nestingType: GqlPoolNestingType!
+  owner: Bytes!
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  tokens: [GqlPoolTokenUnion!]!
+  withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolPhantomStableNested {
+  address: Bytes!
+  amp: BigInt!
+  bptPriceRate: BigDecimal!
+  createTime: Int!
+  factory: Bytes
+  id: ID!
+  name: String!
+  nestingType: GqlPoolNestingType!
+  owner: Bytes!
+  swapFee: BigDecimal!
+  symbol: String!
+  tokens: [GqlPoolTokenPhantomStableNestedUnion!]!
+  totalLiquidity: BigDecimal!
+  totalShares: BigDecimal!
+}
+
+type GqlPoolSnapshot {
+  amounts: [String!]!
+  fees24h: String!
+  holdersCount: String!
+  id: ID!
+  poolId: String!
+  sharePrice: String!
+  swapsCount: String!
+  timestamp: Int!
+  totalLiquidity: String!
+  totalShares: String!
+  totalSwapFee: String!
+  totalSwapVolume: String!
+  volume24h: String!
+}
+
+enum GqlPoolSnapshotDataRange {
+  ALL_TIME
+  NINETY_DAYS
+  ONE_HUNDRED_EIGHTY_DAYS
+  ONE_YEAR
+  THIRTY_DAYS
+}
+
+type GqlPoolStable implements GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  amp: BigInt!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  name: String!
+  owner: Bytes!
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  tokens: [GqlPoolToken!]!
+  withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolStablePhantomPoolData {
+  address: String!
+  balance: String!
+  id: ID!
+  symbol: String!
+  tokens: [GqlPoolToken!]!
+  totalSupply: String!
+}
+
+type GqlPoolStaking {
+  address: String!
+  gauge: GqlPoolStakingGauge
+  id: ID!
+  type: GqlPoolStakingType!
+}
+
+type GqlPoolStakingGauge {
+  gaugeAddress: String!
+  id: ID!
+  rewards: [GqlPoolStakingGaugeReward!]!
+  status: GqlPoolStakingGaugeStatus!
+}
+
+type GqlPoolStakingGaugeReward {
+  id: ID!
+  rewardPerSecond: String!
+  tokenAddress: String!
+}
+
+enum GqlPoolStakingGaugeStatus {
+  ACTIVE
+  KILLED
+  PREFERRED
+}
+
+enum GqlPoolStakingType {
+  GAUGE
+}
+
+type GqlPoolSwap {
+  id: ID!
+  poolId: String!
+  timestamp: Int!
+  tokenAmountIn: String!
+  tokenAmountOut: String!
+  tokenIn: String!
+  tokenOut: String!
+  tx: String!
+  userAddress: String!
+  valueUSD: Float!
+}
+
+input GqlPoolSwapFilter {
+  poolIdIn: [String!]
+  tokenInIn: [String!]
+  tokenOutIn: [String!]
+}
+
+type GqlPoolToken implements GqlPoolTokenBase {
+  address: String!
+  balance: BigDecimal!
+  decimals: Int!
+  id: ID!
+  index: Int!
+  name: String!
+  priceRate: BigDecimal!
+  symbol: String!
+  totalBalance: BigDecimal!
+  weight: BigDecimal
+}
+
+interface GqlPoolTokenBase {
+  address: String!
+  balance: BigDecimal!
+  decimals: Int!
+  id: ID!
+  index: Int!
+  name: String!
+  priceRate: BigDecimal!
+  symbol: String!
+  totalBalance: BigDecimal!
+  weight: BigDecimal
+}
+
+type GqlPoolTokenDisplay {
+  address: String!
+  id: ID!
+  name: String!
+  nestedTokens: [GqlPoolTokenDisplay!]
+  symbol: String!
+  weight: BigDecimal
+}
+
+type GqlPoolTokenExpanded {
+  address: String!
+  decimals: Int!
+  id: ID!
+  isMainToken: Boolean!
+  isNested: Boolean!
+  isPhantomBpt: Boolean!
+  name: String!
+  symbol: String!
+  weight: String
+}
+
+type GqlPoolTokenLinear implements GqlPoolTokenBase {
+  address: String!
+  balance: BigDecimal!
+  decimals: Int!
+  id: ID!
+  index: Int!
+  mainTokenBalance: BigDecimal!
+  name: String!
+  pool: GqlPoolLinearNested!
+  priceRate: BigDecimal!
+  symbol: String!
+  totalBalance: BigDecimal!
+  totalMainTokenBalance: BigDecimal!
+  weight: BigDecimal
+  wrappedTokenBalance: BigDecimal!
+}
+
+type GqlPoolTokenPhantomStable implements GqlPoolTokenBase {
+  address: String!
+  balance: BigDecimal!
+  decimals: Int!
+  id: ID!
+  index: Int!
+  name: String!
+  pool: GqlPoolPhantomStableNested!
+  priceRate: BigDecimal!
+  symbol: String!
+  totalBalance: BigDecimal!
+  weight: BigDecimal
+}
+
+union GqlPoolTokenPhantomStableNestedUnion = GqlPoolToken | GqlPoolTokenLinear
+
+union GqlPoolTokenUnion = GqlPoolToken | GqlPoolTokenLinear | GqlPoolTokenPhantomStable
+
+union GqlPoolUnion = GqlPoolElement | GqlPoolLinear | GqlPoolLiquidityBootstrapping | GqlPoolMetaStable | GqlPoolPhantomStable | GqlPoolStable | GqlPoolWeighted
+
+type GqlPoolUserSwapVolume {
+  swapVolumeUSD: BigDecimal!
+  userAddress: String!
+}
+
+type GqlPoolWeighted implements GqlPoolBase {
+  address: Bytes!
+  allTokens: [GqlPoolTokenExpanded!]!
+  chain: GqlChain!
+  createTime: Int!
+  decimals: Int!
+  displayTokens: [GqlPoolTokenDisplay!]!
+  dynamicData: GqlPoolDynamicData!
+  factory: Bytes
+  id: ID!
+  investConfig: GqlPoolInvestConfig!
+  name: String!
+  nestingType: GqlPoolNestingType!
+  owner: Bytes!
+  staking: [GqlPoolStaking!]!
+  symbol: String!
+  tokens: [GqlPoolTokenUnion!]!
+  withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolWithdrawConfig {
+  options: [GqlPoolWithdrawOption!]!
+  proportionalEnabled: Boolean!
+  singleAssetEnabled: Boolean!
+}
+
+type GqlPoolWithdrawOption {
+  poolTokenAddress: String!
+  poolTokenIndex: Int!
+  tokenOptions: [GqlPoolToken!]!
+}
+
+type GqlProtocolMetrics {
+  poolCount: BigInt!
+  swapFee24h: BigDecimal!
+  swapVolume24h: BigDecimal!
+  totalLiquidity: BigDecimal!
+  totalSwapFee: BigDecimal!
+  totalSwapVolume: BigDecimal!
+}
+
+type GqlSorGetBatchSwapForTokensInResponse {
+  assets: [String!]!
+  swaps: [GqlSorSwap!]!
+  tokenOutAmount: AmountHumanReadable!
+}
+
+type GqlSorGetSwapsResponse {
+  effectivePrice: AmountHumanReadable!
+  effectivePriceReversed: AmountHumanReadable!
+  marketSp: String!
+  priceImpact: AmountHumanReadable!
+  returnAmount: AmountHumanReadable!
+  returnAmountConsideringFees: BigDecimal!
+  returnAmountFromSwaps: BigDecimal
+  returnAmountScaled: BigDecimal!
+  routes: [GqlSorSwapRoute!]!
+  swapAmount: AmountHumanReadable!
+  swapAmountForSwaps: BigDecimal
+  swapAmountScaled: BigDecimal!
+  swapType: GqlSorSwapType!
+  swaps: [GqlSorSwap!]!
+  tokenAddresses: [String!]!
+  tokenIn: String!
+  tokenInAmount: AmountHumanReadable!
+  tokenOut: String!
+  tokenOutAmount: AmountHumanReadable!
+}
+
+type GqlSorSwap {
+  amount: String!
+  assetInIndex: Int!
+  assetOutIndex: Int!
+  poolId: String!
+  userData: String!
+}
+
+input GqlSorSwapOptionsInput {
+  forceRefresh: Boolean
+  maxPools: Int
+  timestamp: Int
+}
+
+type GqlSorSwapRoute {
+  hops: [GqlSorSwapRouteHop!]!
+  share: Float!
+  tokenIn: String!
+  tokenInAmount: BigDecimal!
+  tokenOut: String!
+  tokenOutAmount: BigDecimal!
+}
+
+type GqlSorSwapRouteHop {
+  pool: GqlPoolMinimal!
+  poolId: String!
+  tokenIn: String!
+  tokenInAmount: BigDecimal!
+  tokenOut: String!
+  tokenOutAmount: BigDecimal!
+}
+
+enum GqlSorSwapType {
+  EXACT_IN
+  EXACT_OUT
+}
+
+type GqlToken {
+  address: String!
+  chainId: Int!
+  decimals: Int!
+  description: String
+  discordUrl: String
+  logoURI: String
+  name: String!
+  priority: Int!
+  symbol: String!
+  telegramUrl: String
+  tradable: Boolean!
+  twitterUsername: String
+  websiteUrl: String
+}
+
+input GqlTokenAmountHumanReadable {
+  address: String!
+  amount: AmountHumanReadable!
+}
+
+type GqlTokenCandlestickChartDataItem {
+  close: AmountHumanReadable!
+  high: AmountHumanReadable!
+  id: ID!
+  low: AmountHumanReadable!
+  open: AmountHumanReadable!
+  timestamp: Int!
+}
+
+enum GqlTokenChartDataRange {
+  SEVEN_DAY
+  THIRTY_DAY
+}
+
+type GqlTokenData {
+  description: String
+  discordUrl: String
+  id: ID!
+  telegramUrl: String
+  tokenAddress: String!
+  twitterUsername: String
+  websiteUrl: String
+}
+
+type GqlTokenDynamicData {
+  ath: Float!
+  atl: Float!
+  fdv: String
+  high24h: Float!
+  id: String!
+  low24h: Float!
+  marketCap: String
+  price: Float!
+  priceChange24h: Float!
+  priceChangePercent7d: Float
+  priceChangePercent14d: Float
+  priceChangePercent24h: Float!
+  priceChangePercent30d: Float
+  tokenAddress: String!
+  updatedAt: String!
+}
+
+type GqlTokenPrice {
+  address: String!
+  price: Float!
+}
+
+type GqlTokenPriceChartDataItem {
+  id: ID!
+  price: AmountHumanReadable!
+  timestamp: Int!
+}
+
+enum GqlTokenType {
+  BPT
+  LINEAR_WRAPPED_TOKEN
+  PHANTOM_BPT
+  WHITE_LISTED
+}
+
+type GqlUserPoolBalance {
+  poolId: String!
+  stakedBalance: AmountHumanReadable!
+  tokenAddress: String!
+  tokenPrice: Float!
+  totalBalance: AmountHumanReadable!
+  walletBalance: AmountHumanReadable!
+}
+
+input GqlUserSwapVolumeFilter {
+  poolIdIn: [String!]
+  tokenInIn: [String!]
+  tokenOutIn: [String!]
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type Mutation {
+  balancerMutationTest: String!
+  cacheAverageBlockTime: String!
+  lgeCreate(lge: GqlLgeCreateInput!, signature: String!): GqlLge!
+  poolInitializeSnapshotsForPool(poolId: String!): String!
+  poolLoadOnChainDataForAllPools: String!
+  poolLoadOnChainDataForPoolsWithActiveUpdates: String!
+  poolLoadSnapshotsForAllPools: String!
+  poolLoadSnapshotsForPools(poolIds: [String!]!): String!
+  poolReloadAllPoolAprs: String!
+  poolReloadAllTokenNestedPoolIds: String!
+  poolReloadPoolNestedTokens(poolId: String!): String!
+  poolReloadPoolTokenIndexes(poolId: String!): String!
+  poolReloadStakingForAllPools(stakingTypes: [GqlPoolStakingType!]!): String!
+  poolSetPoolsWithPreferredGaugesAsIncentivized: String!
+  poolSyncAllPoolsFromSubgraph: [String!]!
+  poolSyncLatestSnapshotsForAllPools(daysToSync: Int): String!
+  poolSyncNewPoolsFromSubgraph: [String!]!
+  poolSyncPool(poolId: String!): String!
+  poolSyncPoolAllTokensRelationship: String!
+  poolSyncSanityPoolData: String!
+  poolSyncStakingForPools: String!
+  poolSyncSwapsForLast48Hours: String!
+  poolSyncTotalShares: String!
+  poolUpdateAprs: String!
+  poolUpdateLifetimeValuesForAllPools: String!
+  poolUpdateLiquidity24hAgoForAllPools: String!
+  poolUpdateLiquidityValuesForAllPools: String!
+  poolUpdateVolumeAndFeeValuesForAllPools: String!
+  protocolCacheMetrics: String!
+  tokenDeletePrice(timestamp: Int!, tokenAddress: String!): Boolean!
+  tokenDeleteTokenType(tokenAddress: String!, type: GqlTokenType!): String!
+  tokenInitChartData(tokenAddress: String!): String!
+  tokenReloadTokenPrices: Boolean
+  tokenSyncTokenDefinitions: String!
+  tokenSyncTokenDynamicData: String!
+  userInitStakedBalances(stakingTypes: [GqlPoolStakingType!]!): String!
+  userInitWalletBalancesForAllPools: String!
+  userInitWalletBalancesForPool(poolId: String!): String!
+  userSyncBalance(poolId: String!): String!
+  userSyncBalanceAllPools: String!
+  userSyncChangedStakedBalances: String!
+  userSyncChangedWalletBalancesForAllPools: String!
+}
+
+type Query {
+  balancerQueryTest: String!
+  blocksGetAverageBlockTime: Float!
+  blocksGetBlocksPerDay: Float!
+  blocksGetBlocksPerSecond: Float!
+  blocksGetBlocksPerYear: Float!
+  contentGetNewsItems: [GqlContentNewsItem!]!
+  latestSyncedBlocks: GqlLatestSyncedBlocks!
+  lge(id: ID!): GqlLge!
+  lges: [GqlLge!]!
+  poolGetAllPoolsSnapshots(range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
+  poolGetFeaturedPoolGroups: [GqlPoolFeaturedPoolGroup!]!
+  poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
+  poolGetLinearPools: [GqlPoolLinear!]!
+  poolGetPool(id: String!): GqlPoolBase!
+  poolGetPoolFilters: [GqlPoolFilterDefinition!]!
+  poolGetPools(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, where: GqlPoolFilter): [GqlPoolMinimal!]!
+  poolGetPoolsCount(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, where: GqlPoolFilter): Int!
+  poolGetSnapshots(id: String!, range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolSwap!]!
+  poolGetUserSwapVolume(first: Int, skip: Int, where: GqlUserSwapVolumeFilter): [GqlPoolUserSwapVolume!]!
+  protocolMetrics: GqlProtocolMetrics!
+  sorGetBatchSwapForTokensIn(swapOptions: GqlSorSwapOptionsInput!, tokenOut: String!, tokensIn: [GqlTokenAmountHumanReadable!]!): GqlSorGetBatchSwapForTokensInResponse!
+  sorGetSwaps(swapAmount: BigDecimal!, swapOptions: GqlSorSwapOptionsInput!, swapType: GqlSorSwapType!, tokenIn: String!, tokenOut: String!): GqlSorGetSwapsResponse!
+  tokenGetCandlestickChartData(address: String!, range: GqlTokenChartDataRange!): [GqlTokenCandlestickChartDataItem!]!
+  tokenGetCurrentPrices: [GqlTokenPrice!]!
+  tokenGetHistoricalPrices(addresses: [String!]!): [GqlHistoricalTokenPrice!]!
+  tokenGetPriceChartData(address: String!, range: GqlTokenChartDataRange!): [GqlTokenPriceChartDataItem!]!
+  tokenGetProtocolTokenPrice: AmountHumanReadable!
+  tokenGetRelativePriceChartData(range: GqlTokenChartDataRange!, tokenIn: String!, tokenOut: String!): [GqlTokenPriceChartDataItem!]!
+  tokenGetTokenData(address: String!): GqlTokenData
+  tokenGetTokenDynamicData(address: String!): GqlTokenDynamicData
+  tokenGetTokens: [GqlToken!]!
+  tokenGetTokensData(addresses: [String!]!): [GqlTokenData!]!
+  tokenGetTokensDynamicData(addresses: [String!]!): [GqlTokenDynamicData!]!
+  userGetPoolBalances: [GqlUserPoolBalance!]!
+  userGetPoolJoinExits(first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolJoinExit!]!
+  userGetStaking: [GqlPoolStaking!]!
+  userGetSwaps(first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolSwap!]!
+}

@@ -22,7 +22,7 @@ import usePoolCreation, {
 import useAlerts from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useTokens } from '@/providers/tokens.provider';
-import { lsGet } from '@/lib/utils';
+import { lsGet, selectByAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { StepState } from '@/types';
 import useNetwork from '@/composables/useNetwork';
@@ -101,7 +101,9 @@ const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 
 const unknownTokens = computed(() => {
   return validTokens.value.filter(token => {
-    return priceFor(token) === 0 || injectedPrices.value[token]?.usd;
+    return (
+      priceFor(token) === 0 || selectByAddress(injectedPrices.value, token)
+    );
   });
 });
 
