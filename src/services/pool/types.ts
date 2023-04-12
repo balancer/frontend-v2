@@ -38,6 +38,7 @@ export interface RawOnchainPoolData {
   totalSupply: BigNumber;
   weights?: BigNumber[];
   swapEnabled?: boolean;
+  isInRecoveryMode: boolean;
   amp?: {
     value: BigNumber;
     precision: BigNumber;
