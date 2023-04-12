@@ -5,10 +5,14 @@ import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { useTokens } from '@/providers/tokens.provider';
-import { FiatCurrency } from '@/constants/currency';
-import { bnum, formatWordListAsSentence, isSameAddress } from '@/lib/utils';
+import {
+  bnum,
+  formatWordListAsSentence,
+  isSameAddress,
+  selectByAddress,
+} from '@/lib/utils';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { TokenPrices } from '@/composables/queries/useTokenPricesQuery';
 
 type Props = {
   isVisible: boolean;
@@ -25,33 +29,25 @@ const emit = defineEmits(['close']);
 const PRICE_CAP = 100000000;
 
 /**
- * STATE
- */
-
-/**
  * COMPOSABLES
  */
 const { seedTokens } = usePoolCreation();
-const { getToken, injectPrices, injectedPrices } = useTokens();
+const { getToken, injectPrices, priceFor } = useTokens();
 const { t } = useI18n();
-
-/**
- * LIFECYCLE
- */
-const unknownTokenPrices = computed((): TokenPrices => {
-  const _unknownTokenPrices = {};
-  for (const token of props.unknownTokens) {
-    _unknownTokenPrices[token] = {
-      [FiatCurrency.usd]:
-        injectedPrices.value?.[token]?.[FiatCurrency.usd] || null,
-    };
-  }
-  return _unknownTokenPrices;
-});
 
 /**
  * COMPUTED
  */
+// TODO: this computed property is being used as a modelValue below, this
+// probably won't work and needs to be fixed.
+const unknownTokenPrices = computed((): TokenPrices => {
+  const _unknownTokenPrices = {};
+  for (const token of props.unknownTokens) {
+    _unknownTokenPrices[token] = priceFor(token) || null;
+  }
+  return _unknownTokenPrices;
+});
+
 const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
     tokenAddress => getToken(tokenAddress)?.symbol
@@ -60,11 +56,11 @@ const readableUnknownTokenSymbols = computed(() => {
 });
 
 const isSubmitDisabled = computed(() => {
-  const noPricesEntered = props.unknownTokens.some(token =>
-    [null, ''].includes(unknownTokenPrices[token])
+  const noPricesEntered = props.unknownTokens.some(
+    token => selectByAddress(unknownTokenPrices.value, token) === undefined
   );
   const hasLargePrice = props.unknownTokens.some(token =>
-    bnum(unknownTokenPrices?.[token]?.[FiatCurrency.usd] || '0').gt(PRICE_CAP)
+    bnum(selectByAddress(unknownTokenPrices.value, token) || '0').gt(PRICE_CAP)
   );
   return noPricesEntered || hasLargePrice;
 });
@@ -106,7 +102,7 @@ function injectUnknownPrices() {
         <TokenInput
           v-for="(address, i) in unknownTokens"
           :key="i"
-          v-model:amount="unknownTokenPrices[address][FiatCurrency.usd]"
+          v-model:amount="unknownTokenPrices[address]"
           fixedToken
           placeholder="$0.00"
           :address="address"
