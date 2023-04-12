@@ -11,6 +11,7 @@ import WeightedPoolsService from './weighted-pool.service';
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
 import { Web3ProviderMock } from '@/dependencies/wallets/wallet-connector-mocks';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 
 const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();
@@ -20,17 +21,7 @@ const mockPoolId =
 
 vi.mock('@/services/web3/transactions/transaction.builder');
 
-vi.mock('@ethersproject/contracts', () => {
-  const Contract = vi.fn().mockImplementation(() => {
-    return {
-      getPoolId: vi.fn().mockImplementation(() => mockPoolId),
-    };
-  });
-  return {
-    Contract,
-  };
-});
-
+initEthersContractWithDefaultMocks();
 // Overwrite connect
 //@ts-ignore
 WeightedPool__factory.connect = () => {
@@ -112,6 +103,9 @@ describe('PoolCreator', () => {
           new BigNumber(mockSwapFee).multipliedBy(1e18).toString()
         );
         expect(sendTransactionParams[6]).toEqual(mockOwner);
+        // Verify salt has expected format:
+        expect(sendTransactionParams[7]).toStartWith('0x');
+        expect(sendTransactionParams[7]).toHaveLength(66);
       });
     });
 

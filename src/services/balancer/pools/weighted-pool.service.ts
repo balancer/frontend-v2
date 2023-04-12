@@ -18,7 +18,8 @@ import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 import { POOLS } from '@/constants/pools';
-import WeightedPoolFactoryV3Abi from '@/lib/abi/WeightedPoolFactoryV3.json';
+import WeightedPoolFactoryV4Abi from '@/lib/abi/WeightedPoolFactoryV4.json';
+import { generateSalt } from '@/lib/utils/random';
 
 type Address = string;
 
@@ -63,12 +64,13 @@ export default class WeightedPoolService {
       rateProviders,
       swapFeeScaled.toString(),
       owner,
+      generateSalt(),
     ];
 
     const txBuilder = new TransactionBuilder(provider.getSigner());
     return await txBuilder.contract.sendTransaction({
       contractAddress: configService.network.addresses.weightedPoolFactory,
-      abi: WeightedPoolFactoryV3Abi,
+      abi: WeightedPoolFactoryV4Abi,
       action: 'create',
       params,
     });
