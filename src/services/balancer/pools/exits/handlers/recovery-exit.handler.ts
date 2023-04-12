@@ -11,24 +11,16 @@ import {
   QueryOutput,
 } from './exit-pool.handler';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
-import {
-  formatAddressForSor,
-  indexOfAddress,
-  isSameAddress,
-  selectByAddress,
-} from '@/lib/utils';
+import { isSameAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
-import { TokenInfo } from '@/types/TokenList';
 import { flatTokenTree } from '@/composables/usePoolHelpers';
 import { getAddress } from '@ethersproject/address';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 /**
- * Handles cases where BPT in is set for the exit using SDK's
- * buildExitExactBPTIn function.
+ * Handles cases where the pool is in a recovery mode.
  */
-export class ExactInExitHandler implements ExitPoolHandler {
-  private lastExitRes?: ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
+export class RecoveryExitHandler implements ExitPoolHandler {
+  private lastExitRes?: ReturnType<PoolWithMethods['buildRecoveryExit']>;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -48,34 +40,19 @@ export class ExactInExitHandler implements ExitPoolHandler {
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
-    const { signer, tokenInfo, bptIn, slippageBsp, amountsOut } = params;
+    const { signer, bptIn, slippageBsp } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
     const sdkPool = await getBalancer().pools.find(this.pool.value.id);
-    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
-    if (!tokenOut)
-      throw new Error('Could not find exit token in pool tokens list.');
 
-    const isSingleTokenExit = amountsOut.length === 1;
     const evmBptIn = parseFixed(bptIn, 18).toString();
-    const tokenOutAddressForSor = formatAddressForSor(tokenOut.address);
-    const singleTokenMaxOutAddress = isSingleTokenExit
-      ? tokenOutAddressForSor
-      : undefined;
-    const shouldUnwrapNativeAsset = isSameAddress(
-      tokenOut.address,
-      NATIVE_ASSET_ADDRESS
-    );
 
-    this.lastExitRes = await sdkPool.buildExitExactBPTIn(
+    this.lastExitRes = await sdkPool.buildRecoveryExit(
       exiter,
       evmBptIn,
-      slippage,
-      shouldUnwrapNativeAsset,
-      // TODO: singleTokenMaxOutAddress address format. SDK fix?
-      singleTokenMaxOutAddress?.toLowerCase()
+      slippage
     );
 
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');
@@ -93,42 +70,10 @@ export class ExactInExitHandler implements ExitPoolHandler {
     );
     const priceImpact = Number(formatFixed(evmPriceImpact, 18));
 
-    if (isSingleTokenExit) {
-      const tokenOutIndex = indexOfAddress(
-        // Use token list from the pool to ensure we get the correct index
-        tokensOut,
-        tokenOutAddressForSor
-      );
-      const amountsOut = this.getSingleAmountOut(
-        expectedAmountsOut,
-        tokenOutIndex,
-        tokenOut
-      );
-      return {
-        amountsOut,
-        priceImpact,
-      };
-    } else {
-      const amountsOut = this.getAmountsOut(expectedAmountsOut, tokensOut);
-      return {
-        amountsOut,
-        priceImpact,
-      };
-    }
-  }
-
-  private getSingleAmountOut(
-    amountsOut: string[],
-    tokenOutIndex: number,
-    tokenOut: TokenInfo
-  ): AmountsOut {
-    const amountOut = amountsOut[tokenOutIndex];
-    const normalizedAmountOut = formatFixed(
-      amountOut,
-      tokenOut.decimals
-    ).toString();
+    const amountsOut = this.getAmountsOut(expectedAmountsOut, tokensOut);
     return {
-      [tokenOut.address]: normalizedAmountOut,
+      amountsOut,
+      priceImpact,
     };
   }
 

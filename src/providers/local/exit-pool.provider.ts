@@ -198,6 +198,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   );
 
   const exitHandlerType = computed((): ExitHandler => {
+    if (pool.value.isInRecoveryMode) return ExitHandler.Recovery;
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
     if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
     if (isSingleAssetExit.value) {
