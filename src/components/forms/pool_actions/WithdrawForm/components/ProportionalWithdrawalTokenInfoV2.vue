@@ -44,14 +44,14 @@ const { fNum } = useNumbers();
             }}
           </span>
         </div>
-        <div class="flex w-52 text-sm text-gray-600 dark:text-gray-400">
+        <div class="flex text-sm text-gray-600 dark:text-gray-400 max-w-52">
           <span class="truncate">
             {{ props.token?.name }}
           </span>
         </div>
       </div>
     </div>
-    <div class="flex flex-col flex-grow items-end pl-2 text-right font-numeric">
+    <div class="flex flex-col items-end pl-2 text-right grow font-numeric">
       <BalLoadingBlock v-if="loading" class="w-20 h-12" />
       <template v-else>
         <span class="text-xl font-medium break-words">
