@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { PoolMigrationInfo } from '@/components/forms/pool_actions/MigrateForm/types';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
+import { PoolMigrationInfo } from '@/types/pools';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;

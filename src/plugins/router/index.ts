@@ -4,59 +4,31 @@ import { captureException } from '@sentry/browser';
 import { isGoerli } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
 
-const ClaimPage = () =>
-  import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim/index.vue');
-const LegacyClaimPage = () =>
-  import(/* webpackChunkName: "LegacyClaimPage" */ '@/pages/claim/legacy.vue');
-const CookiesPolicyPage = () =>
-  import(
-    /* webpackChunkName: "CookiesPolicyPage" */ '@/pages/cookies-policy.vue'
-  );
-const GetVeBalPage = () =>
-  import(/* webpackChunkName: "GetVeBalPage" */ '@/pages/get-vebal.vue');
-const HomePage = () =>
-  import(
-    /* webpackChunkName: "HomePage" */ /* webpackPrefetch: true */ '@/pages/index.vue'
-  );
+const ClaimPage = () => import('@/pages/claim/index.vue');
+const LegacyClaimPage = () => import('@/pages/claim/legacy.vue');
+const CookiesPolicyPage = () => import('@/pages/cookies-policy.vue');
+const GetVeBalPage = () => import('@/pages/get-vebal.vue');
+const HomePage = () => import('@/pages/index.vue');
 const PoolPage = () =>
-  import(
-    /* webpackChunkName: "PoolPage" */ /* webpackPrefetch: true */ '@/pages/pool/_id.vue'
-  );
+  import(/* webpackPrefetch: true */ '@/pages/pool/_id.vue');
 // const CreatePoolPage = () =>
-//   import(/* webpackChunkName: "CreatePoolPage" */ '@/pages/pool/create.vue');
-const PoolAddLiquidityPage = () =>
-  import(
-    /* webpackChunkName: "PoolAddLiquidityPage" */ '@/pages/pool/add-liquidity.vue'
-  );
-const MigratePoolPage = () =>
-  import(/* webpackChunkName: "MigratePoolPage" */ '@/pages/pool/migrate.vue');
-const PoolWithdrawPage = () =>
-  import(
-    /* webpackChunkName: "PoolWithdrawPage" */ '@/pages/pool/withdraw.vue'
-  );
-const PrivacyPolicyPage = () =>
-  import(
-    /* webpackChunkName: "PrivacyPolicyPage" */ '@/pages/privacy-policy.vue'
-  );
-const TermsOfUsePage = () =>
-  import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
-const RisksPage = () =>
-  import(/* webpackChunkName: "RisksPage" */ '@/pages/risks.vue');
-const SwapPage = () =>
-  import(
-    /* webpackChunkName: "SwapPage" */ /* webpackPrefetch: true */ '@/pages/swap.vue'
-  );
-const UnlockVeBalPage = () =>
-  import(/* webpackChunkName: "UnlockVeBalPage" */ '@/pages/unlock-vebal.vue');
-const VeBalPage = () =>
-  import(/* webpackChunkName: "VeBalPage" */ '@/pages/vebal.vue');
-const FaucetPage = () =>
-  import(/* webpackChunkName: "FaucetPage" */ '@/pages/faucet.vue');
+//   import('@/pages/pool/create.vue');
+const PoolAddLiquidityPage = () => import('@/pages/pool/add-liquidity.vue');
+const MigratePoolPage = () => import('@/pages/pool/migrate.vue');
+const PoolWithdrawPage = () => import('@/pages/pool/withdraw.vue');
+const PrivacyPolicyPage = () => import('@/pages/privacy-policy.vue');
+const TermsOfUsePage = () => import('@/pages/terms-of-use.vue');
+const RisksPage = () => import('@/pages/risks.vue');
+const SwapPage = () => import('@/pages/swap.vue');
 
-const PortfolioPage = () =>
-  import(
-    /* webpackChunkName: "PortfolioPage" */ /* webpackPrefetch: true */ '@/pages/portfolio.vue'
-  );
+export const SwapPagePrefetchLinks = async () =>
+  import('@/pages/swap.vue').toString();
+
+const UnlockVeBalPage = () => import('@/pages/unlock-vebal.vue');
+const VeBalPage = () => import('@/pages/vebal.vue');
+const FaucetPage = () => import('@/pages/faucet.vue');
+
+const PortfolioPage = () => import('@/pages/portfolio.vue');
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -210,7 +182,7 @@ if (isGoerli.value) {
 //   routes.push();
 // }
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHashHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {

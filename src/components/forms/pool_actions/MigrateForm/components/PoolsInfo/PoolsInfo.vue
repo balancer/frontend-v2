@@ -10,12 +10,12 @@ import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
-import { PoolMigrationInfo } from '../../types';
 import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { fiatValueOf } from '@/composables/usePoolHelpers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { PoolMigrationInfo } from '@/types/pools';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;

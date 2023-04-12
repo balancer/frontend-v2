@@ -9,7 +9,7 @@ import {
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
+
 import { Goals, trackGoal } from '@/composables/useFathom';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
@@ -45,7 +45,7 @@ const joinDisabled = computed(
     deprecatedDetails(props.pool.id)?.joinsDisabled ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
-    (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id)) ||
+    isMigratablePool(props.pool) ||
     shouldDisableJoins.value
 );
 </script>

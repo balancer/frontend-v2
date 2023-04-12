@@ -2,7 +2,6 @@
 import { computed, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -18,6 +17,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import PoolActionsCard from './PoolActionsCard.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useLock } from '@/composables/useLock';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -71,7 +71,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
+      to: configService.network.pools.Migrations?.[pool.id].toPoolId,
     },
     query: {
       returnRoute: 'pool',

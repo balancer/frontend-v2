@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
-import { PoolMigrationInfo } from '../../types';
 import MigrateActions from './components/MigrateActions.vue';
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
 import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
@@ -17,6 +16,7 @@ import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { fiatValueOf } from '@/composables/usePoolHelpers';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import MigrateSummary from './components/MigrateSummary.vue';
+import { PoolMigrationInfo } from '@/types/pools';
 
 /**
  * TYPES
