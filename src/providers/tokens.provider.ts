@@ -10,6 +10,7 @@ import {
   toRef,
   toRefs,
 } from 'vue';
+import { captureException } from '@sentry/browser';
 
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
@@ -369,7 +370,14 @@ export const tokensProvider = (
    */
   function priceFor(address: string): number {
     try {
-      return selectByAddress(prices.value, address) || 0;
+      const price = selectByAddress(prices.value, address);
+      if (!price) {
+        captureException(new Error('Could not find price for token'), {
+          extra: { address },
+        });
+        return 0;
+      }
+      return price;
     } catch {
       return 0;
     }
