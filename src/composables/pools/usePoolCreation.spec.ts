@@ -5,9 +5,6 @@ import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 const tokens: Record<string, PoolSeedToken> = {};
 
 vi.mock('@/providers/tokens.provider');
-vi.mock('@/services/balancer/balancer.service');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/composables/queries/usePoolsQuery');
 
 describe('usePoolCreation', () => {
   const { result: poolCreation } = mountComposable(() => usePoolCreation());
