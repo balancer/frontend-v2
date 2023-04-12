@@ -18,8 +18,8 @@ const weightedPoolsService = new WeightedPoolsService();
 const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
 
-vi.mock('@/services/rpc-provider/rpc-provider.service');
 vi.mock('@/services/web3/transactions/transaction.builder');
+
 vi.mock('@ethersproject/contracts', () => {
   const Contract = vi.fn().mockImplementation(() => {
     return {
@@ -68,19 +68,6 @@ describe('PoolCreator', () => {
       isLocked: false,
       id: '2',
       amount: '0',
-    };
-  });
-
-  vi.mock('@/services/gas-price/gas-price.service', () => {
-    return {
-      gasPriceService: {
-        settings: vi.fn().mockReturnValue({
-          gasLimit: 1e5,
-        }),
-        settingsForContractCall: vi.fn().mockReturnValue({
-          gasLimit: 1e5,
-        }),
-      },
     };
   });
 
