@@ -2,7 +2,7 @@ import { reactive, Ref, ref } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import useNetwork from '../useNetwork';
-import { api } from '@/services/api/api.client';
+import { getApi } from '@/dependencies/balancer-api';
 import { GqlTokenPrice } from '@/services/api/graphql/generated/api-types';
 import { oneMinInMs } from '../useTime';
 
@@ -42,6 +42,7 @@ export default function useTokenPricesQuery(
     return prices;
   }
 
+  const api = getApi();
   const queryFn = async () => {
     const { prices } = await api.GetCurrentTokenPrices();
 
