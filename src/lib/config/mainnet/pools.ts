@@ -320,6 +320,7 @@ const pools: Pools = {
     '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db', // ma usdc/usdt/dai (morpho boosted)
     '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7', // sturdy usd
     '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505', // stg/bb-a-usd
+    '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502', // aave usd v3
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
