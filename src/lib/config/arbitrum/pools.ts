@@ -64,6 +64,7 @@ const pools: Pools = {
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'weightedPool', // weighted pool v2
     '0x1c99324edc771c82a0dccb780cc7dda0045e50e7': 'composableStablePool', // ComposableStable V3
     '0xf1665e19bc105be4edd3739f88315cc699cc5b65': 'weightedPool', // Weighted Pool V3
+    '0xc7e5ed1054a24ef31d827e6f86caa58b3bc168d7': 'weightedPool', // weighted pool v4
   },
   Stakable: {
     VotingGaugePools: [
