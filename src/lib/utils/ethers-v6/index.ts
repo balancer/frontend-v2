@@ -3,7 +3,6 @@
  */
 
 import { zeroPadBytes } from './data';
-import { assertArgument, assertNormalize } from './errors';
 
 /**
  *  Encodes %%text%% as a Bytes32 string.
@@ -37,7 +36,6 @@ type UnicodeNormalizationForm = 'NFC' | 'NFD' | 'NFKC' | 'NFKD';
  */
 function toUtf8Bytes(str: string, form?: UnicodeNormalizationForm): Uint8Array {
   if (form != null) {
-    assertNormalize(form);
     str = str.normalize(form);
   }
 
@@ -53,13 +51,6 @@ function toUtf8Bytes(str: string, form?: UnicodeNormalizationForm): Uint8Array {
     } else if ((c & 0xfc00) == 0xd800) {
       i++;
       const c2 = str.charCodeAt(i);
-
-      assertArgument(
-        i < str.length && (c2 & 0xfc00) === 0xdc00,
-        'invalid surrogate pair',
-        'str',
-        str
-      );
 
       // Surrogate Pair
       const pair = 0x10000 + ((c & 0x03ff) << 10) + (c2 & 0x03ff);

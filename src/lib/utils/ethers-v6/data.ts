@@ -1,12 +1,4 @@
 /**
- *  Some data helpers.
- *
- *
- *  @_subsection api/utils:Data Helpers  [about-data]
- */
-import { assert, assertArgument } from './errors.js';
-
-/**
  *  A [[HexString]] whose length is even, which ensures it is a valid
  *  representation of binary data.
  */
@@ -46,8 +38,7 @@ function _getBytes(
     }
     return result;
   }
-
-  assertArgument(false, 'invalid BytesLike value', name || 'value', value);
+  throw new Error('invalid BytesLike value');
 }
 
 /**
@@ -139,54 +130,8 @@ export function dataLength(data: BytesLike): number {
   return getBytes(data).length;
 }
 
-/**
- *  Returns a [[DataHexString]] by slicing %%data%% from the %%start%%
- *  offset to the %%end%% offset.
- *
- *  By default %%start%% is 0 and %%end%% is the length of %%data%%.
- */
-export function dataSlice(
-  data: BytesLike,
-  start?: number,
-  end?: number
-): string {
-  const bytes = getBytes(data);
-  if (end != null && end > bytes.length) {
-    assert(false, 'cannot slice beyond data bounds', 'BUFFER_OVERRUN', {
-      buffer: bytes,
-      length: bytes.length,
-      offset: end,
-    });
-  }
-  return hexlify(
-    bytes.slice(start == null ? 0 : start, end == null ? bytes.length : end)
-  );
-}
-
-/**
- *  Return the [[DataHexString]] result by stripping all **leading**
- ** zero bytes from %%data%%.
- */
-export function stripZerosLeft(data: BytesLike): string {
-  let bytes = hexlify(data).substring(2);
-  while (bytes.startsWith('00')) {
-    bytes = bytes.substring(2);
-  }
-  return '0x' + bytes;
-}
-
 function zeroPad(data: BytesLike, length: number, left: boolean): string {
   const bytes = getBytes(data);
-  assert(
-    length >= bytes.length,
-    'padding exceeds data length',
-    'BUFFER_OVERRUN',
-    {
-      buffer: new Uint8Array(bytes),
-      length: length,
-      offset: length + 1,
-    }
-  );
 
   const result = new Uint8Array(length);
   result.fill(0);
