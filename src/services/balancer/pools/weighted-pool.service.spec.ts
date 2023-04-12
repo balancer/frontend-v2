@@ -10,7 +10,7 @@ import { WeightedPool__factory } from '@balancer-labs/typechain';
 import WeightedPoolsService from './weighted-pool.service';
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
-import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
+import { Web3ProviderMock } from '@/dependencies/wallets/wallet-connector-mocks';
 
 const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();
@@ -71,22 +71,9 @@ describe('PoolCreator', () => {
     };
   });
 
-  const mockProvider: WalletProvider = {
-    _isProvider: true,
-    // @ts-ignore
-    getTransactionReceipt: async () => polygonCreatePoolReceipt,
-    // @ts-ignore
-    getSigner: () => {
-      return {
-        _isSigner: true,
-        getAddress: vi.fn().mockImplementation(() => {
-          return '0x0';
-        }),
-      };
-    },
-    initBlockListener: vi.fn(),
-    getJsonProvider: vi.fn(),
-  };
+  const mockProvider = new Web3ProviderMock();
+  // @ts-ignore
+  mockProvider.getTransactionReceipt = async () => polygonCreatePoolReceipt;
 
   describe('create', () => {
     describe('happy case', () => {
