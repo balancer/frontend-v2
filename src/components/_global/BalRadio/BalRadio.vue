@@ -7,7 +7,7 @@
       :name="name"
       :class="['bal-radio-input', inputClasses]"
       :disabled="disabled"
-      @change="onChange(value)"
+      @click="onChange(value)"
     />
     <label
       v-if="$slots.label || label"
