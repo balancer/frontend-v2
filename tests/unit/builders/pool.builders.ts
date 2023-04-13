@@ -1,5 +1,10 @@
 import { POOLS } from '@/constants/pools';
-import { OnchainTokenData, Pool, PoolType } from '@/services/pool/types';
+import {
+  OnchainTokenData,
+  OnchainPoolData,
+  Pool,
+  PoolType,
+} from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import {
   AprBreakdown,
@@ -41,6 +46,11 @@ export function aCustomWeightedPool(...options: Partial<Pool>[]): Pool {
   const defaultPool = aWeightedPool();
   defaultPool.poolType = PoolType.Weighted;
   return Object.assign(defaultPool, ...options);
+}
+
+export function anOnchainPoolData(...options: Partial<OnchainPoolData>[]) {
+  const data = mock<OnchainTokenData>();
+  return Object.assign(data, ...options);
 }
 
 export function anOnchainTokenData(...options: Partial<OnchainTokenData>[]) {

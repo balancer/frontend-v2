@@ -585,7 +585,6 @@ export function tokenWeight(pool: Pool, tokenAddress: string): number {
   if (isSameAddress(tokenAddress, nativeAsset)) {
     return selectByAddress(pool.onchain.tokens, wNativeAsset)?.weight || 1;
   }
-
   return selectByAddress(pool.onchain.tokens, tokenAddress)?.weight || 1;
 }
 

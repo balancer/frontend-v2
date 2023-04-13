@@ -5,9 +5,11 @@ import { BoostedPoolMock } from '@/__mocks__/pool';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { Network } from '@balancer-labs/sdk';
 import { mountComposableWithDefaultTokensProvider as mountComposable } from '@tests/mount-helpers';
+
 import {
   aCustomWeightedPool,
   anAprBreakdown,
+  anOnchainPoolData,
   anOnchainTokenData,
   aPool,
   aPriceRateProvider,
@@ -33,7 +35,12 @@ import {
   poolURLFor,
   noInitLiquidity,
   filterTokensInList,
+  isComposableStableV1,
+  isComposableStable,
+  tokenWeight,
+  joinTokens,
 } from './usePoolHelpers';
+import { daiAddress } from '@tests/unit/builders/address';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 
@@ -333,6 +340,7 @@ describe('usePool composable', () => {
       isWrappedNativeAssetPool,
       managedPoolWithSwappingHalted,
       poolWeightsLabel,
+      poolJoinTokens,
     } = mountUsePool(undefined);
 
     const weightedPool = aWeightedPool();
@@ -354,7 +362,7 @@ describe('usePool composable', () => {
     expect(isWeightedPool.value).toBeFalse();
     expect(isWeightedLikePool.value).toBeFalse();
     expect(isStablePhantomPool.value).toBeFalse();
-    expect(isWrappedNativeAsset(weightedPool)).toBeTrue();
+    expect(isWrappedNativeAsset(weightedPool)).toBeFalse();
     expect(isWrappedNativeAssetPool.value).toBeFalse();
 
     expect(managedPoolWithSwappingHalted.value).toBeFalse();
@@ -362,6 +370,7 @@ describe('usePool composable', () => {
     expect(isMigratablePool(weightedPool)).toBeFalse();
 
     expect(poolWeightsLabel(weightedPool)).toBe('');
+    expect(poolJoinTokens.value).toEqual([]);
   });
 
   test('handles pool types', () => {
@@ -704,4 +713,77 @@ test('filters tokens in list', async () => {
   expect(
     filterTokensInList(BoostedPoolMock, addresses).map(token => token.address)
   ).toEqual(['0x6b175474e89094c44da98b954eedeac495271d0f']);
+});
+
+test('detects ComposableStable and ComposableStableV1 pools', async () => {
+  const pool = aPool({
+    id: '0x9f19a375709baf0e8e35c2c5c68aca646c4c719100000000000000000000006e',
+    poolType: PoolType.ComposableStable,
+  });
+  expect(isComposableStable(pool.poolType)).toBeTrue();
+  expect(isComposableStableV1(pool)).toBeFalse();
+
+  pool.poolTypeVersion = 1;
+  expect(isComposableStableV1(pool)).toBeTrue();
+});
+
+describe('calculates tokenWeight', async () => {
+  it('when pool is stable like', () => {
+    const pool = aStablePool();
+    expect(tokenWeight(pool, 'any address')).toBe(0);
+  });
+
+  it('when pool does not have onchain tokens', () => {
+    const pool = aStablePool({ onchain: undefined });
+    expect(tokenWeight(pool, 'any address')).toBe(0);
+  });
+
+  const goerliNativeWrappedAsset = '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1';
+
+  it('when token is native asset', () => {
+    const goerliNativeAsset = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+
+    const pool = aPool({
+      onchain: anOnchainPoolData({
+        tokens: {
+          [goerliNativeWrappedAsset]: anOnchainTokenData({
+            weight: 0.7,
+            symbol: 'wETH',
+          }),
+        },
+      }),
+    });
+
+    expect(tokenWeight(pool, goerliNativeAsset)).toBe(0.7);
+  });
+
+  it('when token is not native asset', () => {
+    const pool = aPool({
+      onchain: anOnchainPoolData({
+        tokens: {
+          [goerliNativeWrappedAsset]: anOnchainTokenData({
+            weight: 0.7,
+            symbol: 'wETH',
+          }),
+          [daiAddress]: anOnchainTokenData({
+            weight: 0.3,
+            symbol: 'wETH',
+          }),
+        },
+      }),
+    });
+
+    expect(tokenWeight(pool, daiAddress)).toBe(0.3);
+  });
+});
+
+test('Gets all pool token addresses that can possibly be used to join a pool', async () => {
+  expect(joinTokens(BoostedPoolMock)).toEqual([
+    '0x2f4eb100552ef93840d5adc30560e5513dfffacb',
+    '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83',
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    '0xae37d54ae477268b9997d4161b96b8200755935c',
+    '0x6b175474e89094c44da98b954eedeac495271d0f',
+  ]);
 });
