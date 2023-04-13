@@ -5,7 +5,7 @@ import { handleDependencyError } from '.';
 let _api: typeof api | undefined;
 
 /**
- * Uses the real balancer instance by default but allows injecting balancer mocks from tests
+ * Uses the real api instance by default but allows injecting api mocks from tests
  */
 export function initApi(apiInstance: typeof api = api) {
   _api = apiInstance;
