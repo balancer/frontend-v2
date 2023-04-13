@@ -101,7 +101,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { injectTokens, getTokens, prices, balanceFor } = useTokens();
+  const { injectTokens, getTokens, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
@@ -358,7 +358,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
@@ -405,7 +404,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
@@ -438,7 +436,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
@@ -485,7 +482,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
    */
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
-    // refactoted probably won't be required.
+    // refactored probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
 
     exitPoolService.setExitHandler(exitHandlerType.value);

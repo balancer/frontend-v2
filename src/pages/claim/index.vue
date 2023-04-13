@@ -17,7 +17,6 @@ import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePoolHelpers';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import { useTokens } from '@/providers/tokens.provider';
-import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { Gauge } from '@/services/balancer/gauges/types';
@@ -204,10 +203,8 @@ async function getBBaUSDPrice() {
   if (TOKENS.Addresses.bbaUSDv2) {
     const approxPrice = bnum(await bbAUSDToken.getRate()).toNumber();
     injectPrices({
-      [TOKENS.Addresses.bbaUSD as string]: { [FiatCurrency.usd]: approxPrice },
-      [TOKENS.Addresses.bbaUSDv2 as string]: {
-        [FiatCurrency.usd]: approxPrice,
-      },
+      [TOKENS.Addresses.bbaUSD as string]: approxPrice,
+      [TOKENS.Addresses.bbaUSDv2 as string]: approxPrice,
     });
   }
 }

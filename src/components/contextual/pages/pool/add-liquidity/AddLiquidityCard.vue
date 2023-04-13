@@ -36,7 +36,7 @@ const { setIsSingleAssetJoin } = useJoinPool();
 const { isDeepPool, isPreMintedBptPool } = usePoolHelpers(pool);
 
 /**
- * LIFCYCLE
+ * LIFECYCLE
  */
 onMounted(() => resetTabs());
 

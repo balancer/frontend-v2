@@ -135,8 +135,8 @@ test('Fakes provided methods', async () => {
   const token = getToken(daiAddress);
   expect(token.name).toBe('Dai');
 
-  injectPrices({ [daiAddress]: { usd: 80 } });
-  expect(injectedPrices.value[daiAddress].usd).toBe(80);
+  injectPrices({ [daiAddress]: 80 });
+  expect(injectedPrices.value[daiAddress]).toBe(80);
 
   expect(getMaxBalanceFor(daiAddress)).toBe(defaultBalance);
 });

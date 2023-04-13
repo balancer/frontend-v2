@@ -108,14 +108,9 @@ export const joinPoolProvider = (
   /**
    * COMPOSABLES
    */
-  const {
-    getTokens,
-    prices,
-    injectTokens,
-    priceFor,
-    nativeAsset,
-    wrappedNativeAsset,
-  } = useTokens();
+  const { getTokens, injectTokens, priceFor, nativeAsset, wrappedNativeAsset } =
+    useTokens();
+
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -187,7 +182,7 @@ export const joinPoolProvider = (
     return bnSum(fiatValuesIn).toString();
   });
 
-  // Calculates estimated fiatValueOut using pool's totalLiquity.
+  // Calculates estimated fiatValueOut using pool's totalLiquidity.
   // Could be inaccurate if total liquidity has come from subgraph.
   const fiatValueOut = computed((): string =>
     fiatValueOf(pool.value, bptOut.value)
@@ -306,7 +301,6 @@ export const joinPoolProvider = (
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
@@ -338,7 +332,6 @@ export const joinPoolProvider = (
       const joinRes = await joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
@@ -396,7 +389,7 @@ export const joinPoolProvider = (
    */
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
-    // refactoted probably won't be required.
+    // refactored probably won't be required.
     injectTokens(poolJoinTokens.value);
   });
 

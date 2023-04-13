@@ -11,7 +11,6 @@ import {
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
@@ -20,7 +19,7 @@ import { Pool as SDKPool } from '@balancer-labs/sdk';
 import { captureException } from '@sentry/browser';
 
 export default class PoolService {
-  constructor(public pool: Pool, public liquidity = LiquidityConcern) {
+  constructor(public pool: Pool) {
     this.format();
   }
 

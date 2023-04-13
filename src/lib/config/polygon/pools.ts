@@ -86,6 +86,8 @@ const pools: Pools = {
       '0x511a0fb938bb4aee2a3a9d74f68e37bac8318fbf000000000000000000000b18', // rmatic/wmatic
       '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b', // bb-a-matic / maticx
       '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c', // stmatic / bb-a-matic
+      '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37', // bb-a-usd aave v3
+      '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38', // wseth/bb-a-eth
     ],
   },
   Investment: {
@@ -113,6 +115,7 @@ const pools: Pools = {
     '0x7bc6c0e73edaa66ef3f6e2f27b0ee8661834c6c9': 'composableStablePool', // ComposableStable V3
     '0x82e4cfaef85b1b6299935340c964c942280327f4': 'weightedPool', // weighted pool v3
     '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
+    '0xfc8a407bba312ac761d8bfe04ce1201904842b76': 'weightedPool', // weighted pool v4
   },
   Stakable: {
     VotingGaugePools: [
@@ -161,6 +164,10 @@ const pools: Pools = {
       '0xd80ef9fabfdc3b52e17f74c383cf88ee2efbf0b6000000000000000000000a65',
       '0x65fe9314be50890fb01457be076fafd05ff32b9a000000000000000000000a96',
       '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace',
+      '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
+      '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
+      '0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a',
+      '0x9f9f548354b7c66dc9a9f3373077d86aaaccf8f2000200000000000000000a4a',
     ],
     AllowList: [],
   },
@@ -186,6 +193,8 @@ const pools: Pools = {
     '0x71bd10c2a590b5858f5576550c163976a48af906000000000000000000000b27', // bb-t-MATIC (tetu managed boosted pool)
     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b', // bb-a-matic / maticx
     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c', // stmatic / bb-a-matic
+    '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37', // bb-a-usd aave v3
+    '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38', // wseth/bb-a-eth
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD

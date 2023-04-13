@@ -15,7 +15,7 @@ import { configService } from '@/services/config/config.service';
 import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
-import { hasBalEmissions } from '@/services/staking/utils';
+import { hasBalEmissions } from './useAPR';
 import { cloneDeep, uniq, uniqWith } from 'lodash';
 import {
   appUrl,
