@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import WalletButton from '@/components/web3/WalletButton.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { SupportedWallets } from '@/providers/wallet.provider';
+import LS_KEYS from '@/constants/local-storage.keys';
 
 interface Props {
   isVisible?: boolean;
@@ -21,7 +22,7 @@ const emit = defineEmits(['close']);
 const wallets = ref(SupportedWallets.filter(id => id !== 'safe'));
 
 const acceptedlocalStorageItem = localStorage.getItem(
-  'isBalRulesAccepted'
+  LS_KEYS.App.TermsAccepted
 ) as AcceptedLocalStorageItemType;
 
 const accepted = ref<'0' | '1'>(acceptedlocalStorageItem || '0');
@@ -30,7 +31,7 @@ const isBalRulesAccepted = computed(() => accepted.value === '1');
 
 function onBalRulesAccepted() {
   accepted.value = isBalRulesAccepted.value ? '0' : '1';
-  localStorage.setItem('isBalRulesAccepted', accepted.value);
+  localStorage.setItem(LS_KEYS.App.TermsAccepted, accepted.value);
 }
 </script>
 
