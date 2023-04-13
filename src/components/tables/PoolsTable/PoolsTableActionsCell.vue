@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
 
-import { isVeBalPool, usePoolHelper } from '@/composables/usePoolHelpers';
+import { isVeBalPool, usePoolHelpers } from '@/composables/usePoolHelpers';
 import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
@@ -29,7 +29,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isMigratablePool } = usePoolHelper(toRef(props, 'pool'));
+const { isMigratablePool } = usePoolHelpers(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 
 /** COMPUTED */

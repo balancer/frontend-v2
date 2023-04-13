@@ -24,7 +24,7 @@ import {
   removeBptFromPoolTokenTree,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePoolHelper,
+  usePoolHelpers,
   poolMetadata,
   deprecatedDetails,
   isJoinsDisabled,
@@ -307,7 +307,7 @@ describe('usePool composable', () => {
   initDependenciesWithDefaultMocks();
 
   function mountUsePool(pool: Pool | undefined) {
-    const { result } = mountComposable(() => usePoolHelper(ref(pool)));
+    const { result } = mountComposable(() => usePoolHelpers(ref(pool)));
     return result;
   }
 

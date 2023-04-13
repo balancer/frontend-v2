@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePoolHelper } from '@/composables/usePoolHelpers';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
@@ -45,7 +45,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isStakablePool } = usePoolStaking();
-const { poolWeightsLabel } = usePoolHelper(toRef(props, 'pool'));
+const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const {
   rektPriceImpact,
   fiatValueOut,

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { tokensListExclBpt, usePoolHelper } from '@/composables/usePoolHelpers';
+import {
+  tokensListExclBpt,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -32,7 +35,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isWethPool, isDeepPool } = usePoolHelper(toRef(props, 'pool'));
+const { isWethPool, isDeepPool } = usePoolHelpers(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const route = useRoute();

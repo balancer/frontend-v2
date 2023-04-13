@@ -8,7 +8,7 @@ import { ref, toRef, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePoolHelper } from '@/composables/usePoolHelpers';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
@@ -48,7 +48,7 @@ const { t } = useI18n();
 const { getSigner } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { poolWeightsLabel } = usePoolHelper(toRef(props, 'pool'));
+const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const {
   tokenOutIndex,
   tokensOut,

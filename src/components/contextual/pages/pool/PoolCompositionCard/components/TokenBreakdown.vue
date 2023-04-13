@@ -4,7 +4,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
 import { TokensData } from './composables/useTokenBreakdown';
 
-import { isWeightedLike, usePoolHelper } from '@/composables/usePoolHelpers';
+import { isWeightedLike, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 
 /**
@@ -32,7 +32,7 @@ const tokenData = computed(() => props.tokensData[token.value.address]);
  * COMPOSABLES
  */
 const { explorerLinks } = useWeb3();
-const { isDeepPool } = usePoolHelper(rootPool);
+const { isDeepPool } = usePoolHelpers(rootPool);
 const isWeighted = isWeightedLike(rootPool.value.poolType);
 const { getToken } = useTokens();
 

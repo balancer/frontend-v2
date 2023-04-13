@@ -7,7 +7,7 @@ import {
   isPreMintedBptType,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePoolHelper,
+  usePoolHelpers,
 } from '@/composables/usePoolHelpers';
 import useRelayerApproval, {
   RelayerType,
@@ -111,7 +111,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     RelayerType.BATCH
   );
 
-  const { isWeightedPool } = usePoolHelper(pool);
+  const { isWeightedPool } = usePoolHelpers(pool);
 
   const debounceQueryExit = debounce(queryExit, 1000);
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {

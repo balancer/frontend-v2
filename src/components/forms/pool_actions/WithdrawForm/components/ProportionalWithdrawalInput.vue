@@ -8,7 +8,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   isDeep,
   tokensListExclBpt,
-  usePoolHelper,
+  usePoolHelpers,
 } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
@@ -54,7 +54,7 @@ const { slider } = useWithdrawalState(toRef(props, 'pool'));
 const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
 const { getTokens } = useTokens();
-const { isStableLikePool } = usePoolHelper(toRef(props, 'pool'));
+const { isStableLikePool } = usePoolHelpers(toRef(props, 'pool'));
 const { fNum } = useNumbers();
 
 /**

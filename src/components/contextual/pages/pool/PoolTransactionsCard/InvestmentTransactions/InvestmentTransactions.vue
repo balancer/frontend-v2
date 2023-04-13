@@ -2,7 +2,7 @@
 import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { usePoolHelper } from '@/composables/usePoolHelpers';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 
 import BoostedActivities from '../BoostedPoolActivities/Activities.vue';
@@ -68,7 +68,9 @@ const tabs = computed(() =>
 /**
  * COMPOSABLES
  */
-const { isDeepPool, isStablePhantomPool } = usePoolHelper(toRef(props, 'pool'));
+const { isDeepPool, isStablePhantomPool } = usePoolHelpers(
+  toRef(props, 'pool')
+);
 const { t } = useI18n();
 
 /**
