@@ -85,8 +85,11 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithSwappingHalted, isWethPool, isStableLikePool } =
-  usePoolHelpers(pool);
+const {
+  managedPoolWithSwappingHalted,
+  isWrappedNativeAssetPool,
+  isStableLikePool,
+} = usePoolHelpers(pool);
 
 /**
  * COMPUTED
@@ -211,7 +214,7 @@ function getTokenInputLabel(address: string): string | undefined {
 onBeforeMount(() => {
   resetAmounts();
   tokenAddresses.value = [...investmentTokens.value];
-  if (isWethPool.value) setNativeAssetByBalance();
+  if (isWrappedNativeAssetPool.value) setNativeAssetByBalance();
 });
 
 /**
