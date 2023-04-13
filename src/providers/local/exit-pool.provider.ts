@@ -198,6 +198,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   );
 
   const exitHandlerType = computed((): ExitHandler => {
+    if (pool.value.isInRecoveryMode) return ExitHandler.Recovery;
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
     if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
     if (isSingleAssetExit.value) {
@@ -452,7 +453,9 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   function setInitialPropAmountsOut() {
     const leafNodes: string[] = isDeepPool.value
       ? tokenTreeLeafs(pool.value.tokens)
-      : pool.value.tokensList;
+      : pool.value.tokensList.filter(
+          token => !isSameAddress(token, pool.value.address)
+        );
 
     propAmountsOut.value = leafNodes.map(address => ({
       address,
