@@ -10,7 +10,7 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import {
   isStableLike,
-  usePool,
+  usePoolHelper,
   isDeep,
   tokensListExclBpt,
 } from '@/composables/usePoolHelpers';
@@ -86,7 +86,7 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
 const { managedPoolWithSwappingHalted, isWethPool, isStableLikePool } =
-  usePool(pool);
+  usePoolHelper(pool);
 
 /**
  * COMPUTED

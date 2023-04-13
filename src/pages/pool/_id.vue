@@ -22,7 +22,7 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
-  usePool,
+  usePoolHelper,
   tokensListExclBpt,
   tokenTreeLeafs,
   orderedPoolTokens,
@@ -72,7 +72,7 @@ const {
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
   isDeprecatedPool,
-} = usePool(poolQuery.data);
+} = usePoolHelper(poolQuery.data);
 //#endregion
 
 //#region pool snapshot query

@@ -4,7 +4,7 @@ import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { usePool } from '@/composables/usePoolHelpers';
+import { usePoolHelper } from '@/composables/usePoolHelpers';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
@@ -43,7 +43,7 @@ const showStakeModal = ref(false);
  * COMPOSABLES
  */
 const { managedPoolWithSwappingHalted, isDeepPool, isPreMintedBptPool } =
-  usePool(toRef(props, 'pool'));
+  usePoolHelper(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();

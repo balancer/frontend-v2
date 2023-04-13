@@ -4,7 +4,7 @@ import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vu
 import SwapSettingsPopover, {
   SwapSettingsContext,
 } from '@/components/popovers/SwapSettingsPopover.vue';
-import { usePool } from '@/composables/usePoolHelpers';
+import { usePoolHelper } from '@/composables/usePoolHelpers';
 import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
 import useInvestPageTabs, {
@@ -33,7 +33,7 @@ const pool = computed(() => props.pool);
  */
 const { network } = configService;
 const { activeTab, resetTabs } = useInvestPageTabs();
-const { isDeepPool, isPreMintedBptPool } = usePool(pool);
+const { isDeepPool, isPreMintedBptPool } = usePoolHelper(pool);
 
 const { setIsSingleAssetJoin } = useJoinPool();
 

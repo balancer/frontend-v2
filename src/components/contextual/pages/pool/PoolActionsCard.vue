@@ -3,7 +3,7 @@ import { computed, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import {
   isJoinsDisabled,
-  usePool,
+  usePoolHelper,
   deprecatedDetails,
 } from '@/composables/usePoolHelpers';
 import useNetwork from '@/composables/useNetwork';
@@ -30,7 +30,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
-const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
+const { isMigratablePool, hasNonApprovedRateProviders } = usePoolHelper(
   toRef(props, 'pool')
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool } from '@/composables/usePoolHelpers';
+import { usePoolHelper } from '@/composables/usePoolHelpers';
 import { oneSecondInMs } from '@/composables/useTime';
 import { useIntervalFn } from '@vueuse/core';
 import { computed } from 'vue';
@@ -12,7 +12,7 @@ import { useTokens } from '@/providers/tokens.provider';
  * COMPOSABLES
  */
 const { pool, poolDecorationQuery, loadingPool } = usePoolTransfers();
-const { isDeepPool } = usePool(pool);
+const { isDeepPool } = usePoolHelper(pool);
 const { balanceQueryLoading } = useTokens();
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent

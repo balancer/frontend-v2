@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePoolHelpers';
+import { usePoolHelper } from '@/composables/usePoolHelpers';
 import useSlippage from '@/composables/useSlippage';
 import { useTokens } from '@/providers/tokens.provider';
 import {
@@ -45,7 +45,7 @@ export default function useInvestMath(
     managedPoolWithSwappingHalted,
     isComposableStableLikePool,
     isShallowComposableStablePool,
-  } = usePool(pool);
+  } = usePoolHelper(pool);
 
   /**
    * Services

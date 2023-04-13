@@ -6,7 +6,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   fiatValueOf,
   isVeBalPool,
-  usePool,
+  usePoolHelper,
 } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
@@ -38,7 +38,7 @@ const props = defineProps<Props>();
 const { balanceFor } = useTokens();
 const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { isMigratablePool } = usePool(toRef(props, 'pool'));
+const { isMigratablePool } = usePoolHelper(toRef(props, 'pool'));
 const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
