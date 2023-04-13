@@ -8,6 +8,7 @@ import {
   includesAddress,
   isSameAddress,
   removeAddress,
+  selectByAddress,
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
@@ -61,6 +62,10 @@ export function isStablePhantom(poolType: PoolType): boolean {
 
 export function isComposableStable(poolType: PoolType): boolean {
   return poolType === PoolType.ComposableStable;
+}
+
+export function isComposableStableV1(pool: Pool): boolean {
+  return isComposableStable(pool.poolType) && pool.poolTypeVersion === 1;
 }
 
 export function isComposableStableLike(poolType: PoolType): boolean {
@@ -145,7 +150,7 @@ export function isSwappingHaltable(poolType: PoolType): boolean {
 export function isWrappedNativeAsset(pool: AnyPool): boolean {
   return includesAddress(
     pool.tokensList || [],
-    configService.network.addresses.weth
+    configService.network.tokens.Addresses.wNativeAsset
   );
 }
 
@@ -564,6 +569,40 @@ export function poolMetadata(
 }
 
 /**
+ * Gets weight of token in pool if relevant, e.g if it's a weighted pool.
+ * If not, returns 0.
+ *
+ * @param {Pool} pool - The pool to check
+ * @param {string} tokenAddress - The address of the token to check
+ * @returns {number} The weight of the token in the pool
+ */
+export function tokenWeight(pool: Pool, tokenAddress: string): number {
+  if (isStableLike(pool.poolType)) return 0;
+  if (!pool?.onchain?.tokens) return 0;
+
+  const { nativeAsset, wNativeAsset } = configService.network.tokens.Addresses;
+
+  if (isSameAddress(tokenAddress, nativeAsset)) {
+    return selectByAddress(pool.onchain.tokens, wNativeAsset)?.weight || 1;
+  }
+  return selectByAddress(pool.onchain.tokens, tokenAddress)?.weight || 1;
+}
+
+/**
+ * Gets all pool token addresses that can possibly be used to join a pool.
+ *
+ * @param {Pool} pool - The pool to check
+ * @returns {string[]} The addresses of the tokens that can be used to join the pool
+ */
+export function joinTokens(pool: Pool): string[] {
+  let addresses: string[] = [];
+
+  addresses = isDeep(pool) ? tokenTreeNodes(pool.tokens) : pool.tokensList;
+
+  return removeAddress(pool.address, addresses);
+}
+
+/**
  * COMPOSABLE
  */
 export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
@@ -646,6 +685,10 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
       !!pool.value && includesWstEth(pool.value.tokensList) && isMainnet.value
   );
 
+  const poolJoinTokens = computed((): string[] =>
+    pool.value ? joinTokens(pool.value) : []
+  );
+
   // pool is "Weighted" and some of the rate providers are not on our approved list
   const hasNonApprovedRateProviders = computed(
     () =>
@@ -684,6 +727,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
+    poolJoinTokens,
     // methods
     isStable,
     isMetaStable,
@@ -694,10 +738,12 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeightedLike,
     isSwappingHaltable,
     isPreMintedBptType,
-    isWeth: isWrappedNativeAsset,
+    isWrappedNativeAsset,
+    noInitLiquidity,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,
     orderedPoolTokens,
+    joinTokens,
   };
 }
