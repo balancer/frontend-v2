@@ -34,7 +34,7 @@ const excludedTokens = computed<string[]>(() => {
  * COMPOSABLES
  */
 const { useNativeAsset } = usePoolTransfers();
-const { isWethPool, isDeepPool } = usePoolHelpers(pool);
+const { isWrappedNativeAssetPool, isDeepPool } = usePoolHelpers(pool);
 const { tokenAddresses, amounts } = useInvestState();
 const { setAmountsIn, isSingleAssetJoin, amountsIn } = useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
@@ -92,7 +92,7 @@ function handleMyWalletTokenClick(tokenAddress: string, isPoolToken: boolean) {
         setMaxAmount(tokenAddress, maxBalance);
       });
     }
-  } else if (isWethPool.value) {
+  } else if (isWrappedNativeAssetPool.value) {
     const isNativeAsset = isSameAddress(tokenAddress, nativeAsset.address);
     const isWrappedNativeAsset = isSameAddress(
       tokenAddress,

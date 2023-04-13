@@ -142,7 +142,7 @@ export function isSwappingHaltable(poolType: PoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
-export function isWeth(pool: AnyPool): boolean {
+export function isWrappedNativeAsset(pool: AnyPool): boolean {
   return includesAddress(
     pool.tokensList || [],
     configService.network.addresses.weth
@@ -638,8 +638,8 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean =>
       !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
   );
-  const isWethPool = computed(
-    (): boolean => !!pool.value && isWeth(pool.value)
+  const isWrappedNativeAssetPool = computed(
+    (): boolean => !!pool.value && isWrappedNativeAsset(pool.value)
   );
   const isMainnetWstETHPool = computed(
     (): boolean =>
@@ -680,7 +680,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isManagedPool,
     isLiquidityBootstrappingPool,
     managedPoolWithSwappingHalted,
-    isWethPool,
+    isWrappedNativeAssetPool,
     isMainnetWstETHPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
@@ -694,7 +694,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeightedLike,
     isSwappingHaltable,
     isPreMintedBptType,
-    isWeth,
+    isWeth: isWrappedNativeAsset,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

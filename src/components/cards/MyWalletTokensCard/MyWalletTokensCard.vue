@@ -35,7 +35,9 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isWethPool, isDeepPool } = usePoolHelpers(toRef(props, 'pool'));
+const { isWrappedNativeAssetPool, isDeepPool } = usePoolHelpers(
+  toRef(props, 'pool')
+);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const route = useRoute();
@@ -60,7 +62,10 @@ const tokensForTotal = computed((): string[] => {
         return nativeAsset.address;
       return address;
     });
-  } else if (pageContext.value === 'withdraw' && isWethPool.value) {
+  } else if (
+    pageContext.value === 'withdraw' &&
+    isWrappedNativeAssetPool.value
+  ) {
     return [nativeAsset.address, ...tokenAddresses.value];
   }
 
