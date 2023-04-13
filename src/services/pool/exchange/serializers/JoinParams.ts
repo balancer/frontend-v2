@@ -8,7 +8,7 @@ import {
   isComposableStable,
   isManaged,
   isStableLike,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { includesAddress, isSameAddress } from '@/lib/utils';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';

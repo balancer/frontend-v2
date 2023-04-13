@@ -2,7 +2,7 @@
 import { computed, nextTick } from 'vue';
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { isSameAddress, indexOfAddress } from '@/lib/utils';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import { useTokens } from '@/providers/tokens.provider';
@@ -34,7 +34,7 @@ const excludedTokens = computed<string[]>(() => {
  * COMPOSABLES
  */
 const { useNativeAsset } = usePoolTransfers();
-const { isWethPool, isDeepPool } = usePool(pool);
+const { isWethPool, isDeepPool } = usePoolHelpers(pool);
 const { tokenAddresses, amounts } = useInvestState();
 const { setAmountsIn, isSingleAssetJoin, amountsIn } = useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();

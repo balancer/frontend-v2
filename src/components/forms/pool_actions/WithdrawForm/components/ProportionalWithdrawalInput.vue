@@ -5,7 +5,11 @@ import { computed, onBeforeMount, toRef, toRefs, watch } from 'vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
+import {
+  isDeep,
+  tokensListExclBpt,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 // Types
@@ -50,7 +54,7 @@ const { slider } = useWithdrawalState(toRef(props, 'pool'));
 const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
 const { getTokens } = useTokens();
-const { isStableLikePool } = usePool(toRef(props, 'pool'));
+const { isStableLikePool } = usePoolHelpers(toRef(props, 'pool'));
 const { fNum } = useNumbers();
 
 /**

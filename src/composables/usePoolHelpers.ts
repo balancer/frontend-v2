@@ -566,7 +566,7 @@ export function poolMetadata(
 /**
  * COMPOSABLE
  */
-export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
+export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
   const { fNum } = useNumbers();
 
   /**

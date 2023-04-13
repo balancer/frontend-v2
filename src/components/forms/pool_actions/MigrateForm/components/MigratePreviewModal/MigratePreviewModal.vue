@@ -13,7 +13,7 @@ import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQue
 import { usePoolMigration } from '@/composables/pools/usePoolMigration';
 import { bnum } from '@/lib/utils';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
-import { fiatValueOf } from '@/composables/usePool';
+import { fiatValueOf } from '@/composables/usePoolHelpers';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import MigrateSummary from './components/MigrateSummary.vue';
 import { PoolMigrationInfo } from '@/types/pools';

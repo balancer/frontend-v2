@@ -1,4 +1,4 @@
-import { isDeep } from '@/composables/usePool';
+import { isDeep } from '@/composables/usePoolHelpers';
 import { getBalancer } from '@/dependencies/balancer-sdk';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';

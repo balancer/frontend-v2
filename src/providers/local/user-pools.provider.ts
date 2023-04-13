@@ -7,7 +7,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { safeInject } from '../inject';
 import { useLock } from '@/composables/useLock';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import { fiatValueOf } from '@/composables/usePool';
+import { fiatValueOf } from '@/composables/usePoolHelpers';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { isVeBalSupported } from '@/composables/useVeBAL';
 import { useTokens } from '../tokens.provider';

@@ -1,6 +1,6 @@
 import { differenceInWeeks } from 'date-fns';
 
-import { isStable } from '@/composables/usePool';
+import { isStable } from '@/composables/usePoolHelpers';
 import { oneSecondInMs } from '@/composables/useTime';
 import { bnum } from '@/lib/utils';
 import {

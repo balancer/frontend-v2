@@ -24,7 +24,7 @@ import {
   removeBptFromPoolTokenTree,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePool,
+  usePoolHelpers,
   poolMetadata,
   deprecatedDetails,
   isJoinsDisabled,
@@ -33,7 +33,7 @@ import {
   poolURLFor,
   noInitLiquidity,
   filterTokensInList,
-} from './usePool';
+} from './usePoolHelpers';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 
@@ -307,7 +307,7 @@ describe('usePool composable', () => {
   initDependenciesWithDefaultMocks();
 
   function mountUsePool(pool: Pool | undefined) {
-    const { result } = mountComposable(() => usePool(ref(pool)));
+    const { result } = mountComposable(() => usePoolHelpers(ref(pool)));
     return result;
   }
 
