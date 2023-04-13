@@ -13,7 +13,7 @@ import {
   usePool,
   isDeep,
   tokensListExclBpt,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {

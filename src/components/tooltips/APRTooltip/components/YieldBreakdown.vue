@@ -10,7 +10,7 @@ import {
   hasBoostedAPR,
   isDeep,
   isVeBalPoolAddress,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers.js';
 import { useTokens } from '@/providers/tokens.provider';
 
 /**

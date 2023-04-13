@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers.js';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';

@@ -2,7 +2,7 @@
 import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 
 import BoostedActivities from '../BoostedPoolActivities/Activities.vue';

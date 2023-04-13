@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import InvestPageMyWallet from './InvestPageMyWallet.vue';
 import InvestPageAccordion from './InvestPageAccordion.vue';

@@ -8,7 +8,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import { useSwapState } from '@/composables/swap/useSwapState';
 import { includesAddress } from '@/lib/utils';

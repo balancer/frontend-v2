@@ -2,7 +2,7 @@
 import { computed, toRef } from 'vue';
 
 import useConfig from '@/composables/useConfig';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers.js';
 import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';

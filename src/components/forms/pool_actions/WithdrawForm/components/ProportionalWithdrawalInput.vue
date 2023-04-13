@@ -5,7 +5,11 @@ import { computed, onBeforeMount, toRef, toRefs, watch } from 'vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
+import {
+  isDeep,
+  tokensListExclBpt,
+  usePool,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 // Types

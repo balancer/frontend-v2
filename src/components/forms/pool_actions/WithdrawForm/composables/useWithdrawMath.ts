@@ -10,7 +10,7 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePoolHelpers';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import { useTokens } from '@/providers/tokens.provider';

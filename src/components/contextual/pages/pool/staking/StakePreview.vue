@@ -14,7 +14,7 @@ import { bnum, trackLoading } from '@/lib/utils';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
-import { fiatValueOf, tokensListExclBpt } from '@/composables/usePool';
+import { fiatValueOf, tokensListExclBpt } from '@/composables/usePoolHelpers';
 import StakeSummary from './StakeSummary.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { ApprovalAction } from '@/composables/approvals/types';

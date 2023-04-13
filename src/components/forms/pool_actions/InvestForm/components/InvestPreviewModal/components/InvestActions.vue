@@ -10,7 +10,7 @@ import { useI18n } from 'vue-i18n';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';

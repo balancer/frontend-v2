@@ -5,7 +5,7 @@ import SwapSettingsPopover, {
   SwapSettingsContext,
 } from '@/components/popovers/SwapSettingsPopover.vue';
 import { configService } from '@/services/config/config.service';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import useWithdrawPageTabs from '@/composables/pools/useWithdrawPageTabs';
 import { Pool } from '@balancer-labs/sdk';
 import WithdrawPageTabs from './WithdrawPageTabs.vue';

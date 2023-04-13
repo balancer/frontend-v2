@@ -5,7 +5,7 @@ import { isSameAddress, includesAddress, removeAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
-import { tokenTreeNodes, usePool } from '@/composables/usePool';
+import { tokenTreeNodes, usePool } from '@/composables/usePoolHelpers';
 
 type Props = {
   excludedTokens?: string[];

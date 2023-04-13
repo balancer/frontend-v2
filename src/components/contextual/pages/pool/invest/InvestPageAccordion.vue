@@ -4,7 +4,7 @@ import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
 import InvestPageMyWallet from './InvestPageMyWallet.vue';
 import { useI18n } from 'vue-i18n';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import { Pool } from '@balancer-labs/sdk';
 
 type Props = {

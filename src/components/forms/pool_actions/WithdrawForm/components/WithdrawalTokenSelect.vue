@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
 
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';

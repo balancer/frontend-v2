@@ -6,7 +6,7 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 import { configService } from '@/services/config/config.service';
 
-import { tokensListExclBpt } from '@/composables/usePool';
+import { tokensListExclBpt } from '@/composables/usePoolHelpers.js';
 
 type Props = {
   pool: Pool;

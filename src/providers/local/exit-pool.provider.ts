@@ -8,7 +8,7 @@ import {
   tokenTreeLeafs,
   tokenTreeNodes,
   usePool,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';

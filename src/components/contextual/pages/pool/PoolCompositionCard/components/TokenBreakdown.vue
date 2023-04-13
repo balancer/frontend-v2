@@ -4,7 +4,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
 import { TokensData } from './composables/useTokenBreakdown';
 
-import { isWeightedLike, usePool } from '@/composables/usePool';
+import { isWeightedLike, usePool } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 
 /**

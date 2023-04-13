@@ -8,7 +8,7 @@ import { ref, toRef, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';

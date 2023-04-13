@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePoolHelpers';
 // Composables
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';

@@ -13,7 +13,7 @@ import {
   isDeep,
   isComposableStableLike,
   isComposableStable,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';

@@ -4,7 +4,7 @@ import {
   hasIcon,
   orderedPoolTokens,
   orderedTokenAddresses,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers.js';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import useNetwork from '@/composables/useNetwork';

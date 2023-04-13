@@ -13,7 +13,7 @@ import { TokenInfo } from '@/types/TokenList';
 import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import { fiatValueOf } from '@/composables/usePool';
+import { fiatValueOf } from '@/composables/usePoolHelpers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { PoolMigrationInfo } from '@/types/pools';
 

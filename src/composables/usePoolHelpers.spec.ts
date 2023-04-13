@@ -33,7 +33,7 @@ import {
   poolURLFor,
   noInitLiquidity,
   filterTokensInList,
-} from './usePool';
+} from './usePoolHelpers';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 

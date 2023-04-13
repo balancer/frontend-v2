@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import InvestPage from '@/components/contextual/pages/pool/invest/InvestPage.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers.js';
 import { oneSecondInMs } from '@/composables/useTime';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';

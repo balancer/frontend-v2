@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
 import useNetwork from '@/composables/useNetwork';
-import { deprecatedDetails } from '@/composables/usePool';
+import { deprecatedDetails } from '@/composables/usePoolHelpers.js';
 
 /**
  * TYPES

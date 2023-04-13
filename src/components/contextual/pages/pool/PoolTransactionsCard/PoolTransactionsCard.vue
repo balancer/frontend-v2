@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
 
-import { usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 
 import InvestmentTransactions from './InvestmentTransactions/InvestmentTransactions.vue';
