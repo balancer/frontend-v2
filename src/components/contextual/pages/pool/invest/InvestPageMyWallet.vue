@@ -2,7 +2,7 @@
 import { computed, nextTick } from 'vue';
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool } from '@/composables/usePoolHelpers.js';
+import { usePool } from '@/composables/usePoolHelpers';
 import { isSameAddress, indexOfAddress } from '@/lib/utils';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import { useTokens } from '@/providers/tokens.provider';

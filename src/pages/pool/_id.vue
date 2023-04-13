@@ -26,7 +26,7 @@ import {
   tokensListExclBpt,
   tokenTreeLeafs,
   orderedPoolTokens,
-} from '@/composables/usePoolHelpers.js';
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';

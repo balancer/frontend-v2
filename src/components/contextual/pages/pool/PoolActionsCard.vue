@@ -5,7 +5,7 @@ import {
   isJoinsDisabled,
   usePool,
   deprecatedDetails,
-} from '@/composables/usePoolHelpers.js';
+} from '@/composables/usePoolHelpers';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';

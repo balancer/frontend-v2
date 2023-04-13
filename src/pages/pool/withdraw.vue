@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool } from '@/composables/usePoolHelpers.js';
+import { usePool } from '@/composables/usePoolHelpers';
 import { oneSecondInMs } from '@/composables/useTime';
 import { useIntervalFn } from '@vueuse/core';
 import { computed } from 'vue';

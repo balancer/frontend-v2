@@ -14,7 +14,7 @@ import ProtocolRewardsTable, {
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 import { networkHasNativeGauges } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
-import { isStableLike } from '@/composables/usePoolHelpers.js';
+import { isStableLike } from '@/composables/usePoolHelpers';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';

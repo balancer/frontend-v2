@@ -12,7 +12,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { Pool, PoolActivity, PoolActivityType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { preMintedBptIndex } from '@/composables/usePoolHelpers.js';
+import { preMintedBptIndex } from '@/composables/usePoolHelpers';
 
 /**
  * TYPES

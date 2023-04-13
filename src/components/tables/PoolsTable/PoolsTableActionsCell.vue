@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
 
-import { isVeBalPool, usePool } from '@/composables/usePoolHelpers.js';
+import { isVeBalPool, usePool } from '@/composables/usePoolHelpers';
 import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
