@@ -61,7 +61,6 @@ const emptyPoolCreationState = {
   autoOptimiseBalances: false,
   useNativeAsset: false,
   type: PoolType.Weighted,
-  acceptedCustomTokenDisclaimer: false,
   needsSeeding: false,
   createPoolTxHash: '',
 };
@@ -80,7 +79,7 @@ export default function usePoolCreation() {
     getToken,
     nativeAsset,
     wrappedNativeAsset,
-    injectedTokens,
+    balancerTokenListTokens,
     dynamicDataLoading,
   } = useTokens();
   const { account, getProvider } = useWeb3();
@@ -96,11 +95,11 @@ export default function usePoolCreation() {
     })
   );
 
-  const hasInjectedToken = computed(() => {
-    return tokensList.value.some(
-      token => injectedTokens.value[token]?.symbol !== undefined
-    );
-  });
+  const hasUnlistedToken = computed(() =>
+    tokensList.value.some(token => {
+      return token && !balancerTokenListTokens.value[token];
+    })
+  );
 
   function getOptimisedLiquidity(): Record<string, OptimisedLiquidity> {
     // need to filter out the empty tokens just in case
@@ -416,6 +415,9 @@ export default function usePoolCreation() {
   }
 
   async function createPool(): Promise<TransactionResponse> {
+    if (hasUnlistedToken.value) {
+      throw new Error('Illegal pool creation due to unlisted tokens.');
+    }
     const provider = getProvider();
 
     const tx = await balancerService.pools.weighted.create(
@@ -495,10 +497,6 @@ export default function usePoolCreation() {
 
   function setActiveStep(step: number) {
     poolCreationState.activeStep = step;
-  }
-
-  function acceptCustomTokenDisclaimer() {
-    poolCreationState.acceptedCustomTokenDisclaimer = true;
   }
 
   function saveState() {
@@ -583,7 +581,6 @@ export default function usePoolCreation() {
     sortSeedTokens,
     clearAmounts,
     setAmountsToMaxBalances,
-    acceptCustomTokenDisclaimer,
     saveState,
     resetState,
     importState,
@@ -604,7 +601,7 @@ export default function usePoolCreation() {
     poolTypeString,
     tokenColors,
     isWrappedNativeAssetPool,
-    hasInjectedToken,
+    hasUnlistedToken,
     hasRestoredFromSavedState,
   };
 }
