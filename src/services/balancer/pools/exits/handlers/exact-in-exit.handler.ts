@@ -15,6 +15,7 @@ import {
   formatAddressForSor,
   indexOfAddress,
   isSameAddress,
+  removeAddress,
   selectByAddress,
 } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
@@ -80,8 +81,9 @@ export class ExactInExitHandler implements ExitPoolHandler {
 
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');
 
-    const tokensOut = this.lastExitRes.attributes.exitPoolRequest.assets.filter(
-      token => !isSameAddress(token, this.pool.value.address)
+    const tokensOut = removeAddress(
+      this.pool.value.address,
+      this.lastExitRes.attributes.exitPoolRequest.assets
     );
     const expectedAmountsOut = this.lastExitRes.expectedAmountsOut;
     // Because this is an exit we need to pass amountsOut as the amountsIn and
