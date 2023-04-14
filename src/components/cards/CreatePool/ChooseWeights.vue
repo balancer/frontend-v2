@@ -441,7 +441,7 @@ function onAlertMountChange() {
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
-          <BalAlert :title="$t('unlistedTokenWarningTitle')" type="warning">
+          <BalAlert :title="$t('unlistedTokenWarningTitle')" type="error">
             <BalStack vertical spacing="xs">
               <span class="mt-2"
                 >{{ $t('unlistedTokenWarning') }}
