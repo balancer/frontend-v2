@@ -5,7 +5,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
 import { safeInject } from '../inject';
 
-function poolProvider(poolId: string) {
+export function poolProvider(poolId: string) {
   const poolQuery = usePoolQuery(poolId);
 
   const initialPool = computed((): Pool | undefined => {
