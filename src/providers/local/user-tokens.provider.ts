@@ -7,7 +7,7 @@ import { useTokens } from '../tokens.provider';
  * Provides access to functionality related to tokens in a user's connected
  * wallet.
  */
-function userTokensProvider() {
+export function userTokensProvider() {
   /**
    * COMPOSABLES
    */
