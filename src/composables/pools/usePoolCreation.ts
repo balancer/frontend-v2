@@ -416,7 +416,7 @@ export default function usePoolCreation() {
 
   async function createPool(): Promise<TransactionResponse> {
     if (hasUnlistedToken.value) {
-      throw new Error('Illegal pool creation due to unlisted tokens.');
+      throw new Error('Invalid pool creation due to unlisted tokens.');
     }
     const provider = getProvider();
 
