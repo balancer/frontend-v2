@@ -14,7 +14,6 @@ const PoolPage = () =>
 // const CreatePoolPage = () =>
 //   import('@/pages/pool/create.vue');
 const PoolAddLiquidityPage = () => import('@/pages/pool/add-liquidity.vue');
-const MigratePoolPage = () => import('@/pages/pool/migrate.vue');
 const PoolWithdrawPage = () => import('@/pages/pool/withdraw.vue');
 const PrivacyPolicyPage = () => import('@/pages/privacy-policy.vue');
 const TermsOfUsePage = () => import('@/pages/terms-of-use.vue');
@@ -110,12 +109,6 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/withdraw',
     name: 'withdraw',
     component: PoolWithdrawPage,
-    meta: { layout: 'FocusedLayout' },
-  },
-  {
-    path: '/:networkSlug/pool/migrate/:from/:to',
-    name: 'migrate-pool',
-    component: MigratePoolPage,
     meta: { layout: 'FocusedLayout' },
   },
   {
