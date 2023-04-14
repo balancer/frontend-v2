@@ -11,6 +11,7 @@ export default {
     UserData: 'provider.userData',
     UserPools: 'provider.userPools',
     Wallets: 'provider.wallets',
+    Pool: 'provider.pool',
     UserTokens: 'provider.userTokens',
   },
 };
