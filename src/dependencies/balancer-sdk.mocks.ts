@@ -19,11 +19,6 @@ type DeepPartial<T> = T extends object
     }
   : T;
 
-export const defaultTokenUSDPrice = '1';
-export const defaultTokenEthPrice = '0.005';
-
-export const defaultTokenPrice = 1;
-
 // TODO: Improve builder to avoid DeepPartial and move to sor mocks to subfile
 export const defaultSorPools: DeepPartial<Pool[]> = [
   {

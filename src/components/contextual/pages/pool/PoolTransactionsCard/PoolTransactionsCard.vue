@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
 
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 
 import InvestmentTransactions from './InvestmentTransactions/InvestmentTransactions.vue';
@@ -25,7 +25,9 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { isDeepPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { isDeepPool, isStablePhantomPool } = usePoolHelpers(
+  toRef(props, 'pool')
+);
 </script>
 
 <template>

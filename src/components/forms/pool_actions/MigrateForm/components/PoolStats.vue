@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { totalAprLabel } from '@/composables/usePool';
+import { totalAprLabel } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 import { PoolMigrationInfo } from '@/types/pools';
 

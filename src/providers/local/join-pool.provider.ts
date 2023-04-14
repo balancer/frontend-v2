@@ -3,7 +3,11 @@ import useRelayerApproval, {
 } from '@/composables/approvals/useRelayerApproval';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
-import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
+import {
+  fiatValueOf,
+  isDeep,
+  tokenTreeNodes,
+} from '@/composables/usePoolHelpers';
 import { useTxState } from '@/composables/useTxState';
 import {
   HIGH_PRICE_IMPACT,

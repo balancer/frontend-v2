@@ -3,7 +3,11 @@ import { computed, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { fiatValueOf, isVeBalPool, usePool } from '@/composables/usePool';
+import {
+  fiatValueOf,
+  isVeBalPool,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
@@ -34,7 +38,7 @@ const props = defineProps<Props>();
 const { balanceFor } = useTokens();
 const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { isMigratablePool } = usePool(toRef(props, 'pool'));
+const { isMigratablePool } = usePoolHelpers(toRef(props, 'pool'));
 const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
