@@ -5,13 +5,17 @@ import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 const tokens: Record<string, PoolSeedToken> = {};
 
 vi.mock('@/providers/tokens.provider');
-vi.mock('@/services/balancer/balancer.service');
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/composables/queries/usePoolsQuery');
 
 describe('usePoolCreation', () => {
   const { result: poolCreation } = mountComposable(() => usePoolCreation());
-  const { updateTokenWeights, getPoolSymbol, getScaledAmounts } = poolCreation;
+  const {
+    updateTokenWeights,
+    getPoolSymbol,
+    getScaledAmounts,
+    hasUnlistedToken,
+    setTokensList,
+    isUnlistedToken,
+  } = poolCreation;
 
   beforeEach(() => {
     tokens.MKR = {
@@ -87,5 +91,16 @@ describe('usePoolCreation', () => {
       const scaledAmounts = getScaledAmounts();
       expect(scaledAmounts[0]).toEqual('7643537999');
     });
+  });
+
+  it('detects unlisted tokens', async () => {
+    expect(hasUnlistedToken.value).toBeFalse();
+
+    const unlistedTokenAddress = '0xcc7bb2d219a0fc08033e130629c2b854b7ba9195';
+
+    setTokensList([unlistedTokenAddress]);
+
+    expect(hasUnlistedToken.value).toBeTrue();
+    expect(isUnlistedToken(unlistedTokenAddress)).toBeTrue();
   });
 });
