@@ -32,22 +32,19 @@ const PRICE_CAP = 100000000;
  * COMPOSABLES
  */
 const { seedTokens } = usePoolCreation();
-const { getToken, injectPrices, priceFor } = useTokens();
+const { getToken, injectPrices } = useTokens();
 const { t } = useI18n();
+
+/**
+ * STATE
+ */
+// In the moment of pool creation, there were no valid prices for some tokens.
+// The user will manually introduce those unknown prices here.
+const userDefinedTokenPrices = ref<TokenPrices>({});
 
 /**
  * COMPUTED
  */
-// TODO: this computed property is being used as a modelValue below, this
-// probably won't work and needs to be fixed.
-const unknownTokenPrices = computed((): TokenPrices => {
-  const _unknownTokenPrices = {};
-  for (const token of props.unknownTokens) {
-    _unknownTokenPrices[token] = priceFor(token) || null;
-  }
-  return _unknownTokenPrices;
-});
-
 const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
     tokenAddress => getToken(tokenAddress)?.symbol
@@ -57,10 +54,12 @@ const readableUnknownTokenSymbols = computed(() => {
 
 const isSubmitDisabled = computed(() => {
   const noPricesEntered = props.unknownTokens.some(
-    token => selectByAddress(unknownTokenPrices.value, token) === undefined
+    token => selectByAddress(userDefinedTokenPrices.value, token) === undefined
   );
   const hasLargePrice = props.unknownTokens.some(token =>
-    bnum(selectByAddress(unknownTokenPrices.value, token) || '0').gt(PRICE_CAP)
+    bnum(selectByAddress(userDefinedTokenPrices.value, token) || '0').gt(
+      PRICE_CAP
+    )
   );
   return noPricesEntered || hasLargePrice;
 });
@@ -75,7 +74,7 @@ function getIndexOfUnknownToken(address: string) {
 }
 
 function injectUnknownPrices() {
-  injectPrices(unknownTokenPrices.value);
+  injectPrices(userDefinedTokenPrices.value);
   emit('close');
 }
 </script>
@@ -102,7 +101,7 @@ function injectUnknownPrices() {
         <TokenInput
           v-for="(address, i) in unknownTokens"
           :key="i"
-          v-model:amount="unknownTokenPrices[address]"
+          v-model:amount="userDefinedTokenPrices[address]"
           fixedToken
           placeholder="$0.00"
           :address="address"

@@ -43,9 +43,9 @@ const defaults: DeepPartial<Pool> = {
 
 export const PoolMock: Pool = Object.assign(pool, defaults);
 
-export function aWeightedPool() {
+export function aWeightedPool(options?: DeepPartial<Pool>) {
   const poolMock: Pool = Object.assign(pool, defaults);
-  return poolMock;
+  return Object.assign(poolMock, options);
 }
 
 export function aPoolToken(options?: Partial<PoolToken>): PoolToken {
