@@ -38,6 +38,7 @@ const {
   tokensList,
   totalLiquidity,
   hasUnlistedToken,
+  isUnlistedToken,
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
@@ -342,6 +343,9 @@ function onAlertMountChange() {
                       v-model:address="seedTokens[i].tokenAddress"
                       noRules
                       noMax
+                      :showWarningIcon="
+                        isUnlistedToken(seedTokens[i].tokenAddress)
+                      "
                       :excludedTokens="excludedTokens"
                       @update:weight="data => handleWeightChange(data, i)"
                       @update:address="data => handleAddressChange(data, i)"

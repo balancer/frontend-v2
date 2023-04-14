@@ -96,8 +96,8 @@ export default function usePoolCreation() {
   );
 
   const hasUnlistedToken = computed(() =>
-    tokensList.value.some(token => {
-      return token && !balancerTokenListTokens.value[token];
+    tokensList.value.some(tokenAddress => {
+      return tokenAddress && isUnlistedToken(tokenAddress);
     })
   );
 
@@ -560,6 +560,10 @@ export default function usePoolCreation() {
     await retrievePoolAddress(hash);
   }
 
+  function isUnlistedToken(tokenAddress: string) {
+    return tokenAddress !== '' && !balancerTokenListTokens.value[tokenAddress];
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -603,5 +607,6 @@ export default function usePoolCreation() {
     isWrappedNativeAssetPool,
     hasUnlistedToken,
     hasRestoredFromSavedState,
+    isUnlistedToken,
   };
 }

@@ -14,6 +14,7 @@ describe('usePoolCreation', () => {
     getScaledAmounts,
     hasUnlistedToken,
     setTokensList,
+    isUnlistedToken,
   } = poolCreation;
 
   beforeEach(() => {
@@ -100,5 +101,6 @@ describe('usePoolCreation', () => {
     setTokensList([unlistedTokenAddress]);
 
     expect(hasUnlistedToken.value).toBeTrue();
+    expect(isUnlistedToken(unlistedTokenAddress)).toBeTrue();
   });
 });
