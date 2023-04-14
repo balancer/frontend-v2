@@ -11,8 +11,7 @@ const GetVeBalPage = () => import('@/pages/get-vebal.vue');
 const HomePage = () => import('@/pages/index.vue');
 const PoolPage = () =>
   import(/* webpackPrefetch: true */ '@/pages/pool/_id.vue');
-// const CreatePoolPage = () =>
-//   import('@/pages/pool/create.vue');
+const CreatePoolPage = () => import('@/pages/pool/create.vue');
 const PoolAddLiquidityPage = () => import('@/pages/pool/add-liquidity.vue');
 const MigratePoolPage = () => import('@/pages/pool/migrate.vue');
 const PoolWithdrawPage = () => import('@/pages/pool/withdraw.vue');
@@ -82,12 +81,12 @@ const routes: RouteRecordRaw[] = [
       return `/${to.params.networkSlug}/swap${to.path.split('/trade')[1]}`;
     },
   },
-  // {
-  //   path: '/:networkSlug/pool/create/:tx?',
-  //   name: 'create-pool',
-  //   component: CreatePoolPage,
-  //   meta: { layout: 'FocusedLayout' },
-  // },
+  {
+    path: '/:networkSlug/pool/create/:tx?',
+    name: 'create-pool',
+    component: CreatePoolPage,
+    meta: { layout: 'FocusedLayout' },
+  },
   {
     path: '/:networkSlug/pool/:id',
     name: 'pool',
