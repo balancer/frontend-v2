@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 
 // Composables
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import { isDeep, tokensListExclBpt } from '@/composables/usePool';
+import { isDeep, tokensListExclBpt } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';

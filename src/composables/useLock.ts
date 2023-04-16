@@ -4,7 +4,7 @@ import { TokenInfo } from '@/types/TokenList';
 import { useTokens } from '@/providers/tokens.provider';
 import { useUserData } from '@/providers/user-data.provider';
 import usePoolQuery from './queries/usePoolQuery';
-import { fiatValueOf } from './usePool';
+import { fiatValueOf } from './usePoolHelpers';
 import useVeBal, { isVeBalSupported } from './useVeBAL';
 
 interface Options {

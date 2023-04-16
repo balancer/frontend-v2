@@ -60,6 +60,8 @@ export default function useAllowancesQuery(
 
   const queryOptions = reactive({
     enabled,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
     ...options,
   });
 

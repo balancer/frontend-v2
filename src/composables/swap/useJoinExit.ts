@@ -190,7 +190,7 @@ export default function useJoinExit({
         swapInfo.value,
         pools.value,
         account.value,
-        balancer.contracts.relayerV4?.address ?? '',
+        balancer.contracts.relayer?.address ?? '',
         balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
         String(slippageBufferRate.value * 1e4),
         relayerSignature.value || undefined
@@ -198,7 +198,7 @@ export default function useJoinExit({
 
       const txBuilder = new TransactionBuilder(getSigner());
       const tx = await txBuilder.contract.sendTransaction({
-        contractAddress: balancer.contracts.relayerV4?.address ?? '',
+        contractAddress: balancer.contracts.relayer?.address ?? '',
         abi: BatchRelayerAbi,
         action: 'multicall',
         params: [relayerCallData.rawCalls],

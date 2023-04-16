@@ -9,7 +9,7 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
-import { tokensListExclBpt } from '../usePool';
+import { tokensListExclBpt } from '../usePoolHelpers';
 
 type QueryOptions = QueryObserverOptions<HistoricalPrices>;
 
