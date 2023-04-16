@@ -3,7 +3,11 @@ import useRelayerApproval, {
 } from '@/composables/approvals/useRelayerApproval';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
-import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
+import {
+  fiatValueOf,
+  isDeep,
+  tokenTreeNodes,
+} from '@/composables/usePoolHelpers';
 import { useTxState } from '@/composables/useTxState';
 import {
   HIGH_PRICE_IMPACT,
@@ -100,7 +104,7 @@ export const joinPoolProvider = (
   /**
    * COMPOSABLES
    */
-  const { getTokens, prices, injectTokens, priceFor } = useTokens();
+  const { getTokens, injectTokens, priceFor } = useTokens();
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -282,7 +286,6 @@ export const joinPoolProvider = (
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
@@ -312,7 +315,6 @@ export const joinPoolProvider = (
       return joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,

@@ -113,7 +113,7 @@ describe('Connects to wallet and saves connection in local storage', async () =>
     expect(walletState.value).toBe('connected');
   });
 
-  test.only('with walletconnect', async () => {
+  test('with walletconnect', async () => {
     initWalletconnectConnectorForTesting(WalletConnectConnectorMock);
     await connectWallet('walletconnect');
 
@@ -130,7 +130,7 @@ describe('Connects to wallet and saves connection in local storage', async () =>
     await connectWallet('safe');
 
     expect(lsGet('connectedWallet')).toBe(gnosisAccount);
-    expect(lsGet('connectedProvider')).toBe('gnosis');
+    expect(lsGet('connectedProvider')).toBe('safe');
     expect(walletState.value).toBe('connected');
   });
 

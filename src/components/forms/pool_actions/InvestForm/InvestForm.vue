@@ -10,10 +10,10 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import {
   isStableLike,
-  usePool,
+  usePoolHelpers,
   isDeep,
   tokensListExclBpt,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
@@ -85,8 +85,11 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithSwappingHalted, isWethPool, isStableLikePool } =
-  usePool(pool);
+const {
+  managedPoolWithSwappingHalted,
+  isWrappedNativeAssetPool,
+  isStableLikePool,
+} = usePoolHelpers(pool);
 
 /**
  * COMPUTED
@@ -211,7 +214,7 @@ function getTokenInputLabel(address: string): string | undefined {
 onBeforeMount(() => {
   resetAmounts();
   tokenAddresses.value = [...investmentTokens.value];
-  if (isWethPool.value) setNativeAssetByBalance();
+  if (isWrappedNativeAssetPool.value) setNativeAssetByBalance();
 });
 
 /**

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import InvestPageMyWallet from './InvestPageMyWallet.vue';
 import InvestPageAccordion from './InvestPageAccordion.vue';
@@ -26,7 +26,7 @@ const pool = computed(() => props.pool);
  * COMPOSABLES
  */
 useDisabledJoinsGuard(props.pool);
-const { isDeepPool } = usePool(pool);
+const { isDeepPool } = usePoolHelpers(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
 
 provideJoinPool(pool);

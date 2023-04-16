@@ -7,8 +7,8 @@ import {
   isPreMintedBptType,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePool,
-} from '@/composables/usePool';
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
@@ -101,7 +101,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { injectTokens, getTokens, prices, balanceFor } = useTokens();
+  const { injectTokens, getTokens, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
@@ -111,7 +111,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     RelayerType.BATCH
   );
 
-  const { isWeightedPool } = usePool(pool);
+  const { isWeightedPool } = usePoolHelpers(pool);
 
   const debounceQueryExit = debounce(queryExit, 1000);
   const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
@@ -350,7 +350,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
@@ -396,7 +395,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
@@ -428,7 +426,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
