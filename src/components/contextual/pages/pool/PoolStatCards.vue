@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isLBP, totalAprLabel } from '@/composables/usePool';
+import { isLBP, totalAprLabel } from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';

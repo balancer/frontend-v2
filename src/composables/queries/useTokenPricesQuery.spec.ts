@@ -1,32 +1,26 @@
 import {
   defaultTokenPrice,
-  initBalancerWithDefaultMocks,
-} from '@/dependencies/balancer-sdk.mocks';
+  initBalancerApiWithDefaultMocks,
+} from '@/dependencies/balancer-api.mocks';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { daiAddress, tetherAddress } from '@tests/unit/builders/address';
 import useTokenPricesQuery from './useTokenPricesQuery';
 
-async function mountQuery(tokenAddresses) {
-  const injectedPrices = ref({});
-  const pricesQueryEnabled = ref(true);
-  const { result } = mountComposable(() =>
-    useTokenPricesQuery(tokenAddresses, injectedPrices, pricesQueryEnabled, {
-      keepPreviousData: true,
-      refetchOnWindowFocus: false,
-    })
-  );
+async function mountQuery(pricesToInject) {
+  const { result } = mountComposable(() => useTokenPricesQuery(pricesToInject));
   const data = await waitForQueryData(result);
   return data;
 }
 
-test('Returns token prices from balancer SDK', async () => {
-  const tokenAddresses = ref([tetherAddress, daiAddress]);
-  initBalancerWithDefaultMocks();
-
-  const data = await mountQuery(tokenAddresses);
-
-  expect(data).toEqual({
+test('Returns token prices from balancer API', async () => {
+  const pricesToInject = ref({
     [tetherAddress]: defaultTokenPrice,
     [daiAddress]: defaultTokenPrice,
   });
+  initBalancerApiWithDefaultMocks();
+
+  const data = await mountQuery(pricesToInject);
+
+  expect(data?.[tetherAddress]).toEqual(defaultTokenPrice);
+  expect(data?.[daiAddress]).toEqual(defaultTokenPrice);
 });

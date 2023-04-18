@@ -73,6 +73,9 @@
   "approveGP": "Approve swapping on Cowswap Protocol",
   "approveLidoRelayer": "Approve Lido relayer",
   "approveBatchRelayer": "Approve Batch relayer",
+  "signRelayerApproval": "Sign relayer approval",
+  "signingRelayerApproval": "Signing relayer approval",
+  "signRelayerApprovalTooltip": "Your signature is required to use the relayer.",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
   "approveRelayerTooltip": "Your permission is required to use the relayer.",
@@ -1280,8 +1283,8 @@
   "tokensLowerCase": "tokens",
   "tokensParen": "Token(s)",
   "tokenPrices": "Token prices",
-  "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowledge before continuing.",
-  "tokenWarningTitle": "You have added a custom token",
+  "unlistedTokenWarningTitle": "You have added a token that is not included in the Balancer Tokenlist.",
+  "unlistedTokenWarning": "You will not be able to complete pool creation until it's included. To add a token to our Tokenlist please follow our process described",
   "tooltips": {
     "addLiquidity": {
       "priceImpact": "Price impact from adding liquidity results when the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",

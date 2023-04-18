@@ -12,8 +12,15 @@ export const defaultLockedAmount = formatUnits(defaultLockedAmountBN, 18);
 class MulticallerMock extends Multicaller {
   //@ts-ignore
   execute() {
+    // this.calls.forEach(call => {
+    //   console.log(call);
+    //   // TODO:create a system to mock these calls with good DX
+    // });
+
     return {
-      'test poolId': { 'test poolId': BigNumber.from('2000000000000000000') },
+      'test poolId': {
+        'test poolId': BigNumber.from('2000000000000000000'),
+      },
     };
   }
 }
