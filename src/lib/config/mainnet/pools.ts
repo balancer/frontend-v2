@@ -304,6 +304,10 @@ const pools: Pools = {
       name: 'Balancer Boosted Morpho-Aave USD',
       hasIcon: false,
     },
+    '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
