@@ -6,7 +6,7 @@ import {
   isStableLike,
   isWeighted,
   noInitLiquidity,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { computed } from 'vue';
 
 import { isSameAddress } from '@/lib/utils';
