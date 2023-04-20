@@ -5,9 +5,11 @@ import { initOldMulticallerWithDefaultMocks } from './OldMulticaller.mocks';
 import { initEthersContractWithDefaultMocks } from './EthersContract.mocks';
 import { initMulticallerWithDefaultMocks } from './Multicaller.mocks';
 import { initWalletConnectorsWithDefaultMocks } from './wallets/default-mocks';
+import { initBalancerApiWithDefaultMocks } from './balancer-api.mocks';
 
 export function initDependenciesWithDefaultMocks() {
   initMulticallWithDefaultMocks();
+  initBalancerApiWithDefaultMocks();
   initBalancerWithDefaultMocks();
   initRpcProviderServiceWithDefaultMocks();
   //@ts-ignore

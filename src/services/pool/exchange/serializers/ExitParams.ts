@@ -8,7 +8,7 @@ import {
   isComposableStable,
   isStableLike,
   tokensListExclBpt,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { includesAddress, isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';

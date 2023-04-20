@@ -1,4 +1,4 @@
-import { removeBptFrom } from '@/composables/usePool';
+import { removeBptFrom } from '@/composables/usePoolHelpers';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import * as tokensProvider from '@/providers/tokens.provider';
 import { provideUserData } from '@/providers/user-data.provider';
