@@ -39,6 +39,7 @@ export type DeprecatedDetails = {
   suggestedPools?: string[];
   joinsDisabled?: boolean;
   stakingDisabled?: boolean;
+  description?: string;
 };
 
 export type Pools = {
