@@ -451,7 +451,9 @@
     "generic": {
       "title": "Move your liquidity for future BAL incentives",
       "description": "Liquidity mining incentives are being phased out for this pool, since upgraded pools are now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the newly incentivized pools."
-    }
+    },
+    "migrateApril": "This pool's gauge will soon be killed. A new version of this pool has been created that uses Aave v3. Go live April 20th",
+    "migrateMay": "This pool's gauge will soon be killed. A new version of this pool has been created that uses Aave v3 [link to new pool]. Go live May 4th"
   },
   "highPriceImpact": "High price impact",
   "highPriceImpactDetailed": "This swap is significantly moving the market price.",
