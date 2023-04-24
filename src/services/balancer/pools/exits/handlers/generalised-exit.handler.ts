@@ -9,14 +9,14 @@ import {
   QueryOutput,
   AmountsOut,
 } from './exit-pool.handler';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { flatTokenTree } from '@/composables/usePoolHelpers';
 import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-type BalancerSdkType = ReturnType<typeof getBalancer>;
+type BalancerSdkType = ReturnType<typeof getBalancerSDK>;
 type ExitResponse = Awaited<
   ReturnType<BalancerSdkType['pools']['generalisedExit']>
 >;
@@ -73,7 +73,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
 
     console.log({ simulationType });
 
-    const balancer = getBalancer();
+    const balancer = getBalancerSDK();
     this.lastExitRes = await balancer.pools
       .generalisedExit(
         this.pool.value.id,

@@ -82,6 +82,7 @@ const pools: Pools = {
       '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e', // sweth/bb-a-weth
       '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e', // bb-a-weth / qeth
       '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // bb-a-weth / cbeth
+      '0xbfce47224b4a938865e3e2727dc34e0faa5b1d82000000000000000000000527', // uniweth / weth
     ],
   },
   Investment: {
@@ -105,6 +106,7 @@ const pools: Pools = {
       '0x87a867f5d240a782d43d90b6b06dea470f3f8f22000200000000000000000516', // wseth/comp
       '0x8bd4a1e74a27182d23b98c10fd21d4fbb0ed4ba00002000000000000000004ed', // temple/dai
       '0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524', // ush/unstheth
+      '0x6987633f18ca0b4a10831331fcc57211941b6ba0000200000000000000000530', // 20AGI/80WETH
     ],
   },
   Factories: {
@@ -400,6 +402,20 @@ const pools: Pools = {
     '0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367': {
       newPool:
         '0x9f9d900462492d4c21e9523ca95a7cd86142f298000200000000000000000462',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
+      newPool:
+        '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502',
+      description: 'deprecatedPool.migrateApril',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b': {
+      newPool:
+        '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505',
+      description: 'deprecatedPool.migrateApril',
       joinsDisabled: true,
       stakingDisabled: true,
     },

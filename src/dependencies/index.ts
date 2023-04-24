@@ -1,5 +1,5 @@
 import { initApi } from './balancer-api';
-import { initBalancer } from './balancer-sdk';
+import { initBalancerSDK } from './balancer-sdk';
 import { initEthersContract } from './EthersContract';
 import { initMulticall } from './multicall';
 import { initMulticaller } from './Multicaller';
@@ -12,7 +12,7 @@ import { initWeb3Provider } from './wallets/Web3Provider';
 export function initDependencies() {
   initMulticall();
   initApi();
-  initBalancer();
+  initBalancerSDK();
   initRpcProviderService();
   initMulticaller();
   initOldMulticaller();
