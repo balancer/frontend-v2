@@ -1,4 +1,4 @@
-import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
 import {
@@ -186,6 +186,6 @@ export function generateBalancerSdkMock() {
   return balancerMock;
 }
 
-export function initBalancerWithDefaultMocks() {
-  initBalancer(generateBalancerSdkMock());
+export function initBalancerSdkWithDefaultMocks() {
+  initBalancerSDK(generateBalancerSdkMock());
 }

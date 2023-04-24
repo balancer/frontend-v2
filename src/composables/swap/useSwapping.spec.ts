@@ -1,7 +1,7 @@
 import useSwapping from '@/composables/swap/useSwapping';
 
 import * as useSor from '@/composables/swap/useSor';
-import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { provideTokenLists } from '@/providers/token-lists.provider';
@@ -82,7 +82,7 @@ swapInfoMock.tokenAddresses = [
 
 const balancerMock = mockDeep<BalancerSDK>();
 balancerMock.sor.getSwaps.mockResolvedValue(swapInfoMock);
-initBalancer(balancerMock);
+initBalancerSDK(balancerMock);
 
 const mockProps = {
   exactIn: ref(true),
