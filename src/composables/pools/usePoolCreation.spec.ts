@@ -1,3 +1,4 @@
+import { initPoolsFallbackRepositoryWithDefaultMocks } from '@/dependencies/PoolsFallbackRepository.mocks';
 import { mountComposable } from '@tests/mount-helpers';
 
 import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
@@ -5,6 +6,7 @@ import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 const tokens: Record<string, PoolSeedToken> = {};
 
 vi.mock('@/providers/tokens.provider');
+initPoolsFallbackRepositoryWithDefaultMocks();
 
 describe('usePoolCreation', () => {
   const { result: poolCreation } = mountComposable(() => usePoolCreation());
