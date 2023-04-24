@@ -6,7 +6,7 @@ const contracts: Contracts = {
   multicall: '',
   authorizer: '',
   vault: '',
-  weightedPoolFactory: '0xA0DAbEBAAd1b243BBb243f933013d560819eB66f',
+  weightedPoolFactory: '0x230a59F4d9ADc147480f03B0D3fFfeCd56c3289a',
   stablePoolFactory: '',
   weth: '',
   rETH: '',
