@@ -8,9 +8,19 @@ export type FactoryType =
   | 'composableStablePool'
   | 'fx';
 
+export enum BoostedProtocol {
+  Aave = 'aave',
+  Euler = 'euler',
+  Yearn = 'yearn',
+  Gearbox = 'gearbox',
+  Strudy = 'strudy',
+}
+
 export type PoolMetadata = {
   name: string;
   hasIcon: boolean;
+  boosted?: boolean;
+  boostedProtocol?: BoostedProtocol;
 };
 
 export type NamedPools = {
