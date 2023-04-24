@@ -5,6 +5,7 @@ import NewPoolData from './NewPoolData.vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import GradientCard from '@/components/cards/GradientCard/GradientCard.vue';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -22,6 +23,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { networkSlug } = useNetwork();
+const { t } = useI18n();
 
 const poolDeprecatedDetails = computed(() => deprecatedDetails(props.poolId));
 
@@ -76,6 +78,15 @@ const showLoadingBlock = computed(() => {
     (suggestPoolsQueryEnabled.value && loadingSuggestedPools.value)
   );
 });
+
+const description = computed(() => {
+  const poolDescription = poolDeprecatedDetails.value?.description;
+  if (poolDescription) {
+    return t(poolDescription);
+  }
+
+  return t('migrateCard.description');
+});
 </script>
 
 <template>
@@ -91,7 +102,7 @@ const showLoadingBlock = computed(() => {
             {{ $t('migrateCard.title') }}
           </div>
           <div class="mb-3 text-sm font-medium text-opacity-80">
-            {{ $t('migrateCard.description') }}
+            {{ description }}
           </div>
           <div v-if="newPool" class="no-pad">
             <div
