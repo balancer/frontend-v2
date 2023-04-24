@@ -13,9 +13,9 @@ import useAllowancesQuery from './useAllowancesQuery';
 
 test('Returns token allowances from balancer SDK', async () => {
   const tokens: Ref<TokenInfoMap> = ref({
-    [nativeAssetAddress]: aTokenInfo(nativeAssetAddress),
-    [daiAddress]: aTokenInfo(daiAddress),
-    [balAddress]: aTokenInfo(balAddress),
+    [nativeAssetAddress]: aTokenInfo({ address: nativeAssetAddress }),
+    [daiAddress]: aTokenInfo({ address: daiAddress }),
+    [balAddress]: aTokenInfo({ address: balAddress }),
   });
 
   function processCall(call) {
