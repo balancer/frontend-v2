@@ -835,7 +835,7 @@
   "previewWrap": "Preview {0} Wrap",
   "previewMigrate": "Preview migrate",
   "priceImpact": "Price impact",
-  "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
+  "priceImpactAccept": "I accept the high price impact from {0}, moving the market price based on the depth of the market.",
   "priceImpactCheckbox": "Price impact acknowledgement",
   "priceImpactTolerance": "Price impact tolerance",
   "priceUpdatedAlert": {
