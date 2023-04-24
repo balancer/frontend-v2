@@ -13,7 +13,7 @@ export enum BoostedProtocol {
   Euler = 'euler',
   Yearn = 'yearn',
   Gearbox = 'gearbox',
-  Strudy = 'strudy',
+  Sturdy = 'sturdy',
 }
 
 export type PoolMetadata = {
