@@ -6,11 +6,7 @@ import {
   PoolType,
 } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
-import {
-  AprBreakdown,
-  PoolWithMethods,
-  PriceRateProvider,
-} from '@balancer-labs/sdk';
+import { PoolWithMethods, PriceRateProvider } from '@balancer-labs/sdk';
 import { mock } from 'vitest-mock-extended';
 import { randomAddress, wethAddress } from './address';
 
@@ -61,12 +57,6 @@ export function anOnchainTokenData(...options: Partial<OnchainTokenData>[]) {
 
 export function aPriceRateProvider(...options: Partial<PriceRateProvider>[]) {
   const data = mock<PriceRateProvider>();
-  return Object.assign(data, ...options);
-  return data;
-}
-
-export function anAprBreakdown(...options: Partial<AprBreakdown>[]) {
-  const data = mock<AprBreakdown>();
   return Object.assign(data, ...options);
   return data;
 }

@@ -8,7 +8,6 @@ import { mountComposableWithDefaultTokensProvider as mountComposable } from '@te
 
 import {
   aCustomWeightedPool,
-  anAprBreakdown,
   anOnchainPoolData,
   anOnchainTokenData,
   aPool,
@@ -41,6 +40,7 @@ import {
   joinTokens,
 } from './usePoolHelpers';
 import { daiAddress } from '@tests/unit/builders/address';
+import { anAprBreakdown } from '@tests/unit/builders/sdk-pool.builders';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 

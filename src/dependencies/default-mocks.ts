@@ -6,11 +6,13 @@ import { initEthersContractWithDefaultMocks } from './EthersContract.mocks';
 import { initMulticallerWithDefaultMocks } from './Multicaller.mocks';
 import { initWalletConnectorsWithDefaultMocks } from './wallets/default-mocks';
 import { initBalancerApiWithDefaultMocks } from './balancer-api.mocks';
+import { initPoolsFallbackRepositoryWithDefaultMocks } from './PoolsFallbackRepository.mocks';
 
 export function initDependenciesWithDefaultMocks() {
   initMulticallWithDefaultMocks();
   initBalancerApiWithDefaultMocks();
   initBalancerWithDefaultMocks();
+  initPoolsFallbackRepositoryWithDefaultMocks();
   initRpcProviderServiceWithDefaultMocks();
   //@ts-ignore
   initOldMulticallerWithDefaultMocks();
