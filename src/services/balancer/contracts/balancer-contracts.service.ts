@@ -11,7 +11,7 @@ import StablePhantomPool from '@/lib/abi/StablePhantomPool.json';
 import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
-// import { getBalancer } from '@/dependencies/balancer-sdk';
+// import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { Config } from '@/lib/config/types';
 import { configService as _configService } from '@/services/config/config.service';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
@@ -28,7 +28,7 @@ export default class BalancerContractsService {
     readonly configService = _configService,
     readonly rpcProviderService = _rpcProviderService,
     // TODO: Fix affected tests by refactoring export balancerContractsService
-    // readonly sdk = getBalancer()
+    // readonly sdk = getBalancerSDK()
     readonly sdk = balancer
   ) {
     this.provider = this.rpcProviderService.jsonProvider;

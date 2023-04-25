@@ -1,5 +1,5 @@
-import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
@@ -8,8 +8,8 @@ import { ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
 import { joinPoolProvider } from './join-pool.provider';
 
-initBalancerWithDefaultMocks();
 initEthersContractWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 
 async function mountJoinPoolProvider(pool: Pool) {
   const { result } = await mountComposable(() => joinPoolProvider(ref(pool)));

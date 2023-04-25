@@ -88,6 +88,8 @@ const pools: Pools = {
       '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c', // stmatic / bb-a-matic
       '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37', // bb-a-usd aave v3
       '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38', // wseth/bb-a-eth
+      '0xe19ed40a47f9b0cea4ca6d372df66107758913ec000000000000000000000b41', // 2brl
+      '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42', // bb-a-weth/frxeth
     ],
   },
   Investment: {
@@ -98,6 +100,9 @@ const pools: Pools = {
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
     AllowList: [
       '0x7104ad560c1d74aabc108bc51114db121b927a9d000200000000000000000b2a', // 80XES/20USDC
+      '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43', // bb-am-usd/2brl
+      '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44', // stmatci-bb-wmatic/bb-am-usd
+      '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45', // wsteth-bb-a-weth/bb-am-usd
     ],
   },
   Factories: {
@@ -168,21 +173,31 @@ const pools: Pools = {
       '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
       '0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a',
       '0x9f9f548354b7c66dc9a9f3373077d86aaaccf8f2000200000000000000000a4a',
+      '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37',
+      '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38',
     ],
     AllowList: [],
   },
   Metadata: {
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
-      name: 'Balancer Boosted Aave USD (Polygon)',
+      name: 'Balancer Boosted Aave USD',
       hasIcon: true,
     },
     '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
-      name: 'Balancer Boosted Tetu USD (Polygon)',
+      name: 'Balancer Boosted Tetu USD',
       hasIcon: true,
     },
     '0x71bd10c2a590b5858f5576550c163976a48af906000000000000000000000b27': {
-      name: 'Balancer Boosted Tetu MATIC (Polygon)',
+      name: 'Balancer Boosted Tetu MATIC',
       hasIcon: true,
+    },
+    '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
+      name: 'BstMATIC/Boosted Aave v3 WMATIC',
+      hasIcon: false,
+    },
+    '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
+      name: 'maticX/Boosted Aave v3 WMATIC',
+      hasIcon: false,
     },
   },
   Deep: [
@@ -195,6 +210,9 @@ const pools: Pools = {
     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c', // stmatic / bb-a-matic
     '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37', // bb-a-usd aave v3
     '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38', // wseth/bb-a-eth
+    '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43', // bb-am-usd/2brl
+    '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44', // stmatci-bb-wmatic/bb-am-usd
+    '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45', // wsteth-bb-a-weth/bb-am-usd
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
@@ -217,6 +235,20 @@ const pools: Pools = {
       joinsDisabled: true,
       stakingDisabled: true,
     },
+    // '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
+    //   newPool:
+    //     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
+    //   description: 'deprecatedPool.migrateApril',
+    //   joinsDisabled: true,
+    //   stakingDisabled: true,
+    // },
+    // '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
+    //   newPool:
+    //     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
+    //   description: 'deprecatedPool.migrateApril',
+    //   joinsDisabled: true,
+    //   stakingDisabled: true,
+    // },
   },
   BrandedRedirect: {
     '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':

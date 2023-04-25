@@ -1,4 +1,4 @@
-import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
 import {
@@ -102,7 +102,7 @@ defaultSwapInfo.swaps = [
 export const defaultSwapAttributes = mock<SwapAttributes>();
 
 defaultSwapInfo.tokenAddresses = [
-  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  wethAddress,
   '0x616e8bfa43f920657b3497dbf40d6b1a02d4608d',
   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
 ];
@@ -199,6 +199,6 @@ export function generateBalancerSdkMock() {
   return balancerMock;
 }
 
-export function initBalancerWithDefaultMocks() {
-  initBalancer(generateBalancerSdkMock());
+export function initBalancerSdkWithDefaultMocks() {
+  initBalancerSDK(generateBalancerSdkMock());
 }

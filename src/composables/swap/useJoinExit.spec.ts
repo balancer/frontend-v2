@@ -1,13 +1,13 @@
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { computed, ref } from 'vue';
 
-import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
+import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 
-initBalancerWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 initEthersContractWithDefaultMocks();
 
 const mockAmount = BigNumber.from(10);

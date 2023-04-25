@@ -1,8 +1,8 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
 import {
   gasPriceService,
   GasPriceService,
 } from '@/services/gas-price/gas-price.service';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
@@ -42,7 +42,7 @@ export class JoinPoolService {
    */
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk = getBalancer(),
+    public readonly sdk = getBalancerSDK(),
     public readonly gasPriceServ = gasPriceService
   ) {
     this.joinHandler = this.setJoinHandler(JoinHandler.Generalised);

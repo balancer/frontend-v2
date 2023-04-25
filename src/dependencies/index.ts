@@ -1,9 +1,10 @@
 import { initApi } from './balancer-api';
-import { initBalancer } from './balancer-sdk';
+import { initBalancerSDK } from './balancer-sdk';
 import { initEthersContract } from './EthersContract';
 import { initMulticall } from './multicall';
 import { initMulticaller } from './Multicaller';
 import { initOldMulticaller } from './OldMulticaller';
+import { initPoolsFallbackRepository } from './PoolsFallbackRepository';
 import { initRpcProviderService } from './rpc-provider.service';
 import { initWalletConnectors } from './wallets';
 import { initWeb3Provider } from './wallets/Web3Provider';
@@ -11,13 +12,14 @@ import { initWeb3Provider } from './wallets/Web3Provider';
 export function initDependencies() {
   initMulticall();
   initApi();
-  initBalancer();
+  initBalancerSDK();
   initRpcProviderService();
   initMulticaller();
   initOldMulticaller();
   initEthersContract();
   initWeb3Provider();
   initWalletConnectors();
+  initPoolsFallbackRepository();
 }
 
 export function handleDependencyError(dependencyName: string): never {
