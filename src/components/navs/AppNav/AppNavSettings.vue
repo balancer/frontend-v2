@@ -207,14 +207,12 @@ function copyAddress() {
     </div>
     <div class="px-4 mt-6">
       <div class="flex items-baseline">
-        <span class="mb-2 font-medium" v-text="'Use signatures'" />
+        <span class="mb-2 font-medium" v-text="$t('useSignatures')" />
         <BalTooltip>
           <template #activator>
             <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
           </template>
-          <div
-            v-text="'Where possible use signatures instead of transactions.'"
-          />
+          <div v-text="$t('useSignaturesTooltip')" />
         </BalTooltip>
       </div>
       <BalToggle
