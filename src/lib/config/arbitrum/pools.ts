@@ -107,6 +107,10 @@ const pools: Pools = {
       name: 'Balancer Boosted Reaper Granary USD',
       hasIcon: true,
     },
+    '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
+      name: 'rETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
