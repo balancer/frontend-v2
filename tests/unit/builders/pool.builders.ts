@@ -1,7 +1,8 @@
+import { flatTokenTree } from '@/composables/usePoolHelpers';
 import { POOLS } from '@/constants/pools';
 import {
-  OnchainTokenData,
   OnchainPoolData,
+  OnchainTokenData,
   Pool,
   PoolType,
 } from '@/services/pool/types';
@@ -49,14 +50,30 @@ export function anOnchainPoolData(...options: Partial<OnchainPoolData>[]) {
   return Object.assign(data, ...options);
 }
 
+export const defaultOnchainBalance = '6';
 export function anOnchainTokenData(...options: Partial<OnchainTokenData>[]) {
-  const data = mock<OnchainTokenData>();
+  const data: OnchainTokenData = {
+    name: 'onchain token name',
+    symbol: 'onchain token symbol',
+    balance: defaultOnchainBalance,
+    weight: 50,
+    decimals: 18,
+    logoURI: '',
+  };
   return Object.assign(data, ...options);
-  return data;
 }
 
 export function aPriceRateProvider(...options: Partial<PriceRateProvider>[]) {
   const data = mock<PriceRateProvider>();
   return Object.assign(data, ...options);
   return data;
+}
+
+export function addOnChainToPoolData(pool: Pool) {
+  const onchainTokens = {};
+  flatTokenTree(pool).forEach(
+    token => (onchainTokens[token.address] = anOnchainTokenData())
+  );
+  pool.onchain = anOnchainPoolData({ tokens: onchainTokens });
+  return pool;
 }

@@ -5,8 +5,9 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { aTokenInfo } from '@/types/TokenList.builders';
 import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
+import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
-import { daiAddress } from '@tests/unit/builders/address';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
 import { DeepPartial } from '@tests/unit/types';
 import usePropMaxJoin from './usePropMaxJoin';
 
@@ -18,35 +19,49 @@ async function mountUsePropMaxJoin(
   tokensProviderOverride?: DeepPartial<TokensResponse>
 ) {
   const { result } = await mountComposable(
-    () => usePropMaxJoin(BoostedPoolMock, ref(tokensIn)),
+    () => usePropMaxJoin(aWeightedPool(), ref(tokensIn)),
     { tokensProviderOverride }
   );
   return result;
 }
 
+function buildTokensIn() {
+  return {
+    [groAddress]: aTokenInfo({ address: groAddress }),
+    [wethAddress]: aTokenInfo({ address: wethAddress }),
+  };
+}
+
 test('Calculates the proportional maximum amounts in given the users token balances', async () => {
-  const tokensIn = { [daiAddress]: aTokenInfo({ address: daiAddress }) };
+  const tokensIn = buildTokensIn();
   const result = await mountUsePropMaxJoin(BoostedPoolMock, tokensIn);
 
   expect(result.getPropMax()).toEqual([
     {
-      address: daiAddress,
+      address: groAddress,
       valid: true,
       value: defaultBalance,
+    },
+    {
+      address: wethAddress,
+      valid: true,
+      value: '10.0', //Formatted Default balance
     },
   ]);
 });
 
-//TODO: finish this test
-test('When user does not have enough balance', async () => {
-  const daiBalance = '5';
+test('When user does not have enough proportional balance in one token, it maxes the other tokens to that balance', async () => {
+  const groBalance = '4';
+  const wethBalance = '8';
   const tokensProviderOverride: DeepPartial<TokensResponse> = {
     balanceFor: address => {
-      if (address === daiAddress) return daiBalance;
+      if (address === groAddress) return groBalance;
+      if (address === wethAddress) return wethBalance;
       else return defaultBalance;
     },
   };
-  const tokensIn = { [daiAddress]: aTokenInfo({ address: daiAddress }) };
+  const tokensIn = buildTokensIn();
+
   const result = await mountUsePropMaxJoin(
     BoostedPoolMock,
     tokensIn,
@@ -55,9 +70,14 @@ test('When user does not have enough balance', async () => {
 
   expect(result.getPropMax()).toEqual([
     {
-      address: daiAddress,
+      address: groAddress,
       valid: true,
-      value: daiBalance,
+      value: groBalance,
+    },
+    {
+      address: wethAddress,
+      valid: true,
+      value: '4.0', // Instead of 8 uses 4 because user does not have enough proportional GRO balance
     },
   ]);
 });
