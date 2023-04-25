@@ -52,6 +52,20 @@ defaultRecoveryExit.attributes.exitPoolRequest.assets = [
   wethAddress,
 ];
 
+test('Successfully queries a recovery exit', async () => {
+  const handler = await mountRecoveryExitHandler(aWeightedPool());
+
+  const queryOutput = await handler.queryExit(exitParams);
+
+  expect(queryOutput).toEqual({
+    amountsOut: {
+      [groAddress]: '0.00000000000000002', // 20
+      [wethAddress]: '0.00000000000000002', // 20
+    },
+    priceImpact: 1, // Number(formatFixed(evmPriceImpact, 18)) where evmPriceImpact is defaultPriceImpact
+  });
+});
+
 test('Successfully executes a recovery exit transaction', async () => {
   const handler = await mountRecoveryExitHandler(aWeightedPool());
 
