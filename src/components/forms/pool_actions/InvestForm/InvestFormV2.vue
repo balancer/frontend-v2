@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 
-import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
+import WrapStEthLink from '@/components/contextual/pages/pool/add-liquidity/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';

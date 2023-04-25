@@ -5,8 +5,10 @@ import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.moc
 import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initEthersContractWithDefaultMocks();
 
 const mockAmount = BigNumber.from(10);
 vi.mock('@/lib/balancer.sdk', () => {

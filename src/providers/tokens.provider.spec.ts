@@ -6,6 +6,7 @@ import { provideTokenLists } from '@/providers/token-lists.provider';
 import { provideUserSettings } from '@/providers/user-settings.provider';
 import { configService } from '@/services/config/config.service';
 import { mountComposable } from '@tests/mount-helpers';
+import { nativeAssetAddress, wethAddress } from '@tests/unit/builders/address';
 import { silenceConsoleLog } from '@tests/unit/console';
 import waitForExpect from 'wait-for-expect';
 import { tokensProvider } from './tokens.provider';
@@ -98,5 +99,13 @@ describe('Tokens provider', () => {
     expect(balanceFor(balTokenAddress)).toEqual('0.000000000000000025');
     expect(priceFor(veBAL)).toEqual(defaultTokenPrice);
     expect(priceFor(balTokenAddress)).toEqual(defaultTokenPrice);
+  });
+
+  test('isWethOrEth works', async () => {
+    const { isWethOrEth } = await mountTokenProvider();
+
+    expect(isWethOrEth(wethAddress)).toBeTrue();
+    expect(isWethOrEth(nativeAssetAddress)).toBeTrue();
+    expect(isWethOrEth(balTokenAddress)).toBeFalse();
   });
 });

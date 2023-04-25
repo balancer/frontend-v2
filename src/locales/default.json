@@ -1513,7 +1513,7 @@
   "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
     "tabs": {
-      "poolTokens": "Pool tokens (proportional)",
+      "poolTokens": "Proportional pool tokens",
       "singleToken": "Single token"
     },
     "label": "Withdraw",
