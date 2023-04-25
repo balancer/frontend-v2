@@ -316,6 +316,14 @@ const pools: Pools = {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
     },
+    '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504': {
+      name: 'wstETH/Boosted Aave v3  WETH',
+      hasIcon: false,
+    },
+    '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505': {
+      name: 'STG/Boosted Aave v3 USD',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
