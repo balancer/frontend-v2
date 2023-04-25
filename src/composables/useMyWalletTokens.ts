@@ -5,7 +5,7 @@ import { isSameAddress, includesAddress, removeAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
-import { tokenTreeNodes, usePool } from '@/composables/usePool';
+import { tokenTreeNodes, usePoolHelpers } from '@/composables/usePoolHelpers';
 
 type Props = {
   excludedTokens?: string[];
@@ -30,7 +30,7 @@ export default function useMyWalletTokens({
 
   const poolRef = computed(() => pool);
 
-  const { isWethPool, isDeepPool } = usePool(poolRef);
+  const { isWrappedNativeAssetPool, isDeepPool } = usePoolHelpers(poolRef);
 
   function isExcludedToken(tokenAddress: Address) {
     return excludedTokens.some(excludedAddress =>
@@ -64,7 +64,7 @@ export default function useMyWalletTokens({
     }
 
     const tokensList = pool?.tokensList || [];
-    if (isWethPool.value) {
+    if (isWrappedNativeAssetPool.value) {
       return [nativeAsset.address, ...tokensList];
     }
     return tokensList;

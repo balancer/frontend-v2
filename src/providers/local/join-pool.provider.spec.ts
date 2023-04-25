@@ -1,4 +1,4 @@
-import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
+import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposable } from '@tests/mount-helpers';
@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
 import { joinPoolProvider } from './join-pool.provider';
 
-initBalancerWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 
 vi.mock('@/providers/tokens.provider');
 

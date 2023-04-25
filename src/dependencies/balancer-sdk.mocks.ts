@@ -1,4 +1,4 @@
-import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
 import {
@@ -18,14 +18,6 @@ type DeepPartial<T> = T extends object
       [P in keyof T]?: DeepPartial<T[P]>;
     }
   : T;
-
-export const defaultTokenUSDPrice = '1';
-export const defaultTokenEthPrice = '0.005';
-
-export const defaultTokenPrice = {
-  usd: '1',
-  eth: '0.005',
-};
 
 // TODO: Improve builder to avoid DeepPartial and move to sor mocks to subfile
 export const defaultSorPools: DeepPartial<Pool[]> = [
@@ -152,7 +144,6 @@ defaultExactOutExit.data = 'exact exit test encoded data';
 
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
-  balancerMock.data.tokenPrices.find.mockResolvedValue(defaultTokenPrice);
   balancerMock.sor.fetchPools.mockResolvedValue(true);
 
   balancerMock.sor.getPools.mockReturnValue(
@@ -195,6 +186,6 @@ export function generateBalancerSdkMock() {
   return balancerMock;
 }
 
-export function initBalancerWithDefaultMocks() {
-  initBalancer(generateBalancerSdkMock());
+export function initBalancerSdkWithDefaultMocks() {
+  initBalancerSDK(generateBalancerSdkMock());
 }
