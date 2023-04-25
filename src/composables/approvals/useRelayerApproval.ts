@@ -10,6 +10,7 @@ import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useGnosisSafeApp from '@/composables/useGnosisSafeApp';
 import { COW_RELAYER_CONTRACT_ADDRESS } from '@/services/cowswap/constants';
 import { isWalletConnectWallet } from '@/services/web3/wallet-names';
+import { useUserSettings } from '@/providers/user-settings.provider';
 
 /**
  * TYPES
@@ -40,6 +41,7 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   const { t } = useI18n();
   const { isGnosisSafeApp } = useGnosisSafeApp();
   const { action: transactionAction } = useRelayerApprovalTx(relayerType);
+  const { supportSignatures } = useUserSettings();
 
   const signatureAction: TransactionActionInfo = {
     label: t('approveBatchRelayer'),
@@ -55,7 +57,9 @@ export default function useRelayerApproval(relayerType: RelayerType) {
    */
 
   const relayerApprovalAction = computed((): TransactionActionInfo => {
-    return isGnosisSafeApp.value || isWalletConnectWallet(connector.value?.id)
+    return !supportSignatures.value ||
+      isGnosisSafeApp.value ||
+      isWalletConnectWallet(connector.value?.id)
       ? transactionAction.value
       : signatureAction;
   });

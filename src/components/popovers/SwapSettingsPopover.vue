@@ -11,6 +11,7 @@ import { useApp } from '@/composables/useApp';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import useFathom from '@/composables/useFathom';
 import { ethereumTxTypeOptions } from '@/constants/options';
+import { useUserSettings } from '@/providers/user-settings.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
@@ -31,6 +32,7 @@ const { transactionDeadline, setTransactionDeadline } = useApp();
 const { isEIP1559SupportedNetwork } = useWeb3();
 const { trackGoal, Goals } = useFathom();
 const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
+const { supportSignatures, setSupportSignatures } = useUserSettings();
 
 // METHODS
 function onActivatorClick(): void {
@@ -85,6 +87,22 @@ function onActivatorClick(): void {
           @update:model-value="setEthereumTxType"
         />
       </div>
+    </div>
+    <div class="mt-6">
+      <div class="flex items-baseline">
+        <span class="mb-2 font-medium" v-text="$t('useSignatures')" />
+        <BalTooltip>
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
+          </template>
+          <div v-text="$t('useSignaturesTooltip')" />
+        </BalTooltip>
+      </div>
+      <BalToggle
+        v-model="supportSignatures"
+        name="supportSignatures"
+        @toggle="setSupportSignatures"
+      />
     </div>
     <div v-if="isGassless && context === SwapSettingsContext.swap" class="mt-6">
       <div class="flex items-baseline">

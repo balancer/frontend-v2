@@ -1481,6 +1481,8 @@
   "unwrap": "Unwrap",
   "usdValue": "USD Value",
   "useOf": "use of",
+  "useSignatures": "Use signatures",
+  "useSignaturesTooltip": "Where possible use signatures instead of transactions",
   "v1": "V1",
   "v2": "V2",
   "value": "Value",
