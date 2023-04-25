@@ -4,22 +4,26 @@ import { Pool } from '@/services/pool/types';
 import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
-import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
+import {
+  AmountsOut,
+  ExitParams,
+  ExitPoolHandler,
+  QueryOutput,
+} from './exit-pool.handler';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { indexOfAddress, selectByAddress } from '@/lib/utils';
+import { isSameAddress, removeAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
-import { TokenInfo } from '@/types/TokenList';
+import { flatTokenTree } from '@/composables/usePoolHelpers';
+import { getAddress } from '@ethersproject/address';
 
-export type ExitExactInResponse = ReturnType<
-  PoolWithMethods['buildExitExactBPTIn']
+export type RecoveryExitResponse = ReturnType<
+  PoolWithMethods['buildRecoveryExit']
 >;
-
 /**
- * Handles cases where BPT in is set for the exit using SDK's
- * buildExitExactBPTIn function.
+ * Handles cases where the pool is in a recovery mode.
  */
-export class ExactInExitHandler implements ExitPoolHandler {
-  private lastExitRes?: ExitExactInResponse;
+export class RecoveryExitHandler implements ExitPoolHandler {
+  private lastExitRes?: RecoveryExitResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -39,41 +43,29 @@ export class ExactInExitHandler implements ExitPoolHandler {
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
-    const { signer, tokenInfo, bptIn, slippageBsp, amountsOut } = params;
-    const shouldUnwrapNativeAsset = false;
+    const { signer, bptIn, slippageBsp } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
     const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
-    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
-    if (!tokenOut)
-      throw new Error('Could not find exit token in pool tokens list.');
-
-    const tokenOutAddress = tokenOut.address;
-    const tokenOutIndex = indexOfAddress(
-      this.pool.value.tokensList,
-      tokenOutAddress
-    );
 
     const evmBptIn = parseFixed(bptIn, 18).toString();
-    const singleTokenMaxOut =
-      amountsOut.length === 1
-        ? // TODO: Fix this in the SDK, then remove this toLowerCase
-          tokenOutAddress.toLowerCase()
-        : undefined;
 
-    this.lastExitRes = await sdkPool.buildExitExactBPTIn(
+    this.lastExitRes = await sdkPool.buildRecoveryExit(
       exiter,
       evmBptIn,
-      slippage,
-      shouldUnwrapNativeAsset,
-      singleTokenMaxOut
+      slippage
     );
+
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');
 
-    const expectedAmountsOut = this.lastExitRes.expectedAmountsOut;
+    const tokensOut = removeAddress(
+      this.pool.value.address,
+      this.lastExitRes.attributes.exitPoolRequest.assets
+    );
 
+    const expectedAmountsOut = this.lastExitRes.expectedAmountsOut;
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
     const evmPriceImpact = await sdkPool.calcPriceImpact(
@@ -83,24 +75,37 @@ export class ExactInExitHandler implements ExitPoolHandler {
     );
 
     const priceImpact = Number(formatFixed(evmPriceImpact, 18));
-    const normalizedAmountOut = this.normalizeAmountOut(
-      expectedAmountsOut,
-      tokenOutIndex,
-      tokenOut
-    );
+
+    const amountsOut = this.getAmountsOut(expectedAmountsOut, tokensOut);
 
     return {
-      amountsOut: { [tokenOutAddress]: normalizedAmountOut },
+      amountsOut,
       priceImpact,
     };
   }
 
-  private normalizeAmountOut(
-    amountsOut: string[],
-    tokenOutIndex: number,
-    tokenOut: TokenInfo
-  ) {
-    const amountOut = amountsOut[tokenOutIndex];
-    return formatFixed(amountOut, tokenOut.decimals).toString();
+  private getAmountsOut(
+    expectedAmountsOut: string[],
+    tokensOut: string[]
+  ): AmountsOut {
+    const amountsOut: AmountsOut = {};
+    const allPoolTokens = flatTokenTree(this.pool.value);
+
+    expectedAmountsOut.forEach((amount, i) => {
+      const token = allPoolTokens.find(poolToken =>
+        isSameAddress(poolToken.address, tokensOut[i])
+      );
+
+      if (token) {
+        const realAddress = getAddress(token.address);
+        const scaledAmount = formatFixed(
+          amount,
+          token.decimals ?? 18
+        ).toString();
+        amountsOut[realAddress] = scaledAmount;
+      }
+    });
+
+    return amountsOut;
   }
 }

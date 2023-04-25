@@ -1,0 +1,66 @@
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
+import {
+  defaultRecoveryExit,
+  initBalancerSdkWithDefaultMocks,
+} from '@/dependencies/balancer-sdk.mocks';
+import { GasPriceService } from '@/services/gas-price/gas-price.service';
+import { Pool } from '@/services/pool/types';
+import { aTokenInfo } from '@/types/TokenList.builders';
+import { aWeightedPool } from '@/__mocks__/weighted-pool';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
+import {
+  anAmountOut,
+  buildExitParams,
+} from '@tests/unit/builders/join-exit.builders';
+import {
+  defaultGasLimit,
+  defaultTransactionResponse,
+} from '@tests/unit/builders/signer';
+import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
+import { ExitParams, ExitType } from './exit-pool.handler';
+import { RecoveryExitHandler } from './recovery-exit.handler';
+
+initBalancerSdkWithDefaultMocks();
+
+const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
+  mockDeep<GasPriceService>();
+
+async function mountRecoveryExitHandler(pool: Pool) {
+  return new RecoveryExitHandler(
+    ref(pool),
+    getBalancerSDK(),
+    gasPriceServiceMock
+  );
+}
+
+const exitParams: ExitParams = buildExitParams({
+  exitType: ExitType.GivenIn,
+  bptIn: '40',
+  amountsOut: [
+    anAmountOut({ address: groAddress, value: '20' }),
+    anAmountOut({ address: wethAddress, value: '20' }),
+  ],
+  tokenInfo: {
+    [groAddress]: aTokenInfo({ address: groAddress }),
+    [wethAddress]: aTokenInfo({ address: wethAddress }),
+  },
+});
+
+defaultRecoveryExit.expectedAmountsOut = ['20', '20'];
+defaultRecoveryExit.attributes.exitPoolRequest.assets = [
+  groAddress,
+  wethAddress,
+];
+
+test('Successfully executes a recovery exit transaction', async () => {
+  const handler = await mountRecoveryExitHandler(aWeightedPool());
+
+  const exitResult = await handler.exit(exitParams);
+
+  expect(exitResult).toEqual(defaultTransactionResponse);
+  expect(exitParams.signer.sendTransaction).toHaveBeenCalledOnceWith({
+    data: defaultRecoveryExit.data,
+    to: defaultRecoveryExit.to,
+    gasLimit: defaultGasLimit,
+  });
+});
