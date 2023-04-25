@@ -1,5 +1,6 @@
 import { initPoolsFallbackRepositoryWithDefaultMocks } from '@/dependencies/PoolsFallbackRepository.mocks';
 import { mountComposable } from '@tests/mount-helpers';
+import { wethAddress } from '@tests/unit/builders/address';
 
 import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 
@@ -28,7 +29,7 @@ describe('usePoolCreation', () => {
       amount: '0',
     };
     tokens.WETH = {
-      tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      tokenAddress: wethAddress,
       weight: 20,
       isLocked: false,
       id: '1',

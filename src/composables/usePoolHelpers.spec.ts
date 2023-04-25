@@ -38,8 +38,13 @@ import {
   isComposableStable,
   tokenWeight,
   joinTokens,
+  wNativeAssetAddress,
 } from './usePoolHelpers';
-import { daiAddress } from '@tests/unit/builders/address';
+import {
+  daiAddress,
+  nativeAssetAddress,
+  wethAddress,
+} from '@tests/unit/builders/address';
 import { anAprBreakdown } from '@tests/unit/builders/sdk-pool.builders';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
@@ -362,14 +367,16 @@ describe('usePool composable', () => {
     expect(isWeightedPool.value).toBeFalse();
     expect(isWeightedLikePool.value).toBeFalse();
     expect(isStablePhantomPool.value).toBeFalse();
-    expect(isWrappedNativeAsset(weightedPool)).toBeFalse();
+    expect(isWrappedNativeAsset(weightedPool)).toBeTrue();
     expect(isWrappedNativeAssetPool.value).toBeFalse();
 
     expect(managedPoolWithSwappingHalted.value).toBeFalse();
-    expect(noInitLiquidity(weightedPool)).toBeFalse();
+    expect(noInitLiquidity(weightedPool)).toBeTrue();
     expect(isMigratablePool(weightedPool)).toBeFalse();
 
-    expect(poolWeightsLabel(weightedPool)).toBe('');
+    expect(poolWeightsLabel(weightedPool)).toBe(
+      '5,000% onchain token symbol, 5,000% onchain token symbol'
+    );
     expect(poolJoinTokens.value).toEqual([]);
   });
 
@@ -738,15 +745,11 @@ describe('calculates tokenWeight', async () => {
     expect(tokenWeight(pool, 'any address')).toBe(0);
   });
 
-  const goerliNativeWrappedAsset = '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1';
-
   it('when token is native asset', () => {
-    const goerliNativeAsset = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-
     const pool = aPool({
       onchain: anOnchainPoolData({
         tokens: {
-          [goerliNativeWrappedAsset]: anOnchainTokenData({
+          [wethAddress]: anOnchainTokenData({
             weight: 0.7,
             symbol: 'wETH',
           }),
@@ -754,14 +757,14 @@ describe('calculates tokenWeight', async () => {
       }),
     });
 
-    expect(tokenWeight(pool, goerliNativeAsset)).toBe(0.7);
+    expect(tokenWeight(pool, nativeAssetAddress)).toBe(0.7);
   });
 
   it('when token is not native asset', () => {
     const pool = aPool({
       onchain: anOnchainPoolData({
         tokens: {
-          [goerliNativeWrappedAsset]: anOnchainTokenData({
+          [wethAddress]: anOnchainTokenData({
             weight: 0.7,
             symbol: 'wETH',
           }),
@@ -786,4 +789,8 @@ test('Gets all pool token addresses that can possibly be used to join a pool', a
     '0xae37d54ae477268b9997d4161b96b8200755935c',
     '0x6b175474e89094c44da98b954eedeac495271d0f',
   ]);
+});
+
+test('Returns the wNativeAsset address in the current network (goerli for tests)', () => {
+  expect(wNativeAssetAddress()).toBe(wethAddress);
 });

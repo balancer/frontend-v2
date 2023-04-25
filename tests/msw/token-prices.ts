@@ -418,7 +418,7 @@ export const mockedTokenPrices = [
   //   { price: 0.795133, address: '0xbc396689893d065f41bc2c6ecbee5e0085233447' },
   //   { price: 0.715135, address: '0x261b45d85ccfeabb11f022eba346ee8d1cd488c0' },
   //   { price: 0.01249578, address: '0xf1f955016ecbcd7321c7266bccfb96c68ea5e49b' },
-  //   { price: 1809.33, address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' },
+  //   { price: 1809.33, address: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1' },
   //   { price: 0.175987, address: '0x9992ec3cf6a55b00978cddf2b27bc6882d88d1ec' },
   //   { price: 0.999688, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
   //   { price: 1.075, address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2' },

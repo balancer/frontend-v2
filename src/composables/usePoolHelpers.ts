@@ -147,11 +147,12 @@ export function isSwappingHaltable(poolType: PoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
+export function wNativeAssetAddress() {
+  return configService.network.tokens.Addresses.wNativeAsset;
+}
+
 export function isWrappedNativeAsset(pool: AnyPool): boolean {
-  return includesAddress(
-    pool.tokensList || [],
-    configService.network.tokens.Addresses.wNativeAsset
-  );
+  return includesAddress(pool.tokensList || [], wNativeAssetAddress());
 }
 
 export function isMigratablePool(pool: AnyPool) {

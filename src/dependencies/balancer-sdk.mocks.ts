@@ -10,6 +10,7 @@ import {
   PoolType,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { wethAddress } from '@tests/unit/builders/address';
 import { aPoolWithMethods } from '@tests/unit/builders/pool.builders';
 import { mock, mockDeep } from 'vitest-mock-extended';
 
@@ -101,7 +102,7 @@ defaultSwapInfo.swaps = [
 export const defaultSwapAttributes = mock<SwapAttributes>();
 
 defaultSwapInfo.tokenAddresses = [
-  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  wethAddress,
   '0x616e8bfa43f920657b3497dbf40d6b1a02d4608d',
   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
 ];
