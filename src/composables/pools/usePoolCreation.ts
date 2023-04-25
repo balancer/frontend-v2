@@ -16,11 +16,11 @@ import {
   scale,
 } from '@/lib/utils';
 import { balancerService } from '@/services/balancer/balancer.service';
-import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { useTokens } from '@/providers/tokens.provider';
 import { PoolType } from '@balancer-labs/sdk';
+import { wNativeAssetAddress } from '../usePoolHelpers';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
 export const POOL_CREATION_STATE_KEY = 'poolCreationState';
@@ -61,7 +61,6 @@ const emptyPoolCreationState = {
   autoOptimiseBalances: false,
   useNativeAsset: false,
   type: PoolType.Weighted,
-  acceptedCustomTokenDisclaimer: false,
   needsSeeding: false,
   createPoolTxHash: '',
 };
@@ -80,7 +79,7 @@ export default function usePoolCreation() {
     getToken,
     nativeAsset,
     wrappedNativeAsset,
-    injectedTokens,
+    balancerTokenListTokens,
     dynamicDataLoading,
   } = useTokens();
   const { account, getProvider } = useWeb3();
@@ -96,11 +95,11 @@ export default function usePoolCreation() {
     })
   );
 
-  const hasInjectedToken = computed(() => {
-    return tokensList.value.some(
-      token => injectedTokens.value[token]?.symbol !== undefined
-    );
-  });
+  const hasUnlistedToken = computed(() =>
+    tokensList.value.some(tokenAddress => {
+      return tokenAddress && isUnlistedToken(tokenAddress);
+    })
+  );
 
   function getOptimisedLiquidity(): Record<string, OptimisedLiquidity> {
     // need to filter out the empty tokens just in case
@@ -245,11 +244,8 @@ export default function usePoolCreation() {
     return similarPool;
   });
 
-  const isWethPool = computed((): boolean => {
-    return includesAddress(
-      tokensList.value,
-      configService.network.addresses.weth
-    );
+  const isWrappedNativeAssetPool = computed((): boolean => {
+    return includesAddress(tokensList.value, wNativeAssetAddress());
   });
 
   const poolOwner = computed(() => {
@@ -416,6 +412,9 @@ export default function usePoolCreation() {
   }
 
   async function createPool(): Promise<TransactionResponse> {
+    if (hasUnlistedToken.value) {
+      throw new Error('Invalid pool creation due to unlisted tokens.');
+    }
     const provider = getProvider();
 
     const tx = await balancerService.pools.weighted.create(
@@ -497,10 +496,6 @@ export default function usePoolCreation() {
     poolCreationState.activeStep = step;
   }
 
-  function acceptCustomTokenDisclaimer() {
-    poolCreationState.acceptedCustomTokenDisclaimer = true;
-  }
-
   function saveState() {
     lsSet(
       POOL_CREATION_STATE_KEY,
@@ -562,6 +557,10 @@ export default function usePoolCreation() {
     await retrievePoolAddress(hash);
   }
 
+  function isUnlistedToken(tokenAddress: string) {
+    return tokenAddress !== '' && !balancerTokenListTokens.value[tokenAddress];
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -583,7 +582,6 @@ export default function usePoolCreation() {
     sortSeedTokens,
     clearAmounts,
     setAmountsToMaxBalances,
-    acceptCustomTokenDisclaimer,
     saveState,
     resetState,
     importState,
@@ -603,8 +601,9 @@ export default function usePoolCreation() {
     poolLiquidity,
     poolTypeString,
     tokenColors,
-    isWethPool,
-    hasInjectedToken,
+    isWrappedNativeAssetPool,
+    hasUnlistedToken,
     hasRestoredFromSavedState,
+    isUnlistedToken,
   };
 }

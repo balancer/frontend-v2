@@ -7,13 +7,13 @@ let _balancer: typeof balancer | undefined;
 /**
  * Uses the real balancer instance by default but allows injecting balancer mocks from tests
  */
-export function initBalancer(balancerInstance: typeof balancer = balancer) {
+export function initBalancerSDK(balancerInstance: typeof balancer = balancer) {
   _balancer = balancerInstance;
 }
 
-export function getBalancer() {
+export function getBalancerSDK() {
   if (!_balancer) {
-    handleDependencyError('balancer');
+    handleDependencyError('balancer SDK');
   }
   return _balancer;
 }
