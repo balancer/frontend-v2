@@ -7,7 +7,11 @@ import { aTokenInfo } from '@/types/TokenList.builders';
 import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
-import { groAddress, wethAddress } from '@tests/unit/builders/address';
+import {
+  groAddress,
+  nativeAssetAddress,
+  wethAddress,
+} from '@tests/unit/builders/address';
 import { DeepPartial } from '@tests/unit/types';
 import usePropMaxJoin from './usePropMaxJoin';
 
@@ -82,4 +86,24 @@ test('When user does not have enough proportional balance in one token, it maxes
   ]);
 });
 
-//TODO: missing tests for wNativeAsset
+test('When using nativeAsset instead of wrapped native asset', async () => {
+  const useNativeAsset = true;
+  const tokensIn = buildTokensIn();
+
+  const { result } = await mountComposable(() =>
+    usePropMaxJoin(aWeightedPool(), ref(tokensIn), ref(useNativeAsset))
+  );
+
+  expect(result.getPropMax()).toEqual([
+    {
+      address: groAddress,
+      valid: true,
+      value: defaultBalance,
+    },
+    {
+      address: nativeAssetAddress,
+      valid: true,
+      value: '10.0', //Formatted Default balance
+    },
+  ]);
+});

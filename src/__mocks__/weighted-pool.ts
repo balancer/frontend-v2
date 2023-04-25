@@ -39,7 +39,7 @@ const defaults: DeepPartial<Pool> = {
       },
     }),
   ],
-  tokensList: ['0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7', wethAddress],
+  tokensList: [groAddress, wethAddress],
 };
 
 export const PoolMock: Pool = Object.assign(pool, defaults);
