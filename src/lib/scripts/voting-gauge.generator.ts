@@ -68,8 +68,10 @@ async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   return weights;
 }
 
-function getBalancerAssetsURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${tokenAdress.toLowerCase()}.png`;
+function getBalancerAssetsURI(tokenAddress: string, network?: Network): string {
+  if (network)
+    return `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${network.toString()}_${tokenAddress.toLowerCase()}.png`;
+  return `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${tokenAddress.toLowerCase()}.png`;
 }
 
 function isValidResponse(response: Response) {
@@ -178,10 +180,11 @@ async function getTokenLogoURI(
   log(`getTokenLogoURI network: ${network} tokenAddress: ${tokenAddress}`);
   let logoUri = '';
 
-  if (network === Network.MAINNET) {
-    logoUri = getBalancerAssetsURI(tokenAddress);
-    if (await isValidLogo(logoUri)) return logoUri;
-  }
+  logoUri = getBalancerAssetsURI(tokenAddress);
+  if (await isValidLogo(logoUri)) return logoUri;
+
+  logoUri = getBalancerAssetsURI(tokenAddress, network);
+  if (await isValidLogo(logoUri)) return logoUri;
 
   logoUri = getTrustWalletAssetsURI(tokenAddress, network);
   if (await isValidLogo(logoUri)) return logoUri;
