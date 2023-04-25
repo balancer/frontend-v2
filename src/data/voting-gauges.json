@@ -3261,7 +3261,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "",
+      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x1f32b1c2345538c0c6f582fcb022739c4a194ebb.png",
       "0xDD89C7cd0613C1557B2DaAC6Ae663282900204f1": ""
     }
   },
@@ -3295,9 +3295,9 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "",
-      "0x6222ae1d2a9f6894dA50aA25Cb7b303497f9BEbd": "",
-      "0xA1a77E5d7D769BFBB790a08EC976dc738bF795B9": ""
+      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x1f32b1c2345538c0c6f582fcb022739c4a194ebb.png",
+      "0x6222ae1d2a9f6894dA50aA25Cb7b303497f9BEbd": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x6222ae1d2a9f6894da50aa25cb7b303497f9bebd.png",
+      "0xA1a77E5d7D769BFBB790a08EC976dc738bF795B9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xa1a77e5d7d769bfbb790a08ec976dc738bf795b9.png"
     }
   },
   {
@@ -3335,10 +3335,10 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x6222ae1d2a9f6894dA50aA25Cb7b303497f9BEbd": "",
-      "0x97513e975a7fA9072c72C92d8000B0dB90b163c5": "",
+      "0x6222ae1d2a9f6894dA50aA25Cb7b303497f9BEbd": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x6222ae1d2a9f6894da50aa25cb7b303497f9bebd.png",
+      "0x97513e975a7fA9072c72C92d8000B0dB90b163c5": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x97513e975a7fa9072c72c92d8000b0db90b163c5.png",
       "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x9Bcef72be871e61ED4fBbc7630889beE758eb81D/logo.png",
-      "0xd0d334B6CfD77AcC94bAB28C7783982387856449": ""
+      "0xd0d334B6CfD77AcC94bAB28C7783982387856449": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd0d334b6cfd77acc94bab28c7783982387856449.png"
     }
   },
   {
@@ -3371,9 +3371,9 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x6222ae1d2a9f6894dA50aA25Cb7b303497f9BEbd": "",
+      "0x6222ae1d2a9f6894dA50aA25Cb7b303497f9BEbd": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x6222ae1d2a9f6894da50aa25cb7b303497f9bebd.png",
       "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x9Bcef72be871e61ED4fBbc7630889beE758eb81D/logo.png",
-      "0xA4e597c1bD01859B393b124ce18427Aa4426A871": ""
+      "0xA4e597c1bD01859B393b124ce18427Aa4426A871": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xa4e597c1bd01859b393b124ce18427aa4426a871.png"
     }
   },
   {
@@ -3406,9 +3406,9 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x888a6195D42a95e80D81e1c506172772a80b80Bc": "",
-      "0x9253d7e1B42fa01eDE2c53f3A21b3B4d13239cD4": "",
-      "0xba7834bb3cd2DB888E6A06Fb45E82b4225Cd0C71": ""
+      "0x888a6195D42a95e80D81e1c506172772a80b80Bc": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x888a6195d42a95e80d81e1c506172772a80b80bc.png",
+      "0x9253d7e1B42fa01eDE2c53f3A21b3B4d13239cD4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x9253d7e1b42fa01ede2c53f3a21b3b4d13239cd4.png",
+      "0xba7834bb3cd2DB888E6A06Fb45E82b4225Cd0C71": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba7834bb3cd2db888e6a06fb45e82b4225cd0c71.png"
     }
   },
   {
@@ -3436,8 +3436,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "",
-      "0xFdb794692724153d1488CcdBE0C56c252596735F": ""
+      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x1f32b1c2345538c0c6f582fcb022739c4a194ebb.png",
+      "0xFdb794692724153d1488CcdBE0C56c252596735F": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfdb794692724153d1488ccdbe0c56c252596735f.png"
     }
   },
   {
@@ -3494,8 +3494,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x296F55F8Fb28E498B858d0BcDA06D955B2Cb3f97": "",
-      "0xba7834bb3cd2DB888E6A06Fb45E82b4225Cd0C71": ""
+      "0x296F55F8Fb28E498B858d0BcDA06D955B2Cb3f97": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x296f55f8fb28e498b858d0bcda06d955b2cb3f97.png",
+      "0xba7834bb3cd2DB888E6A06Fb45E82b4225Cd0C71": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba7834bb3cd2db888e6a06fb45e82b4225cd0c71.png"
     }
   },
   {
@@ -3626,7 +3626,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
       "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3/logo.png"
@@ -3762,7 +3762,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
       "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png"
     }
   },
@@ -3868,7 +3868,7 @@
     },
     "tokenLogoURIs": {
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0x2934b36ca9A4B31E633C5BE670C8C8b28b6aA015": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x2934b36ca9a4b31e633c5be670c8c8b28b6aa015.png"
+      "0x2934b36ca9A4B31E633C5BE670C8C8b28b6aA015": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x2934b36ca9a4b31e633c5be670c8c8b28b6aa015.png"
     }
   },
   {
@@ -3931,7 +3931,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
       "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
     }
   },
@@ -4053,7 +4053,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
       "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png"
     }
   },
@@ -4082,7 +4082,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
       "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
     }
   },
@@ -4227,7 +4227,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
       "0x62F594339830b90AE4C084aE7D223fFAFd9658A7": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x62f594339830b90ae4c084ae7d223ffafd9658a7.png"
     }
   },
@@ -4285,7 +4285,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x2934b36ca9A4B31E633C5BE670C8C8b28b6aA015": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0x2934b36ca9a4b31e633c5be670c8c8b28b6aa015.png",
+      "0x2934b36ca9A4B31E633C5BE670C8C8b28b6aA015": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x2934b36ca9a4b31e633c5be670c8c8b28b6aa015.png",
       "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png"
     }
   },
@@ -4523,8 +4523,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
-      "0x0E9b89007eEE9c958c0EDA24eF70723C2C93dD58": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0E9b89007eEE9c958c0EDA24eF70723C2C93dD58/logo.png"
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
+      "0x0E9b89007eEE9c958c0EDA24eF70723C2C93dD58": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0e9b89007eee9c958c0eda24ef70723c2c93dd58.png"
     }
   },
   {
@@ -4716,7 +4716,7 @@
     },
     "tokenLogoURIs": {
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0xa684cd057951541187f288294a1e1C2646aA2d24": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0xa684cd057951541187f288294a1e1c2646aa2d24.png"
+      "0xa684cd057951541187f288294a1e1C2646aA2d24": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xa684cd057951541187f288294a1e1c2646aa2d24.png"
     }
   },
   {
@@ -5086,8 +5086,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x4739E50B59B552D490d3FDc60D200977A38510c0": "",
-      "0x7c82A23B4C48D796dee36A9cA215b641C6a8709d": "",
+      "0x4739E50B59B552D490d3FDc60D200977A38510c0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4739e50b59b552d490d3fdc60d200977a38510c0.png",
+      "0x7c82A23B4C48D796dee36A9cA215b641C6a8709d": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7c82a23b4c48d796dee36a9ca215b641c6a8709d.png",
       "0x9E34631547aDcF2F8cefa0f5f223955C7B137571": ""
     }
   },
