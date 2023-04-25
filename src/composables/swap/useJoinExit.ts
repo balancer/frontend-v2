@@ -11,18 +11,7 @@ import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { captureException } from '@sentry/browser';
 import { bnum } from '@/lib/utils';
 
-import {
-  computed,
-  ComputedRef,
-  onMounted,
-  reactive,
-  Ref,
-  ref,
-  toRefs,
-  watch,
-} from 'vue';
-
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -123,7 +112,7 @@ export default function useJoinExit({
 
   async function getSwapInfo(): Promise<void> {
     swapInfoLoading.value = true;
-    swapInfo.value = await getBalancer().sor.getSwaps(
+    swapInfo.value = await getBalancerSDK().sor.getSwaps(
       tokenInAddressInput.value,
       tokenOutAddressInput.value,
       exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
@@ -177,7 +166,7 @@ export default function useJoinExit({
   }
 
   async function swap(successCallback?: () => void) {
-    const balancer = getBalancer();
+    const balancer = getBalancerSDK();
     try {
       confirming.value = true;
       state.submissionError = null;
@@ -190,7 +179,7 @@ export default function useJoinExit({
         swapInfo.value,
         pools.value,
         account.value,
-        balancer.contracts.relayerV4?.address ?? '',
+        balancer.contracts.relayer?.address ?? '',
         balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
         String(slippageBufferRate.value * 1e4),
         relayerSignature.value || undefined
@@ -198,7 +187,7 @@ export default function useJoinExit({
 
       const txBuilder = new TransactionBuilder(getSigner());
       const tx = await txBuilder.contract.sendTransaction({
-        contractAddress: balancer.contracts.relayerV4?.address ?? '',
+        contractAddress: balancer.contracts.relayer?.address ?? '',
         abi: BatchRelayerAbi,
         action: 'multicall',
         params: [relayerCallData.rawCalls],

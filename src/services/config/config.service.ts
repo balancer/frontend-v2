@@ -10,6 +10,7 @@ interface Env {
   NETWORK: Network;
   APP_DOMAIN: string;
   APP_HOST: string;
+  API_URL: string;
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
   ALCHEMY_KEY: string;
@@ -25,6 +26,8 @@ export default class ConfigService {
       NETWORK: networkId.value,
       APP_DOMAIN: import.meta.env.VITE_DOMAIN || 'app.balancer.fi',
       APP_HOST: import.meta.env.VITE_HOST || 'balancer.fi',
+      API_URL:
+        import.meta.env.VITE_API_URL || 'https://api-v3.balancer.fi/graphql',
       IPFS_NODE: import.meta.env.VITE_IPFS_NODE || 'cloudflare-ipfs.com',
       BLOCKNATIVE_DAPP_ID:
         import.meta.env.VITE_BLOCKNATIVE_DAPP_ID || 'MISSING_KEY',

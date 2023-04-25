@@ -1,7 +1,6 @@
 import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
-import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { APR_THRESHOLD } from '@/constants/pools';
 import configs from '@/lib/config';
 import {
@@ -9,13 +8,14 @@ import {
   includesAddress,
   isSameAddress,
   removeAddress,
+  selectByAddress,
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
 
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
-import { hasBalEmissions } from '@/services/staking/utils';
+import { hasBalEmissions } from './useAPR';
 import { cloneDeep, uniq, uniqWith } from 'lodash';
 import {
   appUrl,
@@ -62,6 +62,10 @@ export function isStablePhantom(poolType: PoolType): boolean {
 
 export function isComposableStable(poolType: PoolType): boolean {
   return poolType === PoolType.ComposableStable;
+}
+
+export function isComposableStableV1(pool: Pool): boolean {
+  return isComposableStable(pool.poolType) && pool.poolTypeVersion === 1;
 }
 
 export function isComposableStableLike(poolType: PoolType): boolean {
@@ -143,15 +147,15 @@ export function isSwappingHaltable(poolType: PoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
-export function isWeth(pool: AnyPool): boolean {
+export function isWrappedNativeAsset(pool: AnyPool): boolean {
   return includesAddress(
     pool.tokensList || [],
-    configService.network.addresses.weth
+    configService.network.tokens.Addresses.wNativeAsset
   );
 }
 
 export function isMigratablePool(pool: AnyPool) {
-  return POOL_MIGRATIONS.some(migration => migration.fromPoolId === pool.id);
+  return !!POOLS.Migrations?.[pool.id];
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
@@ -565,9 +569,43 @@ export function poolMetadata(
 }
 
 /**
+ * Gets weight of token in pool if relevant, e.g if it's a weighted pool.
+ * If not, returns 0.
+ *
+ * @param {Pool} pool - The pool to check
+ * @param {string} tokenAddress - The address of the token to check
+ * @returns {number} The weight of the token in the pool
+ */
+export function tokenWeight(pool: Pool, tokenAddress: string): number {
+  if (isStableLike(pool.poolType)) return 0;
+  if (!pool?.onchain?.tokens) return 0;
+
+  const { nativeAsset, wNativeAsset } = configService.network.tokens.Addresses;
+
+  if (isSameAddress(tokenAddress, nativeAsset)) {
+    return selectByAddress(pool.onchain.tokens, wNativeAsset)?.weight || 1;
+  }
+  return selectByAddress(pool.onchain.tokens, tokenAddress)?.weight || 1;
+}
+
+/**
+ * Gets all pool token addresses that can possibly be used to join a pool.
+ *
+ * @param {Pool} pool - The pool to check
+ * @returns {string[]} The addresses of the tokens that can be used to join the pool
+ */
+export function joinTokens(pool: Pool): string[] {
+  let addresses: string[] = [];
+
+  addresses = isDeep(pool) ? tokenTreeNodes(pool.tokens) : pool.tokensList;
+
+  return removeAddress(pool.address, addresses);
+}
+
+/**
  * COMPOSABLE
  */
-export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
+export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
   const { fNum } = useNumbers();
 
   /**
@@ -639,12 +677,16 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean =>
       !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
   );
-  const isWethPool = computed(
-    (): boolean => !!pool.value && isWeth(pool.value)
+  const isWrappedNativeAssetPool = computed(
+    (): boolean => !!pool.value && isWrappedNativeAsset(pool.value)
   );
   const isMainnetWstETHPool = computed(
     (): boolean =>
       !!pool.value && includesWstEth(pool.value.tokensList) && isMainnet.value
+  );
+
+  const poolJoinTokens = computed((): string[] =>
+    pool.value ? joinTokens(pool.value) : []
   );
 
   // pool is "Weighted" and some of the rate providers are not on our approved list
@@ -681,10 +723,11 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isManagedPool,
     isLiquidityBootstrappingPool,
     managedPoolWithSwappingHalted,
-    isWethPool,
+    isWrappedNativeAssetPool,
     isMainnetWstETHPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
+    poolJoinTokens,
     // methods
     isStable,
     isMetaStable,
@@ -695,10 +738,12 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeightedLike,
     isSwappingHaltable,
     isPreMintedBptType,
-    isWeth,
+    isWrappedNativeAsset,
+    noInitLiquidity,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,
     orderedPoolTokens,
+    joinTokens,
   };
 }
