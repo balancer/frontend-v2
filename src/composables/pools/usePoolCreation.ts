@@ -16,11 +16,11 @@ import {
   scale,
 } from '@/lib/utils';
 import { balancerService } from '@/services/balancer/balancer.service';
-import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { useTokens } from '@/providers/tokens.provider';
 import { PoolType } from '@balancer-labs/sdk';
+import { wNativeAssetAddress } from '../usePoolHelpers';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
 export const POOL_CREATION_STATE_KEY = 'poolCreationState';
@@ -245,10 +245,7 @@ export default function usePoolCreation() {
   });
 
   const isWrappedNativeAssetPool = computed((): boolean => {
-    return includesAddress(
-      tokensList.value,
-      configService.network.tokens.Addresses.wNativeAsset
-    );
+    return includesAddress(tokensList.value, wNativeAssetAddress());
   });
 
   const poolOwner = computed(() => {

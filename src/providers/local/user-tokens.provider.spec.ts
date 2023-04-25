@@ -15,7 +15,7 @@ async function mountUserTokensProvider() {
   return result;
 }
 
-const addressOFTokenWithoutBalance =
+const addressOfTokenWithoutBalance =
   '0xf76142b79db34e57852d68f9c52c0e24f7349647';
 
 test('returns tokens with balance', async () => {
@@ -44,7 +44,7 @@ test('returns tokens with balance from a given address list', async () => {
   expect(
     tokensWithBalanceFrom([
       '0x1f1f156E0317167c11Aa412E3d1435ea29Dc3cCE',
-      addressOFTokenWithoutBalance,
+      addressOfTokenWithoutBalance,
       '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1',
     ])
   ).toEqual([
@@ -59,7 +59,7 @@ test('returns tokens with balance that are not in a given address list', async (
   expect(
     tokensWithBalanceNotIn([
       '0x8c9e6c40d3402480ACE624730524fACC5482798c',
-      addressOFTokenWithoutBalance,
+      addressOfTokenWithoutBalance,
     ])
   ).toEqual([
     '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
@@ -76,13 +76,13 @@ test('returns tokens with balance that are not in a given address list', async (
   ]);
 });
 
-test('returns tokens with balance that are not in a given address list', async () => {
+test('returns tokens without balance from a given address list', async () => {
   const { tokensWithoutBalanceFrom } = await mountUserTokensProvider();
 
   expect(
     tokensWithoutBalanceFrom([
       '0x8c9e6c40d3402480ACE624730524fACC5482798c',
-      addressOFTokenWithoutBalance,
+      addressOfTokenWithoutBalance,
     ])
-  ).toEqual([addressOFTokenWithoutBalance]);
+  ).toEqual([addressOfTokenWithoutBalance]);
 });
