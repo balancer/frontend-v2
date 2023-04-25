@@ -180,16 +180,24 @@ const pools: Pools = {
   },
   Metadata: {
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
-      name: 'Balancer Boosted Aave USD (Polygon)',
+      name: 'Balancer Boosted Aave USD',
       hasIcon: true,
     },
     '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
-      name: 'Balancer Boosted Tetu USD (Polygon)',
+      name: 'Balancer Boosted Tetu USD',
       hasIcon: true,
     },
     '0x71bd10c2a590b5858f5576550c163976a48af906000000000000000000000b27': {
-      name: 'Balancer Boosted Tetu MATIC (Polygon)',
+      name: 'Balancer Boosted Tetu MATIC',
       hasIcon: true,
+    },
+    '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
+      name: 'BstMATIC/Boosted Aave v3 WMATIC',
+      hasIcon: false,
+    },
+    '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
+      name: 'maticX/Boosted Aave v3 WMATIC',
+      hasIcon: false,
     },
   },
   Deep: [
