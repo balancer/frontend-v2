@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import InvestPageMyWallet from './InvestPageMyWallet.vue';
-import InvestPageAccordion from './InvestPageAccordion.vue';
-import InvestPageInvestBlock from './InvestPageInvestBlock.vue';
+import MyWallet from './MyWallet.vue';
+import Accordion from './Accordion.vue';
+import AddLiquidityCard from './AddLiquidityCard.vue';
 import { Pool } from '@balancer-labs/sdk';
 import { computed } from 'vue';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
@@ -35,19 +35,19 @@ provideJoinPool(pool);
 <template>
   <div class="invest-page-layout-grid">
     <div v-if="!upToLargeBreakpoint" class="col-span-5">
-      <InvestPageMyWallet :pool="pool" />
+      <MyWallet :pool="pool" />
     </div>
 
     <div class="col-span-7">
-      <InvestPageInvestBlock :pool="pool" />
+      <AddLiquidityCard :pool="pool" />
     </div>
 
-    <InvestPageAccordion
+    <Accordion
       v-if="upToLargeBreakpoint"
       :pool="pool"
       class="mt-4"
       :isDeepPool="isDeepPool"
-    ></InvestPageAccordion>
+    ></Accordion>
   </div>
 </template>
 

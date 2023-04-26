@@ -7,6 +7,7 @@ type InvestState = {
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
   submitting: boolean;
+  useNativeAsset: boolean;
 };
 
 /**
@@ -19,6 +20,7 @@ const state = reactive<InvestState>({
   validInputs: [],
   highPriceImpactAccepted: false,
   submitting: false,
+  useNativeAsset: false,
 });
 
 /**

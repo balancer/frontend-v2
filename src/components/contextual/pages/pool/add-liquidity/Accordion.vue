@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
-import InvestPageMyWallet from './InvestPageMyWallet.vue';
+import InvestPageMyWallet from './MyWallet.vue';
 import { useI18n } from 'vue-i18n';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { Pool } from '@balancer-labs/sdk';

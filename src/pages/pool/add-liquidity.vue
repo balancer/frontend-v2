@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InvestPage from '@/components/contextual/pages/pool/invest/InvestPage.vue';
+import InvestPage from '@/components/contextual/pages/pool/add-liquidity/Page.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { oneSecondInMs } from '@/composables/useTime';
