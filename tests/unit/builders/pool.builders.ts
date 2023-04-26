@@ -45,8 +45,11 @@ export function aCustomWeightedPool(...options: Partial<Pool>[]): Pool {
   return Object.assign(defaultPool, ...options);
 }
 
+export const defaultOnChainBalance = '234';
 export function anOnchainPoolData(...options: Partial<OnchainPoolData>[]) {
   const data = mock<OnchainTokenData>();
+  data.decimals = 18;
+  data.balance = defaultOnChainBalance;
   return Object.assign(data, ...options);
 }
 

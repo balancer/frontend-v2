@@ -147,10 +147,14 @@ export const defaultExactOutExit: ExitExactOutResponse =
 defaultExactOutExit.to = 'test exact exit to';
 defaultExactOutExit.data = 'exact exit test encoded data';
 
-const defaultExpectedBptOut = '10';
-export const defaultBuildJoin: ExactInJoinResponse =
+export const defaultExpectedBptOut = '30';
+
+export const defaultExactInJoin: ExactInJoinResponse =
   mock<ExactInJoinResponse>();
-defaultBuildJoin.expectedBPTOut = defaultExpectedBptOut;
+defaultExactInJoin.expectedBPTOut = defaultExpectedBptOut;
+defaultExactInJoin.to = 'test exact-in-join to';
+defaultExactInJoin.data = 'test exact-in-join encoded data';
+defaultExactInJoin.value = undefined;
 
 export const defaultRecoveryExit: RecoveryExitResponse =
   mockDeep<RecoveryExitResponse>();
@@ -192,8 +196,8 @@ export function generateBalancerSdkMock() {
       buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
       buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
       buildRecoveryExit: vi.fn(() => defaultRecoveryExit),
+      buildJoin: vi.fn(() => defaultExactInJoin),
       calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
-      buildJoin: vi.fn(() => defaultBuildJoin),
     })
   );
 

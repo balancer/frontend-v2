@@ -64,7 +64,7 @@ function amountShare(address: string): string {
   return bnum(props.fiatAmountMap[address]).div(props.fiatTotal).toString();
 }
 </script>
-  
+
 <template>
   <div class="token-amount-table">
     <div v-if="props.title" class="title">
@@ -96,7 +96,7 @@ function amountShare(address: string): string {
     </div>
   </div>
 </template>
-  
+
   <style scoped>
 .token-amount-table {
   @apply shadow-lg border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg overflow-hidden;
