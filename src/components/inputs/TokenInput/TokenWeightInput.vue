@@ -19,6 +19,7 @@ type Props = {
   hint?: string;
   hintAmount?: string;
   excludedTokens?: string[];
+  showWarningIcon?: boolean;
 };
 
 /**
@@ -31,6 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
   label: '',
   hint: '',
   excludedTokens: () => [],
+  showWarningIcon: false,
 });
 
 const emit = defineEmits<{
@@ -147,13 +149,21 @@ watchEffect(() => {
     @keydown="emit('keydown', $event)"
   >
     <template #prepend>
-      <TokenSelectInput
-        v-model="_address"
-        :fixed="fixedToken"
-        class="mr-2"
-        :excludedTokens="excludedTokens"
-        @update:model-value="emit('update:address', $event)"
-      />
+      <div class="flex justify-between items-center">
+        <TokenSelectInput
+          v-model="_address"
+          :fixed="fixedToken"
+          class="mr-2"
+          :excludedTokens="excludedTokens"
+          @update:model-value="emit('update:address', $event)"
+        />
+        <BalIcon
+          v-if="showWarningIcon"
+          name="alert-triangle"
+          size="sm"
+          class="text-red-600"
+        />
+      </div>
     </template>
     <template #append>
       <BalStack align="center" horizontal spacing="none">

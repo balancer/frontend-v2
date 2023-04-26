@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, isStableLike } from '@/composables/usePool';
+import { isDeep, isStableLike } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 

@@ -6,13 +6,13 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
+import { useTokens } from '@/providers/tokens.provider';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
-import { useTokens } from '@/providers/tokens.provider';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
@@ -43,7 +43,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  * COMPOSABLES
  */
 const { isAffected, warnings } = usePoolWarning(poolId);
-const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
+const { hasNonApprovedRateProviders } = usePoolHelpers(toRef(props, 'pool'));
 const { fNum } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
