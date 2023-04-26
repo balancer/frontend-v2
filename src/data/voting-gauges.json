@@ -3179,6 +3179,64 @@
     }
   },
   {
+    "address": "0x11Ff498C7c2A29fc4638BF45D9fF995C3297fcA5",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e",
+      "address": "0x02D928E68D8F10C0358566152677Db51E1e2Dc8C",
+      "poolType": "ComposableStable",
+      "symbol": "swETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0x60D604890feaa0b5460B28A424407c24fe89374a",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xf951E335afb289353dc249e82926178EaC7DEd78",
+          "weight": "null",
+          "symbol": "swETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x60D604890feaa0b5460B28A424407c24fe89374a": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x60d604890feaa0b5460b28a424407c24fe89374a.png",
+      "0xf951E335afb289353dc249e82926178EaC7DEd78": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xf951e335afb289353dc249e82926178eac7ded78.png"
+    }
+  },
+  {
+    "address": "0xc85d90dec1E12eDee418C445b381E7168EB380Ab",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524",
+      "address": "0xd689ABc77B82803F22c49dE5C8A0049Cc74D11fD",
+      "poolType": "Weighted",
+      "symbol": "80USH-20unshETH",
+      "tokens": [
+        {
+          "address": "0x0Ae38f7E10A43B5b2fB064B42a2f4514cbA909ef",
+          "weight": "0.2",
+          "symbol": "unshETH"
+        },
+        {
+          "address": "0xE60779CC1b2c1d0580611c526a8DF0E3f870EC48",
+          "weight": "0.8",
+          "symbol": "USH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x0Ae38f7E10A43B5b2fB064B42a2f4514cbA909ef": "",
+      "0xE60779CC1b2c1d0580611c526a8DF0E3f870EC48": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe60779cc1b2c1d0580611c526a8df0e3f870ec48.png"
+    }
+  },
+  {
     "address": "0xf0f572ad66baacDd07d8c7ea3e0E5EFA56a76081",
     "network": 5,
     "isKilled": false,
