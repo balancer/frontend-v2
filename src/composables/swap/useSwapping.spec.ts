@@ -1,7 +1,7 @@
 import useSwapping from '@/composables/swap/useSwapping';
 
 import * as useSor from '@/composables/swap/useSor';
-import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { provideTokenLists } from '@/providers/token-lists.provider';
@@ -13,13 +13,14 @@ import { mock, mockDeep } from 'vitest-mock-extended';
 import mockSorOutput from './__mocks__/mockSorOutput';
 import { TokensResponse } from '@/providers/tokens.provider';
 import { DeepPartial } from '@tests/unit/types';
+import { wethAddress } from '@tests/unit/builders/address';
 
 initOldMulticallerWithDefaultMocks();
 initEthersContractWithDefaultMocks();
 
 const mockTokenInfoIn = {
   chainId: 5,
-  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  address: wethAddress,
   name: 'WETH',
   decimals: 18,
   symbol: 'WETH',
@@ -75,14 +76,14 @@ swapInfoMock.swaps = [
   },
 ];
 swapInfoMock.tokenAddresses = [
-  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  wethAddress,
   '0x616e8bfa43f920657b3497dbf40d6b1a02d4608d',
   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
 ];
 
 const balancerMock = mockDeep<BalancerSDK>();
 balancerMock.sor.getSwaps.mockResolvedValue(swapInfoMock);
-initBalancer(balancerMock);
+initBalancerSDK(balancerMock);
 
 const mockProps = {
   exactIn: ref(true),

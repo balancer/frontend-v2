@@ -3,11 +3,11 @@
     <input
       type="radio"
       :value="value"
-      :checked="modelValue === value"
+      :checked="modelValue === value || checked"
       :name="name"
       :class="['bal-radio-input', inputClasses]"
       :disabled="disabled"
-      @change="onChange(value)"
+      @click="onChange(value)"
     />
     <label
       v-if="$slots.label || label"
@@ -27,6 +27,7 @@ export default defineComponent({
   name: 'BalRadio',
 
   props: {
+    checked: { type: Boolean, default: false },
     name: { type: String, required: true },
     value: { type: [String, Number], required: true },
     modelValue: { type: [String, Number], default: '' },

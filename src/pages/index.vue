@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-// import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import HomePageHero from '@/components/heros/HomePageHero.vue';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-// import useBreakpoints from '@/composables/useBreakpoints';
+import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePools from '@/composables/pools/usePools';
 
 // COMPOSABLES
-// const router = useRouter();
+const router = useRouter();
 const { appNetworkConfig } = useWeb3();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
@@ -25,17 +25,17 @@ const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
   selectedTokens,
   poolsSortField
 );
-// const { upToMediumBreakpoint } = useBreakpoints();
-const { networkConfig } = useNetwork();
+const { upToMediumBreakpoint } = useBreakpoints();
+const { networkSlug, networkConfig } = useNetwork();
 
 const isPaginated = computed(() => pools.value.length >= 10);
 
 /**
  * METHODS
  */
-// function navigateToCreatePool() {
-//   router.push({ name: 'create-pool', params: { networkSlug } });
-// }
+function navigateToCreatePool() {
+  router.push({ name: 'create-pool', params: { networkSlug } });
+}
 
 function onColumnSort(columnId: string) {
   poolsSortField.value = columnId;
@@ -53,7 +53,7 @@ function onColumnSort(columnId: string) {
               {{ networkConfig.chainName }}
               <span class="lowercase">{{ $t('pools') }}</span>
             </h3>
-            <!-- <BalBtn
+            <BalBtn
               v-if="upToMediumBreakpoint"
               color="blue"
               size="sm"
@@ -62,7 +62,7 @@ function onColumnSort(columnId: string) {
               @click="navigateToCreatePool"
             >
               {{ $t('createAPool.title') }}
-            </BalBtn> -->
+            </BalBtn>
           </div>
 
           <div
@@ -74,7 +74,7 @@ function onColumnSort(columnId: string) {
               @add="addSelectedToken"
               @remove="removeSelectedToken"
             />
-            <!-- <BalBtn
+            <BalBtn
               v-if="!upToMediumBreakpoint"
               color="blue"
               size="sm"
@@ -84,7 +84,7 @@ function onColumnSort(columnId: string) {
               @click="navigateToCreatePool"
             >
               {{ $t('createAPool.title') }}
-            </BalBtn> -->
+            </BalBtn>
           </div>
         </div>
         <PoolsTable
