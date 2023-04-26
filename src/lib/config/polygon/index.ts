@@ -32,7 +32,7 @@ const config: Config = {
     ],
     aave: 'https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon-beta',
     blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
   },
   bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',

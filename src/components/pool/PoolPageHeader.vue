@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';
-import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers from '@/composables/useNumbers';
@@ -32,11 +31,16 @@ type Props = {
   isComposableStableLikePool: boolean;
 };
 
+/**
+ * PROPS & EMITS
+ */
 const props = withDefaults(defineProps<Props>(), {
   loadingApr: true,
   poolApr: undefined,
 });
-
+const emit = defineEmits<{
+  (e: 'setRestakeVisibility', value: boolean): void;
+}>();
 const poolId = computed(() => toRef(props, 'pool').value.id);
 
 /**
@@ -52,11 +56,6 @@ const { hasNonPrefGaugeBalance } = usePoolStaking();
 const { disableJoinsReason, nonAllowedSymbols } = useDisabledJoinPool(
   props.pool
 );
-
-/**
- * STATE
- */
-const isRestakePreviewVisible = ref(false);
 
 /**
  * COMPUTED
@@ -256,7 +255,7 @@ function symbolFor(titleTokenIndex: number): string {
           :color="'gradient'"
           class="p-2"
           :size="'sm'"
-          @click="isRestakePreviewVisible = true"
+          @click="emit('setRestakeVisibility', true)"
         >
           {{ $t('restake') }}
         </BalBtn>
@@ -323,15 +322,6 @@ function symbolFor(titleTokenIndex: number): string {
     >
     {{ $t('requiresAllowListing2') }}
   </BalAlert>
-
-  <StakePreviewModal
-    v-if="!!pool"
-    :isVisible="isRestakePreviewVisible"
-    :pool="pool"
-    :action="'restake'"
-    @close="isRestakePreviewVisible = false"
-    @success="isRestakePreviewVisible = false"
-  />
 </template>
 <style scoped>
 .pool-title {
