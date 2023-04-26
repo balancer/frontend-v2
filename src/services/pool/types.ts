@@ -7,6 +7,7 @@ export { PoolType } from '@balancer-labs/sdk';
 export interface Pool extends SDKPool {
   tokens: PoolToken[];
   onchain?: OnchainPoolData;
+  isPaused: boolean;
 }
 
 export interface RawPoolTokens {
@@ -39,6 +40,7 @@ export interface RawOnchainPoolData {
   weights?: BigNumber[];
   swapEnabled?: boolean;
   isInRecoveryMode: boolean;
+  isPaused: boolean;
   amp?: {
     value: BigNumber;
     precision: BigNumber;
