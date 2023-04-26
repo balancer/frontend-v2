@@ -1,4 +1,4 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
@@ -16,11 +16,14 @@ import { TransactionBuilder } from '@/services/web3/transactions/transaction.bui
 import { flatTokenTree } from '@/composables/usePoolHelpers';
 import { getAddress } from '@ethersproject/address';
 
+export type RecoveryExitResponse = ReturnType<
+  PoolWithMethods['buildRecoveryExit']
+>;
 /**
  * Handles cases where the pool is in a recovery mode.
  */
 export class RecoveryExitHandler implements ExitPoolHandler {
-  private lastExitRes?: ReturnType<PoolWithMethods['buildRecoveryExit']>;
+  private lastExitRes?: RecoveryExitResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -43,7 +46,7 @@ export class RecoveryExitHandler implements ExitPoolHandler {
     const { signer, bptIn, slippageBsp } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await getBalancer().pools.find(this.pool.value.id);
+    const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
 
@@ -61,6 +64,7 @@ export class RecoveryExitHandler implements ExitPoolHandler {
       this.pool.value.address,
       this.lastExitRes.attributes.exitPoolRequest.assets
     );
+
     const expectedAmountsOut = this.lastExitRes.expectedAmountsOut;
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
@@ -69,9 +73,11 @@ export class RecoveryExitHandler implements ExitPoolHandler {
       evmBptIn,
       false
     );
+
     const priceImpact = Number(formatFixed(evmPriceImpact, 18));
 
     const amountsOut = this.getAmountsOut(expectedAmountsOut, tokensOut);
+
     return {
       amountsOut,
       priceImpact,

@@ -24,12 +24,16 @@ import { flatTokenTree } from '@/composables/usePoolHelpers';
 import { getAddress } from '@ethersproject/address';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
+export type ExitExactInResponse = ReturnType<
+  PoolWithMethods['buildExitExactBPTIn']
+>;
+
 /**
  * Handles cases where BPT in is set for the exit using SDK's
  * buildExitExactBPTIn function.
  */
 export class ExactInExitHandler implements ExitPoolHandler {
-  private lastExitRes?: ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
+  private lastExitRes?: ExitExactInResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,
