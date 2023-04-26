@@ -347,11 +347,11 @@ async function getLiquidityGaugesInfo(
   }
 }
 
-async function getChildChainLiquidityGaugeInfo(
+async function getChildChainLiquidityGaugesInfo(
   poolId: string,
   network: Network,
   retries = 5
-): Promise<ChildChainGaugeInfo | null> {
+): Promise<ChildChainGaugeInfo[] | null> {
   log(`getStreamerAddress. network: ${network} poolId: ${poolId}`);
   const subgraphEndpoint = config[network].subgraphs.gauge;
 
@@ -380,10 +380,14 @@ async function getChildChainLiquidityGaugeInfo(
 
     const { data } = await response.json();
 
-    return {
-      address: data.liquidityGauges[0].id,
-      streamer: data.liquidityGauges[0].streamer,
-    };
+    const gaugesInfo = data.liquidityGauges.map((gauge: any) => {
+      return {
+        address: gauge.id,
+        streamer: gauge.streamer,
+      };
+    });
+
+    return gaugesInfo;
   } catch {
     console.error(
       'Streamer not found for poolId:',
@@ -395,25 +399,25 @@ async function getChildChainLiquidityGaugeInfo(
     );
 
     return retries > 0
-      ? getChildChainLiquidityGaugeInfo(poolId, network, retries - 1)
+      ? getChildChainLiquidityGaugesInfo(poolId, network, retries - 1)
       : null;
   }
 }
 
 async function getRootGaugeInfo(
-  recipient: string,
+  recipients: string[],
   poolId: string,
   network: Network,
   retries = 5
 ): Promise<GaugeInfo[] | null> {
-  log(`getRootGaugeAddress. network: ${network} recipient: ${recipient}`);
+  log(`getRootGaugeAddress. network: ${network} recipient: ${recipients}`);
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
 
   const query = `
     {
       rootGauges(
         where: {
-          recipient: "${recipient}"
+          recipient_in: ${JSON.stringify(recipients)}
           chain: ${config[network].shortName}
           gauge_not: null
         }
@@ -455,13 +459,13 @@ async function getRootGaugeInfo(
   } catch {
     console.error(
       'RootGauge not found for Recipient:',
-      recipient,
+      recipients,
       'chainId:',
       network
     );
 
     return retries > 0
-      ? getRootGaugeInfo(recipient, poolId, network, retries - 1)
+      ? getRootGaugeInfo(recipients, poolId, network, retries - 1)
       : null;
   }
 }
@@ -475,11 +479,13 @@ async function getGaugeInfo(
     const gauges = await getLiquidityGaugesInfo(poolId, network);
     return gauges;
   } else {
-    const child = await getChildChainLiquidityGaugeInfo(poolId, network);
-    if (!child) return null;
-    const recipient = child.streamer ? child.streamer : child.address;
-    const gauges = await getRootGaugeInfo(recipient, poolId, network);
-    return gauges;
+    const gauges = await getChildChainLiquidityGaugesInfo(poolId, network);
+    if (!gauges) return null;
+    const recipients = gauges.map(gauge =>
+      gauge.streamer ? gauge.streamer : gauge.address
+    );
+    const rootGauges = await getRootGaugeInfo(recipients, poolId, network);
+    return rootGauges;
   }
 }
 
