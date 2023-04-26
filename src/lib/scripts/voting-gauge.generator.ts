@@ -39,6 +39,11 @@ type GaugeInfo = {
   relativeWeightCap: string;
 };
 
+type ChildChainGaugeInfo = {
+  address: string;
+  streamer: string;
+};
+
 async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   const rpcUrl = configService.getNetworkRpc(Network.MAINNET);
   if (rpcUrl.includes('INFURA_KEY'))
@@ -342,11 +347,11 @@ async function getLiquidityGaugesInfo(
   }
 }
 
-async function getStreamerAddress(
+async function getChildChainLiquidityGaugeInfo(
   poolId: string,
   network: Network,
   retries = 5
-): Promise<string> {
+): Promise<ChildChainGaugeInfo | null> {
   log(`getStreamerAddress. network: ${network} poolId: ${poolId}`);
   const subgraphEndpoint = config[network].subgraphs.gauge;
 
@@ -357,6 +362,7 @@ async function getStreamerAddress(
           poolId: "${poolId}"
         }
       ) {
+        id
         streamer
       }
     }
@@ -374,7 +380,10 @@ async function getStreamerAddress(
 
     const { data } = await response.json();
 
-    return data.liquidityGauges[0].streamer;
+    return {
+      address: data.liquidityGauges[0].id,
+      streamer: data.liquidityGauges[0].streamer,
+    };
   } catch {
     console.error(
       'Streamer not found for poolId:',
@@ -385,24 +394,26 @@ async function getStreamerAddress(
       retries
     );
 
-    return retries > 0 ? getStreamerAddress(poolId, network, retries - 1) : '';
+    return retries > 0
+      ? getChildChainLiquidityGaugeInfo(poolId, network, retries - 1)
+      : null;
   }
 }
 
 async function getRootGaugeInfo(
-  streamer: string,
+  recipient: string,
   poolId: string,
   network: Network,
   retries = 5
 ): Promise<GaugeInfo[] | null> {
-  log(`getRootGaugeAddress. network: ${network} streamer: ${streamer}`);
+  log(`getRootGaugeAddress. network: ${network} recipient: ${recipient}`);
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
 
   const query = `
     {
       rootGauges(
         where: {
-          recipient: "${streamer}"
+          recipient: "${recipient}"
           chain: ${config[network].shortName}
           gauge_not: null
         }
@@ -443,14 +454,14 @@ async function getRootGaugeInfo(
     return gaugesInfo;
   } catch {
     console.error(
-      'RootGauge not found for Streamer:',
-      streamer,
+      'RootGauge not found for Recipient:',
+      recipient,
       'chainId:',
       network
     );
 
     return retries > 0
-      ? getRootGaugeInfo(streamer, poolId, network, retries - 1)
+      ? getRootGaugeInfo(recipient, poolId, network, retries - 1)
       : null;
   }
 }
@@ -464,8 +475,10 @@ async function getGaugeInfo(
     const gauges = await getLiquidityGaugesInfo(poolId, network);
     return gauges;
   } else {
-    const streamer = await getStreamerAddress(poolId, network);
-    const gauges = await getRootGaugeInfo(streamer, poolId, network);
+    const child = await getChildChainLiquidityGaugeInfo(poolId, network);
+    if (!child) return null;
+    const recipient = child.streamer ? child.streamer : child.address;
+    const gauges = await getRootGaugeInfo(recipient, poolId, network);
     return gauges;
   }
 }
