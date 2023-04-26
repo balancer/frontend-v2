@@ -9,12 +9,15 @@ import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
 
+export type ExitExactOutResponse = ReturnType<
+  PoolWithMethods['buildExitExactTokensOut']
+>;
 /**
  * Handles cases where tokens out are specified for the exit using SDK's
  * buildExitExactTokensOut function.
  */
 export class ExactOutExitHandler implements ExitPoolHandler {
-  private lastExitRes?: ReturnType<PoolWithMethods['buildExitExactTokensOut']>;
+  private lastExitRes?: ExitExactOutResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,

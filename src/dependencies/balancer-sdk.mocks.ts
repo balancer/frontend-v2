@@ -1,13 +1,15 @@
 import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
+import { ExitExactInResponse } from '@/services/balancer/pools/exits/handlers/exact-in-exit.handler';
+import { ExitExactOutResponse } from '@/services/balancer/pools/exits/handlers/exact-out-exit.handler';
+import { RecoveryExitResponse } from '@/services/balancer/pools/exits/handlers/recovery-exit.handler';
 import {
-  PoolWithMethods,
+  Pool,
+  PoolType,
   SubgraphPoolBase,
   SwapAttributes,
   SwapInfo,
-  Pool,
-  PoolType,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { wethAddress } from '@tests/unit/builders/address';
@@ -126,11 +128,6 @@ export const defaultGeneralizedExitResponse = {
   priceImpact: defaultPriceImpact.toString(),
 };
 
-type ExitExactInResponse = ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
-type ExitExactOutResponse = ReturnType<
-  PoolWithMethods['buildExitExactTokensOut']
->;
-
 export const defaultExactInExit: ExitExactInResponse =
   mock<ExitExactInResponse>();
 defaultExactInExit.expectedAmountsOut = ['100', '200'];
@@ -142,6 +139,17 @@ export const defaultExactOutExit: ExitExactOutResponse =
   mock<ExitExactOutResponse>();
 defaultExactOutExit.to = 'test exact exit to';
 defaultExactOutExit.data = 'exact exit test encoded data';
+
+export const defaultRecoveryExit: RecoveryExitResponse =
+  mockDeep<RecoveryExitResponse>();
+defaultRecoveryExit.to = 'test recovery exit to';
+defaultRecoveryExit.data = 'recovery exit test encoded data';
+defaultRecoveryExit.attributes.exitPoolRequest = {
+  assets: [],
+  minAmountsOut: [],
+  userData: 'user data',
+  toInternalBalance: true,
+};
 
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
@@ -172,6 +180,7 @@ export function generateBalancerSdkMock() {
     aPoolWithMethods({
       buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
       buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
+      buildRecoveryExit: vi.fn(() => defaultRecoveryExit),
       calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
     })
   );
