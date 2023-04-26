@@ -6,9 +6,9 @@ import SwapSettingsPopover, {
 } from '@/components/popovers/SwapSettingsPopover.vue';
 import { configService } from '@/services/config/config.service';
 import useWithdrawPageTabs from '@/composables/pools/useWithdrawPageTabs';
-import { Pool } from '@balancer-labs/sdk';
 import WithdrawPageTabs from './WithdrawPageTabs.vue';
 import { provideExitPool } from '@/providers/local/exit-pool.provider';
+import { Pool } from '@/services/pool/types';
 
 type Props = {
   pool: Pool;
@@ -46,7 +46,7 @@ onMounted(() => resetTabs());
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <WithdrawPageTabs v-if="!pool.isInRecoveryMode" />
+        <WithdrawPageTabs v-if="!pool.isInRecoveryMode && !pool.isPaused" />
       </div>
     </template>
     <WithdrawFormV2 v-if="true" :pool="pool" />

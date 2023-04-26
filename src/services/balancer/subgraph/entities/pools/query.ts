@@ -92,6 +92,7 @@ const defaultAttrs = {
   tokens: tokenTreeAttrs,
   poolTypeVersion: true,
   isInRecoveryMode: true,
+  isPaused: true,
 };
 
 export default (args = {}, attrs = {}) => ({

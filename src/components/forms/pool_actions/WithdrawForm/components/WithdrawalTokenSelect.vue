@@ -53,7 +53,12 @@ const tokenAddresses = computed(() => {
 });
 
 const options = computed(() => {
-  return ['all', ...(props.pool.isInRecoveryMode ? [] : tokenAddresses.value)];
+  return [
+    'all',
+    ...(props.pool.isInRecoveryMode && props.pool.isPaused
+      ? []
+      : tokenAddresses.value),
+  ];
 });
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
