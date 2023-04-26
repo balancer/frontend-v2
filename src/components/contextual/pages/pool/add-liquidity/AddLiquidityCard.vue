@@ -11,8 +11,8 @@ import useInvestPageTabs, {
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
-import { Pool } from '@balancer-labs/sdk';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
