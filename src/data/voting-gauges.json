@@ -3179,6 +3179,64 @@
     }
   },
   {
+    "address": "0x11Ff498C7c2A29fc4638BF45D9fF995C3297fcA5",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e",
+      "address": "0x02D928E68D8F10C0358566152677Db51E1e2Dc8C",
+      "poolType": "ComposableStable",
+      "symbol": "swETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0x60D604890feaa0b5460B28A424407c24fe89374a",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xf951E335afb289353dc249e82926178EaC7DEd78",
+          "weight": "null",
+          "symbol": "swETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x60D604890feaa0b5460B28A424407c24fe89374a": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x60d604890feaa0b5460b28a424407c24fe89374a.png",
+      "0xf951E335afb289353dc249e82926178EaC7DEd78": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xf951e335afb289353dc249e82926178eac7ded78.png"
+    }
+  },
+  {
+    "address": "0xc85d90dec1E12eDee418C445b381E7168EB380Ab",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524",
+      "address": "0xd689ABc77B82803F22c49dE5C8A0049Cc74D11fD",
+      "poolType": "Weighted",
+      "symbol": "80USH-20unshETH",
+      "tokens": [
+        {
+          "address": "0x0Ae38f7E10A43B5b2fB064B42a2f4514cbA909ef",
+          "weight": "0.2",
+          "symbol": "unshETH"
+        },
+        {
+          "address": "0xE60779CC1b2c1d0580611c526a8DF0E3f870EC48",
+          "weight": "0.8",
+          "symbol": "USH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x0Ae38f7E10A43B5b2fB064B42a2f4514cbA909ef": "",
+      "0xE60779CC1b2c1d0580611c526a8DF0E3f870EC48": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe60779cc1b2c1d0580611c526a8df0e3f870ec48.png"
+    }
+  },
+  {
     "address": "0xf0f572ad66baacDd07d8c7ea3e0E5EFA56a76081",
     "network": 5,
     "isKilled": false,
@@ -3499,6 +3557,76 @@
     }
   },
   {
+    "address": "0x21b2Ef3DC22B7bd4634205081c667e39742075E2",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013",
+      "address": "0x66F33Ae36dD80327744207a48122F874634B3adA",
+      "poolType": "Weighted",
+      "symbol": "agUSD-agWETH-agWBTC",
+      "tokens": [
+        {
+          "address": "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-WETH"
+        },
+        {
+          "address": "0xd4015683b8153666190e0B2bEC352580EBC4CaCa",
+          "weight": "0.333333334",
+          "symbol": "bb-ag-WBTC"
+        },
+        {
+          "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbb9cd48d33033f5effbedec9dd700c7d7e1dcf50.png",
+      "0xd4015683b8153666190e0B2bEC352580EBC4CaCa": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd4015683b8153666190e0b2bec352580ebc4caca.png",
+      "0xFEdb19Ec000d38d92Af4B21436870F115db22725": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfedb19ec000d38d92af4b21436870f115db22725.png"
+    }
+  },
+  {
+    "address": "0x56A65cC666bfe538c5a031942369F6F63eb42240",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1677684467,
+    "pool": {
+      "id": "0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013",
+      "address": "0x66F33Ae36dD80327744207a48122F874634B3adA",
+      "poolType": "Weighted",
+      "symbol": "agUSD-agWETH-agWBTC",
+      "tokens": [
+        {
+          "address": "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-WETH"
+        },
+        {
+          "address": "0xd4015683b8153666190e0B2bEC352580EBC4CaCa",
+          "weight": "0.333333334",
+          "symbol": "bb-ag-WBTC"
+        },
+        {
+          "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbb9cd48d33033f5effbedec9dd700c7d7e1dcf50.png",
+      "0xd4015683b8153666190e0B2bEC352580EBC4CaCa": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd4015683b8153666190e0b2bec352580ebc4caca.png",
+      "0xFEdb19Ec000d38d92Af4B21436870F115db22725": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfedb19ec000d38d92af4b21436870f115db22725.png"
+    }
+  },
+  {
     "address": "0x3FB2975E00B3dbB97E8315a5ACbFF6B38026FDf3",
     "network": 100,
     "isKilled": false,
@@ -3524,6 +3652,64 @@
     },
     "tokenLogoURIs": {
       "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbb9cd48d33033f5effbedec9dd700c7d7e1dcf50.png",
+      "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xffff76a3280e95dc855696111c2562da09db2ac0.png"
+    }
+  },
+  {
+    "address": "0xE41736b4e78be41Bd03EbAf8F86EA493C6e9EA96",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012",
+      "address": "0xF48f01DCB2CbB3ee1f6AaB0e742c2D3941039d56",
+      "poolType": "Weighted",
+      "symbol": "50bbagGNO-50bbagWETH",
+      "tokens": [
+        {
+          "address": "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50",
+          "weight": "0.5",
+          "symbol": "bb-ag-WETH"
+        },
+        {
+          "address": "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0",
+          "weight": "0.5",
+          "symbol": "bb-ag-GNO"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbb9cd48d33033f5effbedec9dd700c7d7e1dcf50.png",
+      "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xffff76a3280e95dc855696111c2562da09db2ac0.png"
+    }
+  },
+  {
+    "address": "0xcB2c2AF6c3E88b4a89aa2aae1D7C8120EEe9Ad0e",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011",
+      "address": "0xB973Ca96a3f0D61045f53255E319AEDb6ED49240",
+      "poolType": "Weighted",
+      "symbol": "50bbagGNO-50bbagUSD",
+      "tokens": [
+        {
+          "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
+          "weight": "0.5",
+          "symbol": "bb-ag-USD"
+        },
+        {
+          "address": "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0",
+          "weight": "0.5",
+          "symbol": "bb-ag-GNO"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xFEdb19Ec000d38d92Af4B21436870F115db22725": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfedb19ec000d38d92af4b21436870f115db22725.png",
       "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xffff76a3280e95dc855696111c2562da09db2ac0.png"
     }
   },
@@ -3562,6 +3748,41 @@
     "isKilled": false,
     "relativeWeightCap": "1",
     "addedTimestamp": 1677684467,
+    "pool": {
+      "id": "0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010",
+      "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
+      "poolType": "ComposableStable",
+      "symbol": "bb-ag-USD",
+      "tokens": [
+        {
+          "address": "0x41211BBa6d37F5a74b22e667533F080C7C7f3F13",
+          "weight": "null",
+          "symbol": "bb-ag-WXDAI"
+        },
+        {
+          "address": "0xd16f72b02dA5f51231fDe542A8B9E2777a478c88",
+          "weight": "null",
+          "symbol": "bb-ag-USDT"
+        },
+        {
+          "address": "0xE7f88d7d4EF2eb18FCF9Dd7216BA7Da1c46f3dD6",
+          "weight": "null",
+          "symbol": "bb-ag-USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x41211BBa6d37F5a74b22e667533F080C7C7f3F13": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x41211bba6d37f5a74b22e667533f080c7c7f3f13.png",
+      "0xd16f72b02dA5f51231fDe542A8B9E2777a478c88": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd16f72b02da5f51231fde542a8b9e2777a478c88.png",
+      "0xE7f88d7d4EF2eb18FCF9Dd7216BA7Da1c46f3dD6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe7f88d7d4ef2eb18fcf9dd7216ba7da1c46f3dd6.png"
+    }
+  },
+  {
+    "address": "0x3B6A85B5e1e6205ebF4d4eabf147D10e8e4bf0A5",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
     "pool": {
       "id": "0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010",
       "address": "0xFEdb19Ec000d38d92Af4B21436870F115db22725",
@@ -4621,6 +4842,151 @@
     }
   },
   {
+    "address": "0x455f20c54b5712a84454468c7831f7c431aeEB1C",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0xe19ed40a47f9b0cea4ca6d372df66107758913ec000000000000000000000b41",
+      "address": "0xe19ed40A47F9B0CEA4ca6D372dF66107758913Ec",
+      "poolType": "ComposableStable",
+      "symbol": "2BRL (BRZ)",
+      "tokens": [
+        {
+          "address": "0x491a4eB4f1FC3BfF8E1d2FC856a6A46663aD556f",
+          "weight": "null",
+          "symbol": "BRZ"
+        },
+        {
+          "address": "0xf2f77FE7b8e66571E0fca7104c4d670BF1C8d722",
+          "weight": "null",
+          "symbol": "jBRL"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x491a4eB4f1FC3BfF8E1d2FC856a6A46663aD556f": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x491a4eb4f1fc3bff8e1d2fc856a6a46663ad556f.png",
+      "0xf2f77FE7b8e66571E0fca7104c4d670BF1C8d722": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xf2f77fe7b8e66571e0fca7104c4d670bf1c8d722.png"
+    }
+  },
+  {
+    "address": "0x02DFcC6ca6611cCBDCe51049a332afDB91465584",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44",
+      "address": "0x7F4f4942F2a14B6AB7B08b10ada1AAcede4EE8D4",
+      "poolType": "Weighted",
+      "symbol": "50stMATIC-BPT-50bbamUSD",
+      "tokens": [
+        {
+          "address": "0x216690738Aac4aa0C4770253CA26a28f0115c595",
+          "weight": "0.5",
+          "symbol": "stMATIC-bb-a-WMATIC-BPT"
+        },
+        {
+          "address": "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76",
+          "weight": "0.5",
+          "symbol": "bb-am-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x216690738Aac4aa0C4770253CA26a28f0115c595": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x216690738aac4aa0c4770253ca26a28f0115c595.png",
+      "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb371aa09f5a110ab69b39a84b5469d29f9b22b76.png"
+    }
+  },
+  {
+    "address": "0x416d15C36c6DaAd2b9410B79aE557e6F07DcB642",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42",
+      "address": "0xD00f9Ca46ce0E4A63067c4657986f0167b0De1E5",
+      "poolType": "ComposableStable",
+      "symbol": "frxETH-bb-a-WETH",
+      "tokens": [
+        {
+          "address": "0x43894DE14462B421372bCFe445fA51b1b4A0Ff3D",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xEe327F889d5947c1dc1934Bb208a1E792F953E96",
+          "weight": "null",
+          "symbol": "frxETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x43894DE14462B421372bCFe445fA51b1b4A0Ff3D": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x43894de14462b421372bcfe445fa51b1b4a0ff3d.png",
+      "0xEe327F889d5947c1dc1934Bb208a1E792F953E96": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xee327f889d5947c1dc1934bb208a1e792f953e96.png"
+    }
+  },
+  {
+    "address": "0xCDb532170f8B524D047287bFEfAcd0cC02441b4A",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45",
+      "address": "0x8fd39252d683fDB60BDDD4DF4B53C9380B496D59",
+      "poolType": "Weighted",
+      "symbol": "50wstETH-BPT-50bbamUSD",
+      "tokens": [
+        {
+          "address": "0x4a77eF015ddcd972fd9BA2C7D5D658689D090f1A",
+          "weight": "0.5",
+          "symbol": "wstETH-bb-a-WETH-BPT"
+        },
+        {
+          "address": "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76",
+          "weight": "0.5",
+          "symbol": "bb-am-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4a77eF015ddcd972fd9BA2C7D5D658689D090f1A": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a.png",
+      "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb371aa09f5a110ab69b39a84b5469d29f9b22b76.png"
+    }
+  },
+  {
+    "address": "0xBAdF0c8702B7Cb06bBEC351d18071804759e312c",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43",
+      "address": "0x3Efb91C4F9B103Ee45885695C67794591916F34E",
+      "poolType": "Weighted",
+      "symbol": "2BRL-bbamUSD",
+      "tokens": [
+        {
+          "address": "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76",
+          "weight": "0.5",
+          "symbol": "bb-am-USD"
+        },
+        {
+          "address": "0xe19ed40A47F9B0CEA4ca6D372dF66107758913Ec",
+          "weight": "0.5",
+          "symbol": "2BRL (BRZ)"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb371aa09f5a110ab69b39a84b5469d29f9b22b76.png",
+      "0xe19ed40A47F9B0CEA4ca6D372dF66107758913Ec": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe19ed40a47f9b0cea4ca6d372df66107758913ec.png"
+    }
+  },
+  {
     "address": "0x359EA8618c405023Fc4B98dAb1B01F373792a126",
     "network": 42161,
     "isKilled": false,
@@ -5118,6 +5484,64 @@
     "tokenLogoURIs": {
       "0x5979D7b546E38E414F7E9822514be443A4800529": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5979d7b546e38e414f7e9822514be443a4800529.png",
       "0xDa1CD1711743e57Dd57102E9e61b75f3587703da": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/42161_0xda1cd1711743e57dd57102e9e61b75f3587703da.png"
+    }
+  },
+  {
+    "address": "0x8204b749B808818DEb7957DbD030ceEA44D1FE18",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413",
+      "address": "0xD3D5d45f4Edf82ba0dFaf061d230766032a10e07",
+      "poolType": "Weighted",
+      "symbol": "50STG-50bbaUSD",
+      "tokens": [
+        {
+          "address": "0x6694340fc020c5E6B96567843da2df01b2CE1eb6",
+          "weight": "0.5",
+          "symbol": "STG"
+        },
+        {
+          "address": "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A",
+          "weight": "0.5",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6694340fc020c5E6B96567843da2df01b2CE1eb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x6694340fc020c5e6b96567843da2df01b2ce1eb6.png",
+      "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A": ""
+    }
+  },
+  {
+    "address": "0xd40a3C414Bb6f82fC5625e32895F49E53220f73b",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1682430623,
+    "pool": {
+      "id": "0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412",
+      "address": "0x9fB7D6dCAC7b6aa20108BaD226c35B85A9e31B63",
+      "poolType": "Weighted",
+      "symbol": "50wstETH-BPT-50bbaUSD",
+      "tokens": [
+        {
+          "address": "0x5A7f39435fD9c381e4932fa2047C9a5136A5E3E7",
+          "weight": "0.5",
+          "symbol": "wstETH-bb-a-WETH-BPT"
+        },
+        {
+          "address": "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A",
+          "weight": "0.5",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x5A7f39435fD9c381e4932fa2047C9a5136A5E3E7": "",
+      "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A": ""
     }
   }
 ]
