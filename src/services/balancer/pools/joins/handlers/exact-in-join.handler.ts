@@ -17,11 +17,12 @@ import { TransactionBuilder } from '@/services/web3/transactions/transaction.bui
 import { tokensListExclBpt } from '@/composables/usePoolHelpers';
 import { configService } from '@/services/config/config.service';
 
+export type ExactInJoinResponse = ReturnType<PoolWithMethods['buildJoin']>;
 /**
  * Handles joins with pool tokens using SDK functions.
  */
 export class ExactInJoinHandler implements JoinPoolHandler {
-  private joinRes?: ReturnType<PoolWithMethods['buildJoin']>;
+  private joinRes?: ExactInJoinResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,
