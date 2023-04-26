@@ -4,6 +4,7 @@ import { balancer } from '@/lib/balancer.sdk';
 import { ExitExactInResponse } from '@/services/balancer/pools/exits/handlers/exact-in-exit.handler';
 import { ExitExactOutResponse } from '@/services/balancer/pools/exits/handlers/exact-out-exit.handler';
 import { RecoveryExitResponse } from '@/services/balancer/pools/exits/handlers/recovery-exit.handler';
+import { ExactInJoinResponse } from '@/services/balancer/pools/joins/handlers/exact-in-join.handler';
 import {
   Pool,
   PoolType,
@@ -140,6 +141,15 @@ export const defaultExactOutExit: ExitExactOutResponse =
 defaultExactOutExit.to = 'test exact exit to';
 defaultExactOutExit.data = 'exact exit test encoded data';
 
+export const defaultExpectedBptOut = '30';
+
+export const defaultExactInJoin: ExactInJoinResponse =
+  mock<ExactInJoinResponse>();
+defaultExactInJoin.expectedBPTOut = defaultExpectedBptOut;
+defaultExactInJoin.to = 'test exact-in-join to';
+defaultExactInJoin.data = 'test exact-in-join encoded data';
+defaultExactInJoin.value = undefined;
+
 export const defaultRecoveryExit: RecoveryExitResponse =
   mockDeep<RecoveryExitResponse>();
 defaultRecoveryExit.to = 'test recovery exit to';
@@ -181,6 +191,7 @@ export function generateBalancerSdkMock() {
       buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
       buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
       buildRecoveryExit: vi.fn(() => defaultRecoveryExit),
+      buildJoin: vi.fn(() => defaultExactInJoin),
       calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
     })
   );
