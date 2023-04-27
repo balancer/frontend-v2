@@ -244,20 +244,20 @@ const pools: Pools = {
       joinsDisabled: true,
       stakingDisabled: true,
     },
-    // '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
-    //   newPool:
-    //     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
-    //   description: 'deprecatedPool.migrateApril',
-    //   joinsDisabled: true,
-    //   stakingDisabled: true,
-    // },
-    // '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
-    //   newPool:
-    //     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
-    //   description: 'deprecatedPool.migrateApril',
-    //   joinsDisabled: true,
-    //   stakingDisabled: true,
-    // },
+    '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
+      newPool:
+        '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
+      description: 'deprecatedPool.migrateCardDescription',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
+      newPool:
+        '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
+      description: 'deprecatedPool.migrateCardDescription',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
   },
   BrandedRedirect: {
     '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
