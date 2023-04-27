@@ -115,8 +115,12 @@ const pools: Pools = {
       name: 'rETH/Boosted Aave v3 WETH',
       hasIcon: false,
     },
-    xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413: {
+    '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413': {
       name: 'STG/Boosted Aave v3 USD',
+      hasIcon: false,
+    },
+    '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412': {
+      name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
       hasIcon: false,
     },
   },

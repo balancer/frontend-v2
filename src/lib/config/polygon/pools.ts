@@ -197,7 +197,7 @@ const pools: Pools = {
       hasIcon: true,
     },
     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
-      name: 'BstMATIC/Boosted Aave v3 WMATIC',
+      name: 'stMATIC/Boosted Aave v3 WMATIC',
       hasIcon: false,
     },
     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
