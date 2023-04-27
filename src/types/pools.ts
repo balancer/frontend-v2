@@ -93,6 +93,7 @@ export type Pools = {
   Deep: string[];
   BoostedApr: string[];
   DisabledJoins: string[];
+  ExitViaInternalBalance?: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;

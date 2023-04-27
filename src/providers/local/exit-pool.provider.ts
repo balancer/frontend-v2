@@ -57,6 +57,7 @@ import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -335,6 +336,13 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
   const fiatValueIn = computed(() => fiatValueOf(pool.value, bptIn.value));
 
+  // Should the exit be done via internal balances
+  const shouldUseInternalBalances = computed(
+    (): boolean =>
+      !!POOLS.ExitViaInternalBalance &&
+      POOLS.ExitViaInternalBalance.includes(pool.value.id)
+  );
+
   /**
    * METHODS
    */
@@ -366,6 +374,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldUseInternalBalances.value,
       });
 
       priceImpact.value = output.priceImpact;
@@ -412,6 +421,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldUseInternalBalances.value,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -444,6 +454,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldUseInternalBalances.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
