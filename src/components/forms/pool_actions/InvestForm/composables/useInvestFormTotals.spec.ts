@@ -6,7 +6,7 @@ import {
 } from '@/providers/local/join-pool.provider';
 import { provideUserTokens } from '@/providers/local/user-tokens.provider';
 import { defaultBalance } from '@/providers/__mocks__/tokens.provider.fake';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolType } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { groAddress, wethAddress } from '@tests/unit/builders/address';
@@ -101,5 +101,34 @@ describe('calculates maximized', async () => {
       anAmountIn({ address: wethAddress, value: '5' }), //5 != defaultBalance
     ]);
     expect(maximized.value).toBeFalse();
+  });
+});
+
+describe('calculates optimized', async () => {
+  test('when both tokens have max balance', async () => {
+    const pool = aWeightedPool();
+    const { optimized } = await mountInvestFormTotals(pool, [
+      anAmountIn({ address: groAddress, value: defaultBalance }),
+      anAmountIn({ address: wethAddress, value: defaultBalance }),
+    ]);
+    expect(optimized.value).toBeTrue();
+  });
+  test('when one token does not have max balance', async () => {
+    const pool = aWeightedPool();
+    const { optimized } = await mountInvestFormTotals(pool, [
+      anAmountIn({ address: groAddress, value: defaultBalance }),
+      anAmountIn({ address: wethAddress, value: '3' }), // 3 is less than max balance
+    ]);
+    expect(optimized.value).toBeFalse();
+  });
+  test('when pool does not support proportional optimization (not Stable like)', async () => {
+    const pool = aWeightedPool();
+    // Change poolType to be not stable like so supportsProportionalOptimization is false
+    pool.poolType = PoolType.FX;
+    const { optimized } = await mountInvestFormTotals(pool, [
+      anAmountIn({ address: groAddress, value: defaultBalance }),
+      anAmountIn({ address: wethAddress, value: defaultBalance }),
+    ]);
+    expect(optimized.value).toBeFalse();
   });
 });
