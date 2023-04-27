@@ -3,6 +3,7 @@ import { AmountIn } from '@/providers/local/join-pool.provider';
 import { ExitParams } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { JoinParams } from '@/services/balancer/pools/joins/handlers/join-pool.handler';
 import { aTokenInfo } from '@/types/TokenList.builders';
+import { defaultWeightedPoolAddress } from '@/__mocks__/weighted-pool';
 import { mock } from 'vitest-mock-extended';
 import { wethAddress } from './address';
 import { aSigner } from './signer';
@@ -33,7 +34,7 @@ export function buildExitParams(...options: Partial<ExitParams>[]): ExitParams {
 
   defaultExitParams.tokenInfo = {
     // This will be parametrized in incoming PRs:
-    ['0x702605F43471183158938C1a3e5f5A359d7b31ba']: aTokenInfo(),
+    [defaultWeightedPoolAddress]: aTokenInfo(),
     [wethAddress]: aTokenInfo(),
   };
 
