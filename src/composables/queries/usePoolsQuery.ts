@@ -227,8 +227,6 @@ export default function usePoolsQuery(
     const fetchOptions = getFetchOptions(pageParam);
     let skip = 0;
     try {
-      //TODO: Delete the following ts-ignore once we merge SDK version with isPaused attribute:
-      //@ts-ignore
       let pools: Pool[] = await poolsRepository.fetch(fetchOptions);
       if (!isBalancerApiDefined) pools = customSort(pools);
 
