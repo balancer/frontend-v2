@@ -14,7 +14,9 @@ export default function useNativeBalance() {
     return Number(balanceFor(appNetworkConfig.nativeAsset.address)).toFixed(4);
   });
 
-  const hasNativeBalance = computed(() => hasBalance(nativeAsset.address));
+  const hasNativeBalance = computed(() =>
+    hasBalance(nativeAsset.address.toLowerCase())
+  );
 
   return {
     hasNativeBalance,

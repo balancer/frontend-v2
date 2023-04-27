@@ -128,7 +128,7 @@ export const tokensProvider = (
    */
   const tokens = computed(
     (): TokenInfoMap => ({
-      [networkConfig.nativeAsset.address]: nativeAsset,
+      [networkConfig.nativeAsset.address.toLowerCase()]: nativeAsset,
       ...activeTokenListTokens.value,
       ...state.injectedTokens,
     })
@@ -220,7 +220,7 @@ export const tokensProvider = (
       .flat();
 
     const tokensMap = tokens.reduce<TokenInfoMap>((acc, token) => {
-      const address: string = getAddress(token.address);
+      const address: string = getAddress(token.address).toLowerCase();
 
       // Don't include if already included
       if (acc[address]) return acc;
@@ -243,16 +243,20 @@ export const tokensProvider = (
     addresses = addresses
       .filter(a => a)
       .map(getAddressFromPoolId)
-      .map(getAddress);
+      .map(getAddress)
+      .map(a => a.toLowerCase());
 
     // Remove any duplicates
     addresses = [...new Set(addresses)];
 
     const existingAddresses = Object.keys(tokens.value);
+    const existingAddressesMap = Object.fromEntries(
+      existingAddresses.map((address: string) => [address.toLowerCase(), true])
+    );
 
     // Only inject tokens that aren't already in tokens
     const injectable = addresses.filter(
-      address => !includesAddress(existingAddresses, address)
+      address => existingAddressesMap[address] !== true
     );
     if (injectable.length === 0) return;
 
@@ -264,7 +268,14 @@ export const tokensProvider = (
       allTokenLists.value
     );
 
-    state.injectedTokens = { ...state.injectedTokens, ...newTokens };
+    const newTokensLowercase = Object.fromEntries(
+      Object.entries(newTokens).map(([address, token]) => [
+        address.toLowerCase(),
+        token,
+      ])
+    );
+
+    state.injectedTokens = { ...state.injectedTokens, ...newTokensLowercase };
 
     // Wait for balances/allowances to be fetched for newly injected tokens.
     await nextTick();
@@ -370,7 +381,7 @@ export const tokensProvider = (
    */
   function priceFor(address: string): number {
     try {
-      const price = selectByAddress(prices.value, address);
+      const price = selectByAddress(prices.value, address.toLowerCase());
       if (!price) {
         captureException(new Error('Could not find price for token'), {
           extra: { address },
@@ -388,7 +399,7 @@ export const tokensProvider = (
    */
   function balanceFor(address: string): string {
     try {
-      return selectByAddress(balances.value, address) || '0';
+      return selectByAddress(balances.value, address.toLowerCase()) || '0';
     } catch {
       return '0';
     }
@@ -398,7 +409,9 @@ export const tokensProvider = (
    * Checks if token has a balance
    */
   function hasBalance(address: string): boolean {
-    return Number(selectByAddress(balances.value, address) || '0') > 0;
+    return (
+      Number(selectByAddress(balances.value, address.toLowerCase()) || '0') > 0
+    );
   }
 
   /**

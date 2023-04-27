@@ -27,7 +27,7 @@ export default function useTokenPricesQuery(
 
   function priceArrayToMap(prices: GqlTokenPrice[]): TokenPrices {
     return prices.reduce(
-      (obj, item) => ((obj[item.address] = item.price), obj),
+      (obj, item) => ((obj[item.address.toLowerCase()] = item.price), obj),
       {}
     );
   }

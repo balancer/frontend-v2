@@ -1,4 +1,3 @@
-import { getAddress } from '@ethersproject/address';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
@@ -62,9 +61,8 @@ export default class BalancesConcern {
         addresses = addresses.filter(
           address => !isSameAddress(address, this.nativeAssetAddress)
         );
-        balanceMap[this.nativeAssetAddress] = await this.fetchNativeBalance(
-          account
-        );
+        balanceMap[this.nativeAssetAddress.toLowerCase()] =
+          await this.fetchNativeBalance(account);
       }
 
       const multicall = getMulticall();
@@ -100,7 +98,7 @@ export default class BalancesConcern {
   ): BalanceMap {
     return Object.fromEntries(
       addresses.map((address, i) => [
-        getAddress(address),
+        address.toLowerCase(),
         formatUnits(balances[i], tokens[address].decimals),
       ])
     );
