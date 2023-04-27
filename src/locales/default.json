@@ -904,7 +904,7 @@
     "stakingIncentives": "Staking incentives",
     "totalShareTooltip": "Your current total share of LP tokens in the pool",
     "restakeGauge": "Restake to receive future liquidity mining incentives",
-    "restakeGaugeDescription": "You are staking in a gauge which has been deprecated as of May 25th, 2023. Restake to the new gauge for this pool to receive future liquidity mining incentives.",
+    "restakeGaugeDescription": "You are staking in a gauge which has been deprecated. Restake to the new gauge for this pool to receive future liquidity mining incentives.",
     "unclaimedIncentives": "Unclaimed incentives",
     "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
     "unstakedPools": "Unstaked pools",
