@@ -33,6 +33,7 @@ import {
   TokensProviderSymbol,
   TokensResponse,
 } from '../tokens.provider';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
 
 /**
  * TYPES
@@ -50,6 +51,16 @@ export interface TokensProviderState {
 
 export const defaultPrice = 2;
 export const defaultBalance = '10';
+
+export const fakePriceMap: TokenPrices = {
+  [groAddress]: defaultPrice,
+  [wethAddress]: defaultPrice,
+};
+
+export const fakeBalanceMap: BalanceMap = {
+  [groAddress]: defaultBalance,
+  [wethAddress]: defaultBalance,
+};
 
 /**
  * Fake provider to be used by tests.
@@ -74,8 +85,6 @@ export const fakeTokensProvider = (
    * COMPOSABLES
    */
   const { networkConfig } = useConfig();
-  const { currency } = userSettings;
-  const isWalletReady = ref(true);
 
   const {
     tokensListPromise,
@@ -146,14 +155,12 @@ export const fakeTokensProvider = (
     })
   );
 
-  const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
-
   const wrappedNativeAsset = computed(
     (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset)
   );
 
-  const prices = computed((): TokenPrices => ({}));
-  const balances = computed((): BalanceMap => ({}));
+  const prices = computed((): TokenPrices => fakePriceMap);
+  const balances = computed((): BalanceMap => fakeBalanceMap);
   const allowances = computed((): ContractAllowancesMap => ({}));
 
   const dynamicDataLoaded = computed(() => true);
@@ -344,7 +351,7 @@ export const fakeTokensProvider = (
    * Get single token from state
    */
   function getToken(address: string): TokenInfo {
-    address = getAddressFromPoolId(address); // In case pool ID has been passed
+    address = getAddressFromPoolId(address);
     if (address) address = getAddress(address);
     return tokens.value[address];
   }
@@ -383,6 +390,16 @@ export const fakeTokensProvider = (
       maxAmount = tokenBalance;
     }
     return maxAmount;
+  }
+
+  /**
+   * Returns true if the token is the native asset or wrapped native asset
+   */
+  function isWethOrEth(tokenAddress: string): boolean {
+    return (
+      isSameAddress(tokenAddress, nativeAsset.address) ||
+      isSameAddress(tokenAddress, wrappedNativeAsset.value.address)
+    );
   }
 
   /**
@@ -438,6 +455,7 @@ export const fakeTokensProvider = (
     getToken,
     injectPrices,
     getMaxBalanceFor,
+    isWethOrEth,
   };
 
   return { ...defaultResponse, ...override } as TokensResponse;

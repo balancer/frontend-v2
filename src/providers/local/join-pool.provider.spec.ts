@@ -4,9 +4,9 @@ import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { anAmountIn } from '@tests/unit/builders/join-exit.builders';
-import { ref } from 'vue';
 import waitForExpect from 'wait-for-expect';
 import { joinPoolProvider } from './join-pool.provider';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
 
 initEthersContractWithDefaultMocks();
 initBalancerSdkWithDefaultMocks();
@@ -24,13 +24,17 @@ async function mountJoinPoolProvider(pool: Pool) {
   return result;
 }
 
-test('join a weighted pool', async () => {
+test('join a weighted pool with default join handler (ExactIn)', async () => {
   const result = await mountJoinPoolProvider(aWeightedPool());
 
   expect(result.amountsIn.value).toEqual([]);
   expect(result.approvalActions.value).toEqual([]);
 
-  result.setAmountsIn([anAmountIn({ value: '23' })]);
+  const amountsIn = [
+    anAmountIn({ address: groAddress, value: '20' }),
+    anAmountIn({ address: wethAddress, value: '20' }),
+  ];
+  result.setAmountsIn(amountsIn);
 
   await result.join();
 });

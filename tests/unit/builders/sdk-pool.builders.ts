@@ -103,6 +103,7 @@ const defaultSdkPool = {
   lowerTarget: '0',
   upperTarget: '0',
   isInRecoveryMode: false,
+  isPaused: false,
   isNew: false,
   onchain: {
     tokens: {
