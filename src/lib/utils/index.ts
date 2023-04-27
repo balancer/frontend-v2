@@ -7,6 +7,7 @@ import { Path } from 'vue-i18n';
 import pkg from '@/../package.json';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { POOLS } from '@/constants/pools';
+import { CaseInsensitiveMap } from '@/types';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -156,15 +157,10 @@ export function indexOfAddress(addresses: string[], address: string): number {
 }
 
 export function selectByAddress<T>(
-  map: Record<string, T>,
+  map: CaseInsensitiveMap<string, T>,
   address: string
 ): T | undefined {
-  const foundAddress = Object.keys(map).find(itemAddress => {
-    if (isSameAddress(itemAddress, address)) {
-      return true;
-    }
-  });
-  if (foundAddress) return map[foundAddress];
+  return map[address];
 }
 
 export function findByAddress<T>(

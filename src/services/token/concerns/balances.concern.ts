@@ -10,9 +10,10 @@ import { getMulticall } from '@/dependencies/multicall';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import TokenService from '../token.service';
+import { CaseInsensitiveMap } from '@/types';
 
 // TYPES
-export type BalanceMap = { [address: string]: string };
+export type BalanceMap = CaseInsensitiveMap<string, number>;
 
 export default class BalancesConcern {
   network: string;

@@ -5,11 +5,12 @@ import useNetwork from '../useNetwork';
 import { getApi } from '@/dependencies/balancer-api';
 import { GqlTokenPrice } from '@/services/api/graphql/generated/api-types';
 import { oneMinInMs } from '../useTime';
+import { CaseInsensitiveMap } from '@/types';
 
 /**
  * TYPES
  */
-export type TokenPrices = { [address: string]: number };
+export type TokenPrices = CaseInsensitiveMap<string, number>;
 type QueryResponse = TokenPrices;
 type QueryOptions = UseQueryOptions<QueryResponse>;
 
@@ -17,7 +18,9 @@ type QueryOptions = UseQueryOptions<QueryResponse>;
  * Fetches token prices for all provided addresses.
  */
 export default function useTokenPricesQuery(
-  pricesToInject: Ref<TokenPrices> = ref({}),
+  pricesToInject: Ref<TokenPrices> = ref(
+    new CaseInsensitiveMap<string, number>()
+  ),
   options: QueryOptions = {}
 ) {
   const { networkId } = useNetwork();
@@ -28,7 +31,7 @@ export default function useTokenPricesQuery(
   function priceArrayToMap(prices: GqlTokenPrice[]): TokenPrices {
     return prices.reduce(
       (obj, item) => ((obj[item.address] = item.price), obj),
-      {}
+      new CaseInsensitiveMap<string, number>()
     );
   }
 

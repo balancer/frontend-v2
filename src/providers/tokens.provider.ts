@@ -42,6 +42,7 @@ import {
   TokenListMap,
 } from '@/types/TokenList';
 import useWeb3 from '@/services/web3/useWeb3';
+import { CaseInsensitiveMap } from '@/types';
 
 /**
  * TYPES
@@ -172,10 +173,16 @@ export const tokensProvider = (
   } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
 
   const prices = computed(
-    (): TokenPrices => (priceData.value ? priceData.value : {})
+    (): TokenPrices =>
+      priceData.value
+        ? priceData.value
+        : new CaseInsensitiveMap<string, number>()
   );
   const balances = computed(
-    (): BalanceMap => (balanceData.value ? balanceData.value : {})
+    (): BalanceMap =>
+      balanceData.value
+        ? balanceData.value
+        : new CaseInsensitiveMap<string, number>()
   );
   const allowances = computed(
     (): ContractAllowancesMap =>
