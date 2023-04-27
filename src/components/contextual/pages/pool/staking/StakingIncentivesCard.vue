@@ -30,7 +30,7 @@ const emit = defineEmits<{
 
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref<StakeAction>('stake');
-const poolId = computed(() => toRef(props, 'pool').value.id);
+const poolId = computed(() => props.pool.id);
 
 /**
  * COMPOSABLES
