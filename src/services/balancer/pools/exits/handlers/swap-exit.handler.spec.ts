@@ -1,5 +1,5 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
-import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
+import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import {
   defaultBatchSwapResponse,
   initEthersContractWithDefaultMocks,
@@ -15,14 +15,14 @@ import { ref } from 'vue';
 import { ExitType } from './exit-pool.handler';
 import { SwapExitHandler } from './swap-exit.handler';
 
-initBalancerWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 initEthersContractWithDefaultMocks();
 
 const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
   mockDeep<GasPriceService>();
 
 async function mountSwapExitHandler(pool: Pool) {
-  return new SwapExitHandler(ref(pool), getBalancer(), gasPriceServiceMock);
+  return new SwapExitHandler(ref(pool), getBalancerSDK(), gasPriceServiceMock);
 }
 
 const exitParams = buildExitParams({

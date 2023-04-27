@@ -1,0 +1,18 @@
+query GetCurrentTokenPrices {
+    prices: tokenGetCurrentPrices {
+        price
+        address
+    }
+}
+
+#uncomment this query and run `npm run api:generate`
+#query GetTokens {
+#    tokens: tokenGetTokens {
+#        address
+#        name
+#        symbol
+#        decimals
+#        chainId
+#        logoURI
+#    }
+#}

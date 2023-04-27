@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
 import { RouterLinkProps } from 'vue-router';
+import PrefetchLinks from '@/components/links/PrefetchLinks.vue';
 
 interface Props extends RouterLinkProps {
   active: boolean;
+  prefetch?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   active: false,
+  prefetch: false,
 });
 
 const classes = computed(() => ({
@@ -20,6 +22,7 @@ const classes = computed(() => ({
 <template>
   <router-link v-bind="props" :class="['desktop-link-item', classes]">
     <slot />
+    <PrefetchLinks v-if="prefetch" :to="$attrs.to" />
   </router-link>
 </template>
 
