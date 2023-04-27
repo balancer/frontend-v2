@@ -95,7 +95,7 @@ export function useInvestFormTotals(pool: Pool) {
     if (!supportsProportionalOptimization.value) return false;
     const propMaxAmountsIn = getPropMax();
     return amountsIn.value.every(
-      (item, i) => item.value === propMaxAmountsIn[i].value
+      (item, i) => Number(item.value) === Number(propMaxAmountsIn[i].value)
     );
   });
 

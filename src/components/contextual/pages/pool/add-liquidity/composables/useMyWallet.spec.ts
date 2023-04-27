@@ -1,6 +1,6 @@
 import { Tab } from '@/composables/pools/useInvestPageTabs';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { initMulticallerWithOnchainPoolMocks } from '@/dependencies/Multicaller.mocks';
+import { initMulticallerAsPoolMulticallerMock } from '@/dependencies/Multicaller.mocks';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
 import { providePool } from '@/providers/local/pool.provider';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
@@ -12,7 +12,7 @@ import waitForExpect from 'wait-for-expect';
 import { useMyWallet } from './useMyWallet';
 
 initDependenciesWithDefaultMocks();
-initMulticallerWithOnchainPoolMocks();
+initMulticallerAsPoolMulticallerMock();
 
 const pool = aWeightedPool();
 async function mountMyWallet() {

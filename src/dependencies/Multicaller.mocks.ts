@@ -46,8 +46,9 @@ export function initMulticallPoolId(id: string) {
   poolId = id;
 }
 
-export function initMulticallerWithOnchainPoolMocks() {
-  // Used for tests which code uses the Multicaller to get pool data
+export function initMulticallerAsPoolMulticallerMock() {
+  // Used for tests which code uses Multicaller from pool.multicaller, that is, to fetch onchain data to decorate a given SDL pool
+  // pool.multicaller defines its output type RawOnchainPoolDataMap that we can use in this mock
   // We will replace this mock with MulticallerMock in future PRs
   class MulticallerMock {
     execute() {

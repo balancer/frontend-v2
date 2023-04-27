@@ -198,7 +198,10 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   );
 
   const exitHandlerType = computed((): ExitHandler => {
-    if (pool.value.isInRecoveryMode && pool.value.isPaused)
+    if (
+      (pool.value.isInRecoveryMode && pool.value.isPaused) ||
+      (!isDeepPool.value && isComposableStableV1(pool.value))
+    )
       return ExitHandler.Recovery;
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
     if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
