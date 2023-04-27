@@ -7,7 +7,6 @@ export { PoolType } from '@balancer-labs/sdk';
 export interface Pool extends SDKPool {
   tokens: PoolToken[];
   onchain?: OnchainPoolData;
-  isPaused: boolean;
 }
 
 export interface RawPoolTokens {
