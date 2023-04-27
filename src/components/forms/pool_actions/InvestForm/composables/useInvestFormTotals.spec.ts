@@ -104,6 +104,20 @@ describe('calculates maximized', async () => {
   });
 });
 
+test('maximizes amounts', async () => {
+  const pool = aWeightedPool();
+  const { maximized, maximizeAmounts } = await mountInvestFormTotals(pool, [
+    anAmountIn({ address: groAddress, value: '2' }),
+    anAmountIn({ address: wethAddress, value: '4' }),
+  ]);
+
+  expect(maximized.value).toBeFalse();
+
+  maximizeAmounts();
+
+  expect(maximized.value).toBeTrue();
+});
+
 describe('calculates optimized', async () => {
   test('when both tokens have max balance', async () => {
     const pool = aWeightedPool();
@@ -131,4 +145,18 @@ describe('calculates optimized', async () => {
     ]);
     expect(optimized.value).toBeFalse();
   });
+});
+
+test('optimizes amounts', async () => {
+  const pool = aWeightedPool();
+  const { optimized, optimizeAmounts } = await mountInvestFormTotals(pool, [
+    anAmountIn({ address: groAddress, value: '2' }),
+    anAmountIn({ address: wethAddress, value: '4' }),
+  ]);
+
+  expect(optimized.value).toBeFalse();
+
+  optimizeAmounts();
+
+  expect(optimized.value).toBeTrue();
 });
