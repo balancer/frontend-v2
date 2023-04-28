@@ -18,7 +18,7 @@ const contracts: Contracts = {
   balancerHelpers: '0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab',
   batchRelayer: '0x598ce0f1ab64B27256759ef99d883EE51138b9bd',
   gaugeFactory: '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2',
-  balancerMinter: '',
+  balancerMinter: '0xc3ccacE87f6d3A81724075ADcb5ddd85a8A1bB68',
   gaugeController: '',
   tokenAdmin: '',
   veBAL: '',

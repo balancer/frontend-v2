@@ -240,30 +240,26 @@ onBeforeMount(async () => {
           {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
         </h2>
 
-        <template v-if="networkHasNativeGauges">
-          <div class="mb-16">
-            <div class="px-4 xl:px-0">
-              <div class="flex items-center mt-6 mb-2">
-                <h3 class="inline-block mr-1.5 text-xl">
-                  BAL {{ $t('incentives') }}
-                </h3>
-                <BalTooltip
-                  iconSize="xs"
-                  textAlign="left"
-                  class="relative top-px"
-                  iconClass="text-secondary"
-                  width="60"
-                >
-                  {{ $t('claimPage.tips.BalIncentives') }}
-                </BalTooltip>
-              </div>
+        <div class="mb-16">
+          <div class="px-4 xl:px-0">
+            <div class="flex items-center mt-6 mb-2">
+              <h3 class="inline-block mr-1.5 text-xl">
+                BAL {{ $t('incentives') }}
+              </h3>
+              <BalTooltip
+                iconSize="xs"
+                textAlign="left"
+                class="relative top-px"
+                iconClass="text-secondary"
+                width="60"
+              >
+                {{ $t('claimPage.tips.BalIncentives') }}
+              </BalTooltip>
             </div>
-            <BalClaimsTable
-              :rewardsData="balRewardsData"
-              :isLoading="loading"
-            />
           </div>
-        </template>
+          <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
+        </div>
+
         <template v-if="networkHasProtocolRewards">
           <div class="mb-16">
             <h3 class="inline-block xl:px-0 pl-4 mt-8 mr-1.5 mb-3 text-xl">
