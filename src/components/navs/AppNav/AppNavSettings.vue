@@ -10,6 +10,7 @@ import { shorten } from '@/lib/utils';
 import useDarkMode from '@/composables/useDarkMode';
 import { getConnectorLogo } from '@/services/web3/wallet-logos';
 import { getConnectorName } from '@/services/web3/wallet-names';
+import { useUserSettings } from '@/providers/user-settings.provider';
 
 // COMPOSABLES
 const { darkMode, setDarkMode } = useDarkMode();
@@ -27,6 +28,7 @@ const {
   explorerLinks,
 } = useWeb3();
 const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
+const { supportSignatures, setSupportSignatures } = useUserSettings();
 
 // DATA
 const data = reactive({
@@ -201,6 +203,22 @@ function copyAddress() {
         v-model="ethereumTxType"
         :options="ethereumTxTypeOptions"
         @update:model-value="setEthereumTxType"
+      />
+    </div>
+    <div class="px-4 mt-6">
+      <div class="flex items-baseline">
+        <span class="mb-2 font-medium" v-text="$t('useSignatures')" />
+        <BalTooltip>
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
+          </template>
+          <div v-text="$t('useSignaturesTooltip')" />
+        </BalTooltip>
+      </div>
+      <BalToggle
+        v-model="supportSignatures"
+        name="supportSignatures"
+        @toggle="setSupportSignatures"
       />
     </div>
     <div
