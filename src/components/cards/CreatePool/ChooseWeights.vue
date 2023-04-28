@@ -33,13 +33,12 @@ const emptyTokenWeight: PoolSeedToken = {
 const {
   updateTokenWeights,
   proceed,
-  acceptCustomTokenDisclaimer,
   setTokensList,
   seedTokens,
   tokensList,
   totalLiquidity,
-  hasInjectedToken,
-  acceptedCustomTokenDisclaimer,
+  hasUnlistedToken,
+  isUnlistedToken,
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
@@ -103,8 +102,7 @@ const isProceedDisabled = computed(() => {
   if (Number(totalAllocatedWeight.value) !== 100) return true;
   if (seedTokens.value.length < 2) return true;
   if (zeroWeightToken.value) return true;
-  if (hasInjectedToken.value && !acceptedCustomTokenDisclaimer.value)
-    return true;
+  if (hasUnlistedToken.value) return true;
   return false;
 });
 
@@ -345,6 +343,9 @@ function onAlertMountChange() {
                       v-model:address="seedTokens[i].tokenAddress"
                       noRules
                       noMax
+                      :showWarningIcon="
+                        isUnlistedToken(seedTokens[i].tokenAddress)
+                      "
                       :excludedTokens="excludedTokens"
                       @update:weight="data => handleWeightChange(data, i)"
                       @update:address="data => handleAddressChange(data, i)"
@@ -435,19 +436,22 @@ function onAlertMountChange() {
           </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :isVisible="hasInjectedToken && !acceptedCustomTokenDisclaimer"
+          :isVisible="hasUnlistedToken"
           unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
-          <BalAlert :title="$t('tokenWarningTitle')" type="warning">
+          <BalAlert :title="$t('unlistedTokenWarningTitle')" type="error">
             <BalStack vertical spacing="xs">
-              <span>{{ $t('tokenWarning') }}</span>
-              <div>
-                <BalBtn size="xs" @click="acceptCustomTokenDisclaimer">
-                  {{ $t('accept') }}
-                </BalBtn>
-              </div>
+              <span class="mt-2"
+                >{{ $t('unlistedTokenWarning') }}
+                <a
+                  href="https://github.com/balancer/frontend-v2/wiki/How-tos#add-tokens-to-tokenlist"
+                  target="_blank"
+                  class="underline"
+                  >{{ $t('here') }}</a
+                >.
+              </span>
             </BalStack>
           </BalAlert>
         </AnimatePresence>

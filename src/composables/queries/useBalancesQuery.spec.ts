@@ -10,8 +10,8 @@ initDependenciesWithDefaultMocks();
 
 test('Returns token balances', async () => {
   const tokens = ref({
-    [nativeAssetAddress]: aTokenInfo(nativeAssetAddress),
-    [daiAddress]: aTokenInfo(daiAddress),
+    [nativeAssetAddress]: aTokenInfo({ address: nativeAssetAddress }),
+    [daiAddress]: aTokenInfo({ address: daiAddress }),
   });
 
   const { result } = mountComposable(() =>

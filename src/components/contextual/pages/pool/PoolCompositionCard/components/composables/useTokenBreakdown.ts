@@ -1,5 +1,5 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep } from '@/composables/usePool';
+import { isDeep } from '@/composables/usePoolHelpers';
 import { useUserPoolPercentage } from '@/composables/useUserPoolPercentage';
 import { bnum } from '@/lib/utils';
 import { isNumber } from '@/lib/utils/numbers';

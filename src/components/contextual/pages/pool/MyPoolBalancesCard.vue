@@ -2,9 +2,12 @@
 import { computed, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { fiatValueOf, isVeBalPool, usePool } from '@/composables/usePool';
+import {
+  fiatValueOf,
+  isVeBalPool,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
@@ -14,6 +17,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import PoolActionsCard from './PoolActionsCard.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useLock } from '@/composables/useLock';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -34,7 +38,7 @@ const props = defineProps<Props>();
 const { balanceFor } = useTokens();
 const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { isMigratablePool } = usePool(toRef(props, 'pool'));
+const { isMigratablePool } = usePoolHelpers(toRef(props, 'pool'));
 const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
@@ -67,7 +71,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
+      to: configService.network.pools.Migrations?.[pool.id].toPoolId,
     },
     query: {
       returnRoute: 'pool',

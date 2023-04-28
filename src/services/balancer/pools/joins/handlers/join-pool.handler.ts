@@ -1,5 +1,4 @@
 import { AmountIn } from '@/providers/local/join-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -11,7 +10,6 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 export type JoinParams = {
   amountsIn: AmountIn[];
   tokensIn: TokenInfoMap;
-  prices: TokenPrices;
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;

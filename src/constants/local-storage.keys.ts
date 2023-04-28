@@ -7,6 +7,7 @@ export default {
     SwapDeadline: 'app.swapDeadline',
     EthereumTxType: 'app.ethereumTxType',
     SupportSignatures: 'app.supportSignatures',
+    TermsAccepted: 'app.termsAccepted',
   },
   Swap: {
     Gasless: 'swap.gasless',

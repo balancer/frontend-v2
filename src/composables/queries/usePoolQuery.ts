@@ -9,7 +9,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 
-import { tokensListExclBpt, tokenTreeLeafs } from '../usePool';
+import { tokensListExclBpt, tokenTreeLeafs } from '../usePoolHelpers';
 
 import { POOLS } from '@/constants/pools';
 import { configService } from '@/services/config/config.service';

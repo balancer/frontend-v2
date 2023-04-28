@@ -1,0 +1,21 @@
+overwrite: true
+generates:
+  src/services/api/graphql/generated/api-types.ts:
+    schema: ${BALANCER_API_URL:https://api-v3.balancer.fi/graphql}
+    documents: 'src/**/*.graphql'
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request
+    config:
+      scalars:
+        BigInt: string
+        Bytes: string
+        BigDecimal: string
+  src/services/api/graphql/generated/api-schema.graphql:
+    schema: ${BALANCER_API_URL:https://api-v3.balancer.fi/graphql}
+    plugins:
+      - schema-ast
+hooks:
+  afterOneFileWrite:
+    - npm run lint:fix

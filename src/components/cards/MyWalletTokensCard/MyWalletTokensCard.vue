@@ -1,7 +1,10 @@
 <script setup lang="ts">
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import {
+  tokensListExclBpt,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -32,7 +35,9 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
+const { isWrappedNativeAssetPool, isDeepPool } = usePoolHelpers(
+  toRef(props, 'pool')
+);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const route = useRoute();
@@ -57,7 +62,10 @@ const tokensForTotal = computed((): string[] => {
         return nativeAsset.address;
       return address;
     });
-  } else if (pageContext.value === 'withdraw' && isWethPool.value) {
+  } else if (
+    pageContext.value === 'withdraw' &&
+    isWrappedNativeAssetPool.value
+  ) {
     return [nativeAsset.address, ...tokenAddresses.value];
   }
 
