@@ -421,14 +421,14 @@ const pools: Pools = {
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
       newPool:
         '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502',
-      description: 'deprecatedPool.migrateApril',
+      description: 'deprecatedPool.migrateCardDescription',
       joinsDisabled: true,
       stakingDisabled: true,
     },
     '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b': {
       newPool:
         '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505',
-      description: 'deprecatedPool.migrateApril',
+      description: 'deprecatedPool.migrateCardDescription',
       joinsDisabled: true,
       stakingDisabled: true,
     },
