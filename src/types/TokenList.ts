@@ -1,3 +1,5 @@
+import { CaseInsensitiveMap } from '.';
+
 export interface TokenInfo {
   readonly chainId: number;
   readonly address: string;
@@ -40,7 +42,7 @@ export interface TokenList {
 }
 
 export type TokenListMap = { [address: string]: TokenList };
-export type TokenInfoMap = Record<string, TokenInfo>;
+export type TokenInfoMap = CaseInsensitiveMap<string, TokenInfo>;
 
 export interface TokenListURLMap {
   Balancer: {

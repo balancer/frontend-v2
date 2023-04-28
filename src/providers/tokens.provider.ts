@@ -83,13 +83,13 @@ export const tokensProvider = (
 
   const state: TokensProviderState = reactive({
     loading: true,
-    injectedTokens: {},
+    injectedTokens: new CaseInsensitiveMap<string, TokenInfo>(),
     allowanceContracts: compact([
       networkConfig.addresses.vault,
       networkConfig.addresses.wstETH,
       configService.network.addresses.veBAL,
     ]),
-    injectedPrices: {},
+    injectedPrices: new CaseInsensitiveMap<string, number>(),
   });
 
   /**
@@ -99,13 +99,13 @@ export const tokensProvider = (
   /**
    * All tokens from all token lists.
    */
-  const allTokenListTokens = computed(
-    (): TokenInfoMap => ({
+  const allTokenListTokens = computed((): TokenInfoMap => {
+    return new CaseInsensitiveMap<string, TokenInfo>({
       [networkConfig.nativeAsset.address]: nativeAsset,
       ...mapTokenListTokens(allTokenLists.value),
       ...state.injectedTokens,
-    })
-  );
+    });
+  });
 
   /**
    * All tokens from token lists that are toggled on.
@@ -127,13 +127,13 @@ export const tokensProvider = (
    * and any injected tokens. Static and dynamic
    * meta data should be available for these tokens.
    */
-  const tokens = computed(
-    (): TokenInfoMap => ({
+  const tokens = computed((): TokenInfoMap => {
+    return new CaseInsensitiveMap<string, TokenInfo>({
       [networkConfig.nativeAsset.address]: nativeAsset,
       ...activeTokenListTokens.value,
       ...state.injectedTokens,
-    })
-  );
+    });
+  });
 
   const wrappedNativeAsset = computed(
     (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset)
@@ -220,7 +220,7 @@ export const tokensProvider = (
    */
   function mapTokenListTokens(tokenListMap: TokenListMap): TokenInfoMap {
     const isEmpty = Object.keys(tokenListMap).length === 0;
-    if (isEmpty) return {};
+    if (isEmpty) return new CaseInsensitiveMap<string, TokenInfo>();
 
     const tokens = [...Object.values(tokenListMap)]
       .map(list => list.tokens)
@@ -237,7 +237,7 @@ export const tokensProvider = (
 
       acc[address] = token;
       return acc;
-    }, {});
+    }, new CaseInsensitiveMap<string, TokenInfo>());
 
     return tokensMap;
   }
@@ -271,7 +271,10 @@ export const tokensProvider = (
       allTokenLists.value
     );
 
-    state.injectedTokens = { ...state.injectedTokens, ...newTokens };
+    const injectedTokens = { ...state.injectedTokens, ...newTokens };
+    state.injectedTokens = new CaseInsensitiveMap<string, TokenInfo>(
+      injectedTokens as CaseInsensitiveMap<string, TokenInfo>
+    );
 
     // Wait for balances/allowances to be fetched for newly injected tokens.
     await nextTick();

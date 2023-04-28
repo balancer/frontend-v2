@@ -103,4 +103,48 @@ export class CaseInsensitiveMap<T, U> extends Map<T, U> {
 
     return super.has(key);
   }
+
+  delete(key: T): boolean {
+    const keyLowerCase =
+      typeof key === 'string' ? (key.toLowerCase() as any as T) : key;
+    return super.delete(keyLowerCase);
+  }
+
+  clear(): void {
+    super.clear();
+  }
+
+  keys(): IterableIterator<T> {
+    return super.keys();
+  }
+
+  values(): IterableIterator<U> {
+    return super.values();
+  }
+
+  *entries(): IterableIterator<[T, U]> {
+    const keys = super.keys();
+    const values = super.values();
+    for (let i = 0; i < super.size; i++) {
+      yield [keys.next().value, values.next().value];
+    }
+  }
+
+  forEach(
+    callbackfn: (value: U, key: T, map: CaseInsensitiveMap<T, U>) => void
+  ): void {
+    const keys = super.keys();
+    const values = super.values();
+    for (let i = 0; i < super.size; i++) {
+      callbackfn(values.next().value, keys.next().value, this);
+    }
+  }
+
+  next(): IteratorResult<[T, U]> {
+    return super.entries().next();
+  }
+
+  [Symbol.iterator](): IterableIterator<[T, U]> {
+    return this;
+  }
 }
