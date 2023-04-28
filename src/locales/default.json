@@ -1480,6 +1480,8 @@
   "unwrap": "Unwrap",
   "usdValue": "USD Value",
   "useOf": "use of",
+  "useSignatures": "Use signatures",
+  "useSignaturesTooltip": "It's recommended to turn on signatures for gas-free transactions. However, if your wallet doesn't support the signing of signatures, you can turn it off.",
   "v1": "V1",
   "v2": "V2",
   "value": "Value",
