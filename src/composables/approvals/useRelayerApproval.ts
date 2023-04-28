@@ -44,10 +44,10 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   const { supportSignatures } = useUserSettings();
 
   const signatureAction: TransactionActionInfo = {
-    label: t('approveBatchRelayer'),
+    label: t('signRelayerApproval'),
     loadingLabel: t('checkWallet'),
-    confirmingLabel: t('approvingBatchRelayer'),
-    stepTooltip: t('approveBatchRelayerTooltip'),
+    confirmingLabel: t('signingRelayerApproval'),
+    stepTooltip: t('signRelayerApprovalTooltip'),
     action: signRelayerApproval as () => Promise<any>,
     isSignAction: true,
   };

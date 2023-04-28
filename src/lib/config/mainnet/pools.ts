@@ -121,7 +121,7 @@ const pools: Pools = {
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
     '0xf9ac7b9df2b3454e841110cce5550bd5ac6f875f': 'composableStablePool', // ComposableStable
     '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
-    '0xdba127fbc23fb20f5929c546af220a991b5c6e01': 'composableStablePool',
+    '0xdba127fbc23fb20f5929c546af220a991b5c6e01': 'composableStablePool', // ComposableStable v2
     '0x5dd94da3644ddd055fcf6b3e1aa310bb7801eb8b': 'weightedPool', // weighted pool v3
     '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx', // fx
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4

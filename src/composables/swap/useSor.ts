@@ -12,19 +12,10 @@ import {
 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { formatUnits, parseUnits } from '@ethersproject/units';
-import {
-  computed,
-  ComputedRef,
-  onMounted,
-  reactive,
-  Ref,
-  ref,
-  toRefs,
-} from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
 import {
   SorManager,
@@ -279,7 +270,7 @@ export default function useSor({
         ? SwapType.SwapExactIn
         : SwapType.SwapExactOut;
 
-      const deltas = await getBalancer().swaps.queryBatchSwap({
+      const deltas = await getBalancerSDK().swaps.queryBatchSwap({
         kind: swapType,
         swaps: result.swaps,
         assets: result.tokenAddresses,

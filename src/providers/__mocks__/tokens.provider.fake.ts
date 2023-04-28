@@ -18,7 +18,7 @@ import {
   provideTokenLists,
   TokenListsResponse,
 } from '@/providers/token-lists.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { TokenPrices } from '@/composables/queries/useTokenPricesQuery';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';

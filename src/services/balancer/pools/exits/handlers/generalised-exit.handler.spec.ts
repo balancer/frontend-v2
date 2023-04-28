@@ -1,7 +1,7 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import {
   defaultGeneralizedExitResponse,
-  initBalancerWithDefaultMocks,
+  initBalancerSdkWithDefaultMocks,
 } from '@/dependencies/balancer-sdk.mocks';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
@@ -16,7 +16,7 @@ import { ref } from 'vue';
 
 import { GeneralisedExitHandler } from './generalised-exit.handler';
 
-initBalancerWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 
 const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
   mockDeep<GasPriceService>();
@@ -24,7 +24,7 @@ const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
 async function mountGeneralizedExitHandler(pool: Pool) {
   return new GeneralisedExitHandler(
     ref(pool),
-    getBalancer(),
+    getBalancerSDK(),
     gasPriceServiceMock
   );
 }

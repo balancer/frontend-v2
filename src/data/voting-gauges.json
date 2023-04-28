@@ -3658,7 +3658,6 @@
   {
     "address": "0xE41736b4e78be41Bd03EbAf8F86EA493C6e9EA96",
     "network": 100,
-    "isKilled": false,
     "relativeWeightCap": "1",
     "addedTimestamp": 1682430623,
     "pool": {
@@ -3715,8 +3714,6 @@
   },
   {
     "address": "0xd27671f057e9e72751106fBfbBBB33827D986546",
-    "network": 100,
-    "isKilled": false,
     "relativeWeightCap": "1",
     "addedTimestamp": 1677684467,
     "pool": {
