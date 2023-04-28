@@ -51,6 +51,8 @@ const pools: Pools = {
     AllowList: [
       '0xd449efa0a587f2cb6be3ae577bc167a7745258100001000000000000000003f4',
       '0xce34c867d7053befb3421d6adabcb5ce55ff777b00010000000000000000041b', // crv/wbtc/wsteth/gdai/uni/link
+      '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/bb-a-usd
+      '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
     ],
   },
   Factories: {
@@ -99,6 +101,8 @@ const pools: Pools = {
       '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd',
       '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a',
       '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400',
+      '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413',
+      '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412',
     ],
     AllowList: [],
   },
@@ -111,6 +115,14 @@ const pools: Pools = {
       name: 'rETH/Boosted Aave v3 WETH',
       hasIcon: false,
     },
+    '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413': {
+      name: 'STG/Boosted Aave v3 USD',
+      hasIcon: false,
+    },
+    '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412': {
+      name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -118,6 +130,8 @@ const pools: Pools = {
     '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd', // bb-a-eth / reth
     '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a', // bb-a-usd aave v3
     '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400', // wsteth / bb-a-weth
+    '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/ bb-a-usd
+    '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
   ],
   BoostedApr: [],
   DisabledJoins: [],

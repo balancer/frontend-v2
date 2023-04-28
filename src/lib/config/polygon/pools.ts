@@ -175,6 +175,11 @@ const pools: Pools = {
       '0x9f9f548354b7c66dc9a9f3373077d86aaaccf8f2000200000000000000000a4a',
       '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37',
       '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38',
+      '0xe19ed40a47f9b0cea4ca6d372df66107758913ec000000000000000000000b41',
+      '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44',
+      '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42',
+      '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45',
+      '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43',
     ],
     AllowList: [],
   },
@@ -192,11 +197,15 @@ const pools: Pools = {
       hasIcon: true,
     },
     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
-      name: 'BstMATIC/Boosted Aave v3 WMATIC',
+      name: 'stMATIC/Boosted Aave v3 WMATIC',
       hasIcon: false,
     },
     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
       name: 'maticX/Boosted Aave v3 WMATIC',
+      hasIcon: false,
+    },
+    '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38': {
+      name: 'wstETH/Boosted Aave v3 WETH',
       hasIcon: false,
     },
   },
