@@ -123,6 +123,14 @@ const pools: Pools = {
       name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
       hasIcon: false,
     },
+    '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+    },
+    '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
+      name: 'wstETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
