@@ -5543,34 +5543,5 @@
       "0x5A7f39435fD9c381e4932fa2047C9a5136A5E3E7": "",
       "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A": ""
     }
-  },
-  {
-    "address": "0x249034A0EA97E76c2b4AB7a1727CBC52548c531c",
-    "network": 1,
-    "isKilled": false,
-    "relativeWeightCap": "0.02",
-    "addedTimestamp": 1682430623,
-    "pool": {
-      "id": "0x42fbd9f666aacc0026ca1b88c94259519e03dd67000200000000000000000507",
-      "address": "0x42FBD9F666AaCC0026ca1B88C94259519e03dd67",
-      "poolType": "Weighted",
-      "symbol": "50COIL-50USDC",
-      "tokens": [
-        {
-          "address": "0x823E1B82cE1Dc147Bbdb25a203f046aFab1CE918",
-          "weight": "0.5",
-          "symbol": "COIL"
-        },
-        {
-          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-          "weight": "0.5",
-          "symbol": "USDC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x823E1B82cE1Dc147Bbdb25a203f046aFab1CE918": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x823e1b82ce1dc147bbdb25a203f046afab1ce918.png",
-      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
-    }
   }
 ]
