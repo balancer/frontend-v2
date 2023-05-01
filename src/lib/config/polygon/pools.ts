@@ -208,6 +208,10 @@ const pools: Pools = {
       name: 'wstETH/Boosted Aave v3 WETH',
       hasIcon: false,
     },
+    '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
+      name: 'frxETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
