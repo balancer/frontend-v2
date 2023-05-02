@@ -77,8 +77,8 @@ export class PoolMulticaller {
         .call({
           key: `${pool.id}.isPaused`,
           address: pool.address,
-          function: 'isPaused',
-          abi: ['function isPaused() view returns (bool)'],
+          function: 'getPausedState',
+          abi: ['function getPausedState() view returns (bool)'],
         })
         .call({
           key: `${pool.id}.poolTokens`,
