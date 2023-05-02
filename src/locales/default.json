@@ -219,6 +219,9 @@
     "zeroWeightTitle": "You’ve included a token with zero weight",
     "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%."
   },
+  "crossChainBoost": {
+    "title": "Cross chain veBAL boosts"
+  },
   "migratePool": {
     "aaveBoostedPool": {
       "whyMigrate": {
