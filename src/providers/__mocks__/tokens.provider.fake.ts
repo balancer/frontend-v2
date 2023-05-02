@@ -330,7 +330,7 @@ export const fakeTokensProvider = (
    * Checks if token has a balance
    */
   function hasBalance(address: string): boolean {
-    return Number(balances.value[getAddress(address)]) > 0;
+    return Number(balances.value[address]) > 0;
   }
 
   /**

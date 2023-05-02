@@ -135,7 +135,7 @@ export function formatWordListAsSentence(
 }
 
 export function getAddressFromPoolId(poolId: string) {
-  return getAddress(poolId.substring(0, 42));
+  return poolId.substring(0, 42);
 }
 
 export function isSameAddress(address1: string, address2: string): boolean {
