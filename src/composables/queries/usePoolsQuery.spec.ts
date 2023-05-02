@@ -1,9 +1,11 @@
+import { initMulticallWithDefaultMocks } from '@/dependencies/multicall.mocks';
 import { initPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import {
   defaultPool1,
   defaultPool2,
   initPoolsFallbackRepositoryWithDefaultMocks,
 } from '@/dependencies/PoolsFallbackRepository.mocks';
+import { initRpcProviderServiceWithDefaultMocks } from '@/dependencies/rpc-provider.service.mocks';
 import {
   mountComposableWithFakeTokensProvider as mountComposable,
   waitForQueryData,
@@ -12,6 +14,8 @@ import { anAprBreakdown } from '@tests/unit/builders/sdk-pool.builders';
 import usePoolsQuery from './usePoolsQuery';
 
 initPoolsFallbackRepositoryWithDefaultMocks();
+initMulticallWithDefaultMocks();
+initRpcProviderServiceWithDefaultMocks();
 
 async function mountPoolsQuery(poolsSortField = '') {
   const filterTokens = ref([]);
@@ -30,14 +34,14 @@ async function mountPoolsQuery(poolsSortField = '') {
 
   return { firstPage, firstPool, secondPool, poolAt };
 }
-test.skip('Returns a list of pools', async () => {
+test('Returns a list of pools', async () => {
   const { firstPool, secondPool } = await mountPoolsQuery();
 
   expect(firstPool).toEqual(defaultPool1);
   expect(secondPool).toEqual(defaultPool2);
 });
 
-test.skip('Filters by max apr', async () => {
+test('Filters by max apr', async () => {
   defaultPool1.apr = anAprBreakdown({ max: 5 });
   defaultPool2.apr = anAprBreakdown({ max: 10 });
 
@@ -56,7 +60,7 @@ test.skip('Filters by max apr', async () => {
   expect(poolAt2(1)).toEqual(defaultPool2);
 });
 
-test.skip('Filters by totalSwapVolume', async () => {
+test('Filters by totalSwapVolume', async () => {
   defaultPool1.totalSwapVolume = '99';
   defaultPool2.totalSwapVolume = '100';
 
@@ -75,7 +79,7 @@ test.skip('Filters by totalSwapVolume', async () => {
   expect(poolAt2(1)).toEqual(defaultPool2);
 });
 
-test.skip('Returns saved errors if there is an exception during fetching', async () => {
+test('Returns saved errors if there is an exception during fetching', async () => {
   class PoolsFallbackRepositoryMock {
     //@ts-ignore
     fetch() {

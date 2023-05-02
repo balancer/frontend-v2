@@ -34,7 +34,7 @@ import { TokenListsResponse } from '@/providers/token-lists.provider';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { tokenService } from '@/services/token/token.service';
+import TokenService from '@/services/token/token.service';
 import {
   NativeAsset,
   TokenInfo,
@@ -259,7 +259,7 @@ export const tokensProvider = (
     //Wait for dynamic token list import to be resolved
     await tokensListPromise;
 
-    const newTokens = await tokenService.metadata.get(
+    const newTokens = await new TokenService().metadata.get(
       injectable,
       allTokenLists.value
     );
