@@ -82,7 +82,6 @@ export default function usePoolQuery(
     await injectTokens([
       ...tokensListExclBpt(pool),
       ...tokenTreeLeafs(pool.tokens),
-      pool.address,
     ]);
 
     return pool;

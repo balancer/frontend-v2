@@ -129,7 +129,7 @@ export const tokensProvider = (
   const tokens = computed(
     (): TokenInfoMap => ({
       [networkConfig.nativeAsset.address]: nativeAsset,
-      ...activeTokenListTokens.value,
+      ...allTokenListTokens.value,
       ...state.injectedTokens,
     })
   );
@@ -249,10 +249,13 @@ export const tokensProvider = (
     addresses = [...new Set(addresses)];
 
     const existingAddresses = Object.keys(tokens.value);
+    const existingAddressesMap = Object.fromEntries(
+      existingAddresses.map((address: string) => [getAddress(address), true])
+    );
 
     // Only inject tokens that aren't already in tokens
     const injectable = addresses.filter(
-      address => !includesAddress(existingAddresses, address)
+      address => existingAddressesMap[address] !== true
     );
     if (injectable.length === 0) return;
 
@@ -398,7 +401,9 @@ export const tokensProvider = (
    * Checks if token has a balance
    */
   function hasBalance(address: string): boolean {
-    return Number(selectByAddress(balances.value, address) || '0') > 0;
+    return (
+      Number(selectByAddress(balances.value, getAddress(address)) || '0') > 0
+    );
   }
 
   /**

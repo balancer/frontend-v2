@@ -135,7 +135,7 @@ export function formatWordListAsSentence(
 }
 
 export function getAddressFromPoolId(poolId: string) {
-  return poolId.substring(0, 42);
+  return getAddress(poolId.substring(0, 42));
 }
 
 export function isSameAddress(address1: string, address2: string): boolean {
@@ -159,12 +159,7 @@ export function selectByAddress<T>(
   map: Record<string, T>,
   address: string
 ): T | undefined {
-  const foundAddress = Object.keys(map).find(itemAddress => {
-    if (isSameAddress(itemAddress, address)) {
-      return true;
-    }
-  });
-  if (foundAddress) return map[foundAddress];
+  return map[address];
 }
 
 export function findByAddress<T>(
