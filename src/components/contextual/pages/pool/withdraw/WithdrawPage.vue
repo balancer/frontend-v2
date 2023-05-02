@@ -46,7 +46,7 @@ onMounted(() => resetTabs());
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <WithdrawPageTabs v-if="!pool.isInRecoveryMode && !pool.isPaused" />
+        <WithdrawPageTabs v-if="!(pool.isInRecoveryMode && pool.isPaused)" />
       </div>
     </template>
     <WithdrawFormV2 v-if="true" :pool="pool" />
