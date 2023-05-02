@@ -175,8 +175,8 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
   const shouldSignRelayer = computed(
     (): boolean =>
-      isDeepPool.value &&
-      !isSingleAssetExit.value &&
+      (exitHandlerType.value === ExitHandler.Generalised ||
+        exitHandlerType.value === ExitHandler.LinearViaInternalBalance) &&
       // Check if Batch Relayer is either approved, or signed
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
@@ -199,6 +199,9 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   );
 
   const exitHandlerType = computed((): ExitHandler => {
+    if (shouldExitViaInternalBalance.value) {
+      return ExitHandler.LinearViaInternalBalance;
+    }
     if (
       (pool.value.isInRecoveryMode && pool.value.isPaused) ||
       (!isDeepPool.value && isComposableStableV1(pool.value))
@@ -337,7 +340,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   const fiatValueIn = computed(() => fiatValueOf(pool.value, bptIn.value));
 
   // Should the exit be done via internal balances
-  const shouldUseInternalBalances = computed(
+  const shouldExitViaInternalBalance = computed(
     (): boolean =>
       !!POOLS.ExitViaInternalBalance &&
       POOLS.ExitViaInternalBalance.includes(pool.value.id)
@@ -374,7 +377,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
-        toInternalBalance: shouldUseInternalBalances.value,
       });
 
       priceImpact.value = output.priceImpact;
@@ -421,7 +423,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
-        toInternalBalance: shouldUseInternalBalances.value,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -454,7 +455,6 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
-        toInternalBalance: shouldUseInternalBalances.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
