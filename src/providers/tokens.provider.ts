@@ -418,7 +418,7 @@ export const tokensProvider = (
    */
   function getToken(address: string): TokenInfo {
     address = getAddressFromPoolId(address); // In case pool ID has been passed
-    return selectByAddress(tokens.value, address) as TokenInfo;
+    return selectByAddress(tokens.value, getAddress(address)) as TokenInfo;
   }
 
   /**
