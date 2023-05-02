@@ -10,7 +10,6 @@ class StaticJsonRpcBatchProvider extends providers.JsonRpcBatchProvider {
       network = await super.detectNetwork();
 
       if (!network) {
-        console.trace('Network error in tests');
         logger.throwError(
           'no network detected',
           Logger.errors.UNKNOWN_ERROR as any,
