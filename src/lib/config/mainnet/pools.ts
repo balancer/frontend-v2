@@ -437,6 +437,9 @@ const pools: Pools = {
     '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce':
       'xave',
   },
+  ExitViaInternalBalance: [
+    '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC
+  ],
 };
 
 export default pools;
