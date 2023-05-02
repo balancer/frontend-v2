@@ -1,5 +1,6 @@
 import { Pool, PoolToken } from '@/services/pool/types';
-import { wethAddress } from '@tests/unit/builders/address';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
+import { addOnChainToPoolData } from '@tests/unit/builders/pool.builders';
 import { mock } from 'vitest-mock-extended';
 
 export const defaultWeightedPoolId =
@@ -18,7 +19,7 @@ const defaults: DeepPartial<Pool> = {
   owner: '0xb794f5ea0ba39494ce839613fffba74279579268',
   tokens: [
     aPoolToken({
-      address: '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7', //GRO address
+      address: groAddress,
       symbol: 'GRO',
       balance: '408784.606604112667634055',
       weight: '0.8',
@@ -38,17 +39,18 @@ const defaults: DeepPartial<Pool> = {
       },
     }),
   ],
-  tokensList: ['0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7', wethAddress],
+  tokensList: [groAddress, wethAddress],
 };
 
 export const PoolMock: Pool = Object.assign(pool, defaults);
 
-export function aWeightedPool() {
-  const poolMock: Pool = Object.assign(pool, defaults);
-  return poolMock;
+export function aWeightedPool(options?: DeepPartial<Pool>) {
+  let poolMock: Pool = Object.assign({}, pool, defaults);
+  poolMock = addOnChainToPoolData(poolMock);
+  return Object.assign({}, poolMock, options);
 }
 
 export function aPoolToken(options?: Partial<PoolToken>): PoolToken {
   const poolToken = mock<PoolToken>();
-  return Object.assign(poolToken, options);
+  return Object.assign({}, poolToken, options);
 }

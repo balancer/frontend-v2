@@ -1,5 +1,5 @@
-import { isDeep } from '@/composables/usePool';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { isDeep } from '@/composables/usePoolHelpers';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -30,7 +30,7 @@ export class JoinPoolService {
    */
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk = getBalancer(),
+    public readonly sdk = getBalancerSDK(),
     public readonly gasPriceServ = gasPriceService
   ) {
     this.joinHandler = this.setJoinHandler();

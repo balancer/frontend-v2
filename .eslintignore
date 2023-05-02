@@ -6,3 +6,4 @@ public/data/tokenlists/*.json
 package-lock.json
 components.d.ts
 auto-imports.d.ts
+**/*.graphql

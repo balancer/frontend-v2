@@ -9,7 +9,7 @@ import {
   isStable,
   isStableLike,
   tokensListExclBpt,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
