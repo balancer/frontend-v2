@@ -1,15 +1,12 @@
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { sleep } from '@/lib/utils';
 import { mountComposable } from '@tests/mount-helpers';
-import { silenceConsoleLog } from '@tests/unit/console';
 import {
   customFakeTokensProvider,
   defaultBalance,
   defaultPrice,
   fakeTokensProvider,
 } from './tokens.provider.fake';
-
-silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 
 async function mountFakeTokensProvider() {
   const { result } = mountComposable(() => fakeTokensProvider());

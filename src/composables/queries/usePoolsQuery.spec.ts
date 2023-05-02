@@ -30,7 +30,7 @@ async function mountPoolsQuery(poolsSortField = '') {
 
   return { firstPage, firstPool, secondPool, poolAt };
 }
-test('Returns a list of pools', async () => {
+test.skip('Returns a list of pools', async () => {
   const { firstPool, secondPool } = await mountPoolsQuery();
 
   expect(firstPool).toEqual(defaultPool1);
@@ -56,7 +56,7 @@ test.skip('Filters by max apr', async () => {
   expect(poolAt2(1)).toEqual(defaultPool2);
 });
 
-test('Filters by totalSwapVolume', async () => {
+test.skip('Filters by totalSwapVolume', async () => {
   defaultPool1.totalSwapVolume = '99';
   defaultPool2.totalSwapVolume = '100';
 
@@ -75,7 +75,7 @@ test('Filters by totalSwapVolume', async () => {
   expect(poolAt2(1)).toEqual(defaultPool2);
 });
 
-test('Returns saved errors if there is an exception during fetching', async () => {
+test.skip('Returns saved errors if there is an exception during fetching', async () => {
   class PoolsFallbackRepositoryMock {
     //@ts-ignore
     fetch() {

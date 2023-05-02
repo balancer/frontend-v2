@@ -21,10 +21,13 @@ import {
   TokensProviderSymbol,
   TokensResponse,
 } from '../tokens.provider';
+import { silenceConsoleLog } from '@tests/unit/console';
 
 initBalancerApiWithDefaultMocks();
 initOldMulticallerWithDefaultMocks();
 initMulticallWithDefaultMocks();
+
+silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 
 /**
  * TYPES
