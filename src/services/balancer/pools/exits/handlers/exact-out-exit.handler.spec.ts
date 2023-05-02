@@ -1,7 +1,7 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import {
   defaultExactInExit as defaultExactInExit,
-  initBalancerWithDefaultMocks,
+  initBalancerSdkWithDefaultMocks,
 } from '@/dependencies/balancer-sdk.mocks';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
@@ -15,13 +15,17 @@ import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
 import { ExactOutExitHandler } from './exact-out-exit.handler';
 
-initBalancerWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 
 const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
   mockDeep<GasPriceService>();
 
 async function mountExactOutExitHandler(pool: Pool) {
-  return new ExactOutExitHandler(ref(pool), getBalancer(), gasPriceServiceMock);
+  return new ExactOutExitHandler(
+    ref(pool),
+    getBalancerSDK(),
+    gasPriceServiceMock
+  );
 }
 
 const exitParams = buildExitParams({

@@ -3,17 +3,16 @@ import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 // Composables
 import { useI18n } from 'vue-i18n';
 
-import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
+import WrapStEthLink from '@/components/contextual/pages/pool/add-liquidity/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import {
   isStableLike,
-  usePool,
+  usePoolHelpers,
   isDeep,
   tokensListExclBpt,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
@@ -60,12 +59,12 @@ const showStakeModal = ref(false);
  */
 const { t } = useI18n();
 const { balanceFor, nativeAsset, wrappedNativeAsset, getToken } = useTokens();
-const { useNativeAsset } = usePoolTransfers();
 const {
   tokenAddresses,
   amounts,
   validInputs,
   highPriceImpactAccepted,
+  useNativeAsset,
   resetAmounts,
 } = useInvestState();
 
@@ -85,8 +84,11 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithSwappingHalted, isWethPool, isStableLikePool } =
-  usePool(pool);
+const {
+  managedPoolWithSwappingHalted,
+  isWrappedNativeAssetPool,
+  isStableLikePool,
+} = usePoolHelpers(pool);
 
 /**
  * COMPUTED
@@ -211,7 +213,7 @@ function getTokenInputLabel(address: string): string | undefined {
 onBeforeMount(() => {
   resetAmounts();
   tokenAddresses.value = [...investmentTokens.value];
-  if (isWethPool.value) setNativeAssetByBalance();
+  if (isWrappedNativeAssetPool.value) setNativeAssetByBalance();
 });
 
 /**

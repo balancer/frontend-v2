@@ -1,4 +1,3 @@
-import { Ref, ref, watch } from 'vue';
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
@@ -10,13 +9,13 @@ import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,
-  PoolsFallbackRepository,
   PoolsRepositoryFetchOptions,
   PoolRepository as SDKPoolRepository,
 } from '@balancer-labs/sdk';
+import { getPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
-import { tokenTreeLeafs } from '../usePool';
+import { tokenTreeLeafs } from '../usePoolHelpers';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
@@ -53,13 +52,11 @@ export default function usePoolsQuery(
    * METHODS
    */
 
-  function initializePoolsRepository(): PoolsFallbackRepository {
-    const fallbackRepository = new PoolsFallbackRepository(
-      buildRepositories(),
-      {
-        timeout: 30 * 1000,
-      }
-    );
+  function initializePoolsRepository() {
+    const FallbackRepository = getPoolsFallbackRepository();
+    const fallbackRepository = new FallbackRepository(buildRepositories(), {
+      timeout: 30 * 1000,
+    });
     return fallbackRepository;
   }
 

@@ -4,12 +4,12 @@
     "timestamp": "2022-10-22T00:00:00.000Z",
     "tokens": [
       {
-        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "address": "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1",
         "chainId": 1,
         "name": "Wrapped Ether",
         "symbol": "WETH",
         "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1/logo.png"
       },
       {
         "address": "0xba100000625a3754423978a60c9317c58a424e3D",

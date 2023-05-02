@@ -11,7 +11,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 
 const SWAP_COST = import.meta.env.VITE_SWAP_COST || '100000';
 
@@ -52,7 +52,7 @@ export class SorManager {
     chainId: number,
     weth: string
   ) {
-    this.sorV2 = getBalancer().sor;
+    this.sorV2 = getBalancerSDK().sor;
     this.weth = weth;
     this.gasPrice = gasPrice;
     this.maxPools = maxPools;

@@ -41,7 +41,7 @@ const config: Config = {
   blockTime: 4,
   nativeAsset: {
     name: 'Matic',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    address: '0x0000000000000000000000000000000000001010',
     symbol: 'MATIC',
     decimals: 18,
     deeplinkId: 'matic',

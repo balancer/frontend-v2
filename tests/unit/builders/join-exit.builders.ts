@@ -1,4 +1,5 @@
 import { AmountOut } from '@/providers/local/exit-pool.provider';
+import { AmountIn } from '@/providers/local/join-pool.provider';
 import { ExitParams } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { JoinParams } from '@/services/balancer/pools/joins/handlers/join-pool.handler';
 import { aTokenInfo } from '@/types/TokenList.builders';
@@ -7,12 +8,22 @@ import { wethAddress } from './address';
 import { aSigner } from './signer';
 
 export function anAmountOut(...options: Partial<AmountOut>[]): AmountOut {
-  const defaultAmountOut = mock<AmountOut>();
-  defaultAmountOut.address = wethAddress;
-  defaultAmountOut.valid = true;
-  defaultAmountOut.max = '100';
-  defaultAmountOut.value = '10';
+  const defaultAmountOut: AmountOut = {
+    address: wethAddress,
+    valid: true,
+    max: '100',
+    value: '10',
+  };
   return Object.assign(defaultAmountOut, ...options);
+}
+
+export function anAmountIn(...options: Partial<AmountIn>[]): AmountIn {
+  const defaultAmountIn: AmountIn = {
+    address: wethAddress,
+    valid: true,
+    value: '20',
+  };
+  return Object.assign(defaultAmountIn, ...options);
 }
 
 export function buildExitParams(...options: Partial<ExitParams>[]): ExitParams {
@@ -22,8 +33,8 @@ export function buildExitParams(...options: Partial<ExitParams>[]): ExitParams {
 
   defaultExitParams.tokenInfo = {
     // This will be parametrized in incoming PRs:
-    ['0x702605F43471183158938C1a3e5f5A359d7b31ba']: aTokenInfo(wethAddress),
-    [wethAddress]: aTokenInfo(wethAddress),
+    ['0x702605F43471183158938C1a3e5f5A359d7b31ba']: aTokenInfo(),
+    [wethAddress]: aTokenInfo(),
   };
 
   defaultExitParams.signer = aSigner();

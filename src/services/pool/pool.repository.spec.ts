@@ -1,8 +1,10 @@
+import { initPoolsFallbackRepositoryWithDefaultMocks } from '@/dependencies/PoolsFallbackRepository.mocks';
 import PoolRepository from '@/services/pool/pool.repository';
 import { TokenInfoMap } from '@/types/TokenList';
 import { computed } from 'vue';
 
 vi.mock('@/services/web3/useWeb3');
+initPoolsFallbackRepositoryWithDefaultMocks();
 
 describe('Building a pool repository', () => {
   it('avoids balancer Api as a repository when it is not defined', () => {
