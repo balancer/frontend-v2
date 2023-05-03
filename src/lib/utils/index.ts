@@ -155,7 +155,35 @@ export function indexOfAddress(addresses: string[], address: string): number {
   return addresses.indexOf(getAddress(address));
 }
 
+/**
+ * Select an Address when it's unknown what format
+ * the addresses are in. If you do know the format of the addresses it is
+ * recommended you use selectByAddressFast instead
+ * @param map A hashmap of address -> type
+ * @param address An address to find in the map
+ * @returns Item from map or undefined
+ */
 export function selectByAddress<T>(
+  map: Record<string, T>,
+  address: string
+): T | undefined {
+  const foundAddress = Object.keys(map).find(itemAddress => {
+    if (isSameAddress(itemAddress, address)) {
+      return true;
+    }
+  });
+  if (foundAddress) return map[foundAddress];
+}
+
+/**
+ * Select an Address using a hashmap
+ * You must ensure the hashmap keys and address are in the same case
+ * (lowercase or checksum case) before passing them to this function
+ * @param map A hashmap of address -> type
+ * @param address An address to find in the map
+ * @returns Item from map or undefined
+ */
+export function selectByAddressFast<T>(
   map: Record<string, T>,
   address: string
 ): T | undefined {

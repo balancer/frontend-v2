@@ -27,6 +27,7 @@ import {
   includesAddress,
   isSameAddress,
   selectByAddress,
+  selectByAddressFast,
 } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { UserSettingsResponse } from '@/providers/user-settings.provider';
@@ -373,7 +374,7 @@ export const tokensProvider = (
    */
   function priceFor(address: string): number {
     try {
-      const price = selectByAddress(prices.value, address);
+      const price = selectByAddressFast(prices.value, getAddress(address));
       if (!price) {
         captureException(new Error('Could not find price for token'), {
           extra: { address },
@@ -391,7 +392,7 @@ export const tokensProvider = (
    */
   function balanceFor(address: string): string {
     try {
-      return selectByAddress(balances.value, address) || '0';
+      return selectByAddressFast(balances.value, getAddress(address)) || '0';
     } catch {
       return '0';
     }
@@ -402,7 +403,8 @@ export const tokensProvider = (
    */
   function hasBalance(address: string): boolean {
     return (
-      Number(selectByAddress(balances.value, getAddress(address)) || '0') > 0
+      Number(selectByAddressFast(balances.value, getAddress(address)) || '0') >
+      0
     );
   }
 
