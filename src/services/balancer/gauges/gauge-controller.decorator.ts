@@ -13,7 +13,8 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 // eslint-disable-next-line no-restricted-imports
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import { isGoerli, Network } from '@/composables/useNetwork';
+import { isGoerli } from '@/composables/useNetwork';
+import { Network } from '@/lib/config';
 
 const FIRST_WEEK_TIMESTAMP = 1648684800;
 
