@@ -441,6 +441,8 @@ const pools: Pools = {
   },
   ExitViaInternalBalance: [
     '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC
+    '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b', // bb-e-USDT
+    '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c', // bb-e-DAI
   ],
 };
 
