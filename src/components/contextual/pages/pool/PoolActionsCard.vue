@@ -2,10 +2,10 @@
 import { computed, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import {
-  isJoinsDisabled,
   usePoolHelpers,
   deprecatedDetails,
 } from '@/composables/usePoolHelpers';
+import { isJoinsDisabled } from '@/lib/config/pool-restrictions';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';

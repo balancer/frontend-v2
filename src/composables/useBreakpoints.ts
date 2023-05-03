@@ -1,5 +1,3 @@
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-
 export default function useBreakpoints() {
   const windowWidth = ref(window.innerWidth);
 

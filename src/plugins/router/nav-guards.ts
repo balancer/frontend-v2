@@ -1,11 +1,10 @@
-import { ref } from 'vue';
 import {
   getRedirectUrlFor,
   handleNetworkSlug,
   networkFromSlug,
   networkSlug,
 } from '@/composables/useNetwork';
-import { isJoinsDisabled } from '@/composables/usePoolHelpers';
+import { isJoinsDisabled } from '@/lib/config/pool-restrictions';
 import config from '@/lib/config';
 import { Network } from '@/lib/config';
 import { Router } from 'vue-router';

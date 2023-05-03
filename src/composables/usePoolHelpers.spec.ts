@@ -27,7 +27,6 @@ import {
   tokenTreeNodes,
   usePoolHelpers,
   deprecatedDetails,
-  isJoinsDisabled,
   totalAprLabel,
   absMaxApr,
   poolURLFor,
@@ -518,16 +517,6 @@ test('returns undefined when there is no deprecated details', async () => {
 
 test('returns existing deprecated details', async () => {
   expect(deprecatedDetails('deprecatedId')).toEqual({});
-});
-
-test('detects disabled joins by id', async () => {
-  expect(
-    isJoinsDisabled(
-      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f'
-    )
-  ).toBeFalse();
-
-  expect(isJoinsDisabled('testaddresswithdisabledjoins')).toBeTrue();
 });
 
 test('generates empty APR label when swapFees are bigger than APR_THRESHOLD', async () => {
