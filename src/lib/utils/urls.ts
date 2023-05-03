@@ -1,5 +1,5 @@
 import { networkMap, Wallet } from '@/providers/wallet.provider';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 function getNetworkIconName(network: Network) {
   return networkMap[Number(network)].toLowerCase();

@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 import { MetamaskConnectorMock } from '@/dependencies/wallets/wallet-connector-mocks';
 import { JsonRpcSigner } from '@ethersproject/providers';

@@ -5,7 +5,7 @@ import { TokenList, TokenListMap } from '@/types/TokenList';
 
 import { configService } from '../config/config.service';
 import { ipfsService } from '../ipfs/ipfs.service';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 interface TokenListUris {
   All: string[];

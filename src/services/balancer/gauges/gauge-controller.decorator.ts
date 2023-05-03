@@ -1,4 +1,3 @@
-import { Network } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { JsonRpcProvider } from '@ethersproject/providers';
 
@@ -14,6 +13,8 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 // eslint-disable-next-line no-restricted-imports
 import { Multicaller } from '@/lib/utils/balancer/contract';
+import { isGoerli } from '@/composables/useNetwork';
+import { Network } from '@/lib/config';
 
 const FIRST_WEEK_TIMESTAMP = 1648684800;
 
@@ -178,7 +179,7 @@ export class GaugeControllerDecorator {
    * so the network key can only be goerli (5) or mainnet (1).
    */
   private getNetwork(): Network {
-    if (this.config.env.NETWORK === Network.GOERLI) {
+    if (isGoerli.value) {
       return Network.GOERLI;
     } else {
       return Network.MAINNET;
