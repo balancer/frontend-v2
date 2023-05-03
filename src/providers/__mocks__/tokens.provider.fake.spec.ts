@@ -1,5 +1,6 @@
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { sleep } from '@/lib/utils';
-import { mount } from '@tests/mount-composable-tester';
+import { mountComposable } from '@tests/mount-helpers';
 import {
   customFakeTokensProvider,
   defaultBalance,
@@ -8,11 +9,13 @@ import {
 } from './tokens.provider.fake';
 
 async function mountFakeTokensProvider() {
-  const { result } = mount(() => fakeTokensProvider());
+  const { result } = mountComposable(() => fakeTokensProvider());
   // Wait for tokens list promise
   await sleep(5);
   return result;
 }
+
+initDependenciesWithDefaultMocks();
 
 test('Fakes provided state', async () => {
   const {
@@ -43,6 +46,7 @@ test('Fakes provided state', async () => {
     '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb', //bb-a-USDT
     '0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83', //bb-a-USDC
     '0xae37D54Ae477268B9997d4161B96b8200755935c', //b-a-DAI
+    '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF', //veBAL
   ]);
 
   expect(wrappedNativeAsset.value.address).toBe(
@@ -107,7 +111,6 @@ test('Fakes provided methods', async () => {
     getToken,
     injectPrices,
     injectedPrices,
-    getMaxBalanceFor,
   } = await mountFakeTokensProvider();
 
   // Does not fail
@@ -143,12 +146,10 @@ test('Fakes provided methods', async () => {
 
   injectPrices({ [daiAddress]: 80 });
   expect(injectedPrices.value[daiAddress]).toBe(80);
-
-  expect(getMaxBalanceFor(daiAddress)).toBe(defaultBalance);
 });
 
 test('Can be customized with override parameter', async () => {
-  const { result } = mount(() =>
+  const { result } = mountComposable(() =>
     customFakeTokensProvider({ priceFor: () => 125, balanceFor: () => '0.19' })
   );
 
