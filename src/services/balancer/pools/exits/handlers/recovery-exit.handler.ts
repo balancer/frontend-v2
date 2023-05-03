@@ -43,7 +43,7 @@ export class RecoveryExitHandler implements ExitPoolHandler {
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
-    const { signer, bptIn, slippageBsp } = params;
+    const { signer, bptIn, slippageBsp, toInternalBalance } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
     const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
@@ -55,7 +55,8 @@ export class RecoveryExitHandler implements ExitPoolHandler {
     this.lastExitRes = await sdkPool.buildRecoveryExit(
       exiter,
       evmBptIn,
-      slippage
+      slippage,
+      toInternalBalance
     );
 
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');

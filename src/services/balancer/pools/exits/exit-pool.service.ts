@@ -17,7 +17,6 @@ import { BalancerSDK } from '@balancer-labs/sdk';
 import { ExactInExitHandler } from './handlers/exact-in-exit.handler';
 import { ExactOutExitHandler } from './handlers/exact-out-exit.handler';
 import { RecoveryExitHandler } from './handlers/recovery-exit.handler';
-import { LinearViaInternalBalance } from './handlers/linear-via-internal-balance.handler';
 
 export enum ExitHandler {
   Swap = 'Swap',
@@ -77,10 +76,6 @@ export class ExitPoolService {
         return (this.exitHandler = new ExactOutExitHandler(...handlerParams));
       case ExitHandler.Recovery:
         return (this.exitHandler = new RecoveryExitHandler(...handlerParams));
-      case ExitHandler.LinearViaInternalBalance:
-        return (this.exitHandler = new LinearViaInternalBalance(
-          ...handlerParams
-        ));
       default:
         throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
