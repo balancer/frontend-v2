@@ -3,6 +3,7 @@ import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { initMulticallerAsPoolMulticallerMock } from '@/dependencies/Multicaller.mocks';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
 import { providePool } from '@/providers/local/pool.provider';
+import { defaultMaxBalance } from '@/providers/__mocks__/tokens.provider.fake';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { wethAddress } from '@tests/unit/builders/address';
@@ -49,7 +50,7 @@ test('Maximizes the token amount when clicking a token that is a pool token', as
   handleMyWalletTokenClick(wethAddress, isPoolToken);
 
   expect(amountsIn.value).toEqual([
-    anAmountIn({ address: wethAddress, value: '10' }), //10 is max balance for WETH
+    anAmountIn({ address: wethAddress, value: defaultMaxBalance }), //20 is max balance for WETH
   ]);
 });
 
@@ -68,30 +69,7 @@ test('Moves to Single Token tab when clicking a token that is not in a pool toke
 
   await waitForExpect(() =>
     expect(amountsIn.value).toEqual([
-      anAmountIn({ address: wethAddress, value: '10' }), //Also changes the token amount in to its max
+      anAmountIn({ address: wethAddress, value: defaultMaxBalance }), //Also changes the token amount in to its max
     ])
   );
 });
-
-// describe('returns hasBalanceForAllTokens', async () => {
-//   test('when all tokens have balance', async () => {
-//     const { hasBalanceForAllTokens } = await mountMyWallet();
-//     expect(hasBalanceForAllTokens.value).toBeTrue();
-//   });
-
-//   test('when some token does not have balance', async () => {
-//     const tokenAddressWithoutBalance =
-//       '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE';
-//     const pool = aWeightedPool({ tokensList: [tokenAddressWithoutBalance] });
-//     const { hasBalanceForAllTokens } = await mountMyWallet(pool);
-//     expect(hasBalanceForAllTokens.value).toBeFalse();
-//   });
-
-//   test('when some token does not have balance', async () => {
-//     const tokenAddressWithoutBalance =
-//       '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE';
-//     const pool = aWeightedPool({ tokensList: [tokenAddressWithoutBalance] });
-//     const { hasBalanceForAllTokens } = await mountMyWallet(pool);
-//     expect(hasBalanceForAllTokens.value).toBeFalse();
-//   });
-// });

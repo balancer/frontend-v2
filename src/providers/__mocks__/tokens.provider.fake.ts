@@ -46,6 +46,7 @@ export interface TokensProviderState {
 
 export const defaultPrice = 2;
 export const defaultBalance = '10';
+export const defaultMaxBalance = '20';
 
 export const fakePriceMap: TokenPrices = {
   [groAddress]: defaultPrice,
@@ -104,6 +105,17 @@ export const fakeTokensProvider = (
   }
 
   /**
+   * Get max balance of token
+   * @param tokenAddress
+   * @param disableNativeAssetBuffer Optionally disable native asset buffer
+   */
+  function getMaxBalanceFor(
+    tokenAddress,
+    disableNativeAssetBuffer = false
+  ): string {
+    return defaultMaxBalance;
+  }
+  /**
    * Checks if token has a balance
    */
   function hasBalance(address: string): boolean {
@@ -147,6 +159,7 @@ export const fakeTokensProvider = (
     hasBalance,
     priceFor,
     balanceFor,
+    getMaxBalanceFor,
   };
 
   const originalResponse = originalTokensProvider(userSettings, tokenLists);
