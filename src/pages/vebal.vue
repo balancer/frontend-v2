@@ -23,7 +23,7 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       v-if="isVeBalSupported"
       class="xl:container xl:px-4 pt-16 xl:pt-20 xl:mx-auto"
     >
@@ -36,6 +36,6 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
         {{ $t('veBAL.notSupported.title') }}
       </div>
       <div>{{ $t('veBAL.notSupported.description') }}</div>
-    </div>
+    </div> -->
   </div>
 </template>
