@@ -26,7 +26,6 @@ import {
   getAddressFromPoolId,
   includesAddress,
   isSameAddress,
-  selectByAddress,
   selectByAddressFast,
 } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
@@ -421,7 +420,7 @@ export const tokensProvider = (
   function getToken(address: string): TokenInfo | undefined {
     address = getAddressFromPoolId(address); // In case pool ID has been passed
     if (!isAddress(address)) return;
-    return selectByAddress(tokens.value, getAddress(address));
+    return selectByAddressFast(tokens.value, getAddress(address));
   }
 
   /**
