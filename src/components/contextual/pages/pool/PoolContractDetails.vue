@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { POOLS } from '@/constants/pools';
-import { poolMetadata } from '@/composables/usePoolHelpers';
+import { poolMetadata } from '@/lib/config/metadata';
 import { shortenLabel } from '@/lib/utils';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 /**
