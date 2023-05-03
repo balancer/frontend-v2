@@ -1,3 +1,23 @@
+
+<script lang="ts" setup>
+import IconDiscord from '@/components/icons/IconDiscord.vue';
+import IconGithub from '@/components/icons/IconGithub.vue';
+import IconLinkedin from '@/components/icons/IconLinkedin.vue';
+import IconMail from '@/components/icons/IconMail.vue';
+import IconMedium from '@/components/icons/IconMedium.vue';
+import IconTwitter from '@/components/icons/IconTwitter.vue';
+import IconYoutube from '@/components/icons/IconYoutube.vue';
+import { EXTERNAL_LINKS } from '@/constants/links';
+
+import useNetwork from '@/composables/useNetwork';
+
+import AppLogo from '../images/AppLogo.vue';
+import { useThirdPartyServices } from '@/composables/useThirdPartyServices';
+
+const { networkSlug } = useNetwork();
+const { handleThirdPartyModalToggle } = useThirdPartyServices();
+</script>
+
 <template>
   <footer v-once>
     <div
@@ -212,7 +232,7 @@
             <p>
               <span
                 class="cursor-pointer policy"
-                @click="isThirdPartyServicesModalVisible = true"
+                @click="handleThirdPartyModalToggle(true)"
               >
                 {{ $t('policies.thirdPartyServices') }}
               </span>
@@ -223,48 +243,6 @@
     </div>
   </footer>
 </template>
-
-<script>
-import { useI18n } from 'vue-i18n';
-
-import { isThirdPartyServicesModalVisible } from '@/App.vue';
-import IconDiscord from '@/components/icons/IconDiscord.vue';
-import IconGithub from '@/components/icons/IconGithub.vue';
-import IconLinkedin from '@/components/icons/IconLinkedin.vue';
-import IconMail from '@/components/icons/IconMail.vue';
-import IconMedium from '@/components/icons/IconMedium.vue';
-import IconTwitter from '@/components/icons/IconTwitter.vue';
-import IconYoutube from '@/components/icons/IconYoutube.vue';
-import { EXTERNAL_LINKS } from '@/constants/links';
-
-import useNetwork from '@/composables/useNetwork';
-
-import AppLogo from '../images/AppLogo.vue';
-
-export default {
-  components: {
-    IconTwitter,
-    IconDiscord,
-    IconMedium,
-    IconYoutube,
-    IconGithub,
-    IconMail,
-    IconLinkedin,
-    AppLogo,
-  },
-  setup() {
-    const { t } = useI18n();
-    const { networkSlug } = useNetwork();
-
-    return {
-      EXTERNAL_LINKS,
-      t,
-      networkSlug,
-      isThirdPartyServicesModalVisible,
-    };
-  },
-};
-</script>
 
 <style scoped>
 footer {
