@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { PoolToken, PoolType } from '@/services/pool/types';
 
 // voting-gauges.json is inside src

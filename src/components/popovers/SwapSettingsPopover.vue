@@ -12,7 +12,7 @@ import useEthereumTxType from '@/composables/useEthereumTxType';
 import useFathom from '@/composables/useFathom';
 import { ethereumTxTypeOptions } from '@/constants/options';
 import { useUserSettings } from '@/providers/user-settings.provider';
-import useWeb3 from '@/services/web3/useWeb3';
+import { isEIP1559SupportedNetwork } from '@/composables/useNetwork';
 
 type Props = {
   context: SwapSettingsContext;
@@ -29,7 +29,6 @@ const { context } = toRefs(props);
 // COMPOSABLES
 const { transactionDeadline, setTransactionDeadline } = useApp();
 
-const { isEIP1559SupportedNetwork } = useWeb3();
 const { trackGoal, Goals } = useFathom();
 const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 const { supportSignatures, setSupportSignatures } = useUserSettings();
