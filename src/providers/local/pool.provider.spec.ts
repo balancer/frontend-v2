@@ -1,4 +1,5 @@
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+import { initMulticallPoolId } from '@/dependencies/Multicaller.mocks';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { mountComposableWithDefaultTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { aVeBalPool } from '@tests/unit/builders/pool.builders';
@@ -23,6 +24,7 @@ async function mountUserPoolProvider(poolId: string) {
 // TODO: Refactor multicaller mock system to allow proper onchain response mocks and avoid decorator errors
 test('returns pool from store service', async () => {
   const veBalPool = aVeBalPool();
+  initMulticallPoolId(veBalPool.id);
   poolsStoreService.setPools([veBalPool]);
   const { pool } = await mountUserPoolProvider(veBalPool.id);
 

@@ -34,6 +34,7 @@ describe('Token lists provider should', () => {
       'bb-a-USDT',
       'bb-a-USDC',
       'bb-a-DAI',
+      'GRO',
     ]);
   });
 
@@ -52,6 +53,7 @@ describe('Token lists provider should', () => {
       'bb-a-USDT',
       'bb-a-USDC',
       'bb-a-DAI',
+      'GRO',
     ]);
   });
 
@@ -70,6 +72,7 @@ describe('Token lists provider should', () => {
       'bb-a-USDT',
       'bb-a-USDC',
       'bb-a-DAI',
+      'GRO',
     ]);
   });
 
@@ -88,6 +91,7 @@ describe('Token lists provider should', () => {
       'bb-a-USDT',
       'bb-a-USDC',
       'bb-a-DAI',
+      'GRO',
     ]);
   });
 
@@ -109,6 +113,7 @@ describe('Token lists provider should', () => {
       'aDAI',
       'aUSDC',
       'aUSDT',
+      'GRO',
     ]);
   });
 });

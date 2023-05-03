@@ -1,5 +1,12 @@
+import { POOLS } from '@/constants/pools';
+import { TOKENS } from '@/constants/tokens';
+import {
+  formatAddressForSor,
+  indexOfAddress,
+  isSameAddress,
+  selectByAddress,
+} from '@/lib/utils';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { indexOfAddress, selectByAddress } from '@/lib/utils';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
@@ -47,24 +54,27 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     if (!tokenOut)
       throw new Error('Could not find exit token in pool tokens list.');
 
-    const tokenOutAddress = tokenOut.address;
-    const tokenOutIndex = indexOfAddress(
-      this.pool.value.tokensList,
-      tokenOutAddress
-    );
+    const tokenOutAddress = formatAddressForSor(tokenOut.address);
+    const nativeAssetExit = isSameAddress(tokenOutAddress, POOLS.ZeroAddress);
+
+    const poolTokensList = nativeAssetExit
+      ? this.replaceWethWithEth(this.pool.value.tokensList)
+      : this.pool.value.tokensList;
+    const tokenOutIndex = indexOfAddress(poolTokensList, tokenOutAddress);
 
     const amountOut = amountsOut[0].value;
     const evmAmountOut = parseFixed(amountOut, tokenOut.decimals).toString();
 
     const fullAmountsOut = this.getFullAmounts(
-      this.pool.value.tokensList,
+      poolTokensList,
       tokenOutIndex,
       evmAmountOut
     );
 
-    this.lastExitRes = await sdkPool.buildExitExactTokensOut(
+    // Add native asset to the list of tokens to exit
+    this.lastExitRes = sdkPool.buildExitExactTokensOut(
       exiter,
-      this.pool.value.tokensList,
+      poolTokensList,
       fullAmountsOut,
       slippage
     );
@@ -84,6 +94,15 @@ export class ExactOutExitHandler implements ExitPoolHandler {
       amountsOut: { [tokenOutAddress]: amountOut },
       priceImpact,
     };
+  }
+
+  replaceWethWithEth(addresses: string[]): string[] {
+    return addresses.map(address => {
+      if (isSameAddress(address, TOKENS.Addresses.wNativeAsset)) {
+        return POOLS.ZeroAddress;
+      }
+      return address;
+    });
   }
 
   private getFullAmounts(

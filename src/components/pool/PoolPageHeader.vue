@@ -214,7 +214,7 @@ function symbolFor(titleTokenIndex: number): string {
     </div>
   </div>
   <BalAlert
-    v-if="pool.isInRecoveryMode"
+    v-if="pool.isInRecoveryMode && pool.isPaused"
     type="warning"
     :title="$t('recoveryMode')"
     :description="$t('recoveryModeDescription')"

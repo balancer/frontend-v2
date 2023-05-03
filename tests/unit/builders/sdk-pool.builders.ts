@@ -1,8 +1,8 @@
 import { AprBreakdown, Pool } from '@balancer-labs/sdk';
 
 // BAL 80% WETH 20% is the default pool used in builders
-const defaultSdkPool = {
-  id: '0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d40001000000000000000004b9',
+export const defaultSdkPool = {
+  id: '0x45a0623ab66f985effc1c69d05f1af4badb01b00000200000000001230000060',
   name: '25DAI-25WETH-25USDC-25BAL',
   address: '0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d4',
   chainId: 5,
@@ -17,7 +17,7 @@ const defaultSdkPool = {
   symbol: '25DAI-25WETH-25USDC-25BAL',
   tokens: [
     {
-      id: '0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d40001000000000000000004b9-0x8c9e6c40d3402480ace624730524facc5482798c',
+      id: '0x45a0623ab66f985effc1c69d05f1af4badb01b00000200000000001230000060-0x8c9e6c40d3402480ace624730524facc5482798c',
       symbol: 'DAI',
       name: 'Dai Stablecoin',
       decimals: 18,
@@ -33,7 +33,7 @@ const defaultSdkPool = {
       },
     },
     {
-      id: '0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d40001000000000000000004b9-0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1',
+      id: '0x45a0623ab66f985effc1c69d05f1af4badb01b00000200000000001230000060-0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1',
       symbol: 'WETH',
       name: 'Wrapped Ether',
       decimals: 18,
@@ -103,6 +103,7 @@ const defaultSdkPool = {
   lowerTarget: '0',
   upperTarget: '0',
   isInRecoveryMode: false,
+  isPaused: false,
   isNew: false,
   onchain: {
     tokens: {

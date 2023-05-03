@@ -4,10 +4,10 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import MyWallet from './MyWallet.vue';
 import Accordion from './Accordion.vue';
 import AddLiquidityCard from './AddLiquidityCard.vue';
-import { Pool } from '@balancer-labs/sdk';
-import { computed } from 'vue';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
+import Col2Layout from '@/components/layouts/Col2Layout.vue';
 import useDisabledJoinsGuard from '@/composables/contextual/pool-transfers/useDisabledJoinsGuard';
+import { Pool } from '@/services/pool/types';
 
 type Props = {
   pool: Pool;
@@ -18,41 +18,35 @@ type Props = {
  */
 const props = defineProps<Props>();
 
+const pool = toRef(props, 'pool');
+
 /**
- * COMPUTED
+ * PROVIDERS
  */
-const pool = computed(() => props.pool);
+provideJoinPool(pool);
+
 /**
  * COMPOSABLES
  */
 useDisabledJoinsGuard(props.pool);
 const { isDeepPool } = usePoolHelpers(pool);
-const { upToLargeBreakpoint } = useBreakpoints();
-
-provideJoinPool(pool);
+const { isMobile } = useBreakpoints();
 </script>
 
 <template>
-  <div class="invest-page-layout-grid">
-    <div v-if="!upToLargeBreakpoint" class="col-span-5">
+  <Col2Layout leftSpan="5" rightSpan="7">
+    <template v-if="!isMobile" #left>
       <MyWallet :pool="pool" />
-    </div>
-
-    <div class="col-span-7">
+    </template>
+    <template #right>
       <AddLiquidityCard :pool="pool" />
-    </div>
+    </template>
 
     <Accordion
-      v-if="upToLargeBreakpoint"
+      v-if="isMobile"
       :pool="pool"
       class="mt-4"
       :isDeepPool="isDeepPool"
-    ></Accordion>
-  </div>
+    />
+  </Col2Layout>
 </template>
-
-<style scoped>
-.invest-page-layout-grid {
-  @apply grid grid-cols-1 lg:grid-cols-12 gap-y-8 gap-x-0 lg:gap-x-8;
-}
-</style>

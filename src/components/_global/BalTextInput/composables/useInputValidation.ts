@@ -29,9 +29,13 @@ export default function useInputValidation(props, emit) {
     if (props.validateOn === 'input') validate(props.modelValue);
   });
 
-  watch(isInvalid, newVal => {
-    emit('update:isValid', !newVal);
-  });
+  watch(
+    isInvalid,
+    newVal => {
+      emit('update:isValid', !newVal);
+    },
+    { immediate: true }
+  );
 
   return {
     errors,

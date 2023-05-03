@@ -22,6 +22,7 @@ import {
   TokensResponse,
 } from '../tokens.provider';
 import { silenceConsoleLog } from '@tests/unit/console';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
 
 initBalancerApiWithDefaultMocks();
 initOldMulticallerWithDefaultMocks();
@@ -45,6 +46,17 @@ export interface TokensProviderState {
 
 export const defaultPrice = 2;
 export const defaultBalance = '10';
+export const defaultMaxBalance = '20';
+
+export const fakePriceMap: TokenPrices = {
+  [groAddress]: defaultPrice,
+  [wethAddress]: defaultPrice,
+};
+
+export const fakeBalanceMap: BalanceMap = {
+  [groAddress]: defaultBalance,
+  [wethAddress]: defaultBalance,
+};
 
 /**
  * Fake provider to be used by tests.
@@ -68,8 +80,8 @@ export const fakeTokensProvider = (
   /**
    * Fake implementations to simplify testing setup
    */
-  const prices = computed((): TokenPrices => ({}));
-  const balances = computed((): BalanceMap => ({}));
+  const prices = computed((): TokenPrices => fakePriceMap);
+  const balances = computed((): BalanceMap => fakeBalanceMap);
   const allowances = computed((): ContractAllowancesMap => ({}));
 
   const dynamicDataLoaded = computed(() => true);
@@ -92,6 +104,17 @@ export const fakeTokensProvider = (
     return defaultBalance;
   }
 
+  /**
+   * Get max balance of token
+   * @param tokenAddress
+   * @param disableNativeAssetBuffer Optionally disable native asset buffer
+   */
+  function getMaxBalanceFor(
+    tokenAddress,
+    disableNativeAssetBuffer = false
+  ): string {
+    return defaultMaxBalance;
+  }
   /**
    * Checks if token has a balance
    */
@@ -136,6 +159,7 @@ export const fakeTokensProvider = (
     hasBalance,
     priceFor,
     balanceFor,
+    getMaxBalanceFor,
   };
 
   const originalResponse = originalTokensProvider(userSettings, tokenLists);
