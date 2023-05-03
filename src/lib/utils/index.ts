@@ -156,9 +156,8 @@ export function indexOfAddress(addresses: string[], address: string): number {
 }
 
 /**
- * Select an Address when it's unknown what format
- * the addresses are in. If you do know the format of the addresses it is
- * recommended you use selectByAddressFast instead
+ * Select an Address when it's unknown what format the addresses are in.
+ * If you know the format of the addresses use selectByAddressFast instead
  * @param map A hashmap of address -> type
  * @param address An address to find in the map
  * @returns Item from map or undefined
