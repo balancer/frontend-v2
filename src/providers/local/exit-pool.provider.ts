@@ -175,8 +175,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
   const shouldSignRelayer = computed(
     (): boolean =>
-      (exitHandlerType.value === ExitHandler.Generalised ||
-        exitHandlerType.value === ExitHandler.LinearViaInternalBalance) &&
+      exitHandlerType.value === ExitHandler.Generalised &&
       // Check if Batch Relayer is either approved, or signed
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );

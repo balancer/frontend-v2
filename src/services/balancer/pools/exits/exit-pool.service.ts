@@ -24,7 +24,6 @@ export enum ExitHandler {
   ExactOut = 'ExactOut',
   ExactIn = 'ExactIn',
   Recovery = 'Recovery',
-  LinearViaInternalBalance = 'LinearViaInternalBalance',
 }
 
 type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];
