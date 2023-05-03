@@ -1,6 +1,6 @@
-export function useThirdPartyServices() {
-  const isThirdPartyServicesModalVisible = ref(false);
+const isThirdPartyServicesModalVisible = ref(false);
 
+export function useThirdPartyServices() {
   function handleThirdPartyModalToggle(value: boolean) {
     isThirdPartyServicesModalVisible.value = value;
   }
