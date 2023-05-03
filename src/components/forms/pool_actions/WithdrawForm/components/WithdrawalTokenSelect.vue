@@ -52,13 +52,12 @@ const tokenAddresses = computed(() => {
   return tokensList;
 });
 
+const forcePropotionalOnly = computed(
+  (): boolean => !!props.pool.isInRecoveryMode && !!props.pool?.isPaused
+);
+
 const options = computed(() => {
-  return [
-    'all',
-    ...(props.pool.isInRecoveryMode && props.pool.isPaused
-      ? []
-      : tokenAddresses.value),
-  ];
+  return ['all', ...(forcePropotionalOnly.value ? [] : tokenAddresses.value)];
 });
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));

@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { Pools } from '@/types/pools';
 import { TokenListURLMap } from '@/types/TokenList';
 

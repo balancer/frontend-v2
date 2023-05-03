@@ -74,7 +74,11 @@ export type AmountOut = {
  *
  * Handles pool exiting state and transaction execution.
  */
-export const exitPoolProvider = (pool: Ref<Pool>) => {
+export const exitPoolProvider = (
+  pool: Ref<Pool>,
+  debounceQueryExitMillis = 1000,
+  debounceGetSingleAssetMaxMillis = 1000
+) => {
   /**
    * STATE
    */
@@ -112,10 +116,14 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     RelayerType.BATCH
   );
 
-  const debounceQueryExit = debounce(queryExit, 1000);
-  const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
-    leading: true,
-  });
+  const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
+  const debounceGetSingleAssetMax = debounce(
+    getSingleAssetMax,
+    debounceGetSingleAssetMaxMillis,
+    {
+      leading: true,
+    }
+  );
 
   const queriesEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
@@ -197,25 +205,30 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
       (isDeep(pool.value) || isComposableStableV1(pool.value))
   );
 
-  // Should the exit be done via internal balances
+  // Should exit via internal balance only in unique cases.
+  // e.g. exiting the Euler linear pools.
   const shouldExitViaInternalBalance = computed(
     (): boolean =>
       !!POOLS.ExitViaInternalBalance &&
       POOLS.ExitViaInternalBalance.includes(pool.value.id)
   );
 
-  const exitHandlerType = computed((): ExitHandler => {
-    if (
+  // Should use recovery exits if:
+  // 1. The pool is paused AND in recovery mode, OR
+  // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
+  const shouldUseRecoveryExit = computed(
+    (): boolean =>
       (pool.value.isInRecoveryMode && pool.value.isPaused) ||
       (!isDeepPool.value && isComposableStableV1(pool.value))
-    )
-      return ExitHandler.Recovery;
+  );
+
+  const exitHandlerType = computed((): ExitHandler => {
+    if (shouldUseRecoveryExit.value) return ExitHandler.Recovery;
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
     if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
     if (isSingleAssetExit.value) {
-      if (singleAssetMaxed.value) {
-        return ExitHandler.ExactIn;
-      }
+      // If 'max' is clicked we want to pass in the full bpt balance.
+      if (singleAssetMaxed.value) return ExitHandler.ExactIn;
       return ExitHandler.ExactOut;
     }
     return ExitHandler.ExactIn;

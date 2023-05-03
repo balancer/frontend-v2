@@ -9,12 +9,11 @@ import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
-import useWeb3 from '@/services/web3/useWeb3';
 import usePools from '@/composables/pools/usePools';
 
 // COMPOSABLES
 const router = useRouter();
-const { appNetworkConfig } = useWeb3();
+const { appNetworkConfig } = useNetwork();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
