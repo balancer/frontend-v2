@@ -73,7 +73,11 @@ export type AmountOut = {
  *
  * Handles pool exiting state and transaction execution.
  */
-export const exitPoolProvider = (pool: Ref<Pool>) => {
+export const exitPoolProvider = (
+  pool: Ref<Pool>,
+  debounceQueryExitMillis = 1000,
+  debounceGetSingleAssetMaxMillis = 1000
+) => {
   /**
    * STATE
    */
@@ -111,10 +115,14 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     RelayerType.BATCH
   );
 
-  const debounceQueryExit = debounce(queryExit, 1000);
-  const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
-    leading: true,
-  });
+  const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
+  const debounceGetSingleAssetMax = debounce(
+    getSingleAssetMax,
+    debounceGetSingleAssetMaxMillis,
+    {
+      leading: true,
+    }
+  );
 
   const queriesEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
