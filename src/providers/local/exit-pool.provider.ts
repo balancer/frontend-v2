@@ -197,15 +197,22 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
       (isDeep(pool.value) || isComposableStableV1(pool.value))
   );
 
+  // Should use recovery exits if:
+  // 1. The pool is paused AND in recovery mode, OR
+  // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
+  const shouldUseRecoveryExit = computed(
+    (): boolean =>
+      (pool.value.isInRecoveryMode && pool.value.isPaused) ||
+      (!isDeepPool.value && isComposableStableV1(pool.value))
+  );
+
   const exitHandlerType = computed((): ExitHandler => {
-    if (pool.value.isInRecoveryMode && pool.value.isPaused)
-      return ExitHandler.Recovery;
+    if (shouldUseRecoveryExit.value) return ExitHandler.Recovery;
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
     if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
     if (isSingleAssetExit.value) {
-      if (singleAssetMaxed.value) {
-        return ExitHandler.ExactIn;
-      }
+      // If 'max' is clicked we want to pass in the full bpt balance.
+      if (singleAssetMaxed.value) return ExitHandler.ExactIn;
       return ExitHandler.ExactOut;
     }
     return ExitHandler.ExactIn;
