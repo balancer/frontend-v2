@@ -16,7 +16,7 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
-import { poolMetadata } from '@/lib/config/metadata';
+import { poolMetadata as getPoolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES
@@ -121,7 +121,8 @@ const poolTypeLabel = computed(() => {
   return key ? t(key) : t('unknownPoolType');
 });
 
-const hasMetadata = !!poolMetadata;
+const poolMetadata = computed(() => getPoolMetadata(props.pool.id));
+const hasMetadata = computed((): boolean => !!poolMetadata.value);
 
 /**
  * METHODS
