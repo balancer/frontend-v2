@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import {
   getRedirectUrlFor,
   getSubdomain,

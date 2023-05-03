@@ -1,6 +1,6 @@
-import { Network, networkId } from '@/composables/useNetwork';
+import { networkId } from '@/composables/useNetwork';
 import { Config } from '@/lib/config/types';
-import configs from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import template from '@/lib/utils/template';
 
 interface Env {

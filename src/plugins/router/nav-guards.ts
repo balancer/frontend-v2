@@ -7,7 +7,7 @@ import {
 } from '@/composables/useNetwork';
 import { isJoinsDisabled } from '@/composables/usePoolHelpers';
 import config from '@/lib/config';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { Router } from 'vue-router';
 import metaService from '@/services/meta/meta.service';
 

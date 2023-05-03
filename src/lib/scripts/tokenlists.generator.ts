@@ -1,6 +1,6 @@
 import TokenListService from '@/services/token-list/token-list.service';
 import config from '@/lib/config';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 const fs = require('fs');
 const path = require('path');
