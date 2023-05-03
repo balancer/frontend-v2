@@ -14,18 +14,23 @@ import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePre
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 import { deprecatedDetails } from '@/composables/usePoolHelpers';
+import { usePoolWarning } from '@/composables/usePoolWarning';
 
 type Props = {
   pool: Pool;
 };
 const props = defineProps<Props>();
 
+const emit = defineEmits<{
+  (e: 'setRestakeVisibility', value: boolean): void;
+}>();
 /**
  * STATE
  */
 
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref<StakeAction>('stake');
+const poolId = computed(() => props.pool.id);
 
 /**
  * COMPOSABLES
@@ -39,6 +44,7 @@ const {
   stakedShares,
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
+const { isAffected } = usePoolWarning(poolId);
 
 /**
  * COMPUTED
@@ -167,7 +173,16 @@ function handlePreviewClose() {
                     <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                   </BalStack>
                 </BalStack>
-                <BalStack horizontal spacing="sm" class="mt-2">
+                <BalBtn
+                  v-if="hasNonPrefGaugeBalance && !isAffected"
+                  :color="'gradient'"
+                  class="mt-2"
+                  size="sm"
+                  @click="emit('setRestakeVisibility', true)"
+                >
+                  {{ $t('restake') }}
+                </BalBtn>
+                <BalStack v-else horizontal spacing="sm" class="mt-2">
                   <BalBtn
                     color="gradient"
                     size="sm"

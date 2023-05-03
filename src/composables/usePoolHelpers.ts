@@ -1,8 +1,8 @@
-import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
+import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
 import { APR_THRESHOLD } from '@/constants/pools';
-import configs from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import {
   bnum,
   includesAddress,

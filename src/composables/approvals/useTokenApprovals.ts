@@ -8,7 +8,7 @@ import useEthers from '@/composables/useEthers';
 import { useTokens } from '@/providers/tokens.provider';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 import { bnum } from '@/lib/utils';
-import { tokenService } from '@/services/token/token.service';
+import TokenService from '@/services/token/token.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useTransactions from '../useTransactions';
@@ -158,7 +158,7 @@ export default function useTokenApprovals(
   ): Promise<ApprovalStateMap> {
     const customTokenMap = getTokens(tokenAddresses.value);
 
-    const allowances = await tokenService.allowances.get(
+    const allowances = await new TokenService().allowances.get(
       account.value,
       [spender],
       customTokenMap

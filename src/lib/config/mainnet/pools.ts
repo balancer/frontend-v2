@@ -329,6 +329,10 @@ const pools: Pools = {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
     },
+    '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e': {
+      name: 'qETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -359,6 +363,7 @@ const pools: Pools = {
     '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502', // aave usd v3
     '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e', // sweth/bb-a-weth
     '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e', // bb-a-weth / qeth
+    '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // cbeth / bb-a-weth
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
@@ -421,14 +426,14 @@ const pools: Pools = {
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
       newPool:
         '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502',
-      description: 'deprecatedPool.migrateApril',
+      description: 'deprecatedPool.migrateCardDescription',
       joinsDisabled: true,
       stakingDisabled: true,
     },
     '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b': {
       newPool:
         '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505',
-      description: 'deprecatedPool.migrateApril',
+      description: 'deprecatedPool.migrateCardDescription',
       joinsDisabled: true,
       stakingDisabled: true,
     },

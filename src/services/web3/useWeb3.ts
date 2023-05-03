@@ -1,7 +1,5 @@
-import { Network } from '@balancer-labs/sdk';
 import { useQuery } from '@tanstack/vue-query';
 import debounce from 'lodash/debounce';
-import { computed, reactive, ref } from 'vue';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -64,20 +62,6 @@ export default function useWeb3() {
   const isWalletConnecting = computed(() => walletState.value === 'connecting');
   const isWalletDisconnected = computed(
     () => walletState.value === 'disconnected'
-  );
-  const isMainnet = computed(
-    () => appNetworkConfig.chainId === Network.MAINNET
-  );
-  const isGoerli = computed(() => appNetworkConfig.chainId === Network.GOERLI);
-  const isPolygon = computed(
-    () => appNetworkConfig.chainId === Network.POLYGON
-  );
-  const isArbitrum = computed(
-    () => appNetworkConfig.chainId === Network.ARBITRUM
-  );
-  const isGnosis = computed(() => appNetworkConfig.chainId === Network.GNOSIS);
-  const isEIP1559SupportedNetwork = computed(
-    () => appNetworkConfig.supportsEIP1559
   );
 
   const canLoadProfile = computed(
@@ -155,12 +139,6 @@ export default function useWeb3() {
     explorerLinks,
     signer,
     blockNumber,
-    isMainnet,
-    isGoerli,
-    isPolygon,
-    isArbitrum,
-    isGnosis,
-    isEIP1559SupportedNetwork,
     isWalletConnecting,
     isBlocked,
 

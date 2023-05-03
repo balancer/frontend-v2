@@ -37,12 +37,14 @@ import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 import metaService from '@/services/meta/meta.service';
 import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 
 /**
  * STATE
  */
 const route = useRoute();
 const poolId = (route.params.id as string).toLowerCase();
+const isRestakePreviewVisible = ref(false);
 
 /**
  * PROVIDERS
@@ -170,6 +172,10 @@ const showBrandedRedirectCard = computed(() => {
   return POOLS.BrandedRedirect?.[poolId] || false;
 });
 
+function setRestakeVisibility(value: boolean): void {
+  isRestakePreviewVisible.value = value;
+}
+
 /**
  * WATCHERS
  */
@@ -219,6 +225,7 @@ watch(
           :missingPrices="missingPrices"
           :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
           :isComposableStableLikePool="isComposableStableLikePool"
+          @set-restake-visibility="setRestakeVisibility"
         />
       </div>
       <div class="hidden lg:block" />
@@ -292,6 +299,7 @@ watch(
             v-if="isStakablePool && !loadingPool && pool && isWalletReady"
             :pool="pool"
             class="staking-incentives"
+            @set-restake-visibility="setRestakeVisibility"
           />
           <PoolLockingCard
             v-if="_isVeBalPool && !loadingPool && pool"
@@ -304,6 +312,14 @@ watch(
           />
         </BalStack>
       </div>
+      <StakePreviewModal
+        v-if="!!pool"
+        :isVisible="isRestakePreviewVisible"
+        :pool="pool"
+        action="restake"
+        @close="isRestakePreviewVisible = false"
+        @success="isRestakePreviewVisible = false"
+      />
     </div>
   </div>
 </template>

@@ -197,7 +197,7 @@ const pools: Pools = {
       hasIcon: true,
     },
     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
-      name: 'BstMATIC/Boosted Aave v3 WMATIC',
+      name: 'stMATIC/Boosted Aave v3 WMATIC',
       hasIcon: false,
     },
     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
@@ -206,6 +206,10 @@ const pools: Pools = {
     },
     '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38': {
       name: 'wstETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
+    '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
+      name: 'frxETH/Boosted Aave v3 WETH',
       hasIcon: false,
     },
   },
@@ -222,6 +226,7 @@ const pools: Pools = {
     '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43', // bb-am-usd/2brl
     '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44', // stmatci-bb-wmatic/bb-am-usd
     '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45', // wsteth-bb-a-weth/bb-am-usd
+    '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42', // frxETH / bb-a-weth
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
@@ -244,20 +249,20 @@ const pools: Pools = {
       joinsDisabled: true,
       stakingDisabled: true,
     },
-    // '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
-    //   newPool:
-    //     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
-    //   description: 'deprecatedPool.migrateApril',
-    //   joinsDisabled: true,
-    //   stakingDisabled: true,
-    // },
-    // '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
-    //   newPool:
-    //     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
-    //   description: 'deprecatedPool.migrateApril',
-    //   joinsDisabled: true,
-    //   stakingDisabled: true,
-    // },
+    '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
+      newPool:
+        '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
+      description: 'deprecatedPool.migrateCardDescription',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
+    '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
+      newPool:
+        '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
+      description: 'deprecatedPool.migrateCardDescription',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
   },
   BrandedRedirect: {
     '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
