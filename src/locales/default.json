@@ -24,7 +24,11 @@
     "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
     "retry-label": "Refresh to try again",
     "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →",
-    "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28."
+    "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28.",
+    "withdrawToInternalBalance": {
+      "title": "Withdraw to Vault balance",
+      "description": "This transaction will withdraw your tokens from this pool to your Balancer Vault balance. \n\nYou will then be able to withdraw the relevant tokens from the Vault using the"
+    }
   },
   "allow": "Allow",
   "allowing": "Allowing...",
@@ -369,6 +373,7 @@
   "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>liquidity provision, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
   "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
   "etherscan": "Etherscan",
+  "eulerLinear": "Euler Linear",
   "exceedsBalance": "Exceeds wallet balance",
   "exceedsPoolBalance": "Exceeds pool balance for this token",
   "expired": "Expired",
@@ -588,6 +593,7 @@
   "lbpAprTooltip": "Only the LBP creator can add liquidity and receive this APR.",
   "managedPool": "Managed pool",
   "manageLists": "Manage lists",
+  "manageVaultBalances": "Manage Vault balances",
   "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
   "max": "Max",
   "maxed": "Maxed",
@@ -697,6 +703,9 @@
       "btns": {
         "claimOn": "Claim on"
       }
+    },
+    "balances": {
+      "title": "My Vault balances"
     }
   },
   "pastEarnings": {
@@ -1458,6 +1467,8 @@
     "fundPool": "Fund pool",
     "investInPool": "{0} in {1}",
     "withdrawFromPool": "{0} from {1}",
+    "withdrawFromBalance": "{0} from Vault balance",
+    "withdrawToBalance": "{0} to Vault balance",
     "migratePool": "{0} {1} to {2}",
     "wrapUnwrap": "{0} {1} to {2}",
     "tooltips": {

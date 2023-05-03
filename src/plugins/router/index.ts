@@ -25,6 +25,7 @@ export const SwapPagePrefetchLinks = async () =>
 const UnlockVeBalPage = () => import('@/pages/unlock-vebal.vue');
 const VeBalPage = () => import('@/pages/vebal.vue');
 const FaucetPage = () => import('@/pages/faucet.vue');
+const BalancesPage = () => import('@/pages/balances.vue');
 
 const PortfolioPage = () => import('@/pages/portfolio.vue');
 
@@ -141,6 +142,11 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/portfolio',
     name: 'portfolio',
     component: PortfolioPage,
+  },
+  {
+    path: '/:networkSlug/balances',
+    name: 'balances',
+    component: BalancesPage,
   },
   {
     path: '/:networkSlug?',
