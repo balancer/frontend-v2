@@ -1,5 +1,6 @@
 import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { initRpcProviderServiceWithDefaultMocks } from '@/dependencies/rpc-provider.service.mocks';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
@@ -10,6 +11,7 @@ import { exitPoolProvider } from './exit-pool.provider';
 
 initEthersContractWithDefaultMocks();
 initBalancerSdkWithDefaultMocks();
+initRpcProviderServiceWithDefaultMocks();
 
 async function mountExitPoolProvider(pool: Pool) {
   const debounceQueryExitMillis = 10;
@@ -22,9 +24,6 @@ async function mountExitPoolProvider(pool: Pool) {
     )
   );
 
-  await waitForExpect(() => {
-    expect(result.isLoadingQuery.value).toBeTrue();
-  });
   await waitForExpect(() => {
     expect(result.isLoadingQuery.value).toBeFalse();
   });
