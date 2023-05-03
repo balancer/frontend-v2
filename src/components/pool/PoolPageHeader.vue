@@ -138,7 +138,7 @@ function symbolFor(titleTokenIndex: number): string {
     <div class="flex flex-wrap items-center -mt-2">
       <div v-if="hasMetadata">
         <h3 class="pool-title">
-          {{ poolMetadata.name }}
+          {{ poolMetadata?.name }}
         </h3>
         <h5 class="text-sm">
           {{ poolTypeLabel }}
