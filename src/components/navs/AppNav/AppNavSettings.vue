@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Network } from '@balancer-labs/sdk';
-
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useEthereumTxType from '@/composables/useEthereumTxType';
@@ -11,6 +9,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import { getConnectorLogo } from '@/services/web3/wallet-logos';
 import { getConnectorName } from '@/services/web3/wallet-names';
 import { useUserSettings } from '@/providers/user-settings.provider';
+import { Network, isEIP1559SupportedNetwork } from '@/composables/useNetwork';
 
 // COMPOSABLES
 const { darkMode, setDarkMode } = useDarkMode();
@@ -22,7 +21,6 @@ const {
   toggleWalletSelectModal,
   connector,
   provider,
-  isEIP1559SupportedNetwork,
   userNetworkConfig,
   isUnsupportedNetwork,
   explorerLinks,
@@ -44,7 +42,7 @@ const networkColorClass = computed(() => {
     color = 'red';
   } else {
     switch (userNetworkConfig.value?.chainId) {
-      case Network.GÖRLI:
+      case Network.GOERLI:
         color = 'blue';
         break;
     }

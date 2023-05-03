@@ -1,10 +1,22 @@
-import { computed, ref } from 'vue';
-
 import config from '@/lib/config';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
 import { RouteParamsRaw } from 'vue-router';
 import { Config } from '@/lib/config/types';
+
+// We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
+export enum Network {
+  MAINNET = 1,
+  ROPSTEN = 3,
+  RINKEBY = 4,
+  GOERLI = 5,
+  GÖRLI = 5,
+  OPTIMISM = 10,
+  KOVAN = 42,
+  GNOSIS = 100,
+  POLYGON = 137,
+  ARBITRUM = 42161,
+  FANTOM = 250,
+}
 
 /**
  * STATE
@@ -51,6 +63,10 @@ export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
 export const hasBridge = computed<boolean>(() => !!networkConfig.bridgeUrl);
 export const isTestnet = computed(() => isGoerli.value);
+
+export const isEIP1559SupportedNetwork = computed(
+  () => configService.network.supportsEIP1559
+);
 
 export const isPoolBoostsEnabled = computed<boolean>(
   () => configService.network.pools.BoostsEnabled
@@ -162,6 +178,7 @@ export function getRedirectUrlFor(
 }
 
 export default function useNetwork() {
+  const appNetworkConfig = configService.network;
   return {
     appUrl,
     networkId,
@@ -171,5 +188,6 @@ export default function useNetwork() {
     getSubdomain,
     handleNetworkSlug,
     networkLabelMap,
+    appNetworkConfig,
   };
 }
