@@ -418,9 +418,10 @@ export const tokensProvider = (
   /**
    * Get single token from state
    */
-  function getToken(address: string): TokenInfo {
+  function getToken(address: string): TokenInfo | undefined {
     address = getAddressFromPoolId(address); // In case pool ID has been passed
-    return selectByAddress(tokens.value, getAddress(address)) as TokenInfo;
+    if (!isAddress(address)) return;
+    return selectByAddress(tokens.value, getAddress(address));
   }
 
   /**
