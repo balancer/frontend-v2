@@ -6,7 +6,8 @@ export type FactoryType =
   | 'liquidityBootstrappingPool'
   | 'boostedPool'
   | 'composableStablePool'
-  | 'fx';
+  | 'fx'
+  | 'eulerLinear';
 
 export type PoolMetadata = {
   name: string;
