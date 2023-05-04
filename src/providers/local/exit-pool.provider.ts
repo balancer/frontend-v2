@@ -205,14 +205,6 @@ export const exitPoolProvider = (
       (isDeep(pool.value) || isComposableStableV1(pool.value))
   );
 
-  // Should exit via internal balance only in unique cases.
-  // e.g. exiting the Euler linear pools.
-  const shouldExitViaInternalBalance = computed(
-    (): boolean =>
-      !!POOLS.ExitViaInternalBalance &&
-      POOLS.ExitViaInternalBalance.includes(pool.value.id)
-  );
-
   // Should use recovery exits if:
   // 1. The pool is paused AND in recovery mode, OR
   // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
@@ -221,6 +213,14 @@ export const exitPoolProvider = (
       (pool.value.isInRecoveryMode && pool.value.isPaused) ||
       (!isDeepPool.value && isComposableStableV1(pool.value))
   );
+
+  // Should the exit be done via internal balances
+  const shouldExitViaInternalBalance = computed((): boolean => {
+    return (
+      !!POOLS.ExitViaInternalBalance &&
+      POOLS.ExitViaInternalBalance.includes(pool.value.id)
+    );
+  });
 
   const exitHandlerType = computed((): ExitHandler => {
     if (shouldUseRecoveryExit.value) return ExitHandler.Recovery;
