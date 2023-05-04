@@ -1,34 +1,35 @@
-<script setup>
+<script lang="ts" setup>
 /**
  *  This Root.vue component provides global providers that can be injected from any component
  *  We need this higher component over App.vue because App uses some composables (for instance, useWeb3Watchers) that expect a provided content from a higher level component (Root.vue)
  */
-import App from './App.vue';
-import { provideUserSettings } from '@/providers/user-settings.provider';
-import { provideTokenLists } from '@/providers/token-lists.provider';
-import { provideTokens } from '@/providers/tokens.provider';
-import { provideUserData } from '@/providers/user-data.provider';
-import { provideWallets } from './providers/wallet.provider';
+import Skeleton from './Skeleton.vue';
+import { useFirstContentLoad } from '@/composables/useFirstContentLoad';
 import { createProviderComponent } from './providers/createProviderComponent';
 
-// The other providers call useWallets so we need to provide it in a higher level
-const WalletsProvider = createProviderComponent(() => provideWallets());
-const GlobalProvider = createProviderComponent(() => {
-  const userSettings = provideUserSettings();
-  const tokenLists = provideTokenLists();
-  provideTokens(userSettings, tokenLists);
-  provideUserData();
-});
+// const FullApp = defineAsyncComponent(() => import('./FullApp.vue'));
+const WalletsProvider = defineAsyncComponent(() => import('./WalletsProvider'));
+const GlobalProvider = defineAsyncComponent(() => import('./GlobalProvider'));
+const { isFirstContentPainted, isWeb3Loaded } = useFirstContentLoad();
 
-/**
- * GLOBAL PROVIDERS
- */
+function buildWalletsProvider(emptyProvider: boolean) {
+  if (emptyProvider) return createProviderComponent();
+  return WalletsProvider;
+}
+
+function buildGlobalProvider(emptyProvider: boolean) {
+  if (emptyProvider) return createProviderComponent();
+  return GlobalProvider;
+}
 </script>
 
 <template>
-  <WalletsProvider>
-    <GlobalProvider>
-      <App />
-    </GlobalProvider>
-  </WalletsProvider>
+  isFirstContentPainted {{ isFirstContentPainted }}
+  <component :is="buildWalletsProvider(!isFirstContentPainted)">
+    <component :is="buildGlobalProvider(!isFirstContentPainted)">
+      <Skeleton></Skeleton>
+      <!-- <div v-else>PROVIDED WALLET PROVIDER</div> -->
+    </component>
+  </component>
+  <!-- <FullApp v-else /> -->
 </template>

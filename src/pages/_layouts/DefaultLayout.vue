@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Footer from '@/components/footer/Footer.vue';
-import AppNav from '@/components/navs/AppNav/AppNav.vue';
+// import { AppNav, Footer } from './async-layout-components';
+import { AppNav, Footer } from './async-layout-components';
 </script>
 
 <template>

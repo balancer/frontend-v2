@@ -38,7 +38,6 @@ declare module '@vue/runtime-core' {
     BalLink: typeof import('./src/components/_global/BalLink/BalLink.vue')['default']
     BalLoadingBlock: typeof import('./src/components/_global/BalLoadingBlock/BalLoadingBlock.vue')['default']
     BalLoadingIcon: typeof import('./src/components/_global/BalLoadingIcon/BalLoadingIcon.vue')['default']
-    BalLoadingNumber: typeof import('./src/components/_global/BalLoadingNumber/BalLoadingNumber.vue')['default']
     BalModal: typeof import('./src/components/_global/BalModal/BalModal.vue')['default']
     BalPopover: typeof import('./src/components/_global/BalPopover/BalPopover.vue')['default']
     BalProgressBar: typeof import('./src/components/_global/BalProgressBar/BalProgressBar.vue')['default']

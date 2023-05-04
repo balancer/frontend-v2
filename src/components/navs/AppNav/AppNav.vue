@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
-
 import AppIcon from '@/components/images/AppIcon.vue';
 import AppLogo from '@/components/images/AppLogo.vue';
 import useAlerts from '@/composables/useAlerts';
@@ -8,9 +6,9 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useFathom from '@/composables/useFathom';
 import useNetwork from '@/composables/useNetwork';
 
-import AppNavActions from './AppNavActions.vue';
+// import AppNavActions from './AppNavActions.vue';
 import AppNavAlert from './AppNavAlert.vue';
-import DesktopLinks from './DesktopLinks/DesktopLinks.vue';
+// import DesktopLinks from './DesktopLinks/DesktopLinks.vue';
 
 /**
  * STATE
@@ -63,10 +61,10 @@ onUnmounted(() => {
           <AppLogo v-else />
         </router-link>
 
-        <DesktopLinks v-if="isDesktop" class="ml-8 font-medium" />
+        <!-- <DesktopLinks v-if="isDesktop" class="ml-8 font-medium" /> -->
       </div>
 
-      <AppNavActions />
+      <!-- <AppNavActions /> -->
     </div>
   </nav>
 </template>

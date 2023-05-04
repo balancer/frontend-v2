@@ -1,5 +1,3 @@
-import { ref } from 'vue';
-
 import LS_KEYS from '@/constants/local-storage.keys';
 import { lsGet, lsSet } from '@/lib/utils';
 

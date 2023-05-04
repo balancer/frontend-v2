@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FocussedLayout from '@/components/layouts/FocussedLayout.vue';
+import { FocussedLayout } from './async-layout-components';
 </script>
 
 <template>

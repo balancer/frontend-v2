@@ -27,6 +27,7 @@ import {
   totalAprLabel,
   isLBP,
 } from '@/composables/usePoolHelpers';
+import { poolMetadata } from '@/lib/config/metadata';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';

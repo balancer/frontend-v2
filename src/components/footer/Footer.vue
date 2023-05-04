@@ -33,7 +33,7 @@ const { handleThirdPartyModalToggle } = useThirdPartyServices();
             <AppLogo class="mb-4" />
           </router-link>
 
-          <div class="flex md:hidden flex-col gap-2">
+          <!-- <div class="flex md:hidden flex-col gap-2">
             <p>
               <router-link
                 class="text-lg font-medium link"
@@ -74,7 +74,7 @@ const { handleThirdPartyModalToggle } = useThirdPartyServices();
                 {{ $t('vebal') }}
               </router-link>
             </p>
-          </div>
+          </div> -->
 
           <div class="flex flex-wrap md:order-3 gap-3 md:gap-4">
             <BalLink
@@ -208,7 +208,7 @@ const { handleThirdPartyModalToggle } = useThirdPartyServices();
           <div
             class="flex flex-wrap md:order-3 gap-x-3 lg:gap-x-4 gap-y-2 md:justify-end"
           >
-            <p>
+            <!-- <p>
               <router-link class="policy" :to="{ name: 'terms-of-use' }">
                 {{ $t('policies.termsOfUse') }}
               </router-link>
@@ -227,7 +227,7 @@ const { handleThirdPartyModalToggle } = useThirdPartyServices();
               <router-link class="policy" :to="{ name: 'risks' }">
                 {{ $t('policies.risks') }}
               </router-link>
-            </p>
+            </p> -->
             <p>
               <span
                 class="cursor-pointer policy"
