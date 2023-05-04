@@ -534,6 +534,7 @@ export const exitPoolProvider = (
     isSingleAssetExit: readonly(isSingleAssetExit),
     propAmountsOut: readonly(propAmountsOut),
     priceImpact: readonly(priceImpact),
+    exitPoolService,
 
     // computed
     exitTokenAddresses,
