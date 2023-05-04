@@ -26,7 +26,6 @@ import {
   tokenTreeLeafs,
   tokenTreeNodes,
   usePoolHelpers,
-  poolMetadata,
   deprecatedDetails,
   isJoinsDisabled,
   totalAprLabel,
@@ -519,24 +518,6 @@ test('returns undefined when there is no deprecated details', async () => {
 
 test('returns existing deprecated details', async () => {
   expect(deprecatedDetails('deprecatedId')).toEqual({});
-});
-
-test('returns undefined when there is no pool metadata', async () => {
-  const GOERLI = 5;
-  expect(poolMetadata('inventedId', GOERLI)).toBeUndefined();
-});
-
-test('returns existing pool metadata', async () => {
-  const GOERLI = 5;
-  expect(
-    poolMetadata(
-      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
-      GOERLI
-    )
-  ).toEqual({
-    hasIcon: false,
-    name: 'Balancer Boosted Aave USD',
-  });
 });
 
 test('detects disabled joins by id', async () => {
