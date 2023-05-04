@@ -85,7 +85,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/create/:tx?',
     name: 'create-pool',
     component: CreatePoolPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/pool/:id',
