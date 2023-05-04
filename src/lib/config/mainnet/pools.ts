@@ -255,6 +255,8 @@ const pools: Pools = {
       '0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524',
       '0x42fbd9f666aacc0026ca1b88c94259519e03dd67000200000000000000000507',
       '0x3e953c6bf97284f736c5f95b3c3be8f4e48075f4000200000000000000000522',
+      '0x793f2d5cd52dfafe7a1a1b0b3988940ba2d6a63d0000000000000000000004f8',
+      '0x7e9afd25f5ec0eb24d7d4b089ae7ecb9651c8b1f000000000000000000000511',
     ],
     AllowList: [],
   },
@@ -333,6 +335,10 @@ const pools: Pools = {
     },
     '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e': {
       name: 'qETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
+    '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e': {
+      name: 'swETH/Boosted Aave v3 WETH',
       hasIcon: false,
     },
   },
