@@ -26,7 +26,6 @@ import {
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
-  poolMetadata,
 } from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -38,6 +37,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
+import { poolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES

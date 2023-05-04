@@ -1,8 +1,9 @@
-import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
+import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
 import { APR_THRESHOLD } from '@/constants/pools';
-import configs from '@/lib/config';
+import { Network } from '@/lib/config';
+
 import {
   bnum,
   includesAddress,
@@ -12,7 +13,7 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
+import { DeprecatedDetails } from '@/types/pools';
 
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from './useAPR';
@@ -22,10 +23,10 @@ import {
   getNetworkSlug,
   isMainnet,
   isPoolBoostsEnabled,
-  networkId,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { dateToUnixTimestamp } from './useTime';
+import { poolMetadata } from '@/lib/config/metadata';
 
 const POOLS = configService.network.pools;
 
@@ -557,16 +558,6 @@ export function isJoinsDisabled(id: string): boolean {
  */
 export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
   return POOLS.Deprecated?.[id.toLowerCase()];
-}
-
-/**
- * Get metadata for a pool if it exists
- */
-export function poolMetadata(
-  id: string,
-  network = networkId.value
-): PoolMetadata | undefined {
-  return configs[network]?.pools.Metadata[id.toLowerCase()];
 }
 
 /**

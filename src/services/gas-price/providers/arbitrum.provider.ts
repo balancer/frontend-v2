@@ -2,7 +2,7 @@ import axios from 'axios';
 import { GasPrice } from './types';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 interface ArbitrumGasStationResponse {
   id: number;

@@ -1,26 +1,65 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
+
+import { Pool } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
+import { useInvestFormTotals } from '../composables/useInvestFormTotals';
+
+type Props = {
+  pool: Pool;
+};
+
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
  */
-const { highPriceImpact, isLoadingQuery, priceImpact } = useJoinPool();
 const { fNum } = useNumbers();
+const { isWalletReady } = useWeb3();
 
-/**
- * COMPUTED
- */
-const priceImpactClasses = computed(() => ({
-  'dark:bg-gray-800': !highPriceImpact.value,
-  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value,
-}));
+const {
+  highPriceImpact,
+  isLoadingQuery,
+  priceImpact,
+  supportsProportionalOptimization,
+  fiatValueIn,
+} = useJoinPool();
+
+const {
+  priceImpactClasses,
+  optimizeBtnClasses,
+  hasBalanceForAllTokens,
+  hasBalanceForSomeTokens,
+  optimized,
+  maximized,
+  maximizeAmounts,
+  optimizeAmounts,
+} = useInvestFormTotals(props.pool);
 </script>
 
 <template>
   <div class="data-table">
+    <div class="data-table-row total-row">
+      <div class="p-2">
+        {{ $t('total') }}
+      </div>
+      <div class="data-table-number-col">
+        {{ fNum(fiatValueIn, FNumFormats.fiat) }}
+        <div v-if="isWalletReady && hasBalanceForSomeTokens" class="text-sm">
+          <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
+            {{ $t('maxed') }}
+          </span>
+          <span
+            v-else
+            class="text-blue-500 cursor-pointer"
+            @click="maximizeAmounts"
+          >
+            {{ $t('max') }}
+          </span>
+        </div>
+      </div>
+    </div>
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
       <div class="p-2">
         {{ $t('priceImpact') }}
@@ -48,6 +87,25 @@ const priceImpactClasses = computed(() => ({
               />
             </template>
           </BalTooltip>
+        </div>
+        <div
+          v-if="
+            isWalletReady &&
+            hasBalanceForAllTokens &&
+            supportsProportionalOptimization
+          "
+          class="text-sm font-semibold"
+        >
+          <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
+            {{ $t('optimized') }}
+          </span>
+          <span
+            v-else
+            :class="['cursor-pointer', optimizeBtnClasses]"
+            @click="optimizeAmounts"
+          >
+            {{ $t('optimize') }}
+          </span>
         </div>
       </div>
     </div>
