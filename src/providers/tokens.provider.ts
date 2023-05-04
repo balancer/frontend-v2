@@ -255,7 +255,7 @@ export const tokensProvider = (
 
     // Only inject tokens that aren't already in tokens
     const injectable = addresses.filter(
-      address => existingAddressesMap[address] !== true
+      address => !existingAddressesMap[address]
     );
     if (injectable.length === 0) return;
 
@@ -417,10 +417,9 @@ export const tokensProvider = (
   /**
    * Get single token from state
    */
-  function getToken(address: string): TokenInfo | undefined {
+  function getToken(address: string): TokenInfo {
     address = getAddressFromPoolId(address); // In case pool ID has been passed
-    if (!isAddress(address)) return;
-    return selectByAddressFast(tokens.value, getAddress(address));
+    return selectByAddressFast(tokens.value, getAddress(address)) as TokenInfo;
   }
 
   /**
