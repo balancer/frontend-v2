@@ -445,6 +445,13 @@ const pools: Pools = {
       joinsDisabled: true,
       stakingDisabled: true,
     },
+    '0xc9c5ff67bb2fae526ae2467c359609d6bcb4c5320000000000000000000003cc': {
+      newPool:
+        '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e',
+      description: 'deprecatedPool.migrateCardDescription',
+      joinsDisabled: true,
+      stakingDisabled: true,
+    },
   },
   BrandedRedirect: {
     '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce':
