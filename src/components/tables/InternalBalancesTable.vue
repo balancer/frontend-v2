@@ -10,10 +10,11 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { vaultService } from '@/services/contracts/vault.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { bnum, selectByAddress, trackLoading } from '@/lib/utils';
+import { bnum, includesAddress, trackLoading } from '@/lib/utils';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
 import { TokenInfo } from '@/types/TokenList';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -29,14 +30,6 @@ export type InternalBalanceRow = TokenInfo & {
  */
 const internalBalances = ref<InternalBalanceRow[]>([]);
 const loading = ref(true);
-const externalWithdrawActions = {
-  '0xEb91861f8A4e1C12333F42DCE8fB0Ecdc28dA716':
-    'https://redemptions.euler.finance/',
-  '0x4d19F33948b99800B6113Ff3e83beC9b537C85d2':
-    'https://redemptions.euler.finance/',
-  '0xe025E3ca2bE02316033184551D4d3Aa22024D9DC':
-    'https://redemptions.euler.finance/',
-};
 
 /**
  * COMPOSABLES
@@ -102,6 +95,12 @@ async function getInternalBalances() {
     ['value', 'balance'],
     ['desc', 'desc']
   );
+}
+
+function isWithdrawDisabled(address: string): boolean {
+  const disabledAddresses =
+    configService.network.tokens.DisableInternalBalanceWithdrawals;
+  return !!disabledAddresses && includesAddress(disabledAddresses, address);
 }
 
 /**
@@ -187,20 +186,7 @@ const columns = ref<ColumnDefinition<any>[]>([
       </template>
       <template #withdrawColumnCell="{ address, value }">
         <div class="flex justify-end py-4 px-6">
-          <BalBtn
-            v-if="selectByAddress(externalWithdrawActions, address)"
-            tag="a"
-            :href="selectByAddress(externalWithdrawActions, address)"
-            target="_blank"
-            rel="noopener noreferrer"
-            external
-            color="gradient"
-            size="sm"
-            >{{ $t('redeem') }}
-            <BalIcon name="arrow-up-right" size="sm" class="ml-1"
-          /></BalBtn>
           <TxActionBtn
-            v-else
             :label="$t('transactionAction.withdraw')"
             color="gradient"
             size="sm"
@@ -212,6 +198,7 @@ const columns = ref<ColumnDefinition<any>[]>([
               ])
             "
             :confirmingLabel="`${$t('withdrawing')}...`"
+            :disabled="isWithdrawDisabled(address)"
             @confirmed="getInternalBalances"
           />
         </div>
