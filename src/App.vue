@@ -11,7 +11,8 @@ import {
   BlankLayout,
   ContentLayout,
   DefaultLayout,
-  FocusedLayout,
+  FocussedLayout,
+  JoinExitLayout,
 } from '@/pages/_layouts';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -38,7 +39,8 @@ const Layouts = {
   BlankLayout: BlankLayout,
   ContentLayout: ContentLayout,
   DefaultLayout: DefaultLayout,
-  FocusedLayout: FocusedLayout,
+  FocussedLayout: FocussedLayout,
+  JoinExitLayout: JoinExitLayout,
 };
 /**
  * COMPOSABLES
@@ -55,17 +57,6 @@ const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
 const { sidebarOpen } = useSidebar();
 const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
   useThirdPartyServices();
-
-// ADD FEATURE ALERT HERE
-// const featureAlert: Alert = {
-//   id: 'vebal-gap',
-//   priority: AlertPriority.LOW,
-//   label: t('alerts.vebalL2'),
-//   type: AlertType.FEATURE,
-//   rememberClose: false,
-//   actionOnClick: false
-// };
-// addAlert(featureAlert);
 
 /**
  * WATCHERS

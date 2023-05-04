@@ -135,6 +135,12 @@ defaultExactInExit.expectedAmountsOut = ['100', '200'];
 defaultExactInExit.minAmountsOut = ['20'];
 defaultExactInExit.to = 'test exact exit to';
 defaultExactInExit.data = 'exact exit test encoded data';
+defaultExactInExit.attributes.exitPoolRequest = {
+  assets: [wethAddress],
+  minAmountsOut: ['3'],
+  userData: 'test user data',
+  toInternalBalance: false,
+};
 
 export const defaultExactOutExit: ExitExactOutResponse =
   mock<ExitExactOutResponse>();
@@ -160,7 +166,6 @@ defaultRecoveryExit.attributes.exitPoolRequest = {
   userData: 'user data',
   toInternalBalance: true,
 };
-
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
   balancerMock.sor.fetchPools.mockResolvedValue(true);

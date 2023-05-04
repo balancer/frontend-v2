@@ -69,6 +69,18 @@ export class PoolMulticaller {
           abi: PoolTypeABIs,
         })
         .call({
+          key: `${pool.id}.isInRecoveryMode`,
+          address: pool.address,
+          function: 'inRecoveryMode',
+          abi: ['function inRecoveryMode() view returns (bool)'],
+        })
+        .call({
+          key: `${pool.id}.isPaused`,
+          address: pool.address,
+          function: 'getPausedState',
+          abi: ['function getPausedState() view returns (bool)'],
+        })
+        .call({
           key: `${pool.id}.poolTokens`,
           address: this.vaultAddress,
           function: 'getPoolTokens',
