@@ -21,7 +21,7 @@ const addressOfTokenWithoutBalance =
 test('returns tokens with balance', async () => {
   const { tokensWithBalance } = await mountUserTokensProvider();
 
-  expect(tokensWithBalance.value).toEqual([
+  expect(tokensWithBalance.value).toIncludeSameMembers([
     // List of tokens passed to useBalancesQuery in tokens.provider
     '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
     '0x8c9e6c40d3402480ACE624730524fACC5482798c',
@@ -44,6 +44,7 @@ test('returns tokens with balance', async () => {
     '0x811151066392fd641Fe74A9B55a712670572D161',
     '0x4Cb1892FdDF14f772b2E39E299f44B2E5DA90d04',
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
+    '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
   ]);
 });
 
@@ -70,7 +71,7 @@ test('returns tokens with balance that are not in a given address list', async (
       '0x8c9e6c40d3402480ACE624730524fACC5482798c',
       addressOfTokenWithoutBalance,
     ])
-  ).toEqual([
+  ).toIncludeSameMembers([
     '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
     '0x1f1f156E0317167c11Aa412E3d1435ea29Dc3cCE',
     '0xe0C9275E44Ea80eF17579d33c55136b7DA269aEb',
@@ -91,6 +92,7 @@ test('returns tokens with balance that are not in a given address list', async (
     '0x811151066392fd641Fe74A9B55a712670572D161',
     '0x4Cb1892FdDF14f772b2E39E299f44B2E5DA90d04',
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
+    '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
   ]);
 });
 

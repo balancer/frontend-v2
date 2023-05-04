@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import useWeb3 from '@/services/web3/useWeb3';
 import DesktopLinkItem from './DesktopLinkItem.vue';
-import useNetwork from '@/composables/useNetwork';
+import useNetwork, { isGoerli } from '@/composables/useNetwork';
 import { Goals, trackGoal } from '@/composables/useFathom';
-
-const { isGoerli } = useWeb3();
 
 /**
  * COMPOSABLES

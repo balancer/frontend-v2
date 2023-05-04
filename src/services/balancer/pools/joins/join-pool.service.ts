@@ -1,6 +1,8 @@
-import { isDeep } from '@/composables/usePoolHelpers';
+import {
+  gasPriceService,
+  GasPriceService,
+} from '@/services/gas-price/gas-price.service';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
@@ -12,6 +14,16 @@ import {
 } from './handlers/join-pool.handler';
 import { GeneralisedJoinHandler } from './handlers/generalised-join.handler';
 
+import { BalancerSDK } from '@balancer-labs/sdk';
+import { ExactInJoinHandler } from './handlers/exact-in-join.handler';
+
+export enum JoinHandler {
+  Swap = 'Swap',
+  Generalised = 'Generalised',
+  ExactIn = 'ExactIn',
+}
+
+type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
  * type or other criteria. It wraps calls to the functions defined in the
@@ -33,7 +45,7 @@ export class JoinPoolService {
     public readonly sdk = getBalancerSDK(),
     public readonly gasPriceServ = gasPriceService
   ) {
-    this.joinHandler = this.setJoinHandler();
+    this.joinHandler = this.setJoinHandler(JoinHandler.Generalised);
   }
 
   /**
@@ -42,19 +54,21 @@ export class JoinPoolService {
    * @param {boolean} [swapJoin=false] - Flag to ensure SwapJoinHandler is used for joining.
    * @returns {JoinPoolHandler} The JoinPoolHandler class to be used.
    */
-  setJoinHandler(swapJoin = false): JoinPoolHandler {
+  setJoinHandler(type: JoinHandler): JoinPoolHandler {
     const { pool, sdk, gasPriceServ } = this;
+    const handlerParams: HandlerParams = [pool, sdk, gasPriceServ];
 
-    if (swapJoin) {
-      return (this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ));
-    } else if (isDeep(pool.value)) {
-      return (this.joinHandler = new GeneralisedJoinHandler(
-        pool,
-        sdk,
-        gasPriceServ
-      ));
-    } else {
-      throw new Error(`Pool type not handled: ${pool.value.poolType}`);
+    switch (type) {
+      case JoinHandler.Swap:
+        return (this.joinHandler = new SwapJoinHandler(...handlerParams));
+      case JoinHandler.Generalised:
+        return (this.joinHandler = new GeneralisedJoinHandler(
+          ...handlerParams
+        ));
+      case JoinHandler.ExactIn:
+        return (this.joinHandler = new ExactInJoinHandler(...handlerParams));
+      default:
+        throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
   }
 

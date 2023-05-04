@@ -3,12 +3,17 @@ import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import { MerkleOrchardVersion } from '@/services/claim/claim.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import {
+  isArbitrum,
+  isMainnet,
+  isGoerli,
+  isPolygon,
+} from '@/composables/useNetwork';
 
 /**
  * COMPOSABLES
  */
-const { isWalletReady, account, isArbitrum, isMainnet, isGoerli, isPolygon } =
-  useWeb3();
+const { isWalletReady, account } = useWeb3();
 
 /**
  * COMPUTED

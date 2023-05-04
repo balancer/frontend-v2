@@ -9,41 +9,52 @@ import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
-import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import { useSwapState } from '@/composables/swap/useSwapState';
 import { includesAddress } from '@/lib/utils';
+import { useUserTokens } from '@/providers/local/user-tokens.provider';
 
+/**
+ * TYPES
+ */
 type Props = {
   excludedTokens?: string[];
   // If pool prop is provided, Tokens are grouped into:
   // 'Pool tokens in wallet' and 'Other tokens in wallet'
   pool?: AnyPool;
-  includeNativeAsset?: boolean;
 };
 
+/**
+ * PROPS & EMITS
+ */
 const props = withDefaults(defineProps<Props>(), {
   excludedTokens: () => [],
   pool: undefined,
-  includeNativeAsset: false,
 });
 
+/**
+ * COMPOSABLES
+ */
+const networkName = configService.network.name;
+
+const { t } = useI18n();
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { setTokenInAddress } = useSwapState();
-
-const networkName = configService.network.name;
-const { t } = useI18n();
-const { isDeepPool, isPreMintedBptPool } = usePoolHelpers(toRef(props, 'pool'));
+const { isDeepPool, isPreMintedBptPool, poolJoinTokens } = usePoolHelpers(
+  toRef(props, 'pool')
+);
 
 const {
-  tokensWithBalance,
-  poolTokenAddresses,
-  poolTokensWithBalance,
-  poolTokensWithoutBalance,
-  notPoolTokensWithBalance,
   isLoadingBalances,
-} = useMyWalletTokens(props);
+  tokensWithBalance,
+  tokensWithBalanceFrom,
+  tokensWithoutBalanceFrom,
+  tokensWithBalanceNotIn,
+} = useUserTokens();
 
+/**
+ * COMPUTED
+ */
 const noNativeCurrencyMessage = computed(() => {
   return t('noNativeCurrency', [nativeCurrency, networkName]);
 });
@@ -60,7 +71,7 @@ const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 function handleAssetClick(tokenAddress) {
   setTokenInAddress(tokenAddress);
-  const isPoolToken = includesAddress(poolTokenAddresses.value, tokenAddress);
+  const isPoolToken = includesAddress(poolJoinTokens.value, tokenAddress);
   emit('click:asset', tokenAddress, isPoolToken);
 }
 
@@ -130,10 +141,10 @@ const emit = defineEmits<{
                 wrap
                 :size="30"
                 :addresses="[
-                  ...poolTokensWithBalance,
-                  ...poolTokensWithoutBalance,
+                  ...tokensWithBalanceFrom(poolJoinTokens),
+                  ...tokensWithoutBalanceFrom(poolJoinTokens),
                 ]"
-                :disabledAddresses="poolTokensWithoutBalance"
+                :disabledAddresses="tokensWithoutBalanceFrom(poolJoinTokens)"
                 :maxAssetsPerLine="7"
                 @click="handleAssetClick"
               />
@@ -142,7 +153,7 @@ const emit = defineEmits<{
               v-if="
                 isDeepPool &&
                 isPreMintedBptPool &&
-                notPoolTokensWithBalance.length
+                tokensWithBalanceNotIn(poolJoinTokens).length
               "
             >
               <MyWalletSubheader
@@ -155,7 +166,7 @@ const emit = defineEmits<{
                 :width="275"
                 wrap
                 :size="30"
-                :addresses="notPoolTokensWithBalance"
+                :addresses="tokensWithBalanceNotIn(poolJoinTokens)"
                 :maxAssetsPerLine="7"
                 @click="handleAssetClick"
               />
