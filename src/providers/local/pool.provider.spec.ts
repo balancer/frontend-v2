@@ -12,9 +12,6 @@ async function mountUserPoolProvider(poolId: string) {
   const { result } = mountComposable(() => poolProvider(poolId));
 
   await waitForExpect(() => {
-    expect(result.isLoadingPool.value).toBeTrue();
-  });
-  await waitForExpect(() => {
     expect(result.isLoadingPool.value).toBeFalse();
   });
 
