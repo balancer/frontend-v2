@@ -337,6 +337,10 @@ const pools: Pools = {
       name: 'qETH/Boosted Aave v3 WETH',
       hasIcon: false,
     },
+    '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e': {
+      name: 'swETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
