@@ -143,13 +143,13 @@ const pools: Pools = {
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
   ],
   Deprecated: {
-    '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
-      newPool:
-        '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412 ',
-      description: 'deprecatedPool.migrateCardDescription',
-      joinsDisabled: true,
-      stakingDisabled: true,
-    },
+    // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
+    //   newPool:
+    //     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412 ',
+    //   description: 'deprecatedPool.migrateCardDescription',
+    //   joinsDisabled: true,
+    //   stakingDisabled: true,
+    // },
   },
   BoostedApr: [],
   DisabledJoins: [],
