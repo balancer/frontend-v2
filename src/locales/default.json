@@ -704,7 +704,8 @@
       }
     },
     "balances": {
-      "title": "My Vault balances"
+      "title": "My Vault balances",
+      "eulerHack": "Euler eTokens (e.g. eUSDC, eUSDT and eDAI) affected by the Euler hack have been paused and are not transferrable from the Balancer Vault. To redeem your share of the recovered funds of the Euler hack, if you haven't done so already, go to:"
     }
   },
   "pastEarnings": {
