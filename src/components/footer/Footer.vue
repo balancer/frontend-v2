@@ -1,4 +1,3 @@
-
 <script lang="ts" setup>
 import IconDiscord from '@/components/icons/IconDiscord.vue';
 import IconGithub from '@/components/icons/IconGithub.vue';
