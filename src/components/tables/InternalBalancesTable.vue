@@ -10,10 +10,11 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { vaultService } from '@/services/contracts/vault.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { bnum, trackLoading } from '@/lib/utils';
+import { bnum, includesAddress, trackLoading } from '@/lib/utils';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
 import { TokenInfo } from '@/types/TokenList';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -96,6 +97,12 @@ async function getInternalBalances() {
   );
 }
 
+function isWithdrawDisabled(address: string): boolean {
+  const disabledAddresses =
+    configService.network.tokens.DisableInternalBalanceWithdrawals;
+  return !!disabledAddresses && includesAddress(disabledAddresses, address);
+}
+
 /**
  * LIFECYCLE
  */
@@ -143,7 +150,8 @@ const columns = ref<ColumnDefinition<any>[]>([
     id: 'value',
     align: 'right',
     width: 150,
-    accessor: ({ value }) => fNum(value, FNumFormats.fiat),
+    accessor: ({ value }) =>
+      bnum(value).eq(0) ? '-' : fNum(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -190,6 +198,7 @@ const columns = ref<ColumnDefinition<any>[]>([
               ])
             "
             :confirmingLabel="`${$t('withdrawing')}...`"
+            :disabled="isWithdrawDisabled(address)"
             @confirmed="getInternalBalances"
           />
         </div>

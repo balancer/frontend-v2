@@ -13,6 +13,12 @@ import InternalBalancesTable from '@/components/tables/InternalBalancesTable.vue
       <BalStack vertical spacing="2xl">
         <InternalBalancesTable />
       </BalStack>
+      <p class="px-4 lg:px-0 mt-4 max-w-3xl text-sm text-gray-500">
+        {{ $t('pages.balances.eulerHack') }}
+        <BalLink href="https://redemptions.euler.finance/" external
+          >https://redemptions.euler.finance/</BalLink
+        >
+      </p>
     </BalStack>
   </div>
 </template>
