@@ -27,5 +27,34 @@
       "0xDC3326e71D45186F113a2F448984CA0e8D201995": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x70e8dE73cE538DA2bEEd35d14187F6959a8ecA96/logo.png",
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png"
     }
+  },
+  {
+    "address": "0xB5bd58C733948e3d65d86BA9604e06e5dA276FD1",
+    "network": 1,
+    "isKilled": false,
+    "addedTimestamp": 1663017781,
+    "relativeWeightCap": "null",
+    "pool": {
+      "id": "0x6910c4e32d425a834fb61e983c8083a84b0ebd01000200000000000000000532",
+      "address": "0x6910C4e32D425a834Fb61e983C8083a84b0EBd01",
+      "poolType": "TWAMM",
+      "symbol": "wstETH/rETH/L",
+      "tokens": [
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
+      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xae78736cd615f374d3085123a210448e74fc6393.png"
+    }
   }
 ]
