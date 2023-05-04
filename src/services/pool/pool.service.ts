@@ -117,6 +117,8 @@ export default class PoolService {
         rawOnchainData,
         tokenMeta
       );
+      this.pool.isInRecoveryMode = rawOnchainData.isInRecoveryMode;
+      this.pool.isPaused = rawOnchainData.isPaused;
       return (this.pool.onchain = onchainData.format());
     } catch (e) {
       console.warn(e);

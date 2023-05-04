@@ -6,7 +6,7 @@ import {
   Pool,
   PoolType,
 } from '@/services/pool/types';
-import { aWeightedPool } from '@/__mocks__/weighted-pool';
+import { aPoolToken, aWeightedPool } from '@/__mocks__/weighted-pool';
 import { PoolWithMethods, PriceRateProvider } from '@balancer-labs/sdk';
 import { mock } from 'vitest-mock-extended';
 import { randomAddress, wethAddress } from './address';
@@ -19,6 +19,7 @@ export function aPool(...options: Partial<Pool>[]): Pool {
 
 export function aVeBalPool(...options: Partial<Pool>[]): Pool {
   const pool = mock<Pool>();
+  pool.tokens = [aPoolToken({ symbol: 'veBal' })];
   const veBalPoolId = POOLS.IdsMap.veBAL as string;
   const defaults: Partial<Pool> = aPool({ id: veBalPoolId });
   return Object.assign(pool, defaults, ...options);
@@ -69,7 +70,6 @@ export function anOnchainTokenData(...options: Partial<OnchainTokenData>[]) {
 export function aPriceRateProvider(...options: Partial<PriceRateProvider>[]) {
   const data = mock<PriceRateProvider>();
   return Object.assign(data, ...options);
-  return data;
 }
 
 export function addOnChainToPoolData(pool: Pool) {

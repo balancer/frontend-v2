@@ -12,10 +12,13 @@ type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
+export const defaultWeightedPoolAddress =
+  '0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d4';
+
 const defaults: DeepPartial<Pool> = {
   id: defaultWeightedPoolId,
   totalLiquidity: '100000000',
-  address: '0x702605F43471183158938C1a3e5f5A359d7b31ba',
+  address: defaultWeightedPoolAddress,
   owner: '0xb794f5ea0ba39494ce839613fffba74279579268',
   tokens: [
     aPoolToken({

@@ -1,5 +1,8 @@
 import { Pools } from '@/types/pools';
 
+export const poolIdThatRequiresInternalBalanceExit =
+  '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
+
 const pools: Pools = {
   IdsMap: {
     staBAL:
@@ -110,6 +113,7 @@ const pools: Pools = {
     },
     deprecatedid: {}, //Used for unit testing
   },
+  ExitViaInternalBalance: [poolIdThatRequiresInternalBalanceExit],
 };
 
 export default pools;

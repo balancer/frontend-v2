@@ -5,7 +5,7 @@ import useNativeBalance from '@/composables/useNativeBalance';
 import InvestPageMyWallet from './MyWallet.vue';
 import { useI18n } from 'vue-i18n';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
-import { Pool } from '@balancer-labs/sdk';
+import { Pool } from '@/services/pool/types';
 
 type Props = {
   pool: Pool;
