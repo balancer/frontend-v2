@@ -26,6 +26,7 @@ export type ExitParams = {
   bptInValid: boolean;
   approvalActions: TransactionActionInfo[];
   transactionDeadline: number;
+  toInternalBalance?: boolean;
 };
 
 export type QueryOutput = {

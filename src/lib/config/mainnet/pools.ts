@@ -31,6 +31,7 @@ const pools: Pools = {
     'StablePhantom',
     'ComposableStable',
     'FX',
+    'EulerLinear',
   ],
   Stable: {
     AllowList: [
@@ -125,6 +126,7 @@ const pools: Pools = {
     '0x5dd94da3644ddd055fcf6b3e1aa310bb7801eb8b': 'weightedPool', // weighted pool v3
     '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx', // fx
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
+    '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
   },
   Stakable: {
     VotingGaugePools: [
@@ -442,6 +444,11 @@ const pools: Pools = {
     '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce':
       'xave',
   },
+  ExitViaInternalBalance: [
+    '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC
+    '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b', // bb-e-USDT
+    '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c', // bb-e-DAI
+  ],
 };
 
 export default pools;

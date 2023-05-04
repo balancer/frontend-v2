@@ -57,6 +57,7 @@ import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -182,8 +183,7 @@ export const exitPoolProvider = (
 
   const shouldSignRelayer = computed(
     (): boolean =>
-      isDeepPool.value &&
-      !isSingleAssetExit.value &&
+      exitHandlerType.value === ExitHandler.Generalised &&
       // Check if Batch Relayer is either approved, or signed
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
@@ -203,6 +203,14 @@ export const exitPoolProvider = (
     (): boolean =>
       !isSingleAssetExit.value &&
       (isDeep(pool.value) || isComposableStableV1(pool.value))
+  );
+
+  // Should exit via internal balance only in unique cases.
+  // e.g. exiting the Euler linear pools.
+  const shouldExitViaInternalBalance = computed(
+    (): boolean =>
+      !!POOLS.ExitViaInternalBalance &&
+      POOLS.ExitViaInternalBalance.includes(pool.value.id)
   );
 
   // Should use recovery exits if:
@@ -378,6 +386,7 @@ export const exitPoolProvider = (
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
 
       priceImpact.value = output.priceImpact;
@@ -424,6 +433,7 @@ export const exitPoolProvider = (
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -456,6 +466,7 @@ export const exitPoolProvider = (
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
@@ -523,6 +534,7 @@ export const exitPoolProvider = (
     isSingleAssetExit: readonly(isSingleAssetExit),
     propAmountsOut: readonly(propAmountsOut),
     priceImpact: readonly(priceImpact),
+    exitPoolService,
 
     // computed
     exitTokenAddresses,
@@ -547,6 +559,7 @@ export const exitPoolProvider = (
     queryExitQuery,
     approvalActions,
     transactionDeadline,
+    shouldExitViaInternalBalance,
 
     // methods
     setIsSingleAssetExit,
