@@ -145,6 +145,10 @@ const gaugeTables = computed((): GaugeTable[] => {
   }, []);
 });
 
+const networkHasBalClaiming = computed(
+  () => !!configService.network.addresses.balancerMinter
+);
+
 /**
  * METHODS
  */
@@ -239,27 +243,30 @@ onBeforeMount(async () => {
         <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
           {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
         </h2>
-
-        <div class="mb-16">
-          <div class="px-4 xl:px-0">
-            <div class="flex items-center mt-6 mb-2">
-              <h3 class="inline-block mr-1.5 text-xl">
-                BAL {{ $t('incentives') }}
-              </h3>
-              <BalTooltip
-                iconSize="xs"
-                textAlign="left"
-                class="relative top-px"
-                iconClass="text-secondary"
-                width="60"
-              >
-                {{ $t('claimPage.tips.BalIncentives') }}
-              </BalTooltip>
+        <template v-if="networkHasBalClaiming">
+          <div class="mb-16">
+            <div class="px-4 xl:px-0">
+              <div class="flex items-center mt-6 mb-2">
+                <h3 class="inline-block mr-1.5 text-xl">
+                  BAL {{ $t('incentives') }}
+                </h3>
+                <BalTooltip
+                  iconSize="xs"
+                  textAlign="left"
+                  class="relative top-px"
+                  iconClass="text-secondary"
+                  width="60"
+                >
+                  {{ $t('claimPage.tips.BalIncentives') }}
+                </BalTooltip>
+              </div>
             </div>
+            <BalClaimsTable
+              :rewardsData="balRewardsData"
+              :isLoading="loading"
+            />
           </div>
-          <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
-        </div>
-
+        </template>
         <template v-if="networkHasProtocolRewards">
           <div class="mb-16">
             <h3 class="inline-block xl:px-0 pl-4 mt-8 mr-1.5 mb-3 text-xl">
