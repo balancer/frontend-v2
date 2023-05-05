@@ -31,7 +31,7 @@ const config: Config = {
     ],
     aave: '',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-b',
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain',
     blocks: '',
   },
   bridgeUrl: 'https://bridge.gnosischain.com/',
