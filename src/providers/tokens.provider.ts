@@ -1,5 +1,5 @@
 import { getAddress, isAddress } from '@ethersproject/address';
-import { compact, pick } from 'lodash';
+import { compact, omit, pick } from 'lodash';
 import {
   computed,
   InjectionKey,
@@ -42,6 +42,9 @@ import {
   TokenListMap,
 } from '@/types/TokenList';
 import useWeb3 from '@/services/web3/useWeb3';
+import { tokenListService } from '@/services/token-list/token-list.service';
+
+const { uris: tokenListUris } = tokenListService;
 
 /**
  * TYPES
@@ -264,7 +267,7 @@ export const tokensProvider = (
 
     const newTokens = await new TokenService().metadata.get(
       injectable,
-      allTokenLists.value
+      omit(allTokenLists.value, tokenListUris.Balancer.Default)
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
