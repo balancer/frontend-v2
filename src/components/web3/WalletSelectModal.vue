@@ -6,6 +6,7 @@ import { EXTERNAL_LINKS } from '@/constants/links';
 import { SupportedWallets } from '@/providers/wallet.provider';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { useUserAgent } from '@/composables/useUserAgent';
+import { getIsMetaMaskWallet } from '@/services/web3/connectors/metamask/metamask.connector';
 
 interface Props {
   isVisible?: boolean;
@@ -24,7 +25,7 @@ const { isIos } = useUserAgent();
 
 const wallets = ref(
   SupportedWallets.filter(id => {
-    if (id === 'metamask' && isIos) {
+    if (isIos && !getIsMetaMaskWallet()) {
       return false;
     }
     return id !== 'safe';
