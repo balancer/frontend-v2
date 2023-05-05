@@ -23,10 +23,12 @@ import {
 } from '../tokens.provider';
 import { silenceConsoleLog } from '@tests/unit/console';
 import { groAddress, wethAddress } from '@tests/unit/builders/address';
+import { initRpcProviderServiceWithDefaultMocks } from '@/dependencies/rpc-provider.service.mocks';
 
 initBalancerApiWithDefaultMocks();
 initOldMulticallerWithDefaultMocks();
 initMulticallWithDefaultMocks();
+initRpcProviderServiceWithDefaultMocks();
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 
