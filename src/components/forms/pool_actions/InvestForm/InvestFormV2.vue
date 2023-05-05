@@ -78,6 +78,13 @@ const poolHasLowLiquidity = computed((): boolean =>
   bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
 
+const excludedTokens = computed((): string[] => {
+  const tokens = [props.pool.address];
+  if (veBalTokenInfo.value) {
+    tokens.unshift(veBalTokenInfo.value.address);
+  }
+  return tokens;
+});
 const joinTokensWithBalance = computed<string[]>(() =>
   poolJoinTokens.value.filter(address =>
     includesAddress(tokensWithBalance.value, address)
@@ -184,7 +191,7 @@ watch(
       :aria-label="'Amount of: ' + getTokenInputLabel(amountIn.address)"
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
-      :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+      :excludedTokens="excludedTokens"
     />
 
     <MissingPoolTokensAlert

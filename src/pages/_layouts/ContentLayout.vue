@@ -48,7 +48,8 @@ onUnmounted(() => {
 }
 
 .content-container :deep(h4),
-.content-container :deep(h5) {
+.content-container :deep(h5),
+.content-container :deep(h6) {
   @apply pb-2;
 }
 
