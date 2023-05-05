@@ -65,7 +65,7 @@ const fiatValueOfUnstakedShares = computed(() => {
 
 const isStakeDisabled = computed(() => {
   return (
-    deprecatedDetails(props.pool.id)?.stakingDisabled ||
+    !!deprecatedDetails(props.pool.id) ||
     fiatValueOfUnstakedShares.value === '0' ||
     hasNonPrefGaugeBalance.value
   );

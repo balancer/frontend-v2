@@ -42,7 +42,7 @@ const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
  */
 const joinDisabled = computed(
   (): boolean =>
-    deprecatedDetails(props.pool.id)?.joinsDisabled ||
+    !!deprecatedDetails(props.pool.id) ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
     isMigratablePool(props.pool) ||
