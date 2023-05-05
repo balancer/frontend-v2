@@ -77,6 +77,14 @@ const subsetTokens = computed((): string[] => {
   return pool.value.tokensList;
 });
 
+const excludedTokens = computed((): string[] => {
+  const tokens = [pool.value.address];
+  if (veBalTokenInfo.value) {
+    tokens.unshift(veBalTokenInfo.value.address);
+  }
+  return tokens;
+});
+
 /**
  * CALLBACKS
  */
@@ -102,7 +110,7 @@ onBeforeMount(() => {
         :balanceLabel="$t('max')"
         :balanceLoading="isLoadingMax"
         disableNativeAssetBuffer
-        :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+        :excludedTokens="excludedTokens"
         :tokenSelectProps="{ ignoreBalances: true, subsetTokens }"
         ignoreWalletBalance
       />
