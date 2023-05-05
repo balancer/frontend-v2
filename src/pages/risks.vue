@@ -92,6 +92,11 @@
               <router-link to="risks#stable-pools">Stable Pools</router-link>
             </li>
             <li class="text-sm toc-link">
+              <router-link to="risks#composable-pools"
+                >Composable Stable Pools</router-link
+              >
+            </li>
+            <li class="text-sm toc-link">
               <router-link to="risks#boosted-pools">Boosted Pools</router-link>
             </li>
           </ul>
@@ -901,6 +906,100 @@
       </p>
     </div>
 
+    <div id="composable-pools" class="risk">
+      <h4>Composable Stable Pools &amp; MetaStable Pools</h4>
+      <p>
+        Composable Stable Pools are designed for assets that are either expected
+        to consistently trade at near parity, or at a known exchange rate.
+        Composable Stable Pools use Stable Math (based on StableSwap,
+        popularized by Curve) which allows for trades of significant size before
+        encountering substantial price impact, vastly increasing capital
+        efficiency for like-kind and correlated-kind swaps. They are ideal for:
+      </p>
+      <ul>
+        <li>
+          Pegged Tokens: Tokens that trade near 1:1, such as two stablecoins of
+          the same currency (eg: DAI, USDC, USDT), or synthetic assets (eg:
+          renBTC, sBTC, WBTC)
+        </li>
+        <li>
+          Correlated Tokens: Tokens that trade near each other with some slowly
+          changing exchange rate, like derivatives (eg: wstETH, wETH)
+        </li>
+      </ul>
+      <p>
+        Note: Composable Stable Pools are a superset of all previous Stable-type
+        pools (Stable Pools, MetaStable Pools, StablePhantom Pools, and
+        StablePool v2) and therefore obsolete all previous pools.
+      </p>
+      <p>
+        Composable Stable Pools (including MetaStable Pools) carry the all of
+        the same risks as stable pools, including the potential depegging of
+        constituent stablecoin tokens. In addition, there are risks associated
+        with the involvement of rate providers.
+      </p>
+      <h5>Rate provider risk</h5>
+      <p>
+        Rate Providers are contracts that provide an exchange rate between two
+        assets. These exchange rates can come from any on-chain source, whether
+        that may be an oracle, a ratio of queryable balances, or another
+        calculation.
+      </p>
+      <p>
+        This introduces risks around the rate provider being able to supply
+        accurate and timely exchange rates between pool tokens.
+      </p>
+
+      <div id="oracles" class="!pb-0 risk">
+        <h6>Oracle risk</h6>
+        <p>
+          Oracles are data providers which supply external information to smart
+          contracts. Oracles, like Chainlink, may be used to source exchange
+          rates between pool tokens for a rate provider in Balancer MetaStable
+          pools. The risks of using Oracles to supply exchange rates include:
+        </p>
+        <ul>
+          <li>
+            Data accuracy: Oracles must provide accurate data for DeFi
+            applications to function correctly. Inaccurate data can cause
+            significant issues, such as incorrect pricing or faulty execution of
+            smart contracts.
+          </li>
+          <li>
+            Data availability: If an oracle experiences downtime or fails to
+            update its data feed, the DeFi applications relying on it might not
+            function correctly or become temporarily unusable, leading to
+            potential losses for users.
+          </li>
+          <li>
+            Latency: The time it takes for an oracle to fetch, process, and
+            transmit data to a smart contract can impact the performance and
+            efficiency of DeFi applications. High latency could lead to outdated
+            data or missed opportunities.
+          </li>
+          <li>
+            Oracle manipulation: Bad actors might attempt to manipulate an
+            oracle's data feed to influence the outcome of a smart contract or
+            profit from price discrepancies. This can lead to unintended
+            consequences, such as liquidations, loss of funds, or arbitrage
+            opportunities for attackers.
+          </li>
+          <li>
+            Centralization risk: If an oracle relies on a centralized data
+            source or a small number of data providers, it becomes a single
+            point of failure. This centralization goes against the core
+            principles of decentralization in the DeFi ecosystem and exposes the
+            system to potential manipulation or downtime.
+          </li>
+          <li>
+            Exploitation of vulnerabilities: Oracles themselves can have
+            security vulnerabilities, which, if exploited, can compromise the
+            entire DeFi system relying on them.
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <div id="boosted-pools" class="risk">
       <h4>Boosted Pools</h4>
       <p>
@@ -934,9 +1033,16 @@
         exposed to the risks of that protocol. Some of the risks of the
         underlying lending protocol may include smart contract bugs, economic
         attack vulnerabilities and counterparty risk from the protocol’s
-        borrowers. If the underlying lending protocol were to get hacked, LPs in
-        a boosted pool that deposits liquidity in that protocol could lose
-        funds.
+        borrowers. Lending platforms may also use
+        <router-link to="risks#oracles"
+          ><span class="link">Oracles</span></router-link
+        >
+        which face additional risks (described above).
+      </p>
+
+      <p>
+        If the underlying lending protocol were to get hacked, LPs in a boosted
+        pool that deposits liquidity in that protocol could lose funds.
       </p>
       <h5>Depegging risk</h5>
       <p>
