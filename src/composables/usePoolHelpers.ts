@@ -561,6 +561,17 @@ export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
 }
 
 /**
+ * Checks if pool ID is included in the list of deprecated pools
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list
+ */
+export function gaugeMigrationDetails(
+  id: string
+): DeprecatedDetails | undefined {
+  return POOLS.GaugeMigration?.[id.toLowerCase()];
+}
+
+/**
  * Gets weight of token in pool if relevant, e.g if it's a weighted pool.
  * If not, returns 0.
  *

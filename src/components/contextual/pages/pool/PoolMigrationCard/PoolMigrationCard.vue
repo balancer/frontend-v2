@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import useNetwork from '@/composables/useNetwork';
-import { deprecatedDetails } from '@/composables/usePoolHelpers';
+import {
+  deprecatedDetails,
+  gaugeMigrationDetails,
+} from '@/composables/usePoolHelpers';
 import NewPoolData from './NewPoolData.vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
@@ -25,26 +28,28 @@ const props = defineProps<Props>();
 const { networkSlug } = useNetwork();
 const { t } = useI18n();
 
-const poolDeprecatedDetails = computed(() => deprecatedDetails(props.poolId));
+const migrationInfo = computed(
+  () => deprecatedDetails(props.poolId) || gaugeMigrationDetails(props.poolId)
+);
 
 const newPoolQueryEnabled = computed(
-  (): boolean => !!poolDeprecatedDetails.value?.newPool
+  (): boolean => !!migrationInfo.value?.newPool
 );
 
 const newPoolQuery = usePoolQuery(
-  poolDeprecatedDetails.value?.newPool as string,
+  migrationInfo.value?.newPool as string,
   newPoolQueryEnabled
 );
 
 const suggestPoolsQueryEnabled = computed(() => {
-  return !!poolDeprecatedDetails.value?.suggestedPools?.length;
+  return !!migrationInfo.value?.suggestedPools?.length;
 });
 
 const suggestedPoolsQuery = usePoolsQuery(
   ref([]),
   { enabled: suggestPoolsQueryEnabled },
   {
-    poolIds: ref(poolDeprecatedDetails.value?.suggestedPools as string[]),
+    poolIds: ref(migrationInfo.value?.suggestedPools as string[]),
     first: 1000,
   }
 );
@@ -80,7 +85,7 @@ const showLoadingBlock = computed(() => {
 });
 
 const description = computed(() => {
-  const poolDescription = poolDeprecatedDetails.value?.description;
+  const poolDescription = migrationInfo.value?.description;
   if (poolDescription) {
     return t(poolDescription);
   }
