@@ -5,9 +5,10 @@ import useAlerts from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useFathom from '@/composables/useFathom';
 import useNetwork from '@/composables/useNetwork';
-
-// import AppNavActions from './AppNavActions.vue';
 import AppNavAlert from './AppNavAlert.vue';
+import { isGlobalProviderLoaded } from '@/composables/useContentLoadStates';
+
+const AppNavActions = defineAsyncComponent(() => import('./AppNavActions.vue'));
 // import DesktopLinks from './DesktopLinks/DesktopLinks.vue';
 
 /**
@@ -64,7 +65,7 @@ onUnmounted(() => {
         <!-- <DesktopLinks v-if="isDesktop" class="ml-8 font-medium" /> -->
       </div>
 
-      <!-- <AppNavActions /> -->
+      <AppNavActions v-if="isGlobalProviderLoaded" />
     </div>
   </nav>
 </template>
