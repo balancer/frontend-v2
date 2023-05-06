@@ -14,16 +14,19 @@ const ContentLayout = defineAsyncComponent(
   () => import('@/pages/_layouts/ContentLayout.vue')
 );
 
-// const JoinExitLayout = defineAsyncComponent(
-//   () => import('@/pages/_layouts/JoinExitLayout.vue')
-// );
+const JoinExitLayout = defineAsyncComponent(
+  () => import('@/pages/_layouts/JoinExitLayout.vue')
+);
+
+const GlobalModalContainer = defineAsyncComponent(
+  () => import('@/components/modals/GlobalModalContainer.vue')
+);
 
 // Once the skeleton has been loaded, we load the rest of the App that contains heavy dependencies
 const Common = defineAsyncComponent(() => import('./Common.vue'));
 
 import useBackgroundColor from './composables/useBackgroundColor';
-import { useFirstContentLoad } from './composables/useFirstContentLoad';
-// import { useThirdPartyServices } from './composables/useThirdPartyServices';
+import { useContentLoadStates } from './composables/useContentLoadStates';
 
 /**
  * STATE
@@ -35,7 +38,7 @@ const Layouts = {
   DefaultLayout: DefaultLayout,
   ContentLayout: ContentLayout,
   FocussedLayout: FocussedLayout,
-  // JoinExitLayout: JoinExitLayout,
+  JoinExitLayout: JoinExitLayout,
 };
 
 /**
@@ -43,9 +46,7 @@ const Layouts = {
  */
 const route = useRoute();
 const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
-// const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
-//   useThirdPartyServices();
-const { isFirstContentPainted, isWeb3Loaded } = useFirstContentLoad();
+const { isGlobalProviderLoaded } = useContentLoadStates();
 
 /**
  * WATCHERS
@@ -64,12 +65,7 @@ watch(route, newRoute => {
   <div id="modal" />
   <div id="app">
     <component :is="Layouts[layout]" />
-    <Common v-if="isWeb3Loaded"></Common>
-
-    <!-- <ThirdPartyServicesModal
-      :isVisible="isThirdPartyServicesModalVisible"
-      @close="handleThirdPartyModalToggle(false)"
-    /> -->
+    <Common v-if="isGlobalProviderLoaded"></Common>
   </div>
-  <!-- <GlobalModalContainer /> -->
+  <GlobalModalContainer v-if="isGlobalProviderLoaded" />
 </template>

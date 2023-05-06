@@ -1,6 +1,16 @@
 <script setup lang="ts">
 // import { AppNav, Footer } from './async-layout-components';
-import { AppNav, Footer } from './async-layout-components';
+import { Footer } from './async-layout-components';
+import AppNav from '@/components/navs/AppNav/AppNav.vue';
+import { useContentLoadStates } from '@/composables/useContentLoadStates';
+import { sleep } from '@/lib/utils';
+
+const { isFirstContentPainted } = useContentLoadStates();
+const showPage = ref(false);
+onBeforeMount(async () => {
+  if (!isFirstContentPainted.value) await sleep(200);
+  showPage.value = true;
+});
 </script>
 
 <template>
@@ -10,7 +20,7 @@ import { AppNav, Footer } from './async-layout-components';
       <div class="pb-16">
         <router-view v-slot="{ Component }" :key="$route.path">
           <transition appear name="appear">
-            <component :is="Component" />
+            <component :is="Component" v-if="showPage" />
           </transition>
         </router-view>
       </div>
