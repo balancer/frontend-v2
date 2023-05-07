@@ -35,3 +35,7 @@ pnpm-debug.log*
 
 #rollup analyzer
 stats.html
+
+# Ignore auto import d.ts
+components.d.ts
+auto-imports.d.ts
