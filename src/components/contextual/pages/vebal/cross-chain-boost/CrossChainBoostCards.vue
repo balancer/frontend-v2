@@ -21,7 +21,7 @@ async function syncNetwork(network: Network) {
 </script>
 
 <template>
-  <div>
+  <div class="py-5 px-4">
     <h3 class="mb-3">
       {{ $t('crossChainBoost.title') }}
     </h3>
