@@ -23,14 +23,18 @@ const emit = defineEmits(['close']);
 
 const { isIos } = useUserAgent();
 
-const wallets = ref(
-  SupportedWallets.filter(id => {
-    if (isIos && !getIsMetaMaskWallet()) {
-      return false;
-    }
-    return id !== 'safe';
-  })
-);
+const wallets = SupportedWallets.filter(id => {
+  // hide metamask wallet on ios in all browsers except metamask
+  if (id === 'metamask' && isIos && !getIsMetaMaskWallet()) {
+    return false;
+  }
+  // hide all wallets in metamask browser except metamask
+  if (id !== 'metamask' && getIsMetaMaskWallet()) {
+    return false;
+  }
+
+  return id !== 'safe';
+});
 
 const acceptedlocalStorageItem = localStorage.getItem(
   LS_KEYS.App.TermsAccepted
