@@ -151,7 +151,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/:networkSlug?',
     name: 'home',
-    component: HomePage,
+    component: TermsOfUsePage,
   },
   {
     path: '/:pathMatch(.*)*',
