@@ -85,6 +85,7 @@ const pools: Pools = {
       '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // bb-a-weth / cbeth
       '0xbfce47224b4a938865e3e2727dc34e0faa5b1d82000000000000000000000527', // uniweth / weth
       '0x2e848426aec6dbf2260535a5bea048ed94d9ff3d000000000000000000000536', // wbeth/wsteth
+      '0xec3626fee40ef95e7c0cbb1d495c8b67b34d398300000000000000000000053d', // uzd/bb-a-usd
     ],
   },
   Investment: {
