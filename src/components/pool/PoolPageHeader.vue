@@ -16,6 +16,7 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
+import { poolMetadata as getPoolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES
@@ -120,7 +121,7 @@ const poolTypeLabel = computed(() => {
   return key ? t(key) : t('unknownPoolType');
 });
 
-const poolMetadata = computed(() => POOLS.Metadata[props.pool?.id]);
+const poolMetadata = computed(() => getPoolMetadata(props.pool.id));
 const hasMetadata = computed((): boolean => !!poolMetadata.value);
 
 /**
@@ -137,7 +138,7 @@ function symbolFor(titleTokenIndex: number): string {
     <div class="flex flex-wrap items-center -mt-2">
       <div v-if="hasMetadata">
         <h3 class="pool-title">
-          {{ poolMetadata.name }}
+          {{ poolMetadata?.name }}
         </h3>
         <h5 class="text-sm">
           {{ poolTypeLabel }}
@@ -214,7 +215,7 @@ function symbolFor(titleTokenIndex: number): string {
     </div>
   </div>
   <BalAlert
-    v-if="pool.isInRecoveryMode"
+    v-if="pool.isInRecoveryMode && pool.isPaused"
     type="warning"
     :title="$t('recoveryMode')"
     :description="$t('recoveryModeDescription')"

@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { networkId } from './useNetwork';

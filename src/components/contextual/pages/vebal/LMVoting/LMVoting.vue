@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
@@ -15,7 +13,7 @@ import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import GaugesFilters from './GaugesFilters.vue';
 
 /**

@@ -9,6 +9,7 @@ import WithdrawSummary from './components/WithdrawSummary.vue';
 import { useExitPool } from '@/providers/local/exit-pool.provider';
 import WithdrawActionsV2 from './components/WithdrawActionsV2.vue';
 import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -40,6 +41,7 @@ const withdrawalConfirmed = ref(false);
  */
 const { t } = useI18n();
 const { getToken } = useTokens();
+const { networkSlug } = useNetwork();
 
 const {
   bptIn,
@@ -49,6 +51,7 @@ const {
   priceImpact,
   fiatAmountsOut,
   isSingleAssetExit,
+  shouldExitViaInternalBalance,
 } = useExitPool();
 
 /**
@@ -124,6 +127,21 @@ function handleClose(): void {
         </h4>
       </div>
     </template>
+
+    <BalAlert
+      v-if="shouldExitViaInternalBalance"
+      type="warning"
+      :title="$t('alerts.withdrawToInternalBalance.title')"
+      class="mb-4"
+    >
+      {{ $t('alerts.withdrawToInternalBalance.description') }}
+      <router-link
+        class="underline"
+        :to="{ name: 'balances', params: { networkSlug } }"
+        target="_blank"
+        >Vault balances page</router-link
+      >
+    </BalAlert>
 
     <TokenAmounts
       v-if="showTokensIn"

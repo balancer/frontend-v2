@@ -29,6 +29,7 @@ export class RawConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
+
       const txOptions = { ...options, ...gasSettings };
 
       await Promise.all([

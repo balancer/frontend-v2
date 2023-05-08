@@ -25,6 +25,7 @@ export const SwapPagePrefetchLinks = async () =>
 const UnlockVeBalPage = () => import('@/pages/unlock-vebal.vue');
 const VeBalPage = () => import('@/pages/vebal.vue');
 const FaucetPage = () => import('@/pages/faucet.vue');
+const BalancesPage = () => import('@/pages/balances.vue');
 
 const PortfolioPage = () => import('@/pages/portfolio.vue');
 
@@ -84,7 +85,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/create/:tx?',
     name: 'create-pool',
     component: CreatePoolPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/pool/:id',
@@ -95,7 +96,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/add-liquidity',
     name: 'add-liquidity',
     component: PoolAddLiquidityPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'JoinExitLayout' },
   },
   {
     path: '/:networkSlug/pool/:id/invest',
@@ -108,7 +109,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/withdraw',
     name: 'withdraw',
     component: PoolWithdrawPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'JoinExitLayout' },
   },
   {
     path: '/:networkSlug/vebal',
@@ -119,13 +120,13 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/get-vebal',
     name: 'get-vebal',
     component: GetVeBalPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/unlock',
     name: 'unlock',
     component: UnlockVeBalPage,
-    meta: { layout: 'FocusedLayout' },
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/claim',
@@ -141,6 +142,11 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/portfolio',
     name: 'portfolio',
     component: PortfolioPage,
+  },
+  {
+    path: '/:networkSlug/balances',
+    name: 'balances',
+    component: BalancesPage,
   },
   {
     path: '/:networkSlug?',

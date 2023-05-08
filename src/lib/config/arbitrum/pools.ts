@@ -53,6 +53,9 @@ const pools: Pools = {
       '0xce34c867d7053befb3421d6adabcb5ce55ff777b00010000000000000000041b', // crv/wbtc/wsteth/gdai/uni/link
       '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/bb-a-usd
       '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
+      '0x3efd3e18504dc213188ed2b694f886a305a6e5ed00020000000000000000041d', // peg/weth
+      '0x89dc7e71e362faf88d92288fe2311d25c6a1b5e0000200000000000000000423', // ohm/weth
+      '0xce6195089b302633ed60f3f427d1380f6a2bfbc7000200000000000000000424', // ohm/usdc
     ],
   },
   Factories: {
@@ -123,6 +126,14 @@ const pools: Pools = {
       name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
       hasIcon: false,
     },
+    '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+    },
+    '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
+      name: 'wstETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -133,6 +144,14 @@ const pools: Pools = {
     '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/ bb-a-usd
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
   ],
+  Deprecated: {
+    // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
+    //   newPool:
+    //     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412 ',
+    //   description: 'deprecatedPool.gaugeKilledReason',
+    // },
+  },
+  GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [],
 };

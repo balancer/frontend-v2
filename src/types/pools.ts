@@ -6,7 +6,8 @@ export type FactoryType =
   | 'liquidityBootstrappingPool'
   | 'boostedPool'
   | 'composableStablePool'
-  | 'fx';
+  | 'fx'
+  | 'eulerLinear';
 
 export type PoolMetadata = {
   name: string;
@@ -37,8 +38,6 @@ export type NamedPools = {
 export type DeprecatedDetails = {
   newPool?: string;
   suggestedPools?: string[];
-  joinsDisabled?: boolean;
-  stakingDisabled?: boolean;
   description?: string;
 };
 
@@ -93,7 +92,9 @@ export type Pools = {
   Deep: string[];
   BoostedApr: string[];
   DisabledJoins: string[];
+  ExitViaInternalBalance?: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;
+  GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
 };
