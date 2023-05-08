@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { isMigratablePool } from '@/composables/usePool';
+import { isMigratablePool } from '@/composables/usePoolHelpers';
 import { PoolWarning, usePoolWarning } from '@/composables/usePoolWarning';
 import { Pool } from '@/services/pool/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { isSoftMigratablePool } from '../forms/pool_actions/MigrateForm/constants';
 
 /**
  * TYPES
@@ -29,8 +28,8 @@ const { isAffectedBy } = usePoolWarning(poolId);
  * COMPUTED
  */
 const warningLabel = computed((): string => {
-  if (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id)) {
-    return t('deprecatedPool');
+  if (isMigratablePool(props.pool)) {
+    return t('deprecatedPool.tooltip');
   }
 
   if (isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning)) {

@@ -9,14 +9,13 @@ import { useI18n } from 'vue-i18n';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { Pool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
-import useJoinPool from '@/composables/pools/useJoinPool';
+import { useJoinPool } from '@/providers/local/join-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
@@ -46,10 +45,9 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isStakablePool } = usePoolStaking();
-const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
+const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const {
   rektPriceImpact,
-  amountsIn,
   fiatValueOut,
   join,
   txState,
@@ -59,23 +57,11 @@ const {
 
 const approvalActions = ref(joinPoolApprovalActions.value);
 
-const tokensToApprove = computed(() =>
-  amountsIn.value.map(amountIn => amountIn.address)
-);
-const amountsToApprove = computed(() =>
-  amountsIn.value.map(amountIn => amountIn.value)
-);
-const { tokenApprovalActions } = useTokenApprovalActions(
-  tokensToApprove.value,
-  amountsToApprove
-);
-
 /**
  * COMPUTED
  */
 const actions = computed((): TransactionActionInfo[] => [
   ...approvalActions.value,
-  ...tokenApprovalActions,
   {
     label: t('addLiquidity'),
     loadingLabel: t('investment.preview.loadingLabel.investment'),
@@ -129,7 +115,7 @@ async function submit(): Promise<TransactionResponse> {
   txState.init = true;
   try {
     const tx = await join();
-
+    console.log('tx', tx);
     txState.confirming = true;
 
     handleTransaction(tx);

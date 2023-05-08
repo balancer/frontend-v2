@@ -1,5 +1,12 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
-import { indexOfAddress, selectByAddress } from '@/lib/utils';
+import { POOLS } from '@/constants/pools';
+import { TOKENS } from '@/constants/tokens';
+import {
+  formatAddressForSor,
+  indexOfAddress,
+  isSameAddress,
+  selectByAddress,
+} from '@/lib/utils';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
@@ -9,12 +16,15 @@ import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
 
+export type ExitExactOutResponse = ReturnType<
+  PoolWithMethods['buildExitExactTokensOut']
+>;
 /**
  * Handles cases where tokens out are specified for the exit using SDK's
  * buildExitExactTokensOut function.
  */
 export class ExactOutExitHandler implements ExitPoolHandler {
-  private lastExitRes?: ReturnType<PoolWithMethods['buildExitExactTokensOut']>;
+  private lastExitRes?: ExitExactOutResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -37,31 +47,34 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     const { signer, tokenInfo, slippageBsp, amountsOut } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await getBalancer().pools.find(this.pool.value.id);
+    const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     if (!tokenOut)
       throw new Error('Could not find exit token in pool tokens list.');
 
-    const tokenOutAddress = tokenOut.address;
-    const tokenOutIndex = indexOfAddress(
-      this.pool.value.tokensList,
-      tokenOutAddress
-    );
+    const tokenOutAddress = formatAddressForSor(tokenOut.address);
+    const nativeAssetExit = isSameAddress(tokenOutAddress, POOLS.ZeroAddress);
+
+    const poolTokensList = nativeAssetExit
+      ? this.replaceWethWithEth(this.pool.value.tokensList)
+      : this.pool.value.tokensList;
+    const tokenOutIndex = indexOfAddress(poolTokensList, tokenOutAddress);
 
     const amountOut = amountsOut[0].value;
     const evmAmountOut = parseFixed(amountOut, tokenOut.decimals).toString();
 
     const fullAmountsOut = this.getFullAmounts(
-      this.pool.value.tokensList,
+      poolTokensList,
       tokenOutIndex,
       evmAmountOut
     );
 
-    this.lastExitRes = await sdkPool.buildExitExactTokensOut(
+    // Add native asset to the list of tokens to exit
+    this.lastExitRes = sdkPool.buildExitExactTokensOut(
       exiter,
-      this.pool.value.tokensList,
+      poolTokensList,
       fullAmountsOut,
       slippage
     );
@@ -81,6 +94,15 @@ export class ExactOutExitHandler implements ExitPoolHandler {
       amountsOut: { [tokenOutAddress]: amountOut },
       priceImpact,
     };
+  }
+
+  replaceWethWithEth(addresses: string[]): string[] {
+    return addresses.map(address => {
+      if (isSameAddress(address, TOKENS.Addresses.wNativeAsset)) {
+        return POOLS.ZeroAddress;
+      }
+      return address;
+    });
   }
 
   private getFullAmounts(

@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { VotingGauge } from '@/constants/voting-gauges';
@@ -14,6 +13,7 @@ import useWeb3 from '@/services/web3/useWeb3';
  * TYPES
  */
 type QueryResponse = VotingGaugeWithVotes[];
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 /**
  * @summary Fetches guages list from subgraph
@@ -56,5 +56,9 @@ export default function useGaugeVotesQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

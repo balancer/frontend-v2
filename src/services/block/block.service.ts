@@ -1,18 +1,43 @@
 import { BlockNumberResponse } from './types';
-import BlockSubgraphService, {
-  blockSubgraphService,
-} from './subgraph/block-subgraph.service';
-import { oneHourInSecs } from '@/composables/useTime';
+import { blockSubgraphService } from './subgraph/block-subgraph.service';
+import { getSecondsSince, oneHourInSecs } from '@/composables/useTime';
 import { bnum } from '@/lib/utils';
+import { isGnosis, isGoerli } from '@/composables/useNetwork';
+import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { configService } from '../config/config.service';
 
 export default class BlockService {
-  subgraphService: BlockSubgraphService;
-
-  constructor(subgraphService = blockSubgraphService) {
-    this.subgraphService = subgraphService;
-  }
+  constructor(
+    private readonly subgraphService = blockSubgraphService,
+    private readonly rpc = rpcProviderService,
+    private readonly config = configService
+  ) {}
 
   public async fetchBlockByTime(
+    timestamp: string,
+    useRange = true
+  ): Promise<number> {
+    if (isGnosis.value || isGoerli.value)
+      return this.fetchBlockByApprox(timestamp);
+    return this.fetchBlockByTimeWithGraph(timestamp, useRange);
+  }
+
+  /**
+   * Using the networks block time, fetches the block number for a given timestamp.
+   *
+   * @param {string} timestamp - The timestamp to fetch the block number for.
+   */
+  public async fetchBlockByApprox(timestamp: string): Promise<number> {
+    const secsSinceTimestamp = getSecondsSince(Number(timestamp));
+    const currentBlock = await this.rpc.getBlockNumber();
+    const blocksSinceTimestamp = Math.floor(
+      secsSinceTimestamp / this.config.network.blockTime
+    );
+
+    return currentBlock - blocksSinceTimestamp;
+  }
+
+  public async fetchBlockByTimeWithGraph(
     timestamp: string,
     useRange = true
   ): Promise<number> {

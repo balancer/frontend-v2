@@ -1,12 +1,16 @@
-import { Network } from '@balancer-labs/sdk';
+/**
+ * Generates voting-gauges.json file.
+ *
+ * To run, ensure you have your own .env.development file with the following:
+ * VITE_RPC_URL_1=YOUR_MAINNET_RPC_URL
+ */
+import { Network } from '@/lib/config';
 import { getAddress } from '@ethersproject/address';
 import debug from 'debug';
 import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
-import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
-import { POOLS } from '@/constants/voting-gauge-pools';
 import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
@@ -14,11 +18,11 @@ import vebalGauge from '../../../public/data/vebal-gauge.json';
 import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
 import config from '../config';
 import { isSameAddress } from '../utils';
-import { Multicaller } from '../utils/balancer/contract';
 import { formatUnits } from '@ethersproject/units';
-import { JsonRpcProvider } from '@ethersproject/providers';
-import template from '../utils/template';
-import { mapValues } from 'lodash';
+import { flatten, mapValues } from 'lodash';
+import { configService } from '@/services/config/config.service';
+import { Multicaller } from '@/services/multicalls/multicaller';
+import { StaticJsonRpcBatchProvider } from '@/services/rpc-provider/static-json-rpc-batch-provider';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -35,26 +39,32 @@ type GaugeInfo = {
   relativeWeightCap: string;
 };
 
-async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
-  const INFURA_KEY = import.meta.env.VITE_INFURA_PROJECT_ID;
-  if (!INFURA_KEY) throw Error('VITE_INFURA_PROJECT_ID not found!');
+type ChildChainGaugeInfo = {
+  address: string;
+  streamer: string;
+};
 
-  const rpcUrl = template(config[Network.MAINNET].rpc, { INFURA_KEY });
-  const provider = new JsonRpcProvider(rpcUrl);
+async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
+  const rpcUrl = configService.getNetworkRpc(Network.MAINNET);
+  if (rpcUrl.includes('INFURA_KEY'))
+    throw Error('VITE_INFURA_PROJECT_ID not found!');
+
+  const provider = new StaticJsonRpcBatchProvider(rpcUrl);
 
   const multicaller = new Multicaller(
+    config[Network.MAINNET].addresses.multicall,
     config[Network.MAINNET].key,
-    provider,
-    VEBalHelpersABI
+    provider
   );
 
   for (const gaugeAddress of gaugeAddresses) {
-    multicaller.call(
-      getAddress(gaugeAddress),
-      config[Network.MAINNET].addresses.veBALHelpers,
-      'gauge_relative_weight',
-      [getAddress(gaugeAddress)]
-    );
+    multicaller.call({
+      key: gaugeAddress,
+      address: config[Network.MAINNET].addresses.veBALHelpers,
+      function: 'gauge_relative_weight',
+      abi: VEBalHelpersABI,
+      params: [getAddress(gaugeAddress)],
+    });
   }
 
   const result = await multicaller.execute();
@@ -63,12 +73,10 @@ async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   return weights;
 }
 
-function getBalancerAssetsURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
-}
-
-function getBalancerAssetsMultichainURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
+function getBalancerAssetsURI(tokenAddress: string, network?: Network): string {
+  if (network)
+    return `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${network.toString()}_${tokenAddress.toLowerCase()}.png`;
+  return `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${tokenAddress.toLowerCase()}.png`;
 }
 
 function isValidResponse(response: Response) {
@@ -86,7 +94,8 @@ async function getAssetURIFromTokenlists(
   log(
     `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`
   );
-  const tokenListURIs = TOKEN_LIST_MAP[network.toString()];
+
+  const tokenListURIs = configService.getNetworkConfig(network).tokenlists;
   const allURIs = [
     ...Object.values(tokenListURIs.Balancer),
     ...tokenListURIs.External,
@@ -98,7 +107,10 @@ async function getAssetURIFromTokenlists(
   const tokenLists = await Promise.all(
     validResponses.map(response => response.json())
   );
-  const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
+  const allTokens = tokenLists
+    .map(tokenList => tokenList.tokens)
+    .flat()
+    .filter(token => token.chainId === network);
 
   log('getAssetURIFromTokenlists finding token');
   const token = allTokens.find(token =>
@@ -147,9 +159,23 @@ function getTrustWalletAssetsURI(
     [Network.POLYGON]: 'polygon',
     [Network.GOERLI]: 'goerli',
     [Network.OPTIMISM]: 'optimism',
+    [Network.GNOSIS]: 'xdai',
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
+}
+
+async function isValidLogo(uri: string | undefined): Promise<boolean> {
+  try {
+    if (!uri) return false;
+
+    const response = await fetch(uri);
+    if (response.status === 200) return true;
+    return false;
+  } catch (error) {
+    console.log('Failed to fetch', uri);
+    return false;
+  }
 }
 
 async function getTokenLogoURI(
@@ -158,35 +184,28 @@ async function getTokenLogoURI(
 ): Promise<string> {
   log(`getTokenLogoURI network: ${network} tokenAddress: ${tokenAddress}`);
   let logoUri = '';
-  let response;
 
-  if (network === Network.MAINNET) {
-    logoUri = getBalancerAssetsURI(tokenAddress);
-    response = await fetch(logoUri);
-    if (response.status === 200) return logoUri;
-  } else {
-    logoUri = getBalancerAssetsMultichainURI(tokenAddress);
-    response = await fetch(logoUri);
-    if (response.status === 200) return logoUri;
-  }
+  logoUri = getBalancerAssetsURI(tokenAddress);
+  if (await isValidLogo(logoUri)) return logoUri;
+
+  logoUri = getBalancerAssetsURI(tokenAddress, network);
+  if (await isValidLogo(logoUri)) return logoUri;
 
   logoUri = getTrustWalletAssetsURI(tokenAddress, network);
-  response = await fetch(logoUri);
-  if (response.status === 200) return logoUri;
+  if (await isValidLogo(logoUri)) return logoUri;
 
   logoUri = await getAssetURIFromTokenlists(tokenAddress, network);
-  if (logoUri) response = await fetch(logoUri);
-  if (logoUri && response.status === 200) return logoUri;
+  if (await isValidLogo(logoUri)) return logoUri;
 
   if (
     network === Network.ARBITRUM ||
     network === Network.OPTIMISM ||
-    network === Network.POLYGON
+    network === Network.POLYGON ||
+    network === Network.GNOSIS
   ) {
     const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
     logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
-    response = await fetch(logoUri);
-    if (logoUri && response.status === 200) return logoUri;
+    if (await isValidLogo(logoUri)) return logoUri;
   }
 
   return '';
@@ -328,11 +347,11 @@ async function getLiquidityGaugesInfo(
   }
 }
 
-async function getStreamerAddress(
+async function getChildChainLiquidityGaugesInfo(
   poolId: string,
   network: Network,
   retries = 5
-): Promise<string> {
+): Promise<ChildChainGaugeInfo[] | null> {
   log(`getStreamerAddress. network: ${network} poolId: ${poolId}`);
   const subgraphEndpoint = config[network].subgraphs.gauge;
 
@@ -343,6 +362,7 @@ async function getStreamerAddress(
           poolId: "${poolId}"
         }
       ) {
+        id
         streamer
       }
     }
@@ -360,7 +380,14 @@ async function getStreamerAddress(
 
     const { data } = await response.json();
 
-    return data.liquidityGauges[0].streamer;
+    const gaugesInfo = data.liquidityGauges.map((gauge: any) => {
+      return {
+        address: gauge.id,
+        streamer: gauge.streamer,
+      };
+    });
+
+    return gaugesInfo;
   } catch {
     console.error(
       'Streamer not found for poolId:',
@@ -371,24 +398,26 @@ async function getStreamerAddress(
       retries
     );
 
-    return retries > 0 ? getStreamerAddress(poolId, network, retries - 1) : '';
+    return retries > 0
+      ? getChildChainLiquidityGaugesInfo(poolId, network, retries - 1)
+      : null;
   }
 }
 
 async function getRootGaugeInfo(
-  streamer: string,
+  recipients: string[],
   poolId: string,
   network: Network,
   retries = 5
 ): Promise<GaugeInfo[] | null> {
-  log(`getRootGaugeAddress. network: ${network} streamer: ${streamer}`);
+  log(`getRootGaugeAddress. network: ${network} recipient: ${recipients}`);
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
 
   const query = `
     {
       rootGauges(
         where: {
-          recipient: "${streamer}"
+          recipient_in: ${JSON.stringify(recipients)}
           chain: ${config[network].shortName}
           gauge_not: null
         }
@@ -429,14 +458,14 @@ async function getRootGaugeInfo(
     return gaugesInfo;
   } catch {
     console.error(
-      'RootGauge not found for Streamer:',
-      streamer,
+      'RootGauge not found for Recipient:',
+      recipients,
       'chainId:',
       network
     );
 
     return retries > 0
-      ? getRootGaugeInfo(streamer, poolId, network, retries - 1)
+      ? getRootGaugeInfo(recipients, poolId, network, retries - 1)
       : null;
   }
 }
@@ -450,18 +479,37 @@ async function getGaugeInfo(
     const gauges = await getLiquidityGaugesInfo(poolId, network);
     return gauges;
   } else {
-    const streamer = await getStreamerAddress(poolId, network);
-    const gauges = await getRootGaugeInfo(streamer, poolId, network);
-    return gauges;
+    const gauges = await getChildChainLiquidityGaugesInfo(poolId, network);
+    if (!gauges) return null;
+    const recipients = gauges.map(gauge =>
+      gauge.streamer ? gauge.streamer : gauge.address
+    );
+    const rootGauges = await getRootGaugeInfo(recipients, poolId, network);
+    return rootGauges;
   }
 }
 
 (async () => {
   console.log('Generating voting-gauges.json...');
 
+  console.log('Fetching gauges info...');
+  console.time('getGaugeInfo');
+
+  const POOLS = flatten(
+    Object.entries(config).map(([network, networkConfig]) => {
+      return networkConfig.pools.Stakable.VotingGaugePools.map(id => {
+        return {
+          id,
+          network: Number(network) as Network,
+        };
+      });
+    })
+  );
+
   const gaugesInfo = await Promise.all(
     POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
   );
+  console.timeEnd('getGaugeInfo');
 
   const filteredGauges = gaugesInfo
     .flat()
@@ -471,13 +519,18 @@ async function getGaugeInfo(
     .filter(({ isKilled }) => isKilled)
     .map(({ address }) => address);
 
+  console.log('\nFetching killed gauges relative weight...');
+  console.time('getGaugeRelativeWeight');
   const killedGaugesWeight = await getGaugeRelativeWeight(killedGaugesList);
+  console.timeEnd('getGaugeRelativeWeight');
 
   const validGauges = filteredGauges.filter(
     ({ address, isKilled }) =>
       !isKilled || killedGaugesWeight[address] !== '0.0'
   );
 
+  console.log('\nFetching voting gauges info...');
+  console.time('getVotingGauges');
   let votingGauges = await Promise.all(
     validGauges.map(
       async ({
@@ -510,6 +563,7 @@ async function getGaugeInfo(
       }
     )
   );
+  console.timeEnd('getVotingGauges');
 
   votingGauges = [
     ...(vebalGauge as VotingGauge[]),

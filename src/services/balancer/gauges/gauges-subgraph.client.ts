@@ -9,6 +9,11 @@ export class GaugesSubgraphClient {
 
   public async get(query) {
     try {
+      if (!this.url) {
+        return {
+          liquidityGauges: [],
+        };
+      }
       const payload = this.payloadFor(query);
       const {
         data: { data },

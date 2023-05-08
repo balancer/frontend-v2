@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import useWeb3 from '@/services/web3/useWeb3';
+import { buildConnectorIconURL } from '@/lib/utils/urls';
+import { Wallet, WalletNameMap } from '@/providers/wallet.provider';
+
+const props = defineProps<{ wallet: Wallet }>();
+
+const { connectWallet, toggleWalletSelectModal } = useWeb3();
+function handleClick() {
+  connectWallet(props.wallet);
+  toggleWalletSelectModal(false);
+}
+</script>
+
 <template>
   <button class="wallet-connect-btn" @click="handleClick">
     <div class="flex items-center" style="width: 70%">
@@ -8,34 +22,6 @@
     </div>
   </button>
 </template>
-
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import { Wallet, WalletNameMap } from '@/services/web3/web3.plugin';
-import { buildConnectorIconURL } from '@/lib/utils/urls';
-export default defineComponent({
-  props: {
-    wallet: {
-      type: String as PropType<Wallet>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const { connectWallet, toggleWalletSelectModal } = useWeb3();
-    function handleClick() {
-      connectWallet(props.wallet);
-      toggleWalletSelectModal(false);
-    }
-    return {
-      WalletNameMap,
-      handleClick,
-      buildConnectorIconURL,
-    };
-  },
-});
-</script>
 
 <style>
 .wallet-connect-btn {

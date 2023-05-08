@@ -46,17 +46,15 @@ export default function useRelayerApprovalTx(
 
   const loading = computed(
     (): boolean =>
-      relayerApproval.isLoading.value ||
-      relayerApproval.isError.value ||
-      relayerApproval.isIdle.value
+      relayerApproval.isLoading.value || relayerApproval.isError.value
   );
 
   const action = computed(
     (): TransactionActionInfo => ({
-      label: t('approveBatchRelayer'),
-      loadingLabel: t('checkWallet'),
-      confirmingLabel: t('approvingBatchRelayer'),
-      stepTooltip: t('approveBatchRelayerTooltip'),
+      label: t('transactionSummary.approveRelayer', [relayer]),
+      loadingLabel: t('actionSteps.approve.loadingLabel'),
+      confirmingLabel: t('confirming'),
+      stepTooltip: t('approveRelayerTooltip'),
       action: approve,
     })
   );
@@ -104,7 +102,7 @@ export default function useRelayerApprovalTx(
     approved.value = await txListener(tx, {
       onTxConfirmed: () => {
         approving.value = false;
-        relayerApproval.refetch.value();
+        relayerApproval.refetch();
       },
       onTxFailed: () => {
         approving.value = false;

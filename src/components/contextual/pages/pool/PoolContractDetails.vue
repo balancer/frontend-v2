@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { POOLS } from '@/constants/pools';
+import { poolMetadata } from '@/lib/config/metadata';
 import { shortenLabel } from '@/lib/utils';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 /**
@@ -48,6 +48,7 @@ const data = computed(() => {
     createTime,
     swapFee,
     name,
+    id,
     onchain,
   } = props.pool;
 
@@ -58,7 +59,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: name,
+      value: poolMetadata(id)?.name || name,
     },
     {
       title: t('poolSymbol'),

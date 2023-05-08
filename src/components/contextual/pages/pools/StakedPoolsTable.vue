@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import { isL2 } from '@/composables/useNetwork';
+import { isPoolBoostsEnabled } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useUserStaking } from '@/providers/local/user-staking.provider';
@@ -42,7 +42,7 @@ const noPoolsLabel = computed(() => {
 
 const hiddenColumns = computed(() => {
   const _hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
-  if (isL2.value) _hiddenColumns.push('myBoost');
+  if (!isPoolBoostsEnabled.value) _hiddenColumns.push('myBoost');
 
   return _hiddenColumns;
 });
@@ -82,10 +82,10 @@ async function handleUnstakeSuccess() {
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
         sortColumn="myBalance"
-        :isLoading="isLoading"
+        :isLoading="isWalletReady && isLoading"
         showPoolShares
         showActions
-        :showBoost="!isL2"
+        :showBoost="isPoolBoostsEnabled"
         @trigger-unstake="handleUnstake"
       />
     </BalStack>

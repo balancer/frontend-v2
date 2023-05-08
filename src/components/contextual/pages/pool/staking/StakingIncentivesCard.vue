@@ -13,17 +13,24 @@ import StakePreviewModal from './StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
+import { deprecatedDetails } from '@/composables/usePoolHelpers';
+import { usePoolWarning } from '@/composables/usePoolWarning';
+
 type Props = {
   pool: Pool;
 };
 const props = defineProps<Props>();
 
+const emit = defineEmits<{
+  (e: 'setRestakeVisibility', value: boolean): void;
+}>();
 /**
  * STATE
  */
 
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref<StakeAction>('stake');
+const poolId = computed(() => props.pool.id);
 
 /**
  * COMPOSABLES
@@ -37,6 +44,7 @@ const {
   stakedShares,
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
+const { isAffected } = usePoolWarning(poolId);
 
 /**
  * COMPUTED
@@ -53,6 +61,14 @@ const fiatValueOfUnstakedShares = computed(() => {
     .div(props.pool.totalShares)
     .times(balanceFor(getAddress(props.pool.address)))
     .toString();
+});
+
+const isStakeDisabled = computed(() => {
+  return (
+    !!deprecatedDetails(props.pool.id) ||
+    fiatValueOfUnstakedShares.value === '0' ||
+    hasNonPrefGaugeBalance.value
+  );
 });
 
 /**
@@ -157,14 +173,20 @@ function handlePreviewClose() {
                     <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                   </BalStack>
                 </BalStack>
-                <BalStack horizontal spacing="sm" class="mt-2">
+                <BalBtn
+                  v-if="hasNonPrefGaugeBalance && !isAffected"
+                  :color="'gradient'"
+                  class="mt-2"
+                  size="sm"
+                  @click="emit('setRestakeVisibility', true)"
+                >
+                  {{ $t('restake') }}
+                </BalBtn>
+                <BalStack v-else horizontal spacing="sm" class="mt-2">
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    :disabled="
-                      fiatValueOfUnstakedShares === '0' ||
-                      hasNonPrefGaugeBalance
-                    "
+                    :disabled="isStakeDisabled"
                     @click="showStakePreview"
                   >
                     {{ $t('stake') }}

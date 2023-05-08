@@ -2,16 +2,16 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
+import { isVeBalPool, totalAprLabel } from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { hasStakingRewards } from '@/services/staking/utils';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
 import VeBalBreakdown from './components/VeBalBreakdown.vue';
 import YieldBreakdown from './components/YieldBreakdown.vue';
 import { AprBreakdown } from '@balancer-labs/sdk';
+import { hasStakingRewards } from '@/composables/useAPR';
 
 /**
  * TYPES
@@ -37,7 +37,9 @@ const { fNum } = useNumbers();
 const apr = computed<AprBreakdown | undefined>(
   () => props.pool?.apr || props.poolApr
 );
-const validAPR = computed(() => Number(apr.value?.min || 0) <= APR_THRESHOLD);
+const validAPR = computed(
+  () => Number(apr.value?.swapFees || 0) <= APR_THRESHOLD
+);
 
 const hasYieldAPR = computed(() => {
   return bnum(apr.value?.tokenAprs.total || '0').gt(0);

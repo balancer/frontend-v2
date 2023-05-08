@@ -11,18 +11,7 @@ import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { captureException } from '@sentry/browser';
 import { bnum } from '@/lib/utils';
 
-import {
-  computed,
-  ComputedRef,
-  onMounted,
-  reactive,
-  Ref,
-  ref,
-  toRefs,
-  watch,
-} from 'vue';
-
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -95,9 +84,9 @@ export default function useJoinExit({
   // COMPOSABLES
   const { account, getSigner } = useWeb3();
   const { injectTokens, getToken } = useTokens();
-  const { relayerSignature } = useRelayerApproval(RelayerType.BATCH_V4);
+  const { relayerSignature } = useRelayerApproval(RelayerType.BATCH);
   const relayerApprovalQuery = useRelayerApprovalQuery(
-    ref(configService.network.addresses.batchRelayerV4)
+    ref(configService.network.addresses.batchRelayer)
   );
   const { addTransaction } = useTransactions();
   const { txListener } = useEthers();
@@ -123,7 +112,7 @@ export default function useJoinExit({
 
   async function getSwapInfo(): Promise<void> {
     swapInfoLoading.value = true;
-    swapInfo.value = await getBalancer().sor.getSwaps(
+    swapInfo.value = await getBalancerSDK().sor.getSwaps(
       tokenInAddressInput.value,
       tokenOutAddressInput.value,
       exactIn.value ? SwapTypes.SwapExactIn : SwapTypes.SwapExactOut,
@@ -156,12 +145,6 @@ export default function useJoinExit({
       return;
     }
 
-    if (amountToExchange.isZero()) {
-      tokenInAmountInput.value = '0';
-      tokenOutAmountInput.value = '0';
-      return;
-    }
-
     await getSwapInfo();
 
     const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
@@ -183,7 +166,7 @@ export default function useJoinExit({
   }
 
   async function swap(successCallback?: () => void) {
-    const balancer = getBalancer();
+    const balancer = getBalancerSDK();
     try {
       confirming.value = true;
       state.submissionError = null;
@@ -196,7 +179,7 @@ export default function useJoinExit({
         swapInfo.value,
         pools.value,
         account.value,
-        balancer.contracts.relayerV4?.address ?? '',
+        balancer.contracts.relayer?.address ?? '',
         balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
         String(slippageBufferRate.value * 1e4),
         relayerSignature.value || undefined
@@ -204,7 +187,7 @@ export default function useJoinExit({
 
       const txBuilder = new TransactionBuilder(getSigner());
       const tx = await txBuilder.contract.sendTransaction({
-        contractAddress: balancer.contracts.relayerV4?.address ?? '',
+        contractAddress: balancer.contracts.relayer?.address ?? '',
         abi: BatchRelayerAbi,
         action: 'multicall',
         params: [relayerCallData.rawCalls],
@@ -246,7 +229,7 @@ export default function useJoinExit({
       await txListener(tx, {
         onTxConfirmed: () => {
           confirming.value = false;
-          relayerApprovalQuery.refetch.value();
+          relayerApprovalQuery.refetch();
         },
         onTxFailed: () => {
           confirming.value = false;
@@ -260,6 +243,7 @@ export default function useJoinExit({
       }
       swapping.value = false;
       confirming.value = false;
+      throw error;
     }
   }
 

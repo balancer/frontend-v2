@@ -8,7 +8,7 @@ import useEthers from '@/composables/useEthers';
 import { useTokens } from '@/providers/tokens.provider';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 import { bnum } from '@/lib/utils';
-import { tokenService } from '@/services/token/token.service';
+import TokenService from '@/services/token/token.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useTransactions from '../useTransactions';
@@ -32,7 +32,7 @@ export type ApprovalOptions = {
 };
 
 export default function useTokenApprovals(
-  tokenAddresses: string[],
+  tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   actionType: ApprovalAction = ApprovalAction.AddLiquidity
 ) {
@@ -49,17 +49,18 @@ export default function useTokenApprovals(
   /**
    * STATE
    */
-  const vaultApprovalStateMap = ref<ApprovalStateMap>(
-    Object.fromEntries(
-      approvalsRequired(
-        tokenAddresses,
-        amounts.value,
-        appNetworkConfig.addresses.vault
-      ).map(address => [
-        address,
-        { init: false, confirming: false, approved: false },
-      ])
-    )
+  const vaultApprovalStateMap = computed(
+    (): ApprovalStateMap =>
+      Object.fromEntries(
+        approvalsRequired(
+          tokenAddresses.value,
+          amounts.value,
+          appNetworkConfig.addresses.vault
+        ).map(address => [
+          address,
+          { init: false, confirming: false, approved: false },
+        ])
+      )
   );
 
   // Depreciate with new investment flow
@@ -70,7 +71,7 @@ export default function useTokenApprovals(
    */
   const requiredApprovals = computed(() =>
     approvalsRequired(
-      tokenAddresses,
+      tokenAddresses.value,
       amounts.value,
       appNetworkConfig.addresses.vault
     )
@@ -134,7 +135,7 @@ export default function useTokenApprovals(
 
       txListener(tx, {
         onTxConfirmed: async () => {
-          await refetchAllowances.value();
+          await refetchAllowances();
           state.confirming = false;
           state.approved = true;
         },
@@ -155,15 +156,15 @@ export default function useTokenApprovals(
   async function getApprovalStateMapFor(
     spender: string
   ): Promise<ApprovalStateMap> {
-    const customTokenMap = getTokens(tokenAddresses);
+    const customTokenMap = getTokens(tokenAddresses.value);
 
-    const allowances = await tokenService.allowances.get(
+    const allowances = await new TokenService().allowances.get(
       account.value,
       [spender],
       customTokenMap
     );
 
-    const requiredApprovals = tokenAddresses
+    const requiredApprovals = tokenAddresses.value
       .filter((tokenAddress, i) => {
         const allowance = bnum(
           allowances[getAddress(spender)][getAddress(tokenAddress)]

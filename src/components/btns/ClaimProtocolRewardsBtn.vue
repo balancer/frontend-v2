@@ -59,7 +59,7 @@ function claimTx() {
     color="gradient"
     size="sm"
     :actionFn="claimTx"
-    :onConfirmFn="protocolRewardsQuery.refetch.value"
+    :onConfirmFn="protocolRewardsQuery.refetch"
     action="claim"
     :summary="`${t('claim')} ${fNum(fiatValue, FNumFormats.fiat)}`"
     :confirmingLabel="$t('claiming')"

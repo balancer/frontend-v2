@@ -6,11 +6,10 @@ import { Ref, ref } from 'vue';
 
 import {
   isComposableStableLike,
-  isDeep,
   isStable,
   isStableLike,
   tokensListExclBpt,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
@@ -18,7 +17,6 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import Stable from './stable';
-import StablePhantom from './stable-phantom';
 import Weighted from './weighted';
 
 interface Amounts {
@@ -39,7 +37,6 @@ export default class CalculatorService {
   types = ['send', 'receive'];
   weighted: Weighted;
   stable: Stable;
-  stablePhantom: StablePhantom;
 
   constructor(
     public pool: Ref<Pool>,
@@ -49,12 +46,10 @@ export default class CalculatorService {
     public useNativeAsset: Ref<boolean> = ref(false),
     weightedClass = Weighted,
     stableClass = Stable,
-    stablePhantomClass = StablePhantom,
     public readonly config = configService
   ) {
     this.weighted = new weightedClass(this);
     this.stable = new stableClass(this);
-    this.stablePhantom = new stablePhantomClass(this);
   }
 
   public priceImpact(
@@ -62,11 +57,7 @@ export default class CalculatorService {
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): OldBigNumber {
     if (this.isStableLikePool) {
-      if (isDeep(this.pool.value)) {
-        return this.stablePhantom.priceImpact(tokenAmounts, opts);
-      } else {
-        return this.stable.priceImpact(tokenAmounts, opts);
-      }
+      return this.stable.priceImpact(tokenAmounts, opts);
     }
     return this.weighted.priceImpact(tokenAmounts, opts);
   }

@@ -7,11 +7,8 @@ import {
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
-import {
-  JsonRpcProvider,
-  TransactionResponse,
-  Web3Provider,
-} from '@ethersproject/providers';
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 import BigNumber from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 
@@ -20,6 +17,9 @@ import { isSameAddress, scale } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
+import { POOLS } from '@/constants/pools';
+import WeightedPoolFactoryV4Abi from '@/lib/abi/WeightedPoolFactoryV4.json';
+import { generateSalt } from '@/lib/utils/random';
 
 type Address = string;
 
@@ -39,7 +39,7 @@ export interface JoinPoolRequest {
 
 export default class WeightedPoolService {
   public async create(
-    provider: Web3Provider,
+    provider: WalletProvider,
     name: string,
     symbol: string,
     swapFee: string,
@@ -48,48 +48,49 @@ export default class WeightedPoolService {
   ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
-    const weightedPoolFactoryAddress =
-      configService.network.addresses.weightedPoolFactory;
-
     const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
     });
 
     const seedTokens = this.calculateTokenWeights(tokens);
     const swapFeeScaled = scale(new BigNumber(swapFee), 18);
+    const rateProviders = Array(tokenAddresses.length).fill(POOLS.ZeroAddress);
 
     const params = [
       name,
       symbol,
       tokenAddresses,
       seedTokens,
+      rateProviders,
       swapFeeScaled.toString(),
       owner,
+      generateSalt(),
     ];
 
     const txBuilder = new TransactionBuilder(provider.getSigner());
     return await txBuilder.contract.sendTransaction({
-      contractAddress: weightedPoolFactoryAddress,
-      abi: WeightedPoolFactory__factory.abi,
+      contractAddress: configService.network.addresses.weightedPoolFactory,
+      abi: WeightedPoolFactoryV4Abi,
       action: 'create',
       params,
     });
   }
 
   public async retrievePoolIdAndAddress(
-    provider: Web3Provider | JsonRpcProvider,
+    provider: WalletProvider | JsonRpcProvider,
     createHash: string
   ): Promise<CreatePoolReturn | null> {
     const receipt = await provider.getTransactionReceipt(createHash);
     if (!receipt) return null;
 
-    const weightedPoolFactoryAddress =
-      configService.network.addresses.weightedPoolFactory;
     const weightedPoolFactoryInterface =
       WeightedPoolFactory__factory.createInterface();
 
     const poolCreationEvent = receipt.logs
-      .filter(log => log.address === weightedPoolFactoryAddress)
+      .filter(
+        log =>
+          log.address === configService.network.addresses.weightedPoolFactory
+      )
       .map(log => {
         try {
           return weightedPoolFactoryInterface.parseLog(log);
@@ -112,7 +113,7 @@ export default class WeightedPoolService {
   }
 
   public async retrievePoolDetails(
-    provider: Web3Provider | JsonRpcProvider,
+    provider: WalletProvider | JsonRpcProvider,
     hash: string
   ) {
     if (!hash) return;
@@ -149,7 +150,7 @@ export default class WeightedPoolService {
   }
 
   public async initJoin(
-    provider: Web3Provider,
+    provider: WalletProvider,
     poolId: string,
     sender: Address,
     receiver: Address,

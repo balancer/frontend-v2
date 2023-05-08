@@ -1,6 +1,6 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
-RUN npm install -g npm@7
+RUN npm install -g npm@8
 RUN mkdir -p /app
 WORKDIR /app
 

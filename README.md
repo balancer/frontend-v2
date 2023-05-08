@@ -7,7 +7,7 @@ Official frontend app for the Balancer protocol (v2).
 To setup the development environment first clone the repo:
 
 ```bash
-git clone https://github.com/balancer-labs/frontend-v2.git && cd frontend-v2
+git clone https://github.com/balancer/frontend-v2.git && cd frontend-v2
 ```
 
 ### Local env
@@ -44,6 +44,12 @@ Run unit tests with coverage:
 
 ```bash
 npm run test:unit:coverage
+```
+
+Run unit tests with only lcov coverage (useful when doing exploratory testing):
+
+```bash
+npm run test:unit:silent:coverage
 ```
 
 ### Build
@@ -115,15 +121,21 @@ docker run \
   balancerfi/frontend-v2
 ```
 
+### Custom RPC urls
+
+To override RPC network config set in `src/lib/config`, you can use the following environment variables:
+
+`VITE_RPC_URL_<networkId>=XXX`
+
 ### One Click Deploys
 
 The frontend can easily be deployed to any static host. Use the buttons below to spin up an instance. You will be prompted to provide your Infura Project ID, Alchemy Key, and Blocknative Dapp ID as these are required for the frontend to work correctly.
 
-[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer-labs/frontend-v2/tree/master)
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer/frontend-v2/tree/master)
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/balancer-labs/frontend-v2)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/balancer/frontend-v2)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer-labs/frontend-v2)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer/frontend-v2)
 
 ## Vite setup
 
@@ -145,10 +157,8 @@ Auto imports components located in `src/components/_global` so that they are ava
 
 ### Analyze bundle
 
-Analyze and visualize the bundle dependencies by adding these env vars to your `.env` file before running the build:
+Analyze and visualize the bundle dependencies:
 
 ```bash
-# Local .env file
-VITE_BUILD_ANALIZE=true
-VITE_BUILD_VISUALIZE=true
+npm run build:analyze
 ```

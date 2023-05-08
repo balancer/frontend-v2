@@ -151,7 +151,6 @@
       :swapping="swapping"
       :error="error"
       :warning="warning"
-      @swap="swap"
       @close="handlePreviewModalClose"
     />
   </teleport>
@@ -163,7 +162,7 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
+import { useSwapAssets } from '@/composables/swap/useSwapAssets';
 import SwapPreviewModal from '@/components/modals/SwapPreviewModal.vue';
 import SwapSettingsPopover, {
   SwapSettingsContext,
@@ -182,6 +181,7 @@ import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
 import SwapPair from './SwapPair.vue';
 import SwapRoute from './SwapRoute.vue';
+
 export default defineComponent({
   components: {
     SwapPair,
@@ -191,7 +191,7 @@ export default defineComponent({
   },
   setup() {
     // COMPOSABLES
-    const store = useStore();
+    const { inputAsset, outputAsset } = useSwapAssets();
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
@@ -353,33 +353,48 @@ export default defineComponent({
     });
 
     // METHODS
-    function swap() {
-      swapping.swap(() => {
-        swapping.resetAmounts();
-        modalSwapPreviewIsOpen.value = false;
-      });
-    }
 
     function handleErrorButtonClick() {
       if (swapping.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;
       }
     }
-    async function populateInitialTokens(): Promise<void> {
-      let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === nativeAsset.deeplinkId) {
-        assetIn = nativeAsset.address;
-      } else if (isAddress(assetIn)) {
-        assetIn = getAddress(assetIn);
+
+    function isNativeAssetIdentifier(assetParam: string | undefined): boolean {
+      return (
+        assetParam?.toLowerCase() === nativeAsset.deeplinkId?.toLowerCase() ||
+        assetParam?.toLowerCase() === nativeAsset.symbol?.toLowerCase()
+      );
+    }
+
+    function getFirstValidAddress(assets: string[]): string | undefined {
+      for (const asset of assets) {
+        if (isNativeAssetIdentifier(asset)) {
+          return nativeAsset.address;
+        }
+        if (isAddress(asset)) {
+          return getAddress(asset);
+        }
       }
-      let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === nativeAsset.deeplinkId) {
-        assetOut = nativeAsset.address;
-      } else if (isAddress(assetOut)) {
-        assetOut = getAddress(assetOut);
+    }
+
+    function populateInitialTokens(): void {
+      const assetIn = getFirstValidAddress([
+        router.currentRoute.value.params.assetIn,
+        inputAsset.value,
+        appNetworkConfig.tokens.InitialSwapTokens.input,
+      ]);
+      if (assetIn) {
+        setTokenInAddress(assetIn);
       }
-      setTokenInAddress(assetIn || store.state.swap.inputAsset);
-      setTokenOutAddress(assetOut || store.state.swap.outputAsset);
+      const assetOut = getFirstValidAddress([
+        router.currentRoute.value.params.assetOut,
+        outputAsset.value,
+        appNetworkConfig.tokens.InitialSwapTokens.output,
+      ]);
+      if (assetOut) {
+        setTokenOutAddress(assetOut);
+      }
 
       let assetInAmount = router.currentRoute.value.query?.inAmount as string;
       let assetOutAmount = router.currentRoute.value.query?.outAmount as string;
@@ -432,7 +447,6 @@ export default defineComponent({
       handlePreviewButton,
       handlePreviewModalClose,
       // methods
-      swap,
       switchToWETH,
       handleErrorButtonClick,
     };

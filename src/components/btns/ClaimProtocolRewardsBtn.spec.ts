@@ -2,15 +2,10 @@ import { AddressZero } from '@ethersproject/constants';
 import { fireEvent } from '@testing-library/vue';
 
 import { txResponseMock } from '@/__mocks__/transactions';
-import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 
 import ClaimProtocolRewardsBtn from './ClaimProtocolRewardsBtn.vue';
-import TxActionBtn from './TxActionBtn/TxActionBtn.vue';
 import { renderComponent } from '@tests/renderComponent';
-
-ClaimProtocolRewardsBtn.components = { TxActionBtn };
-TxActionBtn.components = { BalBtn };
 
 vi.mock('@/services/balancer/contracts/contracts/fee-distributor');
 vi.mock('@/providers/tokens.provider');

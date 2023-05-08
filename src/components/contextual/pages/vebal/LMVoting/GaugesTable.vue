@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { PoolToken } from '@balancer-labs/sdk';
-import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -14,9 +13,8 @@ import { getNetworkSlug } from '@/composables/useNetwork';
 import {
   isStableLike,
   isUnknownType,
-  orderedPoolTokens,
   poolURLFor,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { isSameAddress } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -25,11 +23,15 @@ import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
-import { orderedTokenURIs } from '@/composables/useVotingGauges';
+import {
+  orderedTokenURIs,
+  orderedGaugeTokens,
+} from '@/composables/useVotingGauges';
 import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
+import { poolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES
@@ -251,8 +253,12 @@ function getPickedTokens(tokens: PoolToken[]) {
       </template>
       <template #poolCompositionCell="{ pool, address, addedTimestamp }">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
+          <div v-if="poolMetadata(pool.id)" class="text-left">
+            {{ poolMetadata(pool.id)?.name }}
+          </div>
           <TokenPills
-            :tokens="orderedPoolTokens(pool, pool.tokens)"
+            v-else
+            :tokens="orderedGaugeTokens(pool)"
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "

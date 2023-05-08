@@ -3,18 +3,19 @@ import { generateMulticallMock } from '@/dependencies/multicall.mocks';
 import { TokenInfoMap } from '@/types/TokenList';
 import { aTokenInfo } from '@/types/TokenList.builders';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
+import {
+  balAddress,
+  daiAddress,
+  nativeAssetAddress,
+} from '@tests/unit/builders/address';
 import { Ref, ref } from 'vue';
 import useAllowancesQuery from './useAllowancesQuery';
 
 test('Returns token allowances from balancer SDK', async () => {
-  const zeroAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-  const daiAddress = '0x8c9e6c40d3402480ACE624730524fACC5482798c';
-  const balAddress = '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47';
-
   const tokens: Ref<TokenInfoMap> = ref({
-    [zeroAddress]: aTokenInfo(zeroAddress),
-    [daiAddress]: aTokenInfo(daiAddress),
-    [balAddress]: aTokenInfo(balAddress),
+    [nativeAssetAddress]: aTokenInfo({ address: nativeAssetAddress }),
+    [daiAddress]: aTokenInfo({ address: daiAddress }),
+    [balAddress]: aTokenInfo({ address: balAddress }),
   });
 
   function processCall(call) {

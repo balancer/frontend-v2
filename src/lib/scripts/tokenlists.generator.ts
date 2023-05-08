@@ -1,5 +1,6 @@
 import TokenListService from '@/services/token-list/token-list.service';
-import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
+import config from '@/lib/config';
+import { Network } from '@/lib/config';
 
 const fs = require('fs');
 const path = require('path');
@@ -13,15 +14,20 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 async function generate() {
-  Object.keys(TOKEN_LIST_MAP).forEach(async networkId => {
+  Object.keys(config).forEach(async (networkId: string) => {
     console.log(`Generating tokenlist for network ${networkId}...`);
-    const tokenListService = new TokenListService(networkId);
+    const network = Number(networkId) as Network;
+    const tokenListService = new TokenListService(network);
     // check if any uris are avaialble
     if (tokenListService.uris.All.find(uri => !!uri)) {
       const tokenlists = await tokenListService.getAll();
+      const filteredTokensList = TokenListService.filterTokensList(
+        tokenlists,
+        network
+      );
       fs.writeFileSync(
         `./src/assets/data/tokenlists/tokens-${networkId}.json`,
-        JSON.stringify(tokenlists)
+        JSON.stringify(filteredTokensList)
       );
     }
   });

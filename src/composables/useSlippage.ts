@@ -26,7 +26,7 @@ export default function useSlippage() {
       .div(10000)
       .dp(0, BigNumber.ROUND_UP);
 
-    return bnum(amount).minus(delta).toString();
+    return bnum(amount).minus(delta).toFixed();
   }
 
   function addSlippage(_amount: string, decimals: number): string {
@@ -42,7 +42,7 @@ export default function useSlippage() {
       .div(10000)
       .dp(0, BigNumber.ROUND_DOWN);
 
-    return bnum(amount).plus(delta).toString();
+    return bnum(amount).plus(delta).toFixed();
   }
 
   return { minusSlippage, minusSlippageScaled, addSlippage, addSlippageScaled };

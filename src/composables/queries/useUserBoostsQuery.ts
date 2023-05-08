@@ -1,13 +1,12 @@
 import { logFetchException } from '@/lib/utils/exceptions';
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import { GaugeShare } from './useUserGaugeSharesQuery';
-import { isL2 } from '../useNetwork';
+import { isPoolBoostsEnabled } from '../useNetwork';
 
 /**
  * TYPES
@@ -15,6 +14,7 @@ import { isL2 } from '../useNetwork';
 export type UserBoosts = {
   [poolId: string]: string;
 };
+type QueryOptions = UseQueryOptions<UserBoosts>;
 
 /**
  * useUserBoostsQuery
@@ -24,12 +24,12 @@ export type UserBoosts = {
  * individual pool.
  *
  * @param {Ref<GaugeShare>} gaugeShares - The gauges to fetch boost values for.
- * @param {UseQueryOptions} options - useQuery options.
+ * @param {QueryOptions} options - useQuery options.
  * @returns Pool ID to boost value map.
  */
 export default function useUserBoostsQuery(
   gaugeShares: Ref<undefined> | Ref<GaugeShare[]>,
-  options: UseQueryOptions<UserBoosts> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -57,7 +57,7 @@ export default function useUserBoostsQuery(
       if (!gaugeShares.value || gaugeShares.value.length === 0) return {};
       // We don't have boosts on L2s. Adding this to the enabled conditional
       // causes permanent loading states, so instead just return empty.
-      if (isL2.value) return {};
+      if (!isPoolBoostsEnabled.value) return {};
 
       return await stakingRewardsService.getUserBoosts({
         userAddress: account.value,
@@ -78,5 +78,5 @@ export default function useUserBoostsQuery(
     ...options,
   });
 
-  return useQuery<UserBoosts>(queryKey, queryFn, queryOptions);
+  return useQuery<UserBoosts>(queryKey, queryFn, queryOptions as QueryOptions);
 }

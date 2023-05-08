@@ -33,7 +33,7 @@ export default function useGnosisSafeApp() {
     // connect to the provided safe.
     isGnosisSafeApp.value = await checkIfGnosisSafeApp();
     if (isGnosisSafeApp.value) {
-      await connectWallet('gnosis');
+      await connectWallet('safe');
       if (chainId.value !== networkId.value) {
         hardRedirectTo(`/#/${getNetworkSlug(chainId.value)}`);
       }

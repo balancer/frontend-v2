@@ -1,6 +1,5 @@
-import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
@@ -10,13 +9,15 @@ import { PoolSnapshots } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
 
+type QueryOptions = QueryObserverOptions<PoolSnapshots>;
+
 /**
  * HELPERS
  */
 export default function usePoolSnapshotsQuery(
   id: string,
   days?: number,
-  options: QueryObserverOptions<PoolSnapshots> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * @description
@@ -59,5 +60,9 @@ export default function usePoolSnapshotsQuery(
     ...options,
   });
 
-  return useQuery<PoolSnapshots>(queryKey, queryFn, queryOptions);
+  return useQuery<PoolSnapshots>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

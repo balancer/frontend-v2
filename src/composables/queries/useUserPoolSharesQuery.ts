@@ -1,6 +1,4 @@
-import { UseQueryOptions } from 'react-query/types';
-import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -12,6 +10,7 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 type PoolShareMap = {
   [poolId: string]: string;
 };
+type QueryOptions = UseQueryOptions<PoolShareMap>;
 
 /**
  * useUserPoolSharesQuery
@@ -21,9 +20,7 @@ type PoolShareMap = {
  * @param {UseQueryOptions} options - useQuery options.
  * @returns {PoolShareMap} A map of poolID -> bpt balance.
  */
-export default function useUserPoolSharesQuery(
-  options: UseQueryOptions<PoolShareMap> = {}
-) {
+export default function useUserPoolSharesQuery(options: QueryOptions = {}) {
   /**
    * COMPOSABLES
    */
@@ -75,5 +72,9 @@ export default function useUserPoolSharesQuery(
     ...options,
   });
 
-  return useQuery<PoolShareMap>(queryKey, queryFn, queryOptions);
+  return useQuery<PoolShareMap>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

@@ -241,7 +241,7 @@ watchEffect(() => {
       <div>
         <div
           v-if="Object.keys(tokenLists).length > 0"
-          class="overflow-y-scroll h-96"
+          class="overflow-y-scroll list-height"
         >
           <TokenListsListItem
             v-for="(tokenList, uri) in tokenLists"

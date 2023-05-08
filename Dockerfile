@@ -2,7 +2,7 @@
 # It requires specifying an Infura API key to pull data.
 # See README for futher information
 
-FROM node:14 AS base
+FROM node:16 AS base
 
 ENV APP_ROOT /app
 RUN mkdir ${APP_ROOT}
@@ -13,13 +13,13 @@ FROM base AS dependencies
 COPY prepare.js ./
 COPY package*.json ./
 
-RUN npm install -g npm@7
+RUN npm install -g npm@8
 RUN npm ci
 
 FROM dependencies AS build
 
 COPY . .
-RUN npm run build -- --mode docker
+RUN npm run build:docker
 
 FROM nginx:1.23.3-alpine as release
 

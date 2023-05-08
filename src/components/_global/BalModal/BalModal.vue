@@ -56,7 +56,7 @@ defineExpose({ hide });
 </script>
 
 <template>
-  <div v-if="show" class="bal-modal" @keyup.esc="hide">
+  <div v-if="show" class="bal-modal" role="dialog" @keyup.esc="hide">
     <transition name="overlay" appear @after-enter="showContent = true">
       <div class="modal-bg" @click="hide">
         <div v-if="fireworks" class="fireworks">
@@ -112,7 +112,7 @@ defineExpose({ hide });
 }
 
 .modal-card {
-  @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border-0;
+  @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border-0 relative;
 }
 
 .dark .bal-modal .content::before {
@@ -129,7 +129,7 @@ defineExpose({ hide });
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: -1;
+  z-index: 0;
   filter: blur(80px);
   transform: translateZ(-1px);
   animation: fadeInMoveUpScaleUp 0.2s ease-out both;

@@ -1,12 +1,5 @@
-import { UseQueryResult } from 'react-query';
-import { UseQueryReturnType } from 'vue-query/lib/vue/useBaseQuery';
+import { UseQueryReturnType } from '@tanstack/vue-query';
 
-type GenericQuery = UseQueryReturnType<
-  any,
-  unknown,
-  UseQueryResult<any, unknown>
->;
-
-export function isQueryLoading(query: GenericQuery): boolean {
-  return query.isLoading.value || query.isIdle.value || !!query.error.value;
+export function isQueryLoading(query: UseQueryReturnType<any, any>): boolean {
+  return query.isInitialLoading.value || !!query.error.value;
 }

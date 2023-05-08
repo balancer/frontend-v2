@@ -1,101 +1,37 @@
-import { Network } from '@balancer-labs/sdk';
+import { Config } from './types';
 
-import arbitrum from './arbitrum.json';
-import docker from './docker.json';
-import goerli from './goerli.json';
-import homestead from './homestead.json';
-import optimism from './optimism.json';
-import polygon from './polygon.json';
-import test from './test.json';
+import arbitrum from './arbitrum';
+import docker from './docker';
+import goerli from './goerli';
+import mainnet from './mainnet';
+import optimism from './optimism';
+import polygon from './polygon';
+import gnosisChain from './gnosis-chain';
+import test from './test';
 
-export interface Config {
-  key: string;
-  chainId: Network | 12345 | 17;
-  chainName: string;
-  name: string;
-  shortName: string;
-  slug: string;
-  network: string;
-  unknown: boolean;
-  rpc: string;
-  publicRpc?: string;
-  ws: string;
-  explorer: string;
-  explorerName: string;
-  subgraph: string;
-  balancerApi?: string;
-  poolsUrlV2: string;
-  subgraphs: {
-    main: string[];
-    aave: string;
-    gauge: string;
-    blocks: string;
-  };
-  supportsEIP1559: boolean;
-  supportsElementPools: boolean;
-  blockTime: number;
-  nativeAsset: {
-    name: string;
-    address: string;
-    symbol: string;
-    decimals: number;
-    deeplinkId: string;
-    logoURI: string;
-    minTransactionBuffer: string;
-  };
-  addresses: {
-    merkleRedeem: string;
-    merkleOrchard: string;
-    multicall: string;
-    vault: string;
-    weightedPoolFactory: string;
-    stablePoolFactory: string;
-    weth: string;
-    rETH: string;
-    stMATIC: string;
-    stETH: string;
-    wstETH: string;
-    lidoRelayer: string;
-    balancerHelpers: string;
-    batchRelayer: string;
-    batchRelayerV4: string;
-    veBAL: string;
-    gaugeController: string;
-    gaugeFactory: string;
-    balancerMinter: string;
-    tokenAdmin: string;
-    veDelegationProxy: string;
-    veBALHelpers: string;
-    feeDistributor: string;
-    feeDistributorDeprecated: string;
-    faucet: string;
-    gaugeRewardsHelper?: string;
-  };
-  keys: {
-    infura: string;
-    alchemy: string;
-    graph?: string;
-    balancerApi?: string;
-  };
-  strategies: Record<
-    string,
-    {
-      type: string;
-      name: string;
-    }
-  >;
-  gauges: {
-    type: number;
-    weight: number;
-  };
+// We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
+export enum Network {
+  MAINNET = 1,
+  ROPSTEN = 3,
+  RINKEBY = 4,
+  GOERLI = 5,
+  GÖRLI = 5,
+  OPTIMISM = 10,
+  KOVAN = 42,
+  GNOSIS = 100,
+  POLYGON = 137,
+  ARBITRUM = 42161,
+  FANTOM = 250,
 }
 
 const config: Record<Network | number, Config> = {
-  [Network.MAINNET]: homestead,
+  [Network.MAINNET]: mainnet,
   [Network.GOERLI]: goerli,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,
+  [Network.GNOSIS]: gnosisChain,
+  // @ts-ignore
   12345: test,
   // @ts-ignore
   17: docker,

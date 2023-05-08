@@ -15,4 +15,5 @@ const RpcProviderService = {
     };
   }),
 };
+
 export const rpcProviderService = RpcProviderService.default();

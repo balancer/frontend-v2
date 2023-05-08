@@ -1,14 +1,13 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
-import ConfigService from '@/services/config/config.service';
+import { Network } from '@/lib/config';
+import { configService } from '@/services/config/config.service';
 import { WalletError } from '@/types';
-import { Network } from '@balancer-labs/sdk';
 import { Connector, ConnectorId } from '../connector';
 
 export class WalletConnectConnector extends Connector {
   id = ConnectorId.WalletConnect;
   async connect() {
-    const configService = new ConfigService();
     const provider = await EthereumProvider.init({
       projectId: 'ee9c0c7e1b8b86ebdfb8fd93bb116ca8',
       chains: [Network.MAINNET, Network.POLYGON, Network.ARBITRUM],
@@ -16,6 +15,7 @@ export class WalletConnectConnector extends Connector {
         [Network.MAINNET]: configService.getNetworkRpc(Network.MAINNET),
         [Network.POLYGON]: configService.getNetworkRpc(Network.POLYGON),
         [Network.ARBITRUM]: configService.getNetworkRpc(Network.ARBITRUM),
+        [Network.GNOSIS]: configService.getNetworkRpc(Network.GNOSIS),
       },
     });
     this.provider = provider;

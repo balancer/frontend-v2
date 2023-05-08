@@ -3,17 +3,16 @@ import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 // Composables
 import { useI18n } from 'vue-i18n';
 
-import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
+import WrapStEthLink from '@/components/contextual/pages/pool/add-liquidity/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import {
   isStableLike,
-  usePool,
+  usePoolHelpers,
   isDeep,
   tokensListExclBpt,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
@@ -59,26 +58,19 @@ const showStakeModal = ref(false);
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { useNativeAsset } = usePoolTransfers();
+const { balanceFor, nativeAsset, wrappedNativeAsset, getToken } = useTokens();
 const {
   tokenAddresses,
   amounts,
   validInputs,
   highPriceImpactAccepted,
+  useNativeAsset,
   resetAmounts,
-  sor,
 } = useInvestState();
 
 const pool = computed(() => props.pool);
 
-const investMath = useInvestMath(
-  pool,
-  tokenAddresses,
-  amounts,
-  useNativeAsset,
-  sor
-);
+const investMath = useInvestMath(pool, tokenAddresses, amounts, useNativeAsset);
 
 const {
   hasAmounts,
@@ -92,8 +84,11 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithSwappingHalted, isWethPool, isStableLikePool } =
-  usePool(pool);
+const {
+  managedPoolWithSwappingHalted,
+  isWrappedNativeAssetPool,
+  isStableLikePool,
+} = usePoolHelpers(pool);
 
 /**
  * COMPUTED
@@ -207,13 +202,18 @@ function setNativeAsset(to: NativeAsset): void {
   }
 }
 
+function getTokenInputLabel(address: string): string | undefined {
+  const token = getToken(address);
+  return token?.symbol || undefined;
+}
+
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
   resetAmounts();
   tokenAddresses.value = [...investmentTokens.value];
-  if (isWethPool.value) setNativeAssetByBalance();
+  if (isWrappedNativeAssetPool.value) setNativeAssetByBalance();
 });
 
 /**
@@ -229,7 +229,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 </script>
 
 <template>
-  <div>
+  <div data-testid="add-liquidity-form">
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
@@ -261,6 +261,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       class="mb-4"
       fixedToken
       :options="tokenOptions(i)"
+      :aria-label="'Amount of: ' + getTokenInputLabel(tokenAddresses[i])"
       @update:amount="handleAmountChange($event, i)"
       @update:address="handleAddressChange($event)"
     />

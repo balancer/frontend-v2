@@ -1,7 +1,6 @@
 import { flatten, keyBy } from 'lodash';
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -12,8 +11,8 @@ import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
-import { tokensListExclBpt } from '../usePool';
-import { tokenTreeLeafs } from '../usePool';
+import { tokensListExclBpt } from '../usePoolHelpers';
+import { tokenTreeLeafs } from '../usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import useGaugesQuery from './useGaugesQuery';
 
@@ -23,9 +22,9 @@ type UserPoolsQueryResponse = {
   tokens: string[];
 };
 
-export default function useUserPoolsQuery(
-  options: UseQueryOptions<UserPoolsQueryResponse> = {}
-) {
+type QueryOptions = UseQueryOptions<UserPoolsQueryResponse>;
+
+export default function useUserPoolsQuery(options: QueryOptions = {}) {
   /**
    * COMPOSABLES
    */
@@ -62,7 +61,7 @@ export default function useUserPoolsQuery(
     const pools = await balancerSubgraphService.pools.get({
       where: {
         id: { in: poolSharesIds },
-        poolType: { not_in: POOLS.ExcludedPoolTypes },
+        poolType: { in: POOLS.IncludedPoolTypes },
       },
     });
 
@@ -106,5 +105,9 @@ export default function useUserPoolsQuery(
     ...options,
   });
 
-  return useQuery<UserPoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<UserPoolsQueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

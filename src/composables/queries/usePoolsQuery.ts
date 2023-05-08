@@ -1,6 +1,4 @@
-import { UseInfiniteQueryOptions } from 'react-query/types';
-import { Ref, ref, watch } from 'vue';
-import { useInfiniteQuery } from 'vue-query';
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -11,17 +9,18 @@ import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,
-  PoolsFallbackRepository,
   PoolsRepositoryFetchOptions,
   PoolRepository as SDKPoolRepository,
 } from '@balancer-labs/sdk';
+import { getPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
-import { tokenTreeLeafs } from '../usePool';
+import { tokenTreeLeafs } from '../usePoolHelpers';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
+import { bnum } from '@/lib/utils';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -33,6 +32,7 @@ type FilterOptions = {
   poolAddresses?: Ref<string[]>;
   isExactTokensList?: boolean;
   pageSize?: number;
+  first?: number;
 };
 
 export default function usePoolsQuery(
@@ -52,13 +52,11 @@ export default function usePoolsQuery(
    * METHODS
    */
 
-  function initializePoolsRepository(): PoolsFallbackRepository {
-    const fallbackRepository = new PoolsFallbackRepository(
-      buildRepositories(),
-      {
-        timeout: 30 * 1000,
-      }
-    );
+  function initializePoolsRepository() {
+    const FallbackRepository = getPoolsFallbackRepository();
+    const fallbackRepository = new FallbackRepository(buildRepositories(), {
+      timeout: 30 * 1000,
+    });
     return fallbackRepository;
   }
 
@@ -107,8 +105,8 @@ export default function usePoolsQuery(
 
         return decoratedPools;
       },
-      get skip(): number {
-        return balancerSubgraphService.pools.skip;
+      get skip(): undefined {
+        return undefined;
       },
     };
   }
@@ -133,14 +131,19 @@ export default function usePoolsQuery(
     const tokenListFormatted = filterTokens.value.map(address =>
       address.toLowerCase()
     );
+
+    const orderBy = isBalancerApiDefined
+      ? poolsSortField?.value
+      : 'totalLiquidity';
+
     const queryArgs: GraphQLArgs = {
       chainId: configService.network.chainId,
-      orderBy: poolsSortField?.value || 'totalLiquidity',
+      orderBy,
       orderDirection: 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
-        poolType: { not_in: POOLS.ExcludedPoolTypes },
-        totalShares: { gt: 0.01 },
+        poolType: { in: POOLS.IncludedPoolTypes },
+        totalShares: { gt: 0.00001 },
         id: { not_in: POOLS.BlockList },
       },
     };
@@ -151,7 +154,7 @@ export default function usePoolsQuery(
       queryArgs.where.address = { in: filterOptions.poolAddresses.value };
     }
     if (options.first) {
-      queryArgs.first = options.first;
+      queryArgs.first = filterOptions?.first || options.first;
     }
     if (options.skip) {
       queryArgs.skip = options.skip;
@@ -172,6 +175,26 @@ export default function usePoolsQuery(
     }
 
     return fetchArgs;
+  }
+
+  function customSort(pools: Pool[]): Pool[] {
+    if (poolsSortField?.value === 'totalLiquidity') return pools;
+
+    if (poolsSortField?.value === 'apr') {
+      return pools.sort((a, b) => {
+        const aprA = a?.apr?.max ?? 0;
+        const aprB = b?.apr?.max ?? 0;
+        return aprB - aprA;
+      });
+    } else if (poolsSortField?.value === 'volume') {
+      return pools.sort((a, b) => {
+        const volumeA = bnum(a?.totalSwapVolume ?? 0);
+        const volumeB = bnum(b?.totalSwapVolume ?? 0);
+        return volumeB.minus(volumeA).toNumber();
+      });
+    }
+
+    return pools;
   }
 
   /**
@@ -204,13 +227,14 @@ export default function usePoolsQuery(
     const fetchOptions = getFetchOptions(pageParam);
     let skip = 0;
     try {
-      const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      let pools: Pool[] = await poolsRepository.fetch(fetchOptions);
+      if (!isBalancerApiDefined) pools = customSort(pools);
+
+      poolsStoreService.addPools(pools);
 
       skip = poolsRepository.currentProvider?.skip
         ? poolsRepository.currentProvider.skip
-        : 0;
-
-      poolsStoreService.setPools(pools);
+        : poolsStoreService.pools.value?.length || 0;
 
       return {
         pools,
@@ -225,7 +249,8 @@ export default function usePoolsQuery(
     }
   };
 
-  options.getNextPageParam = (lastPage: PoolsQueryResponse) => lastPage.skip;
+  options.getNextPageParam = (lastPage: PoolsQueryResponse) =>
+    lastPage.skip || 0;
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, options);
 }

@@ -1,9 +1,21 @@
-import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
-import { SubgraphPoolBase, SwapInfo } from '@balancer-labs/sdk';
+import { ExitExactInResponse } from '@/services/balancer/pools/exits/handlers/exact-in-exit.handler';
+import { ExitExactOutResponse } from '@/services/balancer/pools/exits/handlers/exact-out-exit.handler';
+import { RecoveryExitResponse } from '@/services/balancer/pools/exits/handlers/recovery-exit.handler';
+import { ExactInJoinResponse } from '@/services/balancer/pools/joins/handlers/exact-in-join.handler';
+import {
+  Pool,
+  PoolType,
+  SubgraphPoolBase,
+  SwapAttributes,
+  SwapInfo,
+} from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { mockDeep } from 'vitest-mock-extended';
+import { wethAddress } from '@tests/unit/builders/address';
+import { aPoolWithMethods } from '@tests/unit/builders/pool.builders';
+import { mock, mockDeep } from 'vitest-mock-extended';
 
 type DeepPartial<T> = T extends object
   ? {
@@ -11,17 +23,8 @@ type DeepPartial<T> = T extends object
     }
   : T;
 
-export const defaultTokenUSDPrice = '1';
-export const defaultTokenEthPrice = '0.005';
-
-export const mockedTokenPrice = {
-  usd: '1',
-  eth: '0.005',
-};
-
-// TODO: move to sor mocks to subfile
-//TODO: Improve builder to avoid DeepPartial
-export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
+// TODO: Improve builder to avoid DeepPartial and move to sor mocks to subfile
+export const defaultSorPools: DeepPartial<Pool[]> = [
   {
     id: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
     address: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5',
@@ -37,9 +40,10 @@ export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
         managedBalance: '0',
         weight: '0.3334',
         priceRate: '1',
-        isExemptFromYieldProtocolFee: null,
+        isExemptFromYieldProtocolFee: undefined,
         token: {
           latestUSDPrice: '2.134056945116554709831454942129998',
+          latestFXPrice: '',
           pool: null,
         },
       },
@@ -48,23 +52,22 @@ export const defaultSorPools: DeepPartial<SubgraphPoolBase[]> = [
   {
     id: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
     address: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5',
-    poolType: 'Weighted',
+    poolType: PoolType.Weighted,
   },
   {
     id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
     address: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
-    poolType: 'Weighted',
+    poolType: PoolType.Weighted,
   },
   {
     id: '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249',
     address: '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd',
-    poolType: 'Stable',
+    poolType: PoolType.Stable,
   },
 ];
 
 export const defaultCostOfSwapInToken = BigNumber.from(1);
 
-//TODO: why mock is not working
 // export const defaultSwapInfo = mock<SwapInfo>();
 export const defaultSwapInfo: SwapInfo = {} as SwapInfo;
 defaultSwapInfo.returnAmount = BigNumber.from('10');
@@ -99,16 +102,72 @@ defaultSwapInfo.swaps = [
     returnAmount: '132200045154243418753',
   },
 ];
+export const defaultSwapAttributes = mock<SwapAttributes>();
 
 defaultSwapInfo.tokenAddresses = [
-  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  wethAddress,
   '0x616e8bfa43f920657b3497dbf40d6b1a02d4608d',
   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
 ];
 
+export const defaultPriceImpact = BigNumber.from(10).pow(18);
+
+export const defaultGeneralizedJoinResponse = {
+  to: 'test generalized join to',
+  encodedCall: 'generalized test encoded call',
+  minOut: '20',
+  expectedOut: '10',
+  priceImpact: defaultPriceImpact.toString(),
+};
+
+export const defaultGeneralizedExitResponse = {
+  to: 'test generalized exit to',
+  encodedCall: 'generalized test encoded call',
+  tokensOut: [],
+  expectedAmountsOut: [],
+  minAmountsOut: [],
+  priceImpact: defaultPriceImpact.toString(),
+};
+
+export const defaultExactInExit: ExitExactInResponse =
+  mock<ExitExactInResponse>();
+defaultExactInExit.expectedAmountsOut = ['100', '200'];
+defaultExactInExit.minAmountsOut = ['20'];
+defaultExactInExit.to = 'test exact exit to';
+defaultExactInExit.data = 'exact exit test encoded data';
+defaultExactInExit.attributes.exitPoolRequest = {
+  assets: [wethAddress],
+  minAmountsOut: ['3'],
+  userData: 'test user data',
+  toInternalBalance: false,
+};
+
+export const defaultExactOutExit: ExitExactOutResponse =
+  mock<ExitExactOutResponse>();
+defaultExactOutExit.to = 'test exact exit to';
+defaultExactOutExit.data = 'exact exit test encoded data';
+
+export const defaultExpectedBptOut = '30';
+
+export const defaultExactInJoin: ExactInJoinResponse =
+  mock<ExactInJoinResponse>();
+defaultExactInJoin.expectedBPTOut = defaultExpectedBptOut;
+defaultExactInJoin.to = 'test exact-in-join to';
+defaultExactInJoin.data = 'test exact-in-join encoded data';
+defaultExactInJoin.value = undefined;
+
+export const defaultRecoveryExit: RecoveryExitResponse =
+  mockDeep<RecoveryExitResponse>();
+defaultRecoveryExit.to = 'test recovery exit to';
+defaultRecoveryExit.data = 'recovery exit test encoded data';
+defaultRecoveryExit.attributes.exitPoolRequest = {
+  assets: [],
+  minAmountsOut: [],
+  userData: 'user data',
+  toInternalBalance: true,
+};
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
-  balancerMock.data.tokenPrices.find.mockResolvedValue(mockedTokenPrice);
   balancerMock.sor.fetchPools.mockResolvedValue(true);
 
   balancerMock.sor.getPools.mockReturnValue(
@@ -121,9 +180,38 @@ export function generateBalancerSdkMock() {
 
   balancerMock.sor.getSwaps.mockResolvedValue(defaultSwapInfo);
 
+  // Mock generalized join
+  balancerMock.pools.generalisedJoin.mockResolvedValue(
+    defaultGeneralizedJoinResponse
+  );
+
+  // Mock generalized exit
+  balancerMock.pools.generalisedExit.mockResolvedValue(
+    defaultGeneralizedExitResponse
+  );
+
+  // Mock pool find for exact join/exits
+  balancerMock.pools.find.mockResolvedValue(
+    aPoolWithMethods({
+      buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
+      buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
+      buildRecoveryExit: vi.fn(() => defaultRecoveryExit),
+      buildJoin: vi.fn(() => defaultExactInJoin),
+      calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
+    })
+  );
+
+  balancerMock.swaps.findRouteGivenIn.mockResolvedValue(defaultSwapInfo);
+  balancerMock.swaps.buildSwap.mockImplementation(({ deadline }) => {
+    defaultSwapAttributes.attributes.deadline = deadline;
+    return defaultSwapAttributes;
+  });
+
+  balancerMock.swaps.fetchPools.mockResolvedValue(true);
+
   return balancerMock;
 }
 
-export function initBalancerWithDefaultMocks() {
-  initBalancer(generateBalancerSdkMock());
+export function initBalancerSdkWithDefaultMocks() {
+  initBalancerSDK(generateBalancerSdkMock());
 }

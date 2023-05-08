@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 
 export default {
-  to: '0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9',
+  to: '0x230a59F4d9ADc147480f03B0D3fFfeCd56c3289a',
   from: '0xaD66946538E4B03B1910DadE713feBb8B59Cff60',
   contractAddress: null,
   transactionIndex: 20,
@@ -63,7 +63,7 @@ export default {
       blockNumber: 22043639,
       transactionHash:
         '0x24d6067731ee34f159f00f337be38b26450e181ba3026779187da2ad72023de6',
-      address: '0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9',
+      address: '0x230a59F4d9ADc147480f03B0D3fFfeCd56c3289a',
       topics: [
         '0x83a48fbcfc991335314e74d0496aab6a1987e992ddc85dddbcc4d6dd6ef2e9fc',
         '0x00000000000000000000000092e244b931bd6c71c1db2e50326480a0ba530fc7',

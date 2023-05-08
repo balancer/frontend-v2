@@ -7,7 +7,13 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import BridgeLink from '@/components/links/BridgeLink.vue';
-import { isL2 } from '@/composables/useNetwork';
+import { hasBridge } from '@/composables/useNetwork';
+import { provideUserTokens } from '@/providers/local/user-tokens.provider';
+
+/**
+ * PROVIDERS
+ */
+provideUserTokens();
 
 /**
  * COMPOSABLES
@@ -23,7 +29,7 @@ const sections = computed(() => {
     { title: 'My wallet', id: 'my-wallet' },
     { title: 'Price chart', id: 'price-chart' },
   ];
-  if (isL2.value) sections.push({ title: 'Bridge assets', id: 'bridge' });
+  if (hasBridge.value) sections.push({ title: 'Bridge assets', id: 'bridge' });
   return sections;
 });
 
@@ -56,7 +62,7 @@ onMounted(() => {
           <template #price-chart>
             <PairPriceGraph />
           </template>
-          <template v-if="isL2" #bridge>
+          <template v-if="hasBridge" #bridge>
             <BridgeLink />
           </template>
         </BalAccordion>
@@ -64,7 +70,7 @@ onMounted(() => {
 
       <template #gutterRight>
         <PairPriceGraph />
-        <BridgeLink v-if="isL2" class="mt-4" />
+        <BridgeLink v-if="hasBridge" class="mt-4" />
       </template>
     </Col3Layout>
   </div>

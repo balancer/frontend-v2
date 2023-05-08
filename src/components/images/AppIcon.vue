@@ -7,7 +7,7 @@ import useDarkMode from '@/composables/useDarkMode';
  * TYPES
  */
 type Props = {
-  forceDark: boolean;
+  forceDark?: boolean;
 };
 
 /**

@@ -22,11 +22,11 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
-  removeBptFrom,
-  usePool,
+  usePoolHelpers,
   tokensListExclBpt,
   tokenTreeLeafs,
-} from '@/composables/usePool';
+  orderedPoolTokens,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
@@ -35,12 +35,16 @@ import { PoolToken } from '@/services/pool/types';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
+import metaService from '@/services/meta/meta.service';
+import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 
 /**
  * STATE
  */
 const route = useRoute();
 const poolId = (route.params.id as string).toLowerCase();
+const isRestakePreviewVisible = ref(false);
 
 /**
  * PROVIDERS
@@ -52,7 +56,7 @@ providePoolStaking(poolId);
  */
 const { t } = useI18n();
 
-const { prices } = useTokens();
+const { prices, priceQueryLoading } = useTokens();
 const { isWalletReady } = useWeb3();
 const { addAlert, removeAlert } = useAlerts();
 const _isVeBalPool = isVeBalPool(poolId);
@@ -61,10 +65,7 @@ const _isVeBalPool = isVeBalPool(poolId);
 const poolQuery = usePoolQuery(poolId, undefined, undefined);
 const pool = computed(() => poolQuery.data.value);
 const poolQueryLoading = computed(
-  () =>
-    poolQuery.isLoading.value ||
-    poolQuery.isIdle.value ||
-    Boolean(poolQuery.error.value)
+  () => poolQuery.isLoading.value || Boolean(poolQuery.error.value)
 );
 const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
@@ -72,16 +73,15 @@ const {
   isStableLikePool,
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
-} = usePool(poolQuery.data);
+  isDeprecatedPool,
+} = usePoolHelpers(poolQuery.data);
 //#endregion
 
 //#region pool snapshot query
 const poolSnapshotsQuery = usePoolSnapshotsQuery(poolId, undefined, {
   refetchOnWindowFocus: false,
 });
-const isLoadingSnapshots = computed(
-  () => poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
-);
+const isLoadingSnapshots = computed(() => poolSnapshotsQuery.isLoading.value);
 
 const snapshots = computed(() => poolSnapshotsQuery.data.value);
 //#endregion
@@ -99,10 +99,7 @@ const historicalPrices = computed(() => historicalPricesQuery.data.value);
 //#region APR query
 const aprQuery = usePoolAprQuery(poolId);
 const loadingApr = computed(
-  () =>
-    aprQuery.isLoading.value ||
-    aprQuery.isIdle.value ||
-    Boolean(aprQuery.error.value)
+  () => aprQuery.isLoading.value || Boolean(aprQuery.error.value)
 );
 const poolApr = computed(() => aprQuery.data.value);
 //#endregion
@@ -144,15 +141,8 @@ onBeforeUnmount(() => {
 });
 //#endregion
 
-const noInitLiquidity = computed(
-  () =>
-    !loadingPool.value &&
-    pool.value &&
-    Number(pool.value?.totalShares || '0') === 0
-);
-
 const missingPrices = computed(() => {
-  if (pool.value) {
+  if (pool.value && prices.value && !priceQueryLoading.value) {
     const tokensWithPrice = Object.keys(prices.value);
     const tokens = tokenTreeLeafs(pool.value.tokens);
 
@@ -163,14 +153,14 @@ const missingPrices = computed(() => {
 
 const titleTokens = computed<PoolToken[]>(() => {
   if (!pool.value || !pool.value.tokens) return [];
-  const { tokens } = removeBptFrom(pool.value);
-  if (!tokens) return [];
 
-  return [...tokens].sort((a, b) => Number(b.weight) - Number(a.weight));
+  return orderedPoolTokens(pool.value, pool.value.tokens);
 });
 
-const isStakablePool = computed((): boolean =>
-  POOLS.Stakable.AllowList.includes(poolId)
+const isStakablePool = computed(
+  (): boolean =>
+    POOLS.Stakable.VotingGaugePools.includes(poolId) ||
+    POOLS.Stakable.AllowList.includes(poolId)
 );
 
 const poolPremintedBptIndex = computed(() => {
@@ -182,6 +172,10 @@ const showBrandedRedirectCard = computed(() => {
   return POOLS.BrandedRedirect?.[poolId] || false;
 });
 
+function setRestakeVisibility(value: boolean): void {
+  isRestakePreviewVisible.value = value;
+}
+
 /**
  * WATCHERS
  */
@@ -192,7 +186,7 @@ watch(poolQuery.error, () => {
       label: t('alerts.pool-fetch-error'),
       type: AlertType.ERROR,
       persistent: true,
-      action: poolQuery.refetch.value,
+      action: poolQuery.refetch,
       actionLabel: t('alerts.retry-label'),
       priority: AlertPriority.MEDIUM,
     });
@@ -200,6 +194,15 @@ watch(poolQuery.error, () => {
     removeAlert('pool-fetch-error');
   }
 });
+
+watch(
+  () => pool.value,
+  () => {
+    if (pool.value) {
+      metaService.setMeta(route, pool.value);
+    }
+  }
+);
 </script>
 
 <template>
@@ -218,11 +221,11 @@ watch(poolQuery.error, () => {
           :pool="pool"
           :poolApr="poolApr"
           :isStableLikePool="isStableLikePool"
-          :noInitLiquidity="noInitLiquidity"
           :titleTokens="titleTokens"
           :missingPrices="missingPrices"
           :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
           :isComposableStableLikePool="isComposableStableLikePool"
+          @set-restake-visibility="setRestakeVisibility"
         />
       </div>
       <div class="hidden lg:block" />
@@ -285,7 +288,7 @@ watch(poolQuery.error, () => {
             class="mb-4 h-60 pool-actions-card"
           />
           <MyPoolBalancesCard
-            v-else-if="!noInitLiquidity"
+            v-else
             :pool="pool"
             :missingPrices="missingPrices"
             class="mb-4"
@@ -296,14 +299,27 @@ watch(poolQuery.error, () => {
             v-if="isStakablePool && !loadingPool && pool && isWalletReady"
             :pool="pool"
             class="staking-incentives"
+            @set-restake-visibility="setRestakeVisibility"
           />
           <PoolLockingCard
             v-if="_isVeBalPool && !loadingPool && pool"
             :pool="pool"
             class="pool-locking"
           />
+          <PoolMigrationCard
+            v-if="poolId && isWalletReady && isDeprecatedPool"
+            :poolId="poolId"
+          />
         </BalStack>
       </div>
+      <StakePreviewModal
+        v-if="!!pool"
+        :isVisible="isRestakePreviewVisible"
+        :pool="pool"
+        action="restake"
+        @close="isRestakePreviewVisible = false"
+        @success="isRestakePreviewVisible = false"
+      />
     </div>
   </div>
 </template>

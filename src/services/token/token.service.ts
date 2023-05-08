@@ -25,5 +25,3 @@ export default class TokenService {
     this.allowances = new allowancesConcernClass(this);
   }
 }
-
-export const tokenService = new TokenService();

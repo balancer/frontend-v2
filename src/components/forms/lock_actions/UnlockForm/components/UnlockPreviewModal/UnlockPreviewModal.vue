@@ -69,7 +69,7 @@ function handleClose() {
 
 function handleSuccess() {
   unlockConfirmed.value = true;
-  refetchLockInfo.value();
+  refetchLockInfo();
 }
 </script>
 

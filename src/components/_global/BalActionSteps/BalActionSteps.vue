@@ -67,27 +67,33 @@ const defaultActionState: TransactionActionState = {
  */
 const currentActionIndex = ref(0);
 const _actions = ref<TransactionActionInfo[]>(props.actions);
+const actionStates = ref<TransactionActionState[]>([]);
 
-const actionStates = ref(
-  _actions.value.map(() => ({
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(() => {
+  actionStates.value = props.actions.map(() => ({
     ...defaultActionState,
-  }))
-);
+  }));
+});
 
 /**
  * WATCHERS
  */
 watch(
-  () => [props.actions, props.isLoading],
-  () => {
-    _actions.value = props.actions;
-    actionStates.value = _actions.value.map(() => ({
-      ...defaultActionState,
-    }));
+  () => props.actions,
+  newActions => {
+    newActions.forEach((action, i) => {
+      _actions.value[i] = action;
+      if (!actionStates.value[i]) {
+        actionStates.value[i] = {
+          ...defaultActionState,
+        };
+      }
+    });
   },
-  {
-    deep: true,
-  }
+  { deep: true }
 );
 
 watch(
@@ -127,7 +133,7 @@ const actions = computed((): TransactionAction[] => {
 });
 
 const currentAction = computed(
-  (): TransactionAction => actions.value[currentActionIndex.value]
+  (): TransactionAction | undefined => actions.value[currentActionIndex.value]
 );
 
 const currentActionState = computed(
@@ -173,7 +179,7 @@ async function submit(
     state.init = false;
     state.confirming = true;
 
-    if (currentAction.value.isSignAction) {
+    if (currentAction.value?.isSignAction) {
       handleSignAction(state);
       return;
     }
@@ -183,8 +189,10 @@ async function submit(
     state.init = false;
     state.confirming = false;
     state.error = parseError(error);
-    console.error(error);
-    captureException(error);
+    if (state.error) {
+      console.error(error);
+      captureException(error);
+    }
   }
 }
 
@@ -256,17 +264,17 @@ async function handleTransaction(
               : currentAction?.loadingLabel
           "
           block
-          @click="currentAction.promise()"
+          @click="currentAction?.promise()"
         >
           <div
             :class="{
               'flex grow justify-between items-center':
-                currentAction.isSignAction,
+                currentAction?.isSignAction,
             }"
           >
-            <img v-if="currentAction.isSignAction" :src="signature" />
+            <img v-if="currentAction?.isSignAction" :src="signature" />
             {{ currentAction?.label }}
-            <div v-if="currentAction.isSignAction" class="w-8"></div>
+            <div v-if="currentAction?.isSignAction" class="w-8"></div>
           </div>
         </BalBtn>
       </BalStack>

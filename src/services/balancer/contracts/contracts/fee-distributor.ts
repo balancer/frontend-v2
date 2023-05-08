@@ -8,7 +8,7 @@ import FeeDistributorStaticABI from '@/lib/abi/FeeDistributorStatic.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class FeeDistributor {
@@ -23,7 +23,7 @@ export class FeeDistributor {
     private readonly abi = FeeDistributorABI,
     private readonly staticAbi = FeeDistributorStaticABI,
     private readonly config = configService,
-    private readonly web3 = web3Service,
+    private readonly walletService = walletServiceInstance,
     private readonly provider = rpcProviderService.jsonProvider
   ) {}
 
@@ -49,14 +49,14 @@ export class FeeDistributor {
    * the claimTokens method by modifing the ABI to make it a view function.
    */
   public async getClaimableBalances(userAddress: string): Promise<BalanceMap> {
-    const balances = await this.web3.txBuilder.contract.callStatic<BigNumber[]>(
-      {
-        contractAddress: this.address,
-        abi: this.staticAbi,
-        action: 'claimTokens',
-        params: [userAddress, this.claimableTokens],
-      }
-    );
+    const balances = await this.walletService.txBuilder.contract.callStatic<
+      BigNumber[]
+    >({
+      contractAddress: this.address,
+      abi: this.staticAbi,
+      action: 'claimTokens',
+      params: [userAddress, this.claimableTokens],
+    });
     const stringBalances = balances.map(balance => balance.toString());
 
     return zipObject(this.claimableTokens, stringBalances);
@@ -68,7 +68,7 @@ export class FeeDistributor {
   public async claimBalances(
     userAddress: string
   ): Promise<TransactionResponse> {
-    return await this.web3.txBuilder.contract.sendTransaction({
+    return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'claimTokens',
@@ -83,7 +83,7 @@ export class FeeDistributor {
     userAddress: string,
     tokenAddress: string
   ): Promise<TransactionResponse> {
-    return await this.web3.txBuilder.contract.sendTransaction({
+    return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'claimToken',

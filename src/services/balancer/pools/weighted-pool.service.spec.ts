@@ -1,5 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
@@ -10,6 +10,8 @@ import { WeightedPool__factory } from '@balancer-labs/typechain';
 import WeightedPoolsService from './weighted-pool.service';
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
+import { Web3ProviderMock } from '@/dependencies/wallets/wallet-connector-mocks';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 
 const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();
@@ -17,19 +19,9 @@ const weightedPoolsService = new WeightedPoolsService();
 const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
 
-vi.mock('@/services/rpc-provider/rpc-provider.service');
 vi.mock('@/services/web3/transactions/transaction.builder');
-vi.mock('@ethersproject/contracts', () => {
-  const Contract = vi.fn().mockImplementation(() => {
-    return {
-      getPoolId: vi.fn().mockImplementation(() => mockPoolId),
-    };
-  });
-  return {
-    Contract,
-  };
-});
 
+initEthersContractWithDefaultMocks();
 // Overwrite connect
 //@ts-ignore
 WeightedPool__factory.connect = () => {
@@ -41,6 +33,7 @@ WeightedPool__factory.connect = () => {
 describe('PoolCreator', () => {
   const mockPoolName = 'TestPool';
   const mockPoolSymbol = '50WETH-50USDT';
+  const mockRateProviders = [AddressZero, AddressZero];
   const mockSwapFee = '0.01';
   const mockOwner = AddressZero;
 
@@ -69,35 +62,9 @@ describe('PoolCreator', () => {
     };
   });
 
-  vi.mock('@/services/gas-price/gas-price.service', () => {
-    return {
-      gasPriceService: {
-        settings: vi.fn().mockReturnValue({
-          gasLimit: 1e5,
-        }),
-        settingsForContractCall: vi.fn().mockReturnValue({
-          gasLimit: 1e5,
-        }),
-      },
-    };
-  });
-
-  const mockProvider: Web3Provider = {
-    _isProvider: true,
-    // @ts-ignore
-    getTransactionReceipt: async () => polygonCreatePoolReceipt,
-    // @ts-ignore
-    getSigner: () => {
-      return {
-        _isSigner: true,
-        getAddress: vi.fn().mockImplementation(() => {
-          return '0x0';
-        }),
-      };
-    },
-    initBlockListener: vi.fn(),
-    getJsonProvider: vi.fn(),
-  };
+  const mockProvider = new Web3ProviderMock();
+  // @ts-ignore
+  mockProvider.getTransactionReceipt = async () => polygonCreatePoolReceipt;
 
   describe('create', () => {
     describe('happy case', () => {
@@ -131,10 +98,14 @@ describe('PoolCreator', () => {
           new BigNumber(tokens.WETH.weight).multipliedBy(1e16).toString(),
           new BigNumber(tokens.USDT.weight).multipliedBy(1e16).toString(),
         ]);
-        expect(sendTransactionParams[4]).toEqual(
+        expect(sendTransactionParams[4]).toEqual(mockRateProviders);
+        expect(sendTransactionParams[5]).toEqual(
           new BigNumber(mockSwapFee).multipliedBy(1e18).toString()
         );
-        expect(sendTransactionParams[5]).toEqual(mockOwner);
+        expect(sendTransactionParams[6]).toEqual(mockOwner);
+        // Verify salt has expected format:
+        expect(sendTransactionParams[7]).toStartWith('0x');
+        expect(sendTransactionParams[7]).toHaveLength(66);
       });
     });
 

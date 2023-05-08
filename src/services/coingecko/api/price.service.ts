@@ -3,24 +3,17 @@ import { groupBy, invert, last } from 'lodash';
 
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { TOKENS } from '@/constants/tokens';
-import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
+import { getAddressFromPoolId } from '@/lib/utils';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
 import { configService as _configService } from '@/services/config/config.service';
 
 import { CoingeckoClient } from '../coingecko.client';
-import {
-  CoingeckoService,
-  getNativeAssetId,
-  getPlatformId,
-} from '../coingecko.service';
+import { CoingeckoService, getPlatformId } from '../coingecko.service';
 import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
  */
-export type Price = { [fiat: string]: number };
-export type PriceResponse = { [id: string]: Price };
-export type TokenPrices = { [address: string]: Price };
 export interface HistoricalPriceResponse {
   market_caps: number[][];
   prices: number[][];
@@ -33,9 +26,6 @@ export class PriceService {
   fiatParam: string;
   appNetwork: string;
   platformId: string;
-  nativeAssetId: string;
-  nativeAssetAddress: string;
-  appAddresses: { [key: string]: string };
 
   constructor(
     service: CoingeckoService,
@@ -45,68 +35,6 @@ export class PriceService {
     this.fiatParam = service.supportedFiat;
     this.appNetwork = this.configService.network.key;
     this.platformId = getPlatformId(this.appNetwork);
-    this.nativeAssetId = getNativeAssetId(this.appNetwork);
-    this.nativeAssetAddress = this.configService.network.nativeAsset.address;
-    this.appAddresses = this.configService.network.addresses;
-  }
-
-  async getNativeAssetPrice(): Promise<Price> {
-    try {
-      const response = await this.client.get<PriceResponse>(
-        `/simple/price?ids=${this.nativeAssetId}&vs_currencies=${this.fiatParam}`
-      );
-      return response[this.nativeAssetId];
-    } catch (error) {
-      console.error('Unable to fetch Ether price', error);
-      throw error;
-    }
-  }
-
-  /**
-   *  Rate limit for the CoinGecko API is 10 calls each second per IP address.
-   */
-  async getTokens(
-    addresses: string[],
-    addressesPerRequest = 100
-  ): Promise<TokenPrices> {
-    try {
-      if (addresses.length / addressesPerRequest > 10)
-        throw new Error('To many requests for rate limit.');
-
-      addresses = addresses
-        .map(getAddressFromPoolId)
-        .map(address => this.addressMapIn(address));
-      const pageCount = Math.ceil(addresses.length / addressesPerRequest);
-      const pages = Array.from(Array(pageCount).keys());
-      const requests: Promise<PriceResponse>[] = [];
-
-      pages.forEach(page => {
-        const addressString = addresses.slice(
-          addressesPerRequest * page,
-          addressesPerRequest * (page + 1)
-        );
-        const endpoint = `/simple/token_price/${this.platformId}?contract_addresses=${addressString}&vs_currencies=${this.fiatParam}`;
-        const request = retryPromiseWithDelay(
-          this.client.get<PriceResponse>(endpoint),
-          3,
-          2000
-        );
-        requests.push(request);
-      });
-
-      const paginatedResults = await Promise.all(requests);
-      const results = this.parsePaginatedTokens(paginatedResults);
-
-      // Inject native asset price if included in requested addresses
-      if (includesAddress(addresses, this.nativeAssetAddress)) {
-        results[this.nativeAssetAddress] = await this.getNativeAssetPrice();
-      }
-
-      return results;
-    } catch (error) {
-      console.error('Unable to fetch token prices', addresses, error);
-      throw error;
-    }
   }
 
   async getTokensHistorical(
@@ -155,18 +83,6 @@ export class PriceService {
       console.error('Unable to fetch token prices', addresses, error);
       throw error;
     }
-  }
-
-  private parsePaginatedTokens(paginatedResults: TokenPrices[]): TokenPrices {
-    const results = paginatedResults.reduce(
-      (result, page) => ({ ...result, ...page }),
-      {}
-    );
-    const entries = Object.entries(results);
-    const parsedEntries = entries
-      .filter(result => Object.keys(result[1]).length > 0)
-      .map(result => [this.addressMapOut(result[0]), result[1]]);
-    return Object.fromEntries(parsedEntries);
   }
 
   private parseHistoricalPrices(

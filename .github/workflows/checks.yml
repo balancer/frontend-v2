@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
@@ -40,12 +40,9 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - name: TODO to Issue
-        uses: alstr/todo-to-issue-action@v4
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
       - name: Install deps
@@ -55,14 +52,14 @@ jobs:
           # Increase memory to avoid heap error
           # https://github.com/vitejs/vite/issues/2433
           NODE_OPTIONS: "--max-old-space-size=8192"
-        run: npm run build
+        run: npm run build:witChunkSizeCheck
 
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
       - name: Install deps
@@ -77,9 +74,9 @@ jobs:
   Test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
       - name: Install deps

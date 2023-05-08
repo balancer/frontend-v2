@@ -4,9 +4,8 @@ import { TokenInfo } from '@/types/TokenList';
 import { useTokens } from '@/providers/tokens.provider';
 import { useUserData } from '@/providers/user-data.provider';
 import usePoolQuery from './queries/usePoolQuery';
-import { isL2 } from './useNetwork';
-import { fiatValueOf } from './usePool';
-import useVeBal from './useVeBAL';
+import { fiatValueOf } from './usePoolHelpers';
+import useVeBal, { isVeBalSupported } from './useVeBAL';
 
 interface Options {
   enabled?: boolean;
@@ -21,7 +20,9 @@ export function useLock({ enabled = true }: Options = {}) {
   /**
    * QUERIES
    */
-  const shouldFetchLockPool = computed((): boolean => !isL2.value && enabled);
+  const shouldFetchLockPool = computed(
+    (): boolean => isVeBalSupported.value && enabled
+  );
   const lockPoolQuery = usePoolQuery(
     lockablePoolId.value as string,
     shouldFetchLockPool
@@ -32,12 +33,10 @@ export function useLock({ enabled = true }: Options = {}) {
    * COMPUTED
    */
   const isLoadingLockPool = computed(
-    (): boolean => lockPoolQuery.isLoading.value || lockPoolQuery.isIdle.value
+    (): boolean => lockPoolQuery.isLoading.value
   );
 
-  const isLoadingLockInfo = computed(
-    (): boolean => lockQuery.isLoading.value || lockQuery.isIdle.value
-  );
+  const isLoadingLockInfo = computed((): boolean => lockQuery.isLoading.value);
 
   const isLoadingLock = computed(
     (): boolean => isLoadingLockPool.value || isLoadingLockInfo.value
@@ -58,6 +57,7 @@ export function useLock({ enabled = true }: Options = {}) {
       : '0'
   );
 
+  // Total locked shares (veBAL).
   const totalLockedShares = computed((): string =>
     lockPool.value && lock.value?.hasExistingLock
       ? lock.value.lockedAmount

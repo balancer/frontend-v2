@@ -3,7 +3,7 @@
  */
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
-import { fiatValueOf } from '@/composables/usePool';
+import { fiatValueOf } from '@/composables/usePoolHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
 import { computed, InjectionKey, provide, reactive, ref } from 'vue';
@@ -65,13 +65,14 @@ const provider = () => {
   });
 
   // Is loading any user staking data?
-  const isLoading = computed(
-    (): boolean =>
+  const isLoading = computed((): boolean => {
+    return (
       isQueryLoading(userGaugeSharesQuery) ||
       isQueryLoading(stakedSharesQuery) ||
       isQueryLoading(userBoostsQuery) ||
       isQueryLoading(stakedPoolsQuery)
-  );
+    );
+  });
 
   /**
    * Gets a user's staked BPT balance for a given pool.

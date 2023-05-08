@@ -4,6 +4,14 @@
   "account": "Account",
   "action": "Action",
   "actions": "Actions",
+  "actionSteps": {
+    "approve": {
+      "loadingLabel": "Confirm approval in wallet"
+    },
+    "swap": {
+      "loadingLabel": "Confirm swap in wallet"
+    }
+  },
   "activity": "Activity",
   "addLiquidity": "Add liquidity",
   "addToken": "Add a token",
@@ -16,7 +24,11 @@
     "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
     "retry-label": "Refresh to try again",
     "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →",
-    "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28."
+    "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28.",
+    "withdrawToInternalBalance": {
+      "title": "Withdraw to Vault balance",
+      "description": "This transaction will withdraw your tokens from this pool to your Balancer Vault balance. \n\nYou will then be able to withdraw the relevant tokens from the Vault using the"
+    }
   },
   "allow": "Allow",
   "allowing": "Allowing...",
@@ -65,8 +77,12 @@
   "approveGP": "Approve swapping on Cowswap Protocol",
   "approveLidoRelayer": "Approve Lido relayer",
   "approveBatchRelayer": "Approve Batch relayer",
+  "signRelayerApproval": "Sign relayer approval",
+  "signingRelayerApproval": "Signing relayer approval",
+  "signRelayerApprovalTooltip": "Your signature is required to use the relayer.",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
+  "approveRelayerTooltip": "Your permission is required to use the relayer.",
   "approveTokens": "Approve tokens",
   "approving": "Approving",
   "approvingCowswapRelayer": "Approving Cowswap relayer",
@@ -98,7 +114,7 @@
     "xave": {
       "title": "Xave Finance",
       "description": "Xave Finance  (pronounced \"Save Finance\") allows financial services companies (\"fintechs\") to leverage DeFi for real time remittance transfers and high yield consumer savings. Xave does this in a capital efficient way by building liquid FX markets via our custom FXPools integrated with the Balancer V2 Vault.",
-      "btnText": "Manage liquidity on xave.co"
+      "btnText": "Manage liquidity on app.xave.co"
     }
   },
   "cancel": "Cancel",
@@ -342,7 +358,6 @@
   "delegateFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every swap utilizing the liquidity in this pool. Control has been delegated to the community, so fees could change in the future if this pool becomes actively managed.",
   "depositing": "depositing",
   "details": "Details",
-  "deprecatedPool": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
   "disconnect": "Disconnect",
   "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <span class='font-semibold'>{0}</span>",
   "docs": "Docs",
@@ -358,6 +373,7 @@
   "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>liquidity provision, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
   "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
   "etherscan": "Etherscan",
+  "eulerLinear": "Euler Linear",
   "exceedsBalance": "Exceeds wallet balance",
   "exceedsPoolBalance": "Exceeds pool balance for this token",
   "expired": "Expired",
@@ -368,10 +384,22 @@
   "featuredProtocol": "Featured ecosystem protocol",
   "featuredProtocols": {
     "title": "Featured ecosystem protocols",
-    "Copper": "Fjord (formerly known as Copper Launch) is a community platform that connects inspired projects with passionate supporters via the power of Liquidity Bootstrapping Pools (LBPs).",
-    "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
-    "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
-    "Tracer": "Mycelium (formerly TracerDAO) is an open-source protocol for derivative markets. It utilizes Balancer for aggregated liquidity and creating a market for leveraged tokens."
+    "Copper": {
+      "description": "Fjord (formerly, “Copper Launch”) is a community platform that connects inspired projects with passionate supporters via the power of Liquidity Bootstrapping Pools (LBPs). Also check out their new fair launch NFT drop platform.",
+      "linkText": "Fjord Foundry website"
+    },
+    "Beets": {
+      "description": "Powered by Balancer technology, Beethoven X provides a composable liquidity base layer on Fantom and Optimism. From Boosted Pools to Maturity Adjusted fNFTs, the DEX offers a suite of powerful financial primitives.",
+      "linkText": "Beethoven X website"
+    },
+    "Xave": {
+      "description": "Xave Finance enables real time remittance transfers and high yield consumer savings for Fintechs, with capital efficient liquid FX markets (via custom FXPools) integrated with the Balancer Vault.",
+      "linkText": "Xave website"
+    },
+    "Gyroscope": {
+      "description": "Gyroscope is a new stablecoin that, like a physical gyroscope, aims to remain stable as the surrounding environment changes. Gyroscope AMMs—Concentrated Liquidity Pools (CLPs)—leverage Balancer's customizable AMM logic.",
+      "linkText": "Gyroscope website"
+    }
   },
   "fees": "fees",
   "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every swap utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
@@ -422,6 +450,18 @@
   "goToMigratedPool": "Go to migrated pool",
   "governance": "Governance",
   "grants": "Grants",
+  "deprecatedPool": {
+    "tooltip": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
+    "hasNewPool": {
+      "title": "Move your liquidity for future BAL incentives",
+      "description": "Liquidity mining incentives are being phased out for this pool, since the upgraded pool is now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the"
+    },
+    "generic": {
+      "title": "Move your liquidity for future BAL incentives",
+      "description": "Liquidity mining incentives are being phased out for this pool, since upgraded pools are now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the newly incentivized pools."
+    },
+    "gaugeKilledReason": "This pool's gauge will soon be killed. A new version of this pool has been created that uses Aave v3."
+  },
   "highPriceImpact": "High price impact",
   "highPriceImpactDetailed": "This swap is significantly moving the market price.",
   "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Foundation is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
@@ -429,6 +469,7 @@
   "hourAbbrev": "h",
   "incentives": "incentives",
   "incentiveToken": "Incentive token",
+  "incentivizedPool": "incentivized pool",
   "inclXInVeBal": "{0} in veBAL",
   "initialBPT": "Initial BPT",
   "initialWeight": "Initial weight",
@@ -480,6 +521,11 @@
         "title": "You have no pool tokens to join with",
         "paragraph1": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact.",
         "paragraph2": "However, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens."
+      },
+      "blockedPool": {
+        "title": "This pool contains one or more tokens that have not been vetted by the Balancer community: {0}.",
+        "description": "For the protection of LPs, adding liquidity to the pool has been disabled. Click",
+        "description2": "to learn how to submit the token(s) for review."
       }
     },
     "error": {
@@ -546,6 +592,7 @@
   "lbpAprTooltip": "Only the LBP creator can add liquidity and receive this APR.",
   "managedPool": "Managed pool",
   "manageLists": "Manage lists",
+  "manageVaultBalances": "Manage Vault balances",
   "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
   "max": "Max",
   "maxed": "Maxed",
@@ -557,10 +604,17 @@
   "missingPoolNameOrSymbolInfo": "There is a missing pool name or symbol, fill it in before creating the pool.",
   "menu": "Menu",
   "migrate": "Migrate",
+  "migrateCard": {
+    "title": "Migrate liquidity",
+    "description": "Liquidity mining incentives have expired for this pool. For future BAL incentives: unstake, withdraw and add liquidity to an incentivized pool.",
+    "viewBtn": "View incentivized pools",
+    "recommendedPool": "Recommended incentivized pools",
+    "upgradedPool": "Upgraded incentivized pool"
+  },
   "modals": {
     "veBalRedirectModal": {
       "title": "Proceed to mainnet",
-      "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by adding liquidity to eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
+      "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum, Polygon and Gnosis by adding liquidity to eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
     }
   },
   "month": "month",
@@ -597,9 +651,14 @@
   "next": "Next",
   "noContent": "No content",
   "noClaimableIncentives": "No claimable incentives",
+  "noClaimableIncentivesOnThisChain": "No incentives have currently been added to this chain. Check back later.",
   "noData": "No data available",
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before liquidity provision is supported.",
+  "requiresAllowListing1": "This pool has not been added to our allowlist.",
+  "requiresAllowListing2": "to learn how to enable a new pool.",
+  "Click": "Click",
+  "here": "here",
   "noInvestments": "No liquidity",
   "noUnstakedInvestments": "You have no unstaked liquidity on {0}",
   "noStakedInvestments": "You have no staked liquidity on {0}",
@@ -643,6 +702,10 @@
       "btns": {
         "claimOn": "Claim on"
       }
+    },
+    "balances": {
+      "title": "My Vault balances",
+      "eulerHack": "Euler eTokens (e.g. eUSDC, eUSDT and eDAI) affected by the Euler hack have been paused and are not transferrable from the Balancer Vault. To redeem your share of the recovered funds of the Euler hack, if you haven't done so already, go to:"
     }
   },
   "pastEarnings": {
@@ -656,6 +719,7 @@
     "balancerThirdPartyInfo": "Balancer is an open source, permissionless, decentralized protocol. The smart contracts that power the ecosystem may be used by anyone. This website is the Balancer Foundation's front-end to the ecosystem and it is also open-source. You are free to fork it on Github and modify it as you wish",
     "cookiesPolicy": "Cookies Policy",
     "privacyPolicy": "Privacy Policy",
+    "risks": "Risks",
     "termsOfUse": "Terms of Use",
     "thirdPartyServices": "3rd party services",
     "usesFollowing": "This website uses the following"
@@ -759,6 +823,12 @@
     "renBTCWarning": {
       "title": "You are strongly advised to withdraw any liquidity from this pool ASAP to avoid losses! Ideally you should withdraw in a proportional fashion to reduce price impact. The Ren 1.0 network is expected to be <a href=\"https://medium.com/renproject/moving-on-from-alameda-da62a823ce93\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">sunset</a> in December 2022. This will render this version of the renBTC token as valueless, which will trend the overall pool value towards zero. Ren Protocol also strongly advises to <a href=\"https://twitter.com/renprotocol/status/1595807696296751104\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">bridge all ren assets</a> back to their native chain ASAP to avoid being left holding a valueless token which can no longer be redeemed for the native asset."
     },
+    "eulerBoostedWarning": {
+      "title": "Due to an exploit on Euler, this pool has been set to recovery mode by the <a href=\"https://docs.balancer.fi/concepts/governance/emergency.html\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Emergency multisig</a>. Euler has disabled the transferability of eTokens so withdrawals from this pool are not possible until that functionality is restored."
+    },
+    "eulerRecoveryModeWarning": {
+      "title": "Due to an exploit on Euler this pool has been set to recovery mode by the <a href=\"https://docs.balancer.fi/concepts/governance/emergency.html\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Emergency multisig</a>. Proportional withdrawals are enabled in the UI and you are encouraged to withdraw as soon as possible."
+    },
     "poolProtocolFeeVulnWarning": {
       "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://twitter.com/Balancer/status/1611363559685898247\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
       "tooltip": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately."
@@ -776,7 +846,7 @@
   "previewWrap": "Preview {0} Wrap",
   "previewMigrate": "Preview migrate",
   "priceImpact": "Price impact",
-  "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
+  "priceImpactAccept": "I accept the high price impact from {0}, moving the market price based on the depth of the market.",
   "priceImpactCheckbox": "Price impact acknowledgement",
   "priceImpactTolerance": "Price impact tolerance",
   "priceUpdatedAlert": {
@@ -794,6 +864,8 @@
   "receipt": "Receipt",
   "receive": "Receive",
   "recentActivityTitle": "Recent activity",
+  "recoveryMode": "Recovery mode",
+  "recoveryModeDescription": "This pool is paused and in recovery mode. It does not pay protocol fees and the only available exit is proportional.",
   "redeem": "Redeem",
   "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
   "restoring": "Restoring...",
@@ -841,7 +913,7 @@
     "stakingIncentives": "Staking incentives",
     "totalShareTooltip": "Your current total share of LP tokens in the pool",
     "restakeGauge": "Restake to receive future liquidity mining incentives",
-    "restakeGaugeDescription": "You’re staking against a pool gauge which is being deactivated on 21 September 2022. Restake to the new gauge for this pool to receive future liquidity mining incentives.",
+    "restakeGaugeDescription": "You are staking in a gauge which has been deprecated. Restake to the new gauge for this pool to receive future liquidity mining incentives.",
     "unclaimedIncentives": "Unclaimed incentives",
     "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
     "unstakedPools": "Unstaked pools",
@@ -1222,8 +1294,8 @@
   "tokensLowerCase": "tokens",
   "tokensParen": "Token(s)",
   "tokenPrices": "Token prices",
-  "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowledge before continuing.",
-  "tokenWarningTitle": "You have added a custom token",
+  "unlistedTokenWarningTitle": "You have added a token that is not included in the Balancer Tokenlist.",
+  "unlistedTokenWarning": "You will not be able to complete pool creation until it's included. To add a token to our Tokenlist please follow our process described",
   "tooltips": {
     "addLiquidity": {
       "priceImpact": "Price impact from adding liquidity results when the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
@@ -1395,6 +1467,8 @@
     "fundPool": "Fund pool",
     "investInPool": "{0} in {1}",
     "withdrawFromPool": "{0} from {1}",
+    "withdrawFromBalance": "{0} from Vault balance",
+    "withdrawToBalance": "{0} to Vault balance",
     "migratePool": "{0} {1} to {2}",
     "wrapUnwrap": "{0} {1} to {2}",
     "tooltips": {
@@ -1421,6 +1495,8 @@
   "unwrap": "Unwrap",
   "usdValue": "USD Value",
   "useOf": "use of",
+  "useSignatures": "Use signatures",
+  "useSignaturesTooltip": "It's recommended to turn on signatures for gas-free transactions. However, if your wallet doesn't support the signing of signatures, you can turn it off.",
   "v1": "V1",
   "v2": "V2",
   "value": "Value",
@@ -1450,7 +1526,7 @@
   "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
     "tabs": {
-      "poolTokens": "Pool tokens (proportional)",
+      "poolTokens": "Proportional pool tokens",
       "singleToken": "Single token"
     },
     "label": "Withdraw",
@@ -1526,5 +1602,9 @@
     }
   },
   "poolActivity": "Pool activity",
-  "legacyClaims": "Legacy claims"
+  "legacyClaims": "Legacy claims",
+  "inputLabels": {
+    "tokenOut": "Token out",
+    "tokenIn": "Token in"
+  }
 }

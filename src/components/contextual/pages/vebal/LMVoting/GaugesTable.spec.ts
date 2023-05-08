@@ -71,7 +71,7 @@ const gauge = {
   address: gaugeId,
   network: 1,
   pool: {
-    id: '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+    id: '0x1542b8783e5e884b6fe7422dd2f71a42c5edb86d0000000000000000000002f3',
     address: '0x06Df3b2bbB68adc8B0e302443692037ED9f91b42',
     poolType: 'Stable',
     symbol: 'staBAL2',

@@ -12,15 +12,16 @@ import { calculateValidTo } from '../cowswap/utils';
 
 import ConfigService, { configService } from '@/services/config/config.service';
 
-import Web3Service, { web3Service } from '../web3/web3.service';
-import store from '@/store';
+import WalletService, {
+  walletService as walletServiceInstance,
+} from '@/services/web3/wallet.service';
 
 export default class VaultService {
   abi: ContractInterface;
 
   constructor(
     protected readonly config: ConfigService = configService,
-    private readonly web3: Web3Service = web3Service
+    private readonly walletService: WalletService = walletServiceInstance
   ) {
     this.abi = Vault__factory.abi;
   }
@@ -33,11 +34,11 @@ export default class VaultService {
     single: SingleSwap,
     funds: FundManagement,
     tokenOutAmount: string,
+    transactionDeadline: number,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    const storeState = store.state as any;
-    const deadline = calculateValidTo(storeState.app.transactionDeadline);
-    return this.web3.txBuilder.contract.sendTransaction({
+    const deadline = calculateValidTo(transactionDeadline);
+    return this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'swap',
@@ -52,16 +53,49 @@ export default class VaultService {
     tokenAddresses: string[],
     funds: FundManagement,
     limits: string[],
+    transactionDeadline: number,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    const storeState = store.state as any;
-    const deadline = calculateValidTo(storeState.app.transactionDeadline);
-    return this.web3.txBuilder.contract.sendTransaction({
+    const deadline = calculateValidTo(transactionDeadline);
+    return this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'batchSwap',
       params: [swapKind, swaps, tokenAddresses, funds, limits, deadline],
       options,
+    });
+  }
+
+  public getInternalBalance(
+    account: string,
+    tokens: string[]
+  ): Promise<string[]> {
+    return this.walletService.txBuilder.contract.callStatic({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'getInternalBalance',
+      params: [account, tokens],
+    });
+  }
+
+  public manageUserBalance({
+    kind,
+    asset,
+    amount,
+    sender,
+    recipient,
+  }: {
+    kind: number;
+    asset: string;
+    amount: string;
+    sender: string;
+    recipient: string;
+  }): Promise<TransactionResponse> {
+    return this.walletService.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'manageUserBalance',
+      params: [[{ kind, asset, amount, sender, recipient }]],
     });
   }
 }

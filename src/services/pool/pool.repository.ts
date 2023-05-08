@@ -4,18 +4,22 @@ import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import {
   GraphQLArgs,
   PoolRepository as SDKPoolRepository,
-  PoolsFallbackRepository,
 } from '@balancer-labs/sdk';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
+import {
+  getPoolsFallbackRepository,
+  PoolsFallBackFactoryConstructor,
+} from '@/dependencies/PoolsFallbackRepository';
 
 export default class PoolRepository {
-  repository: PoolsFallbackRepository;
+  repository: PoolsFallBackFactoryConstructor;
   queryArgs: GraphQLArgs;
 
   constructor(private tokens: ComputedRef<TokenInfoMap>) {
+    const PoolsFallbackRepository = getPoolsFallbackRepository();
     this.repository = new PoolsFallbackRepository(this.buildRepositories(), {
       timeout: 30 * 1000,
     });
@@ -25,7 +29,7 @@ export default class PoolRepository {
   public async fetch(queryArgs: GraphQLArgs): Promise<Pool> {
     this.queryArgs = queryArgs;
     const [pool] = await this.repository.fetch();
-    return pool;
+    return pool as Pool;
   }
 
   private initializeDecoratedAPIRepository() {

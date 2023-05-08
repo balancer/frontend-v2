@@ -1,5 +1,10 @@
-import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
-import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import {
+  SubgraphPoolBase,
+  SwapType,
+  SwapTypes,
+  parseFixed,
+} from '@balancer-labs/sdk';
+import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import {
   AddressZero,
   WeiPerEther as ONE,
@@ -7,26 +12,17 @@ import {
 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { formatUnits, parseUnits } from '@ethersproject/units';
-import {
-  computed,
-  ComputedRef,
-  onMounted,
-  reactive,
-  Ref,
-  ref,
-  toRefs,
-} from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
 import {
   SorManager,
   SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { convertStEthWrap, isStEthAddress } from '@/lib/utils/balancer/lido';
-import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
+import { useSwapper } from '@/composables/useSwapper';
 import {
   getWrapOutput,
   unwrap,
@@ -89,6 +85,71 @@ type Props = {
 
 export type UseSor = ReturnType<typeof useSor>;
 
+/**
+ * Calculates the difference between the price the user is receiving
+ * and the market price of the token.
+ * The variable token is the token has it's amount calculated by SOR
+ *  - If the swap type is ExactIn, this is the output token
+ *  - If the swap type is ExactOut, this is the input token
+ * The fixed token is the token that has a fixed amount the user set.
+ * This is the opposite of the variable token.
+ * @param sellTokenAmount - The amount of the token being sold in native amounts (so 25 USDC = 25000000)
+ * @param sellTokenDecimals - The number of decimals the sell token has
+ * @param buyTokenAmount - The amount of the token being bought in native amounts (so 25 USDC = 25000000)
+ * @param buyTokenDecimals - The number of decimals the buy token has
+ * @param swapType - The type of swap we are doing
+ * @param marketSp - The market spot price of the token pair
+ * @returns
+ */
+export function calcPriceImpact(
+  sellTokenAmount: BigNumber,
+  sellTokenDecimals: number,
+  buyTokenAmount: BigNumber,
+  buyTokenDecimals: number,
+  swapType: SwapType,
+  marketSp: string
+): BigNumber {
+  // Scale the sellToken by the buyToken decimals and vice versa so they are both the same scale
+  const sellTokenScaled = parseFixed(
+    sellTokenAmount.toString(),
+    buyTokenDecimals
+  );
+  const buyTokenScaled = parseFixed(
+    buyTokenAmount.toString(),
+    sellTokenDecimals
+  );
+
+  const SCALE = 18;
+  const scalingFactor = BigNumber.from(10).pow(SCALE);
+
+  const effectivePrice = sellTokenScaled.mul(scalingFactor).div(buyTokenScaled);
+  const marketSpScaled = parseFixed(marketSp, SCALE);
+
+  let priceRatio;
+  if (swapType == SwapType.SwapExactIn) {
+    // If we are swapping exact in the buy token is the variable one so we need
+    // to divide the market spot price by it to get the ratio of expectedPrice:actualPrice
+    priceRatio = marketSpScaled.mul(scalingFactor).div(effectivePrice);
+  } else {
+    // If we are swapping exact out the sell token is the variable one so we need
+    // to divide it by the market spot price to get the ratio of expectedPrice:actualPrice
+    priceRatio = effectivePrice.mul(scalingFactor).div(marketSpScaled);
+  }
+
+  // We don't care about > 4 decimal places for price impacts and sometimes
+  // there are rounding errors with repeating numbers so we round to 4 decimal places
+  const maxDecimalPlaces = 4;
+  const priceRatioRounded = Math.round(
+    priceRatio.div(BigNumber.from(10).pow(SCALE - maxDecimalPlaces))
+  );
+  priceRatio = BigNumber.from(priceRatioRounded).mul(
+    BigNumber.from(10).pow(SCALE - maxDecimalPlaces)
+  );
+
+  const priceImpact = ONE.sub(priceRatio);
+  return priceImpact;
+}
+
 export default function useSor({
   exactIn,
   tokenInAddressInput,
@@ -144,6 +205,7 @@ export default function useSor({
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
   const { isUserRejected } = useTranasactionErrors();
+  const { swapIn, swapOut } = useSwapper();
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -208,7 +270,7 @@ export default function useSor({
         ? SwapType.SwapExactIn
         : SwapType.SwapExactOut;
 
-      const deltas = await getBalancer().swaps.queryBatchSwap({
+      const deltas = await getBalancerSDK().swaps.queryBatchSwap({
         kind: swapType,
         swaps: result.swaps,
         assets: result.tokenAddresses,
@@ -279,8 +341,15 @@ export default function useSor({
   }
 
   function resetInputAmounts(amount: string): void {
-    tokenInAmountInput.value = amount;
-    tokenOutAmountInput.value = amount;
+    if (exactIn.value && bnum(amount).isZero()) {
+      tokenOutAmountInput.value = '';
+    } else if (!exactIn.value && bnum(amount).isZero()) {
+      tokenInAmountInput.value = '';
+    } else {
+      tokenInAmountInput.value = amount;
+      tokenOutAmountInput.value = amount;
+    }
+
     priceImpact.value = 0;
     sorReturn.value.hasSwaps = false;
     sorReturn.value.returnAmount = Zero;
@@ -295,11 +364,13 @@ export default function useSor({
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping swap
-    const zeroValueSwap = amount === '' || amount === '0';
+    const zeroValueSwap = amount === '' || bnum(amount).isZero();
     if (zeroValueSwap) {
       resetInputAmounts(amount);
       return;
     }
+
+    amount = bnum(amount).toString();
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
@@ -397,10 +468,12 @@ export default function useSor({
           isInputToken: false,
         });
         const priceImpactCalc = calcPriceImpact(
-          tokenOutDecimals,
-          tokenOutAmount,
           tokenInAmountScaled,
-          swapReturn
+          tokenInDecimals,
+          tokenOutAmount,
+          tokenOutDecimals,
+          SwapType.SwapExactIn,
+          swapReturn.marketSpNormalised
         );
 
         priceImpact.value = Math.max(
@@ -449,10 +522,12 @@ export default function useSor({
           isInputToken: false,
         });
         const priceImpactCalc = calcPriceImpact(
-          tokenInDecimals,
           tokenInAmount,
+          tokenInDecimals,
           tokenOutAmountScaled,
-          swapReturn
+          tokenOutDecimals,
+          SwapType.SwapExactIn,
+          swapReturn.marketSpNormalised
         );
 
         priceImpact.value = Math.max(
@@ -466,21 +541,6 @@ export default function useSor({
 
     state.validationErrors.highPriceImpact =
       priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
-  }
-
-  function calcPriceImpact(
-    tokenDecimals: number,
-    tokenAmount: BigNumber,
-    tokenAmountScaled: BigNumber,
-    swapReturn: SorReturn
-  ): BigNumber {
-    const divScale = BigNumber.from(10).pow(tokenDecimals);
-    const wadScale = BigNumber.from(10).pow(18);
-    const effectivePrice = tokenAmountScaled.mul(divScale).div(tokenAmount);
-    return effectivePrice
-      .mul(wadScale)
-      .div(parseUnits(Number(swapReturn.marketSpNormalised).toFixed(18)))
-      .sub(ONE);
   }
 
   function txHandler(tx: TransactionResponse, action: TransactionAction): void {
@@ -748,6 +808,7 @@ export default function useSor({
     }
     swapping.value = false;
     confirming.value = false;
+    throw error;
   }
 
   return {

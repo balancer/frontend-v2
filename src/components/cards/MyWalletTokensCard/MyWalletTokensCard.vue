@@ -1,7 +1,10 @@
 <script setup lang="ts">
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { tokensListExclBpt, usePool } from '@/composables/usePool';
+import {
+  tokensListExclBpt,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -32,7 +35,9 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
+const { isWrappedNativeAssetPool, isDeepPool } = usePoolHelpers(
+  toRef(props, 'pool')
+);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const route = useRoute();
@@ -51,13 +56,16 @@ const tokenAddresses = computed((): string[] => {
 });
 
 const tokensForTotal = computed((): string[] => {
-  if (pageContext.value === 'invest' && props.useNativeAsset) {
+  if (pageContext.value === 'add-liquidity' && props.useNativeAsset) {
     return tokenAddresses.value.map(address => {
       if (isSameAddress(address, wrappedNativeAsset.value.address))
         return nativeAsset.address;
       return address;
     });
-  } else if (pageContext.value === 'withdraw' && isWethPool.value) {
+  } else if (
+    pageContext.value === 'withdraw' &&
+    isWrappedNativeAssetPool.value
+  ) {
     return [nativeAsset.address, ...tokenAddresses.value];
   }
 
@@ -67,7 +75,7 @@ const tokensForTotal = computed((): string[] => {
 const fiatTotal = computed(() => {
   const fiatValue = tokensForTotal.value
     .map(address => {
-      if (pageContext.value === 'invest') {
+      if (pageContext.value === 'add-liquidity') {
         if (
           isSameAddress(address, nativeAsset.address) &&
           !props.useNativeAsset
@@ -128,7 +136,7 @@ function isSelectedNativeAsset(address: string): boolean {
                   <span class="lowercase">{{ $t('tokens') }}</span>
                 </span>
                 <BalTooltip
-                  v-if="pageContext === 'invest'"
+                  v-if="pageContext === 'add-liquidity'"
                   class="mt-1 ml-2"
                   iconSize="sm"
                   :text="
@@ -143,7 +151,9 @@ function isSelectedNativeAsset(address: string): boolean {
                 <AssetRow
                   :address="asset.address"
                   :selected="isSelectedNativeAsset(asset.address)"
-                  :class="[{ 'cursor-pointer': pageContext === 'invest' }]"
+                  :class="[
+                    { 'cursor-pointer': pageContext === 'add-liquidity' },
+                  ]"
                   @click="
                     emit(
                       'update:useNativeAsset',

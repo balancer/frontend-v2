@@ -1,17 +1,31 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, computed } from 'vue';
-// import { useI18n } from 'vue-i18n';
+import { onBeforeMount, computed } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
 import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
-import useExitPool from '@/composables/pools/useExitPool';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import { isDeep, isPreMintedBptType } from '@/composables/usePool';
+import {
+  isPreMintedBptType,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useI18n } from 'vue-i18n';
+import { Pool } from '@/services/pool/types';
+
+type Props = {
+  pool: Pool;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
+
+const pool = toRef(props, 'pool');
 
 /**
  * STATE
@@ -23,13 +37,11 @@ const showPreview = ref(false);
  */
 const { t } = useI18n();
 const { veBalTokenInfo } = useVeBal();
-const { wrappedNativeAsset } = useTokens();
+const { wrappedNativeAsset, nativeAsset } = useTokens();
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
-
 const {
-  pool,
   isSingleAssetExit,
   singleAmountOut,
   isLoadingMax,
@@ -42,6 +54,8 @@ const {
   hasAmountsOut,
   validAmounts,
 } = useExitPool();
+
+const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
 
 /**
  * COMPUTED
@@ -57,8 +71,18 @@ const hasValidInputs = computed(
 // Limit token select modal to a subset.
 const subsetTokens = computed((): string[] => {
   if (isPreMintedBptType(pool.value.poolType)) return [];
+  if (isWrappedNativeAssetPool.value)
+    return [nativeAsset.address, ...pool.value.tokensList];
 
   return pool.value.tokensList;
+});
+
+const excludedTokens = computed((): string[] => {
+  const tokens = [pool.value.address];
+  if (veBalTokenInfo.value) {
+    tokens.unshift(veBalTokenInfo.value.address);
+  }
+  return tokens;
 });
 
 /**
@@ -72,25 +96,24 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div>
+  <div data-testid="withdraw-form">
     <ProportionalWithdrawalInputV2 v-if="!isSingleAssetExit" :pool="pool" />
     <template v-else>
-      <template v-if="isDeep(pool)">
-        <TokenInput
-          v-model:isValid="singleAmountOut.valid"
-          v-model:address="singleAmountOut.address"
-          v-model:amount="singleAmountOut.value"
-          :name="singleAmountOut.address"
-          :rules="singleAssetRules"
-          :customBalance="singleAmountOut.max || '0'"
-          :balanceLabel="$t('max')"
-          :balanceLoading="isLoadingMax"
-          disableNativeAssetBuffer
-          :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-          :tokenSelectProps="{ ignoreBalances: true, subsetTokens }"
-          ignoreWalletBalance
-        />
-      </template>
+      <!-- Single asset exit input -->
+      <TokenInput
+        v-model:isValid="singleAmountOut.valid"
+        v-model:address="singleAmountOut.address"
+        v-model:amount="singleAmountOut.value"
+        :name="singleAmountOut.address"
+        :rules="singleAssetRules"
+        :customBalance="singleAmountOut.max || '0'"
+        :balanceLabel="$t('max')"
+        :balanceLoading="isLoadingMax"
+        disableNativeAssetBuffer
+        :excludedTokens="excludedTokens"
+        :tokenSelectProps="{ ignoreBalances: true, subsetTokens }"
+        ignoreWalletBalance
+      />
     </template>
 
     <WithdrawTotalsV2 class="mt-4" />

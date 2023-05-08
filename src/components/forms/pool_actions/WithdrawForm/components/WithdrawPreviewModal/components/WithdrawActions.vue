@@ -4,25 +4,18 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
-import { onBeforeMount, ref, toRef, toRefs, watch } from 'vue';
+import { ref, toRef, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
-import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-// Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
-// Types
 import { Pool } from '@/services/pool/types';
-// Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
-
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 import router from '@/plugins/router';
@@ -52,15 +45,13 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { getSigner, getProvider, blockNumber } = useWeb3();
+const { getSigner } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
+const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const {
   tokenOutIndex,
   tokensOut,
-  batchRelayerApproval,
-  txInProgress,
   tx: txState,
   resetTxState,
 } = useWithdrawalState(toRef(props, 'pool'));
@@ -74,12 +65,6 @@ const {
   amountsOut,
   exactOut,
   singleAssetMaxOut,
-  batchSwap,
-  batchSwapAmountsOutMap,
-  batchSwapKind,
-  shouldUseBatchRelayer,
-  batchRelayerSwap,
-  shouldFetchBatchSwap,
 } = toRefs(props.math);
 
 const withdrawalAction: TransactionActionInfo = {
@@ -127,7 +112,7 @@ async function handleTransaction(tx): Promise<void> {
         Goals.Withdrawal,
         bnum(fiatTotal.value).times(100).toNumber() || 0
       );
-      await refetchBalances.value();
+      await refetchBalances();
     },
     onTxFailed: () => {
       txState.value.confirming = false;
@@ -140,30 +125,14 @@ async function submit(): Promise<TransactionResponse> {
     let tx;
     txState.value.init = true;
 
-    if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
-      tx = await balancerContractsService.batchRelayer.execute(
-        batchRelayerSwap.value,
-        getProvider()
-      );
-    } else if (batchSwap.value) {
-      tx = await boostedExitBatchSwap(
-        batchSwap.value.swaps,
-        batchSwap.value.assets,
-        props.pool.address,
-        bptIn.value,
-        batchSwapAmountsOutMap.value,
-        batchSwapKind.value
-      );
-    } else {
-      tx = await poolExchange.exit(
-        getSigner(),
-        amountsOut.value,
-        tokensOut.value,
-        formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
-        singleAssetMaxOut.value ? tokenOutIndex.value : null,
-        exactOut.value
-      );
-    }
+    tx = await poolExchange.exit(
+      getSigner(),
+      amountsOut.value,
+      tokensOut.value,
+      formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
+      singleAssetMaxOut.value ? tokenOutIndex.value : null,
+      exactOut.value
+    );
 
     txState.value.init = false;
     txState.value.confirming = true;
@@ -186,31 +155,6 @@ function redirectToPool() {
   resetTxState();
   router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
 }
-
-/**
- * CALLBACKS
- */
-onBeforeMount(() => {
-  if (shouldUseBatchRelayer.value && !batchRelayerApproval.isUnlocked.value) {
-    // Prepend relayer approval action if batch relayer not approved
-    actions.value.unshift(batchRelayerApproval.action.value);
-  }
-});
-
-/**
- * WATCHERS
- */
-watch(blockNumber, async () => {
-  if (shouldFetchBatchSwap.value && !txInProgress.value) {
-    await props.math.fetchExitData();
-    if (
-      batchSwap.value &&
-      (batchSwap.value.assets.length === 0 ||
-        batchSwap.value.swaps.length === 0)
-    )
-      emit('error');
-  }
-});
 </script>
 
 <template>

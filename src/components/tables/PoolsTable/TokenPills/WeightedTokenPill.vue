@@ -9,6 +9,8 @@ type Props = {
   isSelected: boolean;
   isPicked: boolean;
   token: PoolToken;
+  isOnMigrationCard?: boolean;
+  isHovered?: boolean;
 };
 
 withDefaults(defineProps<Props>(), {
@@ -33,6 +35,8 @@ withDefaults(defineProps<Props>(), {
             'pill-selected': isSelected,
             'pill-picked': isPicked,
             'pill-hoverable': hasBalance,
+            'pill-migration': isOnMigrationCard,
+            'pill-hovered': isHovered,
           },
         ]"
       >
@@ -46,7 +50,15 @@ withDefaults(defineProps<Props>(), {
         >
           {{ symbol }}
         </span>
-        <span class="pill-weight">
+        <span
+          v-if="weight !== '0%'"
+          :class="[
+            'pill-weight',
+            {
+              'pill-weight-migration': isOnMigrationCard,
+            },
+          ]"
+        >
           {{ weight }}
         </span>
       </div>
@@ -60,6 +72,16 @@ withDefaults(defineProps<Props>(), {
   @apply flex items-center px-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative h-10 items-center;
 }
 
+.pill-migration {
+  @apply cursor-pointer;
+
+  background-color: rgb(31 41 55 / 60%);
+}
+
+.pill-hovered {
+  @apply bg-gray-600;
+}
+
 .pill-selected {
   @apply ring-2 ring-blue-500 dark:ring-blue-400;
 }
@@ -69,8 +91,11 @@ withDefaults(defineProps<Props>(), {
 }
 
 .pill-weight {
-  @apply font-medium text-gray-600 dark:text-gray-400 text-xs;
-  @apply mt-px ml-1;
+  @apply font-medium text-gray-600 dark:text-gray-400 text-xs  mt-px ml-1;
+}
+
+.pill-weight-migration {
+  @apply text-gray-400;
 }
 
 .balance-indicator {

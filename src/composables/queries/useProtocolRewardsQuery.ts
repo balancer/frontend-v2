@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
@@ -8,7 +7,7 @@ import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { isL2, isGoerli, networkId } from '../useNetwork';
+import { networkId } from '../useNetwork';
 
 /**
  * TYPES
@@ -17,6 +16,8 @@ export type ProtocolRewardsQueryResponse = {
   v1?: BalanceMap;
   v2?: BalanceMap;
 };
+
+type QueryOptions = UseQueryOptions<ProtocolRewardsQueryResponse>;
 
 /**
  * SERVICES
@@ -28,12 +29,16 @@ const feeDistributorV2 = new FeeDistributor(
   configService.network.addresses.feeDistributor
 );
 
+export const networkHasProtocolRewards = computed<boolean>(
+  () =>
+    configService.network.addresses.feeDistributorDeprecated != '' ||
+    configService.network.addresses.feeDistributor != ''
+);
+
 /**
  * @summary Fetches claimable protocol reward balances.
  */
-export default function useProtocolRewardsQuery(
-  options: UseQueryOptions<ProtocolRewardsQueryResponse> = {}
-) {
+export default function useProtocolRewardsQuery(options: QueryOptions = {}) {
   /**
    * COMPOSABLES
    */
@@ -46,8 +51,7 @@ export default function useProtocolRewardsQuery(
     () =>
       isWalletReady.value &&
       account.value != null &&
-      !isL2.value &&
-      !isGoerli.value
+      networkHasProtocolRewards.value
   );
 
   /**
@@ -82,6 +86,6 @@ export default function useProtocolRewardsQuery(
   return useQuery<ProtocolRewardsQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions as QueryOptions
   );
 }

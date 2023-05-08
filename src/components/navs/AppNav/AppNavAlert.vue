@@ -1,5 +1,10 @@
 <template>
-  <div :class="['app-nav-alert', classes]" @click="handleClick">
+  <div
+    role="alert"
+    aria-live="polite"
+    :class="['app-nav-alert', classes]"
+    @click="handleClick"
+  >
     <div class="flex flex-1 md:justify-center fade-in-slow">
       <BalIcon v-if="iconName" :name="iconName" class="mr-3" />
       <div>

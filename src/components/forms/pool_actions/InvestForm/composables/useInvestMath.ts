@@ -1,12 +1,10 @@
 import { logFetchException } from '@/lib/utils/exceptions';
-import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
-import usePromiseSequence from '@/composables/usePromiseSequence';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import useSlippage from '@/composables/useSlippage';
 import { useTokens } from '@/providers/tokens.provider';
 import {
@@ -14,10 +12,8 @@ import {
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import { bnum, isSameAddress } from '@/lib/utils';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
-import { BatchSwap } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -29,15 +25,13 @@ export default function useInvestMath(
   pool: Ref<Pool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
-  useNativeAsset: Ref<boolean>,
-  sor: SOR
+  useNativeAsset: Ref<boolean>
 ) {
   /**
    * STATE
    */
   const proportionalAmounts = ref<string[]>([]);
   const loadingData = ref(false);
-  const batchSwap = ref<BatchSwap | null>(null);
   const queryBptOut = ref<string>('0');
 
   /**
@@ -51,13 +45,7 @@ export default function useInvestMath(
     managedPoolWithSwappingHalted,
     isComposableStableLikePool,
     isShallowComposableStablePool,
-    isDeepPool,
-  } = usePool(pool);
-  const {
-    promises: batchSwapPromises,
-    processing: processingBatchSwaps,
-    processAll: processBatchSwaps,
-  } = usePromiseSequence();
+  } = usePoolHelpers(pool);
 
   /**
    * Services
@@ -91,17 +79,6 @@ export default function useInvestMath(
       parseUnits(amount, poolTokens.value[i].decimals)
     )
   );
-
-  const batchSwapAmountMap = computed((): Record<string, BigNumber> => {
-    const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-      tokenAddresses.value[i].toLowerCase(),
-      amount,
-    ]);
-    const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
-      (amount as BigNumber).gt(0)
-    );
-    return Object.fromEntries(onlyTokensWithAmounts);
-  });
 
   const fiatAmounts = computed((): string[] =>
     fullAmounts.value.map((_, i) => fiatAmount(i))
@@ -171,14 +148,7 @@ export default function useInvestMath(
   const fullBPTOut = computed((): string => {
     let _bptOut: string;
 
-    if (isDeepPool.value) {
-      _bptOut = batchSwap.value
-        ? bnum(batchSwap.value.amountTokenOut).abs().toString()
-        : '0';
-    } else if (
-      isShallowComposableStablePool.value &&
-      bnum(queryBptOut.value).gt(0)
-    ) {
+    if (isShallowComposableStablePool.value && bnum(queryBptOut.value).gt(0)) {
       _bptOut = queryBptOut.value;
     } else {
       if (!hasAmounts.value) return '0';
@@ -209,10 +179,6 @@ export default function useInvestMath(
 
   const hasAllTokens = computed((): boolean =>
     poolTokenBalances.value.every(balance => bnum(balance).gt(0))
-  );
-
-  const shouldFetchBatchSwap = computed(
-    (): boolean => pool.value && isDeepPool.value && hasAmounts.value
   );
 
   const supportsPropotionalOptimization = computed(
@@ -246,19 +212,6 @@ export default function useInvestMath(
   function optimizeAmounts(): void {
     const { send } = poolCalculator.propMax();
     amounts.value = [...send];
-  }
-
-  async function getBatchSwap(): Promise<void> {
-    loadingData.value = true;
-    batchSwap.value = await queryBatchSwapTokensIn(
-      sor,
-      balancerContractsService.vault.instance as any,
-      Object.keys(batchSwapAmountMap.value),
-      Object.values(batchSwapAmountMap.value),
-      pool.value.address.toLowerCase()
-    );
-
-    loadingData.value = false;
   }
 
   /**
@@ -300,11 +253,6 @@ export default function useInvestMath(
     if (changedIndex >= 0) {
       await getQueryBptOut();
 
-      if (shouldFetchBatchSwap.value) {
-        batchSwapPromises.value.push(getBatchSwap);
-        if (!processingBatchSwaps.value) processBatchSwaps();
-      }
-
       const { send } = poolCalculator.propAmountsGiven(
         fullAmounts.value[changedIndex],
         changedIndex,
@@ -319,7 +267,6 @@ export default function useInvestMath(
     hasAmounts,
     fullAmounts,
     fullAmountsScaled,
-    batchSwapAmountMap,
     fiatTotal,
     fiatTotalLabel,
     priceImpact,
@@ -328,17 +275,14 @@ export default function useInvestMath(
     maximized,
     optimized,
     proportionalAmounts,
-    batchSwap,
     bptOut,
     hasZeroBalance,
     hasNoBalances,
     hasAllTokens,
-    shouldFetchBatchSwap,
     loadingData,
     supportsPropotionalOptimization,
     // methods
     maximizeAmounts,
     optimizeAmounts,
-    getBatchSwap,
   };
 }

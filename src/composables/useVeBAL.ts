@@ -1,7 +1,6 @@
 import { differenceInSeconds, formatDistanceToNow, sub } from 'date-fns';
 import { computed, ref } from 'vue';
 
-import { isGoerli, isMainnet } from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
@@ -9,6 +8,7 @@ import useConfig from './useConfig';
 import { getPreviousThursday, oneYearInSecs, toJsTimestamp } from './useTime';
 import { useTokens } from '@/providers/tokens.provider';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
+import { configService } from '@/services/config/config.service';
 
 /**
  * STATE
@@ -18,8 +18,8 @@ const showRedirectModal = ref(false);
 /**
  * COMPUTED
  */
-export const isVeBalSupported = computed(
-  () => isMainnet.value || isGoerli.value
+export const isVeBalSupported = computed<boolean>(
+  () => configService.network.addresses.veBAL !== ''
 );
 
 /**
@@ -87,7 +87,9 @@ export default function useVeBal() {
    * COMPUTED
    */
   const veBalTokenInfo = computed(() =>
-    getToken(networkConfig.addresses.veBAL)
+    networkConfig.addresses.veBAL
+      ? getToken(networkConfig.addresses.veBAL)
+      : null
   );
 
   const veBalBalance = computed(() =>

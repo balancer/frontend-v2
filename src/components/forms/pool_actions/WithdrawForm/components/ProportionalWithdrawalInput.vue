@@ -2,12 +2,14 @@
 import BigNumber from 'bignumber.js';
 import { computed, onBeforeMount, toRef, toRefs, watch } from 'vue';
 
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
+import {
+  tokensListExclBpt,
+  usePoolHelpers,
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
-import { bnum } from '@/lib/utils';
+import { bnum, includesAddress } from '@/lib/utils';
 // Types
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -17,7 +19,6 @@ import useWithdrawalState from '../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
-import { debounce } from 'lodash';
 
 /**
  * TYPES
@@ -43,26 +44,29 @@ const {
   fiatTotalLabel,
   fiatAmounts,
   proportionalAmounts,
-  shouldFetchBatchSwap,
   loadingData,
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
 
 const { isWalletReady } = useWeb3();
-const { missingPrices } = usePoolTransfers();
-const { getTokens } = useTokens();
-const { isStableLikePool } = usePool(toRef(props, 'pool'));
+const { getTokens, prices } = useTokens();
+const { isStableLikePool } = usePoolHelpers(toRef(props, 'pool'));
 const { fNum } = useNumbers();
 
 /**
  * COMPUTED
  */
 const tokens = computed((): TokenInfoMap => {
-  if (isDeep(props.pool)) {
-    return getTokens(props.pool.mainTokens || []);
-  }
   return getTokens(tokensListExclBpt(props.pool));
+});
+
+const missingPrices = computed(() => {
+  const tokensWithPrice = Object.keys(prices.value).map(t => t.toLowerCase());
+  const tokenAddresses = Object.keys(tokens.value);
+  return !tokenAddresses.every(token =>
+    includesAddress(tokensWithPrice, token)
+  );
 });
 
 const percentageLabel = computed(() => {
@@ -93,15 +97,7 @@ function handleSliderChange(newVal: number): void {
     .times(fractionBasisPoints)
     .div(10000)
     .toFixed(props.pool?.onchain?.decimals || 18);
-
-  if (shouldFetchBatchSwap.value) {
-    delayedExitDataFetch();
-  }
 }
-
-const delayedExitDataFetch = debounce(() => {
-  void props.math.fetchExitData();
-}, 500);
 
 /**
  * WATCHERS

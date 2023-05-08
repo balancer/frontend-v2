@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
 
-import { isVeBalPool, usePool } from '@/composables/usePool';
+import { isVeBalPool, usePoolHelpers } from '@/composables/usePoolHelpers';
 import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
@@ -29,11 +29,13 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isMigratablePool } = usePool(toRef(props, 'pool'));
+const { isMigratablePool } = usePoolHelpers(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 
 /** COMPUTED */
-const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
+const stakablePoolIds = computed((): string[] =>
+  POOLS.Stakable.VotingGaugePools.concat(POOLS.Stakable.AllowList)
+);
 const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
 </script>
 

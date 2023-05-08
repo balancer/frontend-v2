@@ -7,7 +7,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { safeInject } from '../inject';
 import { useLock } from '@/composables/useLock';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import { fiatValueOf } from '@/composables/usePool';
+import { fiatValueOf } from '@/composables/usePoolHelpers';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { isVeBalSupported } from '@/composables/useVeBAL';
 import { useTokens } from '../tokens.provider';
@@ -96,10 +96,7 @@ export const provider = (userStaking: UserStakingResponse) => {
 
   // Trigger refetch of queries for staked and unstaked pools.
   async function refetchAllUserPools() {
-    await Promise.all([
-      refetchUserPoolShares.value(),
-      refetchStakedPools.value(),
-    ]);
+    await Promise.all([refetchUserPoolShares(), refetchStakedPools()]);
   }
 
   // Whenever new pools show up in the user pools array, inject their tokens so

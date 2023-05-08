@@ -1,6 +1,5 @@
-import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, QueryObserverOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
@@ -9,7 +8,9 @@ import { Pool } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
 import { AprBreakdown } from '@balancer-labs/sdk';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
+
+type QueryOptions = QueryObserverOptions<AprBreakdown>;
 
 export default function usePoolAprQuery(
   id: string,
@@ -60,7 +61,7 @@ export default function usePoolAprQuery(
 
     _pool.chainId = networkId.value;
 
-    const apr = await getBalancer().pools.apr(_pool);
+    const apr = await getBalancerSDK().pools.apr(_pool);
 
     return apr;
   };
@@ -68,5 +69,9 @@ export default function usePoolAprQuery(
     enabled,
     ...options,
   });
-  return useQuery<AprBreakdown>(queryKey, queryFn, queryOptions);
+  return useQuery<AprBreakdown>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

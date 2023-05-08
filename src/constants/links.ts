@@ -41,6 +41,15 @@ export const EXTERNAL_LINKS = {
   Tracer: {
     Home: 'https://mycelium.xyz/',
   },
+  Gyroscope: {
+    Home: 'https://gyro.finance/',
+  },
+  Beets: {
+    Home: 'https://beets.fi/',
+  },
+  Xave: {
+    Home: 'https://www.xave.co/',
+  },
   Sense: {
     Home: 'https://sense.finance/',
   },

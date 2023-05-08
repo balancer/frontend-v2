@@ -12,6 +12,6 @@ export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
     title: 'brandedRedirect.xave.title',
     description: 'brandedRedirect.xave.description',
     btnText: 'brandedRedirect.xave.btnText',
-    link: 'https://xave.co/',
+    link: 'https://app.xave.co/',
   },
 };

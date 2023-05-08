@@ -2,12 +2,13 @@
   <div class="inline-flex items-start">
     <input
       type="radio"
+      autofocus
       :value="value"
-      :checked="modelValue === value"
+      :checked="modelValue === value || checked"
       :name="name"
       :class="['bal-radio-input', inputClasses]"
       :disabled="disabled"
-      @change="onChange(value)"
+      @click="onChange(value)"
     />
     <label
       v-if="$slots.label || label"
@@ -27,6 +28,7 @@ export default defineComponent({
   name: 'BalRadio',
 
   props: {
+    checked: { type: Boolean, default: false },
     name: { type: String, required: true },
     value: { type: [String, Number], required: true },
     modelValue: { type: [String, Number], default: '' },
@@ -109,8 +111,8 @@ export default defineComponent({
 
 <style>
 .bal-radio-input {
-  @apply bg-white dark:bg-gray-900 rounded-full m-0;
-  @apply border border-gray-300 dark:border-gray-900;
+  @apply bg-white dark:bg-gray-900 rounded-full m-0 shadow-inner transition-all;
+  @apply border border-gray-400 dark:border-gray-500;
 
   transition: all ease 0.25s;
   appearance: none;
@@ -122,6 +124,10 @@ export default defineComponent({
   user-select: none;
 }
 
+.bal-radio-input:focus {
+  @apply border-2 border-blue-500 dark:border-blue-400;
+}
+
 .bal-radio-input:checked {
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
   border-color: transparent;
@@ -129,6 +135,10 @@ export default defineComponent({
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.bal-radio-input:checked:focus {
+  @apply border-transparent;
 }
 
 .bal-radio-label {

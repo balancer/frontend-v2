@@ -95,7 +95,7 @@ const cards = computed(() => {
         : '—',
       showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: {
-        name: 'invest',
+        name: 'add-liquidity',
         params: { id: lockablePoolId.value, networkSlug },
         query: { returnRoute: 'vebal' },
       },

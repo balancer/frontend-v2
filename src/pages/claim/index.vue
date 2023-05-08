@@ -12,12 +12,11 @@ import ProtocolRewardsTable, {
   ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { isL2, isMainnet } from '@/composables/useNetwork';
+import { networkHasNativeGauges } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
-import { isStableLike } from '@/composables/usePool';
+import { isStableLike } from '@/composables/usePoolHelpers';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import { useTokens } from '@/providers/tokens.provider';
-import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { Gauge } from '@/services/balancer/gauges/types';
@@ -26,7 +25,7 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 /**
  * TYPES
@@ -46,6 +45,7 @@ const { isWalletReady } = useWeb3();
 const {
   gauges,
   gaugePools,
+  networkHasProtocolRewards,
   protocolRewards,
   isLoading: isClaimsLoading,
 } = useClaimsData();
@@ -200,11 +200,11 @@ function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
  * @summary Fetches bb-a-USD rate as an appoximation of USD price.
  */
 async function getBBaUSDPrice() {
-  if (isMainnet.value) {
-    const appoxPrice = bnum(await bbAUSDToken.getRate()).toNumber();
+  if (TOKENS.Addresses.bbaUSDv2) {
+    const approxPrice = bnum(await bbAUSDToken.getRate()).toNumber();
     injectPrices({
-      [TOKENS.Addresses.bbaUSD as string]: { [FiatCurrency.usd]: appoxPrice },
-      [TOKENS.Addresses.bbaUSDv2 as string]: { [FiatCurrency.usd]: appoxPrice },
+      [TOKENS.Addresses.bbaUSD as string]: approxPrice,
+      [TOKENS.Addresses.bbaUSDv2 as string]: approxPrice,
     });
   }
 }
@@ -224,7 +224,7 @@ watch(gaugePools, async newPools => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  if (!isL2.value) await getBBaUSDPrice();
+  await getBBaUSDPrice();
 });
 </script>
 
@@ -240,7 +240,7 @@ onBeforeMount(async () => {
           {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
         </h2>
 
-        <template v-if="!isL2">
+        <template v-if="networkHasNativeGauges">
           <div class="mb-16">
             <div class="px-4 xl:px-0">
               <div class="flex items-center mt-6 mb-2">
@@ -263,6 +263,8 @@ onBeforeMount(async () => {
               :isLoading="loading"
             />
           </div>
+        </template>
+        <template v-if="networkHasProtocolRewards">
           <div class="mb-16">
             <h3 class="inline-block xl:px-0 pl-4 mt-8 mr-1.5 mb-3 text-xl">
               {{ $t('protocolIncentives') }}
@@ -288,7 +290,7 @@ onBeforeMount(async () => {
             />
           </div>
         </template>
-        <div v-if="!isL2">
+        <div v-if="networkHasNativeGauges">
           <h3 class="inline-block px-4 xl:px-0 mt-8 mr-1.5 text-xl">
             {{ $t('otherTokenIncentives') }}
           </h3>
@@ -315,7 +317,6 @@ onBeforeMount(async () => {
             </div>
           </div>
         </template>
-
         <BalBlankSlate
           v-else-if="
             (!isClaimsLoading && gaugeTables.length === 0) || !isWalletReady

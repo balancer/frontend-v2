@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
+import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 import { formatUnits } from '@ethersproject/units';
 import { parseUnits } from '@ethersproject/units';
 
@@ -72,7 +73,7 @@ export default class VeBAL {
   }
 
   public async createLock(
-    userProvider: Web3Provider,
+    userProvider: WalletProvider,
     lockAmount: string,
     lockEndDate: string
   ): Promise<TransactionResponse> {
@@ -86,7 +87,7 @@ export default class VeBAL {
   }
 
   public async increaseLock(
-    userProvider: Web3Provider,
+    userProvider: WalletProvider,
     lockAmount: string
   ): Promise<TransactionResponse> {
     const txBuilder = new TransactionBuilder(userProvider.getSigner());
@@ -99,7 +100,7 @@ export default class VeBAL {
   }
 
   public async extendLock(
-    userProvider: Web3Provider,
+    userProvider: WalletProvider,
     lockEndDate: string
   ): Promise<TransactionResponse> {
     const txBuilder = new TransactionBuilder(userProvider.getSigner());
@@ -112,7 +113,7 @@ export default class VeBAL {
   }
 
   public async unlock(
-    userProvider: Web3Provider
+    userProvider: WalletProvider
   ): Promise<TransactionResponse> {
     const txBuilder = new TransactionBuilder(userProvider.getSigner());
     return await txBuilder.contract.sendTransaction({

@@ -1,26 +1,27 @@
-import { QueryObserverOptions } from 'react-query/core';
+import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
 import { computed, reactive, Ref, ref } from 'vue';
-import { useQuery } from 'vue-query';
+
 import { GraphQLArgs } from '@balancer-labs/sdk';
 
-import { useTokens } from '@/providers/tokens.provider';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { useTokens } from '@/providers/tokens.provider';
 
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
-import useWeb3 from '@/services/web3/useWeb3';
 
-import { isBlocked, tokensListExclBpt, tokenTreeLeafs } from '../usePool';
+import { tokensListExclBpt, tokenTreeLeafs } from '../usePoolHelpers';
 
-import PoolRepository from '@/services/pool/pool.repository';
-import { configService } from '@/services/config/config.service';
 import { POOLS } from '@/constants/pools';
+import { configService } from '@/services/config/config.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+import PoolRepository from '@/services/pool/pool.repository';
+
+type QueryOptions = QueryObserverOptions<Pool>;
 
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * If pool is already downloaded, we can use it instantly
@@ -32,7 +33,6 @@ export default function usePoolQuery(
    * COMPOSABLES
    */
   const { injectTokens, tokens } = useTokens();
-  const { account } = useWeb3();
 
   const poolRepository = new PoolRepository(tokens);
 
@@ -51,7 +51,7 @@ export default function usePoolQuery(
       where: {
         id: { eq: id?.toLowerCase() },
         totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
-        poolType: { not_in: POOLS.ExcludedPoolTypes },
+        poolType: { in: POOLS.IncludedPoolTypes },
       },
     };
     return queryArgs;
@@ -72,8 +72,6 @@ export default function usePoolQuery(
 
     if (!pool) throw new Error('Pool does not exist');
 
-    if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');
-
     // If the pool is cached from homepage it may not have onchain set, so update it
     if (!pool.onchain) {
       const poolDecorator = new PoolDecorator([pool]);
@@ -84,7 +82,6 @@ export default function usePoolQuery(
     await injectTokens([
       ...tokensListExclBpt(pool),
       ...tokenTreeLeafs(pool.tokens),
-      pool.address,
     ]);
 
     return pool;
@@ -95,5 +92,5 @@ export default function usePoolQuery(
     ...options,
   });
 
-  return useQuery<Pool>(queryKey, queryFn, queryOptions);
+  return useQuery<Pool>(queryKey, queryFn, queryOptions as QueryOptions);
 }

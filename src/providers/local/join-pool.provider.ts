@@ -1,44 +1,53 @@
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
+import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
-import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
-import { useTokens } from '@/providers/tokens.provider';
+import {
+  joinTokens,
+  fiatValueOf,
+  isDeep,
+  isStableLike,
+} from '@/composables/usePoolHelpers';
 import { useTxState } from '@/composables/useTxState';
-import { useUserSettings } from '../user-settings.provider';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
+import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, removeAddress } from '@/lib/utils';
-import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
+import { bnSum, bnum, isSameAddress } from '@/lib/utils';
+import { safeInject } from '@/providers/inject';
+import { useTokens } from '@/providers/tokens.provider';
+import {
+  JoinHandler,
+  JoinPoolService,
+} from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { captureException } from '@sentry/browser';
+import debounce from 'debounce-promise';
 import {
   computed,
-  defineComponent,
-  h,
   InjectionKey,
   onBeforeMount,
   onMounted,
-  PropType,
   provide,
   reactive,
   readonly,
+  Ref,
   ref,
-  toRef,
   watch,
 } from 'vue';
-import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
-import { TransactionActionInfo } from '@/types/transactions';
-import useRelayerApproval, {
-  RelayerType,
-} from '@/composables/approvals/useRelayerApproval';
-import { useQuery, useQueryClient } from 'vue-query';
-import QUERY_KEYS, { QUERY_JOIN_ROOT_KEY } from '@/constants/queryKeys';
-import { captureException } from '@sentry/browser';
-import debounce from 'debounce-promise';
+import { useUserSettings } from '../user-settings.provider';
+import { useQuery } from '@tanstack/vue-query';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
+import { useApp } from '@/composables/useApp';
+import { throwQueryError } from '@/lib/utils/queries';
 
 /**
  * TYPES
@@ -49,35 +58,35 @@ export type AmountIn = {
   valid: boolean;
 };
 
-type Props = {
-  pool: Pool;
-  isSingleAssetJoin: boolean;
-};
-
 /**
- * JoinPoolProvider
  *
  * Handles pool joining state and transaction execution.
  */
-const provider = (props: Props) => {
+export const joinPoolProvider = (
+  pool: Ref<Pool>,
+  queryJoinDebounceMillis = 1000
+) => {
   /**
    * STATE
    */
-  const pool = toRef(props, 'pool');
   const isMounted = ref(false);
-  const isSingleAssetJoin = toRef(props, 'isSingleAssetJoin');
   const amountsIn = ref<AmountIn[]>([]);
   const bptOut = ref<string>('0');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
+  const approvalActions = ref<TransactionActionInfo[]>([]);
+  const isSingleAssetJoin = ref<boolean>(false);
 
-  const debounceQueryJoin = debounce(queryJoin, 1000);
+  const debounceQueryJoin = debounce(queryJoin, queryJoinDebounceMillis);
 
   const queryEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
   );
-  const queryJoinQuery = useQuery<void, Error>(
+  const queryJoinQuery = useQuery<
+    Awaited<ReturnType<typeof debounceQueryJoin>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Joins.QueryJoin(
       // If amountsIn change we should call queryJoin to get expected output.
       amountsIn,
@@ -99,32 +108,26 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { getTokens, prices, injectTokens, priceFor } = useTokens();
+  const { getTokens, injectTokens, priceFor, nativeAsset, wrappedNativeAsset } =
+    useTokens();
+
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
+  const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
-  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
-    RelayerType.BATCH_V4
+    RelayerType.BATCH
   );
-  const queryClient = useQueryClient();
 
   /**
    * COMPUTED
    */
   const isDeepPool = computed((): boolean => isDeep(pool.value));
 
-  // All tokens in the pool token tree that can be used in join functions.
-  const joinTokens = computed((): string[] => {
-    let addresses: string[] = [];
-
-    addresses = isDeepPool.value
-      ? tokenTreeNodes(pool.value.tokens)
-      : pool.value.tokensList;
-
-    return removeAddress(pool.value.address, addresses);
-  });
+  // List of token addresses that can be used to join the pool.
+  const poolJoinTokens = computed((): string[] => joinTokens(pool.value));
 
   // Token meta data for amountsIn tokens.
   const tokensIn = computed((): TokenInfoMap => {
@@ -179,7 +182,7 @@ const provider = (props: Props) => {
     return bnSum(fiatValuesIn).toString();
   });
 
-  // Calculates estimated fiatValueOut using pool's totalLiquity.
+  // Calculates estimated fiatValueOut using pool's totalLiquidity.
   // Could be inaccurate if total liquidity has come from subgraph.
   const fiatValueOut = computed((): string =>
     fiatValueOf(pool.value, bptOut.value)
@@ -193,8 +196,17 @@ const provider = (props: Props) => {
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
 
-  const approvalActions = computed((): TransactionActionInfo[] =>
-    shouldSignRelayer.value ? [relayerApprovalAction.value] : []
+  const tokensToApprove = computed(() => {
+    return amountsIn.value.map(amountIn => amountIn.address);
+  });
+
+  const amountsToApprove = computed(() => {
+    return amountsIn.value.map(amountIn => amountIn.value);
+  });
+
+  const { getTokenApprovalActions } = useTokenApprovalActions(
+    tokensToApprove,
+    amountsToApprove
   );
 
   const isLoadingQuery = computed(
@@ -203,6 +215,20 @@ const provider = (props: Props) => {
 
   const queryError = computed(
     (): string | undefined => queryJoinQuery.error.value?.message
+  );
+
+  const joinHandlerType = computed((): JoinHandler => {
+    if (isDeepPool.value) {
+      if (isSingleAssetJoin.value) {
+        return JoinHandler.Swap;
+      }
+      return JoinHandler.Generalised;
+    }
+    return JoinHandler.ExactIn;
+  });
+
+  const supportsProportionalOptimization = computed(
+    (): boolean => !isStableLike(pool.value.poolType)
   );
 
   /**
@@ -245,7 +271,15 @@ const provider = (props: Props) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
-    queryJoinQuery.remove.value();
+    queryJoinQuery.remove();
+  }
+
+  // Updates the approval actions like relayer approval and token approvals.
+  function setApprovalActions() {
+    const tokenApprovalActions = getTokenApprovalActions();
+    approvalActions.value = shouldSignRelayer.value
+      ? [relayerApprovalAction.value, ...tokenApprovalActions]
+      : tokenApprovalActions;
   }
 
   /**
@@ -256,28 +290,31 @@ const provider = (props: Props) => {
     // return early
     if (!hasAmountsIn.value) {
       priceImpact.value = 0;
-      return;
+      return null;
     }
 
-    // Invalidate previous query in order to prevent stale data
-    queryClient.invalidateQueries(QUERY_JOIN_ROOT_KEY);
-
     try {
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      joinPoolService.setJoinHandler(joinHandlerType.value);
+      setApprovalActions();
 
+      console.log('joinHandler:', joinHandlerType.value);
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
+        relayerSignature: relayerSignature.value,
+        approvalActions: approvalActions.value,
+        transactionDeadline: transactionDeadline.value,
       });
 
       bptOut.value = output.bptOut;
       priceImpact.value = output.priceImpact;
+
+      return output;
     } catch (error) {
       captureException(error);
-      throw new Error('Failed to construct join.', { cause: error });
+      throwQueryError('Failed to construct join.', error);
     }
   }
 
@@ -287,19 +324,51 @@ const provider = (props: Props) => {
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
 
-      return joinPoolService.join({
+      joinPoolService.setJoinHandler(joinHandlerType.value);
+      setApprovalActions();
+
+      console.log('joinHandler:', joinHandlerType.value);
+      const joinRes = await joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
-        prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         relayerSignature: relayerSignature.value,
+        approvalActions: approvalActions.value,
+        transactionDeadline: transactionDeadline.value,
       });
+
+      return joinRes;
     } catch (error) {
+      console.log(error);
       txError.value = (error as Error).message;
-      throw new Error('Failed to submit join transaction.', { cause: error });
+      throw error;
+    }
+  }
+
+  function setIsSingleAssetJoin(value: boolean) {
+    isSingleAssetJoin.value = value;
+  }
+
+  /**
+   * Swap the native token address to wrapped token address
+   * or vice versa
+   */
+  function setJoinWithNativeAsset(joinWithNativeAsset: boolean): void {
+    const newAddress = joinWithNativeAsset
+      ? nativeAsset.address
+      : wrappedNativeAsset.value.address;
+
+    const prevAddress = joinWithNativeAsset
+      ? wrappedNativeAsset.value.address
+      : nativeAsset.address;
+
+    const amountIn = amountsIn.value.find(item =>
+      isSameAddress(prevAddress, item.address)
+    );
+    if (amountIn) {
+      amountIn.address = newAddress;
     }
   }
 
@@ -310,9 +379,9 @@ const provider = (props: Props) => {
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
   // setJoinHandler on the joinPoolService to update the join handler.
-  watch(isSingleAssetJoin, newVal => {
+  watch(isSingleAssetJoin, () => {
     resetQueryJoinState();
-    joinPoolService.setJoinHandler(newVal);
+    joinPoolService.setJoinHandler(joinHandlerType.value);
   });
 
   /**
@@ -320,8 +389,8 @@ const provider = (props: Props) => {
    */
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
-    // refactoted probably won't be required.
-    injectTokens(joinTokens.value);
+    // refactored probably won't be required.
+    injectTokens(poolJoinTokens.value);
   });
 
   onMounted(() => (isMounted.value = true));
@@ -330,6 +399,7 @@ const provider = (props: Props) => {
     // State
     amountsIn,
     highPriceImpactAccepted,
+    txState,
     pool: readonly(pool),
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
@@ -337,9 +407,9 @@ const provider = (props: Props) => {
     txError: readonly(txError),
 
     //  Computed
+    poolJoinTokens,
     isLoadingQuery,
     queryError,
-    joinTokens,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,
@@ -347,10 +417,11 @@ const provider = (props: Props) => {
     hasAmountsIn,
     fiatValueIn,
     fiatValueOut,
-    txState,
     txInProgress,
     approvalActions,
     missingPricesIn,
+    tokensIn,
+    supportsProportionalOptimization,
 
     // Methods
     setAmountsIn,
@@ -358,42 +429,24 @@ const provider = (props: Props) => {
     resetAmounts,
     join,
     resetTxState,
+    setIsSingleAssetJoin,
+    setJoinWithNativeAsset,
 
     // queries
     queryJoinQuery,
   };
 };
 
-/**
- * Provide setup: response type + symbol.
- */
-export type Response = ReturnType<typeof provider>;
-export const JoinPoolProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.JoinPool
-);
+export type JoinPoolProviderResponse = ReturnType<typeof joinPoolProvider>;
+export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
+  Symbol(symbolKeys.Providers.JoinPool);
 
-/**
- * <JoinPoolProvider /> component.
- */
-export const JoinPoolProvider = defineComponent({
-  name: 'JoinPoolProvider',
+export function provideJoinPool(pool: Ref<Pool>) {
+  const joinPoolResponse = joinPoolProvider(pool);
+  provide(JoinPoolProviderSymbol, joinPoolResponse);
+  return joinPoolResponse;
+}
 
-  props: {
-    pool: {
-      type: Object as PropType<Pool>,
-      required: true,
-    },
-    isSingleAssetJoin: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  setup(props) {
-    provide(JoinPoolProviderSymbol, provider(props));
-  },
-
-  render() {
-    return h('div', this.$slots?.default ? this.$slots.default() : []);
-  },
-});
+export const useJoinPool = (): JoinPoolProviderResponse => {
+  return safeInject(JoinPoolProviderSymbol);
+};

@@ -3,7 +3,8 @@
     ref="animateRef"
     :class="[
       `flex items-center py-3 border border-transparent ml-4 mr-2 px-2 text-base
-  leading-5 opacity-0 highlight hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg`,
+  leading-5 opacity-0 highlight hover:bg-blue-50 dark:hover:bg-blue-900
+  rounded-lg transition-colors ease-in duration-300`,
       {
         'bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-500':
           focussed,
@@ -50,7 +51,6 @@ import { computed, onMounted, onUnmounted, PropType, ref } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
-import { useUserSettings } from '@/providers/user-settings.provider';
 import { TokenInfo } from '@/types/TokenList';
 
 export default {
@@ -69,19 +69,13 @@ export default {
      */
     const { fNum } = useNumbers();
     const animateRef = ref();
-    const { balances, prices } = useTokens();
-    const { currency } = useUserSettings();
+    const { priceFor, balanceFor } = useTokens();
 
     /**
      * COMPUTED
      */
-    const balance = computed(() => Number(balances.value[props.token.address]));
-    const price = computed(() =>
-      prices.value[props.token.address]
-        ? prices.value[props.token.address][currency.value]
-        : 0
-    );
-    const value = computed(() => balance.value * price.value);
+    const balance = computed(() => Number(balanceFor(props.token.address)));
+    const value = computed(() => balance.value * priceFor(props.token.address));
 
     /**
      * CALLBACKS

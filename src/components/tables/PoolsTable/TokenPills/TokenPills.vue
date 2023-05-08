@@ -15,12 +15,16 @@ type Props = {
   isStablePool?: boolean;
   selectedTokens?: string[];
   pickedTokens?: string[];
+  isOnMigrationCard?: boolean;
+  isHovered?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   isStablePool: false,
   selectedTokens: () => [],
   pickedTokens: () => [],
+  isOnMigrationCard: false,
+  isHovered: false,
 });
 
 const { fNum } = useNumbers();
@@ -63,11 +67,11 @@ function weightFor(token: PoolToken): string {
   });
 }
 
-const MAX_PILLS = 11;
+const MAX_PILLS = 8;
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-y-2 -mt-1">
+  <div class="flex flex-wrap -mt-1">
     <template v-if="isStablePool">
       <StableTokenPill
         v-for="token in visibleTokens"
@@ -89,6 +93,8 @@ const MAX_PILLS = 11;
         :token="token"
         :isSelected="includesAddress(selectedTokens, token.address)"
         :isPicked="includesAddress(pickedTokens, token.address)"
+        :isOnMigrationCard="isOnMigrationCard"
+        :isHovered="isHovered"
       />
       <HiddenTokensPills
         v-if="hiddenTokens.length > 0"

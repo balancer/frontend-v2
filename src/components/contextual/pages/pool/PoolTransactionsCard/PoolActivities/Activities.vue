@@ -8,7 +8,7 @@ import { Pool } from '@/services/pool/types';
 
 import { PoolTransactionsTab } from '../types';
 import Table from './Table.vue';
-import { tokensListExclBpt } from '@/composables/usePool';
+import { tokensListExclBpt } from '@/composables/usePoolHelpers';
 
 /**
  * TYPES
@@ -60,7 +60,7 @@ const poolActivitiesIsFetchingNextPage = computed(
  * METHODS
  */
 function loadMorePoolActivities() {
-  poolActivitiesQuery.fetchNextPage.value();
+  poolActivitiesQuery.fetchNextPage();
 }
 </script>
 

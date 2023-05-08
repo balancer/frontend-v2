@@ -76,8 +76,8 @@ export default function useWeb3Watchers() {
 
         const { emitter } = blocknative.account(newAccount);
         emitter.on('txConfirmed', () => {
-          refetchBalances.value();
-          refetchAllowances.value();
+          refetchBalances();
+          refetchAllowances();
         });
 
         emitter.on('txSpeedUp', tx =>

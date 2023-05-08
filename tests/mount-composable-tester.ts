@@ -8,6 +8,7 @@ export interface MountResult<R> {
 
 export interface MountOptions {
   provider?: () => void;
+  intermediateProvider?: () => void;
   configApp?: (app: App) => void;
 }
 
@@ -29,6 +30,20 @@ export function mount<R>(
 
   const Child = {
     setup() {
+      // Useful when some provider depends itself on another provider that should be provided from an upper level (App-> Child -> GrandChild)
+      // For instance, joinPoolProvider depends on useTokens (App provides tokens -> Child provides joinPool -> GrandChild uses composable that injects joinPool)
+      options?.intermediateProvider?.();
+    },
+
+    render() {
+      return h(GrandChild, {
+        ref: 'grandchild',
+      });
+    },
+  };
+
+  const GrandChild = {
+    setup() {
       const result = composable();
       const wrapper = () => result;
       return { wrapper };
@@ -45,7 +60,7 @@ export function mount<R>(
 
   return {
     //@ts-ignore
-    result: vm.$refs.child.wrapper(),
+    result: vm.$refs.child.$refs.grandchild.wrapper(),
     vm,
 
     unmount: () => app.unmount(),

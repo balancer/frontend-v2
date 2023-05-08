@@ -3,7 +3,7 @@ import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 
 import { Connector, ConnectorId } from '../connector';
 
-export class GnosisSafeConnector extends Connector {
+export class SafeConnector extends Connector {
   id = ConnectorId.Gnosis;
   async connect() {
     const sdk = new SafeAppsSDK();

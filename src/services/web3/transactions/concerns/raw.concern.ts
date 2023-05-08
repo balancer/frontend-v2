@@ -1,4 +1,8 @@
 import { Goals, trackGoal } from '@/composables/useFathom';
+import {
+  verifyNetwork,
+  verifyTransactionSender,
+} from '@/providers/wallet.provider';
 import { WalletError } from '@/types';
 import {
   JsonRpcSigner,
@@ -6,7 +10,6 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/browser';
-import { verifyNetwork, verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
 export class RawConcern extends TransactionConcern {
@@ -26,6 +29,7 @@ export class RawConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
+
       const txOptions = { ...options, ...gasSettings };
 
       await Promise.all([

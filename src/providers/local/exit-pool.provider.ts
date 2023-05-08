@@ -3,12 +3,12 @@ import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
   flatTokenTree,
+  isComposableStableV1,
   isDeep,
   isPreMintedBptType,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePool,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
@@ -19,7 +19,7 @@ import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
-import QUERY_KEYS, { QUERY_EXIT_ROOT_KEY } from '@/constants/queryKeys';
+import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import {
@@ -41,30 +41,27 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import {
   computed,
-  defineComponent,
-  h,
   InjectionKey,
   onBeforeMount,
-  PropType,
   provide,
   ref,
   reactive,
   toRef,
   watch,
   onMounted,
+  Ref,
+  readonly,
 } from 'vue';
-import { useQuery, useQueryClient } from 'vue-query';
+import { useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
+import { safeInject } from '../inject';
+import { useApp } from '@/composables/useApp';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
  */
-type Props = {
-  pool: Pool;
-  isSingleAssetExit: boolean;
-};
-
 export type AmountOut = {
   address: string;
   value: string;
@@ -77,13 +74,16 @@ export type AmountOut = {
  *
  * Handles pool exiting state and transaction execution.
  */
-const provider = (props: Props) => {
+export const exitPoolProvider = (
+  pool: Ref<Pool>,
+  debounceQueryExitMillis = 1000,
+  debounceGetSingleAssetMaxMillis = 1000
+) => {
   /**
    * STATE
    */
-  const pool = toRef(props, 'pool');
   const isMounted = ref(false);
-  const isSingleAssetExit = toRef(props, 'isSingleAssetExit');
+  const isSingleAssetExit = ref<boolean>(false);
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const bptIn = ref<string>('0');
@@ -106,28 +106,33 @@ const provider = (props: Props) => {
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { injectTokens, getTokens, prices, balanceFor } = useTokens();
+  const { injectTokens, getTokens, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
+  const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
-    RelayerType.BATCH_V4
+    RelayerType.BATCH
   );
-  const { isWeightedPool } = usePool(pool);
 
-  const queryClient = useQueryClient();
-
-  const debounceQueryExit = debounce(queryExit, 1000);
-  const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
-    leading: true,
-  });
+  const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
+  const debounceGetSingleAssetMax = debounce(
+    getSingleAssetMax,
+    debounceGetSingleAssetMaxMillis,
+    {
+      leading: true,
+    }
+  );
 
   const queriesEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
   );
 
-  const queryExitQuery = useQuery<void, Error>(
+  const queryExitQuery = useQuery<
+    Awaited<ReturnType<typeof debounceQueryExit>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Exits.QueryExit(
       bptIn,
       hasFetchedPoolsForSor,
@@ -138,7 +143,10 @@ const provider = (props: Props) => {
     reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
   );
 
-  const singleAssetMaxQuery = useQuery<void, Error>(
+  const singleAssetMaxQuery = useQuery<
+    Awaited<ReturnType<typeof debounceGetSingleAssetMax>>,
+    Error
+  >(
     QUERY_KEYS.Pools.Exits.SingleAssetMax(
       hasFetchedPoolsForSor,
       isSingleAssetExit,
@@ -175,8 +183,7 @@ const provider = (props: Props) => {
 
   const shouldSignRelayer = computed(
     (): boolean =>
-      isDeepPool.value &&
-      !isSingleAssetExit.value &&
+      exitHandlerType.value === ExitHandler.Generalised &&
       // Check if Batch Relayer is either approved, or signed
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
@@ -192,14 +199,39 @@ const provider = (props: Props) => {
       isPreMintedBptType(pool.value.poolType)
   );
 
+  const shouldUseGeneralisedExit = computed(
+    (): boolean =>
+      !isSingleAssetExit.value &&
+      (isDeep(pool.value) || isComposableStableV1(pool.value))
+  );
+
+  // Should exit via internal balance only in unique cases.
+  // e.g. exiting the Euler linear pools.
+  const shouldExitViaInternalBalance = computed(
+    (): boolean =>
+      !!POOLS.ExitViaInternalBalance &&
+      POOLS.ExitViaInternalBalance.includes(pool.value.id)
+  );
+
+  // Should use recovery exits if:
+  // 1. The pool is paused AND in recovery mode, OR
+  // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
+  const shouldUseRecoveryExit = computed(
+    (): boolean =>
+      (pool.value.isInRecoveryMode && pool.value.isPaused) ||
+      (!isDeepPool.value && isComposableStableV1(pool.value))
+  );
+
   const exitHandlerType = computed((): ExitHandler => {
+    if (shouldUseRecoveryExit.value) return ExitHandler.Recovery;
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
-    if (isWeightedPool.value && isSingleAssetExit.value) {
+    if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
+    if (isSingleAssetExit.value) {
+      // If 'max' is clicked we want to pass in the full bpt balance.
       if (singleAssetMaxed.value) return ExitHandler.ExactIn;
       return ExitHandler.ExactOut;
     }
-
-    return ExitHandler.Generalised;
+    return ExitHandler.ExactIn;
   });
 
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
@@ -292,9 +324,9 @@ const provider = (props: Props) => {
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
   // Checks if amountsIn has any values > 0.
-  const hasAmountsOut = computed(() =>
-    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
-  );
+  const hasAmountsOut = computed(() => {
+    return amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0));
+  });
 
   // Checks if BPT in is > 0
   const hasBptIn = computed(() => bnum(bptIn.value).gt(0));
@@ -331,19 +363,17 @@ const provider = (props: Props) => {
    * Simulate exit transaction to get expected output and calculate price impact.
    */
   async function queryExit() {
-    if (!hasFetchedPoolsForSor.value) return;
+    if (!hasFetchedPoolsForSor.value) return null;
 
     // Single asset exit, and token out amount is 0 or less
-    if (isSingleAssetExit.value && !hasAmountsOut.value) return;
+    if (isSingleAssetExit.value && !hasAmountsOut.value) return null;
 
     // Proportional exit, and BPT in is 0 or less
-    if (!isSingleAssetExit.value && !hasBptIn.value) return;
+    if (!isSingleAssetExit.value && !hasBptIn.value) return null;
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
-    // Invalidate previous query in order to prevent stale data
-    queryClient.invalidateQueries(QUERY_EXIT_ROOT_KEY);
-
+    console.log('exitHandler:', exitHandlerType.value);
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
@@ -352,7 +382,11 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
+        relayerSignature: relayerSignature.value,
+        transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
 
       priceImpact.value = output.priceImpact;
@@ -362,6 +396,7 @@ const provider = (props: Props) => {
         max: '',
         valid: true,
       }));
+      return output;
     } catch (error) {
       captureException(error);
       throw new Error('Failed to construct exit.', { cause: error });
@@ -372,11 +407,11 @@ const provider = (props: Props) => {
    * Fetch maximum amount out given bptBalance as bptIn.
    */
   async function getSingleAssetMax() {
-    if (!hasFetchedPoolsForSor.value) return;
-    if (!isSingleAssetExit.value) return;
+    if (!hasFetchedPoolsForSor.value) return null;
+    if (!isSingleAssetExit.value) return null;
 
     // If the user has not BPT, there is no maximum amount out.
-    if (!hasBpt.value) return;
+    if (!hasBpt.value) return null;
 
     const singleAssetMaxedExitHandler = shouldUseSwapExit.value
       ? ExitHandler.Swap
@@ -385,6 +420,7 @@ const provider = (props: Props) => {
     exitPoolService.setExitHandler(singleAssetMaxedExitHandler);
     singleAmountOut.max = '';
 
+    console.log('exitHandler:', exitHandlerType.value);
     try {
       const output = await exitPoolService.queryExit({
         exitType: ExitType.GivenIn,
@@ -393,12 +429,17 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
-        relayerSignature: '',
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
+        relayerSignature: relayerSignature.value,
+        transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
-
-      singleAmountOut.max =
+      const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
+      singleAmountOut.max = newMax;
+
+      return newMax;
     } catch (error) {
       captureException(error);
       throw new Error('Failed to calculate max.', { cause: error });
@@ -413,6 +454,7 @@ const provider = (props: Props) => {
       txError.value = '';
       exitPoolService.setExitHandler(exitHandlerType.value);
 
+      console.log('exitHandler:', exitHandlerType.value);
       return exitPoolService.exit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
@@ -420,8 +462,11 @@ const provider = (props: Props) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
+        approvalActions: approvalActions.value,
+        bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
+        transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
@@ -430,13 +475,22 @@ const provider = (props: Props) => {
   }
 
   function setInitialPropAmountsOut() {
-    const leafNodes = tokenTreeLeafs(props.pool.tokens);
+    const leafNodes: string[] = isDeepPool.value
+      ? tokenTreeLeafs(pool.value.tokens)
+      : pool.value.tokensList.filter(
+          token => !isSameAddress(token, pool.value.address)
+        );
+
     propAmountsOut.value = leafNodes.map(address => ({
       address,
       value: '0',
       max: '',
       valid: true,
     }));
+  }
+
+  function setIsSingleAssetExit(value: boolean) {
+    isSingleAssetExit.value = value;
   }
 
   /**
@@ -455,12 +509,12 @@ const provider = (props: Props) => {
    */
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
-    // refactoted probably won't be required.
+    // refactored probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
-    if (!props.isSingleAssetExit) {
+    if (!isSingleAssetExit.value) {
       setInitialPropAmountsOut();
     }
   });
@@ -470,20 +524,26 @@ const provider = (props: Props) => {
   });
 
   return {
-    pool,
-    isSingleAssetExit,
+    // state
+    txState,
     singleAmountOut,
-    propAmountsOut,
+    highPriceImpactAccepted,
+    bptIn,
+    bptInValid,
+    pool,
+    isSingleAssetExit: readonly(isSingleAssetExit),
+    propAmountsOut: readonly(propAmountsOut),
+    priceImpact: readonly(priceImpact),
+    exitPoolService,
+
+    // computed
     exitTokenAddresses,
     exitTokens,
-    priceImpact,
     isLoadingQuery,
     isLoadingMax,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,
-    highPriceImpactAccepted,
-    txState,
     txInProgress,
     queryError,
     maxError,
@@ -492,48 +552,31 @@ const provider = (props: Props) => {
     hasAmountsOut,
     bptBalance,
     hasBpt,
-    bptIn,
     fiatTotalOut,
     fiatValueIn,
     fiatAmountsOut,
     exitTokenInfo,
     queryExitQuery,
-    bptInValid,
     approvalActions,
+    transactionDeadline,
+    shouldExitViaInternalBalance,
+
+    // methods
+    setIsSingleAssetExit,
     exit,
   };
 };
 
-/**
- * Provide setup: response type + symbol.
- */
-export type Response = ReturnType<typeof provider>;
-export const ExitPoolProviderSymbol: InjectionKey<Response> = Symbol(
-  symbolKeys.Providers.ExitPool
-);
+export type ExitPoolProviderResponse = ReturnType<typeof exitPoolProvider>;
+export const ExitPoolProviderSymbol: InjectionKey<ExitPoolProviderResponse> =
+  Symbol(symbolKeys.Providers.ExitPool);
 
-/**
- * <ExitPoolProvider /> component.
- */
-export const ExitPoolProvider = defineComponent({
-  name: 'ExitPoolProvider',
+export function provideExitPool(pool: Ref<Pool>) {
+  const exitPoolResponse = exitPoolProvider(pool);
+  provide(ExitPoolProviderSymbol, exitPoolResponse);
+  return exitPoolResponse;
+}
 
-  props: {
-    pool: {
-      type: Object as PropType<Pool>,
-      required: true,
-    },
-    isSingleAssetExit: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  setup(props) {
-    provide(ExitPoolProviderSymbol, provider(props));
-  },
-
-  render() {
-    return h('div', this.$slots?.default ? this.$slots.default() : []);
-  },
-});
+export function useExitPool(): ExitPoolProviderResponse {
+  return safeInject(ExitPoolProviderSymbol);
+}

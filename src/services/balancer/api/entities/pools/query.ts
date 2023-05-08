@@ -8,7 +8,7 @@ const defaultArgs: GraphQLArgs = {
   orderDirection: 'desc',
   where: {
     totalShares: {
-      gt: 0.01,
+      gt: 0.00001,
     },
     id: {
       not_in: POOLS.BlockList,
@@ -93,6 +93,8 @@ export const defaultAttrs = {
     priceRateProviders: priceRateProviderAttrs,
     tokens: tokenTreeAttrs,
     isNew: true,
+    isInRecoveryMode: true,
+    isPaused: true,
     apr: {
       stakingApr: {
         min: true,

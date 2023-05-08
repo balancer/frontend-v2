@@ -9,7 +9,7 @@ import { mapValues } from 'lodash';
 import veBalProxyABI from '@/lib/abi/veDelegationProxy.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class VeBALProxy {
@@ -20,7 +20,7 @@ export class VeBALProxy {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = veBalProxyABI,
     private readonly config = configService,
-    private readonly web3 = web3Service
+    private readonly walletService = walletServiceInstance
   ) {
     const Contract = getEthersContract();
     this.instance = new Contract(this.address, this.abi, this.provider);

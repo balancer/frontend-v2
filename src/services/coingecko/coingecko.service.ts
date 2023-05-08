@@ -2,27 +2,24 @@ import { SUPPORTED_FIAT } from '@/constants/currency';
 
 import { PriceService } from './api/price.service';
 import { coingeckoClient } from './coingecko.client';
+import config from '@/lib/config';
 
 export const getNativeAssetId = (chainId: string): string => {
-  const mapping = {
-    '1': 'ethereum',
-    '5': 'ethereum',
-    '42': 'ethereum',
-    '137': 'matic-network',
-    '42161': 'ethereum',
-  };
+  const mapping = Object.fromEntries(
+    Object.values(config).map(c => {
+      return [c.chainId.toString(), c.thirdParty.coingecko.nativeAssetId];
+    })
+  );
 
   return mapping[chainId] || 'ethereum';
 };
 
 export const getPlatformId = (chainId: string): string => {
-  const mapping = {
-    '1': 'ethereum',
-    '5': 'ethereum',
-    '42': 'ethereum',
-    '137': 'polygon-pos',
-    '42161': 'arbitrum-one',
-  };
+  const mapping = Object.fromEntries(
+    Object.values(config).map(c => {
+      return [c.chainId.toString(), c.thirdParty.coingecko.platformId];
+    })
+  );
 
   return mapping[chainId] || 'ethereum';
 };

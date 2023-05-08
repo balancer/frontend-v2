@@ -1,8 +1,7 @@
 import { Vault__factory } from '@balancer-labs/typechain';
-import { Contract } from '@ethersproject/contracts';
-import { UseQueryOptions } from 'react-query/types';
+import { getEthersContract } from '@/dependencies/EthersContract';
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
@@ -16,10 +15,11 @@ import useNetwork from '../useNetwork';
  * TYPES
  */
 type QueryResponse = boolean;
+type QueryOptions = UseQueryOptions<QueryResponse>;
 
 export default function useRelayerApprovalQuery(
   relayer: Ref<string>,
-  options: UseQueryOptions<QueryResponse> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * COMPOSABLES
@@ -32,9 +32,10 @@ export default function useRelayerApprovalQuery(
    */
   const enabled = computed(() => isWalletReady.value);
 
+  const EthersContract = getEthersContract();
   const vaultContract = computed(
     () =>
-      new Contract(
+      new EthersContract(
         configService.network.addresses.vault,
         Vault__factory.abi,
         rpcProviderService.jsonProvider
@@ -67,5 +68,9 @@ export default function useRelayerApprovalQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

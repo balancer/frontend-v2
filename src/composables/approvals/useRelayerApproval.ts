@@ -1,7 +1,7 @@
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, ref, watch } from 'vue';
 import useNetwork from '../useNetwork';
-import { Relayer } from '@balancer-labs/sdk';
+import { Relayer, Vault } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { useI18n } from 'vue-i18n';
@@ -9,6 +9,8 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useGnosisSafeApp from '@/composables/useGnosisSafeApp';
 import { COW_RELAYER_CONTRACT_ADDRESS } from '@/services/cowswap/constants';
+import { isWalletConnectWallet } from '@/services/web3/wallet-names';
+import { useUserSettings } from '@/providers/user-settings.provider';
 
 /**
  * TYPES
@@ -17,14 +19,12 @@ export enum RelayerType {
   COWSWAP = 'Cowswap',
   LIDO = 'Lido',
   BATCH = 'Batch',
-  BATCH_V4 = 'BATCH_V4',
 }
 
 export const relayerAddressMap = {
   [RelayerType.COWSWAP]: COW_RELAYER_CONTRACT_ADDRESS,
   [RelayerType.LIDO]: configService.network.addresses.lidoRelayer,
   [RelayerType.BATCH]: configService.network.addresses.batchRelayer,
-  [RelayerType.BATCH_V4]: configService.network.addresses.batchRelayerV4,
 };
 
 /**
@@ -36,17 +36,18 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   /**
    * COMPOSABLES
    */
-  const { account, getSigner } = useWeb3();
+  const { account, getSigner, connector } = useWeb3();
   const { networkId } = useNetwork();
   const { t } = useI18n();
   const { isGnosisSafeApp } = useGnosisSafeApp();
   const { action: transactionAction } = useRelayerApprovalTx(relayerType);
+  const { supportSignatures } = useUserSettings();
 
   const signatureAction: TransactionActionInfo = {
-    label: t('approveBatchRelayer'),
+    label: t('signRelayerApproval'),
     loadingLabel: t('checkWallet'),
-    confirmingLabel: t('approvingBatchRelayer'),
-    stepTooltip: t('approveBatchRelayerTooltip'),
+    confirmingLabel: t('signingRelayerApproval'),
+    stepTooltip: t('signRelayerApprovalTooltip'),
     action: signRelayerApproval as () => Promise<any>,
     isSignAction: true,
   };
@@ -54,8 +55,13 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   /**
    * COMPUTED
    */
+
   const relayerApprovalAction = computed((): TransactionActionInfo => {
-    return isGnosisSafeApp.value ? transactionAction.value : signatureAction;
+    return !supportSignatures.value ||
+      isGnosisSafeApp.value ||
+      isWalletConnectWallet(connector.value?.id)
+      ? transactionAction.value
+      : signatureAction;
   });
 
   /**
@@ -69,7 +75,10 @@ export default function useRelayerApproval(relayerType: RelayerType) {
       relayerAddress,
       signerAddress,
       signer,
-      Vault__factory.connect(configService.network.addresses.vault, signer)
+      Vault__factory.connect(
+        configService.network.addresses.vault,
+        signer
+      ) as unknown as Vault
     );
     relayerSignature.value = signature;
   }

@@ -166,7 +166,8 @@ onMounted(() => {
       :amount="_tokenInAmount"
       :address="_tokenInAddress"
       name="tokenIn"
-      :excludedTokens="[veBalTokenInfo?.address]"
+      :aria-label="$t('inputLabels.tokenIn')"
+      :excludedTokens="veBalTokenInfo ? [veBalTokenInfo.address] : []"
       :ignoreWalletBalance="swapLoading"
       autoFocus
       @update:amount="handleInAmountChange"
@@ -190,11 +191,12 @@ onMounted(() => {
       :amount="_tokenOutAmount"
       :address="_tokenOutAddress"
       name="tokenOut"
+      :aria-label="$t('inputLabels.tokenOut')"
       :priceImpact="priceImpact"
       noRules
       noMax
       disableNativeAssetBuffer
-      :excludedTokens="[veBalTokenInfo?.address]"
+      :excludedTokens="veBalTokenInfo ? [veBalTokenInfo.address] : []"
       @update:amount="handleOutAmountChange"
       @update:address="handleOutputTokenChange"
       @input="emit('update:exactIn', false)"

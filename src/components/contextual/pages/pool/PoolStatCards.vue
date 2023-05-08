@@ -4,8 +4,8 @@ import { useI18n } from 'vue-i18n';
 
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isLBP, totalAprLabel } from '@/composables/usePool';
-import { APR_THRESHOLD } from '@/constants/pools';
+import { isLBP, totalAprLabel } from '@/composables/usePoolHelpers';
+import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
 
@@ -45,6 +45,8 @@ const aprLabel = computed((): string => {
 });
 
 const stats = computed(() => {
+  const volumeSnapshot = Number(props.pool?.volumeSnapshot || '0');
+  const feesSnapshot = Number(props.pool?.feesSnapshot || '0');
   return [
     {
       id: 'poolValue',
@@ -55,20 +57,26 @@ const stats = computed(() => {
     {
       id: 'volumeTime',
       label: t('volumeTime', ['24h']),
-      value: fNum(props.pool?.volumeSnapshot || '0', FNumFormats.fiat),
+      value: fNum(
+        volumeSnapshot > VOLUME_THRESHOLD ? '-' : volumeSnapshot,
+        FNumFormats.fiat
+      ),
       loading: props.loading,
     },
     {
       id: 'feesTime',
       label: t('feesTime', ['24h']),
-      value: fNum(props.pool?.feesSnapshot || '0', FNumFormats.fiat),
+      value: fNum(
+        feesSnapshot > VOLUME_THRESHOLD ? '-' : feesSnapshot,
+        FNumFormats.fiat
+      ),
       loading: props.loading,
     },
     {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.poolApr?.min || '0') > APR_THRESHOLD
+        Number(props.poolApr?.swapFees || '0') > APR_THRESHOLD
           ? '-'
           : aprLabel.value,
       loading: props.loadingApr,

@@ -9,7 +9,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
+
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -26,16 +26,18 @@ import {
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { POOLS } from '@/constants/pools';
+import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
+import { configService } from '@/services/config/config.service';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
+import { poolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES
@@ -93,12 +95,13 @@ const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
-const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 
-const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 250 : undefined
-);
+const wideCompositionWidth = computed(() => {
+  if (upToSmallBreakpoint.value) return 250;
+  return 350;
+});
 
 /**
  * DATA
@@ -170,7 +173,8 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     Cell: 'volumeCell',
     sortKey: pool => {
       const volume = Number(pool?.volumeSnapshot);
-      if (volume === Infinity || isNaN(volume)) return 0;
+      if (volume === Infinity || isNaN(volume) || volume > VOLUME_THRESHOLD)
+        return 0;
       return volume;
     },
     width: 175,
@@ -189,7 +193,9 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
-      return isFinite(apr) ? apr : 0;
+      return isFinite(apr) && (pool.apr?.swapFees || 0) < APR_THRESHOLD
+        ? apr
+        : 0;
     },
     width: 220,
   },
@@ -241,7 +247,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
+      to: configService.network.pools.Migrations?.[pool.id].toPoolId,
     },
     query: { returnRoute: 'home' },
   });
@@ -268,7 +274,7 @@ function lockedUntil(lockEndDate?: number) {
 }
 
 function iconAddresses(pool: Pool) {
-  return POOLS.Metadata[pool.id]?.hasIcon
+  return poolMetadata(pool.id)?.hasIcon
     ? [pool.address]
     : orderedTokenAddresses(pool);
 }
@@ -302,25 +308,26 @@ function iconAddresses(pool: Pool) {
     >
       <template #iconColumnHeader>
         <div class="flex items-center">
-          <img v-if="darkMode" :src="TokensWhite" />
-          <img v-else :src="TokensBlack" />
+          <img v-if="darkMode" :src="TokensWhite" alt="token" />
+          <img v-else :src="TokensBlack" alt="token" />
         </div>
       </template>
       <template #iconColumnCell="pool">
-        <div v-if="!isLoading" class="py-4 px-6">
+        <div v-if="!isLoading" class="py-4 px-6" :data-testid="pool?.id">
           <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
         </div>
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
-            {{ POOLS.Metadata[pool.id].name }}
+          <div v-if="poolMetadata(pool.id)" class="text-left">
+            {{ poolMetadata(pool.id)?.name }}
           </div>
           <div v-else>
             <TokenPills
               :tokens="orderedPoolTokens(pool, pool.tokens)"
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
+              :pickedTokens="selectedTokens"
             />
           </div>
           <BalChip
@@ -340,10 +347,15 @@ function iconAddresses(pool: Pool) {
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
-              fNum(pool?.volumeSnapshot, {
-                style: 'currency',
-                maximumFractionDigits: 0,
-              })
+              fNum(
+                pool?.volumeSnapshot < VOLUME_THRESHOLD
+                  ? pool?.volumeSnapshot
+                  : '-',
+                {
+                  style: 'currency',
+                  maximumFractionDigits: 0,
+                }
+              )
             }}
           </span>
         </div>

@@ -10,5 +10,8 @@ export default {
     UserStaking: 'provider.userStaking',
     UserData: 'provider.userData',
     UserPools: 'provider.userPools',
+    Wallets: 'provider.wallets',
+    Pool: 'provider.pool',
+    UserTokens: 'provider.userTokens',
   },
 };

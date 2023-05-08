@@ -13,6 +13,7 @@ import ExitParams from './serializers/ExitParams';
 import JoinParams from './serializers/JoinParams';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { BigNumber } from 'ethers';
+import { parseUnits } from '@ethersproject/units';
 
 export default class ExchangeService {
   pool: Ref<Pool>;
@@ -97,13 +98,17 @@ export default class ExchangeService {
       exactOut
     );
 
-    const txBuilder = new TransactionBuilder(signer);
-    return await txBuilder.contract.callStatic({
-      contractAddress: this.helpersAddress,
-      abi: BalancerHelpers__factory.abi,
-      action: 'queryExit',
-      params,
-    });
+    if (this.pool.value.isInRecoveryMode) {
+      return queryRecoveryExit(bptIn, this.pool.value);
+    } else {
+      const txBuilder = new TransactionBuilder(signer);
+      return await txBuilder.contract.callStatic({
+        contractAddress: this.helpersAddress,
+        abi: BalancerHelpers__factory.abi,
+        action: 'queryExit',
+        params,
+      });
+    }
   }
 
   public async exit(
@@ -141,4 +146,27 @@ export default class ExchangeService {
   private get exitParams() {
     return new ExitParams(this);
   }
+}
+
+function queryRecoveryExit(
+  bptIn: string,
+  pool: Pool
+): { bptIn: BigNumber; amountsOut: BigNumber[] } {
+  const evmBptIn = parseUnits(bptIn);
+  const evmTotalSupply = parseUnits(pool?.onchain?.totalSupply || '0');
+  const balances = Object.values(pool?.onchain?.tokens || []).map(t => ({
+    balance: t.balance,
+    decimals: t.decimals,
+  }));
+  const evmBalances = balances.map(({ balance, decimals }) =>
+    parseUnits(balance, decimals || 18)
+  );
+  const bptRatio = evmBptIn.div(evmTotalSupply);
+
+  return {
+    bptIn: evmBptIn,
+    amountsOut: evmBalances.map(balance => {
+      return balance.mul(bptRatio);
+    }),
+  };
 }

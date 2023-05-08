@@ -73,6 +73,12 @@ module.exports = {
               'Please import from src/dependencies to make this dependency more testable',
           },
           {
+            group: ['@balancer-labs/sdk'],
+            importNames: ['PoolsFallbackRepository'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
+          {
             group: ['@/lib/utils/balancer/contract'],
             importNames: ['Multicaller'],
             message:
@@ -84,6 +90,18 @@ module.exports = {
           //   message:
           //     'Please import from src/dependencies to make this dependency more testable',
           // },
+          {
+            group: ['@ethersproject/providers'],
+            importNames: ['Web3Provider'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
+          {
+            group: ['@balancer-labs/sdk'],
+            importNames: ['Network'],
+            message:
+              'Please import Network from @/lib/config to avoid adding SDK to bundle',
+          },
         ],
       },
     ],
@@ -95,6 +113,12 @@ module.exports = {
       files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/**/*.spec.{j,t}s?(x)'],
       env: {
         jest: true,
+      },
+    },
+    {
+      files: ['src/services/api/graphql/generated/**/*.ts'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
       },
     },
   ],

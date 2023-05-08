@@ -1,6 +1,6 @@
 import { computed, reactive, Ref, toRefs } from 'vue';
 
-import { isDeep, tokensListExclBpt } from '@/composables/usePool';
+import { isDeep, tokensListExclBpt } from '@/composables/usePoolHelpers';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import { useTokens } from '@/providers/tokens.provider';
 import i18n from '@/plugins/i18n';
@@ -23,7 +23,6 @@ type WithdrawalState = {
   validInput: boolean;
   highPriceImpactAccepted: boolean;
   submitting: boolean;
-  sorReady: boolean;
   tx: {
     init: boolean;
     confirming: boolean;
@@ -49,7 +48,6 @@ const state = reactive<WithdrawalState>({
   validInput: true,
   highPriceImpactAccepted: false,
   submitting: false,
-  sorReady: false,
   tx: {
     init: false,
     confirming: false,

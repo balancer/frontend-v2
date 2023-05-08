@@ -2,7 +2,7 @@
 import { format, fromUnixTime } from 'date-fns';
 import { Dictionary, mapKeys, mapValues, pickBy, toPairs } from 'lodash';
 import { useI18n } from 'vue-i18n';
-import { useQuery } from 'vue-query';
+import { useQuery } from '@tanstack/vue-query';
 
 import { useSwapState } from '@/composables/swap/useSwapState';
 import useBreakpoints from '@/composables/useBreakpoints';

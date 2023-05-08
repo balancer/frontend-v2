@@ -4,13 +4,13 @@ import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { getBalancer } from '@/dependencies/balancer-sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
-const balancer = getBalancer();
-type JoinResponse = Awaited<ReturnType<typeof balancer.pools.generalisedJoin>>;
+type JoinResponse = Awaited<
+  ReturnType<BalancerSDK['pools']['generalisedJoin']>
+>;
 
 /**
  * Handles generalized joins for deep pools using SDK functions.
@@ -43,6 +43,7 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     signer,
     slippageBsp,
     relayerSignature,
+    approvalActions,
   }: JoinParams): Promise<QueryOutput> {
     const evmAmountsIn: string[] = amountsIn.map(({ address, value }) => {
       const token = selectByAddress(tokensIn, address);
@@ -55,19 +56,27 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
 
     const tokenAddresses: string[] = amountsIn.map(({ address }) => address);
     const signerAddress = await signer.getAddress();
-    const wrapLeafTokens = false;
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
+    const hasInvalidAmounts = amountsIn.some(item => !item.valid);
 
-    this.lastJoinRes = await balancer.pools.generalisedJoin(
+    // Static call simulation is more accurate than VaultModel, but requires relayer approval,
+    // token approvals, and account to have enought token balance.
+    const simulationType: SimulationType =
+      !hasInvalidAmounts && !approvalActions.length
+        ? SimulationType.Static
+        : SimulationType.VaultModel;
+
+    console.log({ simulationType });
+
+    this.lastJoinRes = await this.sdk.pools.generalisedJoin(
       poolId,
       tokenAddresses,
       evmAmountsIn,
       signerAddress,
-      wrapLeafTokens,
       slippage,
       signer,
-      SimulationType.Tenderly, // TODO: update to use VaultModel + Static (see SDK example for more details)
+      simulationType,
       relayerSignature
     );
 

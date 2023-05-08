@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -13,14 +12,14 @@ import {
   isStableLike,
   orderedPoolTokens,
   orderedTokenAddresses,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/composables/useClaimsData';
 
 import { Gauge } from '@/services/balancer/gauges/types';
-import { POOLS } from '@/constants/pools';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import useNetwork from '@/composables/useNetwork';
+import { poolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES
@@ -146,8 +145,8 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
       </template>
       <template #pillsColumnCell="{ pool }">
         <div class="flex items-center py-4 px-6">
-          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
-            {{ POOLS.Metadata[pool.id].name }}
+          <div v-if="poolMetadata(pool.id)" class="text-left">
+            {{ poolMetadata(pool.id)!.name }}
           </div>
 
           <TokenPills

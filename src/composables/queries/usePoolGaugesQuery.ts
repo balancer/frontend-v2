@@ -1,6 +1,5 @@
-import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
+import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { subgraphRequest } from '@/lib/utils/subgraph';
@@ -21,6 +20,8 @@ export type PoolGauges = {
   };
   liquidityGauges: { id: string }[];
 };
+
+type QueryOptions = UseQueryOptions<PoolGauges>;
 
 /**
  * Fetches all gauges for a given pool and specifies which gauge is the
@@ -92,5 +93,5 @@ export default function usePoolGaugesQuery(
     ...options,
   });
 
-  return useQuery<PoolGauges>(queryKey, queryFn, queryOptions);
+  return useQuery<PoolGauges>(queryKey, queryFn, queryOptions as QueryOptions);
 }

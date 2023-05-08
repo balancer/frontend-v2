@@ -9,13 +9,22 @@ import {
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
 import { isGoerli } from './useNetwork';
-import { orderedPoolTokens } from '@/composables/usePool';
+import { orderedPoolTokens } from '@/composables/usePoolHelpers';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolToken } from '@/services/pool/types';
+import { cloneDeep } from 'lodash';
+
+export function orderedGaugeTokens(
+  gaugePool: VotingGaugeWithVotes['pool']
+): PoolToken[] {
+  const _gaugePool = cloneDeep(gaugePool as Pool);
+  _gaugePool.tokensList = _gaugePool.tokens.map(token => token.address);
+
+  return orderedPoolTokens(_gaugePool, _gaugePool.tokens as PoolToken[]);
+}
 
 export function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(gauge.pool as Pool, gauge.pool.tokens);
-  return sortedTokens.map(
+  return orderedGaugeTokens(gauge.pool).map(
     token => gauge.tokenLogoURIs[token?.address || ''] || ''
   );
 }
@@ -37,9 +46,7 @@ export default function useVotingGauges() {
 
   const isLoading = computed(
     (): boolean =>
-      gaugeVotesQuery.isLoading.value ||
-      gaugeVotesQuery.isIdle.value ||
-      !!gaugeVotesQuery.error.value
+      gaugeVotesQuery.isLoading.value || !!gaugeVotesQuery.error.value
   );
 
   const votingGauges = computed(() => gaugeVotesQuery.data.value || []);

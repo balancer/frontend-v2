@@ -4,8 +4,6 @@ import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
 import OldBigNumber from 'bignumber.js';
-import { computed, ComputedRef, reactive, Ref, ref, toRefs } from 'vue';
-import { useStore } from 'vuex';
 
 import { bnum } from '@/lib/utils';
 import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
@@ -25,6 +23,7 @@ import { captureException } from '@sentry/browser';
 import { Goals, trackGoal } from '../useFathom';
 import useTranasactionErrors from '../useTransactionErrors';
 import { useI18n } from 'vue-i18n';
+import { useApp } from '@/composables/useApp';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
@@ -89,7 +88,7 @@ export default function useCowswap({
   slippageBufferRate,
 }: Props) {
   // COMPOSABLES
-  const store = useStore();
+  const { transactionDeadline } = useApp();
   const { account, getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
@@ -104,10 +103,6 @@ export default function useCowswap({
   const latestQuoteIdx = ref<number>(0);
 
   // COMPUTED
-  const appTransactionDeadline = computed<number>(
-    () => store.state.app.transactionDeadline
-  );
-
   const hasValidationError = computed(() => state.validationError != null);
 
   // METHODS
@@ -166,7 +161,7 @@ export default function useCowswap({
         buyAmount: exactIn.value
           ? quote.minimumOutAmount.toString()
           : tokenOutAmountScaled.value.toString(),
-        validTo: calculateValidTo(appTransactionDeadline.value),
+        validTo: calculateValidTo(transactionDeadline.value),
         appData: APP_DATA,
         feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
@@ -248,6 +243,7 @@ export default function useCowswap({
         captureException(new Error(state.submissionError, { cause: error }));
       }
       confirming.value = false;
+      throw error;
     }
   }
 

@@ -5,7 +5,7 @@ import { mapValues } from 'lodash';
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { web3Service } from '@/services/web3/web3.service';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 
 export class VEBalHelpers {
@@ -14,7 +14,7 @@ export class VEBalHelpers {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = VEBalHelpersABI,
     private readonly config = configService,
-    private readonly web3 = web3Service
+    private readonly walletService = walletServiceInstance
   ) {}
 
   async getRelativeWeights(gaugeAddresses: string[]) {

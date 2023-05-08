@@ -32,5 +32,6 @@ export default function useDarkMode() {
   return {
     darkMode,
     toggleDarkMode,
+    setDarkMode,
   };
 }

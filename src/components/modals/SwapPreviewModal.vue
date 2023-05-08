@@ -35,35 +35,31 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-
 const props = defineProps<Props>();
-
 const emit = defineEmits(['swap', 'close']);
-// COMPOSABLES
+
+/**
+ * COMPOSABLES
+ */
 const { t } = useI18n();
 const { fNum, toFiat } = useNumbers();
 const { tokens, balanceFor, approvalRequired } = useTokens();
-const {
-  relayerSignature: batchRelayerSignature,
-  relayerApprovalAction: batchRelayerApprovalAction,
-} = useRelayerApproval(RelayerType.BATCH_V4);
-const { isUnlocked: batchRelayerIsUnlocked } = useRelayerApprovalTx(
-  RelayerType.BATCH_V4
-);
 const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
 const { slippage } = useUserSettings();
 
-// state
+/**
+ * STATE
+ */
 const lastQuote = ref<SwapQuote | null>(
   props.swapping.isWrapUnwrapSwap.value ? null : props.swapping.getQuote()
 );
 const priceUpdated = ref(false);
 const priceUpdateAccepted = ref(false);
-
-// DATA
 const showSummaryInFiat = ref(false);
 
-// COMPUTED
+/**
+ * COMPUTED
+ */
 const slippageRatePercent = computed(() =>
   fNum(slippage.value, FNumFormats.percent)
 );
@@ -248,21 +244,6 @@ const labels = computed(() => {
   };
 });
 
-const tokenApproval = useTokenApproval(
-  addressIn,
-  props.swapping.tokenInAmountInput,
-  tokens
-);
-
-const cowswapRelayerApproval = useRelayerApprovalTx(
-  RelayerType.COWSWAP,
-  props.swapping.isCowswapSwap
-);
-
-const pools = computed<SubgraphPoolBase[]>(() => {
-  return props.swapping.sor.pools.value;
-});
-
 const wrapType = computed(() =>
   getWrapAction(
     props.swapping.tokenIn.value.address,
@@ -276,7 +257,29 @@ const isStETHSwap = computed(
     wrapType.value === WrapType.NonWrap
 );
 
+const tokenApproval = useTokenApproval(
+  addressIn,
+  props.swapping.tokenInAmountInput,
+  tokens
+);
+
+const {
+  relayerSignature: batchRelayerSignature,
+  relayerApprovalAction: batchRelayerApprovalAction,
+} = useRelayerApproval(RelayerType.BATCH);
+
+const batchRelayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
+
+const cowswapRelayerApproval = useRelayerApprovalTx(
+  RelayerType.COWSWAP,
+  props.swapping.isCowswapSwap
+);
+
 const lidoRelayerApproval = useRelayerApprovalTx(RelayerType.LIDO, isStETHSwap);
+
+const pools = computed<SubgraphPoolBase[]>(() => {
+  return props.swapping.sor.pools.value;
+});
 
 const requiresTokenApproval = computed(() => {
   if (props.swapping.isWrap.value && !props.swapping.isEthSwap.value) {
@@ -294,7 +297,7 @@ const requiresTokenApproval = computed(() => {
 const requiresBatchRelayerApproval = computed(
   () =>
     props.swapping.isJoinExitSwap.value &&
-    !batchRelayerIsUnlocked.value &&
+    !batchRelayerApproval.isUnlocked.value &&
     !batchRelayerSignature.value
 );
 
@@ -318,7 +321,9 @@ const showTokenApprovalStep = computed(
 );
 
 const showBatchRelayerApprovalStep = computed(
-  () => props.swapping.isJoinExitSwap.value && !batchRelayerIsUnlocked.value
+  () =>
+    props.swapping.isJoinExitSwap.value &&
+    !batchRelayerApproval.isUnlocked.value
 );
 
 const showCowswapRelayerApprovalStep = computed(
@@ -351,90 +356,53 @@ const showPriceUpdateError = computed(
     !requiresApproval.value && priceUpdated.value && !priceUpdateAccepted.value
 );
 
-const actionStepsLoading = computed(
-  () =>
-    cowswapRelayerApproval.init.value ||
-    cowswapRelayerApproval.approving.value ||
-    lidoRelayerApproval.init.value ||
-    lidoRelayerApproval.approving.value ||
-    tokenApproval.approving.value ||
-    props.swapping.isConfirming.value
-);
+const actions = computed((): TransactionActionInfo[] => {
+  const actions: TransactionActionInfo[] = [];
 
-const actionStepsLoadingLabel = computed(() =>
-  requiresCowswapRelayerApproval.value
-    ? `${t('approvingCowswapRelayer')}...`
-    : requiresLidoRelayerApproval.value
-    ? `${t('approvingLidoRelayer')}...`
-    : requiresBatchRelayerApproval.value
-    ? `${t('approvingBatchRelayer')}...`
-    : requiresTokenApproval.value
-    ? `${t('approving')} ${props.swapping.tokenIn.value.symbol}...`
-    : t('confirming')
-);
+  if (showCowswapRelayerApprovalStep.value) {
+    actions.push(cowswapRelayerApproval.action.value);
+  } else if (showLidoRelayerApprovalStep.value) {
+    actions.push(lidoRelayerApproval.action.value);
+  } else if (showBatchRelayerApprovalStep.value) {
+    actions.push(batchRelayerApprovalAction.value);
+  }
 
-const actions = computed((): TransactionActionInfo[] => [
-  ...(showCowswapRelayerApprovalStep.value
-    ? [
-        {
-          label: t('approveCowswapRelayer'),
-          loadingLabel: t('approvingCowswapRelayer'),
-          confirmingLabel: t('approveCowswapRelayer'),
-          action: cowswapRelayerApproval.approve,
-          stepTooltip: t(
-            'swapSummary.transactionTypesTooltips.cowswapRelayerApproval.content'
-          ),
-        },
-      ]
-    : []),
-  ...(showLidoRelayerApprovalStep.value
-    ? [
-        {
-          label: t('approveLidoRelayer'),
-          loadingLabel: t('approvingLidoRelayer'),
-          confirmingLabel: t('approveLidoRelayer'),
-          action: lidoRelayerApproval.approve,
-          stepTooltip: t(
-            'swapSummary.transactionTypesTooltips.lidoRelayerApproval.content'
-          ),
-        },
-      ]
-    : []),
-  ...(showBatchRelayerApprovalStep.value
-    ? [batchRelayerApprovalAction.value]
-    : []),
-  ...(showTokenApprovalStep.value
-    ? [
-        {
-          label: `${t('approve')} ${props.swapping.tokenIn.value.symbol}`,
-          loadingLabel: `${t('approving')} ${
-            props.swapping.tokenIn.value.symbol
-          }...`,
-          confirmingLabel: `${t('confirming')} ${
-            props.swapping.tokenIn.value.symbol
-          }`,
-          action: approveToken,
-          stepTooltip: t(
-            'swapSummary.transactionTypesTooltips.tokenApproval.content'
-          ),
-        },
-      ]
-    : []),
-  {
+  if (showTokenApprovalStep.value) {
+    actions.push({
+      label: t('transactionSummary.approveForSwapping', [
+        props.swapping.tokenIn.value.symbol,
+      ]),
+      loadingLabel: t('actionSteps.approve.loadingLabel'),
+      confirmingLabel: t('confirming'),
+      action: approveToken,
+      stepTooltip: t(
+        'swapSummary.transactionTypesTooltips.tokenApproval.content'
+      ),
+    });
+  }
+
+  actions.push({
     label: labels.value.confirmSwap,
-    loadingLabel: `${t('approving')} ${props.swapping.tokenIn.value.symbol}...`,
+    loadingLabel: t('actionSteps.swap.loadingLabel'),
     confirmingLabel: t('confirming'),
     action: swap as () => Promise<any>,
     stepTooltip:
       props.swapping.isCowswapSwap.value && !props.swapping.isJoinExitSwap
         ? t('swapSummary.transactionTypesTooltips.sign.content')
         : t('swapSummary.transactionTypesTooltips.swap.content'),
-  },
-]);
+  });
 
-// METHODS
-function swap() {
-  emit('swap');
+  return actions;
+});
+
+/**
+ * METHODS
+ */
+async function swap() {
+  return props.swapping.swap(() => {
+    props.swapping.resetAmounts();
+    emit('close');
+  });
 }
 
 function onClose() {
@@ -508,7 +476,9 @@ async function approveToken(): Promise<TransactionResponse> {
   }
 }
 
-// WATCHERS
+/**
+ * WATCHERS
+ */
 watch(blockNumber, () => {
   handlePriceUpdate();
 });
@@ -741,8 +711,6 @@ watch(blockNumber, () => {
       <BalActionSteps
         v-else
         :actions="actions"
-        :isLoading="actionStepsLoading"
-        :loadingLabel="actionStepsLoadingLabel"
         :disabled="disableSubmitButton || showPriceUpdateError"
       />
       <BalAlert

@@ -4,20 +4,18 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from 'ethers';
-import { computed, reactive, toRef, toRefs, watch } from 'vue';
+import { computed, reactive, toRef, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import useNetwork from '@/composables/useNetwork';
-import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
 import { Pool } from '@/services/pool/types';
@@ -73,7 +71,7 @@ const investmentState = reactive<InvestmentState>({
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { getSigner, blockNumber } = useWeb3();
+const { getSigner } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
@@ -81,19 +79,12 @@ const { isStakablePool } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const { refetchBalances } = useTokens();
 
-const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-const {
-  fullAmounts,
-  batchSwapAmountMap,
-  bptOut,
-  fiatTotalLabel,
-  fiatTotal,
-  batchSwap,
-  shouldFetchBatchSwap,
-} = toRefs(props.math);
+const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
+const tokenAddresses = computed(() => props.tokenAddresses);
+const { fullAmounts, bptOut, fiatTotalLabel, fiatTotal } = toRefs(props.math);
 
 const { tokenApprovalActions } = useTokenApprovalActions(
-  props.tokenAddresses,
+  tokenAddresses,
   fullAmounts
 );
 
@@ -115,13 +106,6 @@ const actions = computed((): TransactionActionInfo[] => [
     stepTooltip: t('investmentTooltip'),
   },
 ]);
-
-const transactionInProgress = computed(
-  (): boolean =>
-    investmentState.init ||
-    investmentState.confirming ||
-    investmentState.confirmed
-);
 
 const normalizedBptOut = computed((): string => {
   return formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18);
@@ -159,7 +143,7 @@ async function handleTransaction(tx): Promise<void> {
         Goals.LiquidityAdded,
         bnum(fiatTotal.value).times(100).toNumber() || 0
       );
-      await refetchBalances.value();
+      await refetchBalances();
     },
     onTxFailed: () => {
       console.error('Add liquidity failed');
@@ -173,22 +157,12 @@ async function submit(): Promise<TransactionResponse> {
     let tx;
     investmentState.init = true;
 
-    if (batchSwap.value) {
-      tx = await boostedJoinBatchSwap(
-        batchSwap.value.swaps,
-        batchSwap.value.assets,
-        props.pool.address,
-        batchSwapAmountMap.value,
-        BigNumber.from(bptOut.value)
-      );
-    } else {
-      tx = await poolExchange.join(
-        getSigner(),
-        fullAmounts.value,
-        props.tokenAddresses,
-        normalizedBptOut.value
-      );
-    }
+    tx = await poolExchange.join(
+      getSigner(),
+      fullAmounts.value,
+      props.tokenAddresses,
+      normalizedBptOut.value
+    );
 
     investmentState.init = false;
     investmentState.confirming = true;
@@ -204,15 +178,6 @@ async function submit(): Promise<TransactionResponse> {
     });
   }
 }
-
-/**
- * WATCHERS
- */
-watch(blockNumber, async () => {
-  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
-    await props.math.getBatchSwap();
-  }
-});
 </script>
 
 <template>

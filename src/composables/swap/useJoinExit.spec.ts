@@ -1,23 +1,14 @@
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { computed, ref } from 'vue';
 
-import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
+import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import useJoinExit from '@/composables/swap/useJoinExit';
 import { noop } from 'lodash';
-import { mountComposable } from '@tests/mount-helpers';
+import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 
-vi.mock('@/providers/tokens.provider', () => ({
-  useTokens: () => {
-    return {
-      injectTokens: vi.fn(noop),
-      priceFor: vi.fn(noop),
-      useTokens: vi.fn(noop),
-      getToken: vi.fn(noop),
-    };
-  },
-}));
-
-initBalancerWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
+initEthersContractWithDefaultMocks();
 
 const mockAmount = BigNumber.from(10);
 vi.mock('@/lib/balancer.sdk', () => {
@@ -81,14 +72,16 @@ describe('useJoinExit', () => {
     vi.spyOn(console, 'timeEnd').mockImplementation(noop);
   });
 
-  it('Should load', () => {
+  it('Should load', async () => {
     vi.spyOn(console, 'time').mockImplementation(noop);
-    const { result } = mountComposable(() => useJoinExit(mockProps));
+    const { result } = await mountComposable(() => useJoinExit(mockProps));
     expect(result).toBeTruthy();
   });
 
   it('Should return an available joinExit swap', async () => {
-    const { result: joinExit } = mountComposable(() => useJoinExit(mockProps));
+    const { result: joinExit } = await mountComposable(() =>
+      useJoinExit(mockProps)
+    );
     await joinExit.handleAmountChange();
     expect(Number((await joinExit).swapInfo.value?.returnAmount)).toBe(
       Number(mockAmount)

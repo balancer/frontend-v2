@@ -4,9 +4,9 @@ import { computed } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { hasBalEmissions } from '@/services/staking/utils';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useTokens } from '@/providers/tokens.provider';
+import { hasBalEmissions } from '@/composables/useAPR';
 
 /**
  * TYPES

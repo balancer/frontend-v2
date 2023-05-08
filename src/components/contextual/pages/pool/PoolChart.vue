@@ -13,7 +13,7 @@ import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
-import { isFx } from '@/composables/usePool';
+import { isFx } from '@/composables/usePoolHelpers';
 import FxPoolWarning from './FxPoolWarning.vue';
 
 /**
@@ -400,7 +400,7 @@ function setCurrentChartValue(payload: {
 }) {
   currentChartValue.value.num = fNum(payload.chartValue, {
     style: 'currency',
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
     fixedFormat: true,
   });
   currentChartValue.value.isNegative = payload.chartValue < 0;

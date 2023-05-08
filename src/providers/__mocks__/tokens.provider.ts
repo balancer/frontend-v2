@@ -1,3 +1,4 @@
+import { wethAddress } from '@tests/unit/builders/address';
 import { mock } from 'vitest-mock-extended';
 import { computed } from 'vue';
 import { TokensResponse } from '../tokens.provider';
@@ -6,7 +7,7 @@ const mockTokens = {
   '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2': {
     symbol: 'MKR',
   },
-  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
+  [wethAddress]: {
     symbol: 'WETH',
   },
   '0xdac17f958d2ee523a2206206994597c13d831ec7': {
@@ -43,9 +44,12 @@ export function useTokens() {
   return tokensProvider();
 }
 
+export const defaultPrice = 2;
+export const defaultBalance = '10';
+
 export const mockTokensProvider = mock<TokensResponse>();
-mockTokensProvider.priceFor.mockReturnValue(2);
-mockTokensProvider.balanceFor.mockReturnValue('10');
+mockTokensProvider.priceFor.mockReturnValue(defaultPrice);
+mockTokensProvider.balanceFor.mockReturnValue(defaultBalance);
 mockTokensProvider.getTokens.mockImplementation(addresses => {
   return Object.fromEntries(
     addresses.map(address => {

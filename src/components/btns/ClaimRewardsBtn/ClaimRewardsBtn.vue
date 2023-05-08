@@ -11,8 +11,8 @@ import { Gauge } from '@/services/balancer/gauges/types';
 
 import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
 import { configService } from '@/services/config/config.service';
-import { isL2 } from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
+import { networkHasNativeGauges } from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -46,7 +46,7 @@ const liquidityGaugeContract = new LiquidityGauge(gaugeAddress);
  * METHODS
  */
 function claimTx() {
-  if (isL2.value) {
+  if (!networkHasNativeGauges.value) {
     const liquidityGaugeRewardsHelperContract = new LiquidityGaugeRewardsHelper(
       configService.network.addresses.gaugeRewardsHelper || ''
     );
@@ -65,7 +65,7 @@ function claimTx() {
     color="gradient"
     size="sm"
     :actionFn="claimTx"
-    :onConfirmFn="gaugesQuery.refetch.value"
+    :onConfirmFn="gaugesQuery.refetch"
     action="claim"
     :summary="`${t('claim')} ${fNum(props.fiatValue, FNumFormats.fiat)}`"
     :confirmingLabel="t('claiming')"

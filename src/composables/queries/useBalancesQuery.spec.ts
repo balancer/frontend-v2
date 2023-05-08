@@ -4,16 +4,14 @@ import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { aTokenInfo } from '@/types/TokenList.builders';
 import { ref } from 'vue';
 import useBalancesQuery from './useBalancesQuery';
+import { daiAddress, nativeAssetAddress } from '@tests/unit/builders/address';
 
 initDependenciesWithDefaultMocks();
 
 test('Returns token balances', async () => {
-  const zeroAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-  const daiAddress = '0x8c9e6c40d3402480ACE624730524fACC5482798c';
-
   const tokens = ref({
-    [zeroAddress]: aTokenInfo(zeroAddress),
-    [daiAddress]: aTokenInfo(daiAddress),
+    [nativeAssetAddress]: aTokenInfo({ address: nativeAssetAddress }),
+    [daiAddress]: aTokenInfo({ address: daiAddress }),
   });
 
   const { result } = mountComposable(() =>

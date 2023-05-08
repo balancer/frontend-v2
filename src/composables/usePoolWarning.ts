@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { networkId } from './useNetwork';
@@ -11,6 +11,8 @@ export enum PoolWarning {
   PoolOwnerVulnWarningEcosystem = 'poolOwnerVulnWarningEcosystem',
   PoolOwnerVulnWarningEcosystemMigrate = 'poolOwnerVulnWarningEcosystemMigrate',
   RenBTCWarning = 'renBTCWarning',
+  EulerBoostedWarning = 'eulerBoostedWarning',
+  EulerRecoveryModeWarning = 'eulerRecoveryModeWarning',
 }
 
 const POOL_ISSUES = {
@@ -36,6 +38,17 @@ const POOL_ISSUES = {
     [PoolWarning.RenBTCWarning]: [
       '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
       '0xad6a8c18b62eb914604ec1eec7fbcf132799fe090001000000000000000003f6',
+    ],
+    [PoolWarning.EulerBoostedWarning]: [
+      '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f',
+    ],
+    [PoolWarning.EulerRecoveryModeWarning]: [
+      '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476',
+      '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477',
+      '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488',
+      '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474',
+      '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475',
+      '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
     ],
   },
   [Network.POLYGON]: {
@@ -70,6 +83,7 @@ const POOL_ISSUES = {
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
     ],
   },
+  [Network.GNOSIS]: {},
 };
 
 const issues = POOL_ISSUES[networkId.value];
