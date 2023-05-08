@@ -55,7 +55,7 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=8192"
         run: |
           output=$(npm run build)
-          echo "::set-env name=build-output::$output"
+          echo "::set-output name=build-output::$output"
       - name: Fail if big chunks
         run: |
           if echo "${{join(steps.build.outputs.build-output, '\n')}}" | grep -q "Some chunks are larger than 500 kBs after minification"; then
