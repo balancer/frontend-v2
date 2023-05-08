@@ -7,13 +7,6 @@ import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.v
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
-import {
-  BlankLayout,
-  ContentLayout,
-  DefaultLayout,
-  FocussedLayout,
-  JoinExitLayout,
-} from '@/pages/_layouts';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
@@ -27,6 +20,25 @@ import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
 import { useThirdPartyServices } from './composables/useThirdPartyServices';
+
+// Dynamic import of layout components:
+// it prevents the initial bundle from including all the layouts (and their unique dependencies)
+// each route will only load the layout that it needs
+const DefaultLayout = defineAsyncComponent(
+  () => import('@/pages/_layouts/DefaultLayout.vue')
+);
+const BlankLayout = defineAsyncComponent(
+  () => import('@/pages/_layouts/BlankLayout.vue')
+);
+const FocussedLayout = defineAsyncComponent(
+  () => import('@/pages/_layouts/FocussedLayout.vue')
+);
+const ContentLayout = defineAsyncComponent(
+  () => import('@/pages/_layouts/ContentLayout.vue')
+);
+const JoinExitLayout = defineAsyncComponent(
+  () => import('@/pages/_layouts/JoinExitLayout.vue')
+);
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
