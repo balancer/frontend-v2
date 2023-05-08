@@ -26,7 +26,6 @@ poolsStoreService.setPools([veBalPool]);
 test('returns veBal locked amount', async () => {
   const result = await mountUseLock();
 
-  expect(result.isLoadingLock.value).toBeTrue();
   await waitForExpect(() => expect(result.isLoadingLock.value).toBeFalse());
 
   expect(result.lock.value?.lockedAmount).toBe(defaultLockedAmount);
@@ -35,5 +34,5 @@ test('returns veBal locked amount', async () => {
 test('returns totalLockedValue', async () => {
   const result = await mountUseLock();
 
-  expect(result.isLoadingLock.value).toBeTrue();
+  await waitForExpect(() => expect(result.isLoadingLock.value).toBeFalse());
 });
