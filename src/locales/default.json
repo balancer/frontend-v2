@@ -241,7 +241,8 @@
     "syncModal": {
       "title": "Sync veBAL: Select networks",
       "description": "Layer 2 (L2) networks don’t know your veBAL balance on Ethereum, unless you sync it. On any L2 where you stake, sync your veBAL balance to get your max possible boost. Resync after acquiring more veBAL to continue your max boost. Note: Each network to sync costs more gas."
-    }
+    },
+    "syncInProgress": "A sync operation is currently in progress. Wait until it completes before restaking any of your positions on [Arbitrum] to get your maximum veBAL boost."
   },
   "migratePool": {
     "aaveBoostedPool": {

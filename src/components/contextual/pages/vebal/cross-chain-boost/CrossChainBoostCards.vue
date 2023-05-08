@@ -30,7 +30,7 @@ async function syncNetwork(network: Network) {
         <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
       </template> -->
       <BalCard>
-        <div class="mb-3 font-medium label">
+        <div class="mb-3 font-bold label">
           {{ $t('crossChainBoost.unsyncedNetworks') }}
         </div>
         <div class="flex mb-5">
@@ -51,9 +51,12 @@ async function syncNetwork(network: Network) {
       </BalCard>
 
       <BalCard>
-        <div class="font-medium label">
+        <div class="mb-3 font-bold label">
           {{ $t('crossChainBoost.syncedNetworks') }}
         </div>
+        <span class="text-sm text-gray-600">
+          {{ $t('crossChainBoost.unsyncedAllDescription') }}
+        </span>
       </BalCard>
     </div>
 
