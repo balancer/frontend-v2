@@ -48,12 +48,18 @@ jobs:
       - name: Install deps
         run: npm install -g npm@7 && npm ci
       - name: Run build
+        id: build
         env:
           # Increase memory to avoid heap error
           # https://github.com/vitejs/vite/issues/2433
           NODE_OPTIONS: "--max-old-space-size=8192"
         run: npm run build
-
+      - name: Fail if big chunks
+        run: |
+          if echo "${{join(steps.build.outputs.*, '\n')}}" | grep -q "Some chunks are larger than 500 kBs after minification"; then
+            echo "Chunks larger than 500 kBs. Please review the PR so that it does not increase bundle chunk size so much."
+            exit 1
+          fi
   Lint:
     runs-on: ubuntu-latest
     steps:
