@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: HomePage,
+    component: TermsOfUsePage,
   },
   {
     path: '/terms-of-use',
