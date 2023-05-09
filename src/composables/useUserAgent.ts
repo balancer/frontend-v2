@@ -1,35 +1,35 @@
-export enum MobileOS {
+import { UAParser } from 'ua-parser-js';
+
+export enum OS {
   Android = 'Android',
   IOS = 'iOS',
   Unknown = 'Unknown',
 }
 
 export function useUserAgent() {
-  /**
-   * @description
-   * Detect mobile operation system and resolve it as string
-   *
-   * @return MobileOS
-   */
-  function getOperationSystemName(): MobileOS {
-    const userAgent = window.navigator.userAgent;
+  const parser = new UAParser(window.navigator.userAgent);
+  const { type } = parser.getDevice();
 
-    if (/android/i.test(userAgent)) {
-      return MobileOS.Android;
+  const isMobile = type === 'mobile' || type === 'tablet';
+
+  function getOS(): OS {
+    const platform = parser.getOS().name;
+
+    switch (platform) {
+      case 'iOS':
+        return OS.IOS;
+      case 'Android':
+        return OS.Android;
+      default:
+        return OS.Unknown;
     }
-
-    if (/iPad|iPhone|iPod/.test(userAgent)) {
-      return MobileOS.IOS;
-    }
-
-    return MobileOS.Unknown;
   }
 
-  const isIos = getOperationSystemName() === MobileOS.IOS;
-  const isAndroid = getOperationSystemName() === MobileOS.Android;
+  const isIos = getOS() === OS.IOS;
+  const isAndroid = getOS() === OS.Android;
 
   return {
-    getOperationSystemName,
+    isMobile,
     isIos,
     isAndroid,
   };
