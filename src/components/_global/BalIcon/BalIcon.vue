@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import feather from 'feather-icons';
-
 /**
  * TYPES
  */
@@ -45,7 +43,10 @@ const fill = computed(() => (props.filled ? 'currentColor' : 'none'));
 /**
  * LIFECYCLE
  */
-onMounted(() => feather.replace());
+onMounted(async () => {
+  const feather = await import('feather-icons');
+  feather.replace();
+});
 </script>
 
 <template>
