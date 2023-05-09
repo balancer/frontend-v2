@@ -17,7 +17,7 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
+  rpc: `https://arbitrum-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://arb1.arbitrum.io/rpc',
   explorer: 'https://arbiscan.io',

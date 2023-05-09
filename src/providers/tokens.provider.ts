@@ -1,5 +1,5 @@
 import { getAddress, isAddress } from '@ethersproject/address';
-import { compact, pick } from 'lodash';
+import { compact, omit, pick } from 'lodash';
 import {
   computed,
   InjectionKey,
@@ -26,7 +26,7 @@ import {
   getAddressFromPoolId,
   includesAddress,
   isSameAddress,
-  selectByAddress,
+  selectByAddressFast,
 } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { UserSettingsResponse } from '@/providers/user-settings.provider';
@@ -42,6 +42,9 @@ import {
   TokenListMap,
 } from '@/types/TokenList';
 import useWeb3 from '@/services/web3/useWeb3';
+import { tokenListService } from '@/services/token-list/token-list.service';
+
+const { uris: tokenListUris } = tokenListService;
 
 /**
  * TYPES
@@ -129,7 +132,7 @@ export const tokensProvider = (
   const tokens = computed(
     (): TokenInfoMap => ({
       [networkConfig.nativeAsset.address]: nativeAsset,
-      ...activeTokenListTokens.value,
+      ...allTokenListTokens.value,
       ...state.injectedTokens,
     })
   );
@@ -249,10 +252,13 @@ export const tokensProvider = (
     addresses = [...new Set(addresses)];
 
     const existingAddresses = Object.keys(tokens.value);
+    const existingAddressesMap = Object.fromEntries(
+      existingAddresses.map((address: string) => [getAddress(address), true])
+    );
 
     // Only inject tokens that aren't already in tokens
     const injectable = addresses.filter(
-      address => !includesAddress(existingAddresses, address)
+      address => !existingAddressesMap[address]
     );
     if (injectable.length === 0) return;
 
@@ -261,7 +267,7 @@ export const tokensProvider = (
 
     const newTokens = await new TokenService().metadata.get(
       injectable,
-      allTokenLists.value
+      omit(allTokenLists.value, tokenListUris.Balancer.Default)
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
@@ -370,7 +376,7 @@ export const tokensProvider = (
    */
   function priceFor(address: string): number {
     try {
-      const price = selectByAddress(prices.value, address);
+      const price = selectByAddressFast(prices.value, getAddress(address));
       if (!price) {
         captureException(new Error('Could not find price for token'), {
           extra: { address },
@@ -388,7 +394,7 @@ export const tokensProvider = (
    */
   function balanceFor(address: string): string {
     try {
-      return selectByAddress(balances.value, address) || '0';
+      return selectByAddressFast(balances.value, getAddress(address)) || '0';
     } catch {
       return '0';
     }
@@ -398,7 +404,10 @@ export const tokensProvider = (
    * Checks if token has a balance
    */
   function hasBalance(address: string): boolean {
-    return Number(selectByAddress(balances.value, address) || '0') > 0;
+    return (
+      Number(selectByAddressFast(balances.value, getAddress(address)) || '0') >
+      0
+    );
   }
 
   /**
@@ -413,7 +422,7 @@ export const tokensProvider = (
    */
   function getToken(address: string): TokenInfo {
     address = getAddressFromPoolId(address); // In case pool ID has been passed
-    return selectByAddress(tokens.value, address) as TokenInfo;
+    return selectByAddressFast(tokens.value, getAddress(address)) as TokenInfo;
   }
 
   /**

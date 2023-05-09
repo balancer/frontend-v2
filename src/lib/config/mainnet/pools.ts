@@ -85,6 +85,8 @@ const pools: Pools = {
       '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // bb-a-weth / cbeth
       '0xbfce47224b4a938865e3e2727dc34e0faa5b1d82000000000000000000000527', // uniweth / weth
       '0x2e848426aec6dbf2260535a5bea048ed94d9ff3d000000000000000000000536', // wbeth/wsteth
+      '0xec3626fee40ef95e7c0cbb1d495c8b67b34d398300000000000000000000053d', // uzd/bb-a-usd
+      '0x7e9afd25f5ec0eb24d7d4b089ae7ecb9651c8b1f000000000000000000000511', // baoUSD LUSD
     ],
   },
   Investment: {
@@ -395,59 +397,45 @@ const pools: Pools = {
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // Euler Boosted USD/dola
   ],
   Deprecated: {
-    '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
-      joinsDisabled: true,
-      stakingDisabled: true,
-    },
-    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
-      joinsDisabled: true,
-      stakingDisabled: true,
-    },
+    '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {},
+    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {},
     '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba': {
       newPool:
         '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467',
-      joinsDisabled: true,
-      stakingDisabled: true,
     },
     '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396': {
       newPool:
         '0x1ee442b5326009bb18f2f472d3e0061513d1a0ff000200000000000000000464',
-      joinsDisabled: true,
-      stakingDisabled: true,
     },
     '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366': {
       newPool:
         '0x5f1f4e50ba51d723f12385a8a9606afc3a0555f5000200000000000000000465',
-      joinsDisabled: true,
-      stakingDisabled: true,
     },
     '0x798b112420ad6391a4129ac25ef59663a44c88bb0002000000000000000003f4': {
       newPool:
         '0x36be1e97ea98ab43b4debf92742517266f5731a3000200000000000000000466',
-      joinsDisabled: true,
-      stakingDisabled: true,
     },
     '0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367': {
       newPool:
         '0x9f9d900462492d4c21e9523ca95a7cd86142f298000200000000000000000462',
-      joinsDisabled: true,
-      stakingDisabled: true,
     },
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
       newPool:
         '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502',
-      description: 'deprecatedPool.migrateCardDescription',
-      joinsDisabled: true,
-      stakingDisabled: true,
+      description: 'deprecatedPool.gaugeKilledReason',
     },
     '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b': {
       newPool:
         '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505',
-      description: 'deprecatedPool.migrateCardDescription',
-      joinsDisabled: true,
-      stakingDisabled: true,
+      description: 'deprecatedPool.gaugeKilledReason',
+    },
+    '0xc9c5ff67bb2fae526ae2467c359609d6bcb4c5320000000000000000000003cc': {
+      newPool:
+        '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e',
+      description: 'deprecatedPool.gaugeKilledReason',
     },
   },
+  GaugeMigration: {},
   BrandedRedirect: {
     '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce':
       'xave',

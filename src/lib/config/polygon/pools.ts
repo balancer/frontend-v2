@@ -90,6 +90,7 @@ const pools: Pools = {
       '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38', // wseth/bb-a-eth
       '0xe19ed40a47f9b0cea4ca6d372df66107758913ec000000000000000000000b41', // 2brl
       '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42', // bb-a-weth/frxeth
+      '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b', // frax/bb-am-usd
     ],
   },
   Investment: {
@@ -239,33 +240,31 @@ const pools: Pools = {
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
   ],
   Deprecated: {
-    '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4': {
-      joinsDisabled: true,
-      stakingDisabled: true,
-    },
-    '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366': {
-      joinsDisabled: true,
-      stakingDisabled: true,
-    },
-    '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012': {
-      joinsDisabled: true,
-      stakingDisabled: true,
-    },
+    '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4': {},
+    '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366': {},
+    '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012': {},
     '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
       newPool:
         '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
-      description: 'deprecatedPool.migrateCardDescription',
-      joinsDisabled: true,
-      stakingDisabled: true,
+      description: 'deprecatedPool.gaugeKilledReason',
     },
     '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
       newPool:
         '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
-      description: 'deprecatedPool.migrateCardDescription',
-      joinsDisabled: true,
-      stakingDisabled: true,
+      description: 'deprecatedPool.gaugeKilledReason',
+    },
+    '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
+      newPool:
+        '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37',
+      description: 'deprecatedPool.gaugeKilledReason',
+    },
+    '0x4a0b73f0d13ff6d43e304a174697e3d5cfd310a400020000000000000000091c': {
+      newPool:
+        '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43',
+      description: 'deprecatedPool.gaugeKilledReason',
     },
   },
+  GaugeMigration: {},
   BrandedRedirect: {
     '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
       'xave',

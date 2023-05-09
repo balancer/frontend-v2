@@ -32,15 +32,15 @@ const { t } = useI18n();
 const conversationTableRows = computed(() => [
   {
     label: t('getVeBAL.lockForm.lockPeriods.1y'),
-    value: `~1 ${veBalTokenInfo.value.symbol}`,
+    value: `~1 ${veBalTokenInfo.value?.symbol}`,
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.6m'),
-    value: `~0.5 ${veBalTokenInfo.value.symbol}`,
+    value: `~0.5 ${veBalTokenInfo.value?.symbol}`,
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.3m'),
-    value: `~0.25 ${veBalTokenInfo.value.symbol}`,
+    value: `~0.25 ${veBalTokenInfo.value?.symbol}`,
   },
 ]);
 </script>
@@ -54,7 +54,7 @@ const conversationTableRows = computed(() => [
       <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-t">
         <h5>
           {{ fNum(expectedVeBalAmount, FNumFormats.token) }}
-          {{ veBalTokenInfo.symbol }}
+          {{ veBalTokenInfo?.symbol }}
         </h5>
       </div>
       <div class="p-3">
