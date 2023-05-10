@@ -1,4 +1,4 @@
-<template>Test v1</template>
+<template>Test v2</template>
 
 <style scoped>
 .app-logo :deep(.logotype) {
