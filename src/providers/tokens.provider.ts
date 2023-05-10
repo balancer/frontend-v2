@@ -379,6 +379,7 @@ export const tokensProvider = (
       const price = selectByAddressFast(prices.value, getAddress(address));
       if (!price) {
         captureException(new Error('Could not find price for token'), {
+          level: 'info',
           extra: { address },
         });
         return 0;
