@@ -15,7 +15,7 @@ export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
     link: 'https://app.xave.co/',
   },
   gyro: {
-    id: 'xave',
+    id: 'gyro',
     title: 'brandedRedirect.gyro.title',
     description: 'brandedRedirect.gyro.description',
     btnText: 'brandedRedirect.gyro.btnText',
