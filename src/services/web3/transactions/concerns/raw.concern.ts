@@ -44,7 +44,7 @@ export class RawConcern extends TransactionConcern {
 
       if (this.shouldRetryAsLegacy(error)) {
         return await this.sendTransaction(options, true);
-      } else if (this.shouldLogFailure()) {
+      } else if (this.shouldLogFailure(error)) {
         await this.logFailedTx(options, error);
       }
       return Promise.reject(error);
