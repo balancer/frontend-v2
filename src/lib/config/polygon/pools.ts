@@ -123,6 +123,7 @@ const pools: Pools = {
     '0x82e4cfaef85b1b6299935340c964c942280327f4': 'weightedPool', // weighted pool v3
     '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
     '0xfc8a407bba312ac761d8bfe04ce1201904842b76': 'weightedPool', // weighted pool v4
+    '0x1a79a24db0f73e9087205287761fc9c5c305926b': 'gyroE',
   },
   Stakable: {
     VotingGaugePools: [
@@ -268,6 +269,8 @@ const pools: Pools = {
   BrandedRedirect: {
     '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
       'xave',
+    '0xf0ad209e2e969eaaa8c882aac71f02d8a047d5c2000200000000000000000b49':
+      'gyro',
   },
 };
 
