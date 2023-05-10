@@ -2,6 +2,15 @@ import { useI18n } from 'vue-i18n';
 
 import { TransactionError } from '@/types/transactions';
 
+export function isUserRejected(error): boolean {
+  console.log('cause', error.cause);
+  return (
+    (error?.code && error.code === 4001) ||
+    (error?.message && error.message.includes('user rejected transaction')) ||
+    (error?.cause && error.cause.message.includes('user rejected transaction'))
+  );
+}
+
 export default function useTranasactionErrors() {
   /**
    * COMPOSABLES
@@ -31,16 +40,6 @@ export default function useTranasactionErrors() {
       title: t('transactionErrors.default.title'),
       description: message.trim(),
     };
-  }
-
-  function isUserRejected(error): boolean {
-    console.log('cause', error.cause);
-    return (
-      (error?.code && error.code === 4001) ||
-      (error?.message && error.message.includes('user rejected transaction')) ||
-      (error?.cause &&
-        error.cause.message.includes('user rejected transaction'))
-    );
   }
 
   /**
