@@ -38,6 +38,8 @@ import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
+import BoostedChip from '@/components/chips/BoostedChip.vue';
+import { PoolMetadata } from '@/types/pools';
 
 /**
  * TYPES
@@ -318,9 +320,19 @@ function iconAddresses(pool: Pool) {
         </div>
       </template>
       <template #poolNameCell="pool">
-        <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="poolMetadata(pool.id)" class="text-left">
-            {{ poolMetadata(pool.id)?.name }}
+        <div v-if="!isLoading" class="flex py-4 px-6">
+          <div
+            v-if="poolMetadata(pool.id)?.name"
+            class="flex flex-wrap items-center"
+          >
+            <div class="whitespace-nowrap">
+              {{ poolMetadata(pool.id)?.name }}
+            </div>
+            <BoostedChip
+              v-if="poolMetadata(pool.id)?.boosted"
+              :metadata="poolMetadata(pool.id) as PoolMetadata"
+              class="ml-4"
+            />
           </div>
           <div v-else>
             <TokenPills
@@ -328,6 +340,10 @@ function iconAddresses(pool: Pool) {
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
               :pickedTokens="selectedTokens"
+            />
+            <BoostedChip
+              v-if="poolMetadata(pool.id)?.boosted"
+              :metadata="poolMetadata(pool.id) as PoolMetadata"
             />
           </div>
           <BalChip
