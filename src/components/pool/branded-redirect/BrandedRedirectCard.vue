@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { BRANDED_REDIRECT_DATA } from './constants';
-import xave from '@/assets/images/branded-redirect-logos/xave.png';
 import { POOLS } from '@/constants/pools';
 
 const props = defineProps<{
@@ -13,19 +12,22 @@ const redirectData = computed(() => {
   return BRANDED_REDIRECT_DATA[brand];
 });
 
-function openRedirectLink() {
-  const link = redirectData.value?.link;
-  if (!link) return;
-  window.open(link, '_blank');
-}
+const hasBannerImage = computed<boolean>(() => {
+  return !!redirectData.value?.bannerPath;
+});
+
+const bannerSrc = computed<string>(() => {
+  if (!hasBannerImage.value) return '';
+  return new URL(redirectData.value?.bannerPath || '', import.meta.url).href;
+});
 </script>
 
 <template>
   <BalStack v-if="redirectData" vertical>
     <BalCard shadow="2xl" noPad class="rounded-xl" growContent>
       <div class="flex flex-col items-center">
-        <img class="mb-4" :src="xave" :alt="redirectData.title" />
-        <div class="px-6 pb-4">
+        <img v-if="hasBannerImage" :src="bannerSrc" :alt="redirectData.title" />
+        <div class="py-4 px-6 w-full">
           <div class="mb-1.5 text-lg font-semibold">
             {{ $t(redirectData.title) }}
           </div>
@@ -33,11 +35,17 @@ function openRedirectLink() {
             {{ $t(redirectData.description) }}
           </div>
           <BalBtn
+            v-if="redirectData.link"
             color="blue"
-            :label="$t(redirectData.btnText)"
             block
-            @click="openRedirectLink"
-          />
+            tag="a"
+            :href="redirectData.link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ $t(redirectData.btnText) }}
+            <BalIcon name="arrow-up-right" size="sm" class="ml-2" />
+          </BalBtn>
         </div>
       </div>
     </BalCard>

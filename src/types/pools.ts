@@ -7,7 +7,8 @@ export type FactoryType =
   | 'boostedPool'
   | 'composableStablePool'
   | 'fx'
-  | 'eulerLinear';
+  | 'eulerLinear'
+  | 'gyroE';
 
 export type PoolMetadata = {
   name: string;
