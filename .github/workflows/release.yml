@@ -1,0 +1,59 @@
+name: E2E tests after each release
+
+on:
+  release:
+    types:
+      - created
+
+env:
+  VITE_FATHOM_SITE_ID: xxx
+
+jobs:
+  E2E:
+    # Only run e2e tests, if Build job is successful
+    # needs: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Install deps
+        run: npm install -g npm@8 && npm ci
+      - name: Start app in background
+        run: npm run dev &
+      - name: Checkout Playwright app
+        uses: actions/checkout@v3
+        with:
+          repository: balancer-labs/frontend-e2e
+          # Checkout a specific branch
+          # ref: feature/some-feature-branch
+          # Checkout to folder "frontend/e2e"
+          path: e2e
+      - name: Run Playwright
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Install Playwright dependencies
+        run: ls -la && npm ci
+        working-directory: ./e2e
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: ./e2e
+      - name: Run Playwright tests
+        env:
+          SEED_PHRASE: ${{ secrets.TEST_WALLET_SECRET_WORDS }}
+          # Pass the github token to Dappwright. https://github.com/TenKeyLabs/dappwright/issues/40
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PREVIEW_BASE_URL: beta.balancer.fi
+        run: npm run playwright:ci
+        working-directory: ./e2e
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: e2e_test_report
+          path: e2e/test-results
+          # Keep the test report artifact for 5 days
+          retention-days: 5

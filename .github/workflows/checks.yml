@@ -116,7 +116,7 @@ jobs:
         run: ls -la && npm ci
         working-directory: ./e2e
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps --with=chromium
+        run: npx playwright install --with-deps chromium
         working-directory: ./e2e
       - name: Run Playwright tests
         env:
