@@ -1,5 +1,4 @@
 import { initApi } from './balancer-api';
-import { initBalancer } from './balancer-sdk';
 import { initEthersContract } from './EthersContract';
 import { initMulticall } from './multicall';
 import { initMulticaller } from './Multicaller';
@@ -9,9 +8,12 @@ import { initWalletConnectors } from './wallets';
 import { initWeb3Provider } from './wallets/Web3Provider';
 
 export function initDependencies() {
+  // We exclude the heavy dependencies to save bundle size:
+  // - initBalancerSDK
+  // - initPoolsFallbackRepository
+  // that are explicitly initialized the first time they are accessed via getter
   initMulticall();
   initApi();
-  initBalancer();
   initRpcProviderService();
   initMulticaller();
   initOldMulticaller();

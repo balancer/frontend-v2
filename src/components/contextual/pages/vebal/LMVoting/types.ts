@@ -1,5 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
-
+import { Network } from '@/lib/config';
 import { PoolType } from '@/services/pool/types';
 
 export type Pool = {

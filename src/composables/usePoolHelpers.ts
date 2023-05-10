@@ -1,8 +1,9 @@
-import { AprBreakdown, Network, PoolType } from '@balancer-labs/sdk';
+import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
 import { APR_THRESHOLD } from '@/constants/pools';
-import configs from '@/lib/config';
+import { Network } from '@/lib/config';
+
 import {
   bnum,
   includesAddress,
@@ -12,7 +13,7 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { DeprecatedDetails, PoolMetadata } from '@/types/pools';
+import { DeprecatedDetails } from '@/types/pools';
 
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from './useAPR';
@@ -22,10 +23,10 @@ import {
   getNetworkSlug,
   isMainnet,
   isPoolBoostsEnabled,
-  networkId,
 } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { dateToUnixTimestamp } from './useTime';
+import { poolMetadata } from '@/lib/config/metadata';
 
 const POOLS = configService.network.pools;
 
@@ -147,11 +148,12 @@ export function isSwappingHaltable(poolType: PoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
+export function wNativeAssetAddress() {
+  return configService.network.tokens.Addresses.wNativeAsset;
+}
+
 export function isWrappedNativeAsset(pool: AnyPool): boolean {
-  return includesAddress(
-    pool.tokensList || [],
-    configService.network.tokens.Addresses.wNativeAsset
-  );
+  return includesAddress(pool.tokensList || [], wNativeAssetAddress());
 }
 
 export function isMigratablePool(pool: AnyPool) {
@@ -559,13 +561,14 @@ export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
 }
 
 /**
- * Get metadata for a pool if it exists
+ * Checks if pool ID is included in the list of deprecated pools
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list
  */
-export function poolMetadata(
-  id: string,
-  network = networkId.value
-): PoolMetadata | undefined {
-  return configs[network]?.pools.Metadata[id.toLowerCase()];
+export function gaugeMigrationDetails(
+  id: string
+): DeprecatedDetails | undefined {
+  return POOLS.GaugeMigration?.[id.toLowerCase()];
 }
 
 /**

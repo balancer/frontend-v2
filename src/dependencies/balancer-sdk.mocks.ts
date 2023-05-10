@@ -1,15 +1,19 @@
-import { initBalancer } from '@/dependencies/balancer-sdk';
+import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 // eslint-disable-next-line no-restricted-imports
 import { balancer } from '@/lib/balancer.sdk';
+import { ExitExactInResponse } from '@/services/balancer/pools/exits/handlers/exact-in-exit.handler';
+import { ExitExactOutResponse } from '@/services/balancer/pools/exits/handlers/exact-out-exit.handler';
+import { RecoveryExitResponse } from '@/services/balancer/pools/exits/handlers/recovery-exit.handler';
+import { ExactInJoinResponse } from '@/services/balancer/pools/joins/handlers/exact-in-join.handler';
 import {
-  PoolWithMethods,
+  Pool,
+  PoolType,
   SubgraphPoolBase,
   SwapAttributes,
   SwapInfo,
-  Pool,
-  PoolType,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { wethAddress } from '@tests/unit/builders/address';
 import { aPoolWithMethods } from '@tests/unit/builders/pool.builders';
 import { mock, mockDeep } from 'vitest-mock-extended';
 
@@ -101,7 +105,7 @@ defaultSwapInfo.swaps = [
 export const defaultSwapAttributes = mock<SwapAttributes>();
 
 defaultSwapInfo.tokenAddresses = [
-  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  wethAddress,
   '0x616e8bfa43f920657b3497dbf40d6b1a02d4608d',
   '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
 ];
@@ -125,23 +129,43 @@ export const defaultGeneralizedExitResponse = {
   priceImpact: defaultPriceImpact.toString(),
 };
 
-type ExitExactInResponse = ReturnType<PoolWithMethods['buildExitExactBPTIn']>;
-type ExitExactOutResponse = ReturnType<
-  PoolWithMethods['buildExitExactTokensOut']
->;
-
 export const defaultExactInExit: ExitExactInResponse =
   mock<ExitExactInResponse>();
 defaultExactInExit.expectedAmountsOut = ['100', '200'];
 defaultExactInExit.minAmountsOut = ['20'];
 defaultExactInExit.to = 'test exact exit to';
 defaultExactInExit.data = 'exact exit test encoded data';
+defaultExactInExit.attributes.exitPoolRequest = {
+  assets: [wethAddress],
+  minAmountsOut: ['3'],
+  userData: 'test user data',
+  toInternalBalance: false,
+};
 
 export const defaultExactOutExit: ExitExactOutResponse =
   mock<ExitExactOutResponse>();
 defaultExactOutExit.to = 'test exact exit to';
 defaultExactOutExit.data = 'exact exit test encoded data';
 
+export const defaultExpectedBptOut = '30';
+
+export const defaultExactInJoin: ExactInJoinResponse =
+  mock<ExactInJoinResponse>();
+defaultExactInJoin.expectedBPTOut = defaultExpectedBptOut;
+defaultExactInJoin.to = 'test exact-in-join to';
+defaultExactInJoin.data = 'test exact-in-join encoded data';
+defaultExactInJoin.value = undefined;
+
+export const defaultRecoveryExit: RecoveryExitResponse =
+  mockDeep<RecoveryExitResponse>();
+defaultRecoveryExit.to = 'test recovery exit to';
+defaultRecoveryExit.data = 'recovery exit test encoded data';
+defaultRecoveryExit.attributes.exitPoolRequest = {
+  assets: [],
+  minAmountsOut: [],
+  userData: 'user data',
+  toInternalBalance: true,
+};
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
   balancerMock.sor.fetchPools.mockResolvedValue(true);
@@ -171,6 +195,8 @@ export function generateBalancerSdkMock() {
     aPoolWithMethods({
       buildExitExactBPTIn: vi.fn(() => defaultExactInExit),
       buildExitExactTokensOut: vi.fn(() => defaultExactOutExit),
+      buildRecoveryExit: vi.fn(() => defaultRecoveryExit),
+      buildJoin: vi.fn(() => defaultExactInJoin),
       calcPriceImpact: vi.fn(async () => defaultPriceImpact.toString()),
     })
   );
@@ -186,6 +212,6 @@ export function generateBalancerSdkMock() {
   return balancerMock;
 }
 
-export function initBalancerWithDefaultMocks() {
-  initBalancer(generateBalancerSdkMock());
+export function initBalancerSdkWithDefaultMocks() {
+  initBalancerSDK(generateBalancerSdkMock());
 }

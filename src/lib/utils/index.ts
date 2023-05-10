@@ -5,6 +5,8 @@ import { Ref } from 'vue';
 import { Path } from 'vue-i18n';
 
 import pkg from '@/../package.json';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { POOLS } from '@/constants/pools';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -14,10 +16,6 @@ export async function sleep(time) {
   return new Promise(resolve => {
     setTimeout(resolve, time);
   });
-}
-
-export function clone(item) {
-  return JSON.parse(JSON.stringify(item));
 }
 
 function lsAddVersion(value: any, version: string) {
@@ -157,6 +155,13 @@ export function indexOfAddress(addresses: string[], address: string): number {
   return addresses.indexOf(getAddress(address));
 }
 
+/**
+ * Select an Address when it's unknown what format the addresses are in.
+ * If you know the format of the addresses use selectByAddressFast instead
+ * @param map A hashmap of address -> type
+ * @param address An address to find in the map
+ * @returns Item from map or undefined
+ */
 export function selectByAddress<T>(
   map: Record<string, T>,
   address: string
@@ -167,6 +172,21 @@ export function selectByAddress<T>(
     }
   });
   if (foundAddress) return map[foundAddress];
+}
+
+/**
+ * Select an Address using a hashmap
+ * You must ensure the hashmap keys and address are in the same case
+ * (lowercase or checksum case) before passing them to this function
+ * @param map A hashmap of address -> type
+ * @param address An address to find in the map
+ * @returns Item from map or undefined
+ */
+export function selectByAddressFast<T>(
+  map: Record<string, T>,
+  address: string
+): T | undefined {
+  return map[address];
 }
 
 export function findByAddress<T>(
@@ -196,4 +216,11 @@ export async function trackLoading<T>(
   const result = await fn();
   toggle.value = false;
   return result;
+}
+
+// If given address is the native asset address, return the zero address
+export function formatAddressForSor(address: string): string {
+  return isSameAddress(address, NATIVE_ASSET_ADDRESS)
+    ? POOLS.ZeroAddress
+    : address;
 }

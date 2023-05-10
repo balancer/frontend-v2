@@ -25,7 +25,7 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 /**
  * TYPES
@@ -145,6 +145,10 @@ const gaugeTables = computed((): GaugeTable[] => {
   }, []);
 });
 
+const networkHasBalClaiming = computed(
+  () => !!configService.network.addresses.balancerMinter
+);
+
 /**
  * METHODS
  */
@@ -239,8 +243,7 @@ onBeforeMount(async () => {
         <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
           {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
         </h2>
-
-        <template v-if="networkHasNativeGauges">
+        <template v-if="networkHasBalClaiming">
           <div class="mb-16">
             <div class="px-4 xl:px-0">
               <div class="flex items-center mt-6 mb-2">

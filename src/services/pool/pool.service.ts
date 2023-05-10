@@ -14,7 +14,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { Pool as SDKPool } from '@balancer-labs/sdk';
 import { captureException } from '@sentry/browser';
 
@@ -44,7 +44,7 @@ export default class PoolService {
     let totalLiquidity = this.pool.totalLiquidity;
 
     try {
-      const sdkTotalLiquidity = await getBalancer().pools.liquidity(
+      const sdkTotalLiquidity = await getBalancerSDK().pools.liquidity(
         this.pool as unknown as SDKPool
       );
       // if totalLiquidity can be computed from coingecko prices, use that
@@ -67,7 +67,7 @@ export default class PoolService {
     let apr = this.pool.apr;
 
     try {
-      const sdkApr = await getBalancer().pools.apr(this.pool);
+      const sdkApr = await getBalancerSDK().pools.apr(this.pool);
       if (sdkApr) apr = sdkApr;
     } catch (error) {
       captureException(error);
@@ -117,6 +117,8 @@ export default class PoolService {
         rawOnchainData,
         tokenMeta
       );
+      this.pool.isInRecoveryMode = rawOnchainData.isInRecoveryMode;
+      this.pool.isPaused = rawOnchainData.isPaused;
       return (this.pool.onchain = onchainData.format());
     } catch (e) {
       console.warn(e);

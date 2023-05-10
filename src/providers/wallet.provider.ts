@@ -20,7 +20,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { Connector } from '@/services/web3/connectors/connector';
 import { walletService } from '@/services/web3/wallet.service';
 import { getWeb3Provider } from '@/dependencies/wallets/Web3Provider';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import {
   getSafeConnector,
   initSafeConnector,

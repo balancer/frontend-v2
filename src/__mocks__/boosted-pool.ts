@@ -128,4 +128,4 @@ const defaults: DeepPartial<Pool> = {
   ],
 };
 
-export const BoostedPoolMock: Pool = Object.assign(pool, defaults);
+export const BoostedPoolMock: Pool = Object.assign({}, pool, defaults);

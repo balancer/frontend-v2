@@ -5,6 +5,8 @@ import WalletButton from '@/components/web3/WalletButton.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { SupportedWallets } from '@/providers/wallet.provider';
 import LS_KEYS from '@/constants/local-storage.keys';
+import { useWalletHelpers } from '@/composables/useWalletHelpers';
+import { useUserAgent } from '@/composables/useUserAgent';
 
 interface Props {
   isVisible?: boolean;
@@ -19,7 +21,22 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['close']);
 
-const wallets = ref(SupportedWallets.filter(id => id !== 'safe'));
+const { isMobile } = useUserAgent();
+const { getIsMetaMaskBrowser } = useWalletHelpers();
+
+const wallets = SupportedWallets.filter(id => {
+  // hide metamask wallet on all mobile browsers except metamask
+  if (id === 'metamask' && isMobile && !getIsMetaMaskBrowser()) {
+    return false;
+  }
+
+  // Hide all wallets except metamask on metamask browser
+  if (id !== 'metamask' && getIsMetaMaskBrowser()) {
+    return false;
+  }
+
+  return id !== 'safe';
+});
 
 const acceptedlocalStorageItem = localStorage.getItem(
   LS_KEYS.App.TermsAccepted

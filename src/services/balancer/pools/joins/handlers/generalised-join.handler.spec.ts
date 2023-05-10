@@ -1,7 +1,7 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import {
   defaultGeneralizedJoinResponse,
-  initBalancerWithDefaultMocks,
+  initBalancerSdkWithDefaultMocks,
 } from '@/dependencies/balancer-sdk.mocks';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
@@ -15,7 +15,7 @@ import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
 import { GeneralisedJoinHandler } from './generalised-join.handler';
 
-initBalancerWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 
 const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
   mockDeep<GasPriceService>();
@@ -23,7 +23,7 @@ const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
 async function mountGeneralizedJoinHandler(pool: Pool) {
   return new GeneralisedJoinHandler(
     ref(pool),
-    getBalancer(),
+    getBalancerSDK(),
     gasPriceServiceMock
   );
 }

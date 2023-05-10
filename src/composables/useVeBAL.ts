@@ -87,7 +87,9 @@ export default function useVeBal() {
    * COMPUTED
    */
   const veBalTokenInfo = computed(() =>
-    getToken(networkConfig.addresses.veBAL)
+    networkConfig.addresses.veBAL
+      ? getToken(networkConfig.addresses.veBAL)
+      : null
   );
 
   const veBalBalance = computed(() =>

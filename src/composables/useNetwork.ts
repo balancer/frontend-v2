@@ -1,8 +1,5 @@
-import { computed, ref } from 'vue';
-
-import config from '@/lib/config';
+import config, { Network } from '@/lib/config';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
 import { RouteParamsRaw } from 'vue-router';
 import { Config } from '@/lib/config/types';
 
@@ -51,6 +48,10 @@ export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
 export const hasBridge = computed<boolean>(() => !!networkConfig.bridgeUrl);
 export const isTestnet = computed(() => isGoerli.value);
+
+export const isEIP1559SupportedNetwork = computed(
+  () => configService.network.supportsEIP1559
+);
 
 export const isPoolBoostsEnabled = computed<boolean>(
   () => configService.network.pools.BoostsEnabled
@@ -162,6 +163,7 @@ export function getRedirectUrlFor(
 }
 
 export default function useNetwork() {
+  const appNetworkConfig = configService.network;
   return {
     appUrl,
     networkId,
@@ -171,5 +173,6 @@ export default function useNetwork() {
     getSubdomain,
     handleNetworkSlug,
     networkLabelMap,
+    appNetworkConfig,
   };
 }

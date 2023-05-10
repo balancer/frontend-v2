@@ -69,7 +69,7 @@ const stakeAction = {
   label: t('stake'),
   loadingLabel: t('staking.staking'),
   confirmingLabel: t('confirming'),
-  action: () => txWithNotification(stake),
+  action: () => txWithNotification(stake, 'stake'),
   stepTooltip: t('staking.stakeTooltip'),
 };
 
@@ -77,7 +77,7 @@ const unstakeAction = {
   label: t('unstake'),
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
-  action: () => txWithNotification(unstake),
+  action: () => txWithNotification(unstake, 'unstake'),
   stepTooltip:
     props.action === 'restake'
       ? t('staking.restakeTooltip')
@@ -114,14 +114,17 @@ async function handleSuccess({ receipt }) {
   emit('success');
 }
 
-async function txWithNotification(action: () => Promise<TransactionResponse>) {
+async function txWithNotification(
+  action: () => Promise<TransactionResponse>,
+  actionType: StakeAction
+) {
   try {
     const tx = await action();
     addTransaction({
       id: tx.hash,
       type: 'tx',
-      action: props.action,
-      summary: t(`transactionSummary.${props.action}`, {
+      action: actionType,
+      summary: t(`transactionSummary.${actionType}`, {
         pool: props.pool.symbol,
         amount: fNum(fiatValueOf(props.pool, currentShares), FNumFormats.fiat),
       }),
@@ -132,7 +135,7 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
     });
     return tx;
   } catch (error) {
-    throw new Error(`Failed create ${props.action} transaction`, {
+    throw new Error(`Failed create ${actionType} transaction`, {
       cause: error,
     });
   }

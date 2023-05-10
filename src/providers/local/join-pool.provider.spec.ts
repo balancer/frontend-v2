@@ -1,17 +1,18 @@
-import { initBalancerWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
-import { mountComposable } from '@tests/mount-helpers';
-import { ref } from 'vue';
+import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { anAmountIn } from '@tests/unit/builders/join-exit.builders';
 import waitForExpect from 'wait-for-expect';
 import { joinPoolProvider } from './join-pool.provider';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
 
-initBalancerWithDefaultMocks();
-
-vi.mock('@/providers/tokens.provider');
+initEthersContractWithDefaultMocks();
+initBalancerSdkWithDefaultMocks();
 
 async function mountJoinPoolProvider(pool: Pool) {
-  const { result } = mountComposable(() => joinPoolProvider(ref(pool)));
+  const { result } = await mountComposable(() => joinPoolProvider(ref(pool)));
 
   await waitForExpect(() => {
     expect(result.isLoadingQuery.value).toBeTrue();
@@ -23,15 +24,17 @@ async function mountJoinPoolProvider(pool: Pool) {
   return result;
 }
 
-// These tests are throwing an unhandled error:
-// TODO: review that error when we decide to complete the suite
-test('Throws error for weighted pools', async () => {
-  let expectedError: Error = Error();
-  try {
-    await mountJoinPoolProvider(aWeightedPool());
-  } catch (error) {
-    if (error instanceof Error) expectedError = error;
-  }
+test('join a weighted pool with default join handler (ExactIn)', async () => {
+  const result = await mountJoinPoolProvider(aWeightedPool());
 
-  expect(expectedError.message).toStartWith('Pool type not handled:');
+  expect(result.amountsIn.value).toEqual([]);
+  expect(result.approvalActions.value).toEqual([]);
+
+  const amountsIn = [
+    anAmountIn({ address: groAddress, value: '20' }),
+    anAmountIn({ address: wethAddress, value: '20' }),
+  ];
+  result.setAmountsIn(amountsIn);
+
+  await result.join();
 });
