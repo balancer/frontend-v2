@@ -384,6 +384,9 @@ export const joinPoolProvider = (
     joinPoolService.setJoinHandler(joinHandlerType.value);
   });
 
+  // relayerApprovalAction can change if the user changes their useSignatures setting.
+  watch(relayerApprovalAction, () => setApprovalActions());
+
   /**
    * LIFECYCLE
    */
