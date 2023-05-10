@@ -80,8 +80,9 @@ export class ContractConcern extends TransactionConcern {
           options,
           forceLegacyTxType: true,
         });
-      } else if (this.shouldLogFailure(error)) {
+      } else if (this.shouldLogFailure()) {
         await this.logFailedTx(
+          error,
           contractWithSigner,
           action,
           params,
@@ -111,6 +112,7 @@ export class ContractConcern extends TransactionConcern {
   }
 
   private async logFailedTx(
+    error: WalletError,
     contract: EthersContract,
     action: string,
     params: any,
@@ -123,15 +125,13 @@ export class ContractConcern extends TransactionConcern {
     const msgValue = overrides.value ? overrides.value.toString() : 0;
     const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?rawFunctionInput=${calldata}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&contractAddress=${contract.address}&network=${chainId}`;
 
-    captureException(
-      `Failed transaction:
-    Action: ${action}
-    Sender: ${sender}`,
-      {
-        extra: {
-          simulate: simulate,
-        },
-      }
-    );
+    captureException(error, {
+      level: 'fatal',
+      extra: {
+        action,
+        sender,
+        simulate,
+      },
+    });
   }
 }
