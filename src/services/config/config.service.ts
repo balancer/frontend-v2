@@ -1,15 +1,13 @@
-import { Network } from '@balancer-labs/sdk';
-
 import { networkId } from '@/composables/useNetwork';
 import { Config } from '@/lib/config/types';
-import configs from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import template from '@/lib/utils/template';
 
 interface Env {
   APP_ENV: string;
-  NETWORK: Network;
   APP_DOMAIN: string;
   APP_HOST: string;
+  API_URL: string;
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
   ALCHEMY_KEY: string;
@@ -22,9 +20,10 @@ export default class ConfigService {
   public get env(): Env {
     return {
       APP_ENV: import.meta.env.VITE_ENV || 'development',
-      NETWORK: networkId.value,
       APP_DOMAIN: import.meta.env.VITE_DOMAIN || 'app.balancer.fi',
       APP_HOST: import.meta.env.VITE_HOST || 'balancer.fi',
+      API_URL:
+        import.meta.env.VITE_API_URL || 'https://api-v3.balancer.fi/graphql',
       IPFS_NODE: import.meta.env.VITE_IPFS_NODE || 'cloudflare-ipfs.com',
       BLOCKNATIVE_DAPP_ID:
         import.meta.env.VITE_BLOCKNATIVE_DAPP_ID || 'MISSING_KEY',

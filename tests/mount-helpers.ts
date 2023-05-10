@@ -16,6 +16,7 @@ import waitForExpect from 'wait-for-expect';
 import { mount, MountResult } from './mount-composable-tester';
 import { registerTestPlugins } from './registerTestPlugins';
 import { DeepPartial } from './unit/types';
+import { Router } from 'vue-router';
 
 export const defaultStakedShares = '5';
 
@@ -27,7 +28,11 @@ export function provideFakePoolStaking(stackedShares = defaultStakedShares) {
 
 export function mountComposable<R>(
   callback: () => R,
-  options?: { extraProvidersCb?: () => void }
+  options?: {
+    extraProvidersCb?: () => void;
+    intermediateProvider?: () => void;
+    routerMock?: Router;
+  }
 ): MountResult<R> {
   return mount<R>(callback, {
     provider: () => {
@@ -38,7 +43,12 @@ export function mountComposable<R>(
       provideFakePoolStaking();
       options?.extraProvidersCb?.();
     },
-    configApp: app => registerTestPlugins(app),
+    intermediateProvider: options?.intermediateProvider,
+    configApp: app => {
+      if (options?.routerMock) app.use(options.routerMock);
+
+      return registerTestPlugins(app);
+    },
   });
 }
 
@@ -56,30 +66,39 @@ export function mountComposableWithDefaultTokensProvider<R>(
   });
 }
 
+// Used when fakeTokens is used by another provider that it is also depending on tokens provider (For instance, joinPoolProvider)
+export let fakeTokens;
+
+export function provideFakeTokens(
+  tokensProviderOverride?: DeepPartial<TokensResponse>
+) {
+  const tokenLists = provideTokenLists();
+  const userSettings = provideUserSettings();
+  const tokens = fakeTokensProvider(
+    userSettings,
+    tokenLists,
+    tokensProviderOverride
+  );
+  provide(TokensProviderSymbol, tokens);
+  return tokens;
+}
+
 export async function mountComposableWithFakeTokensProvider<R>(
   callback: () => R,
   options?: {
     extraProvidersCb?: () => void;
+    intermediateProvider?: () => void;
     tokensProviderOverride?: DeepPartial<TokensResponse>;
+    routerMock?: Router;
   }
 ): Promise<MountResult<R>> {
-  const { result: tokenLists } = mount(() => provideTokenLists());
-  // Wait for token list json to be async loaded (GOERLI json is loaded in tests)
-  await tokenLists.tokensListPromise;
-
   return mountComposable<R>(callback, {
     extraProvidersCb: () => {
-      const userSettings = provideUserSettings();
-      provide(
-        TokensProviderSymbol,
-        fakeTokensProvider(
-          userSettings,
-          tokenLists,
-          options?.tokensProviderOverride
-        )
-      );
+      fakeTokens = provideFakeTokens(options?.tokensProviderOverride);
       options?.extraProvidersCb?.();
     },
+    intermediateProvider: options?.intermediateProvider,
+    routerMock: options?.routerMock,
   });
 }
 

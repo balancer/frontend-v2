@@ -94,6 +94,7 @@ export const defaultAttrs = {
     tokens: tokenTreeAttrs,
     isNew: true,
     isInRecoveryMode: true,
+    isPaused: true,
     apr: {
       stakingApr: {
         min: true,

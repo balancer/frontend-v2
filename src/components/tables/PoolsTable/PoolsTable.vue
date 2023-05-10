@@ -9,7 +9,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
+
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -26,17 +26,18 @@ import {
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
-  poolMetadata,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
+import { configService } from '@/services/config/config.service';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
+import { poolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES
@@ -246,7 +247,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
+      to: configService.network.pools.Migrations?.[pool.id].toPoolId,
     },
     query: { returnRoute: 'home' },
   });
@@ -312,7 +313,7 @@ function iconAddresses(pool: Pool) {
         </div>
       </template>
       <template #iconColumnCell="pool">
-        <div v-if="!isLoading" class="py-4 px-6">
+        <div v-if="!isLoading" class="py-4 px-6" :data-testid="pool?.id">
           <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
         </div>
       </template>

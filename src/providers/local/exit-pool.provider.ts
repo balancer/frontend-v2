@@ -3,12 +3,12 @@ import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
   flatTokenTree,
+  isComposableStableV1,
   isDeep,
   isPreMintedBptType,
   tokenTreeLeafs,
   tokenTreeNodes,
-  usePool,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
@@ -57,6 +57,7 @@ import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -73,7 +74,11 @@ export type AmountOut = {
  *
  * Handles pool exiting state and transaction execution.
  */
-export const exitPoolProvider = (pool: Ref<Pool>) => {
+export const exitPoolProvider = (
+  pool: Ref<Pool>,
+  debounceQueryExitMillis = 1000,
+  debounceGetSingleAssetMaxMillis = 1000
+) => {
   /**
    * STATE
    */
@@ -101,22 +106,24 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { injectTokens, getTokens, prices, balanceFor } = useTokens();
+  const { injectTokens, getTokens, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH_V4);
+  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
-    RelayerType.BATCH_V4
+    RelayerType.BATCH
   );
 
-  const { isWeightedPool } = usePool(pool);
-
-  const debounceQueryExit = debounce(queryExit, 1000);
-  const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
-    leading: true,
-  });
+  const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
+  const debounceGetSingleAssetMax = debounce(
+    getSingleAssetMax,
+    debounceGetSingleAssetMaxMillis,
+    {
+      leading: true,
+    }
+  );
 
   const queriesEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
@@ -176,8 +183,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
   const shouldSignRelayer = computed(
     (): boolean =>
-      isDeepPool.value &&
-      !isSingleAssetExit.value &&
+      exitHandlerType.value === ExitHandler.Generalised &&
       // Check if Batch Relayer is either approved, or signed
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
@@ -193,14 +199,39 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
       isPreMintedBptType(pool.value.poolType)
   );
 
+  const shouldUseGeneralisedExit = computed(
+    (): boolean =>
+      !isSingleAssetExit.value &&
+      (isDeep(pool.value) || isComposableStableV1(pool.value))
+  );
+
+  // Should exit via internal balance only in unique cases.
+  // e.g. exiting the Euler linear pools.
+  const shouldExitViaInternalBalance = computed(
+    (): boolean =>
+      !!POOLS.ExitViaInternalBalance &&
+      POOLS.ExitViaInternalBalance.includes(pool.value.id)
+  );
+
+  // Should use recovery exits if:
+  // 1. The pool is paused AND in recovery mode, OR
+  // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
+  const shouldUseRecoveryExit = computed(
+    (): boolean =>
+      (pool.value.isInRecoveryMode && pool.value.isPaused) ||
+      (!isDeepPool.value && isComposableStableV1(pool.value))
+  );
+
   const exitHandlerType = computed((): ExitHandler => {
+    if (shouldUseRecoveryExit.value) return ExitHandler.Recovery;
     if (shouldUseSwapExit.value) return ExitHandler.Swap;
-    if (isWeightedPool.value && isSingleAssetExit.value) {
+    if (shouldUseGeneralisedExit.value) return ExitHandler.Generalised;
+    if (isSingleAssetExit.value) {
+      // If 'max' is clicked we want to pass in the full bpt balance.
       if (singleAssetMaxed.value) return ExitHandler.ExactIn;
       return ExitHandler.ExactOut;
     }
-
-    return ExitHandler.Generalised;
+    return ExitHandler.ExactIn;
   });
 
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
@@ -293,9 +324,9 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
   // Checks if amountsIn has any values > 0.
-  const hasAmountsOut = computed(() =>
-    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
-  );
+  const hasAmountsOut = computed(() => {
+    return amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0));
+  });
 
   // Checks if BPT in is > 0
   const hasBptIn = computed(() => bnum(bptIn.value).gt(0));
@@ -342,6 +373,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
+    console.log('exitHandler:', exitHandlerType.value);
     try {
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
@@ -350,11 +382,11 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
 
       priceImpact.value = output.priceImpact;
@@ -366,7 +398,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
       }));
       return output;
     } catch (error) {
-      captureException(error);
+      logExitException(error as Error);
       throw new Error('Failed to construct exit.', { cause: error });
     }
   }
@@ -388,6 +420,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     exitPoolService.setExitHandler(singleAssetMaxedExitHandler);
     singleAmountOut.max = '';
 
+    console.log('exitHandler:', exitHandlerType.value);
     try {
       const output = await exitPoolService.queryExit({
         exitType: ExitType.GivenIn,
@@ -396,11 +429,11 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
       const newMax =
         selectByAddress(output.amountsOut, singleAmountOut.address) || '0';
@@ -408,7 +441,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
       return newMax;
     } catch (error) {
-      captureException(error);
+      logExitException(error as Error);
       throw new Error('Failed to calculate max.', { cause: error });
     }
   }
@@ -421,6 +454,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
       txError.value = '';
       exitPoolService.setExitHandler(exitHandlerType.value);
 
+      console.log('exitHandler:', exitHandlerType.value);
       return exitPoolService.exit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
@@ -428,20 +462,26 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
         approvalActions: approvalActions.value,
         bptInValid: bptInValid.value,
         relayerSignature: relayerSignature.value,
         transactionDeadline: transactionDeadline.value,
+        toInternalBalance: shouldExitViaInternalBalance.value,
       });
     } catch (error) {
+      logExitException(error as Error);
       txError.value = (error as Error).message;
       throw new Error('Failed to submit exit transaction.', { cause: error });
     }
   }
 
   function setInitialPropAmountsOut() {
-    const leafNodes = tokenTreeLeafs(pool.value.tokens);
+    const leafNodes: string[] = isDeepPool.value
+      ? tokenTreeLeafs(pool.value.tokens)
+      : pool.value.tokensList.filter(
+          token => !isSameAddress(token, pool.value.address)
+        );
+
     propAmountsOut.value = leafNodes.map(address => ({
       address,
       value: '0',
@@ -452,6 +492,29 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
 
   function setIsSingleAssetExit(value: boolean) {
     isSingleAssetExit.value = value;
+  }
+
+  async function logExitException(error: Error) {
+    const sender = await getSigner().getAddress();
+    captureException(error, {
+      level: 'fatal',
+      extra: {
+        exitHandler: exitHandlerType.value,
+        params: {
+          exitType: exitType.value,
+          bptIn: _bptIn.value,
+          amountsOut: amountsOut.value,
+          signer: sender,
+          slippageBsp: slippageBsp.value,
+          tokenInfo: exitTokenInfo.value,
+          approvalActions: approvalActions.value,
+          bptInValid: bptInValid.value,
+          relayerSignature: relayerSignature.value,
+          transactionDeadline: transactionDeadline.value,
+          toInternalBalance: shouldExitViaInternalBalance.value,
+        },
+      },
+    });
   }
 
   /**
@@ -470,7 +533,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
    */
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
-    // refactoted probably won't be required.
+    // refactored probably won't be required.
     injectTokens([...exitTokenAddresses.value, pool.value.address]);
 
     exitPoolService.setExitHandler(exitHandlerType.value);
@@ -495,6 +558,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     isSingleAssetExit: readonly(isSingleAssetExit),
     propAmountsOut: readonly(propAmountsOut),
     priceImpact: readonly(priceImpact),
+    exitPoolService,
 
     // computed
     exitTokenAddresses,
@@ -519,6 +583,7 @@ export const exitPoolProvider = (pool: Ref<Pool>) => {
     queryExitQuery,
     approvalActions,
     transactionDeadline,
+    shouldExitViaInternalBalance,
 
     // methods
     setIsSingleAssetExit,
@@ -531,8 +596,7 @@ export const ExitPoolProviderSymbol: InjectionKey<ExitPoolProviderResponse> =
   Symbol(symbolKeys.Providers.ExitPool);
 
 export function provideExitPool(pool: Ref<Pool>) {
-  const exitPoolResponse = isDeep(pool.value) ? exitPoolProvider(pool) : {};
-
+  const exitPoolResponse = exitPoolProvider(pool);
   provide(ExitPoolProviderSymbol, exitPoolResponse);
   return exitPoolResponse;
 }

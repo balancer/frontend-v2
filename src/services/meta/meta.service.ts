@@ -1,11 +1,18 @@
-import { Pool } from '@balancer-labs/sdk';
+import { poolMetadata } from '@/lib/config/metadata';
 import { RouteLocationNormalized } from 'vue-router';
 import { configService } from '../config/config.service';
 import { ROUTE_META_DATA } from './meta.constants';
-import { poolMetadata } from '@/composables/usePool';
 
 interface IMetaService {
   setMeta(route: RouteLocationNormalized | string): void;
+}
+
+// We use this interface to avoid importing Pool type from SDK while it is not tree-shakable
+interface Pool {
+  id: string;
+  name: string;
+  poolType: string;
+  symbol?: string;
 }
 
 class MetaService implements IMetaService {

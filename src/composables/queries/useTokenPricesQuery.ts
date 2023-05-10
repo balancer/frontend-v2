@@ -1,15 +1,16 @@
 import { reactive, Ref, ref } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
-
 import QUERY_KEYS from '@/constants/queryKeys';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-
 import useNetwork from '../useNetwork';
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getApi } from '@/dependencies/balancer-api';
+import { GqlTokenPrice } from '@/services/api/graphql/generated/api-types';
+import { oneMinInMs } from '../useTime';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
  */
+export type TokenPrices = { [address: string]: number };
 type QueryResponse = TokenPrices;
 type QueryOptions = UseQueryOptions<QueryResponse>;
 
@@ -17,15 +18,20 @@ type QueryOptions = UseQueryOptions<QueryResponse>;
  * Fetches token prices for all provided addresses.
  */
 export default function useTokenPricesQuery(
-  addresses: Ref<string[]> = ref([]),
   pricesToInject: Ref<TokenPrices> = ref({}),
-  enabled: Ref<boolean> = ref(false),
   options: QueryOptions = {}
 ) {
   const { networkId } = useNetwork();
   const queryKey = reactive(
-    QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject)
+    QUERY_KEYS.Tokens.Prices(networkId, pricesToInject)
   );
+
+  function priceArrayToMap(prices: GqlTokenPrice[]): TokenPrices {
+    return prices.reduce(
+      (obj, item) => ((obj[getAddress(item.address)] = item.price), obj),
+      {}
+    );
+  }
 
   function injectCustomTokens(
     prices: TokenPrices,
@@ -37,27 +43,22 @@ export default function useTokenPricesQuery(
     return prices;
   }
 
-  const balancer = getBalancer();
+  const api = getApi();
   const queryFn = async () => {
-    const priceData = await Promise.all(
-      addresses.value.map(a => balancer.data.tokenPrices.find(a))
-    );
+    const { prices } = await api.GetCurrentTokenPrices();
 
-    let prices = addresses.value.reduce(
-      (obj, key, index) => ({
-        ...obj,
-        [key]: priceData[index],
-      }),
-      {}
-    );
-
-    prices = injectCustomTokens(prices, pricesToInject.value);
+    let pricesMap = priceArrayToMap(prices);
+    pricesMap = injectCustomTokens(pricesMap, pricesToInject.value);
     console.log('Fetching', Object.values(prices).length, 'prices');
-    return prices;
+
+    return pricesMap;
   };
 
   const queryOptions = reactive({
-    enabled,
+    enabled: true,
+    refetchInterval: oneMinInMs * 5,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
     ...options,
   });
 

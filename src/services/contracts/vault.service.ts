@@ -65,6 +65,39 @@ export default class VaultService {
       options,
     });
   }
+
+  public getInternalBalance(
+    account: string,
+    tokens: string[]
+  ): Promise<string[]> {
+    return this.walletService.txBuilder.contract.callStatic({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'getInternalBalance',
+      params: [account, tokens],
+    });
+  }
+
+  public manageUserBalance({
+    kind,
+    asset,
+    amount,
+    sender,
+    recipient,
+  }: {
+    kind: number;
+    asset: string;
+    amount: string;
+    sender: string;
+    recipient: string;
+  }): Promise<TransactionResponse> {
+    return this.walletService.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'manageUserBalance',
+      params: [[{ kind, asset, amount, sender, recipient }]],
+    });
+  }
 }
 
 export const vaultService = new VaultService();

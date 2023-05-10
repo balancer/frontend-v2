@@ -14,6 +14,8 @@ const config: Config = {
   slug: 'gnosis-chain',
   network: 'gnosis-chain',
   unknown: false,
+  visibleInUI: true,
+  testNetwork: false,
   rpc: 'https://poa-xdai.gateway.pokt.network/v1/lb/91bc0e12a76e7a84dd76189d',
   ws: 'wss://rpc.gnosischain.com/wss',
   publicRpc: 'https://rpc.gnosis.gateway.fm',
@@ -29,7 +31,7 @@ const config: Config = {
     ],
     aave: '',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-b',
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain',
     blocks: '',
   },
   bridgeUrl: 'https://bridge.gnosischain.com/',
@@ -44,6 +46,12 @@ const config: Config = {
     deeplinkId: 'xdai',
     logoURI: 'tokens/xdai.png',
     minTransactionBuffer: '0.05',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'xdai',
+      platformId: 'xdai',
+    },
   },
   addresses: {
     ...contracts,

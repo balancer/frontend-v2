@@ -10,6 +10,7 @@ import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useGnosisSafeApp from '@/composables/useGnosisSafeApp';
 import { COW_RELAYER_CONTRACT_ADDRESS } from '@/services/cowswap/constants';
 import { isWalletConnectWallet } from '@/services/web3/wallet-names';
+import { useUserSettings } from '@/providers/user-settings.provider';
 
 /**
  * TYPES
@@ -18,14 +19,12 @@ export enum RelayerType {
   COWSWAP = 'Cowswap',
   LIDO = 'Lido',
   BATCH = 'Batch',
-  BATCH_V4 = 'BATCH_V4',
 }
 
 export const relayerAddressMap = {
   [RelayerType.COWSWAP]: COW_RELAYER_CONTRACT_ADDRESS,
   [RelayerType.LIDO]: configService.network.addresses.lidoRelayer,
   [RelayerType.BATCH]: configService.network.addresses.batchRelayer,
-  [RelayerType.BATCH_V4]: configService.network.addresses.batchRelayerV4,
 };
 
 /**
@@ -42,12 +41,13 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   const { t } = useI18n();
   const { isGnosisSafeApp } = useGnosisSafeApp();
   const { action: transactionAction } = useRelayerApprovalTx(relayerType);
+  const { supportSignatures } = useUserSettings();
 
   const signatureAction: TransactionActionInfo = {
-    label: t('approveBatchRelayer'),
+    label: t('signRelayerApproval'),
     loadingLabel: t('checkWallet'),
-    confirmingLabel: t('approvingBatchRelayer'),
-    stepTooltip: t('approveBatchRelayerTooltip'),
+    confirmingLabel: t('signingRelayerApproval'),
+    stepTooltip: t('signRelayerApprovalTooltip'),
     action: signRelayerApproval as () => Promise<any>,
     isSignAction: true,
   };
@@ -57,7 +57,9 @@ export default function useRelayerApproval(relayerType: RelayerType) {
    */
 
   const relayerApprovalAction = computed((): TransactionActionInfo => {
-    return isGnosisSafeApp.value || isWalletConnectWallet(connector.value?.id)
+    return !supportSignatures.value ||
+      isGnosisSafeApp.value ||
+      isWalletConnectWallet(connector.value?.id)
       ? transactionAction.value
       : signatureAction;
   });

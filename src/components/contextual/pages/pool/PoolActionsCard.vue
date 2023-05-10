@@ -3,14 +3,15 @@ import { computed, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import {
   isJoinsDisabled,
-  usePool,
+  usePoolHelpers,
   deprecatedDetails,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
+
 import { Goals, trackGoal } from '@/composables/useFathom';
+import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
 /**
  * TYPES
@@ -29,21 +30,23 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
-const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
+const { isMigratablePool, hasNonApprovedRateProviders } = usePoolHelpers(
   toRef(props, 'pool')
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
+const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
 
 /**
  * COMPUTED
  */
 const joinDisabled = computed(
   (): boolean =>
-    deprecatedDetails(props.pool.id)?.joinsDisabled ||
+    !!deprecatedDetails(props.pool.id) ||
     isJoinsDisabled(props.pool.id) ||
     hasNonApprovedRateProviders.value ||
-    (isMigratablePool(props.pool) && !isSoftMigratablePool(props.pool.id))
+    isMigratablePool(props.pool) ||
+    shouldDisableJoins.value
 );
 </script>
 
@@ -68,6 +71,7 @@ const joinDisabled = computed(
         block
         @click="trackGoal(Goals.ClickAddLiquidity)"
       />
+
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
         :to="{ name: 'withdraw', params: { networkSlug } }"

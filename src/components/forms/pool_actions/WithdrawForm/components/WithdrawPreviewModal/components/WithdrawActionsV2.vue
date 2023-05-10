@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
-import { usePool } from '@/composables/usePool';
+import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
@@ -46,7 +46,7 @@ const { t } = useI18n();
 const { blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
+const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 const { fNum } = useNumbers();
 
@@ -58,6 +58,7 @@ const {
   queryExitQuery,
   fiatTotalOut,
   approvalActions: exitPoolApprovalActions,
+  shouldExitViaInternalBalance,
 } = useExitPool();
 
 const withdrawalAction: TransactionActionInfo = {
@@ -74,6 +75,26 @@ const actions = ref<TransactionActionInfo[]>([
 ]);
 
 /**
+ * COMPUTED
+ */
+const redirectLabel = computed<string>(() => {
+  if (shouldExitViaInternalBalance.value) return t('manageVaultBalances');
+  return t('returnToPool');
+});
+
+const txSummary = computed<string>(() => {
+  if (shouldExitViaInternalBalance.value)
+    return t('transactionSummary.withdrawToBalance', [
+      fNum(fiatTotalOut.value, FNumFormats.fiat),
+    ]);
+
+  return t('transactionSummary.withdrawFromPool', [
+    fNum(fiatTotalOut.value, FNumFormats.fiat),
+    poolWeightsLabel(props.pool),
+  ]);
+});
+
+/**
  * METHODS
  */
 async function handleTransaction(tx): Promise<void> {
@@ -81,10 +102,7 @@ async function handleTransaction(tx): Promise<void> {
     id: tx.hash,
     type: 'tx',
     action: 'withdraw',
-    summary: t('transactionSummary.withdrawFromPool', [
-      fNum(fiatTotalOut.value, FNumFormats.fiat),
-      poolWeightsLabel(props.pool),
-    ]),
+    summary: txSummary.value,
     details: {
       total: fNum(fiatTotalOut.value, FNumFormats.fiat),
       pool: props.pool,
@@ -124,9 +142,12 @@ async function submit(): Promise<TransactionResponse> {
   }
 }
 
-function redirectToPool() {
-  // resetTxState();
-  router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
+function redirect() {
+  if (shouldExitViaInternalBalance.value) {
+    router.push({ name: 'balances', params: { networkSlug } });
+  } else {
+    router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
+  }
 }
 
 /**
@@ -148,8 +169,8 @@ watch(blockNumber, () => {
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />
-      <BalBtn color="gray" outline block class="mt-2" @click="redirectToPool">
-        {{ $t('returnToPool') }}
+      <BalBtn color="gray" outline block class="mt-2" @click="redirect">
+        {{ redirectLabel }}
       </BalBtn>
     </div>
   </transition>

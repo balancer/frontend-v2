@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -11,16 +10,16 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   isStableLike,
-  poolMetadata,
   orderedPoolTokens,
   orderedTokenAddresses,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/composables/useClaimsData';
 
 import { Gauge } from '@/services/balancer/gauges/types';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import useNetwork from '@/composables/useNetwork';
+import { poolMetadata } from '@/lib/config/metadata';
 
 /**
  * TYPES

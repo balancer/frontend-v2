@@ -1,5 +1,5 @@
 import { getAddress, isAddress } from '@ethersproject/address';
-import { compact, pick } from 'lodash';
+import { compact, omit, pick } from 'lodash';
 import {
   computed,
   InjectionKey,
@@ -10,10 +10,13 @@ import {
   toRef,
   toRefs,
 } from 'vue';
+import { captureException } from '@sentry/browser';
 
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
-import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
+import useTokenPricesQuery, {
+  TokenPrices,
+} from '@/composables/queries/useTokenPricesQuery';
 import useConfig from '@/composables/useConfig';
 import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
@@ -23,15 +26,15 @@ import {
   getAddressFromPoolId,
   includesAddress,
   isSameAddress,
+  selectByAddressFast,
 } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { UserSettingsResponse } from '@/providers/user-settings.provider';
 import { TokenListsResponse } from '@/providers/token-lists.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { tokenService } from '@/services/token/token.service';
+import TokenService from '@/services/token/token.service';
 import {
   NativeAsset,
   TokenInfo,
@@ -39,6 +42,9 @@ import {
   TokenListMap,
 } from '@/types/TokenList';
 import useWeb3 from '@/services/web3/useWeb3';
+import { tokenListService } from '@/services/token-list/token-list.service';
+
+const { uris: tokenListUris } = tokenListService;
 
 /**
  * TYPES
@@ -61,7 +67,6 @@ export const tokensProvider = (
    * COMPOSABLES
    */
   const { networkConfig } = useConfig();
-  const { currency } = userSettings;
   const { isWalletReady } = useWeb3();
   const {
     tokensListPromise,
@@ -127,12 +132,10 @@ export const tokensProvider = (
   const tokens = computed(
     (): TokenInfoMap => ({
       [networkConfig.nativeAsset.address]: nativeAsset,
-      ...activeTokenListTokens.value,
+      ...allTokenListTokens.value,
       ...state.injectedTokens,
     })
   );
-
-  const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
 
   const wrappedNativeAsset = computed(
     (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset)
@@ -144,11 +147,6 @@ export const tokensProvider = (
    * The prices, balances and allowances maps provide dynamic
    * metadata for each token in the tokens state array.
    ****************************************************************/
-
-  // Prevent prices fetching initally until we inject default tokens like veBAL.
-  // This helps reduce coingecko API calls.
-  const pricesQueryEnabled = computed(() => !state.loading);
-
   const {
     data: priceData,
     isSuccess: priceQuerySuccess,
@@ -156,15 +154,7 @@ export const tokensProvider = (
     isRefetching: priceQueryRefetching,
     isError: priceQueryError,
     refetch: refetchPrices,
-  } = useTokenPricesQuery(
-    tokenAddresses,
-    toRef(state, 'injectedPrices'),
-    pricesQueryEnabled,
-    {
-      keepPreviousData: true,
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = useTokenPricesQuery(toRef(state, 'injectedPrices'));
 
   const {
     data: balanceData,
@@ -173,7 +163,7 @@ export const tokensProvider = (
     isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
-  } = useBalancesQuery(tokens, { keepPreviousData: true });
+  } = useBalancesQuery(tokens);
 
   const {
     data: allowanceData,
@@ -213,8 +203,8 @@ export const tokensProvider = (
 
   const dynamicDataLoading = computed(
     (): boolean =>
-      (pricesQueryEnabled.value &&
-        (priceQueryLoading.value || priceQueryRefetching.value)) ||
+      priceQueryLoading.value ||
+      priceQueryRefetching.value ||
       onchainDataLoading.value
   );
 
@@ -262,26 +252,29 @@ export const tokensProvider = (
     addresses = [...new Set(addresses)];
 
     const existingAddresses = Object.keys(tokens.value);
+    const existingAddressesMap = Object.fromEntries(
+      existingAddresses.map((address: string) => [getAddress(address), true])
+    );
 
     // Only inject tokens that aren't already in tokens
     const injectable = addresses.filter(
-      address => !includesAddress(existingAddresses, address)
+      address => !existingAddressesMap[address]
     );
     if (injectable.length === 0) return;
 
     //Wait for dynamic token list import to be resolved
     await tokensListPromise;
 
-    const newTokens = await tokenService.metadata.get(
+    const newTokens = await new TokenService().metadata.get(
       injectable,
-      allTokenLists.value
+      omit(allTokenLists.value, tokenListUris.Balancer.Default)
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
 
-    // Wait for balances/allowances/prices to be fetched for newly injected tokens.
+    // Wait for balances/allowances to be fetched for newly injected tokens.
     await nextTick();
-    await forChange(dynamicDataLoading, false);
+    await forChange(onchainDataLoading, false);
   }
 
   /**
@@ -321,8 +314,8 @@ export const tokensProvider = (
       const tokensArray = Object.entries(tokensToSearch);
       const results = tokensArray.filter(
         ([, token]) =>
-          token.name.toLowerCase().includes(query.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(query.toLowerCase())
+          token.name?.toLowerCase().includes(query.toLowerCase()) ||
+          token.symbol?.toLowerCase().includes(query.toLowerCase())
       );
       return removeExcluded(Object.fromEntries(results), excluded);
     }
@@ -382,9 +375,16 @@ export const tokensProvider = (
    * Fetch price for a token
    */
   function priceFor(address: string): number {
-    if (address) address = getAddress(address);
     try {
-      return prices.value[address][currency.value] || 0;
+      const price = selectByAddressFast(prices.value, getAddress(address));
+      if (!price) {
+        captureException(new Error('Could not find price for token'), {
+          level: 'info',
+          extra: { address },
+        });
+        return 0;
+      }
+      return price;
     } catch {
       return 0;
     }
@@ -394,9 +394,8 @@ export const tokensProvider = (
    * Fetch balance for a token
    */
   function balanceFor(address: string): string {
-    if (address) address = getAddress(address);
     try {
-      return balances.value[address] || '0';
+      return selectByAddressFast(balances.value, getAddress(address)) || '0';
     } catch {
       return '0';
     }
@@ -406,7 +405,10 @@ export const tokensProvider = (
    * Checks if token has a balance
    */
   function hasBalance(address: string): boolean {
-    return Number(balances.value[address]) > 0;
+    return (
+      Number(selectByAddressFast(balances.value, getAddress(address)) || '0') >
+      0
+    );
   }
 
   /**
@@ -421,8 +423,7 @@ export const tokensProvider = (
    */
   function getToken(address: string): TokenInfo {
     address = getAddressFromPoolId(address); // In case pool ID has been passed
-    if (address) address = getAddress(address);
-    return tokens.value[address];
+    return selectByAddressFast(tokens.value, getAddress(address)) as TokenInfo;
   }
 
   /**
@@ -448,6 +449,7 @@ export const tokensProvider = (
   ): string {
     let maxAmount;
     const tokenBalance = balanceFor(tokenAddress) || '0';
+    console.log({ tokenBalance });
     const tokenBalanceBN = bnum(tokenBalance);
 
     if (tokenAddress === nativeAsset.address && !disableNativeAssetBuffer) {
@@ -459,6 +461,16 @@ export const tokensProvider = (
       maxAmount = tokenBalance;
     }
     return maxAmount;
+  }
+
+  /**
+   * Returns true if the token is the native asset or wrapped native asset
+   */
+  function isWethOrEth(tokenAddress: string): boolean {
+    return (
+      isSameAddress(tokenAddress, nativeAsset.address) ||
+      isSameAddress(tokenAddress, wrappedNativeAsset.value.address)
+    );
   }
 
   /**
@@ -505,6 +517,7 @@ export const tokensProvider = (
     getToken,
     injectPrices,
     getMaxBalanceFor,
+    isWethOrEth,
   };
 };
 

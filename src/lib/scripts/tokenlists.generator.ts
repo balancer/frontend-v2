@@ -1,6 +1,6 @@
 import TokenListService from '@/services/token-list/token-list.service';
 import config from '@/lib/config';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 const fs = require('fs');
 const path = require('path');
@@ -21,9 +21,13 @@ async function generate() {
     // check if any uris are avaialble
     if (tokenListService.uris.All.find(uri => !!uri)) {
       const tokenlists = await tokenListService.getAll();
+      const filteredTokensList = TokenListService.filterTokensList(
+        tokenlists,
+        network
+      );
       fs.writeFileSync(
         `./src/assets/data/tokenlists/tokens-${networkId}.json`,
-        JSON.stringify(tokenlists)
+        JSON.stringify(filteredTokensList)
       );
     }
   });

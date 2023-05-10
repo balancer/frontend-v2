@@ -1,4 +1,4 @@
-import { getBalancer } from '@/dependencies/balancer-sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import {
   GasPriceService,
   gasPriceService,
@@ -16,12 +16,14 @@ import {
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { ExactInExitHandler } from './handlers/exact-in-exit.handler';
 import { ExactOutExitHandler } from './handlers/exact-out-exit.handler';
+import { RecoveryExitHandler } from './handlers/recovery-exit.handler';
 
 export enum ExitHandler {
-  Swap,
-  Generalised,
-  ExactOut,
-  ExactIn,
+  Swap = 'Swap',
+  Generalised = 'Generalised',
+  ExactOut = 'ExactOut',
+  ExactIn = 'ExactIn',
+  Recovery = 'Recovery',
 }
 
 type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];
@@ -44,7 +46,7 @@ export class ExitPoolService {
    */
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk = getBalancer(),
+    public readonly sdk = getBalancerSDK(),
     public readonly gasPriceServ = gasPriceService
   ) {
     this.exitHandler = this.setExitHandler(ExitHandler.Generalised);
@@ -71,6 +73,8 @@ export class ExitPoolService {
         return (this.exitHandler = new ExactInExitHandler(...handlerParams));
       case ExitHandler.ExactOut:
         return (this.exitHandler = new ExactOutExitHandler(...handlerParams));
+      case ExitHandler.Recovery:
+        return (this.exitHandler = new RecoveryExitHandler(...handlerParams));
       default:
         throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
 import useVeBAL from '@/composables/useVeBAL';

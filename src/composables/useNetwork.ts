@@ -1,9 +1,7 @@
-import { computed, ref } from 'vue';
-
-import config from '@/lib/config';
+import config, { Network } from '@/lib/config';
 import { configService } from '@/services/config/config.service';
-import { Network } from '@balancer-labs/sdk';
 import { RouteParamsRaw } from 'vue-router';
+import { Config } from '@/lib/config/types';
 
 /**
  * STATE
@@ -48,31 +46,32 @@ export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
 export const isGnosis = computed(() => networkId.value === Network.GNOSIS);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
-export const isL2 = computed(
-  () => isPolygon.value || isArbitrum.value || isGnosis.value
-);
 export const hasBridge = computed<boolean>(() => !!networkConfig.bridgeUrl);
 export const isTestnet = computed(() => isGoerli.value);
 
+export const isEIP1559SupportedNetwork = computed(
+  () => configService.network.supportsEIP1559
+);
+
+export const isPoolBoostsEnabled = computed<boolean>(
+  () => configService.network.pools.BoostsEnabled
+);
+export const networkHasNativeGauges = computed<boolean>(() => {
+  return networkConfig.addresses.gaugeController !== '';
+});
 /**
  * METHODS
  */
 
 export function networkFor(key: string | number): Network {
-  switch (key.toString()) {
-    case '1':
-      return Network.MAINNET;
-    case '5':
-      return Network.GOERLI;
-    case '137':
-      return Network.POLYGON;
-    case '42161':
-      return Network.ARBITRUM;
-    case '100':
-      return Network.GNOSIS;
-    default:
-      throw new Error('Network not supported');
+  const network = Object.values(config).find((config: Config) => {
+    return config.key === key.toString();
+  });
+  if (!network) {
+    throw new Error('Network not supported');
   }
+
+  return network.chainId as Network;
 }
 
 export function getNetworkSlug(network: Network): string {
@@ -80,10 +79,10 @@ export function getNetworkSlug(network: Network): string {
 }
 
 export function networkFromSlug(networkSlug: string): Network | null {
-  const networkConf = Object.keys(config).find(
-    network => config[network].slug === networkSlug
-  );
-  return networkConf ? (Number(networkConf) as Network) : null;
+  const networkConf = Object.values(config).find((config: Config) => {
+    return config.slug === networkSlug;
+  });
+  return networkConf ? (networkConf.chainId as Network) : null;
 }
 
 export function appUrl(): string {
@@ -164,6 +163,7 @@ export function getRedirectUrlFor(
 }
 
 export default function useNetwork() {
+  const appNetworkConfig = configService.network;
   return {
     appUrl,
     networkId,
@@ -173,5 +173,6 @@ export default function useNetwork() {
     getSubdomain,
     handleNetworkSlug,
     networkLabelMap,
+    appNetworkConfig,
   };
 }

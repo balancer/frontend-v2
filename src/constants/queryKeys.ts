@@ -1,11 +1,11 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { NativeAsset, TokenInfo } from '@/types/TokenList';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
+import { TokenPrices } from '@/composables/queries/useTokenPricesQuery';
 import { MerkleOrchardVersion } from '@/services/claim/claim.service';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
@@ -163,6 +163,11 @@ const QUERY_KEYS = {
       'protocol',
       { networkId, account },
     ],
+    GaugePools: (poolIds: Ref<string[]>) => [
+      CLAIMS_ROOT_KEY,
+      'gaugePools',
+      { poolIds },
+    ],
   },
   Tokens: {
     PairPriceData: (
@@ -183,11 +188,11 @@ const QUERY_KEYS = {
         wrappedNativeAsset,
       },
     ],
-    Prices: (
-      networkId: Ref<Network>,
-      tokens: Ref<string[]>,
-      pricesToInject: Ref<TokenPrices>
-    ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
+    Prices: (networkId: Ref<Network>, pricesToInject: Ref<TokenPrices>) => [
+      'tokens',
+      'prices',
+      { networkId, pricesToInject },
+    ],
     AllPrices: ['tokens', 'prices'],
     VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [
       'tokens',

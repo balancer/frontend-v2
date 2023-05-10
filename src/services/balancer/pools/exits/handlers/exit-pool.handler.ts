@@ -1,6 +1,5 @@
 import { Address, BalancerSDK } from '@balancer-labs/sdk';
 import { AmountOut } from '@/providers/local/exit-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -21,13 +20,13 @@ export type ExitParams = {
   bptIn: string;
   amountsOut: AmountOut[];
   tokenInfo: TokenInfoMap;
-  prices: TokenPrices;
   signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
   bptInValid: boolean;
   approvalActions: TransactionActionInfo[];
   transactionDeadline: number;
+  toInternalBalance?: boolean;
 };
 
 export type QueryOutput = {

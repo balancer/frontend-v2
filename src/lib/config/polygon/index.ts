@@ -15,6 +15,8 @@ const config: Config = {
   slug: 'polygon',
   network: 'polygon',
   unknown: false,
+  visibleInUI: true,
+  testNetwork: false,
   rpc: `https://polygon-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://polygon-rpc.com',
@@ -39,12 +41,21 @@ const config: Config = {
   blockTime: 4,
   nativeAsset: {
     name: 'Matic',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    address: '0x0000000000000000000000000000000000001010',
     symbol: 'MATIC',
     decimals: 18,
     deeplinkId: 'matic',
     logoURI: 'tokens/matic.svg',
     minTransactionBuffer: '0.1',
+  },
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: 'matic-network',
+      platformId: 'polygon-pos',
+    },
+    apyVision: {
+      networkName: 'matic',
+    },
   },
   addresses: {
     ...contracts,

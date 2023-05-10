@@ -1,5 +1,8 @@
 import { Pools } from '@/types/pools';
 
+export const poolIdThatRequiresInternalBalanceExit =
+  '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
+
 const pools: Pools = {
   IdsMap: {
     staBAL:
@@ -15,6 +18,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
+  BoostsEnabled: true,
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
@@ -48,6 +52,13 @@ const pools: Pools = {
   Investment: {
     AllowList: [],
   },
+  Weighted: {
+    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
+    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    AllowList: [
+      '0xbb372d299cc1afa14d5b8691ced1486fa0216f74000200000000000000000757', // DVT /WETH
+    ],
+  },
   Factories: {
     '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
     '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool',
@@ -58,12 +69,15 @@ const pools: Pools = {
     '0x41e9036ae350baedcc7107760a020dca3c0731ec': 'boostedPool',
     '0xb848f50141f3d4255b37ac288c25c109104f2158': 'composableStablePool',
     '0x94f68b54191f62f781fe8298a8a5fa3ed772d227': 'weightedPool', // weighted pool v2
+    '0x230a59f4d9adc147480f03b0d3fffecd56c3289a': 'weightedPool', // weighted pool v4
   },
   Stakable: {
-    AllowList: [
+    VotingGaugePools: [
       '0x16faf9f73748013155b7bc116a3008b57332d1e600020000000000000000005b',
       '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
       '0xdcdd4a3d36dec8d57594e89763d069a7e9b223e2000000000000000000000062',
+    ],
+    AllowList: [
       '0x67f8fcb9d3c463da05de1392efdbb2a87f8599ea000200000000000000000059',
     ],
   },
@@ -73,12 +87,24 @@ const pools: Pools = {
       hasIcon: false,
     },
   },
+  Deep: [
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f', // bb-a-USD1 (goerli)
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
+  ],
+  BoostedApr: [
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd', // bb-a-USD1
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e', // bb-a-USD2
+  ],
   DisabledJoins: [
     'testaddresswithdisabledjoins', //Used for unit testing
   ],
   Deprecated: {
+    '0xdcdd4a3d36dec8d57594e89763d069a7e9b223e2000000000000000000000062': {},
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f': {},
+    '0x6a8f9ab364b85725973d2a33cb9aae2dac43b5e30000000000000000000000a6': {},
     deprecatedid: {}, //Used for unit testing
   },
+  ExitViaInternalBalance: [poolIdThatRequiresInternalBalanceExit],
 };
 
 export default pools;

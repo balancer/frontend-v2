@@ -1,21 +1,23 @@
 import WalletConnectProvider from '@walletconnect/web3-provider';
 
 import ConfigService from '@/services/config/config.service';
+import config from '@/lib/config';
 import { WalletError } from '@/types';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { Connector, ConnectorId } from '../connector';
+import { Config } from '@/lib/config/types';
 
 export class WalletConnectConnector extends Connector {
   id = ConnectorId.WalletConnect;
   async connect() {
     const configService = new ConfigService();
+    const rpcUrls: Record<number, string> = {};
+    Object.values(config).forEach((c: Config) => {
+      if (!c.visibleInUI) return;
+      rpcUrls[c.chainId] = configService.getNetworkRpc(c.chainId as Network);
+    });
     const provider = new WalletConnectProvider({
-      rpc: {
-        [Network.MAINNET]: configService.getNetworkRpc(Network.MAINNET),
-        [Network.POLYGON]: configService.getNetworkRpc(Network.POLYGON),
-        [Network.ARBITRUM]: configService.getNetworkRpc(Network.ARBITRUM),
-        [Network.GOERLI]: configService.getNetworkRpc(Network.GOERLI),
-      },
+      rpc: rpcUrls,
     });
     this.provider = provider;
 

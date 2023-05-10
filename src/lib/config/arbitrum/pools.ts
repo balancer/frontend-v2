@@ -7,6 +7,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
+  BoostsEnabled: false,
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
@@ -36,10 +37,26 @@ const pools: Pools = {
       '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bbrfusd
       '0x70ba7dc356b41c849e74c679932c852cc0331a90000000000000000000000357', // gdai/mai/usdc
       '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
+      '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd', // bb-a-eth / reth
+      '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a', // bb-a-usd aave v3
+      '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400', // wsteth / bb-a-weth
     ],
   },
   Investment: {
     AllowList: [''],
+  },
+  Weighted: {
+    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
+    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    AllowList: [
+      '0xd449efa0a587f2cb6be3ae577bc167a7745258100001000000000000000003f4',
+      '0xce34c867d7053befb3421d6adabcb5ce55ff777b00010000000000000000041b', // crv/wbtc/wsteth/gdai/uni/link
+      '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/bb-a-usd
+      '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
+      '0x3efd3e18504dc213188ed2b694f886a305a6e5ed00020000000000000000041d', // peg/weth
+      '0x89dc7e71e362faf88d92288fe2311d25c6a1b5e0000200000000000000000423', // ohm/weth
+      '0xce6195089b302633ed60f3f427d1380f6a2bfbc7000200000000000000000424', // ohm/usdc
+    ],
   },
   Factories: {
     '0x7dfdef5f355096603419239ce743bfaf1120312b': 'weightedPool', // Arbitrum Weighted
@@ -55,16 +72,17 @@ const pools: Pools = {
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'weightedPool', // weighted pool v2
     '0x1c99324edc771c82a0dccb780cc7dda0045e50e7': 'composableStablePool', // ComposableStable V3
     '0xf1665e19bc105be4edd3739f88315cc699cc5b65': 'weightedPool', // Weighted Pool V3
+    '0xc7e5ed1054a24ef31d827e6f86caa58b3bc168d7': 'weightedPool', // weighted pool v4
   },
   Stakable: {
-    AllowList: [
+    VotingGaugePools: [
+      '0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002',
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
       '0x0adeb25cb5920d4f7447af4a0428072edc2cee2200020000000000000000004a',
       '0x1533a3278f3f9141d5f820a184ea4b017fce2382000000000000000000000016',
       '0x1779900c7707885720d39aa741f4086886307e9e00020000000000000000004b',
       '0x4a3a22a3e7fee0ffbb66f1c28bfac50f75546fc7000200000000000000000008',
       '0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f',
-      '0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002',
       '0x651e00ffd5ecfa7f3d4f33d62ede0a97cf62ede2000200000000000000000006',
       '0xb28670b3e7ad27bd41fb5938136bf9e9cba90d6500020000000000000000001e',
       '0xb340b6b1a34019853cb05b2de6ee8ffd0b89a008000100000000000000000036',
@@ -80,17 +98,61 @@ const pools: Pools = {
       '0x13f2f70a951fb99d48ede6e25b0bdf06914db33f00020000000000000000016b',
       '0xf93579002dbe8046c43fefe86ec78b1112247bb800020000000000000000021d',
       '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316',
-      '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316',
       '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352',
       '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382',
+      '0x32df62dc3aed2cd6224193052ce665dc181658410002000000000000000003bd',
+      '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd',
+      '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a',
+      '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400',
+      '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413',
+      '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412',
     ],
+    AllowList: [],
   },
   Metadata: {
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
       name: 'Balancer Boosted Reaper Granary USD',
       hasIcon: true,
     },
+    '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
+      name: 'rETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
+    '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413': {
+      name: 'STG/Boosted Aave v3 USD',
+      hasIcon: false,
+    },
+    '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412': {
+      name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
+      hasIcon: false,
+    },
+    '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+    },
+    '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
+      name: 'wstETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+    },
   },
+  Deep: [
+    '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
+    '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
+    '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd', // bb-a-eth / reth
+    '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a', // bb-a-usd aave v3
+    '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400', // wsteth / bb-a-weth
+    '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/ bb-a-usd
+    '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
+  ],
+  Deprecated: {
+    // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
+    //   newPool:
+    //     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412 ',
+    //   description: 'deprecatedPool.gaugeKilledReason',
+    // },
+  },
+  GaugeMigration: {},
+  BoostedApr: [],
   DisabledJoins: [],
 };
 

@@ -1,7 +1,9 @@
+import { Network } from '@/lib/config';
 import {
   getRedirectUrlFor,
   getSubdomain,
   handleNetworkSlug,
+  networkFor,
 } from './useNetwork';
 
 vi.mock('@/services/web3/useWeb3');
@@ -34,6 +36,19 @@ describe('useNetwork', () => {
       urls.forEach(url => {
         expect(getSubdomain(url.path)).toEqual(url.result);
       });
+    });
+  });
+
+  describe('neworkFor', () => {
+    it('should return networks that exists', () => {
+      expect(networkFor(1)).toEqual(Network.MAINNET);
+      expect(networkFor(137)).toEqual(Network.POLYGON);
+      expect(networkFor('42161')).toEqual(Network.ARBITRUM);
+      expect(networkFor('5')).toEqual(Network.GOERLI);
+    });
+
+    it('should throw an error for networks that dont exist', () => {
+      expect(() => networkFor(56)).toThrow('Network not supported');
     });
   });
 

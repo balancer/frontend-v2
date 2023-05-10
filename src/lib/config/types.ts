@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { Pools } from '@/types/pools';
 import { TokenListURLMap } from '@/types/TokenList';
 
@@ -16,7 +16,12 @@ export type TokenConstants = {
     Symbols: string[];
   };
   Addresses: CommonTokens;
+  InitialSwapTokens: {
+    input: string;
+    output: string;
+  };
   PriceChainMap?: Record<string, string>;
+  DisableInternalBalanceWithdrawals?: string[];
 };
 
 export interface Contracts {
@@ -36,7 +41,6 @@ export interface Contracts {
   lidoRelayer: string;
   balancerHelpers: string;
   batchRelayer: string;
-  batchRelayerV4: string;
   veBAL: string;
   gaugeController: string;
   gaugeFactory: string;
@@ -72,6 +76,8 @@ export interface Config {
   slug: string;
   network: string;
   unknown: boolean;
+  visibleInUI: boolean;
+  testNetwork: boolean;
   rpc: string;
   publicRpc?: string;
   ws: string;
@@ -98,6 +104,15 @@ export interface Config {
     deeplinkId: string;
     logoURI: string;
     minTransactionBuffer: string;
+  };
+  thirdParty: {
+    coingecko: {
+      nativeAssetId: string;
+      platformId: string;
+    };
+    apyVision?: {
+      networkName: string;
+    };
   };
   addresses: Contracts;
   pools: Pools;

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, isStableLike } from '@/composables/usePool';
-import { Pool } from '@/services/pool/types';
+import { isDeep, isLinear, isStableLike } from '@/composables/usePoolHelpers';
+import { findByAddress } from '@/lib/utils';
+import { Pool, PoolToken } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -26,6 +27,13 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum } = useNumbers();
+
+/**
+ * COMPUTED
+ */
+const poolToken = computed((): PoolToken | undefined => {
+  return findByAddress(props.pool.tokens, props.address);
+});
 </script>
 
 <template>
@@ -34,8 +42,14 @@ const { fNum } = useNumbers();
       <BalAsset :address="address" class="mr-2" />
       <div class="flex flex-col leading-none">
         <div class="text-lg font-medium">
-          {{ props.token?.symbol }}
-          <span v-if="!isStableLike(pool.poolType) && !isDeep(pool)">
+          {{ props.token?.symbol || poolToken?.symbol }}
+          <span
+            v-if="
+              !isStableLike(pool.poolType) &&
+              !isDeep(pool) &&
+              !isLinear(pool.poolType)
+            "
+          >
             {{
               fNum(weight, {
                 style: 'percent',
@@ -44,14 +58,14 @@ const { fNum } = useNumbers();
             }}
           </span>
         </div>
-        <div class="flex w-52 text-sm text-gray-600 dark:text-gray-400">
+        <div class="flex text-sm text-gray-600 dark:text-gray-400 max-w-52">
           <span class="truncate">
             {{ props.token?.name }}
           </span>
         </div>
       </div>
     </div>
-    <div class="flex flex-col flex-grow items-end pl-2 text-right font-numeric">
+    <div class="flex flex-col items-end pl-2 text-right grow font-numeric">
       <BalLoadingBlock v-if="loading" class="w-20 h-12" />
       <template v-else>
         <span class="text-xl font-medium break-words">

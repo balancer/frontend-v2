@@ -11,16 +11,16 @@ import {
   isWeightedLike,
   isComposableStableLike,
   isComposableStable,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import ERC20_ABI from '@/lib/abi/ERC20.json';
 import IERC4626 from '@/lib/abi/IERC4626.json';
 import LinearPoolABI from '@/lib/abi/LinearPool.json';
 import StablePhantomPoolABI from '@/lib/abi/StablePhantomPool.json';
 import StaticATokenLMABI from '@/lib/abi/StaticATokenLM.json';
 import { configService } from '@/services/config/config.service';
-import { Multicaller } from '@/services/multicalls/multicaller';
 
 import { Pool, RawOnchainPoolDataMap } from '../types';
+import { getMulticaller } from '@/dependencies/Multicaller';
 
 const PoolTypeABIs = Object.values(
   Object.fromEntries(
@@ -40,7 +40,7 @@ const PoolTypeABIs = Object.values(
 export class PoolMulticaller {
   constructor(
     public readonly pools: Pool[],
-    private readonly MulticallerClass = Multicaller,
+    private readonly MulticallerClass = getMulticaller(),
     private readonly vaultAddress = configService.network.addresses.vault
   ) {}
 
@@ -67,6 +67,18 @@ export class PoolMulticaller {
           address: pool.address,
           function: 'getSwapFeePercentage',
           abi: PoolTypeABIs,
+        })
+        .call({
+          key: `${pool.id}.isInRecoveryMode`,
+          address: pool.address,
+          function: 'inRecoveryMode',
+          abi: ['function inRecoveryMode() view returns (bool)'],
+        })
+        .call({
+          key: `${pool.id}.isPaused`,
+          address: pool.address,
+          function: 'getPausedState',
+          abi: ['function getPausedState() view returns (bool)'],
         })
         .call({
           key: `${pool.id}.poolTokens`,

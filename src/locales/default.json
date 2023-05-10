@@ -24,7 +24,11 @@
     "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
     "retry-label": "Refresh to try again",
     "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →",
-    "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28."
+    "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28.",
+    "withdrawToInternalBalance": {
+      "title": "Withdraw to Vault balance",
+      "description": "This transaction will withdraw your tokens from this pool to your Balancer Vault balance. \n\nYou will then be able to withdraw the relevant tokens from the Vault using the"
+    }
   },
   "allow": "Allow",
   "allowing": "Allowing...",
@@ -73,6 +77,9 @@
   "approveGP": "Approve swapping on Cowswap Protocol",
   "approveLidoRelayer": "Approve Lido relayer",
   "approveBatchRelayer": "Approve Batch relayer",
+  "signRelayerApproval": "Sign relayer approval",
+  "signingRelayerApproval": "Signing relayer approval",
+  "signRelayerApprovalTooltip": "Your signature is required to use the relayer.",
   "approvingBatchRelayer": "Approving Batch relayer",
   "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
   "approveRelayerTooltip": "Your permission is required to use the relayer.",
@@ -366,6 +373,7 @@
   "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>liquidity provision, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
   "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
   "etherscan": "Etherscan",
+  "eulerLinear": "Euler Linear",
   "exceedsBalance": "Exceeds wallet balance",
   "exceedsPoolBalance": "Exceeds pool balance for this token",
   "expired": "Expired",
@@ -451,7 +459,8 @@
     "generic": {
       "title": "Move your liquidity for future BAL incentives",
       "description": "Liquidity mining incentives are being phased out for this pool, since upgraded pools are now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the newly incentivized pools."
-    }
+    },
+    "gaugeKilledReason": "This pool's gauge will soon be killed. A new version of this pool has been created that uses Aave v3."
   },
   "highPriceImpact": "High price impact",
   "highPriceImpactDetailed": "This swap is significantly moving the market price.",
@@ -512,6 +521,11 @@
         "title": "You have no pool tokens to join with",
         "paragraph1": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact.",
         "paragraph2": "However, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens."
+      },
+      "blockedPool": {
+        "title": "This pool contains one or more tokens that have not been vetted by the Balancer community: {0}.",
+        "description": "For the protection of LPs, adding liquidity to the pool has been disabled. Click",
+        "description2": "to learn how to submit the token(s) for review."
       }
     },
     "error": {
@@ -578,6 +592,7 @@
   "lbpAprTooltip": "Only the LBP creator can add liquidity and receive this APR.",
   "managedPool": "Managed pool",
   "manageLists": "Manage lists",
+  "manageVaultBalances": "Manage Vault balances",
   "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
   "max": "Max",
   "maxed": "Maxed",
@@ -640,6 +655,10 @@
   "noData": "No data available",
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before liquidity provision is supported.",
+  "requiresAllowListing1": "This pool has not been added to our allowlist.",
+  "requiresAllowListing2": "to learn how to enable a new pool.",
+  "Click": "Click",
+  "here": "here",
   "noInvestments": "No liquidity",
   "noUnstakedInvestments": "You have no unstaked liquidity on {0}",
   "noStakedInvestments": "You have no staked liquidity on {0}",
@@ -683,6 +702,10 @@
       "btns": {
         "claimOn": "Claim on"
       }
+    },
+    "balances": {
+      "title": "My Vault balances",
+      "eulerHack": "Euler eTokens (e.g. eUSDC, eUSDT and eDAI) affected by the Euler hack have been paused and are not transferrable from the Balancer Vault. To redeem your share of the recovered funds of the Euler hack, if you haven't done so already, go to:"
     }
   },
   "pastEarnings": {
@@ -801,10 +824,10 @@
       "title": "You are strongly advised to withdraw any liquidity from this pool ASAP to avoid losses! Ideally you should withdraw in a proportional fashion to reduce price impact. The Ren 1.0 network is expected to be <a href=\"https://medium.com/renproject/moving-on-from-alameda-da62a823ce93\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">sunset</a> in December 2022. This will render this version of the renBTC token as valueless, which will trend the overall pool value towards zero. Ren Protocol also strongly advises to <a href=\"https://twitter.com/renprotocol/status/1595807696296751104\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">bridge all ren assets</a> back to their native chain ASAP to avoid being left holding a valueless token which can no longer be redeemed for the native asset."
     },
     "eulerBoostedWarning": {
-      "title": "Due to an exploit on Euler, this pool has been set to recovery mode by the Emergency subDAO. Euler has disabled the transferability of eTokens so withdrawals from this pool are not possible until that functionality is restored."
+      "title": "Due to an exploit on Euler, this pool has been set to recovery mode by the <a href=\"https://docs.balancer.fi/concepts/governance/emergency.html\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Emergency multisig</a>. Euler has disabled the transferability of eTokens so withdrawals from this pool are not possible until that functionality is restored."
     },
     "eulerRecoveryModeWarning": {
-      "title": "Due to an exploit on Euler this pool has been set to recovery mode by the Emergency subDAO. Proportional withdrawals are enabled in the UI and you are encouraged to withdraw as soon as possible."
+      "title": "Due to an exploit on Euler this pool has been set to recovery mode by the <a href=\"https://docs.balancer.fi/concepts/governance/emergency.html\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Emergency multisig</a>. Proportional withdrawals are enabled in the UI and you are encouraged to withdraw as soon as possible."
     },
     "poolProtocolFeeVulnWarning": {
       "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://twitter.com/Balancer/status/1611363559685898247\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
@@ -823,7 +846,7 @@
   "previewWrap": "Preview {0} Wrap",
   "previewMigrate": "Preview migrate",
   "priceImpact": "Price impact",
-  "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
+  "priceImpactAccept": "I accept the high price impact from {0}, moving the market price based on the depth of the market.",
   "priceImpactCheckbox": "Price impact acknowledgement",
   "priceImpactTolerance": "Price impact tolerance",
   "priceUpdatedAlert": {
@@ -841,6 +864,8 @@
   "receipt": "Receipt",
   "receive": "Receive",
   "recentActivityTitle": "Recent activity",
+  "recoveryMode": "Recovery mode",
+  "recoveryModeDescription": "This pool is paused and in recovery mode. It does not pay protocol fees and the only available exit is proportional.",
   "redeem": "Redeem",
   "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
   "restoring": "Restoring...",
@@ -888,7 +913,7 @@
     "stakingIncentives": "Staking incentives",
     "totalShareTooltip": "Your current total share of LP tokens in the pool",
     "restakeGauge": "Restake to receive future liquidity mining incentives",
-    "restakeGaugeDescription": "You’re staking against a pool gauge which is being deactivated on 21 September 2022. Restake to the new gauge for this pool to receive future liquidity mining incentives.",
+    "restakeGaugeDescription": "You are staking in a gauge which has been deprecated. Restake to the new gauge for this pool to receive future liquidity mining incentives.",
     "unclaimedIncentives": "Unclaimed incentives",
     "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
     "unstakedPools": "Unstaked pools",
@@ -1269,8 +1294,8 @@
   "tokensLowerCase": "tokens",
   "tokensParen": "Token(s)",
   "tokenPrices": "Token prices",
-  "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowledge before continuing.",
-  "tokenWarningTitle": "You have added a custom token",
+  "unlistedTokenWarningTitle": "You have added a token that is not included in the Balancer Tokenlist.",
+  "unlistedTokenWarning": "You will not be able to complete pool creation until it's included. To add a token to our Tokenlist please follow our process described",
   "tooltips": {
     "addLiquidity": {
       "priceImpact": "Price impact from adding liquidity results when the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
@@ -1442,6 +1467,8 @@
     "fundPool": "Fund pool",
     "investInPool": "{0} in {1}",
     "withdrawFromPool": "{0} from {1}",
+    "withdrawFromBalance": "{0} from Vault balance",
+    "withdrawToBalance": "{0} to Vault balance",
     "migratePool": "{0} {1} to {2}",
     "wrapUnwrap": "{0} {1} to {2}",
     "tooltips": {
@@ -1468,6 +1495,8 @@
   "unwrap": "Unwrap",
   "usdValue": "USD Value",
   "useOf": "use of",
+  "useSignatures": "Use signatures",
+  "useSignaturesTooltip": "It's recommended to turn on signatures for gas-free transactions. However, if your wallet doesn't support the signing of signatures, you can turn it off.",
   "v1": "V1",
   "v2": "V2",
   "value": "Value",
@@ -1497,7 +1526,7 @@
   "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
     "tabs": {
-      "poolTokens": "Pool tokens (proportional)",
+      "poolTokens": "Proportional pool tokens",
       "singleToken": "Single token"
     },
     "label": "Withdraw",

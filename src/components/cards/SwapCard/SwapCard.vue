@@ -367,21 +367,34 @@ export default defineComponent({
       );
     }
 
-    async function populateInitialTokens(): Promise<void> {
-      let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (isNativeAssetIdentifier(assetIn)) {
-        assetIn = nativeAsset.address;
-      } else if (isAddress(assetIn)) {
-        assetIn = getAddress(assetIn);
+    function getFirstValidAddress(assets: string[]): string | undefined {
+      for (const asset of assets) {
+        if (isNativeAssetIdentifier(asset)) {
+          return nativeAsset.address;
+        }
+        if (isAddress(asset)) {
+          return getAddress(asset);
+        }
       }
-      let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (isNativeAssetIdentifier(assetOut)) {
-        assetOut = nativeAsset.address;
-      } else if (isAddress(assetOut)) {
-        assetOut = getAddress(assetOut);
+    }
+
+    function populateInitialTokens(): void {
+      const assetIn = getFirstValidAddress([
+        router.currentRoute.value.params.assetIn,
+        inputAsset.value,
+        appNetworkConfig.tokens.InitialSwapTokens.input,
+      ]);
+      if (assetIn) {
+        setTokenInAddress(assetIn);
       }
-      setTokenInAddress(assetIn || inputAsset);
-      setTokenOutAddress(assetOut || outputAsset);
+      const assetOut = getFirstValidAddress([
+        router.currentRoute.value.params.assetOut,
+        outputAsset.value,
+        appNetworkConfig.tokens.InitialSwapTokens.output,
+      ]);
+      if (assetOut) {
+        setTokenOutAddress(assetOut);
+      }
 
       let assetInAmount = router.currentRoute.value.query?.inAmount as string;
       let assetOutAmount = router.currentRoute.value.query?.outAmount as string;

@@ -22,11 +22,11 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
-  usePool,
+  usePoolHelpers,
   tokensListExclBpt,
   tokenTreeLeafs,
   orderedPoolTokens,
-} from '@/composables/usePool';
+} from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
@@ -37,12 +37,14 @@ import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 import metaService from '@/services/meta/meta.service';
 import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
+import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 
 /**
  * STATE
  */
 const route = useRoute();
 const poolId = (route.params.id as string).toLowerCase();
+const isRestakePreviewVisible = ref(false);
 
 /**
  * PROVIDERS
@@ -72,7 +74,7 @@ const {
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
   isDeprecatedPool,
-} = usePool(poolQuery.data);
+} = usePoolHelpers(poolQuery.data);
 //#endregion
 
 //#region pool snapshot query
@@ -139,13 +141,6 @@ onBeforeUnmount(() => {
 });
 //#endregion
 
-const noInitLiquidity = computed(
-  () =>
-    !loadingPool.value &&
-    pool.value &&
-    Number(pool.value?.totalShares || '0') === 0
-);
-
 const missingPrices = computed(() => {
   if (pool.value && prices.value && !priceQueryLoading.value) {
     const tokensWithPrice = Object.keys(prices.value);
@@ -162,8 +157,10 @@ const titleTokens = computed<PoolToken[]>(() => {
   return orderedPoolTokens(pool.value, pool.value.tokens);
 });
 
-const isStakablePool = computed((): boolean =>
-  POOLS.Stakable.AllowList.includes(poolId)
+const isStakablePool = computed(
+  (): boolean =>
+    POOLS.Stakable.VotingGaugePools.includes(poolId) ||
+    POOLS.Stakable.AllowList.includes(poolId)
 );
 
 const poolPremintedBptIndex = computed(() => {
@@ -174,6 +171,10 @@ const poolPremintedBptIndex = computed(() => {
 const showBrandedRedirectCard = computed(() => {
   return POOLS.BrandedRedirect?.[poolId] || false;
 });
+
+function setRestakeVisibility(value: boolean): void {
+  isRestakePreviewVisible.value = value;
+}
 
 /**
  * WATCHERS
@@ -220,11 +221,11 @@ watch(
           :pool="pool"
           :poolApr="poolApr"
           :isStableLikePool="isStableLikePool"
-          :noInitLiquidity="noInitLiquidity"
           :titleTokens="titleTokens"
           :missingPrices="missingPrices"
           :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
           :isComposableStableLikePool="isComposableStableLikePool"
+          @set-restake-visibility="setRestakeVisibility"
         />
       </div>
       <div class="hidden lg:block" />
@@ -287,7 +288,7 @@ watch(
             class="mb-4 h-60 pool-actions-card"
           />
           <MyPoolBalancesCard
-            v-else-if="!noInitLiquidity"
+            v-else
             :pool="pool"
             :missingPrices="missingPrices"
             class="mb-4"
@@ -298,6 +299,7 @@ watch(
             v-if="isStakablePool && !loadingPool && pool && isWalletReady"
             :pool="pool"
             class="staking-incentives"
+            @set-restake-visibility="setRestakeVisibility"
           />
           <PoolLockingCard
             v-if="_isVeBalPool && !loadingPool && pool"
@@ -310,6 +312,14 @@ watch(
           />
         </BalStack>
       </div>
+      <StakePreviewModal
+        v-if="!!pool"
+        :isVisible="isRestakePreviewVisible"
+        :pool="pool"
+        action="restake"
+        @close="isRestakePreviewVisible = false"
+        @success="isRestakePreviewVisible = false"
+      />
     </div>
   </div>
 </template>

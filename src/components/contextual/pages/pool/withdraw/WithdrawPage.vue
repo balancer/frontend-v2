@@ -5,11 +5,10 @@ import SwapSettingsPopover, {
   SwapSettingsContext,
 } from '@/components/popovers/SwapSettingsPopover.vue';
 import { configService } from '@/services/config/config.service';
-import { usePool } from '@/composables/usePool';
 import useWithdrawPageTabs from '@/composables/pools/useWithdrawPageTabs';
-import { Pool } from '@balancer-labs/sdk';
 import WithdrawPageTabs from './WithdrawPageTabs.vue';
 import { provideExitPool } from '@/providers/local/exit-pool.provider';
+import { Pool } from '@/services/pool/types';
 
 type Props = {
   pool: Pool;
@@ -20,18 +19,18 @@ type Props = {
  */
 const props = defineProps<Props>();
 
+const pool = toRef(props, 'pool');
+
 /**
- * COMPUTED
+ * PROVIDERS
  */
-const pool = computed(() => props.pool);
+provideExitPool(pool);
 
 /**
  * COMPOSABLES
  */
 const { network } = configService;
-const { isDeepPool } = usePool(pool);
 const { resetTabs } = useWithdrawPageTabs();
-provideExitPool(pool);
 
 onMounted(() => resetTabs());
 </script>
@@ -47,10 +46,11 @@ onMounted(() => resetTabs());
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <WithdrawPageTabs v-if="isDeepPool" />
+        <WithdrawPageTabs v-if="!(pool.isInRecoveryMode && pool.isPaused)" />
       </div>
     </template>
-    <WithdrawFormV2 v-if="isDeepPool" />
+    <WithdrawFormV2 v-if="true" :pool="pool" />
+    <!-- Temp support in case we need to re-enable old flow -->
     <WithdrawForm v-else :pool="pool" />
   </BalCard>
 </template>
