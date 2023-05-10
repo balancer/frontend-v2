@@ -80,7 +80,7 @@ export class ContractConcern extends TransactionConcern {
           options,
           forceLegacyTxType: true,
         });
-      } else if (this.shouldLogFailure()) {
+      } else if (this.shouldLogFailure(error)) {
         await this.logFailedTx(
           error,
           contractWithSigner,
@@ -127,6 +127,9 @@ export class ContractConcern extends TransactionConcern {
 
     captureException(error, {
       level: 'fatal',
+      tags: {
+        simulate,
+      },
       extra: {
         action,
         sender,
