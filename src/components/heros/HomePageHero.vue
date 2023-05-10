@@ -6,8 +6,6 @@ import useFathom from '@/composables/useFathom';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
-
 /**
  * COMPOSABLES
  */
@@ -26,11 +24,10 @@ const classes = computed(() => ({
 <template>
   <AppHero :class="classes">
     <h1 class="headline" v-text="$t('defiLiquidityPools')" />
-    <p class="mt-2 text-xl text-white" v-text="$t('builtOnBalancer')" />
+    <p class="mt-2 text-xl text-white">DEBUGGING BALANCER UI</p>
+
     <template v-if="!isWalletReady && !isWalletConnecting">
       <div class="flex justify-center mt-6">
-        <HeroConnectWalletButton class="mr-4" />
-
         <BalBtn
           tag="a"
           :href="EXTERNAL_LINKS.Balancer.Home"

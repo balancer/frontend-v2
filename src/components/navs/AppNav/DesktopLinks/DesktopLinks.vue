@@ -30,14 +30,6 @@ function isActive(page: string): boolean {
       {{ $t('pool') }}
     </DesktopLinkItem>
     <DesktopLinkItem
-      :to="{ name: 'swap', params: { networkSlug } }"
-      :active="isActive('swap')"
-      prefetch
-      @click="trackGoal(Goals.ClickNavSwap)"
-    >
-      {{ $t('swap') }}
-    </DesktopLinkItem>
-    <DesktopLinkItem
       :to="{ name: 'claim', params: { networkSlug } }"
       :active="isActive('claim')"
       prefetch

@@ -17,10 +17,6 @@ const PoolWithdrawPage = () => import('@/pages/pool/withdraw.vue');
 const PrivacyPolicyPage = () => import('@/pages/privacy-policy.vue');
 const TermsOfUsePage = () => import('@/pages/terms-of-use.vue');
 const RisksPage = () => import('@/pages/risks.vue');
-const SwapPage = () => import('@/pages/swap.vue');
-
-export const SwapPagePrefetchLinks = async () =>
-  import('@/pages/swap.vue').toString();
 
 const UnlockVeBalPage = () => import('@/pages/unlock-vebal.vue');
 const VeBalPage = () => import('@/pages/vebal.vue');
@@ -68,18 +64,6 @@ const routes: RouteRecordRaw[] = [
     name: 'risks',
     component: RisksPage,
     meta: { layout: 'ContentLayout' },
-  },
-  {
-    path: '/:networkSlug/swap/:assetIn?/:assetOut?',
-    name: 'swap',
-    component: SwapPage,
-  },
-  {
-    path: '/:networkSlug/trade/:assetIn?/:assetOut?',
-    name: 'trade-redirect',
-    redirect: to => {
-      return `/${to.params.networkSlug}/swap${to.path.split('/trade')[1]}`;
-    },
   },
   {
     path: '/:networkSlug/pool/create/:tx?',
