@@ -398,7 +398,7 @@ export const exitPoolProvider = (
       }));
       return output;
     } catch (error) {
-      captureException(error);
+      logExitException(error as Error);
       throw new Error('Failed to construct exit.', { cause: error });
     }
   }
@@ -441,7 +441,7 @@ export const exitPoolProvider = (
 
       return newMax;
     } catch (error) {
-      captureException(error);
+      logExitException(error as Error);
       throw new Error('Failed to calculate max.', { cause: error });
     }
   }
@@ -469,6 +469,7 @@ export const exitPoolProvider = (
         toInternalBalance: shouldExitViaInternalBalance.value,
       });
     } catch (error) {
+      logExitException(error as Error);
       txError.value = (error as Error).message;
       throw new Error('Failed to submit exit transaction.', { cause: error });
     }
@@ -491,6 +492,29 @@ export const exitPoolProvider = (
 
   function setIsSingleAssetExit(value: boolean) {
     isSingleAssetExit.value = value;
+  }
+
+  async function logExitException(error: Error) {
+    const sender = await getSigner().getAddress();
+    captureException(error, {
+      level: 'fatal',
+      extra: {
+        exitHandler: exitHandlerType.value,
+        params: {
+          exitType: exitType.value,
+          bptIn: _bptIn.value,
+          amountsOut: amountsOut.value,
+          signer: sender,
+          slippageBsp: slippageBsp.value,
+          tokenInfo: exitTokenInfo.value,
+          approvalActions: approvalActions.value,
+          bptInValid: bptInValid.value,
+          relayerSignature: relayerSignature.value,
+          transactionDeadline: transactionDeadline.value,
+          toInternalBalance: shouldExitViaInternalBalance.value,
+        },
+      },
+    });
   }
 
   /**
