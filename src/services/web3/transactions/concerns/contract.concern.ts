@@ -80,7 +80,7 @@ export class ContractConcern extends TransactionConcern {
           options,
           forceLegacyTxType: true,
         });
-      } else if (this.shouldLogFailure(error)) {
+      } else if (this.shouldLogFailure()) {
         await this.logFailedTx(
           error,
           contractWithSigner,
