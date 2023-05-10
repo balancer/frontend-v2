@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 import Notifications from '@/components/notifications/Notifications.vue';
 import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-// import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
+import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -57,7 +57,7 @@ const Layouts = {
 /**
  * COMPOSABLES
  */
-// useWeb3Watchers();
+useWeb3Watchers();
 usePoolCreationWatcher();
 useGlobalQueryWatchers();
 useGnosisSafeApp();
