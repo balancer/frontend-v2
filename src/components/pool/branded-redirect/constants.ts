@@ -14,4 +14,11 @@ export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
     btnText: 'brandedRedirect.xave.btnText',
     link: 'https://app.xave.co/',
   },
+  gyro: {
+    id: 'xave',
+    title: 'brandedRedirect.gyro.title',
+    description: 'brandedRedirect.gyro.description',
+    btnText: 'brandedRedirect.gyro.btnText',
+    link: 'https://app.gyro.finance/',
+  },
 };

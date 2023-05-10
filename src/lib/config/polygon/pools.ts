@@ -268,6 +268,8 @@ const pools: Pools = {
   BrandedRedirect: {
     '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
       'xave',
+    '0xf0ad209e2e969eaaa8c882aac71f02d8a047d5c2000200000000000000000b49':
+      'gyro',
   },
 };
 
