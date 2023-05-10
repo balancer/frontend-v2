@@ -91,7 +91,7 @@ jobs:
 
   E2E:
     # Only run e2e tests, if Build job is successful
-    needs: Build
+    # needs: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
