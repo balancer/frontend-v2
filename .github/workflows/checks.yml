@@ -102,7 +102,7 @@ jobs:
       - name: Install deps
         run: npm install -g npm@8 && npm ci
       - name: Start app in background
-        run: npm run serve &
+        run: npm run dev &
       - name: Checkout Playwright app
         uses: actions/checkout@v3
         with:
@@ -126,6 +126,7 @@ jobs:
           SEED_PHRASE: ${{ secrets.TEST_WALLET_SECRET_WORDS }}
           # Pass the github token to Dappwright. https://github.com/TenKeyLabs/dappwright/issues/40
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PREVIEW_BASE_URL: http://localhost:8080
         run: npm run playwright:ci
         working-directory: ./e2e
       - name: Upload test artifacts
