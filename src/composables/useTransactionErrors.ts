@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 
 export function isUserRejected(error): boolean {
-  console.log('cause', error.cause);
   return (
     (error?.code && error.code === 4001) ||
     (error?.message && error.message.includes('user rejected transaction')) ||
