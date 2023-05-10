@@ -116,14 +116,14 @@ jobs:
         run: ls -la && npm ci
         working-directory: ./e2e
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps --with=chromium
         working-directory: ./e2e
       - name: Run Playwright tests
         env:
           SEED_PHRASE: ${{ secrets.TEST_WALLET_SECRET_WORDS }}
           # Pass the github token to Dappwright. https://github.com/TenKeyLabs/dappwright/issues/40
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PREVIEW_BASE_URL: http://localhost:8080
+          PREVIEW_BASE_URL: beta.balancer.fi
         run: npm run playwright:ci
         working-directory: ./e2e
       - name: Upload test artifacts
