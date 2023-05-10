@@ -35,6 +35,7 @@ const fillColor = computed(() => {
 </script>
 
 <template>
+  Test v1
   <div class="flex items-center sm:mr-4 app-logo">
     <svg
       id="logo"
