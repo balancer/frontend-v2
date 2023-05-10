@@ -115,6 +115,11 @@
       "title": "Xave Finance",
       "description": "Xave Finance  (pronounced \"Save Finance\") allows financial services companies (\"fintechs\") to leverage DeFi for real time remittance transfers and high yield consumer savings. Xave does this in a capital efficient way by building liquid FX markets via our custom FXPools integrated with the Balancer V2 Vault.",
       "btnText": "Manage liquidity on app.xave.co"
+    },
+    "gyro": {
+      "title": "Gyro Finance",
+      "description": "Gyroscope",
+      "btnText": "Manage liquidity on app.gyro.finance"
     }
   },
   "cancel": "Cancel",
