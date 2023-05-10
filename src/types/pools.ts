@@ -1,3 +1,5 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -9,19 +11,11 @@ export type FactoryType =
   | 'fx'
   | 'eulerLinear';
 
-export enum BoostedProtocol {
-  Aave = 'aave',
-  Euler = 'euler',
-  Yearn = 'yearn',
-  Gearbox = 'gearbox',
-  Sturdy = 'sturdy',
-}
-
 export type PoolMetadata = {
   name: string;
   hasIcon: boolean;
   boosted?: boolean;
-  boostedProtocol?: BoostedProtocol;
+  boostedProtocols?: BoostedProtocol[];
 };
 
 export type NamedPools = {

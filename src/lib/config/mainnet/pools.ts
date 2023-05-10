@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 const pools: Pools = {
@@ -268,6 +269,7 @@ const pools: Pools = {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
+      boosted: true,
     },
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
       name: 'Balancer Boosted Aave USD',
@@ -328,6 +330,8 @@ const pools: Pools = {
     '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504': {
       name: 'wstETH/Boosted Aave v3  WETH',
