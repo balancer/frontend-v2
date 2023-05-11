@@ -43,7 +43,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { blockNumber } = useWeb3();
+const { blockNumber, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
@@ -166,6 +166,7 @@ watch(blockNumber, () => {
     <BalActionSteps
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
+      :disabled="isMismatchedNetwork"
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />
