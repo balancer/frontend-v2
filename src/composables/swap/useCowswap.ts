@@ -143,11 +143,12 @@ export default function useCowswap({
   }
 
   async function swap(successCallback?: () => void) {
+    let quote;
     try {
       confirming.value = true;
       state.submissionError = null;
 
-      const quote = getQuote();
+      quote = getQuote();
 
       const unsignedOrder: UnsignedOrder = {
         sellToken: tokenInAddressInput.value,
@@ -240,7 +241,13 @@ export default function useCowswap({
       if (!isUserRejected(error)) {
         console.trace(error);
         state.submissionError = t('swapException', ['Cowswap']);
-        captureException(new Error(state.submissionError, { cause: error }));
+        captureException(new Error(state.submissionError, { cause: error }), {
+          level: 'fatal',
+          extra: {
+            sender: account.value,
+            quote,
+          },
+        });
       }
       confirming.value = false;
       throw error;
