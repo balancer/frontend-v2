@@ -13,12 +13,13 @@ const redirectData = computed(() => {
 });
 
 const hasBannerImage = computed<boolean>(() => {
-  return !!redirectData.value?.bannerPath;
+  return typeof redirectData.value?.buildBannerPath === 'function';
 });
 
 const bannerSrc = computed<string>(() => {
-  if (!hasBannerImage.value) return '';
-  return new URL(redirectData.value?.bannerPath || '', import.meta.url).href;
+  //@ts-ignore
+  if (hasBannerImage.value) return redirectData.value.buildBannerPath();
+  return '';
 });
 </script>
 
