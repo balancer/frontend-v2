@@ -4,7 +4,7 @@ interface BrandedRedirectData {
   description: string;
   btnText: string;
   link: string;
-  bannerPath?: string;
+  buildBannerPath?: () => string;
 }
 
 export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
@@ -14,7 +14,7 @@ export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
     description: 'brandedRedirect.xave.description',
     btnText: 'brandedRedirect.xave.btnText',
     link: 'https://app.xave.co/',
-    bannerPath: '/src/assets/images/branded-redirect-logos/xave.png',
+    buildBannerPath: buildXaveBannerPath,
   },
   gyro: {
     id: 'gyro',
@@ -24,3 +24,12 @@ export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
     link: 'https://app.gyro.finance/',
   },
 };
+
+export function buildXaveBannerPath(): string {
+  return new URL(
+    // https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
+    // Warning: Don't extract this string into a variable or it will stop working in production builds
+    '/src/assets/images/branded-redirect-logos/xave.png',
+    import.meta.url
+  ).href;
+}
