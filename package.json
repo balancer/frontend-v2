@@ -10,6 +10,7 @@
     "dev": "npm run generate:tokenlists && vite",
     "serve": "npm run dev",
     "build": "npm run generate:tokenlists && vite build",
+    "build:witChunkSizeCheck": "node ./scripts/buildWithChunkSizeCheck.mjs",
     "build:analyze": "BUILD_ANALIZE=true npm run build",
     "build:docker": "export NODE_OPTIONS=--max-old-space-size=8192 && npm run build",
     "build:withouttokenlists": "vite build",
