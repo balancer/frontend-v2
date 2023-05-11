@@ -2,7 +2,10 @@
 import { PoolsFallbackRepository } from '@balancer-labs/sdk';
 import { handleDependencyError } from '.';
 
-let _repository: typeof PoolsFallbackRepository | undefined;
+// Initializing this heavy dependency by default we avoid calling initPoolsFallbackRepository in initDependencies from main.ts
+// so that we avoid including in in the initial bundle
+// as it is only imported when used via getPoolsFallbackRepository
+let _repository: typeof PoolsFallbackRepository = PoolsFallbackRepository;
 
 /**
  * Uses the real PoolsFallbackRepository instance by default but allows injecting PoolsFallbackRepository mocks from tests
