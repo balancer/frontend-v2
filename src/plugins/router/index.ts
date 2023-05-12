@@ -184,8 +184,16 @@ export const router = createRouter({
   history: createWebHashHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      // Delaying the scroll to enforce that the route transition has finished (for example, when clicking a risk hash from the pool risks section)
+      // https://router.vuejs.org/guide/advanced/scroll-behavior.html#delaying-the-scroll
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve({ el: to.hash });
+        }, 250);
+      });
+    }
     if (savedPosition) return savedPosition;
-    if (to.hash) return { el: to.hash };
 
     return { x: 0, top: 0 };
   },

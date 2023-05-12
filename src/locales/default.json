@@ -1612,5 +1612,8 @@
   "inputLabels": {
     "tokenOut": "Token out",
     "tokenIn": "Token in"
+  },
+  "poolRisks": {
+    "title": "Pool risks"
   }
 }
