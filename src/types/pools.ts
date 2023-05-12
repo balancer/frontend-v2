@@ -1,3 +1,5 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -11,8 +13,10 @@ export type FactoryType =
   | 'gyroE';
 
 export type PoolMetadata = {
-  name: string;
-  hasIcon: boolean;
+  name?: string;
+  hasIcon?: boolean;
+  boosted?: boolean;
+  boostedProtocols?: BoostedProtocol[];
 };
 
 export type NamedPools = {

@@ -25,6 +25,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useVotingGauges from '@/composables/useVotingGauges';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { ApprovalAction } from '@/composables/approvals/types';
+import { captureException } from '@sentry/browser';
 
 /**
  * TYPES
@@ -182,6 +183,17 @@ async function submit(lockType: LockType, actionIndex: number) {
     return tx;
   } catch (error) {
     console.error(error);
+
+    // An exception is already logged in balancerContractsService, but we should
+    // log another here in case any exceptions are thrown before it's sent
+    captureException(error, {
+      level: 'fatal',
+      extra: {
+        lockType,
+        props,
+      },
+    });
+
     return Promise.reject(error);
   }
 }
