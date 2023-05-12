@@ -73,7 +73,7 @@ export class RawConcern extends TransactionConcern {
         sender,
         simulate,
         options,
-        originalError: error.data?.originalError,
+        originalError: error?.data?.originalError,
       },
     });
   }
