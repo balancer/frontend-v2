@@ -1,5 +1,7 @@
+# Bumps the package version with a patch if the version wasn't already updated
+# - This is skipped if there is already a version bump in the merged PR
 # Tags each push to master with version in package.json if not already a tag.
-name: Tag
+name: BumpTag
 
 on:
   push:
@@ -11,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: 'phips28/gh-action-bump-version@v9.1.3'
+      with:
+        commit-message: '{{version}}'
     - uses: Klemensas/action-autotag@stable
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
