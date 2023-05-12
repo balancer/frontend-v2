@@ -3,6 +3,9 @@ import { Pools } from '@/types/pools';
 export const poolIdThatRequiresInternalBalanceExit =
   '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
 
+export const boostedPoolId =
+  '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f';
+
 const pools: Pools = {
   IdsMap: {
     staBAL:
@@ -82,9 +85,10 @@ const pools: Pools = {
     ],
   },
   Metadata: {
-    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f': {
+    [boostedPoolId]: {
       name: 'Balancer Boosted Aave USD',
       hasIcon: false,
+      boosted: true,
     },
   },
   Deep: [

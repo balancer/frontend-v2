@@ -21,6 +21,7 @@ const width = 25 + (iconURIs.length - 1) * 16;
 
 <template>
   <div
+    data-testid="boosted-chip"
     class="flex relative items-center py-1 px-2 max-h-10 bg-gradient-to-tr from-yellow-500 to-pink-500 rounded-lg"
   >
     <BalAssetSet
