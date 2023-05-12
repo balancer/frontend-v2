@@ -5,6 +5,7 @@ import {
   isPolygon,
 } from '@/composables/useNetwork';
 import {
+  isBoosted,
   isComposableStable,
   isMetaStable,
   isStable,
@@ -23,14 +24,6 @@ function aLink(title: string, hash: string) {
     title,
     hash,
   };
-}
-
-// TODO: Get boosted pool helper
-function isBoostedPool(pool) {
-  return (
-    pool.id ===
-    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f'
-  );
 }
 
 // Pool type risks
@@ -62,8 +55,7 @@ export function riskLinks(pool: Pool) {
   if (isStable(pool.poolType)) result.push(stableRisks);
   if (isComposableStable(pool.poolType)) result.push(composableRisks);
   if (isMetaStable(pool.poolType)) result.push(metaStableRisks);
-  // TODO!!
-  if (isBoostedPool(pool)) result.push(boostedRisks);
+  if (isBoosted(pool)) result.push(boostedRisks);
 
   if (isArbitrum.value) result.push(arbitrumRisks);
   if (isOptimism.value) result.push(optimismRisks);

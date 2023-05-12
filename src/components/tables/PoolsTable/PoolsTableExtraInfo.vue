@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { isLiquidityBootstrapping } from '@/composables/usePoolHelpers';
+import {
+  isLiquidityBootstrapping,
+  isBoosted,
+} from '@/composables/usePoolHelpers';
 import { poolMetadata } from '@/lib/config/metadata';
 import { Pool } from '@/services/pool/types';
 import { PoolMetadata } from '@/types/pools';
@@ -16,11 +19,7 @@ defineProps<Props>();
 
 <template>
   <div>
-    <BalTooltip
-      v-if="poolMetadata(pool.id)?.boosted"
-      :text="$t('boostedTooltip')"
-      width="56"
-    >
+    <BalTooltip v-if="isBoosted(pool)" :text="$t('boostedTooltip')" width="56">
       <template #activator>
         <BoostedChip
           :metadata="poolMetadata(pool.id) as PoolMetadata"
