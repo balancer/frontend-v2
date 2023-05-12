@@ -57,7 +57,7 @@ withDefaults(defineProps<Props>(), {
   @apply flex;
   @apply relative;
   @apply my-1;
-  @apply h-10 items-center;
+  @apply max-h-10 items-center;
 }
 
 .pill::before {

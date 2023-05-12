@@ -1,6 +1,6 @@
 {
   "name": "@balancer/frontend-v2",
-  "version": "1.100.13",
+  "version": "1.100.20",
   "engines": {
     "node": "=16",
     "npm": ">=8"
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
-    "@balancer-labs/sdk": "^1.0.6-beta.0",
+    "@balancer-labs/sdk": "^1.0.6-beta.1",
     "@balancer-labs/typechain": "^1.0.0",
     "@cowprotocol/contracts": "^1.3.1",
     "@ensdomains/content-hash": "^2.5.3",
