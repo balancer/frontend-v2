@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 const pools: Pools = {
@@ -115,26 +116,38 @@ const pools: Pools = {
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
       name: 'Balancer Boosted Reaper Granary USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Reaper],
     },
     '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
       name: 'rETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413': {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412': {
       name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
       name: 'wstETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
   },
   Deep: [

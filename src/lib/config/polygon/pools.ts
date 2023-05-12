@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 const pools: Pools = {
@@ -191,30 +192,44 @@ const pools: Pools = {
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
       name: 'Balancer Boosted Tetu USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Tetu],
     },
     '0x71bd10c2a590b5858f5576550c163976a48af906000000000000000000000b27': {
       name: 'Balancer Boosted Tetu MATIC',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Tetu],
     },
     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
       name: 'stMATIC/Boosted Aave v3 WMATIC',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
       name: 'maticX/Boosted Aave v3 WMATIC',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38': {
       name: 'wstETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
       name: 'frxETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
   },
   Deep: [
