@@ -131,6 +131,7 @@ export class ContractConcern extends TransactionConcern {
         action,
         sender,
         simulate,
+        originalError: error?.data?.originalError,
       },
     });
   }
