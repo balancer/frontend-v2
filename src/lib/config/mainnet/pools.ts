@@ -381,6 +381,7 @@ const pools: Pools = {
     '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e', // sweth/bb-a-weth
     '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e', // bb-a-weth / qeth
     '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // cbeth / bb-a-weth
+    '0x3035917be42af437cbdd774be26b9ec90a2bd677000200000000000000000543', // inst / bb-inst-weth
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
