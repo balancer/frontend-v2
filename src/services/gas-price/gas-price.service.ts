@@ -13,8 +13,6 @@ import { JsonRpcSigner, TransactionRequest } from '@ethersproject/providers';
 import ArbitrumProvider from './providers/arbitrum.provider';
 import GnosisProvider from './providers/gnosis.provider';
 
-const USE_BLOCKNATIVE_GAS_PLATFORM =
-  import.meta.env.VITE_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 export const GAS_LIMIT_BUFFER = 0.1;
 
 export class GasPriceService {
@@ -43,20 +41,12 @@ export class GasPriceService {
 
   public async settings(
     signer: JsonRpcSigner,
-    options: TransactionRequest,
-    forceLegacyTxType = false
+    options: TransactionRequest
   ): Promise<GasSettings> {
-    let gasSettings: GasSettings = {};
+    const gasSettings: GasSettings = {};
 
     const gasLimit = await signer.estimateGas(options);
     gasSettings.gasLimit = this.formatGasLimit(gasLimit.toNumber());
-
-    if (this.shouldSetGasPriceSettings(options)) {
-      gasSettings = await this.setGasPriceSettings(
-        gasSettings,
-        forceLegacyTxType
-      );
-    }
 
     return gasSettings;
   }
@@ -65,10 +55,9 @@ export class GasPriceService {
     contractWithSigner: Contract,
     action: string,
     params: any[],
-    options: Record<string, any>,
-    forceLegacyTxType = false
+    options: Record<string, any>
   ): Promise<GasSettings> {
-    let gasSettings: GasSettings = {};
+    const gasSettings: GasSettings = {};
 
     const gasLimit = await contractWithSigner.estimateGas[action](
       ...params,
@@ -76,27 +65,11 @@ export class GasPriceService {
     );
     gasSettings.gasLimit = this.formatGasLimit(gasLimit.toNumber());
 
-    if (this.shouldSetGasPriceSettings(options)) {
-      gasSettings = await this.setGasPriceSettings(
-        gasSettings,
-        forceLegacyTxType
-      );
-    }
-
     return gasSettings;
   }
 
   private formatGasLimit(limit: number): number {
     return Math.floor(limit * (1 + GAS_LIMIT_BUFFER));
-  }
-
-  private shouldSetGasPriceSettings(options: Record<string, any>): boolean {
-    return (
-      USE_BLOCKNATIVE_GAS_PLATFORM &&
-      options.gasPrice == null &&
-      options.maxFeePerGas == null &&
-      options.maxPriorityFeePerGas == null
-    );
   }
 
   private async setGasPriceSettings(
