@@ -69,6 +69,9 @@ export class RawConcern extends TransactionConcern {
     const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?contractAddress=${options.to}&rawFunctionInput=${options.data}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&network=${chainId}`;
     captureException(error, {
       level: 'fatal',
+      tags: {
+        simulate,
+      },
       extra: {
         sender,
         simulate,
