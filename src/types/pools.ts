@@ -12,8 +12,8 @@ export type FactoryType =
   | 'eulerLinear';
 
 export type PoolMetadata = {
-  name: string;
-  hasIcon: boolean;
+  name?: string;
+  hasIcon?: boolean;
   boosted?: boolean;
   boostedProtocols?: BoostedProtocol[];
 };

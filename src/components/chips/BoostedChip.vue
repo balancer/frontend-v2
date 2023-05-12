@@ -15,6 +15,8 @@ const iconURIs = boostedProtocols.map(
 );
 
 const hasIcons = boostedProtocols.length > 0;
+
+const width = 25 + (iconURIs.length - 1) * 16;
 </script>
 
 <template>
@@ -24,9 +26,9 @@ const hasIcons = boostedProtocols.length > 0;
     <BalAssetSet
       v-if="hasIcons"
       :logoURIs="iconURIs"
-      class="mr-1"
-      :width="25"
-      :size="18"
+      :width="width"
+      :size="20"
+      :ringSize="1"
     />
     <span class="text-sm font-bold text-white">{{ $t('boosted') }}</span>
   </div>

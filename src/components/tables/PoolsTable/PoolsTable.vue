@@ -320,7 +320,7 @@ function iconAddresses(pool: Pool) {
         </div>
       </template>
       <template #poolNameCell="pool">
-        <div v-if="!isLoading" class="flex py-4 px-6">
+        <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <div
             v-if="poolMetadata(pool.id)?.name"
             class="flex flex-wrap items-center"
@@ -328,11 +328,6 @@ function iconAddresses(pool: Pool) {
             <div class="whitespace-nowrap">
               {{ poolMetadata(pool.id)?.name }}
             </div>
-            <BoostedChip
-              v-if="poolMetadata(pool.id)?.boosted"
-              :metadata="poolMetadata(pool.id) as PoolMetadata"
-              class="ml-4"
-            />
           </div>
           <div v-else>
             <TokenPills
@@ -341,17 +336,30 @@ function iconAddresses(pool: Pool) {
               :selectedTokens="selectedTokens"
               :pickedTokens="selectedTokens"
             />
-            <BoostedChip
-              v-if="poolMetadata(pool.id)?.boosted"
-              :metadata="poolMetadata(pool.id) as PoolMetadata"
-            />
           </div>
-          <BalChip
-            v-if="isLiquidityBootstrapping(pool.poolType)"
-            label="LBP"
-            color="amber"
-          />
-          <BalChipNew v-else-if="pool?.isNew" class="mt-1" />
+          <div>
+            <BalTooltip
+              v-if="poolMetadata(pool.id)?.boosted"
+              :text="$t('boostedTooltip')"
+              width="56"
+            >
+              <template #activator>
+                <BoostedChip
+                  :metadata="poolMetadata(pool.id) as PoolMetadata"
+                  class="ml-4"
+                />
+              </template>
+            </BalTooltip>
+
+            <BalChip
+              v-if="isLiquidityBootstrapping(pool.poolType)"
+              label="LBP"
+              color="amber"
+              class="font-medium"
+            />
+            <BalChipNew v-else-if="pool?.isNew" />
+          </div>
+
           <PoolWarningTooltip :pool="pool" />
         </div>
       </template>
