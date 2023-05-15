@@ -23,7 +23,7 @@ export class RawConcern extends TransactionConcern {
     console.log('sendTransaction', options);
 
     try {
-      const gasSettings = await this.gasPrice.settings(this.signer, options);
+      const gasSettings = await this.gas.settings(this.signer, options);
 
       const txOptions = { ...options, ...gasSettings };
 
@@ -45,7 +45,7 @@ export class RawConcern extends TransactionConcern {
   }
 
   public async call(options: TransactionRequest): Promise<string> {
-    const gasSettings = await this.gasPrice.settings(this.signer, options);
+    const gasSettings = await this.gas.settings(this.signer, options);
     options = { ...options, ...gasSettings };
 
     return await this.signer.call(options);

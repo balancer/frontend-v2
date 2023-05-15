@@ -1,8 +1,4 @@
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import {
-  GasPriceService,
-  gasPriceService,
-} from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
@@ -26,7 +22,7 @@ export enum ExitHandler {
   Recovery = 'Recovery',
 }
 
-type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];
+type HandlerParams = [Ref<Pool>, BalancerSDK];
 
 /**
  * ExitPoolService acts as an adapter to underlying handlers based on the pool
@@ -42,12 +38,10 @@ export class ExitPoolService {
    *
    * @param {Pool} pool - The pool you want to exit.
    * @param {BalancerSDK} sdk - Balancers SDK.
-   * @param {GasPriceService} gasPriceServ - Gas price service for fetching gas price.
    */
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk = getBalancerSDK(),
-    public readonly gasPriceServ = gasPriceService
+    public readonly sdk = getBalancerSDK()
   ) {
     this.exitHandler = this.setExitHandler(ExitHandler.Generalised);
   }
@@ -59,8 +53,8 @@ export class ExitPoolService {
    * @returns {ExitPoolHandler} The ExitPoolHandler class to be used.
    */
   setExitHandler(type: ExitHandler): ExitPoolHandler {
-    const { pool, sdk, gasPriceServ } = this;
-    const handlerParams: HandlerParams = [pool, sdk, gasPriceServ];
+    const { pool, sdk } = this;
+    const handlerParams: HandlerParams = [pool, sdk];
 
     switch (type) {
       case ExitHandler.Swap:

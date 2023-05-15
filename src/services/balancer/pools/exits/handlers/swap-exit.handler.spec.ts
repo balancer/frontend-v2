@@ -6,11 +6,9 @@ import {
 } from '@/dependencies/EthersContract.mocks';
 import { Web3ProviderMock } from '@/dependencies/wallets/wallet-connector-mocks';
 import { vaultService } from '@/services/contracts/vault.service';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { buildExitParams } from '@tests/unit/builders/join-exit.builders';
-import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ref } from 'vue';
 import { ExitType } from './exit-pool.handler';
 import { SwapExitHandler } from './swap-exit.handler';
@@ -18,11 +16,8 @@ import { SwapExitHandler } from './swap-exit.handler';
 initBalancerSdkWithDefaultMocks();
 initEthersContractWithDefaultMocks();
 
-const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
-  mockDeep<GasPriceService>();
-
 async function mountSwapExitHandler(pool: Pool) {
-  return new SwapExitHandler(ref(pool), getBalancerSDK(), gasPriceServiceMock);
+  return new SwapExitHandler(ref(pool), getBalancerSDK());
 }
 
 const exitParams = buildExitParams({
