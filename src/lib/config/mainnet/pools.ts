@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 const pools: Pools = {
@@ -273,14 +274,20 @@ const pools: Pools = {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f': {
       name: 'Balancer Boosted Euler USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
@@ -293,62 +300,92 @@ const pools: Pools = {
     '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
       name: 'Balancer Idle JuniorBY Boosted StablePool',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Idle],
     },
     '0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499': {
       name: 'Balancer Boosted Yearn USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Yearn],
     },
     '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a': {
       name: 'Balancer Boosted Gearbox USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Gearbox],
     },
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476': {
       name: 'Euler Boosted USD/DOLA',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488': {
       name: 'Euler Boosted USD/TUSD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474': {
       name: 'Euler Boosted USD/rETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475': {
       name: 'Euler Boosted USD/TEMPLE',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473': {
       name: 'Euler Boosted USD/wstETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7': {
       name: 'Balancer Boosted Sturdy USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Sturdy],
     },
     '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db': {
       name: 'Balancer Boosted Morpho-Aave USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Morpho, BoostedProtocol.Aave],
     },
     '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504': {
       name: 'wstETH/Boosted Aave v3  WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505': {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e': {
       name: 'qETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e': {
       name: 'swETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
   },
   Deep: [

@@ -18,6 +18,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -45,6 +46,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isStakablePool } = usePoolStaking();
+const { isMismatchedNetwork } = useWeb3();
 const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const {
   rektPriceImpact,
@@ -136,7 +138,7 @@ async function submit(): Promise<TransactionResponse> {
     <BalActionSteps
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
-      :disabled="rektPriceImpact"
+      :disabled="rektPriceImpact || isMismatchedNetwork"
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />

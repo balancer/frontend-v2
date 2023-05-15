@@ -105,6 +105,8 @@
   "browserWallet": "Browser Wallet",
   "bugBounty": "Bug bounty",
   "builtOnBalancer": "Built on Balancer protocol",
+  "boosted": "Boosted",
+  "boostedTooltip": "This pool has a Boosted Pool component. In addition to accumulating swap fees, Boosted pools also generate yield for LPs by lending excess liquidity to other yield generating DeFi protocols.",
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",

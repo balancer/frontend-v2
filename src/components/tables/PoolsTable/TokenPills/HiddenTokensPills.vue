@@ -53,7 +53,7 @@ withDefaults(defineProps<Props>(), {
 
 <style scoped>
 .pill {
-  @apply px-2 py-1;
+  @apply px-2 py-1 max-h-10;
   @apply rounded-lg;
   @apply bg-gray-50 dark:bg-gray-600 text-gray-600 dark:text-gray-400;
   @apply text-sm;

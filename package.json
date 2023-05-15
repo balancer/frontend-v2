@@ -1,6 +1,6 @@
 {
   "name": "@balancer/frontend-v2",
-  "version": "1.100.21",
+  "version": "1.101.0",
   "engines": {
     "node": "=16",
     "npm": ">=8"
@@ -10,6 +10,7 @@
     "dev": "npm run generate:tokenlists && vite",
     "serve": "npm run dev",
     "build": "npm run generate:tokenlists && vite build",
+    "build:witChunkSizeCheck": "node ./scripts/buildWithChunkSizeCheck.mjs",
     "build:analyze": "BUILD_ANALIZE=true npm run build",
     "build:docker": "export NODE_OPTIONS=--max-old-space-size=8192 && npm run build",
     "build:withouttokenlists": "vite build",
@@ -86,7 +87,9 @@
     "@vitest/coverage-c8": "^0.30.1",
     "@vue/test-utils": "^2.3.2",
     "@vueuse/core": "^4.3.4",
-    "@walletconnect/web3-provider": "^1.5.2",
+    "@walletconnect/client": "^1.8.0",
+    "@walletconnect/http-connection": "^1.8.0",
+    "@walletconnect/qrcode-modal": "^1.8.0",
     "animejs": "^3.2.1",
     "autoprefixer": "^10.4.13",
     "axios": "0.21.2",
@@ -153,6 +156,7 @@
     "vue3-virtual-scroller": "^0.2.1",
     "wait-for-expect": "^3.0.2",
     "walletlink": "^2.1.5",
+    "web3-provider-engine": "^16.0.5",
     "web3-utils": "^1.3.1",
     "worker-loader": "^3.0.8"
   },

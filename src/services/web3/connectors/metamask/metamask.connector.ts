@@ -2,6 +2,25 @@ import { WalletError } from '@/types';
 
 import { Connector, ConnectorId } from '../connector';
 
+type NonMetaMaskFlag =
+  | 'isRabby'
+  | 'isBraveWallet'
+  | 'isTrustWallet'
+  | 'isLedgerConnect';
+
+const allNonMetamaskFlags: NonMetaMaskFlag[] = [
+  'isRabby',
+  'isBraveWallet',
+  'isTrustWallet',
+  'isLedgerConnect',
+];
+
+export const getIsMetaMaskWallet = () =>
+  Boolean(
+    window.ethereum?.isMetaMask &&
+      !allNonMetamaskFlags.some(flag => window.ethereum?.[flag])
+  );
+
 export function getInjectedProvider() {
   const ethereum: any = window.ethereum;
   let provider = ethereum || (window as any).web3?.currentProvider;
