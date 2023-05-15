@@ -139,7 +139,7 @@ export default defineConfig(({ mode }) => {
           rollupPolyfillNode(),
         ],
       },
-      chunkSizeWarningLimit: 750,
+      chunkSizeWarningLimit: 1500, // 750 once we fix @walletconnect/web3-provider issue
       commonjsOptions: {
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
