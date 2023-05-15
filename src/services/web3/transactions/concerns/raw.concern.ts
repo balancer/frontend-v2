@@ -29,6 +29,7 @@ export class RawConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
+
       const txOptions = { ...options, ...gasSettings };
 
       await Promise.all([
@@ -62,10 +63,18 @@ export class RawConcern extends TransactionConcern {
     error: WalletError
   ): Promise<void> {
     const sender = await this.signer.getAddress();
-    captureException(`Failed raw transaction:
-      Sender: ${sender}
-      options: ${options}
-      error: ${error}
-    `);
+    const chainId = await this.signer.getChainId();
+    const block = await this.signer.provider.getBlockNumber();
+    const msgValue = options.value ? options.value.toString() : 0;
+    const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?contractAddress=${options.to}&rawFunctionInput=${options.data}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&network=${chainId}`;
+    captureException(error, {
+      level: 'fatal',
+      extra: {
+        sender,
+        simulate,
+        options,
+        originalError: error?.data?.originalError,
+      },
+    });
   }
 }

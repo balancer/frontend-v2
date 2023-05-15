@@ -20,7 +20,7 @@ export interface UserSettingsState {
  */
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
 const lsSlippage = lsGet(LS_KEYS.App.SwapSlippage, '0.005'); // Defaults to 0.5%
-const lsSupportSignatures = lsGet(LS_KEYS.App.SupportSignatures, true);
+const lsSupportSignatures = lsGet(LS_KEYS.App.SupportSignatures, 'true');
 
 /**
  * STATE
@@ -28,7 +28,7 @@ const lsSupportSignatures = lsGet(LS_KEYS.App.SupportSignatures, true);
 const state: UserSettingsState = reactive({
   currency: lsCurrency,
   slippage: lsSlippage,
-  supportSignatures: lsSupportSignatures,
+  supportSignatures: lsSupportSignatures === 'true',
 });
 
 /**
@@ -53,7 +53,7 @@ function setSlippage(newSlippage: string): void {
 }
 
 function setSupportSignatures(newValue: boolean): void {
-  lsSet(LS_KEYS.App.SupportSignatures, newValue);
+  lsSet(LS_KEYS.App.SupportSignatures, `${newValue}`);
   state.supportSignatures = newValue;
 }
 

@@ -1,9 +1,11 @@
+import { initMulticallWithDefaultMocks } from '@/dependencies/multicall.mocks';
 import { initPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import {
   defaultPool1,
   defaultPool2,
   initPoolsFallbackRepositoryWithDefaultMocks,
 } from '@/dependencies/PoolsFallbackRepository.mocks';
+import { initRpcProviderServiceWithDefaultMocks } from '@/dependencies/rpc-provider.service.mocks';
 import {
   mountComposableWithFakeTokensProvider as mountComposable,
   waitForQueryData,
@@ -12,6 +14,8 @@ import { anAprBreakdown } from '@tests/unit/builders/sdk-pool.builders';
 import usePoolsQuery from './usePoolsQuery';
 
 initPoolsFallbackRepositoryWithDefaultMocks();
+initMulticallWithDefaultMocks();
+initRpcProviderServiceWithDefaultMocks();
 
 async function mountPoolsQuery(poolsSortField = '') {
   const filterTokens = ref([]);

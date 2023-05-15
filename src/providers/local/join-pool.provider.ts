@@ -4,9 +4,10 @@ import useRelayerApproval, {
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
+  joinTokens,
   fiatValueOf,
   isDeep,
-  tokenTreeNodes,
+  isStableLike,
 } from '@/composables/usePoolHelpers';
 import { useTxState } from '@/composables/useTxState';
 import {
@@ -16,10 +17,13 @@ import {
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, removeAddress } from '@/lib/utils';
+import { bnSum, bnum, isSameAddress } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { useTokens } from '@/providers/tokens.provider';
-import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
+import {
+  JoinHandler,
+  JoinPoolService,
+} from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -104,7 +108,9 @@ export const joinPoolProvider = (
   /**
    * COMPOSABLES
    */
-  const { getTokens, injectTokens, priceFor } = useTokens();
+  const { getTokens, injectTokens, priceFor, nativeAsset, wrappedNativeAsset } =
+    useTokens();
+
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -120,16 +126,8 @@ export const joinPoolProvider = (
    */
   const isDeepPool = computed((): boolean => isDeep(pool.value));
 
-  // All tokens in the pool token tree that can be used in join functions.
-  const joinTokens = computed((): string[] => {
-    let addresses: string[] = [];
-
-    addresses = isDeepPool.value
-      ? tokenTreeNodes(pool.value.tokens)
-      : pool.value.tokensList;
-
-    return removeAddress(pool.value.address, addresses);
-  });
+  // List of token addresses that can be used to join the pool.
+  const poolJoinTokens = computed((): string[] => joinTokens(pool.value));
 
   // Token meta data for amountsIn tokens.
   const tokensIn = computed((): TokenInfoMap => {
@@ -184,7 +182,7 @@ export const joinPoolProvider = (
     return bnSum(fiatValuesIn).toString();
   });
 
-  // Calculates estimated fiatValueOut using pool's totalLiquity.
+  // Calculates estimated fiatValueOut using pool's totalLiquidity.
   // Could be inaccurate if total liquidity has come from subgraph.
   const fiatValueOut = computed((): string =>
     fiatValueOf(pool.value, bptOut.value)
@@ -201,9 +199,11 @@ export const joinPoolProvider = (
   const tokensToApprove = computed(() => {
     return amountsIn.value.map(amountIn => amountIn.address);
   });
+
   const amountsToApprove = computed(() => {
     return amountsIn.value.map(amountIn => amountIn.value);
   });
+
   const { getTokenApprovalActions } = useTokenApprovalActions(
     tokensToApprove,
     amountsToApprove
@@ -215,6 +215,20 @@ export const joinPoolProvider = (
 
   const queryError = computed(
     (): string | undefined => queryJoinQuery.error.value?.message
+  );
+
+  const joinHandlerType = computed((): JoinHandler => {
+    if (isDeepPool.value) {
+      if (isSingleAssetJoin.value) {
+        return JoinHandler.Swap;
+      }
+      return JoinHandler.Generalised;
+    }
+    return JoinHandler.ExactIn;
+  });
+
+  const supportsProportionalOptimization = computed(
+    (): boolean => !isStableLike(pool.value.poolType)
   );
 
   /**
@@ -280,9 +294,10 @@ export const joinPoolProvider = (
     }
 
     try {
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+      joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
 
+      console.log('joinHandler:', joinHandlerType.value);
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
@@ -298,7 +313,7 @@ export const joinPoolProvider = (
 
       return output;
     } catch (error) {
-      captureException(error);
+      logJoinException(error as Error);
       throwQueryError('Failed to construct join.', error);
     }
   }
@@ -309,10 +324,12 @@ export const joinPoolProvider = (
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
-      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+
+      joinPoolService.setJoinHandler(joinHandlerType.value);
       setApprovalActions();
 
-      return joinPoolService.join({
+      console.log('joinHandler:', joinHandlerType.value);
+      const joinRes = await joinPoolService.join({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
         signer: getSigner(),
@@ -321,14 +338,58 @@ export const joinPoolProvider = (
         approvalActions: approvalActions.value,
         transactionDeadline: transactionDeadline.value,
       });
+
+      return joinRes;
     } catch (error) {
+      console.log(error);
+      logJoinException(error as Error);
       txError.value = (error as Error).message;
-      throw new Error('Failed to submit join transaction.', { cause: error });
+      throw error;
     }
   }
 
   function setIsSingleAssetJoin(value: boolean) {
     isSingleAssetJoin.value = value;
+  }
+
+  /**
+   * Swap the native token address to wrapped token address
+   * or vice versa
+   */
+  function setJoinWithNativeAsset(joinWithNativeAsset: boolean): void {
+    const newAddress = joinWithNativeAsset
+      ? nativeAsset.address
+      : wrappedNativeAsset.value.address;
+
+    const prevAddress = joinWithNativeAsset
+      ? wrappedNativeAsset.value.address
+      : nativeAsset.address;
+
+    const amountIn = amountsIn.value.find(item =>
+      isSameAddress(prevAddress, item.address)
+    );
+    if (amountIn) {
+      amountIn.address = newAddress;
+    }
+  }
+
+  async function logJoinException(error: Error) {
+    const sender = await getSigner().getAddress();
+    captureException(error, {
+      level: 'fatal',
+      extra: {
+        joinHandler: joinHandlerType.value,
+        params: {
+          amountsIn: amountsInWithValue.value,
+          tokensIn: tokensIn.value,
+          signer: sender,
+          slippageBsp: slippageBsp.value,
+          relayerSignature: relayerSignature.value,
+          approvalActions: approvalActions.value,
+          transactionDeadline: transactionDeadline.value,
+        },
+      },
+    });
   }
 
   /**
@@ -338,18 +399,21 @@ export const joinPoolProvider = (
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
   // setJoinHandler on the joinPoolService to update the join handler.
-  watch(isSingleAssetJoin, newVal => {
+  watch(isSingleAssetJoin, () => {
     resetQueryJoinState();
-    joinPoolService.setJoinHandler(newVal);
+    joinPoolService.setJoinHandler(joinHandlerType.value);
   });
+
+  // relayerApprovalAction can change if the user changes their useSignatures setting.
+  watch(relayerApprovalAction, () => setApprovalActions());
 
   /**
    * LIFECYCLE
    */
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
-    // refactoted probably won't be required.
-    injectTokens(joinTokens.value);
+    // refactored probably won't be required.
+    injectTokens(poolJoinTokens.value);
   });
 
   onMounted(() => (isMounted.value = true));
@@ -366,9 +430,9 @@ export const joinPoolProvider = (
     txError: readonly(txError),
 
     //  Computed
+    poolJoinTokens,
     isLoadingQuery,
     queryError,
-    joinTokens,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,
@@ -379,6 +443,8 @@ export const joinPoolProvider = (
     txInProgress,
     approvalActions,
     missingPricesIn,
+    tokensIn,
+    supportsProportionalOptimization,
 
     // Methods
     setAmountsIn,
@@ -387,6 +453,7 @@ export const joinPoolProvider = (
     join,
     resetTxState,
     setIsSingleAssetJoin,
+    setJoinWithNativeAsset,
 
     // queries
     queryJoinQuery,
@@ -398,7 +465,7 @@ export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
   Symbol(symbolKeys.Providers.JoinPool);
 
 export function provideJoinPool(pool: Ref<Pool>) {
-  const joinPoolResponse = isDeep(pool.value) ? joinPoolProvider(pool) : {};
+  const joinPoolResponse = joinPoolProvider(pool);
   provide(JoinPoolProviderSymbol, joinPoolResponse);
   return joinPoolResponse;
 }

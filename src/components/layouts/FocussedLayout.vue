@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import useAlerts from '@/composables/useAlerts';
 import { useReturnRoute } from '@/composables/useReturnRoute';
+import AppNavAlert from '@/components/navs/AppNav/AppNavAlert.vue';
 
 const { getReturnRoute } = useReturnRoute();
+const { currentAlert } = useAlerts();
 </script>
 <template>
+  <AppNavAlert v-if="currentAlert" :alert="currentAlert" />
   <div class="pb-16">
     <div class="mb-12 layout-header">
       <div />
@@ -11,11 +15,7 @@ const { getReturnRoute } = useReturnRoute();
         <BalIcon name="x" size="lg" />
       </BalBtn>
     </div>
-    <router-view v-slot="{ Component }" :key="$route.path">
-      <transition appear name="appear">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+    <slot />
   </div>
 </template>
 

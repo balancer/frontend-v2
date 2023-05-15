@@ -96,6 +96,12 @@ module.exports = {
             message:
               'Please import from src/dependencies to make this dependency more testable',
           },
+          {
+            group: ['@balancer-labs/sdk'],
+            importNames: ['Network'],
+            message:
+              'Please import Network from @/lib/config to avoid adding SDK to bundle',
+          },
         ],
       },
     ],

@@ -65,7 +65,7 @@ const fiatValueOfUnstakedShares = computed(() => {
 
 const isStakeDisabled = computed(() => {
   return (
-    deprecatedDetails(props.pool.id)?.stakingDisabled ||
+    !!deprecatedDetails(props.pool.id) ||
     fiatValueOfUnstakedShares.value === '0' ||
     hasNonPrefGaugeBalance.value
   );
@@ -173,15 +173,31 @@ function handlePreviewClose() {
                     <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                   </BalStack>
                 </BalStack>
-                <BalBtn
+                <BalStack
                   v-if="hasNonPrefGaugeBalance && !isAffected"
-                  :color="'gradient'"
+                  horizontal
+                  spacing="sm"
                   class="mt-2"
-                  size="sm"
-                  @click="emit('setRestakeVisibility', true)"
                 >
-                  {{ $t('restake') }}
-                </BalBtn>
+                  <BalBtn
+                    color="gradient"
+                    size="sm"
+                    @click="emit('setRestakeVisibility', true)"
+                  >
+                    {{ $t('restake') }}
+                  </BalBtn>
+
+                  <BalBtn
+                    outline
+                    color="blue"
+                    size="sm"
+                    :disabled="fiatValueOfStakedShares === '0'"
+                    @click="showUnstakePreview"
+                  >
+                    {{ $t('unstake') }}
+                  </BalBtn>
+                </BalStack>
+
                 <BalStack v-else horizontal spacing="sm" class="mt-2">
                   <BalBtn
                     color="gradient"

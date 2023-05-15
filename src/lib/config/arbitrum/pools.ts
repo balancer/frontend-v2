@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 const pools: Pools = {
@@ -40,6 +41,7 @@ const pools: Pools = {
       '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd', // bb-a-eth / reth
       '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a', // bb-a-usd aave v3
       '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400', // wsteth / bb-a-weth
+      '0x161cd105034ac000d2aad75f06c26e943130bc0e000200000000000000000426', // nfte/weth
     ],
   },
   Investment: {
@@ -53,6 +55,12 @@ const pools: Pools = {
       '0xce34c867d7053befb3421d6adabcb5ce55ff777b00010000000000000000041b', // crv/wbtc/wsteth/gdai/uni/link
       '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/bb-a-usd
       '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
+      '0x3efd3e18504dc213188ed2b694f886a305a6e5ed00020000000000000000041d', // peg/weth
+      '0x89dc7e71e362faf88d92288fe2311d25c6a1b5e0000200000000000000000423', // ohm/weth
+      '0xce6195089b302633ed60f3f427d1380f6a2bfbc7000200000000000000000424', // ohm/usdc
+      '0xc69771058481551261709d8db44977e9afde645000010000000000000000042a', // wbtc/wsteth-bb-a-weth/bb-a-usd
+      '0x49f3040f6e4dc7ff8fd85502bc40877311ff13d700020000000000000000042b', // dfx/weth
+      '0x161cd105034ac000d2aad75f06c26e943130bc0e000200000000000000000426', // nfte/weth
     ],
   },
   Factories: {
@@ -103,6 +111,7 @@ const pools: Pools = {
       '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400',
       '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413',
       '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412',
+      '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
     ],
     AllowList: [],
   },
@@ -110,18 +119,38 @@ const pools: Pools = {
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
       name: 'Balancer Boosted Reaper Granary USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Reaper],
     },
     '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
       name: 'rETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413': {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412': {
       name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
+      name: 'wstETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
   },
   Deep: [
@@ -133,6 +162,14 @@ const pools: Pools = {
     '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/ bb-a-usd
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
   ],
+  Deprecated: {
+    // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
+    //   newPool:
+    //     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412 ',
+    //   description: 'deprecatedPool.gaugeKilledReason',
+    // },
+  },
+  GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [],
 };

@@ -6,8 +6,6 @@ import { useRouter } from 'vue-router';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
-import BalChipNew from '@/components/chips/BalChipNew.vue';
-
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
@@ -19,14 +17,12 @@ import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
   fiatValueOf,
-  isLiquidityBootstrapping,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
-  poolMetadata,
 } from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -35,9 +31,10 @@ import { configService } from '@/services/config/config.service';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
-import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
+import { poolMetadata } from '@/lib/config/metadata';
+import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
 
 /**
  * TYPES
@@ -319,7 +316,7 @@ function iconAddresses(pool: Pool) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="poolMetadata(pool.id)" class="text-left">
+          <div v-if="poolMetadata(pool.id)?.name" class="text-left">
             {{ poolMetadata(pool.id)?.name }}
           </div>
           <div v-else>
@@ -330,13 +327,7 @@ function iconAddresses(pool: Pool) {
               :pickedTokens="selectedTokens"
             />
           </div>
-          <BalChip
-            v-if="isLiquidityBootstrapping(pool.poolType)"
-            label="LBP"
-            color="amber"
-          />
-          <BalChipNew v-else-if="pool?.isNew" class="mt-1" />
-          <PoolWarningTooltip :pool="pool" />
+          <PoolsTableExtraInfo :pool="pool" />
         </div>
       </template>
       <template #volumeCell="pool">

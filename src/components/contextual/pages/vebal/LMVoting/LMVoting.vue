@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
@@ -15,7 +13,7 @@ import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import GaugesFilters from './GaugesFilters.vue';
 
 /**
@@ -103,28 +101,24 @@ const gaugesFilteredByExpiring = computed(() => {
 
 const filteredVotingGauges = computed(() => {
   // put filter by expiring in separate computed to maintain readability
-  return gaugesFilteredByExpiring.value
-    .filter((_, index) => {
-      return index + 1 < showingGaugesNum.value;
-    })
-    .filter(gauge => {
-      let showByNetwork = true;
-      if (
-        activeNetworkFilters.value.length > 0 &&
-        !activeNetworkFilters.value.includes(gauge.network)
-      ) {
-        showByNetwork = false;
-      }
+  return gaugesFilteredByExpiring.value.filter(gauge => {
+    let showByNetwork = true;
+    if (
+      activeNetworkFilters.value.length > 0 &&
+      !activeNetworkFilters.value.includes(gauge.network)
+    ) {
+      showByNetwork = false;
+    }
 
-      return (
-        showByNetwork &&
-        gauge.pool.tokens.some(token => {
-          return token.symbol
-            ?.toLowerCase()
-            .includes(tokenFilter.value.toLowerCase());
-        })
-      );
-    });
+    return (
+      showByNetwork &&
+      gauge.pool.tokens.some(token => {
+        return token.symbol
+          ?.toLowerCase()
+          .includes(tokenFilter.value.toLowerCase());
+      })
+    );
+  });
 });
 
 /**
@@ -142,49 +136,6 @@ function handleModalClose() {
 function handleVoteSuccess() {
   refetchVotingGauges();
 }
-
-const intersectionSentinel = ref<HTMLDivElement | null>(null);
-const showingGaugesNum = ref(40);
-let observer: IntersectionObserver | undefined;
-
-function addIntersectionObserver(): void {
-  if (
-    !('IntersectionObserver' in window) ||
-    !('IntersectionObserverEntry' in window) ||
-    !intersectionSentinel.value
-  ) {
-    showingGaugesNum.value = votingGauges.value.length;
-    return;
-  }
-
-  const options = {
-    rootMargin: '300px',
-  };
-
-  const callback = (entries: IntersectionObserverEntry[]): void => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        showingGaugesNum.value += 40;
-      }
-    });
-  };
-  observer = new IntersectionObserver(callback, options);
-  observer.observe(intersectionSentinel.value);
-}
-onMounted(() => {
-  addIntersectionObserver();
-});
-onBeforeUnmount(() => {
-  observer?.disconnect();
-});
-
-watch(
-  () => [showExpiredGauges.value, activeNetworkFilters.value],
-  () => {
-    showingGaugesNum.value = votingGauges.value.length;
-  },
-  { deep: true }
-);
 </script>
 
 <template>

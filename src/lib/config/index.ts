@@ -1,4 +1,3 @@
-import { Network } from '@balancer-labs/sdk';
 import { Config } from './types';
 
 import arbitrum from './arbitrum';
@@ -9,6 +8,21 @@ import optimism from './optimism';
 import polygon from './polygon';
 import gnosisChain from './gnosis-chain';
 import test from './test';
+
+// We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
+export enum Network {
+  MAINNET = 1,
+  ROPSTEN = 3,
+  RINKEBY = 4,
+  GOERLI = 5,
+  GÖRLI = 5,
+  OPTIMISM = 10,
+  KOVAN = 42,
+  GNOSIS = 100,
+  POLYGON = 137,
+  ARBITRUM = 42161,
+  FANTOM = 250,
+}
 
 const config: Record<Network | number, Config> = {
   [Network.MAINNET]: mainnet,

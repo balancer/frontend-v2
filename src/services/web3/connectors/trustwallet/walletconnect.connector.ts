@@ -1,9 +1,9 @@
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import WalletConnectProvider from './wallet-connect-provider';
 
 import ConfigService from '@/services/config/config.service';
 import config from '@/lib/config';
 import { WalletError } from '@/types';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { Connector, ConnectorId } from '../connector';
 import { Config } from '@/lib/config/types';
 

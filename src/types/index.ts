@@ -31,6 +31,9 @@ export interface Claim {
 
 export interface WalletError extends Error {
   code: number | string;
+  data?: {
+    originalError?: any;
+  };
 }
 
 export type BatchSwap = {

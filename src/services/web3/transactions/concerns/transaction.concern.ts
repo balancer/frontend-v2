@@ -1,8 +1,8 @@
+import { isUserRejected } from '@/composables/useTransactionErrors';
 import { configService } from '@/services/config/config.service';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { WalletError } from '@/types';
-import { ErrorCode } from '@ethersproject/logger';
 
 const RPC_INVALID_PARAMS_ERROR_CODE = -32602;
 const EIP1559_UNSUPPORTED_REGEX = /network does not support EIP-1559/i;
@@ -21,10 +21,7 @@ export class TransactionConcern {
     );
   }
 
-  public shouldLogFailure(error: WalletError): boolean {
-    return (
-      error.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
-      this.config.env.APP_ENV !== 'development'
-    );
+  public shouldLogFailure(error): boolean {
+    return this.config.env.APP_ENV !== 'development' && !isUserRejected(error);
   }
 }

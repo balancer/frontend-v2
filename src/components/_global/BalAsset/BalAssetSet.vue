@@ -17,8 +17,13 @@
         v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
         :class="[
-          'token-icon ring-2 ring-white dark:ring-gray-800 group-hover:ring-gray-50 dark:group-hover:ring-gray-800',
-          { absolute: !wrap, relative: wrap },
+          'token-icon',
+          ringClass,
+          'ring-white dark:ring-gray-800 group-hover:ring-gray-50 dark:group-hover:ring-gray-800',
+          {
+            absolute: !wrap,
+            relative: wrap,
+          },
         ]"
         :style="getBalAssetStyle(assetChunkIndex, i)"
         @click="$emit('click', addressOrURI)"
@@ -39,6 +44,7 @@ type BalAssetProps = {
   size?: number;
   button?: boolean;
   disabled?: boolean;
+  ringSize?: number;
 };
 
 export default defineComponent({
@@ -76,6 +82,10 @@ export default defineComponent({
     },
     wrap: {
       type: Boolean,
+    },
+    ringSize: {
+      type: Number,
+      default: 2,
     },
   },
   emits: ['click'],
@@ -126,6 +136,17 @@ export default defineComponent({
         smallSetSpacer.value
     );
 
+    const ringClass = computed(() => {
+      switch (props.ringSize) {
+        case 2:
+          return 'ring-2';
+        case 1:
+          return 'ring-1';
+        default:
+          return 'ring-2';
+      }
+    });
+
     /**
      * METHODS
      */
@@ -162,6 +183,7 @@ export default defineComponent({
       // computed
       assetChunks,
       assetRowClasses,
+      ringClass,
 
       // methods
       leftOffsetFor,

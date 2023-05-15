@@ -167,6 +167,7 @@ export default function useJoinExit({
 
   async function swap(successCallback?: () => void) {
     const balancer = getBalancerSDK();
+    let tx;
     try {
       confirming.value = true;
       state.submissionError = null;
@@ -186,7 +187,7 @@ export default function useJoinExit({
       );
 
       const txBuilder = new TransactionBuilder(getSigner());
-      const tx = await txBuilder.contract.sendTransaction({
+      tx = await txBuilder.contract.sendTransaction({
         contractAddress: balancer.contracts.relayer?.address ?? '',
         abi: BatchRelayerAbi,
         action: 'multicall',
@@ -239,7 +240,14 @@ export default function useJoinExit({
       if (!isUserRejected(error)) {
         console.trace(error);
         state.submissionError = t('swapException', ['Relayer']);
-        captureException(new Error(state.submissionError, { cause: error }));
+        captureException(new Error(state.submissionError, { cause: error }), {
+          level: 'fatal',
+          extra: {
+            sender: account.value,
+            swapInfo: swapInfo.value,
+            tx,
+          },
+        });
       }
       swapping.value = false;
       confirming.value = false;

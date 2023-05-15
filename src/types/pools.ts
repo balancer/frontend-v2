@@ -1,3 +1,5 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -6,11 +8,15 @@ export type FactoryType =
   | 'liquidityBootstrappingPool'
   | 'boostedPool'
   | 'composableStablePool'
-  | 'fx';
+  | 'fx'
+  | 'eulerLinear'
+  | 'gyroE';
 
 export type PoolMetadata = {
-  name: string;
-  hasIcon: boolean;
+  name?: string;
+  hasIcon?: boolean;
+  boosted?: boolean;
+  boostedProtocols?: BoostedProtocol[];
 };
 
 export type NamedPools = {
@@ -37,8 +43,6 @@ export type NamedPools = {
 export type DeprecatedDetails = {
   newPool?: string;
   suggestedPools?: string[];
-  joinsDisabled?: boolean;
-  stakingDisabled?: boolean;
   description?: string;
 };
 
@@ -93,7 +97,9 @@ export type Pools = {
   Deep: string[];
   BoostedApr: string[];
   DisabledJoins: string[];
+  ExitViaInternalBalance?: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;
+  GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
 };

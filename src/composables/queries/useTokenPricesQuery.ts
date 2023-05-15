@@ -5,6 +5,7 @@ import useNetwork from '../useNetwork';
 import { getApi } from '@/dependencies/balancer-api';
 import { GqlTokenPrice } from '@/services/api/graphql/generated/api-types';
 import { oneMinInMs } from '../useTime';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -27,7 +28,7 @@ export default function useTokenPricesQuery(
 
   function priceArrayToMap(prices: GqlTokenPrice[]): TokenPrices {
     return prices.reduce(
-      (obj, item) => ((obj[item.address] = item.price), obj),
+      (obj, item) => ((obj[getAddress(item.address)] = item.price), obj),
       {}
     );
   }

@@ -36,7 +36,9 @@ const error = ref(false);
 /**
  * COMPUTED
  */
-const token = computed<TokenInfo | undefined>(() => getToken(address.value));
+const token = computed<TokenInfo | undefined>(() =>
+  address.value ? getToken(address.value) : undefined
+);
 
 const iconSRC = computed(() => {
   if (props.iconURI) return resolve(props.iconURI);

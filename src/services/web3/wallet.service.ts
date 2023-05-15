@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
 
