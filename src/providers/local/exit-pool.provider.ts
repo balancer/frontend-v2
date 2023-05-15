@@ -87,7 +87,6 @@ export const exitPoolProvider = (
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const bptIn = ref<string>('0');
-  const bptInValid = ref<boolean>(true);
   const txError = ref<string>('');
   const singleAmountOut = reactive<AmountOut>({
     address: '',
@@ -264,6 +263,11 @@ export const exitPoolProvider = (
     return tokens.filter(
       token => !isSameAddress(token.address, pool.value.address)
     );
+  });
+
+  // Is the bptIn a valid value
+  const bptInValid = computed<boolean>(() => {
+    return bnum(bptIn.value).gt(0);
   });
 
   // Amounts out to pass into exit functions
