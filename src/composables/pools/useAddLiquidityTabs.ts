@@ -20,6 +20,6 @@ function resetTabs() {
   activeTab.value = tabs[0].value;
 }
 
-export default function useInvestPageTabs() {
+export default function useAddLiquidityTabs() {
   return { activeTab, resetTabs };
 }

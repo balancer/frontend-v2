@@ -12,8 +12,8 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
 
-import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
-import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
+import AddLiquidityPreview from './components/AddLiquidityPreview/AddLiquidityPreview.vue';
+import AddLiquidityTotals from './components/AddLiquidityTotals.vue';
 
 import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import { useTokens } from '@/providers/tokens.provider';
@@ -36,7 +36,7 @@ const props = defineProps<Props>();
 /**
  * STATE
  */
-const showInvestPreview = ref(false);
+const showPreview = ref(false);
 const showStakeModal = ref(false);
 
 /**
@@ -145,7 +145,7 @@ watch(
   ) => {
     // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
     // only if preview modal is not open
-    if (!showInvestPreview.value) {
+    if (!showPreview.value) {
       const hasTabChanged = prevIsSingleAsset !== isSingleAsset;
       const hasUserTokensChanged = !isEqual(
         prevJoinTokensWithBalance,
@@ -201,7 +201,7 @@ watch(
       :poolTokensWithoutBalance="joinTokensWithoutBalance"
     />
 
-    <InvestFormTotalsV2 :pool="pool" />
+    <AddLiquidityTotals :pool="pool" />
 
     <div
       v-if="highPriceImpact"
@@ -247,15 +247,15 @@ watch(
           !!queryError
         "
         block
-        @click="showInvestPreview = true"
+        @click="showPreview = true"
       />
     </div>
 
     <teleport to="#modal">
-      <InvestPreviewModalV2
-        v-if="showInvestPreview"
+      <AddLiquidityPreview
+        v-if="showPreview"
         :pool="pool"
-        @close="showInvestPreview = false"
+        @close="showPreview = false"
         @show-stake-modal="showStakeModal = true"
       />
       <StakePreviewModal

@@ -7,7 +7,7 @@ import { useUserTokens } from '@/providers/local/user-tokens.provider';
 import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
 
-export function useInvestFormTotals(pool: Pool) {
+export function useAddLiquidityTotals(pool: Pool) {
   /**
    * COMPOSABLES
    */

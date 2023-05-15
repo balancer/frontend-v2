@@ -4,11 +4,11 @@ import SwapSettingsPopover, {
   SwapSettingsContext,
 } from '@/components/popovers/SwapSettingsPopover.vue';
 import { configService } from '@/services/config/config.service';
-import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
-import useInvestPageTabs, {
+import AddLiquidityForm from '@/components/forms/pool_actions/AddLiquidityForm/AddLiquidityForm.vue';
+import useAddLiquidityTabs, {
   Tab,
   tabs,
-} from '@/composables/pools/useInvestPageTabs';
+} from '@/composables/pools/useAddLiquidityTabs';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
@@ -30,7 +30,7 @@ const pool = toRef(props, 'pool');
  * COMPOSABLES
  */
 const { network } = configService;
-const { activeTab, resetTabs } = useInvestPageTabs();
+const { activeTab, resetTabs } = useAddLiquidityTabs();
 const { setIsSingleAssetJoin } = useJoinPool();
 const { isDeepPool, isPreMintedBptPool } = usePoolHelpers(pool);
 
@@ -67,7 +67,7 @@ watch(activeTab, value => {
         />
       </div>
     </template>
-    <InvestFormV2 :pool="pool" />
+    <AddLiquidityForm :pool="pool" />
   </BalCard>
 </template>
 

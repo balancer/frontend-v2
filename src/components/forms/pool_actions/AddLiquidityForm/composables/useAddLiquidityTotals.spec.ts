@@ -11,13 +11,13 @@ import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { groAddress, wethAddress } from '@tests/unit/builders/address';
 import { anAmountIn } from '@tests/unit/builders/join-exit.builders';
-import { useInvestFormTotals } from './useInvestFormTotals';
+import { useAddLiquidityTotals } from './useAddLiquidityTotals';
 
 initBalancerSdkWithDefaultMocks();
 initEthersContractWithDefaultMocks();
 
-async function mountInvestFormTotals(pool: Pool, amountsIn: AmountIn[] = []) {
-  const { result } = await mountComposable(() => useInvestFormTotals(pool), {
+async function mountAddLiquidityTotals(pool: Pool, amountsIn: AmountIn[] = []) {
+  const { result } = await mountComposable(() => useAddLiquidityTotals(pool), {
     intermediateProvider: () => {
       provideUserTokens();
       const joinPool = provideJoinPool(ref(pool));
@@ -30,7 +30,7 @@ async function mountInvestFormTotals(pool: Pool, amountsIn: AmountIn[] = []) {
 describe('returns hasBalanceForAllTokens', async () => {
   test('when all tokens have balance', async () => {
     const pool = aWeightedPool();
-    const { hasBalanceForAllTokens } = await mountInvestFormTotals(pool);
+    const { hasBalanceForAllTokens } = await mountAddLiquidityTotals(pool);
     expect(hasBalanceForAllTokens.value).toBeTrue();
   });
 
@@ -38,7 +38,7 @@ describe('returns hasBalanceForAllTokens', async () => {
     const tokenAddressWithoutBalance =
       '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE';
     const pool = aWeightedPool({ tokensList: [tokenAddressWithoutBalance] });
-    const { hasBalanceForAllTokens } = await mountInvestFormTotals(pool);
+    const { hasBalanceForAllTokens } = await mountAddLiquidityTotals(pool);
     expect(hasBalanceForAllTokens.value).toBeFalse();
   });
 
@@ -46,7 +46,7 @@ describe('returns hasBalanceForAllTokens', async () => {
     const tokenAddressWithoutBalance =
       '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE';
     const pool = aWeightedPool({ tokensList: [tokenAddressWithoutBalance] });
-    const { hasBalanceForAllTokens } = await mountInvestFormTotals(pool);
+    const { hasBalanceForAllTokens } = await mountAddLiquidityTotals(pool);
     expect(hasBalanceForAllTokens.value).toBeFalse();
   });
 });
@@ -58,7 +58,7 @@ describe('returns hasBalanceForSomeTokens', async () => {
     const pool = aWeightedPool({
       tokensList: [groAddress, tokenAddressWithoutBalance],
     });
-    const { hasBalanceForSomeTokens } = await mountInvestFormTotals(pool);
+    const { hasBalanceForSomeTokens } = await mountAddLiquidityTotals(pool);
     expect(hasBalanceForSomeTokens.value).toBeTrue();
   });
 
@@ -68,7 +68,7 @@ describe('returns hasBalanceForSomeTokens', async () => {
     const pool = aWeightedPool({
       tokensList: [wethAddress, tokenAddressWithoutBalance],
     });
-    const { hasBalanceForSomeTokens } = await mountInvestFormTotals(pool);
+    const { hasBalanceForSomeTokens } = await mountAddLiquidityTotals(pool);
     expect(hasBalanceForSomeTokens.value).toBeTrue();
   });
 
@@ -80,7 +80,7 @@ describe('returns hasBalanceForSomeTokens', async () => {
     const pool = aWeightedPool({
       tokensList: [tokenAddressWithoutBalance, anotherAddressWithoutBalance],
     });
-    const { hasBalanceForSomeTokens } = await mountInvestFormTotals(pool);
+    const { hasBalanceForSomeTokens } = await mountAddLiquidityTotals(pool);
     expect(hasBalanceForSomeTokens.value).toBeFalse();
   });
 });
@@ -88,7 +88,7 @@ describe('returns hasBalanceForSomeTokens', async () => {
 describe('calculates maximized', async () => {
   test('when both tokens have max balance', async () => {
     const pool = aWeightedPool();
-    const { maximized } = await mountInvestFormTotals(pool, [
+    const { maximized } = await mountAddLiquidityTotals(pool, [
       anAmountIn({ address: groAddress, value: defaultBalance }),
       anAmountIn({ address: wethAddress, value: defaultBalance }),
     ]);
@@ -96,7 +96,7 @@ describe('calculates maximized', async () => {
   });
   test('when one of the tokens does not have max balance', async () => {
     const pool = aWeightedPool();
-    const { maximized } = await mountInvestFormTotals(pool, [
+    const { maximized } = await mountAddLiquidityTotals(pool, [
       anAmountIn({ address: groAddress, value: defaultBalance }),
       anAmountIn({ address: wethAddress, value: '5' }), //5 != defaultBalance
     ]);
@@ -106,7 +106,7 @@ describe('calculates maximized', async () => {
 
 test('maximizes amounts', async () => {
   const pool = aWeightedPool();
-  const { maximized, maximizeAmounts } = await mountInvestFormTotals(pool, [
+  const { maximized, maximizeAmounts } = await mountAddLiquidityTotals(pool, [
     anAmountIn({ address: groAddress, value: '2' }),
     anAmountIn({ address: wethAddress, value: '4' }),
   ]);
@@ -121,7 +121,7 @@ test('maximizes amounts', async () => {
 describe('calculates optimized', async () => {
   test('when both tokens have max balance', async () => {
     const pool = aWeightedPool();
-    const { optimized } = await mountInvestFormTotals(pool, [
+    const { optimized } = await mountAddLiquidityTotals(pool, [
       anAmountIn({ address: groAddress, value: defaultBalance }),
       anAmountIn({ address: wethAddress, value: defaultBalance }),
     ]);
@@ -129,7 +129,7 @@ describe('calculates optimized', async () => {
   });
   test('when one token does not have max balance', async () => {
     const pool = aWeightedPool();
-    const { optimized } = await mountInvestFormTotals(pool, [
+    const { optimized } = await mountAddLiquidityTotals(pool, [
       anAmountIn({ address: groAddress, value: defaultBalance }),
       anAmountIn({ address: wethAddress, value: '3' }), // 3 is less than max balance
     ]);
@@ -139,7 +139,7 @@ describe('calculates optimized', async () => {
     const pool = aWeightedPool();
     // Change poolType to be not stable like so supportsProportionalOptimization is false
     pool.poolType = PoolType.FX;
-    const { optimized } = await mountInvestFormTotals(pool, [
+    const { optimized } = await mountAddLiquidityTotals(pool, [
       anAmountIn({ address: groAddress, value: defaultBalance }),
       anAmountIn({ address: wethAddress, value: defaultBalance }),
     ]);
@@ -149,7 +149,7 @@ describe('calculates optimized', async () => {
 
 test('optimizes amounts', async () => {
   const pool = aWeightedPool();
-  const { optimized, optimizeAmounts } = await mountInvestFormTotals(pool, [
+  const { optimized, optimizeAmounts } = await mountAddLiquidityTotals(pool, [
     anAmountIn({ address: groAddress, value: '2' }),
     anAmountIn({ address: wethAddress, value: '4' }),
   ]);
