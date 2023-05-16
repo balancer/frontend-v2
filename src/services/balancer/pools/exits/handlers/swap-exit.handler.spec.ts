@@ -1,9 +1,5 @@
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
-import {
-  defaultBatchSwapResponse,
-  initEthersContractWithDefaultMocks,
-} from '@/dependencies/EthersContract.mocks';
 import { Web3ProviderMock } from '@/dependencies/wallets/wallet-connector-mocks';
 import { vaultService } from '@/services/contracts/vault.service';
 import { Pool } from '@/services/pool/types';
@@ -12,9 +8,9 @@ import { buildExitParams } from '@tests/unit/builders/join-exit.builders';
 import { ref } from 'vue';
 import { ExitType } from './exit-pool.handler';
 import { SwapExitHandler } from './swap-exit.handler';
+import { defaultTransactionResponse } from '@tests/unit/builders/signer';
 
 initBalancerSdkWithDefaultMocks();
-initEthersContractWithDefaultMocks();
 
 async function mountSwapExitHandler(pool: Pool) {
   return new SwapExitHandler(ref(pool), getBalancerSDK());
@@ -35,5 +31,5 @@ test('Successfully executes a swap exit transaction', async () => {
 
   const swapResult = await handler.exit(exitParams);
 
-  expect(swapResult).toEqual(defaultBatchSwapResponse);
+  expect(swapResult).toEqual(defaultTransactionResponse);
 });

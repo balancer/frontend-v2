@@ -115,9 +115,6 @@ export class ContractConcern extends TransactionConcern {
 
     captureException(error, {
       level: 'fatal',
-      tags: {
-        simulate,
-      },
       extra: {
         action,
         sender,

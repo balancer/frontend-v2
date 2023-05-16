@@ -2,9 +2,8 @@ import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, formatAddressForSor, selectByAddress } from '@/lib/utils';
-import { vaultService } from '@/services/contracts/vault.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, BatchSwap, SwapInfo, SwapType } from '@balancer-labs/sdk';
+import { BalancerSDK, SwapInfo, SwapType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcSigner } from '@ethersproject/providers';
@@ -15,6 +14,7 @@ import {
   ExitType,
   QueryOutput,
 } from './exit-pool.handler';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 /**
  * Handles exits for single asset flows where we need to use a BatchSwap to exit
@@ -31,25 +31,23 @@ export class SwapExitHandler implements ExitPoolHandler {
   async exit(params: ExitParams): Promise<TransactionResponse> {
     const userAddress = await params.signer.getAddress();
     await this.queryExit(params);
+
     if (!this.lastSwapRoute)
       throw new Error('Could not fetch swap route for join.');
 
-    const swap = this.getSwapAttributes(
+    const { to, data, value } = this.getSwapAttributes(
       params.exitType,
       this.lastSwapRoute,
       params.slippageBsp,
       userAddress
     );
 
-    const { kind, swaps, assets, funds, limits } = swap.attributes as BatchSwap;
-    return vaultService.batchSwap(
-      kind,
-      swaps,
-      assets,
-      funds,
-      limits as string[],
-      params.transactionDeadline
-    );
+    const txBuilder = new TransactionBuilder(params.signer);
+    return txBuilder.raw.sendTransaction({
+      to,
+      data,
+      value,
+    });
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
