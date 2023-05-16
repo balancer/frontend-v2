@@ -268,7 +268,7 @@ watch(
           <template v-if="isSentinelIntersected && pool">
             <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
             <PoolContractDetails :pool="pool" />
-            <PoolRisks :pool="pool"></PoolRisks>
+            <PoolRisks :pool="pool" />
           </template>
         </div>
       </div>
