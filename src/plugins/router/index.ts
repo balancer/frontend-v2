@@ -186,18 +186,24 @@ export const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
     if (to.hash) {
-      if (fromPoolToRisks(from, to)) {
-        // Avoid default smooth scroll
-        return {
-          el: to.hash,
-          behavior: 'instant',
-          // https://github.com/microsoft/TypeScript/issues/47441
-        } as unknown as ScrollToOptions;
-      }
-      return {
-        el: to.hash,
-        behavior: 'smooth',
-      };
+      // Delaying the scroll to enforce that the route transition has finished (for example, when clicking a risk hash from the pool risks section)
+      // https://router.vuejs.org/guide/advanced/scroll-behavior.html#delaying-the-scroll
+      return new Promise(resolve => {
+        setTimeout(() => {
+          if (fromPoolToRisks(from, to)) {
+            // Avoid default smooth scroll
+            return resolve({
+              el: to.hash,
+              behavior: 'instant',
+              // https://github.com/microsoft/TypeScript/issues/47441
+            } as unknown as ScrollToOptions);
+          }
+          return resolve({
+            el: to.hash,
+            behavior: 'smooth',
+          });
+        }, 250);
+      });
     }
     return { x: 0, top: 0 };
   },
