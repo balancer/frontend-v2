@@ -335,7 +335,7 @@ export const exitPoolProvider = (
   const validAmounts = computed((): boolean => {
     return isSingleAssetExit.value
       ? amountsOut.value.every(ao => ao.valid)
-      : bptInValid.value;
+      : bptInValid.value && bnum(bptIn.value).gt(0);
   });
 
   // Map of amount out address to value as fiat amount.
