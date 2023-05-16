@@ -1,3 +1,4 @@
+import { WalletError } from '@/types';
 import { isUserRejected } from './useTransactionErrors';
 
 describe('userTransactionErrors', () => {
@@ -28,7 +29,7 @@ describe('userTransactionErrors', () => {
     });
 
     it('Should return true if the error code is 4001', () => {
-      const rejectionError = new Error('Something went wrong');
+      const rejectionError = new Error('Something went wrong') as WalletError;
       rejectionError.code = 4001;
       expect(isUserRejected(rejectionError)).toBe(true);
     });
