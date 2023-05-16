@@ -82,8 +82,6 @@ const hasExpiredLock = computed(
     veBalLockInfoQuery.data.value?.isExpired
 );
 
-const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
-
 const gaugesFilteredByExpiring = computed(() => {
   if (showExpiredGauges.value) {
     return votingGauges.value;
@@ -136,6 +134,45 @@ function handleModalClose() {
 function handleVoteSuccess() {
   refetchVotingGauges();
 }
+
+const intersectionSentinel = ref<HTMLDivElement | null>(null);
+const showingGaugesIdx = ref(10);
+let observer: IntersectionObserver | undefined;
+function addIntersectionObserver(): void {
+  if (
+    !('IntersectionObserver' in window) ||
+    !('IntersectionObserverEntry' in window) ||
+    !intersectionSentinel.value
+  ) {
+    showingGaugesIdx.value = votingGauges.value.length;
+    return;
+  }
+  const options = {
+    rootMargin: '0% 0% 50% 0%',
+  };
+  const callback = (entries: IntersectionObserverEntry[]): void => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        showingGaugesIdx.value += 40;
+      }
+    });
+  };
+  observer = new IntersectionObserver(callback, options);
+  observer.observe(intersectionSentinel.value);
+}
+onMounted(() => {
+  addIntersectionObserver();
+});
+onBeforeUnmount(() => {
+  observer?.disconnect();
+});
+watch(
+  () => [showExpiredGauges.value, activeNetworkFilters.value],
+  () => {
+    showingGaugesIdx.value = votingGauges.value.length;
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -252,7 +289,7 @@ function handleVoteSuccess() {
     </div>
 
     <GaugesTable
-      :key="gaugesTableKey"
+      :showingGaugesIdx="showingGaugesIdx"
       :expiredGauges="expiredGauges"
       :isLoading="isLoading"
       :data="filteredVotingGauges"

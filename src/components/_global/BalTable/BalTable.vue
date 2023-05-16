@@ -47,6 +47,7 @@ type Props = {
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: DataProp, rowIndex: number) => string;
   isOnlyDescSort?: boolean;
+  showingRowsIdx?: number;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -343,27 +344,32 @@ watch(
         <!-- end pinned rows -->
 
         <!-- begin data rows -->
-        <BalTableRow
+        <template
           v-for="(dataItem, index) in unpinnedData"
           :key="`tableRow-${dataItem.id ?? index}`"
-          :class="
-            props.getTableRowClass
-              ? props.getTableRowClass(dataItem, index)
-              : undefined
-          "
-          :data="dataItem"
-          :columns="filteredColumns"
-          :onRowClick="onRowClick"
-          :link="link"
-          :href="href"
-          :sticky="sticky"
-          :isColumnStuck="isColumnStuck"
         >
-          <slot :name="'named'" v-bind="dataItem"></slot>
-          <template v-for="(_, name) in $slots" #[name]>
-            <slot :name="name" v-bind="dataItem" />
-          </template>
-        </BalTableRow>
+          <BalTableRow
+            v-if="!showingRowsIdx || index <= showingRowsIdx"
+            :class="
+              props.getTableRowClass
+                ? props.getTableRowClass(dataItem, index)
+                : undefined
+            "
+            :data="dataItem"
+            :columns="filteredColumns"
+            :onRowClick="onRowClick"
+            :link="link"
+            :href="href"
+            :sticky="sticky"
+            :isColumnStuck="isColumnStuck"
+          >
+            <slot :name="'named'" v-bind="dataItem"></slot>
+            <template v-for="(_, name) in $slots" #[name]>
+              <slot :name="name" v-bind="dataItem" />
+            </template>
+          </BalTableRow>
+        </template>
+
         <!-- end end data rows -->
         <TotalsRow
           v-if="!isLoading && tableData.length && shouldRenderTotals"
