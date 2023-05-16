@@ -92,6 +92,10 @@ export function isDeep(pool: Pool): boolean {
   return configService.network.pools.Deep.includes(pool.id);
 }
 
+export function isBoosted(pool: Pool) {
+  return !!poolMetadata(pool.id)?.boosted;
+}
+
 /**
  * Pool addresses that have underlying tokens that generate boosted yield. Used
  * for APR display only.
