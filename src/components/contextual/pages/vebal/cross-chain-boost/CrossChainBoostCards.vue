@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config';
 import IconLoaderWrapper from './IconLoaderWrapper.vue';
 import CrossChainSyncModal from './CrossChainSyncModal.vue';
+import CrossChainSelectNetworkModal from './CrossChainSelectNetworkModal.vue';
 
 const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
 const syncedNetworks = ref([]);
@@ -60,9 +61,13 @@ async function syncNetwork(network: Network) {
       </BalCard>
     </div>
 
+    <CrossChainSelectNetworkModal
+      :isVisible="isSyncModalOpen"
+      @close-modal="isSyncModalOpen = false"
+    />
     <CrossChainSyncModal
       :isVisible="isSyncModalOpen"
       @close-modal="isSyncModalOpen = false"
-    ></CrossChainSyncModal>
+    />
   </div>
 </template>
