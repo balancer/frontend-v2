@@ -87,6 +87,7 @@ export const exitPoolProvider = (
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const bptIn = ref<string>('0');
+  const bptInValid = ref<boolean>(true);
   const txError = ref<string>('');
   const singleAmountOut = reactive<AmountOut>({
     address: '',
@@ -265,11 +266,6 @@ export const exitPoolProvider = (
     );
   });
 
-  // Is the bptIn a valid value
-  const bptInValid = computed<boolean>(() => {
-    return bnum(bptIn.value).gt(0);
-  });
-
   // Amounts out to pass into exit functions
   const amountsOut = computed((): AmountOut[] => {
     if (isSingleAssetExit.value) return [singleAmountOut];
@@ -339,7 +335,7 @@ export const exitPoolProvider = (
   const validAmounts = computed((): boolean => {
     return isSingleAssetExit.value
       ? amountsOut.value.every(ao => ao.valid)
-      : bptInValid.value;
+      : bptInValid.value && bnum(bptIn.value).gt(0);
   });
 
   // Map of amount out address to value as fiat amount.
