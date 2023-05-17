@@ -23,12 +23,12 @@ const config: Config = {
   explorer: 'https://zkevm.polygonscan.com/',
   explorerName: 'Polygonscan',
   subgraph:
-    'https://api.studio.thegraph.com/query/24660/balancer-polygon-zkevm-v2/v0.0.1',
+    'https://api.studio.thegraph.com/query/24660/balancer-polygon-zkevm-v2/v0.0.2',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.studio.thegraph.com/query/24660/balancer-polygon-zkevm-v2/v0.0.1',
+      'https://api.studio.thegraph.com/query/24660/balancer-polygon-zkevm-v2/v0.0.2',
     ],
     aave: '',
     gauge: '',
