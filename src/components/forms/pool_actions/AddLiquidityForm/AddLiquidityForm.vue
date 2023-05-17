@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { tokenWeight, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, includesAddress } from '@/lib/utils';
+import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -85,9 +85,12 @@ const excludedTokens = computed((): string[] => {
   }
   return tokens;
 });
+
 const joinTokensWithBalance = computed<string[]>(() =>
-  poolJoinTokens.value.filter(address =>
-    includesAddress(tokensWithBalance.value, address)
+  poolJoinTokens.value.filter(
+    address =>
+      includesAddress(tokensWithBalance.value, address) ||
+      isSameAddress(address, wrappedNativeAsset.value.address)
   )
 );
 
