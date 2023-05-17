@@ -4,7 +4,6 @@ import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -23,8 +22,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk: BalancerSDK,
-    public readonly gasPriceService: GasPriceService
+    public readonly sdk: BalancerSDK
   ) {}
 
   async join(params: JoinParams): Promise<TransactionResponse> {
@@ -108,14 +106,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
   }
 
   private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {
-    let price: number;
-
-    const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (gasPriceParams) {
-      price = gasPriceParams.price;
-    } else {
-      price = (await signer.getGasPrice()).toNumber();
-    }
+    const price = (await signer.getGasPrice()).toNumber();
 
     if (!price) throw new Error('Failed to fetch gas price.');
 

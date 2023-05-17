@@ -1,4 +1,4 @@
-import WalletConnectProvider from './wallet-connect-provider';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
 import ConfigService from '@/services/config/config.service';
 import config from '@/lib/config';
