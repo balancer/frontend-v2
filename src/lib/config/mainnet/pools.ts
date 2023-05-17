@@ -89,6 +89,7 @@ const pools: Pools = {
       '0xec3626fee40ef95e7c0cbb1d495c8b67b34d398300000000000000000000053d', // uzd/bb-a-usd
       '0x7e9afd25f5ec0eb24d7d4b089ae7ecb9651c8b1f000000000000000000000511', // baoUSD LUSD
       '0x1a44e35d5451e0b78621a1b3e7a53dfaa306b1d000000000000000000000051b', // baoETH WETH
+      '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548', // bb-a-weth/ankreth
     ],
   },
   Investment: {
