@@ -13,7 +13,7 @@ import { randomAddress, wethAddress } from './address';
 
 export function aPool(...options: Partial<Pool>[]): Pool {
   const pool = mock<Pool>();
-  const defaults: Partial<Pool> = aWeightedPool();
+  const defaults: Partial<Pool> = aWeightedPool({ owner: POOLS.ZeroAddress });
   return Object.assign(pool, defaults, ...options);
 }
 

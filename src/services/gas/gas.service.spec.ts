@@ -1,9 +1,9 @@
-import { GasPriceService } from './gas-price.service';
+import { GasService } from './gas.service';
 import { mock } from 'vitest-mock-extended';
 import { Contract } from '@ethersproject/contracts';
 
 async function settingsForContractCall(contractMock) {
-  const service = new GasPriceService();
+  const service = new GasService();
   const emptyParams = [];
   const emptyOptions = {};
   return service.settingsForContractCall(

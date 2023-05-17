@@ -6,7 +6,6 @@ import SwapSettingsPopover, {
 import { configService } from '@/services/config/config.service';
 import AddLiquidityForm from '@/components/forms/pool_actions/AddLiquidityForm/AddLiquidityForm.vue';
 import useAddLiquidityTabs, {
-  Tab,
   tabs,
 } from '@/composables/pools/useAddLiquidityTabs';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
