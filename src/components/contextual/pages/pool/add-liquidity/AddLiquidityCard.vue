@@ -5,7 +5,6 @@ import SwapSettingsPopover, {
 } from '@/components/popovers/SwapSettingsPopover.vue';
 import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
-import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import useInvestPageTabs, {
   Tab,
   tabs,
@@ -68,9 +67,7 @@ watch(activeTab, value => {
         />
       </div>
     </template>
-    <InvestFormV2 v-if="true" :pool="pool" />
-    <!-- Temp support in case we need to re-enable old flow -->
-    <InvestForm v-else :pool="pool" />
+    <InvestFormV2 :pool="pool" />
   </BalCard>
 </template>
 

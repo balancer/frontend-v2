@@ -6,7 +6,7 @@ import Accordion from './Accordion.vue';
 import AddLiquidityCard from './AddLiquidityCard.vue';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
 import Col2Layout from '@/components/layouts/Col2Layout.vue';
-import useDisabledJoinsGuard from '@/composables/contextual/pool-transfers/useDisabledJoinsGuard';
+import useDisabledJoinsGuard from '@/composables/contextual/add-liquidity/useDisabledJoinsGuard';
 import { Pool } from '@/services/pool/types';
 
 type Props = {
