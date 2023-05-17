@@ -4,7 +4,7 @@ import { useJoinPool } from '@/providers/local/join-pool.provider';
 
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { useInvestFormTotals } from '../composables/useInvestFormTotals';
+import { useAddLiquidityTotals } from '../composables/useAddLiquidityTotals';
 
 type Props = {
   pool: Pool;
@@ -35,7 +35,7 @@ const {
   maximized,
   maximizeAmounts,
   optimizeAmounts,
-} = useInvestFormTotals(props.pool);
+} = useAddLiquidityTotals(props.pool);
 </script>
 
 <template>

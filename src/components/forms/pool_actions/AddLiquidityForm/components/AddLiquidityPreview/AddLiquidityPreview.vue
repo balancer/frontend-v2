@@ -8,9 +8,9 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import InvestSummary from './components/InvestSummary.vue';
+import Summary from './components/Summary.vue';
 import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
-import InvestActionsV2 from './components/InvestActionsV2.vue';
+import Actions from './components/Actions.vue';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
 import { useIntervalFn } from '@vueuse/shared';
 import { oneSecondInMs } from '@/composables/useTime';
@@ -39,7 +39,7 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const investmentConfirmed = ref(false);
+const confirmed = ref(false);
 
 /**
  * COMPOSABLES
@@ -67,7 +67,7 @@ const {
  * COMPUTED
  */
 const title = computed((): string =>
-  investmentConfirmed.value
+  confirmed.value
     ? t('investment.preview.titles.confirmed')
     : t('investment.preview.titles.default')
 );
@@ -133,9 +133,9 @@ const fiatTotalOut = computed((): string =>
  * METHODS
  */
 function handleClose(): void {
-  if (investmentConfirmed.value) {
+  if (confirmed.value) {
     resetAmounts();
-    investmentConfirmed.value = false;
+    confirmed.value = false;
   }
   emit('close');
 }
@@ -162,11 +162,11 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
+  <BalModal show :fireworks="confirmed" @close="handleClose">
     <template #header>
       <div class="flex items-center">
         <BalCircle
-          v-if="investmentConfirmed"
+          v-if="confirmed"
           size="8"
           color="green"
           class="mr-2 text-white"
@@ -207,7 +207,7 @@ useIntervalFn(() => {
       block
     />
 
-    <InvestSummary
+    <Summary
       :pool="pool"
       :fiatTotal="missingPricesIn ? '-' : fiatValueIn"
       :priceImpact="priceImpact"
@@ -222,10 +222,10 @@ useIntervalFn(() => {
       class="mt-6 mb-2"
     />
 
-    <InvestActionsV2
+    <Actions
       :pool="pool"
       class="mt-4"
-      @success="investmentConfirmed = true"
+      @success="confirmed = true"
       @show-stake-modal="handleShowStakeModal"
     />
   </BalModal>
