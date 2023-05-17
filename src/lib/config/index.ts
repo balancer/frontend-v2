@@ -20,8 +20,9 @@ export enum Network {
   KOVAN = 42,
   GNOSIS = 100,
   POLYGON = 137,
-  ARBITRUM = 42161,
   FANTOM = 250,
+  ZKEVM = 1101,
+  ARBITRUM = 42161,
 }
 
 const config: Record<Network | number, Config> = {
