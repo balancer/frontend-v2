@@ -1,4 +1,5 @@
 import { Contracts } from '../types';
+import * as optimism from '@/assets/data/contracts/optimism.json';
 
 const contracts: Contracts = {
   merkleRedeem: '',
@@ -6,7 +7,7 @@ const contracts: Contracts = {
   multicall: '',
   authorizer: '',
   vault: '',
-  weightedPoolFactory: '0x230a59F4d9ADc147480f03B0D3fFfeCd56c3289a',
+  weightedPoolFactory: optimism.WeightedPoolFactory,
   stablePoolFactory: '',
   weth: '',
   rETH: '',
@@ -15,9 +16,9 @@ const contracts: Contracts = {
   wstETH: '',
   lidoRelayer: '',
   balancerHelpers: '',
-  batchRelayer: '0x03F1ab8b19bcE21EB06C364aEc9e40322572a1e9',
+  batchRelayer: optimism.BalancerRelayer,
   gaugeFactory: '',
-  balancerMinter: '0x4fb47126Fa83A8734991E41B942Ac29A3266C968',
+  balancerMinter: optimism.L2BalancerPseudoMinter,
   gaugeController: '',
   tokenAdmin: '',
   veBAL: '',
