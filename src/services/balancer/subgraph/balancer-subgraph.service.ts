@@ -7,7 +7,6 @@ import PoolShares from './entities/poolShares';
 import PoolSnapshots from './entities/poolSnapshots';
 import PoolSwaps from './entities/poolSwaps';
 import TradePairSnapshots from './entities/swapPairs';
-import OmniVotingEscrowLocks from './entities/votingEscrow';
 
 export default class BalancerSubgraphService {
   pools: Pools;
@@ -16,7 +15,6 @@ export default class BalancerSubgraphService {
   poolSwaps: PoolSwaps;
   poolSnapshots: PoolSnapshots;
   tradePairSnapshots: TradePairSnapshots;
-  omniVotingEscrowLocks: OmniVotingEscrowLocks;
 
   constructor(
     readonly client = balancerSubgraphClient,
@@ -29,7 +27,6 @@ export default class BalancerSubgraphService {
     this.poolSwaps = new PoolSwaps(this);
     this.poolSnapshots = new PoolSnapshots(this);
     this.tradePairSnapshots = new TradePairSnapshots(this);
-    this.omniVotingEscrowLocks = new OmniVotingEscrowLocks(this);
   }
 }
 

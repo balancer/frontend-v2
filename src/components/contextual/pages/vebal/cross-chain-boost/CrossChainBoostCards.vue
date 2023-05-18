@@ -4,10 +4,17 @@ import { Network } from '@/lib/config';
 import IconLoaderWrapper from './IconLoaderWrapper.vue';
 import CrossChainSyncModal from './CrossChainSyncModal.vue';
 import CrossChainSelectNetworkModal from './CrossChainSelectNetworkModal.vue';
+import { useCrossChainSync } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
-const syncedNetworks = ref([]);
+
 const isSyncModalOpen = ref(false);
+const {
+  omniEscrowLocks,
+  votingEscrowLocks,
+  networksSyncState,
+  syncedNetworks,
+} = useCrossChainSync();
 
 function openSyncModal() {
   isSyncModalOpen.value = true;
@@ -24,6 +31,8 @@ async function syncNetwork(network: Network) {
 <template>
   <div class="py-5 px-4">
     <h3 class="mb-3">
+      {{ networksSyncState }}
+      {{ syncedNetworks }}
       {{ $t('crossChainBoost.title') }}
     </h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
