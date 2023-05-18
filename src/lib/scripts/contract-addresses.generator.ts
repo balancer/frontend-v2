@@ -3,15 +3,6 @@ import { Config } from '@/lib/config/types';
 import { Address } from '@/types';
 
 const fs = require('fs');
-const path = require('path');
-
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config({
-    path: path.resolve(__dirname, '../../../.env.development'),
-  });
-} else {
-  require('dotenv').config();
-}
 
 type AddressMap = Record<Address, { task: string; name: string }>;
 type ContractMap = Record<string, Address>;
