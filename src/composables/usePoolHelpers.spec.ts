@@ -38,6 +38,7 @@ import {
   tokenWeight,
   joinTokens,
   wNativeAssetAddress,
+  tokensListExclPoolTokens,
 } from './usePoolHelpers';
 import {
   daiAddress,
@@ -774,4 +775,12 @@ test('Gets all pool token addresses that can possibly be used to join a pool', a
 
 test('Returns the wNativeAsset address in the current network (goerli for tests)', () => {
   expect(wNativeAssetAddress()).toBe(wethAddress);
+});
+
+test('tokensListExclBptAndBoostedPoolTokens', () => {
+  expect(tokensListExclPoolTokens(aWeightedPool())).toEqual([
+    '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
+    '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
+  ]);
+  expect(tokensListExclPoolTokens(BoostedPoolMock)).toEqual([]);
 });

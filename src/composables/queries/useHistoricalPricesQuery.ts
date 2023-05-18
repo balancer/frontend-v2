@@ -1,5 +1,4 @@
 import differenceInDays from 'date-fns/differenceInDays';
-import { computed, reactive } from 'vue';
 import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -9,7 +8,7 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
-import { tokensListExclBpt } from '../usePoolHelpers';
+import { tokensListExclPoolTokens } from '../usePoolHelpers';
 
 type QueryOptions = QueryObserverOptions<HistoricalPrices>;
 
@@ -49,11 +48,16 @@ export default function useHistoricalPricesQuery(
     if (!pool.value && !storedPool) throw new Error('No pool');
 
     const createTime = storedPool?.createTime || pool.value?.createTime || 0;
+    // if (pool.value) {
+    //   logRawObject(pool.value);
+    // }
     const tokensList = storedPool
-      ? tokensListExclBpt(storedPool)
+      ? tokensListExclPoolTokens(storedPool)
       : pool.value
-      ? tokensListExclBpt(pool.value)
+      ? tokensListExclPoolTokens(pool.value)
       : [];
+
+    // console.log({ tokensList });
 
     const shapshotDaysNum =
       days || differenceInDays(new Date(), new Date(createTime * 1000));
