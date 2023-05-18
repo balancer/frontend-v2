@@ -20,12 +20,14 @@ type BalancerSdkType = ReturnType<typeof getBalancerSDK>;
 type ExitResponse = Awaited<
   ReturnType<BalancerSdkType['pools']['generalisedExit']>
 >;
+type ExitInfo = Awaited<ReturnType<BalancerSdkType['pools']['getExitInfo']>>;
 
 /**
  * Handles exits using SDK's generalisedExit function.
  */
 export class GeneralisedExitHandler implements ExitPoolHandler {
-  private lastExitRes?: ExitResponse;
+  private exitTx?: ExitResponse;
+  private exitInfo?: ExitInfo;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -36,12 +38,12 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
   async exit(params: ExitParams): Promise<TransactionResponse> {
     await this.queryExit(params);
 
-    if (!this.lastExitRes) {
+    if (!this.exitTx) {
       throw new Error('Could not query generalised exit');
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, encodedCall } = this.lastExitRes;
+    const { to, encodedCall } = this.exitTx;
 
     return txBuilder.raw.sendTransaction({ to, data: encodedCall });
   }
@@ -58,59 +60,69 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
       bptIn || '0',
       this.pool.value.onchain?.decimals ?? 18
     );
-
     if (evmAmountIn.lte(0)) throw new Error('BPT in amount is 0.');
 
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
-
-    // Static call simulation is more accurate than VaultModel, but requires relayer approval and
-    // account to have enough BPT balance
-    const simulationType: SimulationType =
-      bptInValid && !approvalActions.length
-        ? SimulationType.Static
-        : SimulationType.VaultModel;
-
-    console.log({ simulationType });
-
+    const isRelayerApproved = bptInValid && approvalActions.length === 0;
     const balancer = getBalancerSDK();
-    this.lastExitRes = await balancer.pools
-      .generalisedExit(
-        this.pool.value.id,
-        evmAmountIn.toString(),
-        signerAddress,
-        slippage,
-        signer,
-        simulationType,
-        relayerSignature
-      )
-      .catch(err => {
-        console.error(err);
-        throw new Error('Failed to query exit.');
-      });
 
-    if (!this.lastExitRes) throw new Error('Failed to query exit.');
+    try {
+      if (this.exitInfo && isRelayerApproved) {
+        this.exitTx = await balancer.pools.generalisedExit(
+          this.pool.value.id,
+          evmAmountIn.toString(),
+          signerAddress,
+          slippage,
+          signer,
+          SimulationType.Static,
+          relayerSignature,
+          this.exitInfo.tokensToUnwrap
+        );
+      } else {
+        this.exitInfo = await balancer.pools.getExitInfo(
+          this.pool.value.id,
+          evmAmountIn.toString(),
+          signerAddress,
+          signer
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      console.log('Failed here');
+      throw new Error('Failed to query exit.');
+    }
+
+    console.log('this.exitInfo', this.exitInfo);
+    if (!this.exitInfo && !this.exitTx)
+      throw new Error('Failed to query exit.');
 
     const priceImpact: number = bnum(
-      formatFixed(this.lastExitRes.priceImpact, 18)
+      formatFixed(this.exitTx?.priceImpact || this.exitInfo.priceImpact, 18)
     ).toNumber();
 
     return {
       priceImpact,
-      amountsOut: this.formatAmountsOut(this.lastExitRes),
+      amountsOut: this.formatAmountsOut(
+        this.exitTx?.expectedAmountsOut || this.exitInfo.estimatedAmountsOut,
+        this.exitTx?.tokensOut || this.exitInfo.tokensOut
+      ),
     };
   }
 
   /**
    * PRIVATE METHODS
    */
-  private formatAmountsOut(exitRes: ExitResponse): AmountsOut {
+  private formatAmountsOut(
+    expectedAmountsOut: string[],
+    tokensOut: string[]
+  ): AmountsOut {
     const amountsOut: AmountsOut = {};
     const allPoolTokens = flatTokenTree(this.pool.value);
 
-    exitRes.expectedAmountsOut.forEach((amount, i) => {
+    expectedAmountsOut.forEach((amount, i) => {
       const token = allPoolTokens.find(poolToken =>
-        isSameAddress(poolToken.address, exitRes.tokensOut[i])
+        isSameAddress(poolToken.address, tokensOut[i])
       );
 
       if (token) {
