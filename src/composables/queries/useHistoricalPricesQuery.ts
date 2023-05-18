@@ -48,16 +48,11 @@ export default function useHistoricalPricesQuery(
     if (!pool.value && !storedPool) throw new Error('No pool');
 
     const createTime = storedPool?.createTime || pool.value?.createTime || 0;
-    // if (pool.value) {
-    //   logRawObject(pool.value);
-    // }
     const tokensList = storedPool
       ? tokensListExclPoolTokens(storedPool)
       : pool.value
       ? tokensListExclPoolTokens(pool.value)
       : [];
-
-    // console.log({ tokensList });
 
     const shapshotDaysNum =
       days || differenceInDays(new Date(), new Date(createTime * 1000));
