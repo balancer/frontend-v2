@@ -2636,7 +2636,7 @@
     "address": "0x183D73dA7adC5011EC3C46e33BB50271e59EC976",
     "network": 1,
     "isKilled": false,
-    "relativeWeightCap": "0.02",
+    "relativeWeightCap": "0.10",
     "addedTimestamp": 1678920275,
     "pool": {
       "id": "0xf16aee6a71af1a9bc8f56975a4c2705ca7a782bc0002000000000000000004bb",
