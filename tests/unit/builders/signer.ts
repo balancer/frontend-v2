@@ -1,9 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { JsonRpcSigner, TransactionResponse } from '@ethersproject/providers';
-import { mock, mockDeep } from 'vitest-mock-extended';
+import { mock } from 'vitest-mock-extended';
 import { randomAddress } from './address';
 
-export const defaultTransactionResponse = mockDeep<TransactionResponse>();
+export const defaultTransactionResponse = mock<TransactionResponse>();
+defaultTransactionResponse.to = 'default to';
+defaultTransactionResponse.from = 'default from';
+defaultTransactionResponse.data = 'default data';
 
 export const defaultGasLimit = 2;
 const defaultEstimatedGas = BigNumber.from(defaultGasLimit);
@@ -21,5 +24,5 @@ export function aSigner(...options: Partial<JsonRpcSigner>[]): JsonRpcSigner {
 
   defaultSigner.getGasPrice.mockResolvedValue(defaultEstimatedGas);
 
-  return Object.assign(defaultSigner, ...options);
+  return Object.assign({}, defaultSigner, ...options);
 }

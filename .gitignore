@@ -35,3 +35,6 @@ pnpm-debug.log*
 
 #rollup analyzer
 stats.html
+
+#Auto generated component types
+components.d.ts
