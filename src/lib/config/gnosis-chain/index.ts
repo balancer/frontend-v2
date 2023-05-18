@@ -11,6 +11,7 @@ const config: Config = {
   chainName: 'Gnosis Chain',
   name: 'Gnosis Chain',
   shortName: 'Gnosis',
+  monorepoName: 'gnosis',
   slug: 'gnosis-chain',
   network: 'gnosis-chain',
   unknown: false,
