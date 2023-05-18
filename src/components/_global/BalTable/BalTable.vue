@@ -47,7 +47,7 @@ type Props = {
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: DataProp, rowIndex: number) => string;
   isOnlyDescSort?: boolean;
-  showingRowsIdx?: number;
+  renderedRowsIdx?: number;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -349,7 +349,7 @@ watch(
           :key="`tableRow-${dataItem.id ?? index}`"
         >
           <BalTableRow
-            v-if="!showingRowsIdx || index <= showingRowsIdx"
+            v-if="!renderedRowsIdx || index <= renderedRowsIdx"
             :class="
               props.getTableRowClass
                 ? props.getTableRowClass(dataItem, index)

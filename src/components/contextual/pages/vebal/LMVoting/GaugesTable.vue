@@ -43,7 +43,7 @@ type Props = {
   noPoolsLabel?: string;
   isPaginated?: boolean;
   filterText?: string;
-  showingGaugesIdx: number;
+  renderedRowsIdx: number;
 };
 
 /**
@@ -220,7 +220,7 @@ function getPickedTokens(tokens: PoolToken[]) {
         pinOn: 'address',
         pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b'],
       }"
-      :showingRowsIdx="showingGaugesIdx"
+      :renderedRowsIdx="renderedRowsIdx"
     >
       <template #chainColumnHeader>
         <div class="flex items-center">
