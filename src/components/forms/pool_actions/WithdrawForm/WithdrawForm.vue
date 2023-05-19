@@ -3,11 +3,11 @@ import { onBeforeMount, computed } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
-import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
+import ProportionalWithdrawalInput from './components/ProportionalWithdrawalInput.vue';
 import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
 import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useVeBal from '@/composables/useVeBAL';
-import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
+import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import {
   isPreMintedBptType,
@@ -97,7 +97,7 @@ onBeforeMount(() => {
 
 <template>
   <div data-testid="withdraw-form">
-    <ProportionalWithdrawalInputV2 v-if="!isSingleAssetExit" :pool="pool" />
+    <ProportionalWithdrawalInput v-if="!isSingleAssetExit" :pool="pool" />
     <template v-else>
       <!-- Single asset exit input -->
       <TokenInput
@@ -165,7 +165,7 @@ onBeforeMount(() => {
     </div>
 
     <teleport to="#modal">
-      <WithdrawPreviewModalV2
+      <WithdrawPreviewModal
         v-if="showPreview"
         :pool="pool"
         @close="showPreview = false"
