@@ -116,6 +116,7 @@ describe('GaugesTable', () => {
       global,
       props: {
         data: gauges,
+        renderedRowsIdx: 0,
       },
     });
     const usdt = await screen.findByText('USDT');
@@ -137,6 +138,7 @@ describe('GaugesTable', () => {
       props: {
         expiredGauges,
         data: gauges,
+        renderedRowsIdx: 0,
       },
     });
 
@@ -155,6 +157,7 @@ describe('GaugesTable', () => {
       props: {
         expiredGauges,
         data: [{ ...gauge, userVotes: '1' }],
+        renderedRowsIdx: 0,
       },
     });
 

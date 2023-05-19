@@ -80,6 +80,7 @@ export class RecoveryExitHandler implements ExitPoolHandler {
     return {
       amountsOut,
       priceImpact,
+      txReady: true,
     };
   }
 
