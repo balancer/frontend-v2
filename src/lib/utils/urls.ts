@@ -1,8 +1,8 @@
-import { networkMap, Wallet } from '@/providers/wallet.provider';
-import { Network } from '@/lib/config';
+import { Wallet } from '@/providers/wallet.provider';
+import config, { Network } from '@/lib/config';
 
 function getNetworkIconName(network: Network) {
-  return networkMap[Number(network)].toLowerCase();
+  return config[Number(network)].network;
 }
 export function buildNetworkIconURL(network: Network | string): string {
   const networkName =
