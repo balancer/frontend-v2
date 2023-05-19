@@ -37,6 +37,7 @@ const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
 const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
 const { balanceFor } = useTokens();
+const route = useRoute();
 
 /**
  * COMPUTED
@@ -44,7 +45,6 @@ const { balanceFor } = useTokens();
 const hasBpt = computed((): boolean =>
   bnum(balanceFor(props.pool.address)).gt(0)
 );
-
 const joinDisabled = computed(
   (): boolean =>
     !!deprecatedDetails(props.pool.id) ||
@@ -92,10 +92,10 @@ const joinDisabled = computed(
       <div class="pt-4 text-xs text-secondary">
         {{ $t('poolTransfer.myPoolBalancesCard.risksDisclaimer') }}
 
-        <a href="#risks-section"
+        <router-link :to="`${route.fullPath}#risks-section`"
           ><span class="font-medium link">{{
             $t('poolTransfer.myPoolBalancesCard.poolsRisks')
-          }}</span></a
+          }}</span></router-link
         >
         .
       </div>
