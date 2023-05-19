@@ -15,12 +15,9 @@ async function generate() {
     console.log(`Generating contract addresses for network ${network}...`);
     const addresses: AddressMap = require(`@balancer-labs/v2-deployments/dist/addresses/${network}.json`);
 
-    let contracts: ContractMap = {};
+    const contracts: ContractMap = {};
     for (const [address, value] of Object.entries(addresses)) {
-      contracts = {
-        ...contracts,
-        [value.name]: address,
-      };
+      contracts[value.name] = address;
     }
 
     const sortedContracts = Object.fromEntries(
