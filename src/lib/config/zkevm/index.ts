@@ -16,7 +16,7 @@ const config: Config = {
   slug: 'zkevm',
   network: 'polygon-zkevm',
   unknown: false,
-  visibleInUI: false,
+  visibleInUI: true,
   testNetwork: false,
   rpc: `https://polygonzkevm-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   ws: ``,
