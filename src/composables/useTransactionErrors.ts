@@ -7,12 +7,12 @@ export function isUserRejected(error): boolean {
 
   const userRejectionMessages = [
     'user rejected transaction',
-    'Request rejected',
+    'request rejected',
     'user rejected methods.',
     'user rejected the transaction',
     'rejected by user',
     'user canceled',
-    'cancelled by User',
+    'cancelled by user',
     'transaction declined',
     'transaction was rejected',
     'user denied transaction signature',
