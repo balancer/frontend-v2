@@ -73,6 +73,7 @@ export interface Config {
   chainName: string;
   name: string;
   shortName: string;
+  monorepoName?: string;
   slug: string;
   network: string;
   unknown: boolean;

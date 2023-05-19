@@ -7,7 +7,6 @@ import {
   selectByAddress,
 } from '@/lib/utils';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
@@ -28,8 +27,7 @@ export class ExactOutExitHandler implements ExitPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk: BalancerSDK,
-    public readonly gasPriceService: GasPriceService
+    public readonly sdk: BalancerSDK
   ) {}
 
   async exit(params: ExitParams): Promise<TransactionResponse> {
