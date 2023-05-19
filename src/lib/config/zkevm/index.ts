@@ -12,6 +12,7 @@ const config: Config = {
   chainName: 'Polygon zkEVM',
   name: 'Polygon zkEVM Mainnet',
   shortName: 'zkEVM',
+  monorepoName: 'zkevm',
   slug: 'zkevm',
   network: 'polygon-zkevm',
   unknown: false,

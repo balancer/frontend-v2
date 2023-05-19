@@ -7,6 +7,7 @@ import mainnet from './mainnet';
 import optimism from './optimism';
 import polygon from './polygon';
 import gnosisChain from './gnosis-chain';
+import zkevm from './zkevm';
 import test from './test';
 
 // We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
@@ -32,6 +33,7 @@ const config: Record<Network | number, Config> = {
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,
   [Network.GNOSIS]: gnosisChain,
+  [Network.ZKEVM]: zkevm,
   // @ts-ignore
   12345: test,
   // @ts-ignore
