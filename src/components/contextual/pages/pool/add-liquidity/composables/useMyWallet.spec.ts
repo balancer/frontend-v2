@@ -1,4 +1,4 @@
-import { Tab } from '@/composables/pools/useInvestPageTabs';
+import { Tab } from '@/composables/pools/useAddLiquidityTabs';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { initMulticallerAsPoolMulticallerMock } from '@/dependencies/Multicaller.mocks';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';

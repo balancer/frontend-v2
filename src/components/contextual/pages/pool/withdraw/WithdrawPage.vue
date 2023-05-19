@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import WithdrawFormV2 from '@/components/forms/pool_actions/WithdrawForm/WithdrawFormV2.vue';
 import SwapSettingsPopover, {
   SwapSettingsContext,
@@ -49,8 +48,6 @@ onMounted(() => resetTabs());
         <WithdrawPageTabs v-if="!(pool.isInRecoveryMode && pool.isPaused)" />
       </div>
     </template>
-    <WithdrawFormV2 v-if="true" :pool="pool" />
-    <!-- Temp support in case we need to re-enable old flow -->
-    <WithdrawForm v-else :pool="pool" />
+    <WithdrawFormV2 :pool="pool" />
   </BalCard>
 </template>

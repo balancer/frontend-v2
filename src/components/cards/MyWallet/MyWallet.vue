@@ -125,7 +125,7 @@ const emit = defineEmits<{
         <BalLoadingBlock v-else class="w-12 h-8" />
       </div>
       <div class="z-0 px-3 pb-3 h-full my-wallet">
-        <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
+        <BalLoadingBlock v-if="isLoadingBalances" class="mt-4 h-8" />
         <div v-else-if="isWalletReady">
           <template v-if="pool">
             <MyWalletSubheader
