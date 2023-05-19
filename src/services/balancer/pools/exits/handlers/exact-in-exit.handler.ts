@@ -111,12 +111,14 @@ export class ExactInExitHandler implements ExitPoolHandler {
       return {
         amountsOut,
         priceImpact,
+        txReady: true,
       };
     } else {
       const amountsOut = this.getAmountsOut(expectedAmountsOut, tokensOut);
       return {
         amountsOut,
         priceImpact,
+        txReady: true,
       };
     }
   }

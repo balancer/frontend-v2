@@ -62,7 +62,8 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
 
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const isRelayerApproved = bptInValid && approvalActions.length === 0;
+    const isRelayerApproved =
+      (bptInValid && approvalActions.length === 0) || !!relayerSignature;
     const balancer = getBalancerSDK();
 
     try {
@@ -91,7 +92,6 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
       throw new Error('Failed to query exit.');
     }
 
-    console.log('this.exitInfo', this.exitInfo);
     if (!this.exitInfo && !this.exitTx)
       throw new Error('Failed to query exit.');
 
@@ -105,6 +105,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
         this.exitTx?.expectedAmountsOut || this.exitInfo.estimatedAmountsOut,
         this.exitTx?.tokensOut || this.exitInfo.tokensOut
       ),
+      txReady: !!this.exitTx,
     };
   }
 
