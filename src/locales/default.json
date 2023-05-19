@@ -772,6 +772,8 @@
     "myPoolBalancesCard": {
       "title": "My pool balance",
       "altTitle": "My pool liquidity balance",
+      "poolsRisks": "pool's risks",
+      "risksDisclaimer": "Liquidity Providers encounter risks when using DeFi and Balancer pools. Before proceeding, view this",
       "underlyingTokens": "Underlying pool tokens"
     },
     "myWalletTokensCard": {

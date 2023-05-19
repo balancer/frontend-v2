@@ -66,27 +66,38 @@ const joinDisabled = computed(
       block
       @click="startConnectWithInjectedProvider"
     />
-    <div v-else class="grid grid-cols-2 gap-2">
-      <BalBtn
-        :tag="joinDisabled ? 'div' : 'router-link'"
-        :to="{ name: 'add-liquidity', params: { networkSlug } }"
-        :label="$t('addLiquidity')"
-        color="gradient"
-        :disabled="joinDisabled"
-        block
-        @click="trackGoal(Goals.ClickAddLiquidity)"
-      />
+    <div v-else>
+      <div class="grid grid-cols-2 gap-2">
+        <BalBtn
+          :tag="joinDisabled ? 'div' : 'router-link'"
+          :to="{ name: 'add-liquidity', params: { networkSlug } }"
+          :label="$t('addLiquidity')"
+          color="gradient"
+          :disabled="joinDisabled"
+          block
+          @click="trackGoal(Goals.ClickAddLiquidity)"
+        />
 
-      <BalBtn
-        :tag="hasBpt ? 'router-link' : 'div'"
-        :to="{ name: 'withdraw', params: { networkSlug } }"
-        :label="$t('withdraw.label')"
-        :disabled="!hasBpt"
-        color="blue"
-        outline
-        block
-        @click="trackGoal(Goals.ClickWithdraw)"
-      />
+        <BalBtn
+          :tag="hasBpt ? 'router-link' : 'div'"
+          :to="{ name: 'withdraw', params: { networkSlug } }"
+          :label="$t('withdraw.label')"
+          :disabled="!hasBpt"
+          color="blue"
+          outline
+          block
+          @click="trackGoal(Goals.ClickWithdraw)"
+        />
+      </div>
+      <div class="pt-4 text-xs text-secondary">
+        {{ $t('poolTransfer.myPoolBalancesCard.risksDisclaimer') }}
+
+        <router-link to="#risks"
+          ><span class="font-medium link">{{
+            $t('poolTransfer.myPoolBalancesCard.poolsRisks')
+          }}</span></router-link
+        >.
+      </div>
     </div>
   </div>
 </template>

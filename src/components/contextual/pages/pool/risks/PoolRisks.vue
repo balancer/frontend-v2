@@ -16,7 +16,7 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div>
+  <div id="risks">
     <h3 class="px-4 lg:px-0 mb-5" v-text="$t('poolRisks.title')" />
 
     <p v-if="poolSpecificRisks(pool)" class="px-4 lg:px-0 mb-5">
@@ -28,12 +28,16 @@ defineProps<Props>();
     </p>
 
     <ul class="px-8 lg:px-4 list-disc">
-      <li v-for="{ title, hash } in riskLinks(pool)" :key="hash" class="link">
+      <li
+        v-for="{ title, hash } in riskLinks(pool)"
+        :key="hash"
+        class="mb-1 link"
+      >
         <router-link :to="{ name: 'risks', hash }">{{ title }}</router-link>
       </li>
       <li class="link">
         <router-link :to="{ name: 'risks', hash: '#general-risks' }"
-          >General balancer protocol risks</router-link
+          >General Balancer protocol risks</router-link
         >
       </li>
     </ul>
