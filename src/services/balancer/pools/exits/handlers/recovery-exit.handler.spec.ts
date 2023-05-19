@@ -54,6 +54,7 @@ test('Successfully queries a recovery exit', async () => {
       [wethAddress]: '0.00000000000000002', // 20
     },
     priceImpact: 1, // Number(formatFixed(evmPriceImpact, 18)) where evmPriceImpact is defaultPriceImpact
+    txReady: true,
   });
 });
 
