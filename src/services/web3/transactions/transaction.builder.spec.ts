@@ -22,9 +22,9 @@ vi.mock('@ethersproject/providers', () => {
   };
 });
 vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/services/gas-price/gas-price.service', () => {
+vi.mock('@/services/gas/gas.service', () => {
   return {
-    gasPriceService: {
+    gasService: {
       settings: vi.fn().mockReturnValue({
         gasLimit: 1e5,
       }),

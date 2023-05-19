@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
-import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import {
   isJoinsDisabled,
   usePoolHelpers,
@@ -12,6 +11,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import { Goals, trackGoal } from '@/composables/useFathom';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
+import { useTokens } from '@/providers/tokens.provider';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -29,17 +30,21 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { isMigratablePool, hasNonApprovedRateProviders } = usePoolHelpers(
   toRef(props, 'pool')
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
 const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
+const { balanceFor } = useTokens();
 
 /**
  * COMPUTED
  */
+const hasBpt = computed((): boolean =>
+  bnum(balanceFor(props.pool.address)).gt(0)
+);
+
 const joinDisabled = computed(
   (): boolean =>
     !!deprecatedDetails(props.pool.id) ||
