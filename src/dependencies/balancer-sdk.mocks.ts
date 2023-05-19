@@ -3,6 +3,10 @@ import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 import { balancer } from '@/lib/balancer.sdk';
 import { ExitExactInResponse } from '@/services/balancer/pools/exits/handlers/exact-in-exit.handler';
 import { ExitExactOutResponse } from '@/services/balancer/pools/exits/handlers/exact-out-exit.handler';
+import {
+  ExitInfo,
+  ExitResponse,
+} from '@/services/balancer/pools/exits/handlers/generalised-exit.handler';
 import { RecoveryExitResponse } from '@/services/balancer/pools/exits/handlers/recovery-exit.handler';
 import { ExactInJoinResponse } from '@/services/balancer/pools/joins/handlers/exact-in-join.handler';
 import {
@@ -120,13 +124,20 @@ export const defaultGeneralizedJoinResponse = {
   priceImpact: defaultPriceImpact.toString(),
 };
 
-export const defaultGeneralizedExitResponse = {
+export const defaultGeneralizedExitResponse: ExitResponse = {
   to: 'test generalized exit to',
   encodedCall: 'generalized test encoded call',
   tokensOut: [],
   expectedAmountsOut: [],
   minAmountsOut: [],
   priceImpact: defaultPriceImpact.toString(),
+};
+
+export const defaultGetExitInfoResponse: ExitInfo = {
+  tokensOut: [],
+  estimatedAmountsOut: [],
+  priceImpact: defaultPriceImpact.toString(),
+  tokensToUnwrap: [],
 };
 
 export const defaultExactInExit: ExitExactInResponse =
@@ -189,6 +200,8 @@ export function generateBalancerSdkMock() {
   balancerMock.pools.generalisedExit.mockResolvedValue(
     defaultGeneralizedExitResponse
   );
+
+  balancerMock.pools.getExitInfo.mockResolvedValue(defaultGetExitInfoResponse);
 
   // Mock pool find for exact join/exits
   balancerMock.pools.find.mockResolvedValue(

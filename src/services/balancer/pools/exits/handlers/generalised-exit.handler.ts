@@ -1,7 +1,6 @@
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Ref } from 'vue';
 import {
   ExitParams,
   ExitPoolHandler,
@@ -16,10 +15,12 @@ import { getAddress } from '@ethersproject/address';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 type BalancerSdkType = ReturnType<typeof getBalancerSDK>;
-type ExitResponse = Awaited<
+export type ExitResponse = Awaited<
   ReturnType<BalancerSdkType['pools']['generalisedExit']>
 >;
-type ExitInfo = Awaited<ReturnType<BalancerSdkType['pools']['getExitInfo']>>;
+export type ExitInfo = Awaited<
+  ReturnType<BalancerSdkType['pools']['getExitInfo']>
+>;
 
 /**
  * Handles exits using SDK's generalisedExit function.
