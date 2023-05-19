@@ -1543,7 +1543,8 @@
     },
     "preview": {
       "loadingLabel": {
-        "withdraw": "Confirm withdrawal in wallet"
+        "withdraw": "Confirm withdrawal in wallet",
+        "building": "Building transaction"
       },
       "titles": {
         "confirmed": "Withdrawal confirmed",
