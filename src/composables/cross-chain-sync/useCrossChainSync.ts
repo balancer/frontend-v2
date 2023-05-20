@@ -79,7 +79,7 @@ export function useCrossChainSync() {
       !votingEscrowLocks.value?.[Network.MAINNET] ||
       !votingEscrowLocks.value?.[Network.ARBITRUM]
     ) {
-      return;
+      return {};
     }
 
     const { bias, slope } = omniEscrowLocks.value;

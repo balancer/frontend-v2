@@ -3,8 +3,11 @@ import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { Network } from '@/lib/config';
 import IconLoaderWrapper from './IconLoaderWrapper.vue';
 import CrossChainSyncModal from './CrossChainSyncModal.vue';
-import CrossChainSelectNetworkModal from './CrossChainSelectNetworkModal.vue';
-import { useCrossChainSync } from '@/composables/cross-chain-sync/useCrossChainSync';
+
+import {
+  useCrossChainSync,
+  NetworkSyncState,
+} from '@/composables/cross-chain-sync/useCrossChainSync';
 
 const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
 
@@ -14,6 +17,7 @@ const {
   votingEscrowLocks,
   networksSyncState,
   syncedNetworks,
+  isLoading,
 } = useCrossChainSync();
 
 function openSyncModal() {
@@ -36,46 +40,71 @@ async function syncNetwork(network: Network) {
       {{ $t('crossChainBoost.title') }}
     </h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <!-- <template v-if="isLoading">
-        <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
-      </template> -->
-      <BalCard>
-        <div class="mb-3 font-bold label">
-          {{ $t('crossChainBoost.unsyncedNetworks') }}
-        </div>
-        <div class="flex mb-5">
-          <div v-for="network in unsyncedNetworks" :key="network" class="flex">
-            <IconLoaderWrapper :isLoading="true">
+      <template v-if="isLoading">
+        <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
+      </template>
+      <template v-else>
+        <BalCard>
+          <div class="mb-3 font-bold label">
+            {{ $t('crossChainBoost.unsyncedNetworks') }}
+          </div>
+          <div class="flex mb-5">
+            <div
+              v-for="network in unsyncedNetworks"
+              :key="network"
+              class="flex"
+            >
+              <IconLoaderWrapper
+                :isLoading="
+                  networksSyncState[network] === NetworkSyncState.Syncing
+                "
+              >
+                <img
+                  :src="buildNetworkIconURL(network)"
+                  alt=""
+                  class="mr-2 w-8 h-8 rounded-full cursor-pointer"
+                />
+              </IconLoaderWrapper>
+            </div>
+          </div>
+
+          <BalBtn
+            color="blue"
+            size="sm"
+            outline
+            @click="isSyncModalOpen = true"
+          >
+            {{ $t('crossChainBoost.sync') }}
+          </BalBtn>
+        </BalCard>
+
+        <BalCard>
+          <div class="mb-3 font-bold label">
+            {{ $t('crossChainBoost.syncedNetworks') }}
+          </div>
+          <span
+            v-if="syncedNetworks.length === 0"
+            class="text-sm text-gray-600"
+          >
+            {{ $t('crossChainBoost.unsyncedAllDescription') }}
+          </span>
+
+          <div v-for="network in syncedNetworks" :key="network" class="flex">
+            <IconLoaderWrapper>
               <img
-                :src="buildNetworkIconURL(network)"
-                :alt="''"
+                :src="buildNetworkIconURL(Number(network))"
+                alt=""
                 class="mr-2 w-8 h-8 rounded-full cursor-pointer"
               />
             </IconLoaderWrapper>
           </div>
-        </div>
-
-        <BalBtn color="blue" size="sm" outline @click="isSyncModalOpen = true">
-          {{ $t('crossChainBoost.sync') }}
-        </BalBtn>
-      </BalCard>
-
-      <BalCard>
-        <div class="mb-3 font-bold label">
-          {{ $t('crossChainBoost.syncedNetworks') }}
-        </div>
-        <span class="text-sm text-gray-600">
-          {{ $t('crossChainBoost.unsyncedAllDescription') }}
-        </span>
-      </BalCard>
+        </BalCard>
+      </template>
     </div>
 
-    <CrossChainSelectNetworkModal
-      :isVisible="isSyncModalOpen"
-      @close-modal="isSyncModalOpen = false"
-    />
     <CrossChainSyncModal
       :isVisible="isSyncModalOpen"
+      :unsyncedNetworks="unsyncedNetworks"
       @close-modal="isSyncModalOpen = false"
     />
   </div>
