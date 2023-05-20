@@ -8,38 +8,39 @@ import {
   useCrossChainSync,
   NetworkSyncState,
 } from '@/composables/cross-chain-sync/useCrossChainSync';
+import useWeb3 from '@/services/web3/useWeb3';
 
-const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
-
-const isSyncModalOpen = ref(false);
+/**
+ * COMPOSABLES
+ */
+const { isWalletReady } = useWeb3();
 const {
   omniEscrowLocks,
   votingEscrowLocks,
   networksSyncState,
-  syncedNetworks,
+  syncUnsyncState,
   isLoading,
 } = useCrossChainSync();
 
-function openSyncModal() {
-  isSyncModalOpen.value = true;
-}
-async function syncNetwork(network: Network) {
-  const resp = await new Promise(res => {
-    setTimeout(() => {
-      res(true);
-    }, 2000);
-  });
-}
+/**
+ * State
+ */
+const isSyncModalOpen = ref(false);
+const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
 </script>
 
 <template>
   <div class="py-5 px-4">
     <h3 class="mb-3">
-      {{ networksSyncState }}
-      {{ syncedNetworks }}
       {{ $t('crossChainBoost.title') }}
+      {{ networksSyncState }}
+      {{ syncUnsyncState }}
     </h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div v-if="!isWalletReady">
+      {{ $t('crossChainBoost.emptyState') }}
+    </div>
+
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <template v-if="isLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
       </template>
@@ -83,21 +84,27 @@ async function syncNetwork(network: Network) {
             {{ $t('crossChainBoost.syncedNetworks') }}
           </div>
           <span
-            v-if="syncedNetworks.length === 0"
+            v-if="syncUnsyncState.synced?.length === 0"
             class="text-sm text-gray-600"
           >
             {{ $t('crossChainBoost.unsyncedAllDescription') }}
           </span>
 
-          <div v-for="network in syncedNetworks" :key="network" class="flex">
-            <IconLoaderWrapper>
-              <img
-                :src="buildNetworkIconURL(Number(network))"
-                alt=""
-                class="mr-2 w-8 h-8 rounded-full cursor-pointer"
-              />
-            </IconLoaderWrapper>
-          </div>
+          <template v-else>
+            <div
+              v-for="network in syncUnsyncState.synced"
+              :key="network"
+              class="flex"
+            >
+              <IconLoaderWrapper>
+                <img
+                  :src="buildNetworkIconURL(Number(network))"
+                  alt=""
+                  class="mr-2 w-8 h-8 rounded-full cursor-pointer"
+                />
+              </IconLoaderWrapper>
+            </div>
+          </template>
         </BalCard>
       </template>
     </div>

@@ -19,31 +19,23 @@ const currentNetwork = computed<number>(() => {
   )[0];
 });
 
-const addVebalSync = number => {
-  emit('addVebalSync', number);
-  if (props.chosenNetworks.length === props.vebalSynced.length) {
-    emit('update:activeTabIdx', 2);
-  }
-};
-
-const horizSteps = computed(() => {
-  const res: Step[] = [];
-  props.chosenNetworks.filter(item =>
-    props.vebalSynced.includes(item)
-      ? res.push({ tooltip: '', state: StepState.Success })
-      : false
-  );
-  if (currentNetwork.value) {
-    res.push({ tooltip: '', state: StepState.Active });
-  }
-  let remainingLength = props.chosenNetworks.length - props.vebalSynced.length;
-  if (remainingLength > 2) {
-    remainingLength -= 1;
-  }
-  if (remainingLength > 1) {
-    res.push({ tooltip: '', state: StepState.Todo });
-  }
-  return res;
+const networkSyncSteps = computed(() => {
+  return [
+    {
+      label: 'Sync veBAL to Arbitrum',
+      loadingLabel: 'Syncing veBAL to Arbitrum',
+      confirmingLabel: 'Syncing veBAL to Arbitrum',
+      action: () => emit('update:activeTabIdx', 2),
+      stepTooltip: 'Sync veBAL to Arbitrum',
+    },
+    {
+      label: 'Sync veBAL to Arbitrum',
+      loadingLabel: 'Syncing veBAL to Arbitrum',
+      confirmingLabel: 'Syncing veBAL to Arbitrum',
+      action: () => emit('update:activeTabIdx', 2),
+      stepTooltip: 'Sync veBAL to Arbitrum',
+    },
+  ];
 });
 </script>
 
@@ -87,19 +79,10 @@ const horizSteps = computed(() => {
 
     <div class="grow"></div>
 
-    <BalHorizSteps
+    <BalActionSteps
       class="justify-center mb-5"
-      :steps="horizSteps"
+      :actions="networkSyncSteps"
       :spacerWidth="10"
     />
-
-    <BalBtn
-      block
-      color="gradient"
-      size="md"
-      @click="addVebalSync(currentNetwork)"
-    >
-      Confirm veBAL sync
-    </BalBtn>
   </div>
 </template>

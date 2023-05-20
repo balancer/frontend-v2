@@ -129,12 +129,20 @@ export function useCrossChainSync() {
     return NetworkSyncState.Unsync;
   }
 
-  const syncedNetworks = computed(() => {
-    if (!networksSyncState.value) return [];
+  const syncUnsyncState = computed(() => {
+    if (!networksSyncState.value) return {};
 
-    return Object.keys(networksSyncState.value).filter(
-      network => networksSyncState.value?.[network] === NetworkSyncState.Synced
-    );
+    return {
+      synced: Object.keys(networksSyncState.value).filter(
+        network =>
+          networksSyncState.value?.[network] === NetworkSyncState.Synced
+      ),
+      unsynced: Object.keys(networksSyncState.value).filter(
+        network =>
+          networksSyncState.value?.[network] === NetworkSyncState.Unsync ||
+          networksSyncState.value?.[network] === NetworkSyncState.Syncing
+      ),
+    };
   });
 
   async function sync() {}
@@ -144,6 +152,6 @@ export function useCrossChainSync() {
     votingEscrowLocks,
     networksSyncState,
     isLoading,
-    syncedNetworks,
+    syncUnsyncState,
   };
 }

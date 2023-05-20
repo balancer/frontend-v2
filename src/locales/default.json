@@ -237,6 +237,7 @@
     "unsyncedNetworks": "Unsynced networks",
     "unsyncedAllDescription": "Sync veBAL across networks for a boosted APR on your staked positions.",
     "syncedAllDescription": "Your veBAL is synced across all networks",
+    "emptyState": "Once you have some veBAL, sync your balance here to other networks.",
     "syncProcessWarning": {
       "title": "Wait until sync finalizes before restaking on L2",
       "description": "Your veBAL is currently syncing to other networks. Wait until the sync is complete before re-staking any L2 positions in order for your new boosts to apply."
