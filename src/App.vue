@@ -20,6 +20,11 @@ import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
 import { useThirdPartyServices } from './composables/useThirdPartyServices';
+import useAlerts, {
+  Alert,
+  AlertPriority,
+  AlertType,
+} from './composables/useAlerts';
 
 // Dynamic import of layout components:
 // it prevents the initial bundle from including all the layouts (and their unique dependencies)
@@ -67,8 +72,21 @@ const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } = useWeb3();
 const route = useRoute();
 const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
 const { sidebarOpen } = useSidebar();
+const { addAlert } = useAlerts();
 const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
   useThirdPartyServices();
+
+// ADD FEATURE ALERT HERE
+const featureAlert: Alert = {
+  id: 'feature-alert',
+  priority: AlertPriority.LOW,
+  label:
+    'The Graph’s hosted service (our data provider) will undergo scheduled database maintenance on May 22, 2023, 05:00 UTC for a window of up to five hours. During this time, some features of the app might be unavailable and data might be stale.',
+  type: AlertType.FEATURE,
+  rememberClose: false,
+  actionOnClick: false,
+};
+addAlert(featureAlert);
 
 /**
  * WATCHERS
