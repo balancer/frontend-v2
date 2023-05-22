@@ -6,6 +6,8 @@ import {
 import { useVotingEscrowLocksQuery } from '../queries/useVotingEscrowQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 import { VotingEscrowLock } from '../useVotingEscrowLocks';
+import { configService } from '@/services/config/config.service';
+import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-voting-escrow';
 
 export enum NetworkSyncState {
   Unsync = 'Unsync',
@@ -145,7 +147,15 @@ export function useCrossChainSync() {
     };
   });
 
-  async function sync() {}
+  async function sync() {
+    const contractAddress = configService.network.addresses.omniVotingEscrow;
+    if (!contractAddress) throw new Error('No contract address found');
+
+    const omniVotingEscrowContract = new OmniVotingEscrow(contractAddress);
+    const tx = await omniVotingEscrowContract.estimateSendUserBalance(137);
+
+    console.log('tx', tx);
+  }
 
   return {
     omniEscrowLocks,
@@ -153,5 +163,6 @@ export function useCrossChainSync() {
     networksSyncState,
     isLoading,
     syncUnsyncState,
+    sync,
   };
 }

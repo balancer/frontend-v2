@@ -45,11 +45,17 @@ export class ContractConcern extends TransactionConcern {
       abi,
       this.signer
     );
-
+    console.log('Sending transaction', contractWithSigner);
     const block = await this.signer.provider.getBlockNumber();
     console.log(`Contract: ${contractAddress} Action: ${action}`);
     console.log('Params: ', JSON.stringify(params));
-
+    console.log({
+      contractWithSigner,
+      action,
+      params,
+      options,
+      forceLegacyTxType,
+    });
     try {
       const gasSettings = await this.gasPrice.settingsForContractCall(
         contractWithSigner,
@@ -58,6 +64,7 @@ export class ContractConcern extends TransactionConcern {
         options,
         forceLegacyTxType
       );
+      console.log('Gas settings', gasSettings);
       const txOptions = { ...options, ...gasSettings };
 
       await Promise.all([
