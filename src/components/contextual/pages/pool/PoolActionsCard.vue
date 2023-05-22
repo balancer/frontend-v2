@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
-import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import {
   isJoinsDisabled,
   usePoolHelpers,
@@ -12,6 +11,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import { Goals, trackGoal } from '@/composables/useFathom';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
+import { useTokens } from '@/providers/tokens.provider';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -29,17 +30,21 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { isMigratablePool, hasNonApprovedRateProviders } = usePoolHelpers(
   toRef(props, 'pool')
 );
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
 const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
+const { balanceFor } = useTokens();
+const route = useRoute();
 
 /**
  * COMPUTED
  */
+const hasBpt = computed((): boolean =>
+  bnum(balanceFor(props.pool.address)).gt(0)
+);
 const joinDisabled = computed(
   (): boolean =>
     !!deprecatedDetails(props.pool.id) ||
@@ -61,27 +66,39 @@ const joinDisabled = computed(
       block
       @click="startConnectWithInjectedProvider"
     />
-    <div v-else class="grid grid-cols-2 gap-2">
-      <BalBtn
-        :tag="joinDisabled ? 'div' : 'router-link'"
-        :to="{ name: 'add-liquidity', params: { networkSlug } }"
-        :label="$t('addLiquidity')"
-        color="gradient"
-        :disabled="joinDisabled"
-        block
-        @click="trackGoal(Goals.ClickAddLiquidity)"
-      />
+    <div v-else>
+      <div class="grid grid-cols-2 gap-2">
+        <BalBtn
+          :tag="joinDisabled ? 'div' : 'router-link'"
+          :to="{ name: 'add-liquidity', params: { networkSlug } }"
+          :label="$t('addLiquidity')"
+          color="gradient"
+          :disabled="joinDisabled"
+          block
+          @click="trackGoal(Goals.ClickAddLiquidity)"
+        />
 
-      <BalBtn
-        :tag="hasBpt ? 'router-link' : 'div'"
-        :to="{ name: 'withdraw', params: { networkSlug } }"
-        :label="$t('withdraw.label')"
-        :disabled="!hasBpt"
-        color="blue"
-        outline
-        block
-        @click="trackGoal(Goals.ClickWithdraw)"
-      />
+        <BalBtn
+          :tag="hasBpt ? 'router-link' : 'div'"
+          :to="{ name: 'withdraw', params: { networkSlug } }"
+          :label="$t('withdraw.label')"
+          :disabled="!hasBpt"
+          color="blue"
+          outline
+          block
+          @click="trackGoal(Goals.ClickWithdraw)"
+        />
+      </div>
+      <div class="pt-4 text-xs text-secondary">
+        {{ $t('poolTransfer.myPoolBalancesCard.risksDisclaimer') }}
+
+        <router-link :to="{ path: route.fullPath, hash: '#risks-section' }"
+          ><span class="font-medium link">{{
+            $t('poolTransfer.myPoolBalancesCard.poolsRisks')
+          }}</span></router-link
+        >
+        .
+      </div>
     </div>
   </div>
 </template>

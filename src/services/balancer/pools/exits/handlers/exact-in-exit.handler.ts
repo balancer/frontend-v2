@@ -1,5 +1,4 @@
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -37,8 +36,7 @@ export class ExactInExitHandler implements ExitPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk: BalancerSDK,
-    public readonly gasPriceService: GasPriceService
+    public readonly sdk: BalancerSDK
   ) {}
 
   async exit(params: ExitParams): Promise<TransactionResponse> {
@@ -113,12 +111,14 @@ export class ExactInExitHandler implements ExitPoolHandler {
       return {
         amountsOut,
         priceImpact,
+        txReady: true,
       };
     } else {
       const amountsOut = this.getAmountsOut(expectedAmountsOut, tokensOut);
       return {
         amountsOut,
         priceImpact,
+        txReady: true,
       };
     }
   }

@@ -1,7 +1,3 @@
-import {
-  gasPriceService,
-  GasPriceService,
-} from '@/services/gas-price/gas-price.service';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -23,7 +19,7 @@ export enum JoinHandler {
   ExactIn = 'ExactIn',
 }
 
-type HandlerParams = [Ref<Pool>, BalancerSDK, GasPriceService];
+type HandlerParams = [Ref<Pool>, BalancerSDK];
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
  * type or other criteria. It wraps calls to the functions defined in the
@@ -38,12 +34,10 @@ export class JoinPoolService {
    *
    * @param {Pool} pool - The pool you want to join.
    * @param {BalancerSDK} sdk - Balancers SDK.
-   * @param {GasPriceService} gasPriceServ - Gas price service for fetching gas price.
    */
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk = getBalancerSDK(),
-    public readonly gasPriceServ = gasPriceService
+    public readonly sdk = getBalancerSDK()
   ) {
     this.joinHandler = this.setJoinHandler(JoinHandler.Generalised);
   }
@@ -55,8 +49,8 @@ export class JoinPoolService {
    * @returns {JoinPoolHandler} The JoinPoolHandler class to be used.
    */
   setJoinHandler(type: JoinHandler): JoinPoolHandler {
-    const { pool, sdk, gasPriceServ } = this;
-    const handlerParams: HandlerParams = [pool, sdk, gasPriceServ];
+    const { pool, sdk } = this;
+    const handlerParams: HandlerParams = [pool, sdk];
 
     switch (type) {
       case JoinHandler.Swap:
