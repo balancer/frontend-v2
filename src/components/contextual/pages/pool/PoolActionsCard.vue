@@ -92,7 +92,7 @@ const joinDisabled = computed(
       <div class="pt-4 text-xs text-secondary">
         {{ $t('poolTransfer.myPoolBalancesCard.risksDisclaimer') }}
 
-        <router-link :to="`${route.fullPath}#risks-section`"
+        <router-link :to="{ path: route.fullPath, hash: '#risks-section' }"
           ><span class="font-medium link">{{
             $t('poolTransfer.myPoolBalancesCard.poolsRisks')
           }}</span></router-link
