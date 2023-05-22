@@ -201,7 +201,9 @@ export const wallets = () => {
       const { account } = await connector.connect();
 
       setTag('wallet', wallet);
-      setTag('network', config[chainId.value].network);
+      if (connector?.chainId.value) {
+        setTag('network', config[connector.chainId.value].network);
+      }
 
       // listens to wallet/chain changed and disconnect events
       connector.registerListeners();
