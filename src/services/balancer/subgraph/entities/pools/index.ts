@@ -1,5 +1,6 @@
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
+import { Network } from '@/lib/config';
 import { PoolsQueryBuilder } from '@/types/subgraph';
 import {
   GraphQLArgs,
@@ -31,7 +32,7 @@ export default class Pools {
       this.lastQuery = _.cloneDeep(query);
       this.repository = new PoolsSubgraphRepository({
         url: configService.network.subgraph,
-        chainId: configService.network.chainId,
+        chainId: configService.network.chainId as Network,
         query: query,
       });
     }
