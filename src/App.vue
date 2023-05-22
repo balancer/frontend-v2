@@ -76,17 +76,17 @@ const { addAlert } = useAlerts();
 const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
   useThirdPartyServices();
 
-// ADD FEATURE ALERT HERE
+// OPTIONAL FEATURE ALERTS are enabled by featureAlertEnabled toggle
 const featureAlert: Alert = {
   id: 'feature-alert',
   priority: AlertPriority.LOW,
-  label:
-    'The Graph’s hosted service (our data provider) will undergo scheduled database maintenance on May 22, 2023, 05:00 UTC for a window of up to five hours. During this time, some features of the app might be unavailable and data might be stale.',
+  label: '', // Add the new feature alert text here and set featureAlertEnabled to true to activate it
   type: AlertType.FEATURE,
   rememberClose: false,
   actionOnClick: false,
 };
-addAlert(featureAlert);
+const featureAlertEnabled = false;
+if (featureAlertEnabled) addAlert(featureAlert);
 
 /**
  * WATCHERS
