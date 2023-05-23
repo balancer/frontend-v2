@@ -77,12 +77,19 @@ export function riskLinks(pool: Pool) {
 
 export function generateThirdPartyComposabilityRisks(pool): Risk | undefined {
   const protocols = boostedProtocols(pool);
+
   if (
-    protocols?.includes(BoostedProtocol.Reaper) &&
-    !protocols.includes(BoostedProtocol.Aave)
+    protocols?.includes(BoostedProtocol.Tetu) ||
+    protocols?.includes(BoostedProtocol.Idle)
   )
-    // Adding Aave because Reaper harvests Aave rewards
-    protocols.push(BoostedProtocol.Aave);
+    return aLink(
+      'Third party DeFi composability risks: May use multiple yield protocols',
+      '#composability-risk'
+    );
+
+  if (protocols?.includes(BoostedProtocol.Reaper))
+    protocols.push(BoostedProtocol.Granary);
+
   if (protocols) {
     return aLink(
       `Third party DeFi composability risks: ${protocols

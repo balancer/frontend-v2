@@ -11,8 +11,10 @@ import { networkId } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import { POOLS } from '@/constants/pools';
 import {
+  idleBoostedPoolId,
   poolIdWithTwoBoostedProtocols,
   reaperBoostedPoolId,
+  tetuBoostedPoolId,
 } from '@/lib/config/goerli/pools';
 
 function withGoerli() {
@@ -129,13 +131,37 @@ test('Title changes if the pool has specific risks', () => {
   );
 });
 
-test('Generates multi-protocol risks (i.e. Reaper harvests Aave rewards)', () => {
-  expect(
-    generateThirdPartyComposabilityRisks(aPool({ id: reaperBoostedPoolId }))
-  ).toMatchInlineSnapshot(`
+describe('When generates multi-protocol risks links', () => {
+  test('Reaper shows Granary (as it uses it underneath)', () => {
+    expect(
+      generateThirdPartyComposabilityRisks(aPool({ id: reaperBoostedPoolId }))
+    ).toMatchInlineSnapshot(`
     {
       "hash": "#composability-risk",
-      "title": "Third party DeFi composability risks: Reaper, Aave",
+      "title": "Third party DeFi composability risks: Reaper, Granary",
     }
   `);
+  });
+
+  test('Tetu can use other protocols underneath', () => {
+    expect(
+      generateThirdPartyComposabilityRisks(aPool({ id: tetuBoostedPoolId }))
+    ).toMatchInlineSnapshot(`
+      {
+        "hash": "#composability-risk",
+        "title": "Third party DeFi composability risks: May use multiple yield protocols",
+      }
+    `);
+  });
+
+  test('Idle can use other protocols underneath', () => {
+    expect(
+      generateThirdPartyComposabilityRisks(aPool({ id: idleBoostedPoolId }))
+    ).toMatchInlineSnapshot(`
+      {
+        "hash": "#composability-risk",
+        "title": "Third party DeFi composability risks: May use multiple yield protocols",
+      }
+    `);
+  });
 });

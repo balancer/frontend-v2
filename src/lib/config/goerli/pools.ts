@@ -13,6 +13,12 @@ export const poolIdWithTwoBoostedProtocols =
 export const reaperBoostedPoolId =
   '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035x';
 
+export const tetuBoostedPoolId =
+  '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000036x';
+
+export const idleBoostedPoolId =
+  '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000037x';
+
 const pools: Pools = {
   IdsMap: {
     staBAL:
@@ -108,6 +114,18 @@ const pools: Pools = {
       hasIcon: false,
       boosted: true,
       boostedProtocols: [BoostedProtocol.Reaper], // Explicit Reaper metadata for testing purposes
+    },
+    [tetuBoostedPoolId]: {
+      name: 'Tetu Boosted Test Pool',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Tetu], // Explicit Reaper metadata for testing purposes
+    },
+    [idleBoostedPoolId]: {
+      name: 'Idle Boosted Test Pool',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Idle], // Explicit Reaper metadata for testing purposes
     },
   },
   Deep: [
