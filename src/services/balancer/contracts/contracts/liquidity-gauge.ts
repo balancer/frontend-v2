@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
-import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
@@ -11,6 +10,10 @@ import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
+import {
+  EthersContract,
+  getEthersContract,
+} from '@/dependencies/EthersContract';
 
 const MAX_REWARD_TOKENS = 8;
 
@@ -23,7 +26,7 @@ export type RewardTokenData = {
   token: string;
 };
 export class LiquidityGauge {
-  instance: Contract;
+  instance: EthersContract;
 
   constructor(
     public readonly address: string,
@@ -32,6 +35,7 @@ export class LiquidityGauge {
     private readonly config = configService,
     private readonly walletService = walletServiceInstance
   ) {
+    const Contract = getEthersContract();
     this.instance = new Contract(this.address, this.abi, this.provider);
   }
 
