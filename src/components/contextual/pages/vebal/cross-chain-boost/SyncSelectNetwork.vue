@@ -1,32 +1,23 @@
 <script setup lang="ts">
 import { networkLabelMap } from '@/composables/useNetwork';
+import { Network } from '@/lib/config';
+import { allNetworks } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
   unsyncedNetworks: number[];
-  chosenNetworks: number[];
+  chosenNetworks: Set<Network>;
   activeTabIdx: number;
 };
-
-interface MyWallet {
-  title: string;
-  balance: number;
-}
-
-const myWallet = reactive<MyWallet>({
-  title: 'Ethereum Mainnet',
-  balance: 0,
-});
-
-const emit = defineEmits(['update:activeTabIdx', 'updateNetwork']);
-
-const updateNetwork = number => {
-  emit('updateNetwork', number);
-};
-
 const props = defineProps<Props>();
 
+const emit = defineEmits(['update:activeTabIdx', 'toggleNetwork']);
+
+const toggleNetwork = Network => {
+  emit('toggleNetwork', Network);
+};
+
 async function syncNetworks() {
-  if (!props.chosenNetworks.length) return;
+  if (!props.chosenNetworks.size) return;
   emit('update:activeTabIdx', 1);
 }
 </script>
@@ -44,13 +35,13 @@ async function syncNetworks() {
     <div
       class="flex justify-between p-4 mb-3 rounded-lg border-2 border-gray-200 dark:border-gray-800 bg-slate-100 dark:bg-slate-800"
     >
-      <span>{{ myWallet.title }}</span>
-      <div class="text-gray-600">{{ myWallet.balance.toFixed(4) }} veBal</div>
+      <span>Ethereum</span>
+      <div class="text-gray-600">100 veBal</div>
     </div>
 
     <div class="mb-5 rounded-lg border-2 border-gray-200 dark:border-gray-800">
       <div
-        v-for="network in unsyncedNetworks"
+        v-for="network in allNetworks"
         :key="network"
         class="flex justify-between items-center p-4 border-b-2 last:border-b-0 dark:border-gray-800"
       >
@@ -58,15 +49,13 @@ async function syncNetworks() {
           noMargin
           alignCheckbox="items-center"
           :name="network.toString()"
-          :modelValue="!!chosenNetworks.find(i => i === network)"
+          :modelValue="chosenNetworks.has(network)"
           :label="networkLabelMap[network]"
-          @input="updateNetwork(Number(network))"
+          @input="toggleNetwork(network)"
         />
         <div class="text-gray-600">0.0000 veBal</div>
       </div>
     </div>
-
-    <div class="grow" />
 
     <BalBtn block color="gradient" size="md" @click="syncNetworks">
       {{ $t('next') }}

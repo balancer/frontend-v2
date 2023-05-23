@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['closeModal']);
 
-const chosenNetworks = ref<number[]>([]);
+const chosenNetworks = ref(new Set());
 const vebalSynced = ref<number[]>([]);
 
 const syncData = ref({
@@ -35,14 +35,16 @@ const addVebalSync = number => {
 const closeModal = () => {
   emit('closeModal');
   tabActiveIdx.value = 0;
-  chosenNetworks.value = [];
+  chosenNetworks.value = new Set();
   vebalSynced.value = [];
 };
 
-function updateNetwork(network: number) {
-  chosenNetworks.value.some(item => item === network)
-    ? (chosenNetworks.value = chosenNetworks.value.filter(i => i !== network))
-    : chosenNetworks.value.push(network);
+function toggleNetwork(network: number) {
+  if (chosenNetworks.value.has(network)) {
+    chosenNetworks.value.delete(network);
+    return;
+  }
+  chosenNetworks.value.add(network);
 }
 </script>
 
@@ -54,7 +56,8 @@ function updateNetwork(network: number) {
         v-bind="syncData"
         v-model:activeTabIdx="tabActiveIdx"
         style="min-height: 470px"
-        @update-network="updateNetwork"
+        :chosenNetworks="chosenNetworks"
+        @toggle-network="toggleNetwork"
         @add-vebal-sync="addVebalSync"
       />
     </Transition>

@@ -24,8 +24,23 @@ function allEqual<T>(array: T[]): boolean {
   return array.every(value => value === array[0]);
 }
 
+// all networks that are supported by cross-chain sync feature
+export const allNetworks = [
+  Network.POLYGON,
+  Network.ARBITRUM,
+  Network.GNOSIS,
+  Network.OPTIMISM,
+];
+
+// https://layerzero.gitbook.io/docs/technical-reference/mainnet/supported-chain-ids
+export const LayerZeroNetworkId = {
+  [Network.POLYGON]: 109,
+  [Network.ARBITRUM]: 110,
+  [Network.OPTIMISM]: 111,
+};
+
 export function useCrossChainSync() {
-  const { account } = useWeb3();
+  const { account, getSigner } = useWeb3();
 
   const { data: omniEscrowResponse, isLoading: isLoadingOmniEscrow } =
     useOmniEscrowLocksQuery(account);
@@ -58,8 +73,7 @@ export function useCrossChainSync() {
       mainnetVotingEscrowResponse.value?.votingEscrowLocks[0];
     const votingEscrowLocksArbitrum =
       arbitrumVotingEscrowResponse.value?.votingEscrowLocks[0];
-    console.log('votingEscrowLocksArbitrum', votingEscrowLocksArbitrum);
-    console.log('votingEscrowLocks', votingEscrowLocks);
+
     return {
       [Network.MAINNET]: votingEscrowLocks,
       [Network.ARBITRUM]: votingEscrowLocksArbitrum,
@@ -147,18 +161,26 @@ export function useCrossChainSync() {
     };
   });
 
-  async function sync() {
+  async function sync(network: Network) {
     const contractAddress = configService.network.addresses.omniVotingEscrow;
     if (!contractAddress) throw new Error('No contract address found');
 
+    const signer = getSigner();
     const omniVotingEscrowContract = new OmniVotingEscrow(contractAddress);
-    try {
-      const tx = await omniVotingEscrowContract.estimateSendUserBalance(137);
 
-      console.log('tx', tx);
-    } catch (e) {
-      console.log(e);
-    }
+    const tx = await omniVotingEscrowContract.estimateSendUserBalance(
+      signer,
+      LayerZeroNetworkId[network]
+    );
+    const { nativeFee } = tx;
+    console.log('nativeFee', nativeFee);
+
+    return await omniVotingEscrowContract.sendUserBalance({
+      signer,
+      userAddress: account.value,
+      chainId: LayerZeroNetworkId[network],
+      nativeFee,
+    });
   }
 
   return {

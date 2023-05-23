@@ -2,63 +2,73 @@
 import { Step, StepState } from '@/types';
 import { Network } from '@/lib/config';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
+import { TransactionAction, TransactionActionInfo } from '@/types/transactions';
+import { networkLabelMap } from '@/composables/useNetwork';
+import { useI18n } from 'vue-i18n';
 
 type Props = {
-  chosenNetworks: number[];
+  chosenNetworks: Set<Network>;
   vebalSynced: number[];
   activeTabIdx: number;
 };
 
 const props = defineProps<Props>();
-
 const emit = defineEmits(['addVebalSync', 'update:activeTabIdx']);
 
-const currentNetwork = computed<number>(() => {
-  return props.chosenNetworks.filter(
-    item => !props.vebalSynced.includes(item)
-  )[0];
+const { t } = useI18n();
+
+const currentActionIndex = ref(0);
+const currentNetwork = computed(() => {
+  return [...props.chosenNetworks][0];
 });
 
 const networkSyncSteps = computed(() => {
-  return [
-    {
-      label: 'Sync veBAL to Arbitrum',
-      loadingLabel: 'Syncing veBAL to Arbitrum',
-      confirmingLabel: 'Syncing veBAL to Arbitrum',
-      action: () => emit('update:activeTabIdx', 2),
-      stepTooltip: 'Sync veBAL to Arbitrum',
-    },
-    {
-      label: 'Sync veBAL to Arbitrum',
-      loadingLabel: 'Syncing veBAL to Arbitrum',
-      confirmingLabel: 'Syncing veBAL to Arbitrum',
-      action: () => emit('update:activeTabIdx', 2),
-      stepTooltip: 'Sync veBAL to Arbitrum',
-    },
-  ];
+  const actions: TransactionActionInfo[] = [];
+  props.chosenNetworks.forEach(network => {
+    actions.push({
+      label: t('crossChainBoost.syncToNetwork', {
+        network: networkLabelMap[network],
+      }),
+      loadingLabel: t('crossChainBoost.syncingToNetwork', {
+        network: networkLabelMap[network],
+      }),
+      confirmingLabel: t('crossChainBoost.syncingToNetwork', {
+        network: networkLabelMap[network],
+      }),
+      action: async () => {
+        // await sync(network);
+      },
+      stepTooltip: t('crossChainBoost.syncToNetwork', {
+        network: networkLabelMap[network],
+      }),
+    });
+  });
+
+  return actions;
 });
 </script>
 
 <template>
   <div class="flex flex-col">
-    <div class="mb-1.5 text-lg font-bold">Sync veBAL to Arbitrum</div>
+    <div class="mb-1.5 text-lg font-bold">Sync veBAL</div>
     <div class="mb-5 text-sm text-gray-600">
-      This will sync your veBAL balance and give you a staking boost on
-      Arbitrum.
+      {{ $t('crossChainBoost.syncNetworkAction.title') }}
     </div>
 
     <div
-      class="overflow-hidden mb-4 rounded-lg border-2 border-gray-200 dark:border-gray-800"
+      v-for="network in chosenNetworks.values()"
+      :key="network"
+      class="mb-4 rounded-lg border-2 border-gray-200 dark:border-gray-800"
     >
       <div
         class="flex items-center py-1 px-4 border-b-2 border-gray-200 dark:border-gray-800 bg-slate-100 dark:bg-slate-800"
       >
         <img
-          :src="buildNetworkIconURL(currentNetwork)"
-          :alt="''"
+          :src="buildNetworkIconURL(network)"
+          alt=""
           class="mr-2 w-8 h-8 rounded-full cursor-pointer"
         />
-        <div class="font-semibold">{{ Network[currentNetwork] }}</div>
+        <div class="font-semibold">{{ networkLabelMap[network] }}</div>
       </div>
 
       <div>
@@ -80,9 +90,9 @@ const networkSyncSteps = computed(() => {
     <div class="grow"></div>
 
     <BalActionSteps
-      class="justify-center mb-5"
       :actions="networkSyncSteps"
       :spacerWidth="10"
+      @set-current-action-index="currentActionIndex = $event"
     />
   </div>
 </template>

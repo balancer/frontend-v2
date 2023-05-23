@@ -32,7 +32,7 @@ const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
 
 <template>
   <div class="py-5 px-4">
-    <div @click="sync">sync</div>
+    <div @click="sync(Network.ARBITRUM)">sync</div>
     <h3 class="mb-3">
       {{ $t('crossChainBoost.title') }}
       {{ networksSyncState }}
