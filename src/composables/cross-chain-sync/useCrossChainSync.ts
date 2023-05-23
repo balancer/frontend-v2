@@ -152,9 +152,13 @@ export function useCrossChainSync() {
     if (!contractAddress) throw new Error('No contract address found');
 
     const omniVotingEscrowContract = new OmniVotingEscrow(contractAddress);
-    const tx = await omniVotingEscrowContract.estimateSendUserBalance(137);
+    try {
+      const tx = await omniVotingEscrowContract.estimateSendUserBalance(137);
 
-    console.log('tx', tx);
+      console.log('tx', tx);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return {
