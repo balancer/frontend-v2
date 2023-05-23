@@ -194,7 +194,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         ? apr
         : 0;
     },
-    width: 220,
+    width: 150,
   },
   {
     name: t('expiryDate'),
