@@ -1,11 +1,15 @@
 import { initEthersContract } from '@/dependencies/EthersContract';
 import { MockedContractWithSigner } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
+import { initContractConcern } from '@/dependencies/contract.concern';
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractConcern } from './concerns/contract.concern';
 import { RawConcern } from './concerns/raw.concern';
 import { TransactionBuilder } from './transaction.builder';
+import { initContractConcern } from '@/dependencies/contract.concern';
+
+initContractConcern();
 
 vi.mock('@ethersproject/providers', () => {
   return {
@@ -51,9 +55,10 @@ class ContractMock extends MockedContractWithSigner {
 }
 
 initOldMulticallerWithDefaultMocks();
-
 //@ts-ignore
 initEthersContract(ContractMock);
+// Init real implementation to be tested
+initContractConcern();
 
 const SignerMock = JsonRpcSigner;
 
@@ -86,7 +91,7 @@ describe('TransactionBuilder', () => {
   });
 
   describe('Contract concern', () => {
-    it('It calls given contract with params and options', async () => {
+    it.only('It calls given contract with params and options', async () => {
       const txBuilder = new TransactionBuilder(signer);
       await txBuilder.contract.sendTransaction({
         contractAddress: AddressZero,
