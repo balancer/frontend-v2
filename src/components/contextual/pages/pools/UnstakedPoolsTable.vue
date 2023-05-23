@@ -14,7 +14,7 @@ import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 const showStakeModal = ref(false);
 const stakePool = ref<Pool | undefined>();
 const networkName = configService.network.shortName;
-const hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate', 'volume'];
+const hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
 
 /**
  * PROVIDERS

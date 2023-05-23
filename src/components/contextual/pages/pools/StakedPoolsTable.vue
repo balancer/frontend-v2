@@ -41,7 +41,7 @@ const noPoolsLabel = computed(() => {
 });
 
 const hiddenColumns = computed(() => {
-  const _hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate', 'volume'];
+  const _hiddenColumns = ['poolVolume', 'migrate', 'lockEndDate'];
   if (!isPoolBoostsEnabled.value) _hiddenColumns.push('myBoost');
 
   return _hiddenColumns;
