@@ -1,4 +1,4 @@
-import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
+import { aBoostedPool } from '@/__mocks__/boosted-pool';
 import {
   generateThirdPartyComposabilityRisks,
   riskLinks,
@@ -10,7 +10,10 @@ import { PoolType } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import { POOLS } from '@/constants/pools';
-import { reaperBoostedPoolId } from '@/lib/config/goerli/pools';
+import {
+  poolIdWithTwoBoostedProtocols,
+  reaperBoostedPoolId,
+} from '@/lib/config/goerli/pools';
 
 function withGoerli() {
   networkId.value = Network.GOERLI;
@@ -30,7 +33,8 @@ function withGnosis() {
 describe('Generates links for', () => {
   test('a boosted pool with Aave and Morph boosted protocols', () => {
     withGoerli();
-    expect(riskLinks(BoostedPoolMock)).toMatchInlineSnapshot(`
+    expect(riskLinks(aBoostedPool({ id: poolIdWithTwoBoostedProtocols })))
+      .toMatchInlineSnapshot(`
       [
         {
           "hash": "#boosted-pools",

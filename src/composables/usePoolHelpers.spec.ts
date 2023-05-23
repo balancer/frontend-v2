@@ -46,6 +46,8 @@ import {
   wethAddress,
 } from '@tests/unit/builders/address';
 import { anAprBreakdown } from '@tests/unit/builders/sdk-pool.builders';
+import { aBoostedPool } from '@/__mocks__/boosted-pool';
+import { poolIdWithTwoBoostedProtocols } from '@/lib/config/goerli/pools';
 
 silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 
@@ -778,5 +780,7 @@ test('Returns the wNativeAsset address in the current network (goerli for tests)
 });
 
 test('Returns boosted protocols from boosted pool', () => {
-  expect(boostedProtocols(BoostedPoolMock)).toEqual(['aave', 'morpho']);
+  expect(
+    boostedProtocols(aBoostedPool({ id: poolIdWithTwoBoostedProtocols }))
+  ).toEqual(['aave', 'morpho']);
 });
