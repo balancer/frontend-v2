@@ -18,19 +18,22 @@ export const isNativeAssetWrap = (
   tokenIn: string,
   tokenOut: string
 ): boolean => {
-  const nativeAddress = configService.network.nativeAsset.address;
-  const { weth } = configService.network.addresses;
-  return tokenIn === nativeAddress && tokenOut === weth;
+  const nativeAddress = configService.network.tokens.Addresses.nativeAsset;
+  const wNativeAddress = configService.network.tokens.Addresses.wNativeAsset;
+  return tokenIn === nativeAddress && tokenOut === wNativeAddress;
 };
 
 export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
-  const nativeAddress = configService.network.nativeAsset.address;
-  const { weth, stETH, wstETH } = configService.network.addresses;
+  const nativeAddress = configService.network.tokens.Addresses.nativeAsset;
+  const wNativeAddress = configService.network.tokens.Addresses.wNativeAsset;
+  const { stETH, wstETH } = configService.network.tokens.Addresses;
 
-  if (tokenIn === nativeAddress && tokenOut === weth) return WrapType.Wrap;
+  if (tokenIn === nativeAddress && tokenOut === wNativeAddress)
+    return WrapType.Wrap;
   if (tokenIn === stETH && tokenOut === wstETH) return WrapType.Wrap;
 
-  if (tokenOut === nativeAddress && tokenIn === weth) return WrapType.Unwrap;
+  if (tokenOut === nativeAddress && tokenIn === wNativeAddress)
+    return WrapType.Unwrap;
   if (tokenOut === stETH && tokenIn === wstETH) return WrapType.Unwrap;
 
   return WrapType.NonWrap;
@@ -42,9 +45,10 @@ export const getWrapOutput = async (
   wrapAmount: BigNumber
 ): Promise<BigNumber> => {
   if (wrapType === WrapType.NonWrap) throw new Error('Invalid wrap type');
-  const { weth, wstETH } = configService.network.addresses;
+  const wNativeAddress = configService.network.tokens.Addresses.wNativeAsset;
+  const { wstETH } = configService.network.tokens.Addresses;
 
-  if (wrapper === weth) return BigNumber.from(wrapAmount);
+  if (wrapper === wNativeAddress) return BigNumber.from(wrapAmount);
   if (wrapper === wstETH) {
     return convertStEthWrap({
       amount: wrapAmount,
