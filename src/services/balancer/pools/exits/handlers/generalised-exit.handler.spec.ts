@@ -24,6 +24,9 @@ const exitParams = buildExitParams({ bptIn: '1' });
 
 test('Successfully executes a generalized exit transaction', async () => {
   const handler = await mountGeneralizedExitHandler(BoostedPoolMock);
+
+  await handler.queryExit(exitParams);
+
   const joinResult = await handler.exit(exitParams);
 
   expect(joinResult).toEqual(defaultTransactionResponse);

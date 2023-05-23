@@ -26,6 +26,7 @@ import {
 } from '@/types/transactions';
 import signature from '@/assets/images/icons/signature.svg';
 import { captureException } from '@sentry/core';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -108,6 +109,7 @@ watch(
  */
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTransactionErrors();
+const { t } = useI18n();
 
 /**
  * COMPUTED
@@ -149,6 +151,11 @@ const steps = computed((): Step[] => actions.value.map(action => action.step));
 
 const spacerWidth = computed((): number => {
   return 13 - steps.value.length;
+});
+
+const _loadingLabel = computed((): string => {
+  if (currentAction.value?.pending) return currentAction.value.loadingLabel;
+  return props.loadingLabel || t('Loading');
 });
 
 /**
@@ -258,11 +265,7 @@ async function handleTransaction(
           :disabled="props.disabled"
           color="gradient"
           :loading="currentAction?.pending || isLoading"
-          :loadingLabel="
-            isLoading
-              ? loadingLabel || $t('loading')
-              : currentAction?.loadingLabel
-          "
+          :loadingLabel="_loadingLabel"
           block
           @click="currentAction?.promise()"
         >

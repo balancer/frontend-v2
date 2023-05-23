@@ -80,7 +80,11 @@ export class SwapExitHandler implements ExitPoolHandler {
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
     if (!amountIn || bnum(amountIn).eq(0))
-      return { amountsOut: { [tokenOut.address]: '0' }, priceImpact: 0 };
+      return {
+        amountsOut: { [tokenOut.address]: '0' },
+        priceImpact: 0,
+        txReady: true,
+      };
 
     if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
@@ -108,7 +112,11 @@ export class SwapExitHandler implements ExitPoolHandler {
       this.lastSwapRoute.marketSp
     );
 
-    return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
+    return {
+      amountsOut: { [tokenOut.address]: amountOut },
+      priceImpact,
+      txReady: true,
+    };
   }
 
   /**
@@ -126,7 +134,7 @@ export class SwapExitHandler implements ExitPoolHandler {
 
     const amountOut = amountsOut[0].value;
     if (!amountOut || bnum(amountOut).eq(0))
-      return { amountsOut: {}, priceImpact: 0 };
+      return { amountsOut: {}, priceImpact: 0, txReady: true };
 
     if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
@@ -157,7 +165,11 @@ export class SwapExitHandler implements ExitPoolHandler {
       this.lastSwapRoute.marketSp
     );
 
-    return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
+    return {
+      amountsOut: { [tokenOut.address]: amountOut },
+      priceImpact,
+      txReady: true,
+    };
   }
 
   private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {

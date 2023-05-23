@@ -7,30 +7,52 @@ export function isUserRejected(error): boolean {
 
   const userRejectionMessages = [
     'user rejected transaction',
-    'Request rejected',
-    'User rejected methods.',
-    'User rejected the transaction',
-    'Rejected by user',
-    'User canceled',
-    'Cancelled by User',
-    'Transaction declined',
-    'Transaction was rejected',
+    'request rejected',
+    'user rejected methods.',
+    'user rejected the transaction',
+    'rejected by user',
+    'user canceled',
+    'cancelled by user',
+    'transaction declined',
+    'transaction was rejected',
+    'user denied transaction signature',
   ];
 
-  if (error.message && userRejectionMessages.includes(error.message)) {
+  if (
+    typeof error === 'string' &&
+    userRejectionMessages.includes(error.toLowerCase())
+  )
     return true;
-  }
+
+  if (
+    error.message &&
+    userRejectionMessages.includes(error.message.toLowerCase())
+  )
+    return true;
+
+  if (
+    typeof error.reason === 'string' &&
+    userRejectionMessages.includes(error.reason.toLowerCase())
+  )
+    return true;
 
   if (
     error.cause?.message &&
-    userRejectionMessages.includes(error.cause.message)
-  ) {
+    userRejectionMessages.includes(error.cause.message.toLowerCase())
+  )
     return true;
-  }
+
+  if (
+    typeof error.cause === 'string' &&
+    userRejectionMessages.includes(error.cause.toLowerCase())
+  )
+    return true;
 
   if (error?.code && error.code === 4001) {
     return true;
   }
+
+  if (error.cause instanceof Error) return isUserRejected(error.cause);
 
   return false;
 }

@@ -58,7 +58,10 @@ const {
   queryExitQuery,
   fiatTotalOut,
   approvalActions: exitPoolApprovalActions,
+  relayerApproval,
   shouldExitViaInternalBalance,
+  isTxPayloadReady,
+  relayerSignature,
 } = useExitPool();
 
 const withdrawalAction: TransactionActionInfo = {
@@ -92,6 +95,16 @@ const txSummary = computed<string>(() => {
     fNum(fiatTotalOut.value, FNumFormats.fiat),
     poolWeightsLabel(props.pool),
   ]);
+});
+
+// Prevent the tx action with loading state if:
+// 1. If the exit provider has not yet generated a tx payload, and
+// 2. The user has signed the relayer or has already approved the relayer.
+const isBuildingTx = computed((): boolean => {
+  return (
+    !isTxPayloadReady.value &&
+    (!!relayerSignature.value || relayerApproval.isUnlocked.value)
+  );
 });
 
 /**
@@ -167,6 +180,10 @@ watch(blockNumber, () => {
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
       :disabled="isMismatchedNetwork"
+      :isLoading="isBuildingTx"
+      :loadingLabel="
+        isBuildingTx ? $t('withdraw.preview.loadingLabel.building') : undefined
+      "
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />

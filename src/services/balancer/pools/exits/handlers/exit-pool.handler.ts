@@ -31,6 +31,10 @@ export type ExitParams = {
 export type QueryOutput = {
   priceImpact: number;
   amountsOut: AmountsOut;
+  // Whether the transaction is ready to be sent.
+  // In some cases queries may require approvals first before they can generate
+  // the tx paylod. So in the UI we need a way to show a loading state until the tx is ready.
+  txReady: boolean;
 };
 
 export abstract class ExitPoolHandler {

@@ -256,8 +256,8 @@ watch(
             />
           </div>
           <div class="mb-4">
-            <h4
-              class="px-4 lg:px-0 mb-4"
+            <h3
+              class="px-4 lg:px-0 mb-3"
               v-text="$t('poolComposition.title')"
             />
             <BalLoadingBlock v-if="loadingPool" class="h-64" />
