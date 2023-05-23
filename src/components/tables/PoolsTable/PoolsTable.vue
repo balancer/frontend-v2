@@ -101,6 +101,14 @@ const wideCompositionWidth = computed(() => {
 });
 
 /**
+ * COMPUTED
+ */
+const aprColumnWidth = computed(() => {
+  if (router.currentRoute.value.name === 'portfolio') return 150;
+  return 220;
+});
+
+/**
  * DATA
  */
 const columns = computed<ColumnDefinition<Pool>[]>(() => [
@@ -194,7 +202,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         ? apr
         : 0;
     },
-    width: 220,
+    width: aprColumnWidth.value,
   },
   {
     name: t('expiryDate'),
