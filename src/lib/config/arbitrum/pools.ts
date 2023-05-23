@@ -1,5 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools } from '@/types/pools';
+import { PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {},
@@ -175,6 +175,14 @@ const pools: Pools = {
   GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [],
+  Issues: {
+    [PoolWarning.PoolOwnerVulnWarningGovernance]: [
+      '0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
+      '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
+    ],
+  },
 };
 
 export default pools;
