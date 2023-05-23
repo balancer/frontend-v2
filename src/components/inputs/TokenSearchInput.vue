@@ -7,7 +7,11 @@ import { useI18n } from 'vue-i18n';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import useVeBal from '@/composables/useVeBAL';
-import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import {
+  NATIVE_ASSET_ADDRESS,
+  TOKENS,
+  WRAPPED_NATIVE_ASSET_ADDRESS,
+} from '@/constants/tokens';
 import { includesAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -36,7 +40,7 @@ const selectTokenModal = ref(false);
  * COMPOSABLES
  */
 const { getToken, tokens, balances } = useTokens();
-const { account, appNetworkConfig } = useWeb3();
+const { account } = useWeb3();
 const { veBalTokenInfo } = useVeBal();
 const { t } = useI18n();
 const { upToMediumBreakpoint } = useBreakpoints();
@@ -93,10 +97,10 @@ const selectableTokensAddresses = computed<string[]>(() => {
  */
 function addToken(token: string) {
   let _token = token;
-  // special case for ETH where we want it to filter as WETH regardless
-  // as ETH is the native asset
+  // special case for the native asset where we want it to filter as
+  // wrapped native asset regardless as the native asset can't be in pools
   if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
-    _token = appNetworkConfig.addresses.weth;
+    _token = WRAPPED_NATIVE_ASSET_ADDRESS;
   }
   // const newSelected = [...props.modelValue, _token];
   emit('add', _token);
