@@ -1,13 +1,12 @@
 import { initEthersContract } from '@/dependencies/EthersContract';
+import { initContractConcern } from '@/dependencies/contract.concern';
 import { MockedContractWithSigner } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
-import { initContractConcern } from '@/dependencies/contract.concern';
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractConcern } from './concerns/contract.concern';
 import { RawConcern } from './concerns/raw.concern';
 import { TransactionBuilder } from './transaction.builder';
-import { initContractConcern } from '@/dependencies/contract.concern';
 
 initContractConcern();
 
@@ -25,7 +24,7 @@ vi.mock('@ethersproject/providers', () => {
     }),
   };
 });
-vi.mock('@/services/rpc-provider/rpc-provider.service');
+
 vi.mock('@/services/gas/gas.service', () => {
   return {
     gasService: {
@@ -36,15 +35,6 @@ vi.mock('@/services/gas/gas.service', () => {
         gasLimit: 1e5,
       }),
     },
-  };
-});
-vi.mock('ethers', () => {
-  return {
-    Contract: vi.fn().mockImplementation(() => {
-      return {
-        test: vi.fn(),
-      };
-    }),
   };
 });
 
@@ -91,7 +81,7 @@ describe('TransactionBuilder', () => {
   });
 
   describe('Contract concern', () => {
-    it.only('It calls given contract with params and options', async () => {
+    it('It calls given contract with params and options', async () => {
       const txBuilder = new TransactionBuilder(signer);
       await txBuilder.contract.sendTransaction({
         contractAddress: AddressZero,
