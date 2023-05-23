@@ -84,6 +84,7 @@ const POOL_ISSUES = {
     ],
   },
   [Network.GNOSIS]: {},
+  [Network.ZKEVM]: {},
 };
 
 const issues = POOL_ISSUES[networkId.value];
