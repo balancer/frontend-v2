@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onBeforeMount, computed } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import ProportionalWithdrawalInput from './components/ProportionalWithdrawalInput.vue';
-import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
+import WithdrawTotals from './components/WithdrawTotals.vue';
 import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
@@ -116,7 +115,7 @@ onBeforeMount(() => {
       />
     </template>
 
-    <WithdrawTotalsV2 class="mt-4" />
+    <WithdrawTotals class="mt-4" />
 
     <div
       v-if="highPriceImpact"
