@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 export const poolIdThatRequiresInternalBalanceExit =
@@ -5,6 +6,9 @@ export const poolIdThatRequiresInternalBalanceExit =
 
 export const boostedPoolId =
   '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f';
+
+export const reaperBoostedPoolId =
+  '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035x';
 
 const pools: Pools = {
   IdsMap: {
@@ -89,6 +93,13 @@ const pools: Pools = {
       name: 'Balancer Boosted Aave USD',
       hasIcon: false,
       boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave, BoostedProtocol.Morpho], // Two boosted protocols for testing purposes
+    },
+    [reaperBoostedPoolId]: {
+      name: 'Reaper Boosted Test Pool',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Reaper], // Explicit Reaper metadata for testing purposes
     },
   },
   Deep: [

@@ -38,6 +38,7 @@ import {
   tokenWeight,
   joinTokens,
   wNativeAssetAddress,
+  boostedProtocols,
 } from './usePoolHelpers';
 import {
   daiAddress,
@@ -774,4 +775,8 @@ test('Gets all pool token addresses that can possibly be used to join a pool', a
 
 test('Returns the wNativeAsset address in the current network (goerli for tests)', () => {
   expect(wNativeAssetAddress()).toBe(wethAddress);
+});
+
+test('Returns boosted protocols from boosted pool', () => {
+  expect(boostedProtocols(BoostedPoolMock)).toEqual(['aave', 'morpho']);
 });

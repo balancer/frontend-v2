@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import {
   isArbitrum,
   isGnosis,
@@ -5,6 +6,7 @@ import {
   isPolygon,
 } from '@/composables/useNetwork';
 import {
+  boostedProtocols,
   isBoosted,
   isComposableStable,
   isMetaStable,
@@ -13,6 +15,7 @@ import {
 } from '@/composables/usePoolHelpers';
 import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
+import { capitalize } from 'lodash';
 
 interface Risk {
   title: string;
@@ -55,7 +58,12 @@ export function riskLinks(pool: Pool) {
   if (isStable(pool.poolType)) result.push(stableRisks);
   if (isComposableStable(pool.poolType)) result.push(composableRisks);
   if (isMetaStable(pool.poolType)) result.push(metaStableRisks);
-  if (isBoosted(pool)) result.push(boostedRisks);
+
+  if (isBoosted(pool)) {
+    result.push(boostedRisks);
+    const thirdPartyRisks = generateThirdPartyComposabilityRisks(pool);
+    if (thirdPartyRisks) result.push(thirdPartyRisks);
+  }
 
   if (isArbitrum.value) result.push(arbitrumRisks);
   if (isOptimism.value) result.push(optimismRisks);
@@ -65,6 +73,24 @@ export function riskLinks(pool: Pool) {
   if (hasOwner(pool)) result.push(mutableRisks);
 
   return result;
+}
+
+export function generateThirdPartyComposabilityRisks(pool): Risk | undefined {
+  const protocols = boostedProtocols(pool);
+  if (
+    protocols?.includes(BoostedProtocol.Reaper) &&
+    !protocols.includes(BoostedProtocol.Aave)
+  )
+    // Adding Aave because Reaper harvests Aave rewards
+    protocols.push(BoostedProtocol.Aave);
+  if (protocols) {
+    return aLink(
+      `Third party DeFi composability risks: ${protocols
+        .map(protocol => capitalize(protocol))
+        .join(', ')}`,
+      '#composability-risk'
+    );
+  }
 }
 
 function hasOwner(pool) {
