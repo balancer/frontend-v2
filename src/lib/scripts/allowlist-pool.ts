@@ -37,3 +37,5 @@ try {
 } catch (error) {
   console.error('Failed to write allowlist file.', { cause: error });
 }
+
+export {};
