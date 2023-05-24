@@ -1,5 +1,7 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
+import StableAllowlist from './allowlists/stable.json';
+import WeightedAllowlist from './allowlists/weighted.json';
 
 const pools: Pools = {
   IdsMap: {},
@@ -25,11 +27,7 @@ const pools: Pools = {
     'ComposableStable',
   ],
   Stable: {
-    AllowList: [
-      '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // bb-ag-usd
-      '0x9949f1884b61a8265e12056650c1ac4677a75403000000000000000000000014', // 2EUR (EURe)
-      '0xa611a551b95b205ccd9490657acf7899daee5db700000000000000000000002e', // EURe / bb-ag-usd
-    ],
+    AllowList: StableAllowlist,
   },
   Investment: {
     AllowList: [],
@@ -37,11 +35,7 @@ const pools: Pools = {
   Weighted: {
     // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
-    AllowList: [
-      '0xa99fd9950b5d5dceeaf4939e221dca8ca9b938ab000100000000000000000025', // 25WETH-25BAL-25GNO-25wxDAI
-      '0x388cae2f7d3704c937313d990298ba67d70a3709000200000000000000000026', // 50AGVE-50GNO
-      '0x4bcf6b48906fa0f68bea1fc255869a41241d4851000200000000000000000021', // 50WXDAI-50MPS
-    ],
+    AllowList: WeightedAllowlist,
   },
   Factories: {
     '0xc128468b7ce63ea702c1f104d55a2566b13d3abd': 'composableStablePool', // ComposableStable V3

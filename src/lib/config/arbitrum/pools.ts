@@ -1,5 +1,7 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { PoolWarning, Pools } from '@/types/pools';
+import StableAllowlist from './allowlists/stable.json';
+import WeightedAllowlist from './allowlists/weighted.json';
 
 const pools: Pools = {
   IdsMap: {},
@@ -25,24 +27,7 @@ const pools: Pools = {
     'ComposableStable',
   ],
   Stable: {
-    AllowList: [
-      '0x9be7de742865d021c0e8fb9d64311b2c040c1ec1000200000000000000000012', // arbitrum
-      '0x1533a3278f3f9141d5f820a184ea4b017fce2382000000000000000000000016', // arbitrum
-      '0x386b5d43ba8b97c43d4afb4cdae7877a1b295e8a000000000000000000000020', // tusd arbitrum
-      '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d', // mai
-      '0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f', // VST
-      '0xd89746affa5483627a87e55713ec1905114394950002000000000000000000bf', // fluid stable
-      '0x7bceaa9c5e7f4836fec3bce2d5346637c9b13970000000000000000000000102', // vesta new stable
-      '0xfb5e6d0c1dfed2ba000fbc040ab8df3615ac329c000000000000000000000159', // stETH
-      '0x36bf227d6bac96e2ab1ebb5492ecec69c691943f000200000000000000000316', // wsteth/weth stable
-      '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bbrfusd
-      '0x70ba7dc356b41c849e74c679932c852cc0331a90000000000000000000000357', // gdai/mai/usdc
-      '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
-      '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd', // bb-a-eth / reth
-      '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a', // bb-a-usd aave v3
-      '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400', // wsteth / bb-a-weth
-      '0x161cd105034ac000d2aad75f06c26e943130bc0e000200000000000000000426', // nfte/weth
-    ],
+    AllowList: StableAllowlist,
   },
   Investment: {
     AllowList: [''],
@@ -50,22 +35,7 @@ const pools: Pools = {
   Weighted: {
     // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
-    AllowList: [
-      '0xd449efa0a587f2cb6be3ae577bc167a7745258100001000000000000000003f4',
-      '0xce34c867d7053befb3421d6adabcb5ce55ff777b00010000000000000000041b', // crv/wbtc/wsteth/gdai/uni/link
-      '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/bb-a-usd
-      '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
-      '0x3efd3e18504dc213188ed2b694f886a305a6e5ed00020000000000000000041d', // peg/weth
-      '0x89dc7e71e362faf88d92288fe2311d25c6a1b5e0000200000000000000000423', // ohm/weth
-      '0xce6195089b302633ed60f3f427d1380f6a2bfbc7000200000000000000000424', // ohm/usdc
-      '0xc69771058481551261709d8db44977e9afde645000010000000000000000042a', // wbtc/wsteth-bb-a-weth/bb-a-usd
-      '0x49f3040f6e4dc7ff8fd85502bc40877311ff13d700020000000000000000042b', // dfx/weth
-      '0x161cd105034ac000d2aad75f06c26e943130bc0e000200000000000000000426', // nfte/weth
-      '0x542f16da0efb162d20bf4358efa095b70a100f9e000000000000000000000436', // tbtc/wbtc
-      '0xc9f52540976385a84bf416903e1ca3983c539e34000200000000000000000434', // tbtc/weth
-      '0x8d333f82e0693f53fa48c40d5d4547142e907e1d000200000000000000000437', // pal/ohm
-      '0x00e7ccb0e16fc07d0cb528efea2c130c41c2fc1600010000000000000000043d', // 25LDO/25wstETH/25RPL/25rETH
-    ],
+    AllowList: WeightedAllowlist,
   },
   Factories: {
     '0x7dfdef5f355096603419239ce743bfaf1120312b': 'weightedPool', // Arbitrum Weighted
