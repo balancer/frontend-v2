@@ -10,7 +10,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
 
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import {
+  NATIVE_ASSET_ADDRESS,
+  WRAPPED_NATIVE_ASSET_ADDRESS,
+} from '@/constants/tokens';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 
 const SWAP_COST = import.meta.env.VITE_SWAP_COST || '100000';
@@ -35,7 +38,6 @@ Aims to manage liquidity using SOR.
 */
 export class SorManager {
   private sorV2: SORV2;
-  private weth: string;
   private fetchStatus: FetchStatus = {
     v2finishedFetch: false,
     v2success: false,
@@ -45,15 +47,8 @@ export class SorManager {
   gasPrice: BigNumber;
   selectedPools: SubgraphPoolBase[] = [];
 
-  constructor(
-    provider: Provider,
-    gasPrice: BigNumber,
-    maxPools: number,
-    chainId: number,
-    weth: string
-  ) {
+  constructor(provider: Provider, gasPrice: BigNumber, maxPools: number) {
     this.sorV2 = getBalancerSDK().sor;
-    this.weth = weth;
     this.gasPrice = gasPrice;
     this.maxPools = maxPools;
     this.isFetching = false;
@@ -66,7 +61,10 @@ export class SorManager {
     tokenDecimals: number,
     manualCost: string | null = null
   ): Promise<BigNumber> {
-    tokenAddr = tokenAddr === NATIVE_ASSET_ADDRESS ? this.weth : tokenAddr;
+    tokenAddr =
+      tokenAddr === NATIVE_ASSET_ADDRESS
+        ? WRAPPED_NATIVE_ASSET_ADDRESS
+        : tokenAddr;
 
     if (manualCost) {
       await this.sorV2.swapCostCalculator.setNativeAssetPriceInToken(
