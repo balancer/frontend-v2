@@ -107,6 +107,7 @@ const pools: Pools = {
       '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45', // wsteth-bb-a-weth/bb-am-usd
       '0xfaf3bc722d34146be83a2aac40b43148a51a9126000200000000000000000b4c', // 50kacy/50weth
       '0xbadcdaf6212b0bacf45cc32447cb615f85fe6adf000100000000000000000b87', // 50weth/50wsteth/50nex
+      '0xb1cc24df1d3d2c6cb798b1129ddaae9e29d437c0000100000000000000000b8d', // staking defi pool
     ],
   },
   Factories: {
