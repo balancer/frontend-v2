@@ -139,7 +139,7 @@ export default defineConfig(({ mode }) => {
           rollupPolyfillNode(),
         ],
       },
-      chunkSizeWarningLimit: 750,
+      chunkSizeWarningLimit: 850,
       commonjsOptions: {
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
