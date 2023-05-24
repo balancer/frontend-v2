@@ -18,7 +18,7 @@ const toggleNetwork = Network => {
 
 async function syncNetworks() {
   if (!props.chosenNetworks.size) return;
-  emit('update:activeTabIdx', 1);
+  emit('update:activeTabIdx', 2);
 }
 </script>
 

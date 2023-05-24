@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { Step, StepState } from '@/types';
 import { Network } from '@/lib/config';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { TransactionAction, TransactionActionInfo } from '@/types/transactions';
+import { TransactionActionInfo } from '@/types/transactions';
 import { networkLabelMap } from '@/composables/useNetwork';
 import { useI18n } from 'vue-i18n';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 type Props = {
   chosenNetworks: Set<Network>;
   vebalSynced: number[];
   activeTabIdx: number;
+  sync(network: Network): Promise<TransactionResponse>;
 };
 
 const props = defineProps<Props>();
-const emit = defineEmits(['addVebalSync', 'update:activeTabIdx']);
+defineEmits(['addVebalSync', 'update:activeTabIdx']);
 
 const { t } = useI18n();
 
@@ -36,7 +37,7 @@ const networkSyncSteps = computed(() => {
         network: networkLabelMap[network],
       }),
       action: async () => {
-        // await sync(network);
+        return await props.sync(network);
       },
       stepTooltip: t('crossChainBoost.syncToNetwork', {
         network: networkLabelMap[network],

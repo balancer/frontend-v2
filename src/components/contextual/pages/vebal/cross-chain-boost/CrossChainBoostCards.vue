@@ -114,6 +114,7 @@ const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
     <CrossChainSyncModal
       :isVisible="isSyncModalOpen"
       :unsyncedNetworks="unsyncedNetworks"
+      :sync="sync"
       @close-modal="isSyncModalOpen = false"
     />
   </div>

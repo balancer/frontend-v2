@@ -5,7 +5,7 @@
         <input
           type="checkbox"
           :name="name"
-          :checked="modelValue || checked"
+          :checked="modelValue"
           :class="[
             'bal-checkbox-input hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
             alignCheckbox === 'items-start' && 'relative top-2',
@@ -42,7 +42,6 @@ export default defineComponent({
 
   props: {
     name: { type: String, required: true },
-    checked: { type: Boolean, default: false },
     modelValue: { type: Boolean, default: false },
     label: { type: String, default: '' },
     noMargin: { type: Boolean, default: false },

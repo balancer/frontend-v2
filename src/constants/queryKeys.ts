@@ -245,9 +245,9 @@ const QUERY_KEYS = {
       'votingEscrowLocks',
       lockedAmount,
     ],
-    VotingEscrowLocksByNetworkId: (networkId: Network) => [
+    VotingEscrowLocksByNetworkId: (networkId: Network, account: string) => [
       'votingEscrowLocksByNetworkId',
-      networkId,
+      { networkId, account },
     ],
     OmniEscrowLocks: (userId: string) => ['omniEscrowLocks', userId],
     Voting: (account: Ref<string>) => ['gauges', 'voting', { account }],

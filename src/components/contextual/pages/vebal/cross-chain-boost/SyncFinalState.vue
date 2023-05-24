@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import LightBulbIcon from '@/components/_global/icons/LightBulbIcon.vue';
+import { Network } from '@/lib/config';
+import { networkLabelMap } from '@/composables/useNetwork';
+
+type Props = {
+  chosenNetworks: Set<Network>;
+};
+defineProps<Props>();
 </script>
 
 <template>
   <div>
     <div class="mb-3 text-xl font-bold">
-      {{ $t('crossChainBoost.syncInitiatedModal.title') }}.
+      {{ $t('crossChainBoost.syncInitiatedModal.title') }}
     </div>
     <div class="mb-3 dark:text-gray-300">
-      {{ $t('crossChainBoost.syncInitiatedModal.description') }}.
+      {{ $t('crossChainBoost.syncInitiatedModal.description') }}
     </div>
     <div class="overflow-hidden mb-5 rounded-lg border-2 border-gray-200">
       <div
@@ -23,17 +30,13 @@ import LightBulbIcon from '@/components/_global/icons/LightBulbIcon.vue';
           179.1032 veBAL
         </div>
       </div>
-      <div class="flex border-b-2 last:border-b-0">
+      <div
+        v-for="network in chosenNetworks.values()"
+        :key="network"
+        class="flex border-b-2 last:border-b-0"
+      >
         <div class="p-4 font-semibold text-black dark:text-gray-300 grow">
-          Arbitrum
-        </div>
-        <div class="p-4 font-medium text-black text-emerald-600">
-          179.1032 veBAL
-        </div>
-      </div>
-      <div class="flex border-b-2 last:border-b-0">
-        <div class="p-4 font-semibold text-black dark:text-gray-300 grow">
-          Polygon
+          {{ networkLabelMap[network] }}
         </div>
         <div class="p-4 font-medium text-black text-emerald-600">
           179.1032 veBAL

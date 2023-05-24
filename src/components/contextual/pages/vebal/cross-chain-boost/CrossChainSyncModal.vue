@@ -3,10 +3,12 @@ import { Network } from '@/lib/config';
 import SyncSelectNetwork from '@/components/contextual/pages/vebal/cross-chain-boost/SyncSelectNetwork.vue';
 import SyncNetworkAction from '@/components/contextual/pages/vebal/cross-chain-boost/SyncNetworkAction.vue';
 import SyncFinalState from '@/components/contextual/pages/vebal/cross-chain-boost/SyncFinalState.vue';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 type Props = {
   isVisible: boolean;
   unsyncedNetworks: Network[];
+  sync(network: Network): Promise<TransactionResponse>;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,14 +17,15 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['closeModal']);
 
-const chosenNetworks = ref(new Set());
+const chosenNetworks = ref<Set<Network>>(new Set());
 const vebalSynced = ref<number[]>([]);
 
-const syncData = ref({
+const syncData = {
   unsyncedNetworks: props.unsyncedNetworks,
   chosenNetworks,
   vebalSynced,
-});
+  sync: props.sync,
+};
 
 const syncTabs = [SyncSelectNetwork, SyncNetworkAction, SyncFinalState];
 

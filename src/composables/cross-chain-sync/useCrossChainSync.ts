@@ -10,7 +10,7 @@ import { configService } from '@/services/config/config.service';
 import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-voting-escrow';
 
 export enum NetworkSyncState {
-  Unsync = 'Unsync',
+  Unsynced = 'Unsynced',
   Syncing = 'Syncing',
   Synced = 'Synced',
 }
@@ -142,7 +142,7 @@ export function useCrossChainSync() {
       return NetworkSyncState.Syncing;
     }
 
-    return NetworkSyncState.Unsync;
+    return NetworkSyncState.Unsynced;
   }
 
   const syncUnsyncState = computed(() => {
@@ -155,7 +155,7 @@ export function useCrossChainSync() {
       ),
       unsynced: Object.keys(networksSyncState.value).filter(
         network =>
-          networksSyncState.value?.[network] === NetworkSyncState.Unsync ||
+          networksSyncState.value?.[network] === NetworkSyncState.Unsynced ||
           networksSyncState.value?.[network] === NetworkSyncState.Syncing
       ),
     };
