@@ -202,7 +202,7 @@ export const router = createRouter({
             el: to.hash,
             behavior: 'smooth',
           });
-        }, 250);
+        }, 300);
       });
     }
     return { x: 0, top: 0 };
