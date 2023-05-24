@@ -7,7 +7,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 
 import WithdrawSummary from './components/WithdrawSummary.vue';
 import { useExitPool } from '@/providers/local/exit-pool.provider';
-import WithdrawActionsV2 from './components/WithdrawActionsV2.vue';
+import WithdrawActions from './components/WithdrawActions.vue';
 import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
 import useNetwork from '@/composables/useNetwork';
 
@@ -167,7 +167,7 @@ function handleClose(): void {
       :priceImpact="priceImpact"
     />
 
-    <WithdrawActionsV2
+    <WithdrawActions
       :pool="pool"
       class="mt-4"
       @error="$emit('close')"

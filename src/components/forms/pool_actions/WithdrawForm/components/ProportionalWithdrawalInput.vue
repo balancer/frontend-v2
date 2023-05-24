@@ -6,7 +6,7 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { useExitPool } from '@/providers/local/exit-pool.provider';
 import { useI18n } from 'vue-i18n';
-import ProportionalWithdrawalTokenInfoV2 from './ProportionalWithdrawalTokenInfoV2.vue';
+import ProportionalWithdrawalTokenInfo from './ProportionalWithdrawalTokenInfo.vue';
 
 /**
  * TYPES
@@ -115,7 +115,7 @@ onBeforeMount(() => {
     />
     <div class="label">{{ t('youReceive') }}</div>
     <div class="token-amounts">
-      <ProportionalWithdrawalTokenInfoV2
+      <ProportionalWithdrawalTokenInfo
         v-for="{ address, value } in propAmountsOut"
         :key="address"
         :token="selectByAddress(exitTokenInfo, address)"

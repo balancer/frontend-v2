@@ -124,15 +124,6 @@ export const fakeTokensProvider = (
     return Number(balances.value[address]) > 0;
   }
 
-  /**
-   * Get single token from state
-   */
-  // function getToken(address: string): TokenInfo {
-  //   address = getAddressFromPoolId(address); // In case pool ID has been passed
-  //   if (address) address = getAddress(address);
-  //   return tokens.value[address];
-  // }
-
   const balanceQueryLoading = ref(false);
   const priceQueryLoading = ref(false);
   const priceQueryError = ref(false);

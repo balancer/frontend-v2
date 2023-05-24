@@ -28,9 +28,12 @@ type Props = {
 };
 
 /**
- * PROPS
+ * PROPS & EMITS
  */
 const props = defineProps<Props>();
+const emit = defineEmits<{
+  (e: 'risksClicked'): void;
+}>();
 
 /**
  * COMPOSABLES
@@ -103,7 +106,11 @@ function navigateToPoolMigration(pool: Pool) {
       </BalBtn>
     </div>
     <template #footer>
-      <PoolActionsCard :pool="pool" :missingPrices="missingPrices" />
+      <PoolActionsCard
+        :pool="pool"
+        :missingPrices="missingPrices"
+        @risks-clicked="emit('risksClicked')"
+      />
     </template>
   </BalCard>
 </template>

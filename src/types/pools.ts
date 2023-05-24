@@ -103,4 +103,17 @@ export type Pools = {
   Deprecated?: Record<string, DeprecatedDetails>;
   GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
+  Issues?: Partial<Record<PoolWarning, string[]>>;
 };
+
+export enum PoolWarning {
+  PoolProtocolFeeVulnWarning = 'poolProtocolFeeVulnWarning',
+  PoolOwnerVulnWarningGovernanceMigrate = 'poolOwnerVulnWarningGovernanceMigrate',
+  PoolOwnerVulnWarningGovernanceWithdraw = 'poolOwnerVulnWarningGovernanceWithdraw',
+  PoolOwnerVulnWarningGovernance = 'poolOwnerVulnWarningGovernance',
+  PoolOwnerVulnWarningEcosystem = 'poolOwnerVulnWarningEcosystem',
+  PoolOwnerVulnWarningEcosystemMigrate = 'poolOwnerVulnWarningEcosystemMigrate',
+  RenBTCWarning = 'renBTCWarning',
+  EulerBoostedWarning = 'eulerBoostedWarning',
+  EulerRecoveryModeWarning = 'eulerRecoveryModeWarning',
+}
