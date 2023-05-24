@@ -12,6 +12,11 @@ export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   return includesAddress([tokenInAddress, tokenOutAddress], stEthAddress);
 }
 
+export function isStEthAddress(address: string): boolean {
+  if (!stEthAddress) return false;
+  return address.toLowerCase() === stEthAddress.toLowerCase();
+}
+
 export function getWstETHByStETH(stETHAmount: BigNumberish) {
   return stETHAmount;
 }
