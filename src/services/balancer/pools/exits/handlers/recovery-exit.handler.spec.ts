@@ -17,8 +17,10 @@ import {
 } from '@tests/unit/builders/signer';
 import { ExitParams, ExitType } from './exit-pool.handler';
 import { RecoveryExitHandler } from './recovery-exit.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 async function mountRecoveryExitHandler(pool: Pool) {
   return new RecoveryExitHandler(ref(pool), getBalancerSDK());

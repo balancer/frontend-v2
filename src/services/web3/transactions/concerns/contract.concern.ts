@@ -17,7 +17,7 @@ import {
   getEthersContract,
 } from '@/dependencies/EthersContract';
 
-type SendTransactionOpts = {
+export type SendTransactionOpts = {
   contractAddress: string;
   abi: ContractInterface;
   action: string;

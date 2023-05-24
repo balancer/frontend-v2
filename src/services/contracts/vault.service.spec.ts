@@ -1,4 +1,3 @@
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import {
   FundManagement,
   SingleSwap,
@@ -7,27 +6,26 @@ import {
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 import { walletService } from '@/services/web3/wallet.service';
+import { silenceConsoleLog } from '@tests/unit/console';
 import { configService } from '../config/config.service';
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import VaultService from './vault.service';
 import { walletProviderMock } from './vault.service.mocks';
 
-// @ts-ignore
-walletService.setUserProvider(ref(walletProviderMock));
+initContractConcernWithDefaultMocks();
+
+walletService.setUserProvider(computed(() => walletProviderMock));
 
 const vaultService = new VaultService(configService, walletService);
 
-initEthersContractWithDefaultMocks();
-
 const userAddress = '0xAAA00fB39c06E7b41bEdFf8A6a4e013666141d40';
 
-//TODO: extract to helper that accepts rules callback
-// Silence Contract and Params debug
-vi.spyOn(console, 'log').mockImplementation(args => {
-  if (!args.startsWith('Contract') && !args.startsWith('Params'))
-    return console.warn(args);
-});
+silenceConsoleLog(
+  vi,
+  message => message.startsWith('Contract') && !message.startsWith('Params')
+);
 
 describe('vault.service', () => {
   let swaps: SwapV2[] = [];

@@ -51,7 +51,7 @@ export const boostedProtocolIconPaths: Record<BoostedProtocol, string> = {
     import.meta.url
   ).href,
   [BoostedProtocol.Sturdy]: new URL(
-    '@/assets/images/icons/protocols/sturdy.svg',
+    '@/assets/images/icons/protocols/sturdy.png',
     import.meta.url
   ).href,
   [BoostedProtocol.Reaper]: new URL(

@@ -12,10 +12,11 @@ import {
   defaultGasLimit,
   defaultTransactionResponse,
 } from '@tests/unit/builders/signer';
-import { ref } from 'vue';
 import { ExactOutExitHandler } from './exact-out-exit.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 async function mountExactOutExitHandler(pool: Pool) {
   return new ExactOutExitHandler(ref(pool), getBalancerSDK());

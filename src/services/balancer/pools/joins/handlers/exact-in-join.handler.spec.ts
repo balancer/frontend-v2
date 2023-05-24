@@ -17,8 +17,10 @@ import {
 } from '@tests/unit/builders/signer';
 import { ExactInJoinHandler } from './exact-in-join.handler';
 import { JoinParams } from './join-pool.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 async function mountExactInJoinHandler(pool: Pool) {
   return new ExactInJoinHandler(ref(pool), getBalancerSDK());
