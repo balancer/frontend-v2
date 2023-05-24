@@ -1,4 +1,3 @@
-import { computed, reactive, Ref } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -9,6 +8,7 @@ import { configService } from '@/services/config/config.service';
  * TYPES
  */
 export type PoolGauges = {
+  __name: 'PoolGauges';
   pool: {
     preferentialGauge: {
       id: string | null;
@@ -42,6 +42,7 @@ export default function usePoolGaugesQuery(
   const enabled = computed((): boolean => !!poolAddress?.value);
 
   const subgraphQuery = computed(() => ({
+    __name: 'PoolGauges',
     pool: {
       __args: {
         id: poolAddress.value?.toLowerCase(),

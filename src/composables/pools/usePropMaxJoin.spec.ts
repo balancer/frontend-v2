@@ -1,6 +1,6 @@
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { TokensResponse } from '@/providers/tokens.provider';
-import { defaultBalance } from '@/providers/__mocks__/tokens.provider.fake';
+import { defaultTokenBalance } from '@/providers/__mocks__/tokens.provider.fake';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { aTokenInfo } from '@/types/TokenList.builders';
@@ -44,7 +44,7 @@ test('Calculates the proportional maximum amounts in given the users token balan
     {
       address: groAddress,
       valid: true,
-      value: defaultBalance,
+      value: defaultTokenBalance,
     },
     {
       address: wethAddress,
@@ -61,7 +61,7 @@ test('When user does not have enough proportional balance in one token, it maxes
     balanceFor: address => {
       if (address === groAddress) return groBalance;
       if (address === wethAddress) return wethBalance;
-      else return defaultBalance;
+      else return defaultTokenBalance;
     },
   };
   const tokensIn = buildTokensIn();
@@ -98,7 +98,7 @@ test('When using nativeAsset instead of wrapped native asset', async () => {
     {
       address: groAddress,
       valid: true,
-      value: defaultBalance,
+      value: defaultTokenBalance,
     },
     {
       address: nativeAssetAddress,

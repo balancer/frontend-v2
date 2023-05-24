@@ -30,8 +30,12 @@ const { networkSlug } = useNetwork();
 /**
  * COMPUTED
  */
-const stETH = computed(() => getToken(networkConfig.addresses.stETH));
-const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
+const stETH = computed(() =>
+  getToken(networkConfig.tokens.Addresses.stETH || '')
+);
+const wstETH = computed(() =>
+  getToken(networkConfig.tokens.Addresses.wstETH || '')
+);
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools } from '@/types/pools';
+import { PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {
@@ -290,6 +290,30 @@ const pools: Pools = {
       'xave',
     '0xf0ad209e2e969eaaa8c882aac71f02d8a047d5c2000200000000000000000b49':
       'gyro',
+  },
+  Issues: {
+    [PoolWarning.PoolProtocolFeeVulnWarning]: [
+      '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
+    ],
+    [PoolWarning.RenBTCWarning]: [
+      '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningGovernanceMigrate]: [
+      '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012',
+      '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningGovernance]: [
+      '0xf38cf113d2d4f60c36cbd95af2f48a9a0167045a00000000000000000000005b',
+      '0x0d34e5dd4d8f043557145598e4e2dc286b35fd4f000000000000000000000068',
+      '0x5028497af0c9a54ea8c6d42a054c0341b9fc616800020000000000000000007b',
+      '0xc31a37105b94ab4efca1954a14f059af11fcd9bb000000000000000000000455',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningEcosystemMigrate]: [
+      '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
+      '0xb4670d1389c758e4380c4211bcbc85342688b9c50002000000000000000003d8',
+    ],
   },
 };
 
