@@ -159,6 +159,9 @@ export class GaugesDecorator {
     if (!claimableRewards) return {};
 
     Object.keys(claimableRewards).forEach(rewardToken => {
+      if (!claimableRewards[rewardToken]) {
+        claimableRewards[rewardToken] = '0';
+      }
       claimableRewards[rewardToken] = claimableRewards[rewardToken].toString();
     });
 
