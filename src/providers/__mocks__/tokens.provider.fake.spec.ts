@@ -4,8 +4,8 @@ import { daiAddress, wethAddress } from '@tests/unit/builders/address';
 import { mountComposable } from '@tests/mount-helpers';
 import {
   customFakeTokensProvider,
-  defaultBalance,
-  defaultPrice,
+  defaultTokenBalance,
+  defaultTokenPrice,
   fakeTokensProvider,
 } from './tokens.provider.fake';
 
@@ -99,8 +99,8 @@ test('Fakes provided methods', async () => {
     wethAddress,
   ]);
 
-  expect(priceFor('any address')).toBe(defaultPrice);
-  expect(balanceFor('any address')).toBe(defaultBalance);
+  expect(priceFor('any address')).toBe(defaultTokenPrice);
+  expect(balanceFor('any address')).toBe(defaultTokenBalance);
 
   const tokens = getTokens([daiAddress, wethAddress]);
   expect(Object.keys(tokens)).toEqual([daiAddress, wethAddress]);
