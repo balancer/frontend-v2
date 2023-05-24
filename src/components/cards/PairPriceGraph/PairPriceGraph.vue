@@ -155,7 +155,10 @@ const {
 );
 
 const equivalentTokenPairs = [
-  [appNetworkConfig.addresses.weth, appNetworkConfig.nativeAsset.address],
+  [
+    appNetworkConfig.tokens.Addresses.wNativeAsset,
+    appNetworkConfig.tokens.Addresses.nativeAsset,
+  ],
 ];
 
 const allChartValuesEqual = computed(() =>

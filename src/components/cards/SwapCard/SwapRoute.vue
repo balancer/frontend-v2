@@ -6,10 +6,12 @@ import BigNumber from 'bignumber.js';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import {
+  NATIVE_ASSET_ADDRESS,
+  WRAPPED_NATIVE_ASSET_ADDRESS,
+} from '@/constants/tokens';
 import { isSameAddress } from '@/lib/utils';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import useWeb3 from '@/services/web3/useWeb3';
 import { networkSlug } from '@/composables/useNetwork';
 
 interface Props {
@@ -46,7 +48,6 @@ const props = defineProps<Props>();
 
 const { fNum } = useNumbers();
 
-const { appNetworkConfig } = useWeb3();
 const { getToken } = useTokens();
 
 const visible = ref(false);
@@ -97,13 +98,13 @@ function getV2Routes(
   addresses: string[]
 ): Route[] {
   // ) {
-  const { addresses: constants } = appNetworkConfig;
-
   addressIn =
-    addressIn === NATIVE_ASSET_ADDRESS ? constants.weth : getAddress(addressIn);
+    addressIn === NATIVE_ASSET_ADDRESS
+      ? WRAPPED_NATIVE_ASSET_ADDRESS
+      : getAddress(addressIn);
   addressOut =
     addressOut === NATIVE_ASSET_ADDRESS
-      ? constants.weth
+      ? WRAPPED_NATIVE_ASSET_ADDRESS
       : getAddress(addressOut);
 
   if (
@@ -131,11 +132,11 @@ function getV2Routes(
     if (rawPool) {
       const tokenIn =
         addresses[swap.assetInIndex] === AddressZero
-          ? constants.weth
+          ? WRAPPED_NATIVE_ASSET_ADDRESS
           : getAddress(addresses[swap.assetInIndex]);
       const tokenOut =
         addresses[swap.assetOutIndex] === AddressZero
-          ? constants.weth
+          ? WRAPPED_NATIVE_ASSET_ADDRESS
           : getAddress(addresses[swap.assetOutIndex]);
 
       const isDirectSwap =
