@@ -72,12 +72,12 @@ describe('swap.service', () => {
       type: SwapTokenType.fixed,
     };
     tokens.stETH = {
-      address: configService.network.addresses.stETH,
+      address: configService.network.tokens.Addresses.stETH || '',
       amount: BigNumber.from(2e15),
       type: SwapTokenType.fixed,
     };
     tokens.wstETH = {
-      address: configService.network.addresses.wstETH,
+      address: configService.network.tokens.Addresses.wstETH || '',
       amount: BigNumber.from(3e15),
       type: SwapTokenType.fixed,
     };
