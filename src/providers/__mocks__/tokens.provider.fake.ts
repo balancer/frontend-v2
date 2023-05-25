@@ -46,18 +46,18 @@ export interface TokensProviderState {
   injectedPrices: TokenPrices;
 }
 
-export const defaultPrice = 2;
-export const defaultBalance = '10';
-export const defaultMaxBalance = '20';
+export const defaultTokenPrice = 2;
+export const defaultTokenBalance = '10';
+export const defaultTokenMaxBalance = '20';
 
 export const fakePriceMap: TokenPrices = {
-  [groAddress]: defaultPrice,
-  [wethAddress]: defaultPrice,
+  [groAddress]: defaultTokenPrice,
+  [wethAddress]: defaultTokenPrice,
 };
 
 export const fakeBalanceMap: BalanceMap = {
-  [groAddress]: defaultBalance,
-  [wethAddress]: defaultBalance,
+  [groAddress]: defaultTokenBalance,
+  [wethAddress]: defaultTokenBalance,
 };
 
 /**
@@ -96,14 +96,14 @@ export const fakeTokensProvider = (
    * Fetch price for a token
    */
   function priceFor(address: string): number {
-    return defaultPrice;
+    return defaultTokenPrice;
   }
 
   /**
    * Fetch balance for a token
    */
   function balanceFor(address: string): string {
-    return defaultBalance;
+    return defaultTokenBalance;
   }
 
   /**
@@ -115,7 +115,7 @@ export const fakeTokensProvider = (
     tokenAddress,
     disableNativeAssetBuffer = false
   ): string {
-    return defaultMaxBalance;
+    return defaultTokenMaxBalance;
   }
   /**
    * Checks if token has a balance
@@ -123,15 +123,6 @@ export const fakeTokensProvider = (
   function hasBalance(address: string): boolean {
     return Number(balances.value[address]) > 0;
   }
-
-  /**
-   * Get single token from state
-   */
-  // function getToken(address: string): TokenInfo {
-  //   address = getAddressFromPoolId(address); // In case pool ID has been passed
-  //   if (address) address = getAddress(address);
-  //   return tokens.value[address];
-  // }
 
   const balanceQueryLoading = ref(false);
   const priceQueryLoading = ref(false);

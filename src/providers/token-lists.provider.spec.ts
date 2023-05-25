@@ -32,7 +32,7 @@ describe('Token lists provider should', () => {
       // Explicitly added to test tokens-5.json to simplify testing:
       'bb-a-USD',
       'bb-a-USDT',
-      'bb-a-USDC',
+      'test-pool-symbol',
       'bb-a-DAI',
       'GRO',
     ]);
@@ -51,7 +51,7 @@ describe('Token lists provider should', () => {
       // Explicitly added to test tokens-5.json to simplify testing:
       'bb-a-USD',
       'bb-a-USDT',
-      'bb-a-USDC',
+      'test-pool-symbol',
       'bb-a-DAI',
       'GRO',
     ]);
@@ -70,7 +70,7 @@ describe('Token lists provider should', () => {
       // Explicitly added to test tokens-5.json to simplify testing:
       'bb-a-USD',
       'bb-a-USDT',
-      'bb-a-USDC',
+      'test-pool-symbol',
       'bb-a-DAI',
       'GRO',
     ]);
@@ -89,7 +89,7 @@ describe('Token lists provider should', () => {
       // Explicitly added to test tokens-5.json to simplify testing:
       'bb-a-USD',
       'bb-a-USDT',
-      'bb-a-USDC',
+      'test-pool-symbol',
       'bb-a-DAI',
       'GRO',
     ]);

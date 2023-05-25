@@ -23,6 +23,9 @@ import { lsGet } from '@/lib/utils';
 import { mountComposable } from '@tests/mount-helpers';
 import { SANCTIONED_ADDRESS } from '@tests/msw/rest-handlers';
 import { isBlockedAddress, useWallets } from './wallet.provider';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
+
+initContractConcernWithDefaultMocks();
 
 describe('Given that VITE_WALLET_SCREENING is false', () => {
   beforeAll(() => {
@@ -53,8 +56,6 @@ describe('Given that VITE_WALLET_SCREENING is true', () => {
     expect(result).toBeFalsy();
   });
 });
-
-// initDependenciesWithDefaultMocks();
 
 async function mountWalletProvider() {
   const { result } = mountComposable(() => useWallets());
