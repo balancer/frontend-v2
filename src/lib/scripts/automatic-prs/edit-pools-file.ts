@@ -10,7 +10,7 @@ export function allowListPool({
 
   const fileContent = fs.readFileSync(filePath, 'utf-8');
 
-  // Looking for the last element in the array [allowListType] > Allowlist
+  // Looking for the last element in the array [poolType] > Allowlist
   const regex = new RegExp(
     `${poolType}:[\\s\\n]*{[^}]*AllowList:[\\s\n]*\\[([\\s\\S]+?)\\]`
   );
