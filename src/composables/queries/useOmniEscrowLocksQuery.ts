@@ -1,8 +1,5 @@
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { QueryOptions, useQuery } from '@tanstack/vue-query';
 import useGraphQuery, { subgraphs } from './useGraphQuery';
-import useWeb3 from '@/services/web3/useWeb3';
 
 const attrs = {
   id: true,
@@ -30,11 +27,9 @@ export interface OmniEscrowLockResponse {
   omniVotingEscrowLocks: OmniEscrowLock[];
 }
 
-export function useOmniEscrowLocksQuery(
-  account: ComputedRef<string>,
-  options: QueryOptions = {}
-) {
+export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
   const useOmniEscrowLocksQueryEnabled = computed(() => !!account.value);
+
   /**
    * QUERY INPUTS
    */
@@ -47,7 +42,7 @@ export function useOmniEscrowLocksQuery(
       omniVotingEscrowLocks: {
         __args: {
           where: {
-            localUser: '0x4a30c80a2c41312ce4ee79f730c8d84cad9f7b31', // account.value.toLowerCase(),
+            localUser: account.value.toLowerCase(),
           },
         },
         ...attrs,

@@ -67,6 +67,7 @@ export const networkMap = {
   [Network.POLYGON]: 'polygon',
   [Network.ARBITRUM]: 'arbitrum-one',
   [Network.GNOSIS]: 'gnosis-chain',
+  [Network.OPTIMISM]: 'optimism',
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -126,11 +127,11 @@ export const wallets = () => {
   });
 
   const account = computed(() => {
-    if (pluginState.connector && pluginState.connector.account) {
-      // always want to be using checksum addresses
-      return getAddress(pluginState.connector.account);
-    }
-    return '';
+    // if (pluginState.connector && pluginState.connector.account) {
+    //   // always want to be using checksum addresses
+    //   return getAddress(pluginState.connector.account);
+    // }
+    return '0x4a30c80a2c41312ce4ee79f730c8d84cad9f7b31';
   });
 
   const chainId = computed(() => {

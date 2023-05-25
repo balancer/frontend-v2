@@ -53,7 +53,7 @@ export function useVotingEscrowLocksQuery(
       votingEscrowLocks: {
         __args: {
           where: {
-            user: user.value, // account.value.toLowerCase(),
+            user: user.value?.toLowerCase(),
           },
         },
         ...attrs,

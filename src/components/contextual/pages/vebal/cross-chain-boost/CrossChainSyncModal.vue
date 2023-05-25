@@ -4,10 +4,12 @@ import SyncSelectNetwork from '@/components/contextual/pages/vebal/cross-chain-b
 import SyncNetworkAction from '@/components/contextual/pages/vebal/cross-chain-boost/SyncNetworkAction.vue';
 import SyncFinalState from '@/components/contextual/pages/vebal/cross-chain-boost/SyncFinalState.vue';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { NetworkSyncUnsyncState } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
   isVisible: boolean;
-  unsyncedNetworks: Network[];
+  syncUnsyncState: NetworkSyncUnsyncState;
+  veBalBalance: string;
   sync(network: Network): Promise<TransactionResponse>;
 };
 
@@ -18,12 +20,11 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['closeModal']);
 
 const chosenNetworks = ref<Set<Network>>(new Set());
-const vebalSynced = ref<number[]>([]);
 
 const syncData = {
-  unsyncedNetworks: props.unsyncedNetworks,
+  syncUnsyncState: props.syncUnsyncState,
   chosenNetworks,
-  vebalSynced,
+  veBalBalance: props.veBalBalance,
   sync: props.sync,
 };
 
@@ -31,15 +32,10 @@ const syncTabs = [SyncSelectNetwork, SyncNetworkAction, SyncFinalState];
 
 const tabActiveIdx = ref(0);
 
-const addVebalSync = number => {
-  vebalSynced.value.push(number);
-};
-
 const closeModal = () => {
   emit('closeModal');
   tabActiveIdx.value = 0;
   chosenNetworks.value = new Set();
-  vebalSynced.value = [];
 };
 
 function toggleNetwork(network: number) {
@@ -61,13 +57,12 @@ function toggleNetwork(network: number) {
         style="min-height: 470px"
         :chosenNetworks="chosenNetworks"
         @toggle-network="toggleNetwork"
-        @add-vebal-sync="addVebalSync"
       />
     </Transition>
   </BalModal>
 </template>
 
-<style>
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;

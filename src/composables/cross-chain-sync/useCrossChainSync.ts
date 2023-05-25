@@ -20,6 +20,11 @@ interface EscrowLockData {
   slope: string;
 }
 
+export interface NetworkSyncUnsyncState {
+  synced: Network[];
+  unsynced: Network[];
+}
+
 function allEqual<T>(array: T[]): boolean {
   return array.every(value => value === array[0]);
 }
@@ -48,7 +53,6 @@ export function useCrossChainSync() {
   const omniEscrowLocks = computed(() => {
     const omniVotingEscrowLocks =
       omniEscrowResponse.value?.omniVotingEscrowLocks[0];
-    console.log('omniVotingEscrowLocks', omniVotingEscrowLocks);
     return omniVotingEscrowLocks;
   });
 
@@ -59,10 +63,8 @@ export function useCrossChainSync() {
   const {
     data: mainnetVotingEscrowResponse,
     isLoading: isLoadingVotingEscrow,
-  } = useVotingEscrowLocksQuery(
-    Network.MAINNET,
-    computed(() => '0x4a30c80a2c41312ce4ee79f730c8d84cad9f7b31')
-  );
+  } = useVotingEscrowLocksQuery(Network.MAINNET, account);
+
   const {
     data: arbitrumVotingEscrowResponse,
     isLoading: isLoadingVotingEscrowArbitrum,
@@ -95,7 +97,7 @@ export function useCrossChainSync() {
       !votingEscrowLocks.value?.[Network.MAINNET] ||
       !votingEscrowLocks.value?.[Network.ARBITRUM]
     ) {
-      return {};
+      return null;
     }
 
     const { bias, slope } = omniEscrowLocks.value;
@@ -145,19 +147,26 @@ export function useCrossChainSync() {
     return NetworkSyncState.Unsynced;
   }
 
-  const syncUnsyncState = computed(() => {
-    if (!networksSyncState.value) return {};
+  const syncUnsyncState = computed<NetworkSyncUnsyncState>(() => {
+    if (!networksSyncState.value)
+      return {
+        synced: [],
+        unsynced: [],
+      };
 
     return {
-      synced: Object.keys(networksSyncState.value).filter(
-        network =>
-          networksSyncState.value?.[network] === NetworkSyncState.Synced
-      ),
-      unsynced: Object.keys(networksSyncState.value).filter(
-        network =>
-          networksSyncState.value?.[network] === NetworkSyncState.Unsynced ||
-          networksSyncState.value?.[network] === NetworkSyncState.Syncing
-      ),
+      synced: Object.keys(networksSyncState.value)
+        .map(v => Number(v))
+        .filter(
+          network =>
+            networksSyncState.value?.[network] === NetworkSyncState.Synced
+        ) as Network[],
+      // unsynced: Object.keys(networksSyncState.value).map(v => Number(v)).filter(
+      //   network =>
+      //     networksSyncState.value?.[network] === NetworkSyncState.Unsynced ||
+      //     networksSyncState.value?.[network] === NetworkSyncState.Syncing
+      // ),
+      unsynced: [Network.ARBITRUM],
     };
   });
 

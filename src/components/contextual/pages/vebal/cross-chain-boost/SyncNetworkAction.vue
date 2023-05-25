@@ -8,13 +8,12 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 type Props = {
   chosenNetworks: Set<Network>;
-  vebalSynced: number[];
   activeTabIdx: number;
   sync(network: Network): Promise<TransactionResponse>;
 };
 
 const props = defineProps<Props>();
-defineEmits(['addVebalSync', 'update:activeTabIdx']);
+defineEmits(['update:activeTabIdx']);
 
 const { t } = useI18n();
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { Network } from '@/lib/config';
 import IconLoaderWrapper from './IconLoaderWrapper.vue';
 import CrossChainSyncModal from './CrossChainSyncModal.vue';
 
@@ -9,34 +8,39 @@ import {
   NetworkSyncState,
 } from '@/composables/cross-chain-sync/useCrossChainSync';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useVeBal from '@/composables/useVeBAL';
 
 /**
  * COMPOSABLES
  */
 const { isWalletReady } = useWeb3();
-const {
-  omniEscrowLocks,
-  votingEscrowLocks,
-  networksSyncState,
-  syncUnsyncState,
-  isLoading,
-  sync,
-} = useCrossChainSync();
-
+const { networksSyncState, syncUnsyncState, isLoading, sync } =
+  useCrossChainSync();
+const { fNum } = useNumbers();
+const { veBalBalance } = useVeBal();
 /**
- * State
+ * STATE
  */
 const isSyncModalOpen = ref(false);
-const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
+
+/**
+ * COMPUTED
+ */
 </script>
 
 <template>
   <div class="py-5 px-4">
-    <div @click="sync(Network.ARBITRUM)">sync</div>
     <h3 class="mb-3">
       {{ $t('crossChainBoost.title') }}
-      {{ networksSyncState }}
-      {{ syncUnsyncState }}
+      <!-- {{ networksSyncState }}
+      {{ syncUnsyncState }} -->
+
+      <BalTooltip :text="$t('crossChainBoost.infoDescription')">
+        <template #activator>
+          <BalIcon name="info" size="sm" class="text-gray-400" />
+        </template>
+      </BalTooltip>
     </h3>
     <div v-if="!isWalletReady">
       {{ $t('crossChainBoost.emptyState') }}
@@ -52,14 +56,20 @@ const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
             {{ $t('crossChainBoost.unsyncedNetworks') }}
           </div>
           <div class="flex mb-5">
+            <span
+              v-if="syncUnsyncState.unsynced.length === 0"
+              class="text-sm text-gray-600"
+            >
+              {{ $t('crossChainBoost.syncedAllDescription') }}
+            </span>
             <div
-              v-for="network in unsyncedNetworks"
+              v-for="network in syncUnsyncState.unsynced"
               :key="network"
               class="flex"
             >
               <IconLoaderWrapper
                 :isLoading="
-                  networksSyncState[network] === NetworkSyncState.Syncing
+                  networksSyncState?.[network] === NetworkSyncState.Syncing
                 "
               >
                 <img
@@ -72,6 +82,7 @@ const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
           </div>
 
           <BalBtn
+            v-if="syncUnsyncState.unsynced.length > 0"
             color="blue"
             size="sm"
             outline
@@ -86,7 +97,7 @@ const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
             {{ $t('crossChainBoost.syncedNetworks') }}
           </div>
           <span
-            v-if="syncUnsyncState.synced?.length === 0"
+            v-if="syncUnsyncState.synced.length === 0"
             class="text-sm text-gray-600"
           >
             {{ $t('crossChainBoost.unsyncedAllDescription') }}
@@ -113,8 +124,9 @@ const unsyncedNetworks = ref([Network.POLYGON, Network.ARBITRUM]);
 
     <CrossChainSyncModal
       :isVisible="isSyncModalOpen"
-      :unsyncedNetworks="unsyncedNetworks"
+      :syncUnsyncState="syncUnsyncState"
       :sync="sync"
+      :veBalBalance="fNum(veBalBalance, FNumFormats.token)"
       @close-modal="isSyncModalOpen = false"
     />
   </div>

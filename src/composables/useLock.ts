@@ -6,6 +6,7 @@ import { useUserData } from '@/providers/user-data.provider';
 import usePoolQuery from './queries/usePoolQuery';
 import { fiatValueOf } from './usePoolHelpers';
 import useVeBal, { isVeBalSupported } from './useVeBAL';
+import { bnum } from '@/lib/utils';
 
 interface Options {
   enabled?: boolean;
@@ -15,7 +16,7 @@ export function useLock({ enabled = true }: Options = {}) {
    * COMPOSABLES
    */
   const { lockablePoolId } = useVeBal();
-  const { getToken } = useTokens();
+  const { getToken, balanceFor } = useTokens();
 
   /**
    * QUERIES
@@ -64,6 +65,20 @@ export function useLock({ enabled = true }: Options = {}) {
       : '0'
   );
 
+  const poolShares = computed(() => {
+    if (!lockPool.value) return bnum(0);
+    return bnum(lockPool.value.totalLiquidity).div(lockPool.value.totalShares);
+  });
+
+  const bptBalance = computed(() => {
+    if (!lockPool.value) return bnum(0);
+    return balanceFor(lockPool.value.address);
+  });
+
+  const fiatTotal = computed(() =>
+    poolShares.value.times(bptBalance.value).toString()
+  );
+
   return {
     isLoadingLockPool,
     isLoadingLockInfo,
@@ -73,5 +88,7 @@ export function useLock({ enabled = true }: Options = {}) {
     lock,
     totalLockedValue,
     totalLockedShares,
+    bptBalance,
+    fiatTotal,
   };
 }
