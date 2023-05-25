@@ -1,7 +1,7 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { PoolWarning, Pools } from '@/types/pools';
-import StableAllowlist from './allowlists/stable.json';
-import WeightedAllowlist from './allowlists/weighted.json';
+import StableAllowlist from './allowlists/stable';
+import WeightedAllowlist from './allowlists/weighted';
 
 const pools: Pools = {
   IdsMap: {

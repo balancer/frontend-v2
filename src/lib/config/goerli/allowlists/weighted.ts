@@ -1,0 +1,3 @@
+export default [
+  '0xbb372d299cc1afa14d5b8691ced1486fa0216f74000200000000000000000757', // DVT /WETH
+];

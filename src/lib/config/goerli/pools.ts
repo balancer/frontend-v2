@@ -1,7 +1,7 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
-import StableAllowlist from './allowlists/stable.json';
-import WeightedAllowlist from './allowlists/weighted.json';
+import StableAllowlist from './allowlists/stable';
+import WeightedAllowlist from './allowlists/weighted';
 
 export const poolIdThatRequiresInternalBalanceExit =
   '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
