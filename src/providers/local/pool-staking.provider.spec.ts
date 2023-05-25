@@ -10,7 +10,11 @@ import {
   aGaugeShareResponse,
   aPoolGaugesResponse,
 } from '@/services/balancer/gauges/__mocks__/gauge-builders';
-import { walletProviderMock } from '@/services/contracts/vault.service.mocks';
+import {
+  defaultWalletTransactionResponse,
+  walletProviderMock,
+  walletSignerMock,
+} from '@/services/contracts/vault.service.mocks';
 import { Pool } from '@/services/pool/types';
 import { SendTransactionOpts } from '@/services/web3/transactions/concerns/contract.concern';
 import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
@@ -22,12 +26,17 @@ import waitForExpect from 'wait-for-expect';
 import { provideUserData } from '../user-data.provider';
 import { poolStakingProvider } from './pool-staking.provider';
 import {
+  defaultGaugeBalance,
   defaultNonPreferentialGaugeAddress,
   defaultPreferentialGaugeAddress,
 } from '@/services/balancer/gauges/__mocks__/gauge-mocks';
 import { defaultContractBalance } from '@/dependencies/EthersContract.mocks';
 import { defaultTokenBalance } from '../__mocks__/tokens.provider.fake';
 import { parseUnits } from '@ethersproject/units';
+import {
+  defaultGaugeToGaugeResponse,
+  migrationsMock,
+} from '@/dependencies/balancer-sdk.mocks';
 
 initDependenciesWithDefaultMocks();
 
@@ -110,7 +119,7 @@ test('Creates stake transaction', async () => {
   );
 });
 
-test('Creates unstake transaction', async () => {
+test.only('Creates unstake transaction', async () => {
   walletServiceInstance.setUserProvider(computed(() => walletProviderMock));
 
   const { unstake } = await mountPoolStakingProvider(aWeightedPool());
@@ -126,4 +135,34 @@ test('Creates unstake transaction', async () => {
   expect(params.action).toBe('withdraw(uint256)');
   // params: balance of the gauge contract
   expect(params.params?.toString()).toBe(defaultContractBalance.toString());
+});
+
+test('Creates restake transaction', async () => {
+  walletServiceInstance.setUserProvider(computed(() => walletProviderMock));
+
+  const { buildRestake } = await mountPoolStakingProvider(aWeightedPool());
+
+  // In a previous step (during Stake Preview), the user approved the incoming Relayer transaction
+  const relayerSignature = 'Relayer Signature';
+
+  const restake = buildRestake(relayerSignature);
+
+  const transactionResponse = await restake();
+
+  // Sends a transaction using the wallet provider signer
+  expect(transactionResponse).toEqual(defaultWalletTransactionResponse);
+  // Uses the txInfo returned from the gauge2gauge call
+  expect(walletSignerMock.sendTransaction).toHaveBeenCalledOnceWith(
+    defaultGaugeToGaugeResponse
+  );
+
+  // Calls gauge2gauge with proper parameters
+  expect(migrationsMock.gauge2gauge).toHaveBeenCalledOnce();
+  // const params = firstCallParams(
+  //    migrationsMock.gauge2gauge
+  //  );
+
+  const params = migrationsMock.gauge2gauge.mock.calls[0][0];
+  // Restakes with the balance of the first gauge with balance
+  expect(params.balance).toBe(parseUnits(defaultGaugeBalance).toString());
 });

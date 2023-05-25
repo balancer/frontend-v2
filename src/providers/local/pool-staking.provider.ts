@@ -1,8 +1,9 @@
-import usePoolGaugesQuery from '@/composables/queries/usePoolGaugesQuery';
+import usePoolGaugesQuery, {
+  PoolGauges,
+} from '@/composables/queries/usePoolGaugesQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
-import { computed, InjectionKey, provide } from 'vue';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { getAddress } from '@ethersproject/address';
 import { parseUnits } from '@ethersproject/units';
@@ -14,6 +15,8 @@ import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
+import { walletService } from '@/services/web3/wallet.service';
 
 /**
  * PoolStakingProvider
@@ -181,26 +184,73 @@ export const poolStakingProvider = (_poolId?: string) => {
     if (!poolGauges.value?.pool?.gauges)
       throw new Error('Unable to unstake, no pool gauges');
 
-    const gaugesWithBalance = await Promise.all(
-      poolGauges.value.pool.gauges.map(async gauge => {
-        const gaugeInstance = new LiquidityGauge(gauge.id);
-        const balance = await gaugeInstance.balance(account.value);
-        return { ...gauge, balance: balance?.toString() };
-      })
+    const gaugesWithUserBalance = await filterGaugesWhereUserHasBalance(
+      poolGauges.value,
+      account.value
     );
-
-    const gaugeWithBalance = gaugesWithBalance.find(
-      gauge => gauge.balance !== '0'
-    );
-    if (!gaugeWithBalance) {
-      throw new Error(
-        `Attempted to call unstake, user doesn't have any balance for any gauges.`
-      );
-    }
-
-    const gauge = new LiquidityGauge(gaugeWithBalance.id);
+    const firstGaugeWithUserBalance = gaugesWithUserBalance[0];
+    const gauge = new LiquidityGauge(firstGaugeWithUserBalance.id);
     const balance = await gauge.balance(account.value);
     return await gauge.unstake(balance);
+  }
+
+  /**
+   *
+   * Returns a restake function that triggers restake using the provided relayer signature.
+   * It uses the first non preferential pool gauge that the user has a balance in.
+   * Uses SDK gauge2gauge call.
+   */
+  function buildRestake(relayerSignature: string) {
+    return restake;
+
+    async function restake(): Promise<TransactionResponse> {
+      if (!relayerSignature) throw new Error('No relayer signature to restake');
+      if (!poolAddress.value) throw new Error('No pool to restake.');
+      if (!poolGauges.value?.pool?.gauges)
+        throw new Error('Unable to restake, no pool gauges');
+
+      const gaugesWithUserBalance = await filterGaugesWhereUserHasBalance(
+        poolGauges.value,
+        account.value
+      );
+
+      const firstNonPreferentialGaugeWhereUserHasBalance =
+        gaugesWithUserBalance.filter(
+          gauge => gauge.id !== preferentialGaugeAddress.value
+        )[0];
+
+      const from = firstNonPreferentialGaugeWhereUserHasBalance.id;
+      const to = preferentialGaugeAddress.value;
+      const balanceToRestakeInWei = parseUnits(
+        firstNonPreferentialGaugeWhereUserHasBalance.balance,
+        18
+      );
+
+      //DEBUG!!!
+      const toGaugeAddress = '0x51be9bc648714cc07503ad46f354bc8d1a3b727b';
+
+      console.log(
+        `Restaking ${firstNonPreferentialGaugeWhereUserHasBalance.balance} from ${from} to ${to}`
+      );
+
+      const { migrationService } = getBalancerSDK();
+      if (!migrationService?.gauge2gauge) {
+        throw Error('gauge2gauge is not defined in SDK');
+      }
+      const txInfo = await migrationService?.gauge2gauge({
+        user: account.value,
+        from,
+        to: toGaugeAddress,
+        balance: balanceToRestakeInWei.toString(),
+        authorisation: relayerSignature,
+      });
+
+      console.log('Result of gauge to gauge:', txInfo);
+
+      return walletService.userProvider.value
+        .getSigner()
+        .sendTransaction(txInfo);
+    }
   }
 
   /**
@@ -250,6 +300,7 @@ export const poolStakingProvider = (_poolId?: string) => {
     refetchAllPoolStakingData,
     stake,
     unstake,
+    buildRestake,
   };
 };
 
@@ -268,4 +319,26 @@ export function providePoolStaking(poolId?: string) {
 
 export function usePoolStaking(): PoolStakingProviderResponse {
   return safeInject(PoolStakingProviderSymbol);
+}
+
+async function filterGaugesWhereUserHasBalance(
+  poolGauges: PoolGauges,
+  userAddress: string
+) {
+  // Insert user's balance in gauge objects
+  const gaugesWithBalance = await Promise.all(
+    poolGauges.pool.gauges.map(async gauge => {
+      const gaugeInstance = new LiquidityGauge(gauge.id);
+      const balance = await gaugeInstance.balance(userAddress);
+      return { ...gauge, balance: balance?.toString() };
+    })
+  );
+
+  const gaugesWhereUserHasBalance = gaugesWithBalance.filter(
+    gauge => gauge.balance !== '0'
+  );
+  if (gaugesWhereUserHasBalance.length === 0) {
+    throw new Error(`User doesn't have any balance for any gauges.`);
+  }
+  return gaugesWhereUserHasBalance;
 }

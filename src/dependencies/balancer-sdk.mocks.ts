@@ -178,6 +178,9 @@ export const defaultGaugeToGaugeResponse = {
   data: 'gaugeToGauge data',
 };
 
+export const migrationsMock = mock<Migrations>();
+migrationsMock.gauge2gauge.mockResolvedValue(defaultGaugeToGaugeResponse);
+
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
   balancerMock.sor.fetchPools.mockResolvedValue(true);
@@ -222,9 +225,6 @@ export function generateBalancerSdkMock() {
   });
 
   balancerMock.swaps.fetchPools.mockResolvedValue(true);
-
-  const migrationsMock = mock<Migrations>();
-  migrationsMock.gauge2gauge.mockResolvedValue(defaultGaugeToGaugeResponse);
 
   // @ts-ignore Ignore read-only error
   balancerMock.migrationService = migrationsMock;
