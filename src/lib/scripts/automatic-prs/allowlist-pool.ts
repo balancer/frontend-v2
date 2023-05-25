@@ -21,8 +21,6 @@ cli
 
 const { options } = cli.parse();
 
-console.log('LOCOOO: ', options.poolId);
-
 const poolId = options.poolId.replace(/[^0-9a-fA-Fx]+/g, '') as string;
 const poolType = capitalize(options.poolType);
 let network = options.network as string;
