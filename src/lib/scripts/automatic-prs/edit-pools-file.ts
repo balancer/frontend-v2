@@ -2,9 +2,9 @@ import * as fs from 'fs';
 
 export function allowListPool({
   network,
-  allowListType,
-  poolAddress,
-  comment = '',
+  poolType,
+  poolId,
+  poolDescription = '',
 }) {
   const filePath = `./src/lib/config/${network}/pools.ts`;
 
@@ -12,7 +12,7 @@ export function allowListPool({
 
   // Looking for the last element in the array [allowListType] > Allowlist
   const regex = new RegExp(
-    `${allowListType}:[\\s\\n]*{[^}]*AllowList:[\\s\n]*\\[([\\s\\S]+?)\\]`
+    `${poolType}:[\\s\\n]*{[^}]*AllowList:[\\s\n]*\\[([\\s\\S]+?)\\]`
   );
 
   const match = fileContent.match(regex);
@@ -21,9 +21,12 @@ export function allowListPool({
 
   const arrayContent = match[1].trim();
 
-  let updatedArrayContent = `${arrayContent} \n'${poolAddress}'`;
+  if (arrayContent.includes(poolId))
+    throw Error(`${poolId} is already allowlisted`);
 
-  if (comment) updatedArrayContent += ` // ${comment} \n`;
+  let updatedArrayContent = `${arrayContent} \n'${poolId}',`;
+
+  if (poolDescription) updatedArrayContent += ` // ${poolDescription} \n`;
 
   // Replaces file with updated content:
   const updatedContent = fileContent.replace(arrayContent, updatedArrayContent);
