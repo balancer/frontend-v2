@@ -130,7 +130,7 @@ test.only('Creates unstake transaction', async () => {
 
   // Sends a withdraw transaction in the correct gauge address
   expect(sendTransactionMock).toHaveBeenCalledOnce();
-  const params = firstCallParams(sendTransactionMock) as SendTransactionOpts;
+  const params = firstCallParams(sendTransactionMock);
   expect(params.contractAddress).toBe(defaultPreferentialGaugeAddress);
   expect(params.action).toBe('withdraw(uint256)');
   // params: balance of the gauge contract
@@ -158,11 +158,7 @@ test('Creates restake transaction', async () => {
 
   // Calls gauge2gauge with proper parameters
   expect(migrationsMock.gauge2gauge).toHaveBeenCalledOnce();
-  // const params = firstCallParams(
-  //    migrationsMock.gauge2gauge
-  //  );
-
-  const params = migrationsMock.gauge2gauge.mock.calls[0][0];
+  const params = firstCallParams(migrationsMock.gauge2gauge);
   // Restakes with the balance of the first gauge with balance
   expect(params.balance).toBe(parseUnits(defaultGaugeBalance).toString());
 });
