@@ -23,6 +23,10 @@ on:
         type: string
         description: Pool ID
         required: true
+      poolDescription:
+        type: string
+        description: Pool Description
+        required: false
 
 jobs:
   allowlist-pool:
@@ -40,7 +44,7 @@ jobs:
       - name: Install deps
         run: npm install cac
       - name: Run allowlist script
-        run: npx vite-node ./src/lib/scripts/allowlist-pool.ts -- --network ${{github.event.inputs.network}} --poolType ${{github.event.inputs.poolType}} --poolId \"${{github.event.inputs.poolId}}\"
+        run: npx vite-node ./src/lib/scripts/allowlist-pool.ts -- --network ${{github.event.inputs.network}} --poolType ${{github.event.inputs.poolType}} --poolId \"${{github.event.inputs.poolId}}\" --poolDescription \"${{github.event.inputs.poolDescription}}\"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
