@@ -1,11 +1,11 @@
 import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import {
   defaultGaugeBalance,
   defaultPoolId,
   defaultTotalSupply,
-} from '@tests/msw/graphql-handlers';
+} from '@/services/balancer/gauges/__mocks__/gauge-mocks';
+import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 
 initDependenciesWithDefaultMocks();
 

@@ -20,7 +20,7 @@ import { configService } from '@/services/config/config.service';
  *
  * Fetches data and provides functionality for a specific pool's gauge.
  */
-const provider = (_poolId?: string) => {
+export const poolStakingProvider = (_poolId?: string) => {
   /**
    * STATE
    */
@@ -256,12 +256,14 @@ const provider = (_poolId?: string) => {
 /**
  * Provide setup: response type + symbol.
  */
-export type PoolStakingProviderResponse = ReturnType<typeof provider>;
+export type PoolStakingProviderResponse = ReturnType<
+  typeof poolStakingProvider
+>;
 export const PoolStakingProviderSymbol: InjectionKey<PoolStakingProviderResponse> =
   Symbol(symbolKeys.Providers.PoolStaking);
 
 export function providePoolStaking(poolId?: string) {
-  provide(PoolStakingProviderSymbol, provider(poolId));
+  provide(PoolStakingProviderSymbol, poolStakingProvider(poolId));
 }
 
 export function usePoolStaking(): PoolStakingProviderResponse {

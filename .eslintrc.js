@@ -84,6 +84,12 @@ module.exports = {
             message:
               'Please import from src/dependencies to make this dependency more testable',
           },
+          {
+            group: ['@/services/web3/transactions/concerns/contract.concern'],
+            importNames: ['ContractConcern'],
+            message:
+              'Please import from src/dependencies to make this dependency more testable',
+          },
           // {
           //   group: ['@/services/multicalls/multicaller'],
           //   importNames: ['Multicaller'],

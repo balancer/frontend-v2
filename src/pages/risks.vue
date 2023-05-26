@@ -1041,6 +1041,15 @@
       </p>
 
       <p>
+        Also note, some Boosted pools, like those by Tetu and Idle may use
+        strategies that utilize multiple yield protocols in order to maximize
+        yield. Since these strategies may change exposure to the underlying
+        yield protocols at any time, LP's must accept the risk that the protocol
+        utilizing these strategies carefully vets all third party protocols to
+        reduce composability risks.
+      </p>
+
+      <p>
         If the underlying lending protocol were to get hacked, LPs in a boosted
         pool that deposits liquidity in that protocol could lose funds.
       </p>
