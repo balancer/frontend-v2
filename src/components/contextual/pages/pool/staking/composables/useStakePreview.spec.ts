@@ -83,31 +83,6 @@ test('Successfully creates and runs stake action', async () => {
   expect(params.details?.pool).toEqual(pool);
 });
 
-test('Changes staking actions when action prop changes', async () => {
-  const { props, loadStakeAction } = buildProps();
-  const { stakeActions } = await mountUseStakePreview(props);
-
-  await loadStakeAction('stake');
-
-  expect(stakeActions.value).toHaveLength(2);
-
-  expect(stakeActions.value[0].label).toEqual(
-    `Approve ${defaultWeightedPoolSymbol} for staking`
-  );
-  expect(stakeActions.value[1].label).toEqual('Stake');
-
-  await loadStakeAction('unstake');
-
-  expect(stakeActions.value).toHaveLength(1);
-  expect(stakeActions.value[0].label).toEqual('Unstake');
-
-  await loadStakeAction('restake');
-
-  expect(stakeActions.value).toHaveLength(2);
-  expect(stakeActions.value[0].label).toEqual('Unstake');
-  expect(stakeActions.value[1].label).toEqual('Stake');
-});
-
 test('Successfully creates and runs unstake action', async () => {
   const { props, loadStakeAction } = buildProps();
 
@@ -135,6 +110,31 @@ test('Successfully creates and runs unstake action', async () => {
   const params = firstCallParams(addTransactionMock);
   expect(params.action).toBe('unstake');
   expect(params.details?.pool).toEqual(pool);
+});
+
+test('Changes staking actions when action prop changes', async () => {
+  const { props, loadStakeAction } = buildProps();
+  const { stakeActions } = await mountUseStakePreview(props);
+
+  await loadStakeAction('stake');
+
+  expect(stakeActions.value).toHaveLength(2);
+
+  expect(stakeActions.value[0].label).toEqual(
+    `Approve ${defaultWeightedPoolSymbol} for staking`
+  );
+  expect(stakeActions.value[1].label).toEqual('Stake');
+
+  await loadStakeAction('unstake');
+
+  expect(stakeActions.value).toHaveLength(1);
+  expect(stakeActions.value[0].label).toEqual('Unstake');
+
+  await loadStakeAction('restake');
+
+  expect(stakeActions.value).toHaveLength(2);
+  expect(stakeActions.value[0].label).toEqual('Unstake');
+  expect(stakeActions.value[1].label).toEqual('Stake');
 });
 
 test('Handles staking action success', async () => {
