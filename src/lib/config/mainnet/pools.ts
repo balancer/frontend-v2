@@ -91,6 +91,7 @@ const pools: Pools = {
       '0x1a44e35d5451e0b78621a1b3e7a53dfaa306b1d000000000000000000000051b', // baoETH WETH
       '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548', // bb-a-weth/ankreth
       '0x20a61b948e33879ce7f23e535cc7baa3bc66c5a9000000000000000000000555', // R/DAI
+      '0xfcf77141908aa22bfeac216123c5feb2531f373e00000000000000000000054a', // sWETH/rETH
     ],
   },
   Investment: {
