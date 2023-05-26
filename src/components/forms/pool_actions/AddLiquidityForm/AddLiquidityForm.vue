@@ -126,7 +126,7 @@ function tokenOptions(address: string): string[] {
     [wrappedNativeAsset.value.address, nativeAsset.address],
     address
   )
-    ? [wrappedNativeAsset.value.address, nativeAsset.address]
+    ? [wrappedNativeAsset.value.address]
     : [];
 }
 
