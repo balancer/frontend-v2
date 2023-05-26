@@ -14,6 +14,7 @@ const defaultAttrs = {
     id: true,
   },
   isPreferentialGauge: true,
+  streamer: true,
 };
 
 export const gaugeQueryBuilder = (
