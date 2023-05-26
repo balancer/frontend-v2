@@ -1,14 +1,11 @@
 import { ApprovalAction } from '@/composables/approvals/types';
-import useRelayerApproval, {
-  RelayerType,
-} from '@/composables/approvals/useRelayerApproval';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { fiatValueOf } from '@/composables/usePoolHelpers';
 import useTransactions from '@/composables/useTransactions';
-import { trackLoading } from '@/lib/utils';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useTokens } from '@/providers/tokens.provider';
+import { bnum, trackLoading } from '@/lib/utils';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import {
@@ -39,25 +36,17 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   /**
    * COMPOSABLES
    */
-  const { balanceFor, getToken, refetchBalances } = useTokens();
+  const { balanceFor, refetchBalances } = useTokens();
   const { fNum } = useNumbers();
   const { t } = useI18n();
   const { addTransaction } = useTransactions();
   const {
     stake,
     unstake,
-    restake,
     stakedShares,
     refetchAllPoolStakingData,
     preferentialGaugeAddress,
-    isLoading,
   } = usePoolStaking();
-  //TODO: this is only used for restake (better not always calling it)
-  const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
-    RelayerType.BATCH
-  );
-
-  // console.log('preferentialGaugeAddress', preferentialGaugeAddress);
 
   // Staked or unstaked shares depending on action type.
   const currentShares =
@@ -84,48 +73,32 @@ export function useStakePreview(props: StakePreviewProps, emit) {
     loadingLabel: t('staking.unstaking'),
     confirmingLabel: t('confirming'),
     action: () => txWithNotification(unstake, 'unstake'),
-    stepTooltip: t('staking.unstakeTooltip'),
+    stepTooltip:
+      props.action === 'restake'
+        ? t('staking.restakeTooltip')
+        : t('staking.unstakeTooltip'),
   };
 
-  const restakeAction = {
-    label: t('restake'),
-    loadingLabel: t('staking.unstaking'),
-    confirmingLabel: t('confirming'),
-    action: () => txWithNotification(restake, 'restake'),
-    stepTooltip: t('staking.restakeTooltip'),
-  };
+  /**
+   * COMPUTED
+   */
+  const isStakeAndZero = computed(
+    () =>
+      props.action === 'stake' &&
+      (currentShares === '0' || currentShares === '')
+  );
 
-  // /**
-  //  * COMPUTED
-  //  */
-  // const assetRowWidth = computed(
-  //   () => (tokensListExclBpt(props.pool).length * 32) / 1.5
-  // );
-
-  // const isStakeAndZero = computed(
-  //   () =>
-  //     props.action === 'stake' &&
-  //     (currentShares === '0' || currentShares === '')
-  // );
-
-  // const totalUserPoolSharePct = ref(
-  //   bnum(
-  //     bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
-  //   )
-  //     .div(props.pool.totalShares)
-  //     .toString()
-  // );
+  const totalUserPoolSharePct = ref(
+    bnum(
+      bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
+    )
+      .div(props.pool.totalShares)
+      .toString()
+  );
 
   /**
    * METHODS
    */
-  async function handleSuccess({ receipt }) {
-    isActionConfirmed.value = true;
-    confirmationReceipt.value = receipt;
-    await Promise.all([refetchBalances(), refetchAllPoolStakingData()]);
-    emit('success');
-  }
-
   async function txWithNotification(
     action: () => Promise<TransactionResponse>,
     actionType: StakeAction
@@ -167,13 +140,12 @@ export function useStakePreview(props: StakePreviewProps, emit) {
     if (approvalActions) stakeActions.value.unshift(...approvalActions);
   }
 
-  // async function loadApprovalsForRestake() {
-  //   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
-  //     RelayerType.BATCH
-  //   );
-  //   if (relayerApprovalAction)
-  //     stakeActions.value.unshift(relayerApprovalAction.value);
-  // }
+  async function handleSuccess({ receipt }) {
+    isActionConfirmed.value = true;
+    confirmationReceipt.value = receipt;
+    await Promise.all([refetchBalances(), refetchAllPoolStakingData()]);
+    emit('success');
+  }
 
   function handleClose() {
     isActionConfirmed.value = false;
@@ -188,26 +160,38 @@ export function useStakePreview(props: StakePreviewProps, emit) {
     () => props.action,
     () => {
       if (props.action === 'stake') stakeActions.value = [stakeAction];
-      if (props.action === 'unstake') stakeActions.value = [unstakeAction];
+      if (props.action === 'unstake') {
+        stakeActions.value = [unstakeAction];
+      }
       if (props.action === 'restake')
-        // What if relayerApprovalAction.value is not loaded?
-        stakeActions.value = [relayerApprovalAction.value, restakeAction];
+        stakeActions.value = [unstakeAction, stakeAction];
     },
     { immediate: true }
   );
 
   watch(preferentialGaugeAddress, async () => {
-    if (props.action === 'stake') await loadApprovalsForGauge();
-    // if (props.action === 'restake') await loadApprovalsForRestake();
+    if (props.action === 'unstake') return;
+    await loadApprovalsForGauge();
   });
 
   /**
    * LIFECYCLE
    */
   onBeforeMount(async () => {
-    if (props.action === 'stake') await loadApprovalsForGauge();
-    // if (props.action === 'restake') await loadApprovalsForRestake();
+    if (props.action !== 'unstake') await loadApprovalsForGauge();
   });
 
-  return { handleSuccess, handleClose, getToken, stakeActions };
+  return {
+    //state
+    isActionConfirmed,
+    confirmationReceipt,
+    isLoadingApprovalsForGauge,
+    currentShares,
+    stakeActions,
+    totalUserPoolSharePct,
+    //methods
+    handleSuccess,
+    handleClose,
+    isStakeAndZero,
+  };
 }
