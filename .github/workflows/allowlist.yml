@@ -44,7 +44,7 @@ jobs:
       - name: Install deps
         run: npm install cac
       - name: Run allowlist script
-        run: npx vite-node ./src/lib/scripts/automatic-prs/allowlist-pool.ts --network ${{github.event.inputs.network}} --poolType ${{github.event.inputs.poolType}} --poolId \"${{github.event.inputs.poolId}}\" --poolDescription ${{github.event.inputs.poolDescription}}
+        run: npx vite-node ./src/lib/scripts/automatic-prs/allowlist-pool.ts --network ${{github.event.inputs.network}} --poolType ${{github.event.inputs.poolType}} --poolId \"${{github.event.inputs.poolId}}\" --poolDescription "${{github.event.inputs.poolDescription}}"
       - name: Run eslint fix of updated config files
         run: npm run lint:fix:config
       - name: Create Pull Request
