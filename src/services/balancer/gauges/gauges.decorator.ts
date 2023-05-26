@@ -1,9 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
-
-import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
-import LiquidityGaugeRewardHelperAbi from '@/lib/abi/LiquidityGaugeHelperAbi.json';
 import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 import {
   Gauge,
@@ -11,22 +7,17 @@ import {
   OnchainGaugeDataMap,
   SubgraphGauge,
 } from './types';
-import { getOldMulticaller } from '@/dependencies/OldMulticaller';
-// eslint-disable-next-line no-restricted-imports
-import { Multicaller } from '@/lib/utils/balancer/contract';
+import { getMulticaller } from '@/dependencies/Multicaller';
+import { Multicaller } from '@/services/multicalls/multicaller';
 
 const MAX_REWARD_TOKENS = 8;
 
 export class GaugesDecorator {
   multicaller: Multicaller;
 
-  constructor(
-    private readonly abi = LiquidityGaugeAbi,
-    private readonly rewardsHelperAbi = LiquidityGaugeRewardHelperAbi,
-    private readonly provider = rpcProviderService.jsonProvider,
-    private readonly config = configService
-  ) {
-    this.multicaller = this.resetMulticaller(abi);
+  constructor() {
+    const multicaller = getMulticaller();
+    this.multicaller = new multicaller();
   }
 
   /**
@@ -36,7 +27,6 @@ export class GaugesDecorator {
     subgraphGauges: SubgraphGauge[],
     userAddress: string
   ): Promise<Gauge[]> {
-    this.multicaller = this.resetMulticaller(this.abi);
     this.callRewardTokens(subgraphGauges);
     this.callClaimableTokens(subgraphGauges, userAddress);
 
@@ -44,13 +34,9 @@ export class GaugesDecorator {
 
     const nativeGauges = subgraphGauges.filter(gauge => !gauge.streamer);
     this.callClaimableRewards(nativeGauges, userAddress, gaugesDataMap, false);
-    gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
-      gaugesDataMap
-    );
-
     const oldL2Gauges = subgraphGauges.filter(gauge => !!gauge.streamer);
-    this.multicaller = this.resetMulticaller(this.rewardsHelperAbi);
     this.callClaimableRewards(oldL2Gauges, userAddress, gaugesDataMap, true);
+
     gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
       gaugesDataMap
     );
@@ -80,12 +66,13 @@ export class GaugesDecorator {
   private callRewardTokens(subgraphGauges: SubgraphGauge[]) {
     subgraphGauges.forEach(gauge => {
       for (let i = 0; i < MAX_REWARD_TOKENS; i++) {
-        this.multicaller.call(
-          `${gauge.id}.rewardTokens[${i}]`,
-          gauge.id,
-          'reward_tokens',
-          [i]
-        );
+        this.multicaller.call({
+          key: `${gauge.id}.rewardTokens[${i}]`,
+          address: gauge.id,
+          abi: ['function reward_tokens(uint256) view returns (address)'],
+          function: 'reward_tokens',
+          params: [i],
+        });
       }
     });
   }
@@ -110,12 +97,13 @@ export class GaugesDecorator {
     userAddress: string
   ) {
     subgraphGauges.forEach(gauge => {
-      this.multicaller.call(
-        `${gauge.id}.claimableTokens`,
-        gauge.id,
-        'claimable_tokens',
-        [userAddress]
-      );
+      this.multicaller.call({
+        key: `${gauge.id}.claimableTokens`,
+        address: gauge.id,
+        function: 'claimable_tokens',
+        abi: ['function claimable_tokens(address) view returns (uint256)'],
+        params: [userAddress],
+      });
     });
   }
 
@@ -137,20 +125,31 @@ export class GaugesDecorator {
       gaugesDataMap[gauge.id].rewardTokens.forEach(rewardToken => {
         if (rewardToken === AddressZero) return;
 
-        const callArgs = shouldUseRewardHelper
+        const params = shouldUseRewardHelper
           ? [gauge.id, userAddress, rewardToken]
           : [userAddress, rewardToken];
 
-        const contractAddress = shouldUseRewardHelper
-          ? configService.network.addresses.gaugeRewardsHelper
-          : gauge.id;
+        const contractAddress =
+          shouldUseRewardHelper &&
+          configService.network.addresses.gaugeRewardsHelper
+            ? configService.network.addresses.gaugeRewardsHelper
+            : gauge.id;
 
-        this.multicaller.call(
-          `${gauge.id}.claimableRewards.${rewardToken}`,
-          contractAddress,
-          methodName,
-          callArgs
-        );
+        const abi = shouldUseRewardHelper
+          ? [
+              'function getPendingRewards(address,address,address) view returns (uint256)',
+            ]
+          : [
+              'function claimable_reward(address,address) view returns (uint256)',
+            ];
+
+        this.multicaller.call({
+          key: `${gauge.id}.claimableRewards.${rewardToken}`,
+          address: contractAddress,
+          function: methodName,
+          abi,
+          params,
+        });
       });
     });
   }
@@ -171,13 +170,6 @@ export class GaugesDecorator {
     });
 
     return claimableRewards;
-  }
-
-  private resetMulticaller(
-    abi: typeof LiquidityGaugeAbi | typeof LiquidityGaugeRewardHelperAbi
-  ) {
-    const Multicaller = getOldMulticaller();
-    return new Multicaller(this.config.network.key, this.provider, abi);
   }
 }
 
