@@ -1,6 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
 
-import { networkHasNativeGauges } from '@/composables/useNetwork';
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
 import LiquidityGaugeRewardHelperAbi from '@/lib/abi/LiquidityGaugeHelperAbi.json';
 import { configService } from '@/services/config/config.service';
@@ -43,10 +42,15 @@ export class GaugesDecorator {
 
     let gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>();
 
-    if (!networkHasNativeGauges.value) {
-      this.multicaller = this.resetMulticaller(this.rewardsHelperAbi);
-    }
-    this.callClaimableRewards(subgraphGauges, userAddress, gaugesDataMap);
+    const nativeGauges = subgraphGauges.filter(gauge => !gauge.streamer);
+    this.callClaimableRewards(nativeGauges, userAddress, gaugesDataMap, false);
+    gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
+      gaugesDataMap
+    );
+
+    const oldL2Gauges = subgraphGauges.filter(gauge => !!gauge.streamer);
+    this.multicaller = this.resetMulticaller(this.rewardsHelperAbi);
+    this.callClaimableRewards(oldL2Gauges, userAddress, gaugesDataMap, true);
     gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
       gaugesDataMap
     );
@@ -122,23 +126,24 @@ export class GaugesDecorator {
   private callClaimableRewards(
     subgraphGauges: SubgraphGauge[],
     userAddress: string,
-    gaugesDataMap: OnchainGaugeDataMap
+    gaugesDataMap: OnchainGaugeDataMap,
+    shouldUseRewardHelper: boolean
   ) {
-    const methodName = networkHasNativeGauges.value
-      ? 'claimable_reward'
-      : 'getPendingRewards';
+    const methodName = shouldUseRewardHelper
+      ? 'getPendingRewards'
+      : 'claimable_reward';
 
     subgraphGauges.forEach(gauge => {
       gaugesDataMap[gauge.id].rewardTokens.forEach(rewardToken => {
         if (rewardToken === AddressZero) return;
 
-        const callArgs = networkHasNativeGauges.value
-          ? [userAddress, rewardToken]
-          : [gauge.id, userAddress, rewardToken];
+        const callArgs = shouldUseRewardHelper
+          ? [gauge.id, userAddress, rewardToken]
+          : [userAddress, rewardToken];
 
-        const contractAddress = networkHasNativeGauges.value
-          ? gauge.id
-          : configService.network.addresses.gaugeRewardsHelper;
+        const contractAddress = shouldUseRewardHelper
+          ? configService.network.addresses.gaugeRewardsHelper
+          : gauge.id;
 
         this.multicaller.call(
           `${gauge.id}.claimableRewards.${rewardToken}`,
