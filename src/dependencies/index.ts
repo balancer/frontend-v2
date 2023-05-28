@@ -6,6 +6,7 @@ import { initOldMulticaller } from './OldMulticaller';
 import { initRpcProviderService } from './rpc-provider.service';
 import { initWalletConnectors } from './wallets';
 import { initWeb3Provider } from './wallets/Web3Provider';
+import { initContractConcern } from './contract.concern';
 
 export function initDependencies() {
   // We exclude the heavy dependencies to save bundle size:
@@ -20,6 +21,7 @@ export function initDependencies() {
   initEthersContract();
   initWeb3Provider();
   initWalletConnectors();
+  initContractConcern();
 }
 
 export function handleDependencyError(dependencyName: string): never {

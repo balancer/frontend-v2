@@ -1,10 +1,10 @@
 import { isSameAddress } from '@/lib/utils';
 import { useTokens } from '@/providers/tokens.provider';
 
-import useInvestPageTabs, {
+import useAddLiquidityTabs, {
   Tab,
   tabs,
-} from '@/composables/pools/useInvestPageTabs';
+} from '@/composables/pools/useAddLiquidityTabs';
 import { AmountIn, useJoinPool } from '@/providers/local/join-pool.provider';
 import { usePool } from '@/providers/local/pool.provider';
 
@@ -16,7 +16,7 @@ export function useMyWallet() {
   const { setAmountsIn, setJoinWithNativeAsset, isSingleAssetJoin, amountsIn } =
     useJoinPool();
   const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
-  const { activeTab } = useInvestPageTabs();
+  const { activeTab } = useAddLiquidityTabs();
 
   /**
    * COMPUTED

@@ -82,6 +82,7 @@ export default function usePoolQuery(
     await injectTokens([
       ...tokensListExclBpt(pool),
       ...tokenTreeLeafs(pool.tokens),
+      pool.address, // We need to inject pool addresses so we can fetch a user's balance for that pool.
     ]);
 
     return pool;

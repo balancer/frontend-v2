@@ -3,7 +3,6 @@ import {
   defaultExactInExit as defaultExactInExit,
   initBalancerSdkWithDefaultMocks,
 } from '@/dependencies/balancer-sdk.mocks';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { aTokenInfo } from '@/types/TokenList.builders';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
@@ -13,21 +12,14 @@ import {
   defaultGasLimit,
   defaultTransactionResponse,
 } from '@tests/unit/builders/signer';
-import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
-import { ref } from 'vue';
 import { ExactOutExitHandler } from './exact-out-exit.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
-
-const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
-  mockDeep<GasPriceService>();
+initContractConcernWithDefaultMocks();
 
 async function mountExactOutExitHandler(pool: Pool) {
-  return new ExactOutExitHandler(
-    ref(pool),
-    getBalancerSDK(),
-    gasPriceServiceMock
-  );
+  return new ExactOutExitHandler(ref(pool), getBalancerSDK());
 }
 
 test('Successfully executes an exact-out exit transaction', async () => {

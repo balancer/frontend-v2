@@ -9,6 +9,10 @@ export type CommonTokens = {
   BAL: string;
   bbaUSD?: string;
   bbaUSDv2?: string;
+  rETH?: string;
+  stETH?: string;
+  wstETH?: string;
+  stMATIC?: string;
 };
 
 export type TokenConstants = {
@@ -33,11 +37,6 @@ export interface Contracts {
   vault: string;
   weightedPoolFactory: string;
   stablePoolFactory: string;
-  weth: string;
-  rETH: string;
-  stMATIC: string;
-  stETH: string;
-  wstETH: string;
   lidoRelayer: string;
   balancerHelpers: string;
   batchRelayer: string;
@@ -73,6 +72,7 @@ export interface Config {
   chainName: string;
   name: string;
   shortName: string;
+  monorepoName?: string;
   slug: string;
   network: string;
   unknown: boolean;

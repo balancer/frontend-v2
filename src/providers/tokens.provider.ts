@@ -88,7 +88,7 @@ export const tokensProvider = (
     injectedTokens: {},
     allowanceContracts: compact([
       networkConfig.addresses.vault,
-      networkConfig.addresses.wstETH,
+      networkConfig.tokens.Addresses.wstETH,
       configService.network.addresses.veBAL,
     ]),
     injectedPrices: {},

@@ -1,9 +1,9 @@
-import { Tab } from '@/composables/pools/useInvestPageTabs';
+import { Tab } from '@/composables/pools/useAddLiquidityTabs';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { initMulticallerAsPoolMulticallerMock } from '@/dependencies/Multicaller.mocks';
 import { provideJoinPool } from '@/providers/local/join-pool.provider';
 import { providePool } from '@/providers/local/pool.provider';
-import { defaultMaxBalance } from '@/providers/__mocks__/tokens.provider.fake';
+import { defaultTokenMaxBalance } from '@/providers/__mocks__/tokens.provider.fake';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { wethAddress } from '@tests/unit/builders/address';
@@ -50,7 +50,7 @@ test('Maximizes the token amount when clicking a token that is a pool token', as
   handleMyWalletTokenClick(wethAddress, isPoolToken);
 
   expect(amountsIn.value).toEqual([
-    anAmountIn({ address: wethAddress, value: defaultMaxBalance }), //20 is max balance for WETH
+    anAmountIn({ address: wethAddress, value: defaultTokenMaxBalance }), //20 is max balance for WETH
   ]);
 });
 
@@ -69,7 +69,7 @@ test('Moves to Single Token tab when clicking a token that is not in a pool toke
 
   await waitForExpect(() =>
     expect(amountsIn.value).toEqual([
-      anAmountIn({ address: wethAddress, value: defaultMaxBalance }), //Also changes the token amount in to its max
+      anAmountIn({ address: wethAddress, value: defaultTokenMaxBalance }), //Also changes the token amount in to its max
     ])
   );
 });

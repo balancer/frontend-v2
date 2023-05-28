@@ -12,6 +12,7 @@ const config: Config = {
   chainName: 'Ethereum',
   name: 'Ethereum Mainnet',
   shortName: 'Mainnet',
+  monorepoName: 'mainnet',
   slug: 'ethereum',
   network: 'homestead',
   unknown: false,

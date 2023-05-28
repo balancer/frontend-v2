@@ -18,17 +18,12 @@ export class RawConcern extends TransactionConcern {
   }
 
   public async sendTransaction(
-    options: TransactionRequest,
-    forceLegacyTxType = false
+    options: TransactionRequest
   ): Promise<TransactionResponse> {
     console.log('sendTransaction', options);
 
     try {
-      const gasSettings = await this.gasPrice.settings(
-        this.signer,
-        options,
-        forceLegacyTxType
-      );
+      const gasSettings = await this.gas.settings(this.signer, options);
 
       const txOptions = { ...options, ...gasSettings };
 
@@ -42,9 +37,7 @@ export class RawConcern extends TransactionConcern {
     } catch (err) {
       const error = err as WalletError;
 
-      if (this.shouldRetryAsLegacy(error)) {
-        return await this.sendTransaction(options, true);
-      } else if (this.shouldLogFailure(error)) {
+      if (this.shouldLogFailure(error)) {
         await this.logFailedTx(options, error);
       }
       return Promise.reject(error);
@@ -52,7 +45,7 @@ export class RawConcern extends TransactionConcern {
   }
 
   public async call(options: TransactionRequest): Promise<string> {
-    const gasSettings = await this.gasPrice.settings(this.signer, options);
+    const gasSettings = await this.gas.settings(this.signer, options);
     options = { ...options, ...gasSettings };
 
     return await this.signer.call(options);

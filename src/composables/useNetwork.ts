@@ -57,9 +57,7 @@ export const isEIP1559SupportedNetwork = computed(
 export const isPoolBoostsEnabled = computed<boolean>(
   () => configService.network.pools.BoostsEnabled
 );
-export const networkHasNativeGauges = computed<boolean>(() => {
-  return networkConfig.addresses.gaugeController !== '';
-});
+
 /**
  * METHODS
  */
