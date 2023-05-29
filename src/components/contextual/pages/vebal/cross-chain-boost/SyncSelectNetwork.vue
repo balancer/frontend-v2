@@ -55,7 +55,7 @@ async function syncNetworks() {
           class="flex justify-between items-center p-4"
           :class="{
             'grayscale pointer-events-none opacity-40':
-              networksBySyncState.unsynced.includes(network),
+              networksBySyncState.synced.includes(network),
           }"
         >
           <BalCheckbox

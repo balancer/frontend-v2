@@ -33,7 +33,7 @@ export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
   /**
    * QUERY INPUTS
    */
-  const queryKey = QUERY_KEYS.Gauges.OmniEscrowLocks(account.value);
+  const queryKey = QUERY_KEYS.Gauges.OmniEscrowLocks(account);
 
   return useGraphQuery<OmniEscrowLockResponse>(
     subgraphs.gauge,
@@ -41,11 +41,8 @@ export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
     () => ({
       omniVotingEscrowLocks: {
         __args: {
-          first: 1,
-          sortBy: 'timestamp',
-          orderDirection: 'desc',
           where: {
-            localUser: account.value.toLowerCase(),
+            localUser: account.value?.toLowerCase(),
           },
         },
         ...attrs,

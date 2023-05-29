@@ -53,9 +53,6 @@ export function useVotingEscrowLocksQuery(
     () => ({
       votingEscrowLocks: {
         __args: {
-          first: 1,
-          sortBy: 'timestamp',
-          orderDirection: 'desc',
           where: {
             user: user.value?.toLowerCase(),
           },

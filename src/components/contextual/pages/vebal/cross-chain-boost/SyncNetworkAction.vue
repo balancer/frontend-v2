@@ -5,10 +5,13 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { networkLabelMap } from '@/composables/useNetwork';
 import { useI18n } from 'vue-i18n';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { L2VeBalBalances } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
   chosenNetworks: Set<Network>;
   activeTabIdx: number;
+  veBalBalance: string;
+  l2VeBalBalances: L2VeBalBalances;
   sync(network: Network): Promise<TransactionResponse>;
 };
 
@@ -18,9 +21,6 @@ defineEmits(['update:activeTabIdx']);
 const { t } = useI18n();
 
 const currentActionIndex = ref(0);
-// const currentNetwork = computed(() => {
-//   return [...props.chosenNetworks][0];
-// });
 
 const networkSyncSteps = computed(() => {
   const actions: TransactionActionInfo[] = [];
@@ -77,12 +77,14 @@ const networkSyncSteps = computed(() => {
             <div class="font-medium dark:text-gray-300">
               {{ $t('crossChainBoost.currentBalance') }}
             </div>
-            <div class="font-bold text-black dark:text-white">0.0000 veBAL</div>
+            <div class="font-bold text-black dark:text-white">
+              {{ l2VeBalBalances?.[network] || '0.0000' }} veBAL
+            </div>
           </div>
           <div class="p-4 w-6/12 text-gray-600 dark:text-gray-300">
-            <div>{{ $t('crossChainBoost.syncedBalance') }}</div>
+            <div>{{ $t('crossChainBoost.postSyncBalance') }}</div>
             <div class="font-bold text-black dark:text-white">
-              179.1032 veBAL
+              {{ veBalBalance || '0.0000' }} veBAL
             </div>
           </div>
         </div>

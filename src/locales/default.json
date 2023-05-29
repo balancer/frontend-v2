@@ -235,7 +235,7 @@
     "infoDescription": "Sidechains & Layer 2 networks like Polygon and Arbitrum don’t know your veBAL balance on Ethereum Mainnet, unless you sync it. On any network where you stake, you should sync your veBAL balance to get your max possible boost. Resync after acquiring more veBAL to continue boosting to your max.",
     "sync": "Sync",
     "currentBalance": "Current balance",
-    "syncedBalance": "Synced balance",
+    "postSyncBalance": "Post-sync balance",
     "syncedNetworks": "Synced networks",
     "syncToNetwork": "Sync veBal to {network}",
     "syncingToNetwork": "Syncing veBal to {network}",

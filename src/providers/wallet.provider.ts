@@ -127,11 +127,12 @@ export const wallets = () => {
   });
 
   const account = computed(() => {
-    // if (pluginState.connector && pluginState.connector.account) {
-    //   // always want to be using checksum addresses
-    //   return getAddress(pluginState.connector.account);
-    // }
-    return '0x4a30c80a2c41312ce4ee79f730c8d84cad9f7b31';
+    if (pluginState.connector && pluginState.connector.account) {
+      // always want to be using checksum addresses
+      return getAddress(pluginState.connector.account);
+    }
+    return '';
+    // return '0x0029ab135b5be72168bf80f140d60a9264dbd0c5';
   });
 
   const chainId = computed(() => {

@@ -47,13 +47,7 @@ export class ContractConcern extends TransactionConcern {
     const block = await this.signer.provider.getBlockNumber();
     console.log(`Contract: ${contractAddress} Action: ${action}`);
     console.log('Params: ', JSON.stringify(params));
-    console.log({
-      contractWithSigner,
-      action,
-      params,
-      options,
-      forceLegacyTxType,
-    });
+
     try {
       const gasSettings = await this.gas.settingsForContractCall(
         contractWithSigner,

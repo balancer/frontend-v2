@@ -51,7 +51,14 @@ export function useCrossChainSync() {
   const { data: omniEscrowResponse, isLoading: isLoadingOmniEscrow } =
     useOmniEscrowLocksQuery(account);
 
+  // if omniEscrowLocks is empty, then all networks are unsynced
+  const allNetworksUnsynced = computed(
+    () => omniEscrowResponse.value?.omniVotingEscrowLocks.length === 0
+  );
+
   const omniEscrowLocks = computed(() => {
+    if (allNetworksUnsynced.value) return null;
+
     const omniVotingEscrowLocks =
       omniEscrowResponse.value?.omniVotingEscrowLocks[0];
     return omniVotingEscrowLocks;
@@ -94,6 +101,7 @@ export function useCrossChainSync() {
   });
 
   const isLoading = computed(() => {
+    if (allNetworksUnsynced.value) return false;
     return (
       isLoadingOmniEscrow.value ||
       isLoadingVotingEscrow.value ||
@@ -102,6 +110,15 @@ export function useCrossChainSync() {
   });
 
   const networksSyncState = computed(() => {
+    if (allNetworksUnsynced.value) {
+      return {
+        [Network.ARBITRUM]: NetworkSyncState.Unsynced,
+        [Network.OPTIMISM]: NetworkSyncState.Unsynced,
+        [Network.GNOSIS]: NetworkSyncState.Unsynced,
+        [Network.POLYGON]: NetworkSyncState.Unsynced,
+      };
+    }
+
     if (
       isLoading.value ||
       !omniEscrowLocks.value ||
@@ -173,12 +190,18 @@ export function useCrossChainSync() {
           network =>
             networksSyncState.value?.[network] === NetworkSyncState.Synced
         ) as Network[],
-      // unsynced: Object.keys(networksSyncState.value).map(v => Number(v)).filter(
-      //   network =>
-      //     networksSyncState.value?.[network] === NetworkSyncState.Unsynced ||
-      //     networksSyncState.value?.[network] === NetworkSyncState.Syncing
-      // ),
-      unsynced: [Network.ARBITRUM],
+      unsynced: Object.keys(networksSyncState.value)
+        .map(v => Number(v))
+        .filter(
+          network =>
+            networksSyncState.value?.[network] === NetworkSyncState.Unsynced
+        ),
+      sincing: Object.keys(networksSyncState.value)
+        .map(v => Number(v))
+        .filter(
+          network =>
+            networksSyncState.value?.[network] === NetworkSyncState.Syncing
+        ),
     };
   });
 
@@ -215,7 +238,8 @@ export function useCrossChainSync() {
   async function sync(network: Network) {
     const contractAddress = configService.network.addresses.omniVotingEscrow;
     if (!contractAddress) throw new Error('No contract address found');
-
+    console.log('contractAddress', contractAddress);
+    console.log('network', network);
     const signer = getSigner();
     const omniVotingEscrowContract = new OmniVotingEscrow(contractAddress);
 
