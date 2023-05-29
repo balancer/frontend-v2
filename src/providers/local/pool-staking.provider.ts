@@ -201,10 +201,10 @@ export const poolStakingProvider = (_poolId?: string) => {
    * Uses SDK gauge2gauge call.
    */
   function buildRestake(relayerSignature: string) {
+    if (!relayerSignature) throw new Error('No relayer signature to restake');
     return restake;
 
     async function restake(): Promise<TransactionResponse> {
-      if (!relayerSignature) throw new Error('No relayer signature to restake');
       if (!poolAddress.value) throw new Error('No pool to restake.');
       if (!poolGauges.value?.pool?.gauges)
         throw new Error('Unable to restake, no pool gauges');
@@ -220,14 +220,7 @@ export const poolStakingProvider = (_poolId?: string) => {
         )[0];
 
       const from = firstNonPreferentialGaugeWhereUserHasBalance.id;
-      const to = preferentialGaugeAddress.value;
-      const balanceToRestakeInWei = parseUnits(
-        firstNonPreferentialGaugeWhereUserHasBalance.balance,
-        18
-      );
-
-      //DEBUG!!!
-      const toGaugeAddress = '0x51be9bc648714cc07503ad46f354bc8d1a3b727b';
+      const to = preferentialGaugeAddress.value as string;
 
       console.log(
         `Restaking ${firstNonPreferentialGaugeWhereUserHasBalance.balance} from ${from} to ${to}`
@@ -240,12 +233,10 @@ export const poolStakingProvider = (_poolId?: string) => {
       const txInfo = await migrationService?.gauge2gauge({
         user: account.value,
         from,
-        to: toGaugeAddress,
-        balance: balanceToRestakeInWei.toString(),
+        to,
+        balance: firstNonPreferentialGaugeWhereUserHasBalance.balance,
         authorisation: relayerSignature,
       });
-
-      console.log('Result of gauge to gauge:', txInfo);
 
       return walletService.userProvider.value
         .getSigner()

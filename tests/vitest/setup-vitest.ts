@@ -9,6 +9,7 @@ import { noop } from 'lodash';
 vi.mock('@/services/web3/useWeb3');
 vi.mock('@/composables/useEthers');
 vi.mock('@/composables/useTransactions');
+vi.mock('@balancer-labs/typechain');
 
 //Globally silence time tracing to avoid noise in tests
 beforeAll(() => {
@@ -16,4 +17,6 @@ beforeAll(() => {
   vi.spyOn(console, 'timeEnd').mockImplementation(noop);
 });
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+});

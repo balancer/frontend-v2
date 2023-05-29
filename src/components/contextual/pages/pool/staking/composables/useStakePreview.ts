@@ -14,6 +14,9 @@ import {
 } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { useI18n } from 'vue-i18n';
+import useRelayerApproval, {
+  RelayerType,
+} from '@/composables/approvals/useRelayerApproval';
 
 /**
  * TYPES
@@ -43,10 +46,16 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   const {
     stake,
     unstake,
+    buildRestake,
     stakedShares,
     refetchAllPoolStakingData,
     preferentialGaugeAddress,
   } = usePoolStaking();
+
+  // We only use the relayer in case of restaking
+  const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
+    RelayerType.BATCH
+  );
 
   // Staked or unstaked shares depending on action type.
   const currentShares =
@@ -77,6 +86,15 @@ export function useStakePreview(props: StakePreviewProps, emit) {
       props.action === 'restake'
         ? t('staking.restakeTooltip')
         : t('staking.unstakeTooltip'),
+  };
+
+  const restakeAction = {
+    label: t('restake'),
+    loadingLabel: t('staking.restaking'),
+    confirmingLabel: t('confirming'),
+    action: () =>
+      txWithNotification(buildRestake(relayerSignature.value), 'restake'),
+    stepTooltip: t('staking.restakeTooltip'),
   };
 
   /**
@@ -164,21 +182,20 @@ export function useStakePreview(props: StakePreviewProps, emit) {
         stakeActions.value = [unstakeAction];
       }
       if (props.action === 'restake')
-        stakeActions.value = [unstakeAction, stakeAction];
+        stakeActions.value = [relayerApprovalAction.value, restakeAction];
     },
     { immediate: true }
   );
 
   watch(preferentialGaugeAddress, async () => {
-    if (props.action === 'unstake') return;
-    await loadApprovalsForGauge();
+    if (props.action === 'stake') await loadApprovalsForGauge();
   });
 
   /**
    * LIFECYCLE
    */
   onBeforeMount(async () => {
-    if (props.action !== 'unstake') await loadApprovalsForGauge();
+    if (props.action === 'stake') await loadApprovalsForGauge();
   });
 
   return {

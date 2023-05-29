@@ -2,21 +2,25 @@ import {
   aWeightedPool,
   defaultWeightedPoolSymbol,
 } from '@/__mocks__/weighted-pool';
+import { addTransactionMock } from '@/composables/__mocks__/useTransactions';
+import { defaultContractTransactionResponse } from '@/dependencies/contract.concern.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { sleep } from '@/lib/utils';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { provideUserData } from '@/providers/user-data.provider';
+import { mockWhenUserHasSharesInANonPreferentialGauge } from '@/services/balancer/gauges/__mocks__/gauge-mocks';
+import {
+  defaultWalletTransactionResponse,
+  walletProviderMock,
+} from '@/services/contracts/vault.service.mocks';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { firstCallParams } from '@tests/vitest/assertions';
 import {
   StakeAction,
   StakePreviewProps,
   useStakePreview,
 } from './useStakePreview';
-import { walletProviderMock } from '@/services/contracts/vault.service.mocks';
-import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
-import { defaultContractTransactionResponse } from '@/dependencies/contract.concern.mocks';
-import { addTransactionMock } from '@/composables/__mocks__/useTransactions';
-import { firstCallParams } from '@tests/vitest/assertions';
 
 initDependenciesWithDefaultMocks();
 walletServiceInstance.setUserProvider(computed(() => walletProviderMock));
@@ -112,6 +116,43 @@ test('Successfully creates and runs unstake action', async () => {
   expect(params.details?.pool).toEqual(pool);
 });
 
+test('Successfully creates and runs restake action', async () => {
+  mockWhenUserHasSharesInANonPreferentialGauge();
+
+  const { props, loadStakeAction } = buildProps();
+
+  const { stakeActions } = await mountUseStakePreview(props);
+
+  await loadStakeAction('restake');
+
+  expect(stakeActions.value).toHaveLength(2);
+
+  const approvalAction = stakeActions.value[0];
+  expect(approvalAction).toMatchObject({
+    confirmingLabel: 'Signing relayer approval',
+    isSignAction: true,
+    label: 'Sign relayer approval',
+    loadingLabel: 'Confirm in wallet',
+    stepTooltip: 'Your signature is required to use the relayer.',
+  });
+
+  const approvalTransactionResult = await approvalAction.action();
+
+  console.log(approvalTransactionResult);
+
+  // Restake action implementation is deeply tested in pool staking provider tests
+  const restakeAction = stakeActions.value[1];
+
+  const restakeTransactionResult = await restakeAction.action();
+  expect(restakeTransactionResult).toEqual(defaultWalletTransactionResponse);
+
+  // //Saves transaction
+  expect(addTransactionMock).toHaveBeenCalledOnce();
+  const params = firstCallParams(addTransactionMock);
+  expect(params.action).toBe('restake');
+  expect(params.details?.pool).toEqual(pool);
+});
+
 test('Changes staking actions when action prop changes', async () => {
   const { props, loadStakeAction } = buildProps();
   const { stakeActions } = await mountUseStakePreview(props);
@@ -133,8 +174,8 @@ test('Changes staking actions when action prop changes', async () => {
   await loadStakeAction('restake');
 
   expect(stakeActions.value).toHaveLength(2);
-  expect(stakeActions.value[0].label).toEqual('Unstake');
-  expect(stakeActions.value[1].label).toEqual('Stake');
+  expect(stakeActions.value[0].label).toEqual('Sign relayer approval');
+  expect(stakeActions.value[1].label).toEqual('Restake');
 });
 
 test('Handles staking action success', async () => {
