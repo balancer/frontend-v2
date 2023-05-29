@@ -10,10 +10,11 @@ import {
   defaultGasLimit,
   defaultTransactionResponse,
 } from '@tests/unit/builders/signer';
-import { ref } from 'vue';
 import { GeneralisedJoinHandler } from './generalised-join.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 async function mountGeneralizedJoinHandler(pool: Pool) {
   return new GeneralisedJoinHandler(ref(pool), getBalancerSDK());

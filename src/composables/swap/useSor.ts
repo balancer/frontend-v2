@@ -16,7 +16,7 @@ import { useI18n } from 'vue-i18n';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { bnum, isSameAddress } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import {
   SorManager,
   SorReturn,
@@ -231,9 +231,7 @@ export default function useSor({
     sorManager = new SorManager(
       rpcProviderService.jsonProvider,
       BigNumber.from(GAS_PRICE),
-      Number(MAX_POOLS),
-      configService.network.chainId,
-      configService.network.addresses.weth
+      Number(MAX_POOLS)
     );
 
     fetchPools();
@@ -299,9 +297,9 @@ export default function useSor({
         // wstETH. This is a crude hack to replace token in/out address
         // with wstETH so the index mapping works.
         if (isStEthAddress(tokenInAddressInput.value))
-          tokenInAddress = configService.network.addresses.wstETH;
+          tokenInAddress = configService.network.tokens.Addresses.wstETH || '';
         if (isStEthAddress(tokenOutAddressInput.value))
-          tokenOutAddress = configService.network.addresses.wstETH;
+          tokenOutAddress = configService.network.tokens.Addresses.wstETH || '';
 
         const tokenInPosition = result.tokenAddresses.indexOf(
           tokenInAddress.toLowerCase()
@@ -791,10 +789,7 @@ export default function useSor({
     address: string;
     isInputToken: boolean;
   }): Promise<BigNumber> {
-    if (
-      isSameAddress(address, appNetworkConfig.addresses.stETH) &&
-      isMainnet.value
-    ) {
+    if (isStEthAddress(address) && isMainnet.value) {
       return convertStEthWrap({ amount, isWrap: isInputToken });
     }
     return amount;

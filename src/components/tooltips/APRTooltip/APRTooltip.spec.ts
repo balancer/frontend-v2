@@ -180,7 +180,7 @@ describe('APRTooltip', () => {
         tokenAprs: {
           total: 166,
           breakdown: {
-            [configService.network.addresses.wstETH]: 166,
+            [configService.network.tokens.Addresses.wstETH || '']: 166,
           },
         },
         min: 166,
@@ -188,7 +188,7 @@ describe('APRTooltip', () => {
       };
       const poolMock: Pool = {
         ...EmptyPoolMock,
-        tokensList: [configService.network.addresses.wstETH],
+        tokensList: [configService.network.tokens.Addresses.wstETH || ''],
       };
       const { getByTestId } = renderComponent(APRTooltip, {
         props: {
@@ -214,7 +214,7 @@ describe('APRTooltip', () => {
       };
       const poolMock: Pool = {
         ...EmptyPoolMock,
-        tokensList: [configService.network.addresses.stMATIC],
+        tokensList: [configService.network.tokens.Addresses.stMATIC || ''],
       };
       const { getByTestId } = renderComponent(APRTooltip, {
         props: {
@@ -233,7 +233,7 @@ describe('APRTooltip', () => {
         tokenAprs: {
           total: 73,
           breakdown: {
-            [configService.network.addresses.rETH]: 73,
+            [configService.network.tokens.Addresses.rETH || '']: 73,
           },
         },
         min: 102,
@@ -241,7 +241,7 @@ describe('APRTooltip', () => {
       };
       const poolMock: Pool = {
         ...EmptyPoolMock,
-        tokensList: [configService.network.addresses.rETH],
+        tokensList: [configService.network.tokens.Addresses.rETH || ''],
       };
       const { getByTestId } = renderComponent(APRTooltip, {
         props: {
@@ -270,7 +270,7 @@ describe('APRTooltip', () => {
       };
       const poolMock: Pool = {
         ...EmptyPoolMock,
-        tokensList: [configService.network.addresses.rETH],
+        tokensList: [configService.network.tokens.Addresses.rETH || ''],
       };
       const { getByTestId } = renderComponent(APRTooltip, {
         props: {
