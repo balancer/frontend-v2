@@ -17,6 +17,7 @@ export interface SubgraphGauge {
     id: string;
   };
   isPreferentialGauge: boolean;
+  streamer: string;
 }
 
 export interface OnchainGaugeData {

@@ -12,7 +12,6 @@ import { Gauge } from '@/services/balancer/gauges/types';
 import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { networkHasNativeGauges } from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -46,7 +45,7 @@ const liquidityGaugeContract = new LiquidityGauge(gaugeAddress);
  * METHODS
  */
 function claimTx() {
-  if (!networkHasNativeGauges.value) {
+  if (props.gauge.streamer) {
     const liquidityGaugeRewardsHelperContract = new LiquidityGaugeRewardsHelper(
       configService.network.addresses.gaugeRewardsHelper || ''
     );

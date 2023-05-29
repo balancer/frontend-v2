@@ -12,7 +12,6 @@ import ProtocolRewardsTable, {
   ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { networkHasNativeGauges } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePoolHelpers';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
@@ -293,7 +292,7 @@ onBeforeMount(async () => {
             />
           </div>
         </template>
-        <div v-if="networkHasNativeGauges">
+        <div>
           <h3 class="inline-block px-4 xl:px-0 mt-8 mr-1.5 text-xl">
             {{ $t('otherTokenIncentives') }}
           </h3>
