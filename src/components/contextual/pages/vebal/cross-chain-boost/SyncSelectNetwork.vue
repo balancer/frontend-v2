@@ -2,6 +2,7 @@
 import { networkLabelMap } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import {
+  L2VeBalBalances,
   NetworknetworksBySyncState,
   allNetworks,
 } from '@/composables/cross-chain-sync/useCrossChainSync';
@@ -11,6 +12,7 @@ type Props = {
   chosenNetworks: Set<Network>;
   veBalBalance: string;
   activeTabIdx: number;
+  l2VeBalBalances: L2VeBalBalances;
 };
 const props = defineProps<Props>();
 const emit = defineEmits(['update:activeTabIdx', 'toggleNetwork']);
@@ -64,7 +66,9 @@ async function syncNetworks() {
             :label="networkLabelMap[network]"
             @input="toggleNetwork(network)"
           />
-          <div class="text-gray-600">0.0000 veBal</div>
+          <div class="text-gray-600">
+            {{ l2VeBalBalances?.[network] || '0.0000' }} veBal
+          </div>
         </div>
       </div>
     </div>

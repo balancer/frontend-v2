@@ -74,11 +74,13 @@ const networkSyncSteps = computed(() => {
       <div>
         <div class="flex border-b-2 last:border-b-0 dark:border-gray-800">
           <div class="p-4 w-6/12 text-gray-600 border-r-2 dark:border-gray-800">
-            <div class="font-medium dark:text-gray-300">Current Balance</div>
+            <div class="font-medium dark:text-gray-300">
+              {{ $t('crossChainBoost.currentBalance') }}
+            </div>
             <div class="font-bold text-black dark:text-white">0.0000 veBAL</div>
           </div>
           <div class="p-4 w-6/12 text-gray-600 dark:text-gray-300">
-            <div>Synced balanced</div>
+            <div>{{ $t('crossChainBoost.syncedBalance') }}</div>
             <div class="font-bold text-black dark:text-white">
               179.1032 veBAL
             </div>

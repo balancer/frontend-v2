@@ -32,7 +32,6 @@ export function useVotingEscrowLocksQuery(
   networkId: Network,
   user: ComputedRef<string | undefined>
 ) {
-  console.log('net', networkId);
   const { account } = useWeb3();
 
   const votingEscrowLocksQueryEnabled = computed(() => {
@@ -54,6 +53,9 @@ export function useVotingEscrowLocksQuery(
     () => ({
       votingEscrowLocks: {
         __args: {
+          first: 1,
+          sortBy: 'timestamp',
+          orderDirection: 'desc',
           where: {
             user: user.value?.toLowerCase(),
           },

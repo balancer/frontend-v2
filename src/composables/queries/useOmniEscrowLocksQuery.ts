@@ -41,6 +41,9 @@ export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
     () => ({
       omniVotingEscrowLocks: {
         __args: {
+          first: 1,
+          sortBy: 'timestamp',
+          orderDirection: 'desc',
           where: {
             localUser: account.value.toLowerCase(),
           },

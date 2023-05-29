@@ -10,15 +10,17 @@ import {
 import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
+import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * COMPOSABLES
  */
+const { dynamicDataLoading } = useTokens();
 const { isWalletReady } = useWeb3();
 const {
   networksSyncState,
   networksBySyncState,
-  veBalBalances,
+  l2VeBalBalances,
   isLoading,
   sync,
 } = useCrossChainSync();
@@ -40,7 +42,8 @@ const isSyncModalOpen = ref(false);
       {{ $t('crossChainBoost.title') }}
       <!-- {{ networksSyncState }}
       {{ networksBySyncState }} -->
-      {{ veBalBalances }}
+      {{ l2VeBalBalances }}
+      {{ fNum(veBalBalance, FNumFormats.token) }}
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
           <BalIcon name="info" size="sm" class="text-gray-400" />
@@ -52,7 +55,7 @@ const isSyncModalOpen = ref(false);
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <template v-if="isLoading">
+      <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
       </template>
       <template v-else>
@@ -114,7 +117,7 @@ const isSyncModalOpen = ref(false);
               :key="network"
               class="flex"
             >
-              <IconLoaderWrapper>
+              <IconLoaderWrapper :isLoading="false">
                 <img
                   :src="buildNetworkIconURL(Number(network))"
                   alt=""
@@ -132,6 +135,7 @@ const isSyncModalOpen = ref(false);
       :networksBySyncState="networksBySyncState"
       :sync="sync"
       :veBalBalance="fNum(veBalBalance, FNumFormats.token)"
+      :l2VeBalBalances="l2VeBalBalances"
       @close-modal="isSyncModalOpen = false"
     />
   </div>

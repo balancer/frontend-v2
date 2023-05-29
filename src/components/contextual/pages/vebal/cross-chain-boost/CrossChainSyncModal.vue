@@ -4,29 +4,26 @@ import SyncSelectNetwork from '@/components/contextual/pages/vebal/cross-chain-b
 import SyncNetworkAction from '@/components/contextual/pages/vebal/cross-chain-boost/SyncNetworkAction.vue';
 import SyncFinalState from '@/components/contextual/pages/vebal/cross-chain-boost/SyncFinalState.vue';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { NetworknetworksBySyncState } from '@/composables/cross-chain-sync/useCrossChainSync';
+import {
+  L2VeBalBalances,
+  NetworknetworksBySyncState,
+} from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
   isVisible: boolean;
   networksBySyncState: NetworknetworksBySyncState;
   veBalBalance: string;
+  l2VeBalBalances: L2VeBalBalances;
   sync(network: Network): Promise<TransactionResponse>;
 };
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   isVisible: false,
 });
 
 const emit = defineEmits(['closeModal']);
 
 const chosenNetworks = ref<Set<Network>>(new Set());
-
-const syncData = {
-  networksBySyncState: props.networksBySyncState,
-  chosenNetworks,
-  veBalBalance: props.veBalBalance,
-  sync: props.sync,
-};
 
 const syncTabs = [SyncSelectNetwork, SyncNetworkAction, SyncFinalState];
 
@@ -52,8 +49,11 @@ function toggleNetwork(network: number) {
     <Transition name="fade" mode="out-in">
       <component
         :is="syncTabs[tabActiveIdx]"
-        v-bind="syncData"
         v-model:activeTabIdx="tabActiveIdx"
+        :networksBySyncState="networksBySyncState"
+        :veBalBalance="veBalBalance"
+        :l2VeBalBalances="l2VeBalBalances"
+        :sync="sync"
         style="min-height: 470px"
         :chosenNetworks="chosenNetworks"
         @toggle-network="toggleNetwork"

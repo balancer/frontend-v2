@@ -23,6 +23,8 @@ export interface NetworknetworksBySyncState {
   unsynced: Network[];
 }
 
+export type L2VeBalBalances = Record<number, string> | null;
+
 // all networks that are supported by cross-chain sync feature
 export const allNetworks = [
   Network.POLYGON,
@@ -189,10 +191,10 @@ export function useCrossChainSync() {
     const x = new BigNumber(slope).multipliedBy(
       Math.floor(Date.now() / 1000) - timestamp
     );
-    return new BigNumber(bias).minus(x);
+    return new BigNumber(bias).minus(x).toFixed(4).toString();
   }
 
-  const veBalBalances = computed(() => {
+  const l2VeBalBalances = computed<L2VeBalBalances>(() => {
     if (!votingEscrowLocks.value) return null;
 
     const {
@@ -238,7 +240,7 @@ export function useCrossChainSync() {
     networksSyncState,
     isLoading,
     networksBySyncState,
-    veBalBalances,
+    l2VeBalBalances,
     sync,
   };
 }
