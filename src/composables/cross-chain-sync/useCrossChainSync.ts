@@ -4,6 +4,8 @@ import { useVotingEscrowLocksQuery } from '../queries/useVotingEscrowQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
 import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-voting-escrow';
+import { allEqual } from '@/lib/utils/array';
+import BigNumber from 'bignumber.js';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -19,10 +21,6 @@ interface EscrowLockData {
 export interface NetworknetworksBySyncState {
   synced: Network[];
   unsynced: Network[];
-}
-
-function allEqual<T>(array: T[]): boolean {
-  return array.every(value => value === array[0]);
 }
 
 // all networks that are supported by cross-chain sync feature
@@ -84,6 +82,8 @@ export function useCrossChainSync() {
       mainnetVotingEscrowResponse.value?.votingEscrowLocks[0];
     const votingEscrowLocksArbitrum =
       arbitrumVotingEscrowResponse.value?.votingEscrowLocks[0];
+
+    if (!votingEscrowLocks || !votingEscrowLocksArbitrum) return null;
 
     return {
       [Network.MAINNET]: votingEscrowLocks,
@@ -180,6 +180,36 @@ export function useCrossChainSync() {
     };
   });
 
+  // veBAL_balance = bias - slope * (now() - timestamp)
+  function calculateVeBAlBalance(
+    bias: string,
+    slope: string,
+    timestamp: number
+  ) {
+    const x = new BigNumber(slope).multipliedBy(
+      Math.floor(Date.now() / 1000) - timestamp
+    );
+    return new BigNumber(bias).minus(x);
+  }
+
+  const veBalBalances = computed(() => {
+    if (!votingEscrowLocks.value) return null;
+
+    const {
+      bias: biasArb,
+      slope: slopeArb,
+      timestamp: timestampArb,
+    } = votingEscrowLocks.value[Network.ARBITRUM];
+
+    return {
+      [Network.ARBITRUM]: calculateVeBAlBalance(
+        biasArb,
+        slopeArb,
+        timestampArb
+      ),
+    };
+  });
+
   async function sync(network: Network) {
     const contractAddress = configService.network.addresses.omniVotingEscrow;
     if (!contractAddress) throw new Error('No contract address found');
@@ -208,6 +238,7 @@ export function useCrossChainSync() {
     networksSyncState,
     isLoading,
     networksBySyncState,
+    veBalBalances,
     sync,
   };
 }

@@ -15,8 +15,13 @@ import useVeBal from '@/composables/useVeBAL';
  * COMPOSABLES
  */
 const { isWalletReady } = useWeb3();
-const { networksSyncState, networksBySyncState, isLoading, sync } =
-  useCrossChainSync();
+const {
+  networksSyncState,
+  networksBySyncState,
+  veBalBalances,
+  isLoading,
+  sync,
+} = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
 /**
@@ -35,7 +40,7 @@ const isSyncModalOpen = ref(false);
       {{ $t('crossChainBoost.title') }}
       <!-- {{ networksSyncState }}
       {{ networksBySyncState }} -->
-
+      {{ veBalBalances }}
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
           <BalIcon name="info" size="sm" class="text-gray-400" />

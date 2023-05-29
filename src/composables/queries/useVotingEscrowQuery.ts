@@ -1,5 +1,5 @@
 import QUERY_KEYS from '@/constants/queryKeys';
-import useGraphQuery, { subgraphs } from './useGraphQuery';
+import useGraphQuery from './useGraphQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Network } from '@/lib/config';
 
@@ -14,6 +14,7 @@ export interface VotingEscrowLock {
   id: string;
   slope: string;
   bias: string;
+  timestamp: number;
 }
 
 export interface VotingEscrowLockResponse {
@@ -24,6 +25,7 @@ const attrs = {
   id: true,
   bias: true,
   slope: true,
+  timestamp: true,
 };
 
 export function useVotingEscrowLocksQuery(
