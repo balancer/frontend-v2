@@ -18,9 +18,9 @@ defineEmits(['update:activeTabIdx']);
 const { t } = useI18n();
 
 const currentActionIndex = ref(0);
-const currentNetwork = computed(() => {
-  return [...props.chosenNetworks][0];
-});
+// const currentNetwork = computed(() => {
+//   return [...props.chosenNetworks][0];
+// });
 
 const networkSyncSteps = computed(() => {
   const actions: TransactionActionInfo[] = [];

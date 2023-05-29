@@ -2,12 +2,12 @@
 import { networkLabelMap } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import {
-  NetworkSyncUnsyncState,
+  NetworknetworksBySyncState,
   allNetworks,
 } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
-  syncUnsyncState: NetworkSyncUnsyncState;
+  networksBySyncState: NetworknetworksBySyncState;
   chosenNetworks: Set<Network>;
   veBalBalance: string;
   activeTabIdx: number;
@@ -53,7 +53,7 @@ async function syncNetworks() {
           class="flex justify-between items-center p-4"
           :class="{
             'grayscale pointer-events-none opacity-40':
-              syncUnsyncState.unsynced.includes(network),
+              networksBySyncState.unsynced.includes(network),
           }"
         >
           <BalCheckbox

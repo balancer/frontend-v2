@@ -1,11 +1,7 @@
 import { Network } from '@/lib/config';
-import {
-  OmniEscrowLock,
-  useOmniEscrowLocksQuery,
-} from '../queries/useOmniEscrowLocksQuery';
+import { useOmniEscrowLocksQuery } from '../queries/useOmniEscrowLocksQuery';
 import { useVotingEscrowLocksQuery } from '../queries/useVotingEscrowQuery';
 import useWeb3 from '@/services/web3/useWeb3';
-import { VotingEscrowLock } from '../useVotingEscrowLocks';
 import { configService } from '@/services/config/config.service';
 import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-voting-escrow';
 
@@ -20,7 +16,7 @@ interface EscrowLockData {
   slope: string;
 }
 
-export interface NetworkSyncUnsyncState {
+export interface NetworknetworksBySyncState {
   synced: Network[];
   unsynced: Network[];
 }
@@ -47,6 +43,11 @@ export const LayerZeroNetworkId = {
 export function useCrossChainSync() {
   const { account, getSigner } = useWeb3();
 
+  /**
+   * omniVotingEscrowLocks contains the user's veBAL data that is known by the bridge contract
+   * it is used to determine sync status to l2 networks
+   * slope and bias is how a user's "balance" is stored on the smart contract
+   */
   const { data: omniEscrowResponse, isLoading: isLoadingOmniEscrow } =
     useOmniEscrowLocksQuery(account);
 
@@ -56,10 +57,18 @@ export function useCrossChainSync() {
     return omniVotingEscrowLocks;
   });
 
+  /**
+   * smart contracts can direct their veBAL boost to a different address on L2
+   * for regular UI users, remoteUser will be the same as localUser
+   */
   const remoteUser = computed(() => {
     return omniEscrowLocks.value?.remoteUser;
   });
 
+  /**
+   * votingEscrowLocks contains the user's original veBAL data
+   * slope and bias is how a user's "balance" is stored on the smart contract
+   */
   const {
     data: mainnetVotingEscrowResponse,
     isLoading: isLoadingVotingEscrow,
@@ -147,7 +156,8 @@ export function useCrossChainSync() {
     return NetworkSyncState.Unsynced;
   }
 
-  const syncUnsyncState = computed<NetworkSyncUnsyncState>(() => {
+  // Returns networks lists by sync state synced/unsynced
+  const networksBySyncState = computed<NetworknetworksBySyncState>(() => {
     if (!networksSyncState.value)
       return {
         synced: [],
@@ -197,7 +207,7 @@ export function useCrossChainSync() {
     votingEscrowLocks,
     networksSyncState,
     isLoading,
-    syncUnsyncState,
+    networksBySyncState,
     sync,
   };
 }

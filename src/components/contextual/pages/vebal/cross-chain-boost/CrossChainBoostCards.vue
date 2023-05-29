@@ -15,7 +15,7 @@ import useVeBal from '@/composables/useVeBAL';
  * COMPOSABLES
  */
 const { isWalletReady } = useWeb3();
-const { networksSyncState, syncUnsyncState, isLoading, sync } =
+const { networksSyncState, networksBySyncState, isLoading, sync } =
   useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -34,7 +34,7 @@ const isSyncModalOpen = ref(false);
     <h3 class="mb-3">
       {{ $t('crossChainBoost.title') }}
       <!-- {{ networksSyncState }}
-      {{ syncUnsyncState }} -->
+      {{ networksBySyncState }} -->
 
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
@@ -57,13 +57,13 @@ const isSyncModalOpen = ref(false);
           </div>
           <div class="flex mb-5">
             <span
-              v-if="syncUnsyncState.unsynced.length === 0"
+              v-if="networksBySyncState.unsynced.length === 0"
               class="text-sm text-gray-600"
             >
               {{ $t('crossChainBoost.syncedAllDescription') }}
             </span>
             <div
-              v-for="network in syncUnsyncState.unsynced"
+              v-for="network in networksBySyncState.unsynced"
               :key="network"
               class="flex"
             >
@@ -82,7 +82,7 @@ const isSyncModalOpen = ref(false);
           </div>
 
           <BalBtn
-            v-if="syncUnsyncState.unsynced.length > 0"
+            v-if="networksBySyncState.unsynced.length > 0"
             color="blue"
             size="sm"
             outline
@@ -97,7 +97,7 @@ const isSyncModalOpen = ref(false);
             {{ $t('crossChainBoost.syncedNetworks') }}
           </div>
           <span
-            v-if="syncUnsyncState.synced.length === 0"
+            v-if="networksBySyncState.synced.length === 0"
             class="text-sm text-gray-600"
           >
             {{ $t('crossChainBoost.unsyncedAllDescription') }}
@@ -105,7 +105,7 @@ const isSyncModalOpen = ref(false);
 
           <template v-else>
             <div
-              v-for="network in syncUnsyncState.synced"
+              v-for="network in networksBySyncState.synced"
               :key="network"
               class="flex"
             >
@@ -124,7 +124,7 @@ const isSyncModalOpen = ref(false);
 
     <CrossChainSyncModal
       :isVisible="isSyncModalOpen"
-      :syncUnsyncState="syncUnsyncState"
+      :networksBySyncState="networksBySyncState"
       :sync="sync"
       :veBalBalance="fNum(veBalBalance, FNumFormats.token)"
       @close-modal="isSyncModalOpen = false"

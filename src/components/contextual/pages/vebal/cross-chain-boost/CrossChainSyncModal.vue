@@ -4,11 +4,11 @@ import SyncSelectNetwork from '@/components/contextual/pages/vebal/cross-chain-b
 import SyncNetworkAction from '@/components/contextual/pages/vebal/cross-chain-boost/SyncNetworkAction.vue';
 import SyncFinalState from '@/components/contextual/pages/vebal/cross-chain-boost/SyncFinalState.vue';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { NetworkSyncUnsyncState } from '@/composables/cross-chain-sync/useCrossChainSync';
+import { NetworknetworksBySyncState } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
   isVisible: boolean;
-  syncUnsyncState: NetworkSyncUnsyncState;
+  networksBySyncState: NetworknetworksBySyncState;
   veBalBalance: string;
   sync(network: Network): Promise<TransactionResponse>;
 };
@@ -22,7 +22,7 @@ const emit = defineEmits(['closeModal']);
 const chosenNetworks = ref<Set<Network>>(new Set());
 
 const syncData = {
-  syncUnsyncState: props.syncUnsyncState,
+  networksBySyncState: props.networksBySyncState,
   chosenNetworks,
   veBalBalance: props.veBalBalance,
   sync: props.sync,
