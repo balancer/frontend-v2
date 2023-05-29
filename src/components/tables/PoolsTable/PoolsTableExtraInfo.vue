@@ -23,7 +23,7 @@ defineProps<Props>();
       <template #activator>
         <BoostedChip
           :metadata="poolMetadata(pool.id) as PoolMetadata"
-          class="ml-4"
+          class="ml-3"
         />
       </template>
     </BalTooltip>
@@ -32,9 +32,9 @@ defineProps<Props>();
       v-if="isLiquidityBootstrapping(pool.poolType)"
       label="LBP"
       color="amber"
-      class="font-medium"
+      class="text-xs font-medium"
     />
-    <BalChipNew v-else-if="pool?.isNew" />
+    <BalChipNew v-else-if="pool?.isNew" class="text-lg font-medium" />
 
     <PoolWarningTooltip :pool="pool" />
   </div>

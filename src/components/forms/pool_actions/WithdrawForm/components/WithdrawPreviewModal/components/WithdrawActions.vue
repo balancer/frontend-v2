@@ -3,32 +3,30 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { formatUnits } from '@ethersproject/units';
-import { ref, toRef, toRefs } from 'vue';
+import { ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
+// Types
 import { Pool } from '@/services/pool/types';
+// Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
-import useWithdrawalState from '../../../composables/useWithdrawalState';
-import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
+
 import router from '@/plugins/router';
-import { Goals, trackGoal } from '@/composables/useFathom';
-import { bnum } from '@/lib/utils';
-import { useTokens } from '@/providers/tokens.provider';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  math: WithdrawMathResponse;
 };
 
 /**
@@ -45,27 +43,26 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { getSigner } = useWeb3();
+const { blockNumber, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
-const {
-  tokenOutIndex,
-  tokensOut,
-  tx: txState,
-  resetTxState,
-} = useWithdrawalState(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
-const { refetchBalances } = useTokens();
+const { fNum } = useNumbers();
 
 const {
-  bptIn,
-  fiatTotalLabel,
-  fiatTotal,
-  amountsOut,
-  exactOut,
-  singleAssetMaxOut,
-} = toRefs(props.math);
+  txState,
+  txInProgress,
+  exit,
+  isLoadingQuery,
+  queryExitQuery,
+  fiatTotalOut,
+  approvalActions: exitPoolApprovalActions,
+  relayerApproval,
+  shouldExitViaInternalBalance,
+  isTxPayloadReady,
+  relayerSignature,
+} = useExitPool();
 
 const withdrawalAction: TransactionActionInfo = {
   label: t('withdraw.label'),
@@ -75,12 +72,40 @@ const withdrawalAction: TransactionActionInfo = {
   stepTooltip: t('withdraw.preview.tooltips.withdrawStep'),
 };
 
-const actions = ref<TransactionActionInfo[]>([withdrawalAction]);
+const actions = ref<TransactionActionInfo[]>([
+  ...exitPoolApprovalActions.value,
+  withdrawalAction,
+]);
 
 /**
- * SERVICES
+ * COMPUTED
  */
-const poolExchange = new PoolExchange(toRef(props, 'pool'));
+const redirectLabel = computed<string>(() => {
+  if (shouldExitViaInternalBalance.value) return t('manageVaultBalances');
+  return t('returnToPool');
+});
+
+const txSummary = computed<string>(() => {
+  if (shouldExitViaInternalBalance.value)
+    return t('transactionSummary.withdrawToBalance', [
+      fNum(fiatTotalOut.value, FNumFormats.fiat),
+    ]);
+
+  return t('transactionSummary.withdrawFromPool', [
+    fNum(fiatTotalOut.value, FNumFormats.fiat),
+    poolWeightsLabel(props.pool),
+  ]);
+});
+
+// Prevent the tx action with loading state if:
+// 1. If the exit provider has not yet generated a tx payload, and
+// 2. The user has signed the relayer or has already approved the relayer.
+const isBuildingTx = computed((): boolean => {
+  return (
+    !isTxPayloadReady.value &&
+    (!!relayerSignature.value || relayerApproval.isUnlocked.value)
+  );
+});
 
 /**
  * METHODS
@@ -90,83 +115,80 @@ async function handleTransaction(tx): Promise<void> {
     id: tx.hash,
     type: 'tx',
     action: 'withdraw',
-    summary: t('transactionSummary.withdrawFromPool', [
-      fiatTotalLabel.value,
-      poolWeightsLabel(props.pool),
-    ]),
+    summary: txSummary.value,
     details: {
-      total: fiatTotalLabel.value,
+      total: fNum(fiatTotalOut.value, FNumFormats.fiat),
       pool: props.pool,
     },
   });
 
-  txState.value.confirmed = await txListener(tx, {
+  txState.confirmed = await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       emit('success', receipt);
-      txState.value.confirming = false;
-      txState.value.receipt = receipt;
+      txState.confirming = false;
+      txState.receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
-      txState.value.confirmedAt = dateTimeLabelFor(confirmedAt);
-      trackGoal(
-        Goals.Withdrawal,
-        bnum(fiatTotal.value).times(100).toNumber() || 0
-      );
-      await refetchBalances();
+      txState.confirmedAt = dateTimeLabelFor(confirmedAt);
     },
     onTxFailed: () => {
-      txState.value.confirming = false;
+      txState.confirming = false;
     },
   });
 }
 
 async function submit(): Promise<TransactionResponse> {
   try {
-    let tx;
-    txState.value.init = true;
+    const tx = await exit();
 
-    tx = await poolExchange.exit(
-      getSigner(),
-      amountsOut.value,
-      tokensOut.value,
-      formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
-      singleAssetMaxOut.value ? tokenOutIndex.value : null,
-      exactOut.value
-    );
-
-    txState.value.init = false;
-    txState.value.confirming = true;
-
-    console.log('Receipt', tx);
+    txState.confirming = true;
 
     handleTransaction(tx);
     return tx;
   } catch (error) {
-    txState.value.init = false;
-    txState.value.confirming = false;
-    console.error(error);
+    txState.confirming = false;
     throw new Error('Failed to submit withdrawal transaction.', {
       cause: error,
     });
+  } finally {
+    txState.init = false;
   }
 }
 
-function redirectToPool() {
-  resetTxState();
-  router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
+function redirect() {
+  if (shouldExitViaInternalBalance.value) {
+    router.push({ name: 'balances', params: { networkSlug } });
+  } else {
+    router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
+  }
 }
+
+/**
+ * WATCHERS
+ */
+watch(blockNumber, () => {
+  if (!isLoadingQuery.value && !txInProgress.value) {
+    queryExitQuery.refetch();
+  }
+});
 </script>
+
 
 <template>
   <transition>
     <BalActionSteps
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
+      :disabled="isMismatchedNetwork"
+      :isLoading="isBuildingTx"
+      :loadingLabel="
+        isBuildingTx ? $t('withdraw.preview.loadingLabel.building') : undefined
+      "
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />
-      <BalBtn color="gray" outline block class="mt-2" @click="redirectToPool">
-        {{ $t('returnToPool') }}
+      <BalBtn color="gray" outline block class="mt-2" @click="redirect">
+        {{ redirectLabel }}
       </BalBtn>
     </div>
   </transition>

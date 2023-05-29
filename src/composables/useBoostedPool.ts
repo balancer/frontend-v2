@@ -11,6 +11,7 @@ export enum BoostedProtocol {
   Sturdy = 'sturdy',
   Reaper = 'reaper',
   Tetu = 'tetu',
+  Granary = 'granary',
 }
 
 export const boostedProtocolIconPaths: Record<BoostedProtocol, string> = {
@@ -51,11 +52,15 @@ export const boostedProtocolIconPaths: Record<BoostedProtocol, string> = {
     import.meta.url
   ).href,
   [BoostedProtocol.Sturdy]: new URL(
-    '@/assets/images/icons/protocols/aave.svg',
+    '@/assets/images/icons/protocols/sturdy.png',
     import.meta.url
   ).href,
   [BoostedProtocol.Reaper]: new URL(
-    '@/assets/images/icons/protocols/aave.svg',
+    '@/assets/images/icons/protocols/reaper.svg',
+    import.meta.url
+  ).href,
+  [BoostedProtocol.Granary]: new URL(
+    '@/assets/images/icons/protocols/granary.svg',
     import.meta.url
   ).href,
   [BoostedProtocol.Tetu]: new URL(

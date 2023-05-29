@@ -17,13 +17,12 @@ import {
   getEthersContract,
 } from '@/dependencies/EthersContract';
 
-type SendTransactionOpts = {
+export type SendTransactionOpts = {
   contractAddress: string;
   abi: ContractInterface;
   action: string;
   params?: any[];
   options?: TransactionRequest;
-  forceLegacyTxType?: boolean;
 };
 
 export class ContractConcern extends TransactionConcern {
@@ -37,7 +36,6 @@ export class ContractConcern extends TransactionConcern {
     action,
     params = [],
     options = {},
-    forceLegacyTxType = false,
   }: SendTransactionOpts): Promise<TransactionResponse> {
     const EthersContract = getEthersContract();
     const contractWithSigner = new EthersContract(
@@ -57,12 +55,11 @@ export class ContractConcern extends TransactionConcern {
       forceLegacyTxType,
     });
     try {
-      const gasSettings = await this.gasPrice.settingsForContractCall(
+      const gasSettings = await this.gas.settingsForContractCall(
         contractWithSigner,
         action,
         params,
-        options,
-        forceLegacyTxType
+        options
       );
       console.log('Gas settings', gasSettings);
       const txOptions = { ...options, ...gasSettings };
@@ -78,16 +75,7 @@ export class ContractConcern extends TransactionConcern {
     } catch (err) {
       const error = err as WalletError;
 
-      if (this.shouldRetryAsLegacy(error)) {
-        return await this.sendTransaction({
-          contractAddress,
-          abi,
-          action,
-          params,
-          options,
-          forceLegacyTxType: true,
-        });
-      } else if (this.shouldLogFailure(error)) {
+      if (this.shouldLogFailure(error)) {
         await this.logFailedTx(
           error,
           contractWithSigner,

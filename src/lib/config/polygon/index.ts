@@ -12,6 +12,7 @@ const config: Config = {
   chainName: 'Polygon',
   name: 'Polygon Mainnet',
   shortName: 'Polygon',
+  monorepoName: 'polygon',
   slug: 'polygon',
   network: 'polygon',
   unknown: false,

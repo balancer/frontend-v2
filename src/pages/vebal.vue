@@ -3,7 +3,7 @@
  * veBAL page
  */
 import Hero from '@/components/contextual/pages/vebal/Hero.vue';
-import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
+// import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
 import MyVeBAL from '@/components/contextual/pages/vebal/MyVeBAL/MyVeBAL.vue';
 import CrossChainBoostCards from '@/components/contextual/pages/vebal/cross-chain-boost/CrossChainBoostCards.vue';
 import { isVeBalSupported } from '@/composables/useVeBAL';

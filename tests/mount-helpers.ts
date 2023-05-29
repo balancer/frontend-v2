@@ -39,7 +39,6 @@ export function mountComposable<R>(
       provideWallets();
       provideUserSettings();
       provideTokenLists();
-      provide('store', {});
       provideFakePoolStaking();
       options?.extraProvidersCb?.();
     },

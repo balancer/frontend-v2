@@ -1,6 +1,5 @@
 import { Address, BalancerSDK } from '@balancer-labs/sdk';
 import { AmountOut } from '@/providers/local/exit-pool.provider';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -32,13 +31,16 @@ export type ExitParams = {
 export type QueryOutput = {
   priceImpact: number;
   amountsOut: AmountsOut;
+  // Whether the transaction is ready to be sent.
+  // In some cases queries may require approvals first before they can generate
+  // the tx paylod. So in the UI we need a way to show a loading state until the tx is ready.
+  txReady: boolean;
 };
 
 export abstract class ExitPoolHandler {
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk: BalancerSDK,
-    public readonly gasPriceService: GasPriceService
+    public readonly sdk: BalancerSDK
   ) {}
 
   abstract exit(params: ExitParams): Promise<TransactionResponse>;
