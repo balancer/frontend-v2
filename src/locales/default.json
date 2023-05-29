@@ -105,6 +105,8 @@
   "browserWallet": "Browser Wallet",
   "bugBounty": "Bug bounty",
   "builtOnBalancer": "Built on Balancer protocol",
+  "boosted": "Boosted",
+  "boostedTooltip": "This pool has a Boosted Pool component. In addition to accumulating swap fees, Boosted pools also generate yield for LPs by lending excess liquidity to other yield generating DeFi protocols.",
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",
@@ -115,6 +117,11 @@
       "title": "Xave Finance",
       "description": "Xave Finance  (pronounced \"Save Finance\") allows financial services companies (\"fintechs\") to leverage DeFi for real time remittance transfers and high yield consumer savings. Xave does this in a capital efficient way by building liquid FX markets via our custom FXPools integrated with the Balancer V2 Vault.",
       "btnText": "Manage liquidity on app.xave.co"
+    },
+    "gyro": {
+      "title": "Gyro Finance",
+      "description": "Gyroscope is an asset-backed, redeemable stablecoin. It combines several new design elements, including a diversified reserve, a new oracle and new AMMs such as the E-CLP. The E-CLP, for example, merges the UX of StableSwap with the capital efficiency of Uniswap V3, featuring asymmetric price bounds and custom liquidity profiles.",
+      "btnText": "Manage liquidity on app.gyro.finance"
     }
   },
   "cancel": "Cancel",
@@ -416,6 +423,7 @@
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
   "forum": "Forum",
   "fx": "FX pool",
+  "gyroE": "Gyro ECLP",
   "gaugeFilter": {
     "gaugeDisplay": "Pool gauge display",
     "showExpired": "Show expired pools",
@@ -764,6 +772,8 @@
     "myPoolBalancesCard": {
       "title": "My pool balance",
       "altTitle": "My pool liquidity balance",
+      "poolsRisks": "pool's risks",
+      "risksDisclaimer": "Liquidity Providers encounter risks when using DeFi and Balancer pools. Before proceeding, view this",
       "underlyingTokens": "Underlying pool tokens"
     },
     "myWalletTokensCard": {
@@ -1535,7 +1545,8 @@
     },
     "preview": {
       "loadingLabel": {
-        "withdraw": "Confirm withdrawal in wallet"
+        "withdraw": "Confirm withdrawal in wallet",
+        "building": "Building transaction"
       },
       "titles": {
         "confirmed": "Withdrawal confirmed",
@@ -1606,5 +1617,8 @@
   "inputLabels": {
     "tokenOut": "Token out",
     "tokenIn": "Token in"
+  },
+  "poolRisks": {
+    "title": "Pool risks"
   }
 }

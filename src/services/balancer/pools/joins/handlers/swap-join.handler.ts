@@ -4,20 +4,14 @@ import { POOLS } from '@/constants/pools';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
-import { AmountIn } from '@/providers/local/join-pool.provider';
-import { vaultService } from '@/services/contracts/vault.service';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
-import {
-  TransactionRequest,
-  TransactionResponse,
-} from '@ethersproject/abstract-provider';
+import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 /**
  * Handles joins for single asset flows where we need to use a BatchSwap to join
@@ -28,34 +22,29 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
-    public readonly sdk: BalancerSDK,
-    public readonly gasPriceService: GasPriceService
+    public readonly sdk: BalancerSDK
   ) {}
 
   async join(params: JoinParams): Promise<TransactionResponse> {
     const { signer, slippageBsp } = params;
     const userAddress = await signer.getAddress();
     await this.queryJoin(params);
+
     if (!this.lastSwapRoute)
       throw new Error('Could not fetch swap route for join.');
 
-    const swap = this.getSwapAttributes(
+    const { to, data, value } = this.getSwapAttributes(
       this.lastSwapRoute,
       slippageBsp,
       userAddress
     );
-    const options = this.getSwapOptions(params.amountsIn[0]);
 
-    const { kind, swaps, assets, funds, limits } = swap.attributes as BatchSwap;
-    return vaultService.batchSwap(
-      kind,
-      swaps,
-      assets,
-      funds,
-      limits as string[],
-      params.transactionDeadline,
-      options
-    );
+    const txBuilder = new TransactionBuilder(signer);
+    return txBuilder.raw.sendTransaction({
+      to,
+      data,
+      value,
+    });
   }
 
   async queryJoin({
@@ -117,14 +106,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
   }
 
   private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {
-    let price: number;
-
-    const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (gasPriceParams) {
-      price = gasPriceParams.price;
-    } else {
-      price = (await signer.getGasPrice()).toNumber();
-    }
+    const price = (await signer.getGasPrice()).toNumber();
 
     if (!price) throw new Error('Failed to fetch gas price.');
 
@@ -144,15 +126,6 @@ export class SwapJoinHandler implements JoinPoolHandler {
       deadline,
       maxSlippage,
     });
-  }
-
-  private getSwapOptions(amountIn: AmountIn): TransactionRequest {
-    const options: TransactionRequest = {};
-
-    if (isSameAddress(amountIn.address, NATIVE_ASSET_ADDRESS))
-      options.value = parseUnits(amountIn.value).toString();
-
-    return options;
   }
 
   private formatAddressForSor(address: string): string {

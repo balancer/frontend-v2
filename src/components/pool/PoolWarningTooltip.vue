@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { isMigratablePool } from '@/composables/usePoolHelpers';
-import { PoolWarning, usePoolWarning } from '@/composables/usePoolWarning';
+import { usePoolWarning } from '@/composables/usePoolWarning';
 import { Pool } from '@/services/pool/types';
+import { PoolWarning } from '@/types/pools';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 

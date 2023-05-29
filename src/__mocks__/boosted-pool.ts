@@ -129,3 +129,8 @@ const defaults: DeepPartial<Pool> = {
 };
 
 export const BoostedPoolMock: Pool = Object.assign({}, pool, defaults);
+
+export function aBoostedPool(options?: DeepPartial<Pool>) {
+  const poolMock: Pool = Object.assign({}, pool, defaults);
+  return Object.assign({}, poolMock, options);
+}

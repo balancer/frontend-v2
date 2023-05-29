@@ -1,4 +1,5 @@
 import { initEthersContract } from '@/dependencies/EthersContract';
+import { initContractConcern } from '@/dependencies/contract.concern';
 import { MockedContractWithSigner } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { AddressZero } from '@ethersproject/constants';
@@ -6,6 +7,8 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractConcern } from './concerns/contract.concern';
 import { RawConcern } from './concerns/raw.concern';
 import { TransactionBuilder } from './transaction.builder';
+
+initContractConcern();
 
 vi.mock('@ethersproject/providers', () => {
   return {
@@ -21,10 +24,10 @@ vi.mock('@ethersproject/providers', () => {
     }),
   };
 });
-vi.mock('@/services/rpc-provider/rpc-provider.service');
-vi.mock('@/services/gas-price/gas-price.service', () => {
+
+vi.mock('@/services/gas/gas.service', () => {
   return {
-    gasPriceService: {
+    gasService: {
       settings: vi.fn().mockReturnValue({
         gasLimit: 1e5,
       }),
@@ -32,15 +35,6 @@ vi.mock('@/services/gas-price/gas-price.service', () => {
         gasLimit: 1e5,
       }),
     },
-  };
-});
-vi.mock('ethers', () => {
-  return {
-    Contract: vi.fn().mockImplementation(() => {
-      return {
-        test: vi.fn(),
-      };
-    }),
   };
 });
 
@@ -51,9 +45,10 @@ class ContractMock extends MockedContractWithSigner {
 }
 
 initOldMulticallerWithDefaultMocks();
-
 //@ts-ignore
 initEthersContract(ContractMock);
+// Init real implementation to be tested
+initContractConcern();
 
 const SignerMock = JsonRpcSigner;
 

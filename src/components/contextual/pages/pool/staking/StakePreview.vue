@@ -12,6 +12,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { bnum, trackLoading } from '@/lib/utils';
 import { AnyPool } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
 import { fiatValueOf, tokensListExclBpt } from '@/composables/usePoolHelpers';
@@ -44,6 +45,7 @@ const stakeActions = ref<TransactionActionInfo[]>([]);
 const { balanceFor, getToken, refetchBalances } = useTokens();
 const { fNum } = useNumbers();
 const { t } = useI18n();
+const { isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const {
   stake,
@@ -224,7 +226,7 @@ onBeforeMount(async () => {
       v-if="!isActionConfirmed"
       :actions="stakeActions"
       :isLoading="isLoadingApprovalsForGauge"
-      :disabled="isStakeAndZero"
+      :disabled="isStakeAndZero || isMismatchedNetwork"
       @success="handleSuccess"
     />
     <BalStack v-if="isActionConfirmed && confirmationReceipt" vertical>

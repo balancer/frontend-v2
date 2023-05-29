@@ -7,7 +7,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { includesAddress } from '..';
 
 const { stETH: stEthAddress, wstETH: wstEthAddress } =
-  configService.network.addresses;
+  configService.network.tokens.Addresses;
 
 const MAINNET_RATE_PROVIDER_ADDRESS =
   '0x72d07d7dca67b8a406ad1ec34ce969c90bfee768';
@@ -24,16 +24,18 @@ export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
 }
 
 export function isStEthAddress(address: string): boolean {
+  if (!stEthAddress) return false;
   return address.toLowerCase() === stEthAddress.toLowerCase();
 }
 
 export function isWstEthAddress(address: string): boolean {
+  if (!wstEthAddress) return false;
   return address.toLowerCase() === wstEthAddress.toLowerCase();
 }
 
 export function includesWstEth(
   addresses: string[],
-  wstEthAddress = configService.network.addresses.wstETH
+  wstEthAddress = configService.network.tokens.Addresses.wstETH
 ): boolean {
   if (!wstEthAddress) return false;
 
@@ -44,6 +46,11 @@ export function includesWstEth(
  * @notice Get amount of wstETH for a given amount of stETH
  */
 export function getWstETHByStETH(stETHAmount: BigNumberish) {
+  if (!wstEthAddress) {
+    throw new Error(
+      'Attempted to read wstETH contract on Network that doesnt support wstETH'
+    );
+  }
   const wstETH = new Contract(
     wstEthAddress,
     [

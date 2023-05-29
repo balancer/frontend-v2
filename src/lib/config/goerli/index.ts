@@ -12,6 +12,7 @@ const config: Config = {
   chainName: 'Goerli',
   name: 'Ethereum Testnet Goerli',
   shortName: 'Goerli',
+  monorepoName: 'goerli',
   slug: 'goerli',
   network: 'goerli',
   unknown: false,

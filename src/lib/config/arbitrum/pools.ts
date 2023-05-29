@@ -1,4 +1,5 @@
-import { Pools } from '@/types/pools';
+import { BoostedProtocol } from '@/composables/useBoostedPool';
+import { PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {},
@@ -40,6 +41,7 @@ const pools: Pools = {
       '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd', // bb-a-eth / reth
       '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a', // bb-a-usd aave v3
       '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400', // wsteth / bb-a-weth
+      '0x161cd105034ac000d2aad75f06c26e943130bc0e000200000000000000000426', // nfte/weth
     ],
   },
   Investment: {
@@ -56,6 +58,14 @@ const pools: Pools = {
       '0x3efd3e18504dc213188ed2b694f886a305a6e5ed00020000000000000000041d', // peg/weth
       '0x89dc7e71e362faf88d92288fe2311d25c6a1b5e0000200000000000000000423', // ohm/weth
       '0xce6195089b302633ed60f3f427d1380f6a2bfbc7000200000000000000000424', // ohm/usdc
+      '0xc69771058481551261709d8db44977e9afde645000010000000000000000042a', // wbtc/wsteth-bb-a-weth/bb-a-usd
+      '0x49f3040f6e4dc7ff8fd85502bc40877311ff13d700020000000000000000042b', // dfx/weth
+      '0x161cd105034ac000d2aad75f06c26e943130bc0e000200000000000000000426', // nfte/weth
+      '0x542f16da0efb162d20bf4358efa095b70a100f9e000000000000000000000436', // tbtc/wbtc
+      '0xc9f52540976385a84bf416903e1ca3983c539e34000200000000000000000434', // tbtc/weth
+      '0x8d333f82e0693f53fa48c40d5d4547142e907e1d000200000000000000000437', // pal/ohm
+      '0x00e7ccb0e16fc07d0cb528efea2c130c41c2fc1600010000000000000000043d', // 25LDO/25wstETH/25RPL/25rETH
+      '0xa231aea07bb5e79ae162f95903806fc5ad65ff1100020000000000000000043f', // dfx/weth
     ],
   },
   Factories: {
@@ -106,6 +116,9 @@ const pools: Pools = {
       '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400',
       '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413',
       '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412',
+      '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
+      '0x542f16da0efb162d20bf4358efa095b70a100f9e000000000000000000000436',
+      '0xc9f52540976385a84bf416903e1ca3983c539e34000200000000000000000434',
     ],
     AllowList: [],
   },
@@ -113,26 +126,38 @@ const pools: Pools = {
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352': {
       name: 'Balancer Boosted Reaper Granary USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Reaper],
     },
     '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
       name: 'rETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413': {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412': {
       name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
       name: 'wstETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
   },
   Deep: [
@@ -154,6 +179,14 @@ const pools: Pools = {
   GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [],
+  Issues: {
+    [PoolWarning.PoolOwnerVulnWarningGovernance]: [
+      '0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
+      '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
+    ],
+  },
 };
 
 export default pools;

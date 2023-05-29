@@ -10,7 +10,11 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 
 import { isSameAddress } from '@/lib/utils';
-import { getWstETHByStETH, isStETH } from '@/lib/utils/balancer/lido';
+import {
+  getWstETHByStETH,
+  isStETH,
+  isStEthAddress,
+} from '@/lib/utils/balancer/lido';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import { vaultService } from '@/services/contracts/vault.service';
@@ -128,14 +132,14 @@ export class SwapService {
     }
 
     // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
-    const { stETH, wstETH } = this.config.network.addresses;
-    if (tokenIn.address.toLowerCase() === stETH.toLowerCase()) {
+    const wstETH = this.config.network.tokens.Addresses.wstETH || '';
+    if (isStEthAddress(tokenIn.address)) {
       tokenIn = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenIn.amount),
         type: tokenIn.type,
       };
-    } else if (tokenOut.address.toLowerCase() === stETH.toLowerCase()) {
+    } else if (isStEthAddress(tokenOut.address)) {
       tokenOut = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenOut.amount),

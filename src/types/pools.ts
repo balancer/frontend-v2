@@ -1,3 +1,5 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -7,11 +9,14 @@ export type FactoryType =
   | 'boostedPool'
   | 'composableStablePool'
   | 'fx'
-  | 'eulerLinear';
+  | 'eulerLinear'
+  | 'gyroE';
 
 export type PoolMetadata = {
-  name: string;
-  hasIcon: boolean;
+  name?: string;
+  hasIcon?: boolean;
+  boosted?: boolean;
+  boostedProtocols?: BoostedProtocol[];
 };
 
 export type NamedPools = {
@@ -97,4 +102,17 @@ export type Pools = {
   Deprecated?: Record<string, DeprecatedDetails>;
   GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
+  Issues?: Partial<Record<PoolWarning, string[]>>;
 };
+
+export enum PoolWarning {
+  PoolProtocolFeeVulnWarning = 'poolProtocolFeeVulnWarning',
+  PoolOwnerVulnWarningGovernanceMigrate = 'poolOwnerVulnWarningGovernanceMigrate',
+  PoolOwnerVulnWarningGovernanceWithdraw = 'poolOwnerVulnWarningGovernanceWithdraw',
+  PoolOwnerVulnWarningGovernance = 'poolOwnerVulnWarningGovernance',
+  PoolOwnerVulnWarningEcosystem = 'poolOwnerVulnWarningEcosystem',
+  PoolOwnerVulnWarningEcosystemMigrate = 'poolOwnerVulnWarningEcosystemMigrate',
+  RenBTCWarning = 'renBTCWarning',
+  EulerBoostedWarning = 'eulerBoostedWarning',
+  EulerRecoveryModeWarning = 'eulerRecoveryModeWarning',
+}

@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 const pools: Pools = {
@@ -27,6 +28,8 @@ const pools: Pools = {
     AllowList: [
       '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // bb-ag-usd
       '0x9949f1884b61a8265e12056650c1ac4677a75403000000000000000000000014', // 2EUR (EURe)
+      '0xa611a551b95b205ccd9490657acf7899daee5db700000000000000000000002e', // EURe / bb-ag-usd
+      '0x5c78d05b8ecf97507d1cf70646082c54faa4da95000000000000000000000030', // agEUR / EURe
     ],
   },
   Investment: {
@@ -38,6 +41,7 @@ const pools: Pools = {
     AllowList: [
       '0xa99fd9950b5d5dceeaf4939e221dca8ca9b938ab000100000000000000000025', // 25WETH-25BAL-25GNO-25wxDAI
       '0x388cae2f7d3704c937313d990298ba67d70a3709000200000000000000000026', // 50AGVE-50GNO
+      '0x4bcf6b48906fa0f68bea1fc255869a41241d4851000200000000000000000021', // 50WXDAI-50MPS
     ],
   },
   Factories: {
@@ -58,18 +62,26 @@ const pools: Pools = {
     '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010': {
       name: 'Balancer Boosted Agave USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Agave],
     },
     '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011': {
       name: 'Balancer Boosted Agave GNO/USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Agave],
     },
     '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012': {
       name: 'Balancer Boosted Agave GNO/WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Agave],
     },
     '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013': {
       name: 'Balancer Boosted Agave WETH/WBTC/USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Agave],
     },
   },
   Deep: [
