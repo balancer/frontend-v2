@@ -503,19 +503,23 @@ export const exitPoolProvider = (
       level: 'fatal',
       extra: {
         exitHandler: exitHandlerType.value,
-        params: {
-          exitType: exitType.value,
-          bptIn: _bptIn.value,
-          amountsOut: amountsOut.value,
-          signer: sender,
-          slippageBsp: slippageBsp.value,
-          tokenInfo: exitTokenInfo.value,
-          approvalActions: approvalActions.value,
-          bptInValid: bptInValid.value,
-          relayerSignature: relayerSignature.value,
-          transactionDeadline: transactionDeadline.value,
-          toInternalBalance: shouldExitViaInternalBalance.value,
-        },
+        params: JSON.stringify(
+          {
+            exitType: exitType.value,
+            bptIn: _bptIn.value,
+            amountsOut: amountsOut.value,
+            signer: sender,
+            slippageBsp: slippageBsp.value,
+            tokenInfo: exitTokenInfo.value,
+            approvalActions: approvalActions.value,
+            bptInValid: bptInValid.value,
+            relayerSignature: relayerSignature.value,
+            transactionDeadline: transactionDeadline.value,
+            toInternalBalance: shouldExitViaInternalBalance.value,
+          },
+          null,
+          2
+        ),
       },
     });
   }
