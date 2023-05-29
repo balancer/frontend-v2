@@ -33,6 +33,9 @@ const pools: Pools = {
     'ComposableStable',
     'FX',
     'EulerLinear',
+    'Gyro2',
+    'Gyro3',
+    'GyroE',
   ],
   Stable: {
     AllowList: [
