@@ -3,11 +3,58 @@ import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 
 export function isUserRejected(error): boolean {
-  return (
-    (error?.code && error.code === 4001) ||
-    (error?.message && error.message.includes('user rejected transaction')) ||
-    (error?.cause && error.cause.message.includes('user rejected transaction'))
-  );
+  if (!error) return false;
+
+  const userRejectionMessages = [
+    'user rejected transaction',
+    'request rejected',
+    'user rejected methods.',
+    'user rejected the transaction',
+    'rejected by user',
+    'user canceled',
+    'cancelled by user',
+    'transaction declined',
+    'transaction was rejected',
+    'user denied transaction signature',
+  ];
+
+  if (
+    typeof error === 'string' &&
+    userRejectionMessages.includes(error.toLowerCase())
+  )
+    return true;
+
+  if (
+    error.message &&
+    userRejectionMessages.includes(error.message.toLowerCase())
+  )
+    return true;
+
+  if (
+    typeof error.reason === 'string' &&
+    userRejectionMessages.includes(error.reason.toLowerCase())
+  )
+    return true;
+
+  if (
+    error.cause?.message &&
+    userRejectionMessages.includes(error.cause.message.toLowerCase())
+  )
+    return true;
+
+  if (
+    typeof error.cause === 'string' &&
+    userRejectionMessages.includes(error.cause.toLowerCase())
+  )
+    return true;
+
+  if (error?.code && error.code === 4001) {
+    return true;
+  }
+
+  if (error.cause instanceof Error) return isUserRejected(error.cause);
+
+  return false;
 }
 
 export default function useTranasactionErrors() {

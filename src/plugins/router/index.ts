@@ -185,11 +185,33 @@ export const router = createRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
-    if (to.hash) return { el: to.hash };
-
+    if (to.hash) {
+      // Delaying the scroll to enforce that the route transition has finished (for example, when clicking a risk hash from the pool risks section)
+      // https://router.vuejs.org/guide/advanced/scroll-behavior.html#delaying-the-scroll
+      return new Promise(resolve => {
+        setTimeout(() => {
+          if (fromPoolToRisks(from, to)) {
+            // Avoid default smooth scroll
+            return resolve({
+              el: to.hash,
+              behavior: 'instant',
+              // https://github.com/microsoft/TypeScript/issues/47441
+            } as unknown as ScrollToOptions);
+          }
+          return resolve({
+            el: to.hash,
+            behavior: 'smooth',
+          });
+        }, 300);
+      });
+    }
     return { x: 0, top: 0 };
   },
 });
+
+function fromPoolToRisks(from, to) {
+  return from.name === 'pool' && to.name === 'risks';
+}
 
 router.onError((error, to) => {
   if (error.message.includes('Failed to fetch dynamically imported module')) {

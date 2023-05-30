@@ -43,6 +43,7 @@ type Props = {
   noPoolsLabel?: string;
   isPaginated?: boolean;
   filterText?: string;
+  renderedRowsIdx: number;
 };
 
 /**
@@ -130,8 +131,6 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
   },
 ]);
 
-const dataKey = computed(() => JSON.stringify(props.data));
-
 /**
  * METHODS
  */
@@ -203,7 +202,6 @@ function getPickedTokens(tokens: PoolToken[]) {
     noPad
   >
     <BalTable
-      :key="dataKey"
       :columns="columns"
       :data="data"
       :isLoading="isLoading"
@@ -222,6 +220,7 @@ function getPickedTokens(tokens: PoolToken[]) {
         pinOn: 'address',
         pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b'],
       }"
+      :renderedRowsIdx="renderedRowsIdx"
     >
       <template #chainColumnHeader>
         <div class="flex items-center">

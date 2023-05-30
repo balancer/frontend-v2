@@ -1,4 +1,5 @@
-import { Pools } from '@/types/pools';
+import { BoostedProtocol } from '@/composables/useBoostedPool';
+import { PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {
@@ -32,6 +33,9 @@ const pools: Pools = {
     'ComposableStable',
     'FX',
     'EulerLinear',
+    'Gyro2',
+    'Gyro3',
+    'GyroE',
   ],
   Stable: {
     AllowList: [
@@ -87,6 +91,10 @@ const pools: Pools = {
       '0x2e848426aec6dbf2260535a5bea048ed94d9ff3d000000000000000000000536', // wbeth/wsteth
       '0xec3626fee40ef95e7c0cbb1d495c8b67b34d398300000000000000000000053d', // uzd/bb-a-usd
       '0x7e9afd25f5ec0eb24d7d4b089ae7ecb9651c8b1f000000000000000000000511', // baoUSD LUSD
+      '0x1a44e35d5451e0b78621a1b3e7a53dfaa306b1d000000000000000000000051b', // baoETH WETH
+      '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548', // bb-a-weth/ankreth
+      '0x20a61b948e33879ce7f23e535cc7baa3bc66c5a9000000000000000000000555', // R/DAI
+      '0xfcf77141908aa22bfeac216123c5feb2531f373e00000000000000000000054a', // sWETH/rETH
     ],
   },
   Investment: {
@@ -112,6 +120,11 @@ const pools: Pools = {
       '0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524', // ush/unstheth
       '0x6987633f18ca0b4a10831331fcc57211941b6ba0000200000000000000000530', // 20AGI/80WETH
       '0xdf2c03c12442c7a0895455a48569b889079ca52a000200000000000000000538', // 20WETH/80ARCH
+      '0x08cc92fedc1ce2d8525176a63fcff404450f2998000200000000000000000542', // 50BAO/50BAOUSD-LUSD
+      '0x3035917be42af437cbdd774be26b9ec90a2bd677000200000000000000000543', // isnt/bb-inst-weth
+      '0x1b6e13673f29688e27311b332af1527f1ebf1d28000200000000000000000546', // 80PSDN-20WETH
+      '0x380aabe019ed2a9c2d632b51eddd30fd804d0fad000200000000000000000554', // R/wstETH
+      '0x382dc5b2eca1c1308eb7e2b40c0f571afb899ac8000100000000000000000557', // multi-token
     ],
   },
   Factories: {
@@ -261,8 +274,10 @@ const pools: Pools = {
       '0x3e953c6bf97284f736c5f95b3c3be8f4e48075f4000200000000000000000522',
       '0x793f2d5cd52dfafe7a1a1b0b3988940ba2d6a63d0000000000000000000004f8',
       '0x7e9afd25f5ec0eb24d7d4b089ae7ecb9651c8b1f000000000000000000000511',
-      '0x42fbd9f666aacc0026ca1b88c94259519e03dd67000200000000000000000507',
       '0x2e848426aec6dbf2260535a5bea048ed94d9ff3d000000000000000000000536',
+      '0xec3626fee40ef95e7c0cbb1d495c8b67b34d398300000000000000000000053d',
+      '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548',
+      '0xdf2c03c12442c7a0895455a48569b889079ca52a000200000000000000000538',
     ],
     AllowList: [],
   },
@@ -270,14 +285,20 @@ const pools: Pools = {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f': {
       name: 'Balancer Boosted Euler USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
@@ -290,62 +311,92 @@ const pools: Pools = {
     '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
       name: 'Balancer Idle JuniorBY Boosted StablePool',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Idle],
     },
     '0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499': {
       name: 'Balancer Boosted Yearn USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Yearn],
     },
     '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a': {
       name: 'Balancer Boosted Gearbox USD',
       hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Gearbox],
     },
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476': {
       name: 'Euler Boosted USD/DOLA',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488': {
       name: 'Euler Boosted USD/TUSD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474': {
       name: 'Euler Boosted USD/rETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475': {
       name: 'Euler Boosted USD/TEMPLE',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473': {
       name: 'Euler Boosted USD/wstETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Euler],
     },
     '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7': {
       name: 'Balancer Boosted Sturdy USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Sturdy],
     },
     '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db': {
       name: 'Balancer Boosted Morpho-Aave USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Morpho, BoostedProtocol.Aave],
     },
     '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504': {
       name: 'wstETH/Boosted Aave v3  WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505': {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e': {
       name: 'qETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
     '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e': {
       name: 'swETH/Boosted Aave v3 WETH',
       hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
     },
   },
   Deep: [
@@ -378,6 +429,7 @@ const pools: Pools = {
     '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e', // sweth/bb-a-weth
     '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e', // bb-a-weth / qeth
     '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // cbeth / bb-a-weth
+    '0x3035917be42af437cbdd774be26b9ec90a2bd677000200000000000000000543', // inst / bb-inst-weth
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
@@ -447,6 +499,40 @@ const pools: Pools = {
     '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b', // bb-e-USDT
     '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c', // bb-e-DAI
   ],
+  Issues: {
+    [PoolWarning.PoolProtocolFeeVulnWarning]: [
+      '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningGovernanceMigrate]: [
+      '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningGovernanceWithdraw]: [
+      '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningGovernance]: [
+      '0x9f19a375709baf0e8e35c2c5c65aca676c4c719100000000000000000000006e',
+    ],
+    [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
+      '0xe7b1d394f3b40abeaa0b64a545dbcf89da1ecb3f00010000000000000000009a',
+      '0x3b40d7d5ae25df2561944dd68b252016c4c7b2800001000000000000000000c2',
+      '0xccf5575570fac94cec733a58ff91bb3d073085c70002000000000000000000af',
+    ],
+    [PoolWarning.RenBTCWarning]: [
+      '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
+      '0xad6a8c18b62eb914604ec1eec7fbcf132799fe090001000000000000000003f6',
+    ],
+    [PoolWarning.EulerBoostedWarning]: [
+      '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f',
+    ],
+    [PoolWarning.EulerRecoveryModeWarning]: [
+      '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476',
+      '0x00c2a4be503869fa751c2dbcb7156cc970b5a8da000000000000000000000477',
+      '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488',
+      '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474',
+      '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475',
+      '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
+    ],
+  },
 };
 
 export default pools;

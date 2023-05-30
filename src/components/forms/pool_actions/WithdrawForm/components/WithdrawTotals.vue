@@ -1,46 +1,33 @@
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
-
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
-import { WithdrawMathResponse } from '../composables/useWithdrawMath';
-
-/**
- * TYPES
- */
-type Props = {
-  math: WithdrawMathResponse;
-};
-
-/**
- * Props
- */
-const props = defineProps<Props>();
+import { useExitPool } from '@/providers/local/exit-pool.provider';
 
 /**
  * COMPOSABLES
  */
 const { fNum } = useNumbers();
 
-const { priceImpact, highPriceImpact, loadingData } = toRefs(props.math);
+const { priceImpact, highPriceImpact, isLoadingQuery } = useExitPool();
 
 /**
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'bg-red-500 text-white divide-red-400 border-none': highPriceImpact.value,
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400 border-none':
+    highPriceImpact.value,
 }));
 </script>
 
 <template>
   <div class="data-table">
-    <div :class="['data-table-row', priceImpactClasses]">
+    <div :class="['data-table-row', priceImpactClasses, 'dark:bg-gray-800']">
       <div class="p-2">
         {{ $t('priceImpact') }}
       </div>
       <div class="data-table-number-col">
         <div class="flex items-center">
-          <BalLoadingBlock v-if="loadingData" class="w-10 h-6" />
+          <BalLoadingBlock v-if="isLoadingQuery" class="w-10 h-6" />
           <span v-else>{{ fNum(priceImpact, FNumFormats.percent) }}</span>
 
           <BalTooltip :text="$t('withdraw.tooltips.priceImpact')">
@@ -74,11 +61,10 @@ const priceImpactClasses = computed(() => ({
   @apply flex;
   @apply rounded-lg;
   @apply divide-x dark:divide-gray-900 border dark:border-gray-900;
-  @apply dark:bg-gray-800;
 }
 
 .data-table-number-col {
-  @apply p-2 flex grow items-center justify-between;
+  @apply p-2 flex flex-grow items-center justify-between;
 }
 
 .total-row {

@@ -96,6 +96,7 @@ export const exitPoolProvider = (
     valid: true,
   });
   const propAmountsOut = ref<AmountOut[]>([]);
+  const isTxPayloadReady = ref<boolean>(false);
 
   /**
    * SERVICES
@@ -137,7 +138,8 @@ export const exitPoolProvider = (
       bptIn,
       hasFetchedPoolsForSor,
       isSingleAssetExit,
-      singleAmountOut
+      singleAmountOut,
+      relayerSignature
     ),
     debounceQueryExit,
     reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
@@ -335,7 +337,7 @@ export const exitPoolProvider = (
   const validAmounts = computed((): boolean => {
     return isSingleAssetExit.value
       ? amountsOut.value.every(ao => ao.valid)
-      : bptInValid.value;
+      : bptInValid.value && bnum(bptIn.value).gt(0);
   });
 
   // Map of amount out address to value as fiat amount.
@@ -396,6 +398,7 @@ export const exitPoolProvider = (
         max: '',
         valid: true,
       }));
+      isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
       logExitException(error as Error);
@@ -471,7 +474,7 @@ export const exitPoolProvider = (
     } catch (error) {
       logExitException(error as Error);
       txError.value = (error as Error).message;
-      throw new Error('Failed to submit exit transaction.', { cause: error });
+      throw error;
     }
   }
 
@@ -584,6 +587,9 @@ export const exitPoolProvider = (
     approvalActions,
     transactionDeadline,
     shouldExitViaInternalBalance,
+    isTxPayloadReady,
+    relayerSignature,
+    relayerApproval,
 
     // methods
     setIsSingleAssetExit,

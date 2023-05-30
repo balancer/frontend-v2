@@ -10,6 +10,7 @@ const config: Config = {
   chainName: 'Optimism',
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
+  monorepoName: 'optimism',
   slug: 'optimism',
   network: 'optimism',
   unknown: false,

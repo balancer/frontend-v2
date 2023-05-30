@@ -15,3 +15,5 @@ beforeAll(() => {
   vi.spyOn(console, 'time').mockImplementation(noop);
   vi.spyOn(console, 'timeEnd').mockImplementation(noop);
 });
+
+beforeEach(() => vi.clearAllMocks());
