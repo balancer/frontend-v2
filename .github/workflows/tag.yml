@@ -19,3 +19,8 @@ jobs:
     - uses: Klemensas/action-autotag@stable
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    - uses: Embraser01/update-git-branch-action@v1.0.0
+      with:
+        branch: deploy
+        force: 1 # To push-force to the branch
+        githubToken: ${{ secrets.GITHUB_TOKEN }}
