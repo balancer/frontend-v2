@@ -206,9 +206,9 @@ export function useStakePreview(props: StakePreviewProps, emit) {
     currentShares,
     stakeActions,
     totalUserPoolSharePct,
+    isStakeAndZero,
     //methods
     handleSuccess,
     handleClose,
-    isStakeAndZero,
   };
 }
