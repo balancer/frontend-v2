@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getAddress } from '@ethersproject/address';
-import { computed, ref } from 'vue';
 
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -10,11 +9,11 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from './StakePreviewModal.vue';
-import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 import { deprecatedDetails } from '@/composables/usePoolHelpers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { StakeAction } from './composables/useStakePreview';
 
 type Props = {
   pool: Pool;
