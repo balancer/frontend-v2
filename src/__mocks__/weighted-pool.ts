@@ -15,6 +15,9 @@ type DeepPartial<T> = {
 export const defaultWeightedPoolAddress =
   '0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d4';
 
+// Used in tokens-5.json
+export const defaultWeightedPoolSymbol = 'test-pool-symbol';
+
 const defaults: DeepPartial<Pool> = {
   id: defaultWeightedPoolId,
   poolType: PoolType.Weighted,

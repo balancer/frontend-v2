@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { StakeAction } from './StakePreview.vue';
+import { StakeAction } from './composables/useStakePreview';
 
 /**
  * PROPS
