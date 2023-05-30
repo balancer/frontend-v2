@@ -2,9 +2,12 @@
 import LightBulbIcon from '@/components/_global/icons/LightBulbIcon.vue';
 import { Network } from '@/lib/config';
 import { networkLabelMap } from '@/composables/useNetwork';
+import { L2VeBalBalances } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
   chosenNetworks: Set<Network>;
+  veBalBalance: string;
+  l2VeBalBalances: L2VeBalBalances;
 };
 defineProps<Props>();
 </script>
@@ -27,7 +30,7 @@ defineProps<Props>();
           Ethereum Mainnet
         </div>
         <div class="p-4 font-medium text-black dark:text-gray-300">
-          179.1032 veBAL
+          {{ veBalBalance }} veBAL
         </div>
       </div>
       <div
@@ -39,18 +42,18 @@ defineProps<Props>();
           {{ networkLabelMap[network] }}
         </div>
         <div class="p-4 font-medium text-black text-emerald-600">
-          179.1032 veBAL
+          {{ l2VeBalBalances?.[network] || '0.0000' }} veBAL
         </div>
       </div>
     </div>
 
-    <div class="flex items-center mb-4">
+    <!-- <div class="flex items-center mb-4">
       <BalIcon class="mr-2 dark:text-gray-200" size="18" name="clock" />
       <div>Mon, Jan 17 2022, 10:32am PST</div>
       <div class="grow"></div>
       <div>Etherscan</div>
       <BalIcon class="dark:text-gray-200" size="18" name="arrow-up-right" />
-    </div>
+    </div> -->
 
     <div
       class="flex p-4 dark:text-gray-200 bg-blue-200 rounded-xl border-blue-200 dark:bg-slate-700"
