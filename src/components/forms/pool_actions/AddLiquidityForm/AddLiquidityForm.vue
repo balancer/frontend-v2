@@ -125,8 +125,8 @@ function tokenOptions(address: string): string[] {
   return includesAddress(
     [wrappedNativeAsset.value.address, nativeAsset.address],
     address
-  )
-    ? [wrappedNativeAsset.value.address]
+  ) && !isDeepPool.value
+    ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
 }
 
