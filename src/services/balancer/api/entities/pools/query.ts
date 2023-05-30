@@ -74,6 +74,7 @@ export const defaultAttrs = {
     id: true,
     address: true,
     poolType: true,
+    poolTypeVersion: true,
     swapFee: true,
     tokensList: true,
     totalLiquidity: true,
