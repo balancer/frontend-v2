@@ -5,7 +5,6 @@ import {
   defaultPool2,
   initPoolsFallbackRepositoryWithDefaultMocks,
 } from '@/dependencies/PoolsFallbackRepository.mocks';
-import { initRpcProviderServiceWithDefaultMocks } from '@/dependencies/rpc-provider.service.mocks';
 import {
   mountComposableWithFakeTokensProvider as mountComposable,
   waitForQueryData,
@@ -15,7 +14,6 @@ import usePoolsQuery from './usePoolsQuery';
 
 initPoolsFallbackRepositoryWithDefaultMocks();
 initMulticallWithDefaultMocks();
-initRpcProviderServiceWithDefaultMocks();
 
 async function mountPoolsQuery(poolsSortField = '') {
   const filterTokens = ref([]);

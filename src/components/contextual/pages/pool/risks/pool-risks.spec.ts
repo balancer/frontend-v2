@@ -1,11 +1,21 @@
-import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
-import { riskLinks, risksTitle } from './pool-risks';
+import { aBoostedPool } from '@/__mocks__/boosted-pool';
+import {
+  generateThirdPartyComposabilityRisks,
+  riskLinks,
+  risksTitle,
+} from './pool-risks';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { aPool } from '@tests/unit/builders/pool.builders';
 import { PoolType } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import { POOLS } from '@/constants/pools';
+import {
+  idleBoostedPoolId,
+  poolIdWithTwoBoostedProtocols,
+  reaperBoostedPoolId,
+  tetuBoostedPoolId,
+} from '@/lib/config/goerli/pools';
 
 function withGoerli() {
   networkId.value = Network.GOERLI;
@@ -23,13 +33,18 @@ function withGnosis() {
 }
 
 describe('Generates links for', () => {
-  test('a boosted pool', () => {
+  test('a boosted pool with Aave and Morph boosted protocols', () => {
     withGoerli();
-    expect(riskLinks(BoostedPoolMock)).toMatchInlineSnapshot(`
+    expect(riskLinks(aBoostedPool({ id: poolIdWithTwoBoostedProtocols })))
+      .toMatchInlineSnapshot(`
       [
         {
           "hash": "#boosted-pools",
           "title": "Boosted pool risks",
+        },
+        {
+          "hash": "#composability-risk",
+          "title": "Third party DeFi composability risks: Aave, Morpho",
         },
       ]
     `);
@@ -114,4 +129,39 @@ test('Title changes if the pool has specific risks', () => {
   expect(risksTitle(aPool({ id: goerliPoolWithSpecificRisks }))).toBe(
     'Liquidity Providers in this pool also face the following risks:'
   );
+});
+
+describe('When generates multi-protocol risks links', () => {
+  test('Reaper shows Granary (as it uses it underneath)', () => {
+    expect(
+      generateThirdPartyComposabilityRisks(aPool({ id: reaperBoostedPoolId }))
+    ).toMatchInlineSnapshot(`
+    {
+      "hash": "#composability-risk",
+      "title": "Third party DeFi composability risks: Reaper, Granary",
+    }
+  `);
+  });
+
+  test('Tetu can use other protocols underneath', () => {
+    expect(
+      generateThirdPartyComposabilityRisks(aPool({ id: tetuBoostedPoolId }))
+    ).toMatchInlineSnapshot(`
+      {
+        "hash": "#composability-risk",
+        "title": "Third party DeFi composability risks: May use multiple yield protocols",
+      }
+    `);
+  });
+
+  test('Idle can use other protocols underneath', () => {
+    expect(
+      generateThirdPartyComposabilityRisks(aPool({ id: idleBoostedPoolId }))
+    ).toMatchInlineSnapshot(`
+      {
+        "hash": "#composability-risk",
+        "title": "Third party DeFi composability risks: May use multiple yield protocols",
+      }
+    `);
+  });
 });

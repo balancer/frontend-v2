@@ -79,10 +79,10 @@
         "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x2f4eb100552ef93840d5adc30560e5513dfffacb.png"
       },
       {
-        "address": "0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83",
+        "address": "0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d4",
         "chainId": 5,
-        "name": "Balancer Aave Boosted Pool (USDC)",
-        "symbol": "bb-a-USDC",
+        "name": "Testing pool token symbol",
+        "symbol": "test-pool-symbol",
         "decimals": 18,
         "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x82698aecc9e28e9bb27608bd52cf57f704bd1b83.png"
       },

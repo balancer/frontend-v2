@@ -9,7 +9,6 @@ import { AddressZero } from '@ethersproject/constants';
 
 import { configService } from '@/services/config/config.service';
 
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import { vaultService } from '@/services/contracts/vault.service';
 import { walletService } from '@/services/web3/wallet.service';
@@ -19,11 +18,12 @@ import {
 } from '../contracts/vault.service.mocks';
 import { setUserAddress } from '../web3/__mocks__/web3.service';
 import { SwapService, SwapToken, SwapTokenType } from './swap.service';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 vi.mock('@/lib/utils/balancer/lido');
 vi.mock('@/services/contracts/lido-relayer.service');
 
-initEthersContractWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 walletService.setUserProvider(computed(() => walletProviderMock));
 
@@ -72,12 +72,12 @@ describe('swap.service', () => {
       type: SwapTokenType.fixed,
     };
     tokens.stETH = {
-      address: configService.network.addresses.stETH,
+      address: configService.network.tokens.Addresses.stETH || '',
       amount: BigNumber.from(2e15),
       type: SwapTokenType.fixed,
     };
     tokens.wstETH = {
-      address: configService.network.addresses.wstETH,
+      address: configService.network.tokens.Addresses.wstETH || '',
       amount: BigNumber.from(3e15),
       type: SwapTokenType.fixed,
     };

@@ -21,7 +21,7 @@ export default class LidoService {
 
   constructor(readonly config: ConfigService = configService) {
     this.wethAddress = TOKENS.Addresses.WETH;
-    this.wstEthAddress = config.network.addresses.wstETH;
+    this.wstEthAddress = TOKENS.Addresses.wstETH || '';
   }
 
   async getStEthAPR(): Promise<string> {
