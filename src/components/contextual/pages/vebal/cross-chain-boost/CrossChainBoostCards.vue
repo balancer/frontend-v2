@@ -57,9 +57,14 @@ const isSyncModalOpen = ref(false);
       </template>
       <template v-else>
         <BalCard>
-          <div class="mb-3 font-bold label">
+          <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}
-            <span @click="refetch">refetch</span>
+            <img
+              class="cursor-pointer"
+              src="@/assets/images/icons/update-unsynced.svg"
+              alt=""
+              @click="refetch"
+            />
           </div>
           <div class="flex mb-5">
             <span
@@ -99,8 +104,14 @@ const isSyncModalOpen = ref(false);
         </BalCard>
 
         <BalCard>
-          <div class="mb-3 font-bold label">
+          <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.syncedNetworks') }}
+            <img
+              class="cursor-pointer"
+              src="@/assets/images/icons/update-synced.svg"
+              alt=""
+              @click="refetch"
+            />
           </div>
           <span
             v-if="networksBySyncState.synced.length === 0"
