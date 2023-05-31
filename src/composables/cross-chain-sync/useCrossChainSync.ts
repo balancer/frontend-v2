@@ -48,8 +48,11 @@ export function useCrossChainSync() {
    * it is used to determine sync status to l2 networks
    * slope and bias is how a user's "balance" is stored on the smart contract
    */
-  const { data: omniEscrowResponse, isLoading: isLoadingOmniEscrow } =
-    useOmniEscrowLocksQuery(account);
+  const {
+    data: omniEscrowResponse,
+    isLoading: isLoadingOmniEscrow,
+    refetch: refetchOmniEscrow,
+  } = useOmniEscrowLocksQuery(account);
 
   // if omniEscrowLocks is empty, then all networks are unsynced
   const allNetworksUnsynced = computed(
@@ -79,11 +82,13 @@ export function useCrossChainSync() {
   const {
     data: mainnetVotingEscrowResponse,
     isLoading: isLoadingVotingEscrow,
+    refetch: refetchVotingEscrow,
   } = useVotingEscrowLocksQuery(Network.MAINNET, account);
 
   const {
     data: arbitrumVotingEscrowResponse,
     isLoading: isLoadingVotingEscrowArbitrum,
+    refetch: refetchVotingEscrowArbitrum,
   } = useVotingEscrowLocksQuery(Network.ARBITRUM, remoteUser);
 
   const votingEscrowLocks = computed(() => {
@@ -258,6 +263,13 @@ export function useCrossChainSync() {
     });
   }
 
+  async function refetch() {
+    await Promise.all([refetchOmniEscrow(), refetchVotingEscrow()]);
+    if (remoteUser.value) {
+      await refetchVotingEscrowArbitrum();
+    }
+  }
+
   return {
     omniEscrowLocks,
     votingEscrowLocks,
@@ -266,5 +278,6 @@ export function useCrossChainSync() {
     networksBySyncState,
     l2VeBalBalances,
     sync,
+    refetch,
   };
 }

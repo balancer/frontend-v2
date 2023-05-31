@@ -18,15 +18,15 @@ withDefaults(defineProps<Props>(), {
 <style scoped>
 .loader {
   position: absolute;
-  top: -2px;
-  right: 4px;
+  top: -3px;
+  right: 5px;
   border: 2px solid #f3f3f3;
   border-radius: 50%;
   border-top: 2px solid #f97316;
   border-right: 2px solid #f97316;
   border-bottom: 2px solid #f97316;
-  width: 38px;
-  height: 38px;
+  width: 39px;
+  height: 39px;
   animation: spin 2s linear infinite;
 }
 

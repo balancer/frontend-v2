@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { buildNetworkIconURL } from '@/lib/utils/urls';
+import { buildNetworkIconUrlV2 } from '@/lib/utils/urls';
 import IconLoaderWrapper from './IconLoaderWrapper.vue';
 import CrossChainSyncModal from './CrossChainSyncModal.vue';
 
@@ -23,6 +23,7 @@ const {
   l2VeBalBalances,
   isLoading,
   sync,
+  refetch,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -40,10 +41,6 @@ const isSyncModalOpen = ref(false);
   <div class="py-5 px-4">
     <h3 class="mb-3">
       {{ $t('crossChainBoost.title') }}
-      <!-- {{ networksSyncState }}
-      {{ networksBySyncState }} -->
-      {{ l2VeBalBalances }}
-      {{ fNum(veBalBalance, FNumFormats.token) }}
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
           <BalIcon name="info" size="sm" class="text-gray-400" />
@@ -62,6 +59,7 @@ const isSyncModalOpen = ref(false);
         <BalCard>
           <div class="mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}
+            <span @click="refetch">refetch</span>
           </div>
           <div class="flex mb-5">
             <span
@@ -81,9 +79,9 @@ const isSyncModalOpen = ref(false);
                 "
               >
                 <img
-                  :src="buildNetworkIconURL(network)"
+                  :src="buildNetworkIconUrlV2(network)"
                   alt=""
-                  class="mr-2 w-8 h-8 rounded-full cursor-pointer"
+                  class="mr-2 rounded-full cursor-pointer"
                 />
               </IconLoaderWrapper>
             </div>
@@ -119,7 +117,7 @@ const isSyncModalOpen = ref(false);
             >
               <IconLoaderWrapper :isLoading="false">
                 <img
-                  :src="buildNetworkIconURL(Number(network))"
+                  :src="buildNetworkIconUrlV2(network)"
                   alt=""
                   class="mr-2 w-8 h-8 rounded-full cursor-pointer"
                 />
