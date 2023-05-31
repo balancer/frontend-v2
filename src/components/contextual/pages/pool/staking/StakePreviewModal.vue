@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-
 import { Pool } from '@/services/pool/types';
-import StakePreview, { StakeAction } from './StakePreview.vue';
+import StakePreview from './StakePreview.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import { StakeAction } from './composables/useStakePreview';
 
 /**
  * TYPES

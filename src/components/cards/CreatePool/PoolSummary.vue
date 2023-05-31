@@ -99,7 +99,7 @@ const chartConfig = computed(() => {
         colors: colors.value,
         data: [
           ...seedTokens.value
-            // .filter(t => t.tokenAddress !== '')
+            .filter(t => t.tokenAddress !== '')
             .map((t, i) => {
               const tokenLogoURI = t.tokenAddress
                 ? resolve(getToken(t.tokenAddress)?.logoURI || '')

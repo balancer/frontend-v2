@@ -1,6 +1,9 @@
 import GaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
 
 import { LiquidityGauge } from './liquidity-gauge';
+import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+
+initEthersContractWithDefaultMocks();
 
 describe('Balancer', () => {
   it('Instantiates the class', () => {

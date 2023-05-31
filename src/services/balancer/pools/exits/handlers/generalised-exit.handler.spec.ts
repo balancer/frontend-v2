@@ -10,11 +10,12 @@ import {
   defaultGasLimit,
   defaultTransactionResponse,
 } from '@tests/unit/builders/signer';
-import { ref } from 'vue';
 
 import { GeneralisedExitHandler } from './generalised-exit.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 async function mountGeneralizedExitHandler(pool: Pool) {
   return new GeneralisedExitHandler(ref(pool), getBalancerSDK());
