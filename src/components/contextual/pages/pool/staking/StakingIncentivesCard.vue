@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getAddress } from '@ethersproject/address';
-import { computed, ref } from 'vue';
 
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -10,11 +9,11 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from './StakePreviewModal.vue';
-import { StakeAction } from '@/components/contextual/pages/pool/staking/StakePreview.vue';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 
 import { deprecatedDetails } from '@/composables/usePoolHelpers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { StakeAction } from './composables/useStakePreview';
 
 type Props = {
   pool: Pool;
@@ -173,15 +172,31 @@ function handlePreviewClose() {
                     <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                   </BalStack>
                 </BalStack>
-                <BalBtn
+                <BalStack
                   v-if="hasNonPrefGaugeBalance && !isAffected"
-                  :color="'gradient'"
+                  horizontal
+                  spacing="sm"
                   class="mt-2"
-                  size="sm"
-                  @click="emit('setRestakeVisibility', true)"
                 >
-                  {{ $t('restake') }}
-                </BalBtn>
+                  <BalBtn
+                    color="gradient"
+                    size="sm"
+                    @click="emit('setRestakeVisibility', true)"
+                  >
+                    {{ $t('restake') }}
+                  </BalBtn>
+
+                  <BalBtn
+                    outline
+                    color="blue"
+                    size="sm"
+                    :disabled="fiatValueOfStakedShares === '0'"
+                    @click="showUnstakePreview"
+                  >
+                    {{ $t('unstake') }}
+                  </BalBtn>
+                </BalStack>
+
                 <BalStack v-else horizontal spacing="sm" class="mt-2">
                   <BalBtn
                     color="gradient"

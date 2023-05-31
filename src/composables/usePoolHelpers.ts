@@ -92,6 +92,14 @@ export function isDeep(pool: Pool): boolean {
   return configService.network.pools.Deep.includes(pool.id);
 }
 
+export function isBoosted(pool: Pool) {
+  return !!poolMetadata(pool.id)?.boosted;
+}
+
+export function boostedProtocols(pool: Pool) {
+  return poolMetadata(pool.id)?.boostedProtocols;
+}
+
 /**
  * Pool addresses that have underlying tokens that generate boosted yield. Used
  * for APR display only.
@@ -428,6 +436,18 @@ export function flatTokenTree(
  */
 export function tokensListExclBpt(pool: Pool): string[] {
   return removeAddress(pool.address, pool.tokensList);
+}
+
+/**
+ * Filters the tokenList by excluding the addresses of those tokens that have token.pool defined.
+ * This is useful in certain cases, for example, when we want to exclude tokens like bb-a-DAI or bb-ag-GNO in coingecko requests,
+ * as they will be missing.
+ */
+export function tokensListExclPoolTokens(pool: Pool): string[] {
+  return tokensListExclBpt(pool).filter(address => {
+    const token = findTokenInTree(pool, address);
+    return !token?.token?.pool;
+  });
 }
 
 /**

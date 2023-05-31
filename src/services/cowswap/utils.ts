@@ -2,10 +2,10 @@ import { configService } from '../config/config.service';
 import { MAX_VALID_TO_EPOCH } from './constants';
 
 export function toErc20Address(tokenAddress: string) {
-  const nativeAssetAddress = configService.network.nativeAsset.address;
+  const nativeAssetAddress = configService.network.tokens.Addresses.nativeAsset;
 
   if (tokenAddress.toLowerCase() === nativeAssetAddress.toLowerCase()) {
-    return configService.network.addresses.weth;
+    return configService.network.tokens.Addresses.wNativeAsset;
   }
 
   return tokenAddress;

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
@@ -38,11 +37,13 @@ import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedir
 import metaService from '@/services/meta/meta.service';
 import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
+import PoolRisks from '@/components/contextual/pages/pool/risks/PoolRisks.vue';
 
 /**
  * STATE
  */
 const route = useRoute();
+const router = useRouter();
 const poolId = (route.params.id as string).toLowerCase();
 const isRestakePreviewVisible = ref(false);
 
@@ -133,6 +134,14 @@ function addIntersectionObserver(): void {
   observer = new IntersectionObserver(callback, options);
   observer.observe(intersectionSentinel.value);
 }
+
+async function goToRisksSection() {
+  isSentinelIntersected.value = true;
+  // Wait for risks section to be rendered
+  await nextTick();
+  router.push({ path: route.fullPath, hash: '#risks-section' });
+}
+
 onMounted(() => {
   addIntersectionObserver();
 });
@@ -256,8 +265,8 @@ watch(
             />
           </div>
           <div class="mb-4">
-            <h4
-              class="px-4 lg:px-0 mb-4"
+            <h3
+              class="px-4 lg:px-0 mb-3"
               v-text="$t('poolComposition.title')"
             />
             <BalLoadingBlock v-if="loadingPool" class="h-64" />
@@ -268,6 +277,7 @@ watch(
           <template v-if="isSentinelIntersected && pool">
             <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
             <PoolContractDetails :pool="pool" />
+            <PoolRisks :pool="pool" />
           </template>
         </div>
       </div>
@@ -292,6 +302,7 @@ watch(
             :pool="pool"
             :missingPrices="missingPrices"
             class="mb-4"
+            @risks-clicked="goToRisksSection()"
           />
 
           <BalLoadingBlock v-if="loadingPool" class="h-40 pool-actions-card" />

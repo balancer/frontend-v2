@@ -1,32 +1,18 @@
 <script setup lang="ts">
 import BigNumber from 'bignumber.js';
-import { computed, onBeforeMount, toRef, toRefs, watch } from 'vue';
-
-// Composables
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import {
-  tokensListExclBpt,
-  usePoolHelpers,
-} from '@/composables/usePoolHelpers';
-import { useTokens } from '@/providers/tokens.provider';
-import { bnum, includesAddress } from '@/lib/utils';
-// Types
-import { Pool } from '@/services/pool/types';
-import useWeb3 from '@/services/web3/useWeb3';
-import { TokenInfoMap } from '@/types/TokenList';
-
-import useWithdrawalState from '../composables/useWithdrawalState';
-import { WithdrawMathResponse } from '../composables/useWithdrawMath';
-// Components
-import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
+import { computed, onBeforeMount, reactive } from 'vue';
+import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
+import { Pool, PoolToken } from '@/services/pool/types';
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
+import { useI18n } from 'vue-i18n';
+import ProportionalWithdrawalTokenInfo from './ProportionalWithdrawalTokenInfo.vue';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  tokenAddresses: string[];
-  math: WithdrawMathResponse;
 };
 
 /**
@@ -35,164 +21,119 @@ type Props = {
 const props = defineProps<Props>();
 
 /**
+ * STATE
+ */
+const slider = reactive({
+  val: 1000,
+  max: 1000,
+  min: 0,
+  interval: 1,
+});
+
+/**
  * COMPOSABLES
  */
 const {
-  propBptIn,
+  bptIn,
+  bptInValid,
   bptBalance,
   hasBpt,
-  fiatTotalLabel,
-  fiatAmounts,
-  proportionalAmounts,
-  loadingData,
-} = toRefs(props.math);
-
-const { slider } = useWithdrawalState(toRef(props, 'pool'));
-
-const { isWalletReady } = useWeb3();
-const { getTokens, prices } = useTokens();
-const { isStableLikePool } = usePoolHelpers(toRef(props, 'pool'));
-const { fNum } = useNumbers();
+  isLoadingQuery,
+  exitTokens,
+  propAmountsOut,
+  exitTokenInfo,
+  fiatAmountsOut,
+  fiatTotalOut,
+} = useExitPool();
+const { t } = useI18n();
 
 /**
  * COMPUTED
  */
-const tokens = computed((): TokenInfoMap => {
-  return getTokens(tokensListExclBpt(props.pool));
+const sliderProps = computed(() => {
+  return {
+    modelValue: slider.val,
+    max: slider.max,
+    interval: slider.interval,
+    min: slider.min,
+    tooltip: 'none',
+    disabled: !hasBpt.value,
+  };
 });
-
-const missingPrices = computed(() => {
-  const tokensWithPrice = Object.keys(prices.value).map(t => t.toLowerCase());
-  const tokenAddresses = Object.keys(tokens.value);
-  return !tokenAddresses.every(token =>
-    includesAddress(tokensWithPrice, token)
-  );
-});
-
-const percentageLabel = computed(() => {
-  try {
-    if (!hasBpt.value) return '100';
-
-    return bnum(propBptIn.value)
-      .div(bptBalance.value)
-      .times(100)
-      .integerValue(BigNumber.ROUND_CEIL)
-      .toString();
-  } catch (error) {
-    console.error(error);
-    return '0';
-  }
-});
-
-const seedTokens = computed((): number[] =>
-  Object.values(props.pool?.onchain?.tokens || []).map(token => token.weight)
-);
 
 /**
  * METHODS
  */
 function handleSliderChange(newVal: number): void {
-  const fractionBasisPoints = (newVal / slider.value.max) * 10000;
-  propBptIn.value = bnum(bptBalance.value)
+  const fractionBasisPoints = (newVal / slider.max) * 10000;
+  bptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)
-    .toFixed(props.pool?.onchain?.decimals || 18);
+    .toFixed(props.pool.onchain?.decimals || 18);
 }
 
-/**
- * WATCHERS
- */
-watch(isWalletReady, () => {
-  propBptIn.value = bptBalance.value;
-});
+function handleAmountChange(value: string): void {
+  const percentageOfBalance = bnum(value)
+    .div(bptBalance.value)
+    .times(100)
+    .integerValue(BigNumber.ROUND_CEIL);
+
+  const sliderRangeScaled: number = percentageOfBalance.times(10).toNumber();
+
+  if (sliderRangeScaled > slider.max) slider.val = slider.max;
+  else if (sliderRangeScaled < slider.min) slider.val = slider.min;
+  else slider.val = sliderRangeScaled;
+}
+
+function getPoolToken(address: string): PoolToken | undefined {
+  return exitTokens.value.find(token => isSameAddress(token.address, address));
+}
 
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
-  propBptIn.value = bptBalance.value;
+  bptIn.value = bptBalance.value;
 });
 </script>
 
 <template>
   <div>
-    <div class="proportional-input">
-      <div class="proportional-input-container">
-        <div class="flex">
-          <WithdrawalTokenSelect :pool="pool" />
-          <div class="text-xl text-right grow font-numeric">
-            <BalLoadingBlock v-if="loadingData" class="float-right w-20 h-8" />
-            <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
-          </div>
-        </div>
-        <div class="flex mt-2 text-sm text-secondary">
-          <span>
-            {{ $t('proportionalWithdrawal') }}
-          </span>
-          <span class="text-right grow">{{ percentageLabel }}%</span>
-        </div>
-        <BalRangeInput
-          v-model="slider.val"
-          :max="slider.max"
-          :interval="slider.interval"
-          :min="slider.min"
-          tooltip="none"
-          :disabled="!hasBpt"
-          @update:model-value="handleSliderChange"
-        />
-      </div>
-    </div>
-
+    <div class="label">{{ t('youProvide') }}</div>
+    <TokenInput
+      v-model:amount="bptIn"
+      v-model:isValid="bptInValid"
+      :address="pool.address"
+      :name="pool.address"
+      class="mb-4"
+      fixedToken
+      slider
+      :sliderProps="sliderProps"
+      :tokenValue="fiatTotalOut"
+      @update:amount="handleAmountChange"
+      @update:slider="handleSliderChange"
+    />
+    <div class="label">{{ t('youReceive') }}</div>
     <div class="token-amounts">
-      <div
-        v-for="(token, address, i) in tokens"
+      <ProportionalWithdrawalTokenInfo
+        v-for="{ address, value } in propAmountsOut"
         :key="address"
-        class="p-4 last:mb-0"
-      >
-        <div class="flex justify-between items-center">
-          <div class="flex items-center">
-            <BalAsset :address="address" class="mr-2" />
-            <div class="flex flex-col leading-none">
-              <span class="text-lg font-medium">
-                {{ token.symbol }}
-                <span v-if="!isStableLikePool">
-                  {{
-                    fNum(seedTokens[i], {
-                      style: 'percent',
-                      maximumFractionDigits: 0,
-                    })
-                  }}
-                </span>
-              </span>
-            </div>
-          </div>
-          <div
-            class="flex flex-col items-end pl-2 text-right grow font-numeric"
-          >
-            <BalLoadingBlock v-if="loadingData" class="w-20 h-12" />
-            <template v-else>
-              <span class="text-xl break-words">
-                {{ fNum(proportionalAmounts[i], FNumFormats.token) }}
-              </span>
-              <span class="text-sm text-gray-400">
-                {{ fNum(fiatAmounts[i], FNumFormats.fiat) }}
-              </span>
-            </template>
-          </div>
-        </div>
-      </div>
+        :token="selectByAddress(exitTokenInfo, address)"
+        :weight="getPoolToken(address)?.weight || '0'"
+        :address="address"
+        :fiatAmountOut="selectByAddress(fiatAmountsOut, address)"
+        :loading="isLoadingQuery"
+        :pool="pool"
+        :value="value"
+        class="last:mb-0"
+      />
     </div>
   </div>
 </template>
 
 <style scoped>
-.proportional-input {
-  @apply shadow-lg rounded-lg mb-4 w-full dark:bg-gray-800;
-}
-
-.proportional-input-container {
-  @apply shadow-inner p-3 pb-1 rounded-lg;
-  @apply border border-gray-100 dark:border-gray-800;
+.label {
+  @apply mb-3 text-sm font-bold;
 }
 
 .token-amounts {

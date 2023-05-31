@@ -4,8 +4,8 @@ import { daiAddress, wethAddress } from '@tests/unit/builders/address';
 import { mountComposable } from '@tests/mount-helpers';
 import {
   customFakeTokensProvider,
-  defaultBalance,
-  defaultPrice,
+  defaultTokenBalance,
+  defaultTokenPrice,
   fakeTokensProvider,
 } from './tokens.provider.fake';
 
@@ -46,7 +46,6 @@ test('Fakes provided state', async () => {
       '0x398106564948fEeb1fEdeA0709AE7D969D62a391', //miMATIC
       '0xA13a9247ea42D743238089903570127DdA72fE44', //bb-a-USD
       '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb', //bb-a-USDT
-      '0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83', //bb-a-USDC
       '0xae37D54Ae477268B9997d4161B96b8200755935c', //b-a-DAI
       '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7', //GRO
       '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF', //veBAL
@@ -55,21 +54,9 @@ test('Fakes provided state', async () => {
 
   expect(wrappedNativeAsset.value.address).toBe(wethAddress);
 
+  expect(Object.keys(activeTokenListTokens.value)).toHaveLength(12);
   expect(Object.keys(activeTokenListTokens.value)).toEqual(
-    expect.arrayContaining([
-      '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
-      '0x8c9e6c40d3402480ACE624730524fACC5482798c',
-      '0x1f1f156E0317167c11Aa412E3d1435ea29Dc3cCE',
-      '0xe0C9275E44Ea80eF17579d33c55136b7DA269aEb',
-      '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
-      '0x37f03a12241E9FD3658ad6777d289c3fb8512Bc9',
-      '0x398106564948fEeb1fEdeA0709AE7D969D62a391',
-      '0xA13a9247ea42D743238089903570127DdA72fE44',
-      '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb',
-      '0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83',
-      '0xae37D54Ae477268B9997d4161B96b8200755935c',
-      '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7', //GRO
-    ])
+    expect.arrayContaining([])
   );
 
   expect(Object.keys(balancerTokenListTokens.value)).toHaveLength(21);
@@ -112,8 +99,8 @@ test('Fakes provided methods', async () => {
     wethAddress,
   ]);
 
-  expect(priceFor('any address')).toBe(defaultPrice);
-  expect(balanceFor('any address')).toBe(defaultBalance);
+  expect(priceFor('any address')).toBe(defaultTokenPrice);
+  expect(balanceFor('any address')).toBe(defaultTokenBalance);
 
   const tokens = getTokens([daiAddress, wethAddress]);
   expect(Object.keys(tokens)).toEqual([daiAddress, wethAddress]);

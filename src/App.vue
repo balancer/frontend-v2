@@ -20,6 +20,11 @@ import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
 import { useThirdPartyServices } from './composables/useThirdPartyServices';
+import useAlerts, {
+  Alert,
+  AlertPriority,
+  AlertType,
+} from './composables/useAlerts';
 
 // Dynamic import of layout components:
 // it prevents the initial bundle from including all the layouts (and their unique dependencies)
@@ -67,8 +72,21 @@ const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } = useWeb3();
 const route = useRoute();
 const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
 const { sidebarOpen } = useSidebar();
+const { addAlert } = useAlerts();
 const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
   useThirdPartyServices();
+
+// OPTIONAL FEATURE ALERTS are enabled by featureAlertEnabled toggle
+const featureAlert: Alert = {
+  id: 'feature-alert',
+  priority: AlertPriority.LOW,
+  label: '', // Add the new feature alert text here and set featureAlertEnabled to true to activate it
+  type: AlertType.FEATURE,
+  rememberClose: false,
+  actionOnClick: false,
+};
+const featureAlertEnabled = false;
+if (featureAlertEnabled) addAlert(featureAlert);
 
 /**
  * WATCHERS

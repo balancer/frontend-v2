@@ -20,7 +20,6 @@ const addressOfTokenWithoutBalance =
 
 test('returns tokens with balance', async () => {
   const { tokensWithBalance } = await mountUserTokensProvider();
-
   expect(tokensWithBalance.value).toIncludeSameMembers([
     // List of tokens passed to useBalancesQuery in tokens.provider
     '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
@@ -32,8 +31,9 @@ test('returns tokens with balance', async () => {
     '0x398106564948fEeb1fEdeA0709AE7D969D62a391',
     '0xA13a9247ea42D743238089903570127DdA72fE44',
     '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb',
-    '0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83',
+    '0x9eE0aF1Ee0a0782dAf5F1Af47fD49b2a766bd8d4',
     '0xae37D54Ae477268B9997d4161B96b8200755935c',
+    '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
     '0x5cEA6A84eD13590ED14903925Fa1A73c36297d99',
     '0x0595D1Df64279ddB51F1bdC405Fe2D0b4Cc86681',
     '0xeFD681A82970AC5d980b9B2D40499735e7BF3F1F',
@@ -44,7 +44,6 @@ test('returns tokens with balance', async () => {
     '0x811151066392fd641Fe74A9B55a712670572D161',
     '0x4Cb1892FdDF14f772b2E39E299f44B2E5DA90d04',
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
-    '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
   ]);
 });
 
@@ -80,8 +79,9 @@ test('returns tokens with balance that are not in a given address list', async (
     '0x398106564948fEeb1fEdeA0709AE7D969D62a391',
     '0xA13a9247ea42D743238089903570127DdA72fE44',
     '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb',
-    '0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83',
+    '0x9eE0aF1Ee0a0782dAf5F1Af47fD49b2a766bd8d4',
     '0xae37D54Ae477268B9997d4161B96b8200755935c',
+    '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
     '0x5cEA6A84eD13590ED14903925Fa1A73c36297d99',
     '0x0595D1Df64279ddB51F1bdC405Fe2D0b4Cc86681',
     '0xeFD681A82970AC5d980b9B2D40499735e7BF3F1F',
@@ -92,7 +92,6 @@ test('returns tokens with balance that are not in a given address list', async (
     '0x811151066392fd641Fe74A9B55a712670572D161',
     '0x4Cb1892FdDF14f772b2E39E299f44B2E5DA90d04',
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
-    '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
   ]);
 });
 

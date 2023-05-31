@@ -3,7 +3,6 @@ import {
   defaultExactInJoin,
   initBalancerSdkWithDefaultMocks,
 } from '@/dependencies/balancer-sdk.mocks';
-import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { aTokenInfo } from '@/types/TokenList.builders';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
@@ -16,21 +15,15 @@ import {
   defaultGasLimit,
   defaultTransactionResponse,
 } from '@tests/unit/builders/signer';
-import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import { ExactInJoinHandler } from './exact-in-join.handler';
 import { JoinParams } from './join-pool.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
-
-const gasPriceServiceMock: DeepMockProxy<GasPriceService> =
-  mockDeep<GasPriceService>();
+initContractConcernWithDefaultMocks();
 
 async function mountExactInJoinHandler(pool: Pool) {
-  return new ExactInJoinHandler(
-    ref(pool),
-    getBalancerSDK(),
-    gasPriceServiceMock
-  );
+  return new ExactInJoinHandler(ref(pool), getBalancerSDK());
 }
 
 const joinParams: JoinParams = buildJoinParams({

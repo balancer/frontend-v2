@@ -1,7 +1,23 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools } from '@/types/pools';
 
 export const poolIdThatRequiresInternalBalanceExit =
   '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
+
+export const boostedPoolId =
+  '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f';
+
+export const poolIdWithTwoBoostedProtocols =
+  '0x35acd56c585d7ebb4a9460f7c8f50be60dc080cd000000000000000000000054';
+
+export const reaperBoostedPoolId =
+  '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035x';
+
+export const tetuBoostedPoolId =
+  '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000036x';
+
+export const idleBoostedPoolId =
+  '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000037x';
 
 const pools: Pools = {
   IdsMap: {
@@ -82,9 +98,34 @@ const pools: Pools = {
     ],
   },
   Metadata: {
-    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f': {
+    [boostedPoolId]: {
       name: 'Balancer Boosted Aave USD',
       hasIcon: false,
+      boosted: true,
+    },
+    [poolIdWithTwoBoostedProtocols]: {
+      name: 'Boosted Aave and Morpho Test Pool',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave, BoostedProtocol.Morpho], // Two boosted protocols for testing purposes
+    },
+    [reaperBoostedPoolId]: {
+      name: 'Reaper Boosted Test Pool',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Reaper], // Explicit Reaper metadata for testing purposes
+    },
+    [tetuBoostedPoolId]: {
+      name: 'Tetu Boosted Test Pool',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Tetu], // Explicit Reaper metadata for testing purposes
+    },
+    [idleBoostedPoolId]: {
+      name: 'Idle Boosted Test Pool',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Idle], // Explicit Reaper metadata for testing purposes
     },
   },
   Deep: [

@@ -313,7 +313,7 @@ export const joinPoolProvider = (
 
       return output;
     } catch (error) {
-      captureException(error);
+      logJoinException(error as Error);
       throwQueryError('Failed to construct join.', error);
     }
   }
@@ -342,6 +342,7 @@ export const joinPoolProvider = (
       return joinRes;
     } catch (error) {
       console.log(error);
+      logJoinException(error as Error);
       txError.value = (error as Error).message;
       throw error;
     }
@@ -372,6 +373,29 @@ export const joinPoolProvider = (
     }
   }
 
+  async function logJoinException(error: Error) {
+    const sender = await getSigner().getAddress();
+    captureException(error, {
+      level: 'fatal',
+      extra: {
+        joinHandler: joinHandlerType.value,
+        params: JSON.stringify(
+          {
+            amountsIn: amountsInWithValue.value,
+            tokensIn: tokensIn.value,
+            signer: sender,
+            slippageBsp: slippageBsp.value,
+            relayerSignature: relayerSignature.value,
+            approvalActions: approvalActions.value,
+            transactionDeadline: transactionDeadline.value,
+          },
+          null,
+          2
+        ),
+      },
+    });
+  }
+
   /**
    * WATCHERS
    */
@@ -383,6 +407,9 @@ export const joinPoolProvider = (
     resetQueryJoinState();
     joinPoolService.setJoinHandler(joinHandlerType.value);
   });
+
+  // relayerApprovalAction can change if the user changes their useSignatures setting.
+  watch(relayerApprovalAction, () => setApprovalActions());
 
   /**
    * LIFECYCLE

@@ -42,6 +42,7 @@ export const networkId = ref<Network>(NETWORK_ID);
 
 export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
+export const isOptimism = computed(() => networkId.value === Network.OPTIMISM);
 export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
 export const isGnosis = computed(() => networkId.value === Network.GNOSIS);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
@@ -56,9 +57,7 @@ export const isEIP1559SupportedNetwork = computed(
 export const isPoolBoostsEnabled = computed<boolean>(
   () => configService.network.pools.BoostsEnabled
 );
-export const networkHasNativeGauges = computed<boolean>(() => {
-  return networkConfig.addresses.gaugeController !== '';
-});
+
 /**
  * METHODS
  */

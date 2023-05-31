@@ -12,7 +12,6 @@ import ProtocolRewardsTable, {
   ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { networkHasNativeGauges } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePoolHelpers';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
@@ -145,6 +144,10 @@ const gaugeTables = computed((): GaugeTable[] => {
   }, []);
 });
 
+const networkHasBalClaiming = computed(
+  () => !!configService.network.addresses.balancerMinter
+);
+
 /**
  * METHODS
  */
@@ -239,8 +242,7 @@ onBeforeMount(async () => {
         <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
           {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
         </h2>
-
-        <template v-if="networkHasNativeGauges">
+        <template v-if="networkHasBalClaiming">
           <div class="mb-16">
             <div class="px-4 xl:px-0">
               <div class="flex items-center mt-6 mb-2">
@@ -290,7 +292,7 @@ onBeforeMount(async () => {
             />
           </div>
         </template>
-        <div v-if="networkHasNativeGauges">
+        <div>
           <h3 class="inline-block px-4 xl:px-0 mt-8 mr-1.5 text-xl">
             {{ $t('otherTokenIncentives') }}
           </h3>

@@ -1,29 +1,21 @@
 <script setup lang="ts">
-import { computed, ref, toRef, toRefs, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-// Composables
-import useNumbers from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
-import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import useWithdrawalState from '../../composables/useWithdrawalState';
-// Types
-import { WithdrawMathResponse } from '../../composables/useWithdrawMath';
-import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
-import WithdrawActions from './components/WithdrawActions.vue';
-// Components
 import WithdrawSummary from './components/WithdrawSummary.vue';
-import useWeb3 from '@/services/web3/useWeb3';
+import { useExitPool } from '@/providers/local/exit-pool.provider';
+import WithdrawActions from './components/WithdrawActions.vue';
+import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  math: WithdrawMathResponse;
 };
 
 type AmountMap = {
@@ -40,25 +32,27 @@ const emit = defineEmits<{
 }>();
 
 /**
+ * STATE
+ */
+const withdrawalConfirmed = ref(false);
+
+/**
  * COMPOSABLES
  */
 const { t } = useI18n();
 const { getToken } = useTokens();
-const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact, resetMath } = toRefs(props.math);
-const { tokensOut, maxSlider, resetTxState } = useWithdrawalState(
-  toRef(props, 'pool')
-);
-const { account } = useWeb3();
+const { networkSlug } = useNetwork();
 
-/**
- * STATE
- */
-const withdrawalConfirmed = ref(false);
-// Internal priceImpact - priceImpact from useWithdrawMaths can be dependent on
-// bptBalance which is updated when a tx is successful. This can result in
-// priceImpact becoming NaN. So in the preview modal we want it to be static.
-const _priceImpact = ref(priceImpact.value);
+const {
+  bptIn,
+  fiatValueIn,
+  fiatTotalOut,
+  amountsOut,
+  priceImpact,
+  fiatAmountsOut,
+  isSingleAssetExit,
+  shouldExitViaInternalBalance,
+} = useExitPool();
 
 /**
  * COMPUTED
@@ -69,57 +63,51 @@ const title = computed((): string =>
     : t('withdraw.preview.titles.default')
 );
 
-const amountMap = computed((): AmountMap => {
-  const amountMap = {};
-  fullAmounts.value.forEach((amount, i) => {
-    if (hasAmount(i)) amountMap[tokensOut.value[i]] = amount;
-  });
+const showTokensIn = computed<boolean>(() => !isSingleAssetExit.value);
+
+const amountInMap = computed((): AmountMap => {
+  const amountMap = {
+    [props.pool.address]: bptIn.value,
+  };
   return amountMap;
 });
 
-const tokenMap = computed((): TokenInfoMap => {
+const tokenInMap = computed((): TokenInfoMap => {
+  const tokenMap = {
+    [props.pool.address]: getToken(props.pool.address),
+  };
+  return tokenMap;
+});
+
+const fiatAmountInMap = computed((): AmountMap => {
+  const fiatAmountMap = {
+    [props.pool.address]: fiatValueIn.value,
+  };
+  return fiatAmountMap;
+});
+
+const tokenOutMap = computed((): TokenInfoMap => {
   const tokenMap = {};
-  Object.keys(amountMap.value).forEach(address => {
-    tokenMap[address] = getToken(address);
+  amountsOut.value.forEach(item => {
+    tokenMap[item.address] = getToken(item.address);
   });
   return tokenMap;
 });
 
-const fiatAmountMap = computed((): AmountMap => {
-  const fiatAmountMap = {};
-  Object.keys(amountMap.value).forEach(address => {
-    fiatAmountMap[address] = toFiat(amountMap.value[address], address);
+const amountsOutMap = computed((): AmountMap => {
+  const tokenMap = {};
+  amountsOut.value.forEach(item => {
+    tokenMap[item.address] = item.value;
   });
-  return fiatAmountMap;
+  return tokenMap;
 });
-
-const fiatTotal = computed((): string =>
-  Object.values(fiatAmountMap.value).reduce(
-    (total, amount) => bnum(total).plus(amount).toString(),
-    '0'
-  )
-);
 
 /**
  * METHODS
  */
-function hasAmount(index: number): boolean {
-  return bnum(fullAmounts.value[index]).gt(0);
-}
-
 function handleClose(): void {
-  resetTxState();
-  if (withdrawalConfirmed.value) {
-    resetMath.value();
-    maxSlider();
-  }
   emit('close');
 }
-
-/**
- * WATCHERS
- */
-watch(account, () => emit('close'));
 </script>
 
 <template>
@@ -140,22 +128,47 @@ watch(account, () => emit('close'));
       </div>
     </template>
 
+    <BalAlert
+      v-if="shouldExitViaInternalBalance"
+      type="warning"
+      :title="$t('alerts.withdrawToInternalBalance.title')"
+      class="mb-4"
+    >
+      {{ $t('alerts.withdrawToInternalBalance.description') }}
+      <router-link
+        class="underline"
+        :to="{ name: 'balances', params: { networkSlug } }"
+        target="_blank"
+        >Vault balances page</router-link
+      >
+    </BalAlert>
+
     <TokenAmounts
-      :amountMap="amountMap"
-      :tokenMap="tokenMap"
-      :fiatAmountMap="fiatAmountMap"
-      :fiatTotal="fiatTotal"
+      v-if="showTokensIn"
+      :title="$t('investment.preview.titles.tokenIn')"
+      :amountMap="amountInMap"
+      :tokenMap="tokenInMap"
+      :fiatAmountMap="fiatAmountInMap"
+      :fiatTotal="fiatValueIn"
+    />
+
+    <TokenAmounts
+      :title="$t('investment.preview.titles.tokenOut')"
+      class="mt-4"
+      :amountMap="amountsOutMap"
+      :tokenMap="tokenOutMap"
+      :fiatAmountMap="fiatAmountsOut"
+      :fiatTotal="fiatTotalOut"
     />
 
     <WithdrawSummary
       :pool="pool"
-      :fiatTotal="fiatTotal"
-      :priceImpact="_priceImpact"
+      :fiatTotal="fiatTotalOut"
+      :priceImpact="priceImpact"
     />
 
     <WithdrawActions
       :pool="pool"
-      :math="math"
       class="mt-4"
       @error="$emit('close')"
       @success="withdrawalConfirmed = true"

@@ -1,4 +1,4 @@
-import { Pool, PoolToken } from '@/services/pool/types';
+import { Pool, PoolToken, PoolType } from '@/services/pool/types';
 import { groAddress, wethAddress } from '@tests/unit/builders/address';
 import { addOnChainToPoolData } from '@tests/unit/builders/pool.builders';
 import { mock } from 'vitest-mock-extended';
@@ -15,8 +15,12 @@ type DeepPartial<T> = {
 export const defaultWeightedPoolAddress =
   '0x9ee0af1ee0a0782daf5f1af47fd49b2a766bd8d4';
 
+// Used in tokens-5.json
+export const defaultWeightedPoolSymbol = 'test-pool-symbol';
+
 const defaults: DeepPartial<Pool> = {
   id: defaultWeightedPoolId,
+  poolType: PoolType.Weighted,
   totalLiquidity: '100000000',
   address: defaultWeightedPoolAddress,
   owner: '0xb794f5ea0ba39494ce839613fffba74279579268',
