@@ -4,6 +4,7 @@ import usePoolGaugesQuery, {
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
+import { computed, InjectionKey, provide } from 'vue';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { getAddress } from '@ethersproject/address';
 import { parseUnits } from '@ethersproject/units';
@@ -15,8 +16,6 @@ import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 import { subgraphRequest } from '@/lib/utils/subgraph';
 import { configService } from '@/services/config/config.service';
-import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { walletService } from '@/services/web3/wallet.service';
 
 /**
  * PoolStakingProvider
@@ -195,56 +194,6 @@ export const poolStakingProvider = (_poolId?: string) => {
   }
 
   /**
-   *
-   * Returns a restake function that triggers restake using the provided relayer signature.
-   * It uses the first non preferential pool gauge that the user has a balance in.
-   * Uses SDK gauge2gauge call.
-   */
-  function buildRestake(relayerSignature: string) {
-    if (!relayerSignature) throw new Error('No relayer signature to restake');
-    return restake;
-
-    async function restake(): Promise<TransactionResponse> {
-      if (!poolAddress.value) throw new Error('No pool to restake.');
-      if (!poolGauges.value?.pool?.gauges)
-        throw new Error('Unable to restake, no pool gauges');
-
-      const gaugesWithUserBalance = await filterGaugesWhereUserHasBalance(
-        poolGauges.value,
-        account.value
-      );
-
-      const firstNonPreferentialGaugeWhereUserHasBalance =
-        gaugesWithUserBalance.filter(
-          gauge => gauge.id !== preferentialGaugeAddress.value
-        )[0];
-
-      const from = firstNonPreferentialGaugeWhereUserHasBalance.id;
-      const to = preferentialGaugeAddress.value as string;
-
-      console.log(
-        `Restaking ${firstNonPreferentialGaugeWhereUserHasBalance.balance} from ${from} to ${to}`
-      );
-
-      const { migrationService } = getBalancerSDK();
-      if (!migrationService?.gauge2gauge) {
-        throw Error('gauge2gauge is not defined in SDK');
-      }
-      const txInfo = await migrationService?.gauge2gauge({
-        user: account.value,
-        from,
-        to,
-        balance: firstNonPreferentialGaugeWhereUserHasBalance.balance,
-        authorisation: relayerSignature,
-      });
-
-      return walletService.userProvider.value
-        .getSigner()
-        .sendTransaction(txInfo);
-    }
-  }
-
-  /**
    * Fetch preferential gauge address for pool.
    *
    * @param {string} poolAddress - The pool address to get gauge for.
@@ -291,7 +240,6 @@ export const poolStakingProvider = (_poolId?: string) => {
     refetchAllPoolStakingData,
     stake,
     unstake,
-    buildRestake,
   };
 };
 

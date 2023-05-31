@@ -9,10 +9,7 @@ import { sleep } from '@/lib/utils';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { provideUserData } from '@/providers/user-data.provider';
 import { mockWhenUserHasSharesInANonPreferentialGauge } from '@/services/balancer/gauges/__mocks__/gauge-mocks';
-import {
-  defaultWalletTransactionResponse,
-  walletProviderMock,
-} from '@/services/contracts/vault.service.mocks';
+import { walletProviderMock } from '@/services/contracts/vault.service.mocks';
 import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { firstCallParams } from '@tests/vitest/assertions';
@@ -116,7 +113,7 @@ test('Successfully creates and runs unstake action', async () => {
   expect(params.details?.pool).toEqual(pool);
 });
 
-test('Successfully creates and runs restake action', async () => {
+test('Successfully creates and runs restake action (unstake + stake)', async () => {
   mockWhenUserHasSharesInANonPreferentialGauge();
 
   const { props, loadStakeAction } = buildProps();
@@ -125,32 +122,34 @@ test('Successfully creates and runs restake action', async () => {
 
   await loadStakeAction('restake');
 
-  expect(stakeActions.value).toHaveLength(2);
+  expect(stakeActions.value).toHaveLength(3);
 
   const approvalAction = stakeActions.value[0];
   expect(approvalAction).toMatchObject({
-    confirmingLabel: 'Signing relayer approval',
-    isSignAction: true,
-    label: 'Sign relayer approval',
-    loadingLabel: 'Confirm in wallet',
-    stepTooltip: 'Your signature is required to use the relayer.',
+    confirmingLabel: 'Confirming...',
+    label: `Approve ${defaultWeightedPoolSymbol} for staking`,
+    loadingLabel: 'Confirm approval in wallet',
+    stepTooltip: `You must approve ${defaultWeightedPoolSymbol} to stake this token on Balancer. Approvals are required once per token, per wallet.`,
   });
 
-  const approvalTransactionResult = await approvalAction.action();
+  const unstakeAction = stakeActions.value[1];
 
-  console.log(approvalTransactionResult);
+  expect(unstakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Unstake',
+    loadingLabel: 'Unstaking',
+    stepTooltip:
+      "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
+  });
 
-  // Restake action implementation is deeply tested in pool staking provider tests
-  const restakeAction = stakeActions.value[1];
-
-  const restakeTransactionResult = await restakeAction.action();
-  expect(restakeTransactionResult).toEqual(defaultWalletTransactionResponse);
-
-  // //Saves transaction
-  expect(addTransactionMock).toHaveBeenCalledOnce();
-  const params = firstCallParams(addTransactionMock);
-  expect(params.action).toBe('restake');
-  expect(params.details?.pool).toEqual(pool);
+  const stakeAction = stakeActions.value[2];
+  expect(stakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Stake',
+    loadingLabel: 'Staking',
+    stepTooltip:
+      'Confirm staking of LP tokens to earn liquidity mining incentives on this pool',
+  });
 });
 
 test('Changes staking actions when action prop changes', async () => {
@@ -174,8 +173,8 @@ test('Changes staking actions when action prop changes', async () => {
   await loadStakeAction('restake');
 
   expect(stakeActions.value).toHaveLength(2);
-  expect(stakeActions.value[0].label).toEqual('Sign relayer approval');
-  expect(stakeActions.value[1].label).toEqual('Restake');
+  expect(stakeActions.value[0].label).toEqual('Unstake');
+  expect(stakeActions.value[1].label).toEqual('Stake');
 });
 
 test('Handles staking action success', async () => {

@@ -1,12 +1,5 @@
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
-import {
-  defaultContractBalance,
-  defaultContractBalanceBN,
-} from '@/dependencies/EthersContract.mocks';
-import {
-  defaultGaugeToGaugeResponse,
-  migrationsMock,
-} from '@/dependencies/balancer-sdk.mocks';
+import { defaultContractBalance } from '@/dependencies/EthersContract.mocks';
 import {
   defaultContractTransactionResponse,
   sendTransactionMock,
@@ -17,11 +10,7 @@ import {
   mockWhenUserHasSharesInANonPreferentialGauge,
   mockWhenUserHasSharesInThePreferentialGauge,
 } from '@/services/balancer/gauges/__mocks__/gauge-mocks';
-import {
-  defaultWalletTransactionResponse,
-  walletProviderMock,
-  walletSignerMock,
-} from '@/services/contracts/vault.service.mocks';
+import { walletProviderMock } from '@/services/contracts/vault.service.mocks';
 import { Pool } from '@/services/pool/types';
 import { SendTransactionOpts } from '@/services/web3/transactions/concerns/contract.concern';
 import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
@@ -112,31 +101,5 @@ describe('when the user has shares in a non preferential gauge', () => {
     );
 
     expect(hasNonPrefGaugeBalance.value).toBeTrue();
-  });
-
-  test('Creates restake transaction', async () => {
-    walletServiceInstance.setUserProvider(computed(() => walletProviderMock));
-
-    const { buildRestake } = await mountPoolStakingProvider(aWeightedPool());
-
-    // In a previous step (during Stake Preview), the user approved the incoming Relayer transaction
-    const relayerSignature = 'Relayer Signature';
-
-    const restake = buildRestake(relayerSignature);
-
-    const transactionResponse = await restake();
-
-    // Sends a transaction using the wallet provider signer
-    expect(transactionResponse).toEqual(defaultWalletTransactionResponse);
-    // Uses the txInfo returned from the gauge2gauge call
-    expect(walletSignerMock.sendTransaction).toHaveBeenCalledOnceWith(
-      defaultGaugeToGaugeResponse
-    );
-
-    // Calls gauge2gauge with proper parameters
-    expect(migrationsMock.gauge2gauge).toHaveBeenCalledOnce();
-    const params = firstCallParams(migrationsMock.gauge2gauge);
-    // Restakes with the balance of the first gauge with balance
-    expect(params.balance).toBe(defaultContractBalanceBN.toString());
   });
 });
