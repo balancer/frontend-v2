@@ -5,22 +5,20 @@ import { WalletError } from '@/types';
 import { Connector, ConnectorId } from '../connector';
 import { Network } from '@/lib/config';
 
+const { MAINNET, POLYGON, ARBITRUM, GNOSIS } = Network;
+
 export class WalletConnectConnector extends Connector {
   id = ConnectorId.WalletConnect;
   async connect() {
     const provider = await EthereumProvider.init({
       projectId: 'ee9c0c7e1b8b86ebdfb8fd93bb116ca8',
-      chains: [
-        Network.MAINNET,
-        Network.POLYGON,
-        Network.ARBITRUM,
-        Network.GNOSIS,
-      ],
+      chains: [MAINNET, POLYGON],
+      optionalChains: [ARBITRUM, GNOSIS],
       rpcMap: {
-        [Network.MAINNET]: configService.getNetworkRpc(Network.MAINNET),
-        [Network.POLYGON]: configService.getNetworkRpc(Network.POLYGON),
-        [Network.ARBITRUM]: configService.getNetworkRpc(Network.ARBITRUM),
-        [Network.GNOSIS]: configService.getNetworkRpc(Network.GNOSIS),
+        [MAINNET]: configService.getNetworkRpc(MAINNET),
+        [POLYGON]: configService.getNetworkRpc(POLYGON),
+        [ARBITRUM]: configService.getNetworkRpc(ARBITRUM),
+        [GNOSIS]: configService.getNetworkRpc(GNOSIS),
       },
       showQrModal: true,
     });
