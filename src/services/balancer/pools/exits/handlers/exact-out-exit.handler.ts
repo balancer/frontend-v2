@@ -91,6 +91,7 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     return {
       amountsOut: { [tokenOutAddress]: amountOut },
       priceImpact,
+      txReady: true,
     };
   }
 

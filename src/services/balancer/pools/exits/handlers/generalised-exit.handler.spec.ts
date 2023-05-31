@@ -10,11 +10,12 @@ import {
   defaultGasLimit,
   defaultTransactionResponse,
 } from '@tests/unit/builders/signer';
-import { ref } from 'vue';
 
 import { GeneralisedExitHandler } from './generalised-exit.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 async function mountGeneralizedExitHandler(pool: Pool) {
   return new GeneralisedExitHandler(ref(pool), getBalancerSDK());
@@ -24,6 +25,9 @@ const exitParams = buildExitParams({ bptIn: '1' });
 
 test('Successfully executes a generalized exit transaction', async () => {
   const handler = await mountGeneralizedExitHandler(BoostedPoolMock);
+
+  await handler.queryExit(exitParams);
+
   const joinResult = await handler.exit(exitParams);
 
   expect(joinResult).toEqual(defaultTransactionResponse);

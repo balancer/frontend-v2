@@ -12,6 +12,7 @@ const config: Config = {
   chainName: 'Arbitrum',
   name: 'Arbitrum',
   shortName: 'Arbitrum',
+  monorepoName: 'arbitrum',
   slug: 'arbitrum',
   network: 'arbitrum-one',
   unknown: false,

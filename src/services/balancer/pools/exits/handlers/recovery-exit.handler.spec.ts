@@ -17,8 +17,10 @@ import {
 } from '@tests/unit/builders/signer';
 import { ExitParams, ExitType } from './exit-pool.handler';
 import { RecoveryExitHandler } from './recovery-exit.handler';
+import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
 initBalancerSdkWithDefaultMocks();
+initContractConcernWithDefaultMocks();
 
 async function mountRecoveryExitHandler(pool: Pool) {
   return new RecoveryExitHandler(ref(pool), getBalancerSDK());
@@ -54,6 +56,7 @@ test('Successfully queries a recovery exit', async () => {
       [wethAddress]: '0.00000000000000002', // 20
     },
     priceImpact: 1, // Number(formatFixed(evmPriceImpact, 18)) where evmPriceImpact is defaultPriceImpact
+    txReady: true,
   });
 });
 

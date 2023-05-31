@@ -66,9 +66,7 @@ describe('setSwapCost', () => {
   const sorManager = new SorManager(
     rpcProviderService.jsonProvider,
     BigNumber.from(1),
-    1,
-    1,
-    '1'
+    1
   );
 
   const mockedSorManager = vi.mocked(sorManager);

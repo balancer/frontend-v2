@@ -96,6 +96,10 @@ export function isBoosted(pool: Pool) {
   return !!poolMetadata(pool.id)?.boosted;
 }
 
+export function boostedProtocols(pool: Pool) {
+  return poolMetadata(pool.id)?.boostedProtocols;
+}
+
 /**
  * Pool addresses that have underlying tokens that generate boosted yield. Used
  * for APR display only.

@@ -16,21 +16,21 @@ const iconURIs = boostedProtocols.map(
 
 const hasIcons = boostedProtocols.length > 0;
 
-const width = 25 + (iconURIs.length - 1) * 16;
+const width = 20 + (iconURIs.length - 1) * 16;
 </script>
 
 <template>
   <div
     data-testid="boosted-chip"
-    class="flex relative items-center py-1 px-2 max-h-10 bg-gradient-to-tr from-yellow-500 to-pink-500 rounded-lg"
+    class="flex relative items-center py-1 pr-1.5 pl-2 max-h-10 bg-gradient-to-tr from-yellow-500 to-pink-500 rounded"
   >
     <BalAssetSet
       v-if="hasIcons"
       :logoURIs="iconURIs"
       :width="width"
-      :size="20"
+      :size="16"
       :ringSize="1"
     />
-    <span class="text-sm font-bold text-white">{{ $t('boosted') }}</span>
+    <span class="text-xs font-semibold text-white">{{ $t('boosted') }}</span>
   </div>
 </template>

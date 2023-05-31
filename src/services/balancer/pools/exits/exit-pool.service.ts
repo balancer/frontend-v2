@@ -9,7 +9,6 @@ import {
   ExitPoolHandler,
   QueryOutput,
 } from './handlers/exit-pool.handler';
-import { BalancerSDK } from '@balancer-labs/sdk';
 import { ExactInExitHandler } from './handlers/exact-in-exit.handler';
 import { ExactOutExitHandler } from './handlers/exact-out-exit.handler';
 import { RecoveryExitHandler } from './handlers/recovery-exit.handler';
@@ -22,8 +21,6 @@ export enum ExitHandler {
   Recovery = 'Recovery',
 }
 
-type HandlerParams = [Ref<Pool>, BalancerSDK];
-
 /**
  * ExitPoolService acts as an adapter to underlying handlers based on the pool
  * type or other criteria. It wraps calls to the functions defined in the
@@ -32,6 +29,7 @@ type HandlerParams = [Ref<Pool>, BalancerSDK];
 export class ExitPoolService {
   // The exit pool handler class to call exit pool interface functions.
   public exitHandler: ExitPoolHandler;
+  public exitHandlerMap: Record<ExitHandler, ExitPoolHandler>;
 
   /**
    * Initialize the ExitPoolService
@@ -43,6 +41,13 @@ export class ExitPoolService {
     public readonly pool: Ref<Pool>,
     public readonly sdk = getBalancerSDK()
   ) {
+    this.exitHandlerMap = {
+      [ExitHandler.Swap]: new SwapExitHandler(pool, sdk),
+      [ExitHandler.Generalised]: new GeneralisedExitHandler(pool, sdk),
+      [ExitHandler.ExactIn]: new ExactInExitHandler(pool, sdk),
+      [ExitHandler.ExactOut]: new ExactOutExitHandler(pool, sdk),
+      [ExitHandler.Recovery]: new RecoveryExitHandler(pool, sdk),
+    };
     this.exitHandler = this.setExitHandler(ExitHandler.Generalised);
   }
 
@@ -53,25 +58,7 @@ export class ExitPoolService {
    * @returns {ExitPoolHandler} The ExitPoolHandler class to be used.
    */
   setExitHandler(type: ExitHandler): ExitPoolHandler {
-    const { pool, sdk } = this;
-    const handlerParams: HandlerParams = [pool, sdk];
-
-    switch (type) {
-      case ExitHandler.Swap:
-        return (this.exitHandler = new SwapExitHandler(...handlerParams));
-      case ExitHandler.Generalised:
-        return (this.exitHandler = new GeneralisedExitHandler(
-          ...handlerParams
-        ));
-      case ExitHandler.ExactIn:
-        return (this.exitHandler = new ExactInExitHandler(...handlerParams));
-      case ExitHandler.ExactOut:
-        return (this.exitHandler = new ExactOutExitHandler(...handlerParams));
-      case ExitHandler.Recovery:
-        return (this.exitHandler = new RecoveryExitHandler(...handlerParams));
-      default:
-        throw new Error(`Pool type not handled: ${pool.value.poolType}`);
-    }
+    return (this.exitHandler = this.exitHandlerMap[type]);
   }
 
   /**

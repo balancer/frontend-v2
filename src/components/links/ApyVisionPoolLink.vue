@@ -25,7 +25,7 @@ const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
 <template>
   <div
     v-if="apyVisionNetworkName"
-    class="group flex items-center mt-6 w-fit h-fit"
+    class="group flex items-center mt-6 mb-5 w-fit h-fit"
   >
     <BalLink
       :href="

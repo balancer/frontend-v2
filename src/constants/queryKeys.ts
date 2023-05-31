@@ -94,7 +94,8 @@ const QUERY_KEYS = {
         bptIn: Ref<unknown>,
         hasFetchedPoolsForSor: Ref<unknown>,
         isSingleAssetExit: Ref<unknown>,
-        singleAmountOut: unknown
+        singleAmountOut: unknown,
+        relayerSignature: Ref<string | undefined>
       ) => [
         ...QUERY_EXIT_ROOT_KEY,
         {
@@ -102,6 +103,7 @@ const QUERY_KEYS = {
           hasFetchedPoolsForSor,
           isSingleAssetExit,
           singleAmountOut,
+          relayerSignature,
         },
       ],
       SingleAssetMax: (

@@ -96,6 +96,7 @@ export const exitPoolProvider = (
     valid: true,
   });
   const propAmountsOut = ref<AmountOut[]>([]);
+  const isTxPayloadReady = ref<boolean>(false);
 
   /**
    * SERVICES
@@ -137,7 +138,8 @@ export const exitPoolProvider = (
       bptIn,
       hasFetchedPoolsForSor,
       isSingleAssetExit,
-      singleAmountOut
+      singleAmountOut,
+      relayerSignature
     ),
     debounceQueryExit,
     reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
@@ -396,6 +398,7 @@ export const exitPoolProvider = (
         max: '',
         valid: true,
       }));
+      isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
       logExitException(error as Error);
@@ -471,7 +474,7 @@ export const exitPoolProvider = (
     } catch (error) {
       logExitException(error as Error);
       txError.value = (error as Error).message;
-      throw new Error('Failed to submit exit transaction.', { cause: error });
+      throw error;
     }
   }
 
@@ -500,19 +503,23 @@ export const exitPoolProvider = (
       level: 'fatal',
       extra: {
         exitHandler: exitHandlerType.value,
-        params: {
-          exitType: exitType.value,
-          bptIn: _bptIn.value,
-          amountsOut: amountsOut.value,
-          signer: sender,
-          slippageBsp: slippageBsp.value,
-          tokenInfo: exitTokenInfo.value,
-          approvalActions: approvalActions.value,
-          bptInValid: bptInValid.value,
-          relayerSignature: relayerSignature.value,
-          transactionDeadline: transactionDeadline.value,
-          toInternalBalance: shouldExitViaInternalBalance.value,
-        },
+        params: JSON.stringify(
+          {
+            exitType: exitType.value,
+            bptIn: _bptIn.value,
+            amountsOut: amountsOut.value,
+            signer: sender,
+            slippageBsp: slippageBsp.value,
+            tokenInfo: exitTokenInfo.value,
+            approvalActions: approvalActions.value,
+            bptInValid: bptInValid.value,
+            relayerSignature: relayerSignature.value,
+            transactionDeadline: transactionDeadline.value,
+            toInternalBalance: shouldExitViaInternalBalance.value,
+          },
+          null,
+          2
+        ),
       },
     });
   }
@@ -584,6 +591,9 @@ export const exitPoolProvider = (
     approvalActions,
     transactionDeadline,
     shouldExitViaInternalBalance,
+    isTxPayloadReady,
+    relayerSignature,
+    relayerApproval,
 
     // methods
     setIsSingleAssetExit,
