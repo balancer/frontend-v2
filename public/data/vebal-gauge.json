@@ -74,7 +74,7 @@
     "pool": {
       "id": "0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524",
       "address": "0xd689ABc77B82803F22c49dE5C8A0049Cc74D11fD",
-      "poolType": "Weighted",
+      "poolType": "Stable",
       "symbol": "veUSH",
       "tokens": [
         {
