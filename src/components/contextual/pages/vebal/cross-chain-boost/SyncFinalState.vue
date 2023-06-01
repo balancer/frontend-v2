@@ -42,7 +42,7 @@ defineProps<Props>();
           {{ networkLabelMap[network] }}
         </div>
         <div class="p-4 font-medium text-black text-emerald-600">
-          {{ l2VeBalBalances?.[network] || '0.0000' }} veBAL
+          {{ veBalBalance }} veBAL
         </div>
       </div>
     </div>

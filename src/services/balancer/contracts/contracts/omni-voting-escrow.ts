@@ -1,4 +1,3 @@
-import { POOLS } from '@/constants/pools';
 import OmniVotingEscrowAbi from '@/lib/abi/OmniVotingEscrow.json';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
@@ -26,7 +25,7 @@ export class OmniVotingEscrow {
       contractAddress: this.address,
       abi: this.abi,
       action: 'estimateSendUserBalance',
-      params: [chainId, false, []],
+      params: [chainId],
     });
   }
 
@@ -43,7 +42,7 @@ export class OmniVotingEscrow {
       contractAddress: this.address,
       abi: this.abi,
       action: 'sendUserBalance',
-      params: [userAddress, chainId, userAddress, POOLS.ZeroAddress, []],
+      params: [userAddress, chainId, userAddress],
       options: {
         value: nativeFee,
       },

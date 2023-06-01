@@ -48,7 +48,8 @@ export type TransactionAction =
   | 'voteForGauge'
   | 'unstake'
   | 'stake'
-  | 'restake';
+  | 'restake'
+  | 'sync';
 
 export type TransactionType = 'order' | 'tx';
 

@@ -132,7 +132,7 @@ export const wallets = () => {
       return getAddress(pluginState.connector.account);
     }
     return '';
-    // return '0x0029ab135b5be72168bf80f140d60a9264dbd0c5';
+    // return '0xa2e7002e0ffc42e4228292d67c13a81fdd191870';
   });
 
   const chainId = computed(() => {

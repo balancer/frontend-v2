@@ -11,6 +11,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 import { useTokens } from '@/providers/tokens.provider';
+import BigNumber from 'bignumber.js';
 
 /**
  * COMPOSABLES
@@ -27,6 +28,7 @@ const {
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
+
 /**
  * STATE
  */
@@ -35,6 +37,9 @@ const isSyncModalOpen = ref(false);
 /**
  * COMPUTED
  */
+const isVebalBalanceZero = computed(() => {
+  return new BigNumber(veBalBalance.value).isEqualTo(0);
+});
 </script>
 
 <template>
@@ -47,14 +52,13 @@ const isSyncModalOpen = ref(false);
         </template>
       </BalTooltip>
     </h3>
-    <div v-if="!isWalletReady">
-      {{ $t('crossChainBoost.emptyState') }}
-    </div>
-
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
       </template>
+      <div v-else-if="!isWalletReady || isVebalBalanceZero">
+        {{ $t('crossChainBoost.emptyState') }}
+      </div>
       <template v-else>
         <BalCard>
           <div class="flex justify-between items-center mb-3 font-bold label">
@@ -73,22 +77,23 @@ const isSyncModalOpen = ref(false);
             >
               {{ $t('crossChainBoost.syncedAllDescription') }}
             </span>
-            <div
-              v-for="network in networksBySyncState.unsynced"
-              :key="network"
-              class="flex"
-            >
-              <IconLoaderWrapper
-                :isLoading="
-                  networksSyncState?.[network] === NetworkSyncState.Syncing
-                "
+            <div v-else class="flex">
+              <div
+                v-for="network in networksBySyncState.unsynced"
+                :key="network"
               >
-                <img
-                  :src="buildNetworkIconUrlV2(network)"
-                  alt=""
-                  class="mr-2 rounded-full cursor-pointer"
-                />
-              </IconLoaderWrapper>
+                <IconLoaderWrapper
+                  :isLoading="
+                    networksSyncState?.[network] === NetworkSyncState.Syncing
+                  "
+                >
+                  <img
+                    :src="buildNetworkIconUrlV2(network)"
+                    alt=""
+                    class="mr-2 rounded-full cursor-pointer"
+                  />
+                </IconLoaderWrapper>
+              </div>
             </div>
           </div>
 
@@ -120,12 +125,8 @@ const isSyncModalOpen = ref(false);
             {{ $t('crossChainBoost.unsyncedAllDescription') }}
           </span>
 
-          <template v-else>
-            <div
-              v-for="network in networksBySyncState.synced"
-              :key="network"
-              class="flex"
-            >
+          <div v-else class="flex">
+            <div v-for="network in networksBySyncState.synced" :key="network">
               <IconLoaderWrapper :isLoading="false">
                 <img
                   :src="buildNetworkIconUrlV2(network)"
@@ -134,7 +135,7 @@ const isSyncModalOpen = ref(false);
                 />
               </IconLoaderWrapper>
             </div>
-          </template>
+          </div>
         </BalCard>
       </template>
     </div>

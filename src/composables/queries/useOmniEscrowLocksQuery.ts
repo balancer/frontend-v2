@@ -1,5 +1,6 @@
 import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery, { subgraphs } from './useGraphQuery';
+import useNetwork from '../useNetwork';
 
 const attrs = {
   id: true,
@@ -28,12 +29,14 @@ export interface OmniEscrowLockResponse {
 }
 
 export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
+  const { networkId } = useNetwork();
+
   const useOmniEscrowLocksQueryEnabled = computed(() => !!account.value);
 
   /**
    * QUERY INPUTS
    */
-  const queryKey = QUERY_KEYS.Gauges.OmniEscrowLocks(account);
+  const queryKey = QUERY_KEYS.Gauges.OmniEscrowLocks(networkId, account);
 
   return useGraphQuery<OmniEscrowLockResponse>(
     subgraphs.gauge,
@@ -48,6 +51,9 @@ export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
         ...attrs,
       },
     }),
-    reactive({ enabled: useOmniEscrowLocksQueryEnabled })
+    reactive({
+      enabled: useOmniEscrowLocksQueryEnabled,
+      refetchOnWindowFocus: false,
+    })
   );
 }

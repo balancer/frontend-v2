@@ -14,8 +14,8 @@ export enum NetworkSyncState {
 }
 
 interface EscrowLockData {
-  bias: string;
-  slope: string;
+  bias?: string;
+  slope?: string;
 }
 
 export interface NetworknetworksBySyncState {
@@ -51,6 +51,7 @@ export function useCrossChainSync() {
   const {
     data: omniEscrowResponse,
     isLoading: isLoadingOmniEscrow,
+    isRefetching: isRefetchingOmniEscrow,
     refetch: refetchOmniEscrow,
   } = useOmniEscrowLocksQuery(account);
 
@@ -82,35 +83,45 @@ export function useCrossChainSync() {
   const {
     data: mainnetVotingEscrowResponse,
     isLoading: isLoadingVotingEscrow,
+    isRefetching: isRefetchingVotingEscrow,
     refetch: refetchVotingEscrow,
   } = useVotingEscrowLocksQuery(Network.MAINNET, account);
 
   const {
     data: arbitrumVotingEscrowResponse,
     isLoading: isLoadingVotingEscrowArbitrum,
+    isRefetching: isRefetchingVotingEscrowArbitrum,
     refetch: refetchVotingEscrowArbitrum,
   } = useVotingEscrowLocksQuery(Network.ARBITRUM, remoteUser);
+
+  const {
+    data: polygonVotingEscrowResponse,
+    isLoading: isLoadingVotingEscrowPolygon,
+    isRefetching: isRefetchingVotingEscrowPolygon,
+    refetch: refetchVotingEscrowPolygon,
+  } = useVotingEscrowLocksQuery(Network.POLYGON, remoteUser);
 
   const votingEscrowLocks = computed(() => {
     const votingEscrowLocks =
       mainnetVotingEscrowResponse.value?.votingEscrowLocks[0];
     const votingEscrowLocksArbitrum =
       arbitrumVotingEscrowResponse.value?.votingEscrowLocks[0];
-
-    if (!votingEscrowLocks || !votingEscrowLocksArbitrum) return null;
+    const votingEscrowLocksPolygon =
+      polygonVotingEscrowResponse.value?.votingEscrowLocks[0];
 
     return {
       [Network.MAINNET]: votingEscrowLocks,
       [Network.ARBITRUM]: votingEscrowLocksArbitrum,
+      [Network.POLYGON]: votingEscrowLocksPolygon,
     };
   });
 
   const isLoading = computed(() => {
-    if (allNetworksUnsynced.value) return false;
     return (
       isLoadingOmniEscrow.value ||
+      isRefetchingOmniEscrow.value ||
       isLoadingVotingEscrow.value ||
-      isLoadingVotingEscrowArbitrum.value
+      isRefetchingVotingEscrow.value
     );
   });
 
@@ -124,27 +135,35 @@ export function useCrossChainSync() {
       };
     }
 
-    if (
-      isLoading.value ||
-      !omniEscrowLocks.value ||
-      !votingEscrowLocks.value?.[Network.MAINNET] ||
-      !votingEscrowLocks.value?.[Network.ARBITRUM]
-    ) {
+    if (isLoading.value) {
       return null;
     }
 
-    const { bias, slope } = omniEscrowLocks.value;
-    const { bias: biasVotingEscrow, slope: slopeVotingEscrow } =
-      votingEscrowLocks.value[Network.MAINNET];
+    const bias = omniEscrowLocks.value?.bias;
+    const slope = omniEscrowLocks.value?.slope;
 
-    const { bias: biasVotingEscrowArb, slope: slopeVotingEscrowArb } =
-      votingEscrowLocks.value[Network.ARBITRUM];
+    const biasVotingEscrow = votingEscrowLocks.value[Network.MAINNET]?.bias;
+    const slopeVotingEscrow = votingEscrowLocks.value[Network.MAINNET]?.slope;
+
+    const biasVotingEscrowArb = votingEscrowLocks.value[Network.ARBITRUM]?.bias;
+    const slopeVotingEscrowArb =
+      votingEscrowLocks.value[Network.ARBITRUM]?.slope;
+
+    const biasVotingEscrowPolygon =
+      votingEscrowLocks.value[Network.POLYGON]?.bias;
+    const slopeVotingEscrowPolygon =
+      votingEscrowLocks.value[Network.POLYGON]?.slope;
 
     return {
       [Network.ARBITRUM]: getNetworkSyncState(
         { bias, slope },
         { bias: biasVotingEscrow, slope: slopeVotingEscrow },
         { bias: biasVotingEscrowArb, slope: slopeVotingEscrowArb }
+      ),
+      [Network.POLYGON]: getNetworkSyncState(
+        { bias, slope },
+        { bias: biasVotingEscrow, slope: slopeVotingEscrow },
+        { bias: biasVotingEscrowPolygon, slope: slopeVotingEscrowPolygon }
       ),
     };
   });
@@ -154,6 +173,13 @@ export function useCrossChainSync() {
     votingEscrowMainnet: EscrowLockData,
     votingEscrowNetwork: EscrowLockData
   ) {
+    if (
+      !omniEscrowData.slope ||
+      !votingEscrowMainnet.slope ||
+      !votingEscrowNetwork.slope
+    )
+      return NetworkSyncState.Unsynced;
+
     const { bias: biasOmniEscrow, slope: slopeOmniEscrow } = omniEscrowData;
     const { bias: biasVotingEscrow, slope: slopeVotingEscrow } =
       votingEscrowMainnet;
@@ -173,6 +199,7 @@ export function useCrossChainSync() {
     if (isSynced) {
       return NetworkSyncState.Synced;
     }
+
     if (isSyncing) {
       return NetworkSyncState.Syncing;
     }
@@ -212,10 +239,13 @@ export function useCrossChainSync() {
 
   // veBAL_balance = bias - slope * (now() - timestamp)
   function calculateVeBAlBalance(
-    bias: string,
-    slope: string,
-    timestamp: number
+    bias?: string,
+    slope?: string,
+    timestamp?: number
   ) {
+    if (!bias || !slope || !timestamp)
+      return new BigNumber(0).toFixed(4).toString();
+
     const x = new BigNumber(slope).multipliedBy(
       Math.floor(Date.now() / 1000) - timestamp
     );
@@ -223,13 +253,14 @@ export function useCrossChainSync() {
   }
 
   const l2VeBalBalances = computed<L2VeBalBalances>(() => {
-    if (!votingEscrowLocks.value) return null;
+    const biasArb = votingEscrowLocks.value[Network.ARBITRUM]?.bias;
+    const slopeArb = votingEscrowLocks.value[Network.ARBITRUM]?.slope;
+    const timestampArb = votingEscrowLocks.value[Network.ARBITRUM]?.timestamp;
 
-    const {
-      bias: biasArb,
-      slope: slopeArb,
-      timestamp: timestampArb,
-    } = votingEscrowLocks.value[Network.ARBITRUM];
+    const biasPolygon = votingEscrowLocks.value[Network.POLYGON]?.bias;
+    const slopePolygon = votingEscrowLocks.value[Network.POLYGON]?.slope;
+    const timestampPolygon =
+      votingEscrowLocks.value[Network.POLYGON]?.timestamp;
 
     return {
       [Network.ARBITRUM]: calculateVeBAlBalance(
@@ -237,14 +268,17 @@ export function useCrossChainSync() {
         slopeArb,
         timestampArb
       ),
+      [Network.POLYGON]: calculateVeBAlBalance(
+        biasPolygon,
+        slopePolygon,
+        timestampPolygon
+      ),
     };
   });
 
   async function sync(network: Network) {
     const contractAddress = configService.network.addresses.omniVotingEscrow;
     if (!contractAddress) throw new Error('No contract address found');
-    console.log('contractAddress', contractAddress);
-    console.log('network', network);
     const signer = getSigner();
     const omniVotingEscrowContract = new OmniVotingEscrow(contractAddress);
 
@@ -252,21 +286,28 @@ export function useCrossChainSync() {
       signer,
       LayerZeroNetworkId[network]
     );
+
     const { nativeFee } = tx;
     console.log('nativeFee', nativeFee);
 
-    return await omniVotingEscrowContract.sendUserBalance({
+    const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
       signer,
       userAddress: account.value,
       chainId: LayerZeroNetworkId[network],
       nativeFee,
     });
+
+    console.log('sendUserBalanceTx', sendUserBalanceTx);
+    return sendUserBalanceTx;
   }
 
   async function refetch() {
     await Promise.all([refetchOmniEscrow(), refetchVotingEscrow()]);
     if (remoteUser.value) {
-      await refetchVotingEscrowArbitrum();
+      await Promise.all([
+        refetchVotingEscrowArbitrum(),
+        refetchVotingEscrowPolygon(),
+      ]);
     }
   }
 

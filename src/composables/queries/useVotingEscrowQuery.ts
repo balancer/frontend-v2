@@ -8,6 +8,8 @@ const networkSubgraphGagesMap = {
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-beta',
   [Network.ARBITRUM]:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum-beta',
+  [Network.POLYGON]:
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon-beta',
 };
 
 export interface VotingEscrowLock {
@@ -49,7 +51,7 @@ export function useVotingEscrowLocksQuery(
 
   return useGraphQuery<VotingEscrowLockResponse>(
     networkSubgraphGagesMap[networkId],
-    QUERY_KEYS.Gauges.VotingEscrowLocksByNetworkId(networkId, account.value),
+    QUERY_KEYS.Gauges.VotingEscrowLocksByNetworkId(networkId, account, user),
     () => ({
       votingEscrowLocks: {
         __args: {
@@ -60,6 +62,9 @@ export function useVotingEscrowLocksQuery(
         ...attrs,
       },
     }),
-    reactive({ enabled: votingEscrowLocksQueryEnabled })
+    reactive({
+      enabled: votingEscrowLocksQueryEnabled,
+      refetchOnWindowFocus: false,
+    })
   );
 }

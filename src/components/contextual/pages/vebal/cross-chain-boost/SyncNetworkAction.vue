@@ -6,7 +6,11 @@ import { networkLabelMap } from '@/composables/useNetwork';
 import { useI18n } from 'vue-i18n';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { L2VeBalBalances } from '@/composables/cross-chain-sync/useCrossChainSync';
+import useTransactions from '@/composables/useTransactions';
 
+/**
+ * TYPES
+ */
 type Props = {
   chosenNetworks: Set<Network>;
   activeTabIdx: number;
@@ -15,13 +19,57 @@ type Props = {
   sync(network: Network): Promise<TransactionResponse>;
 };
 
+/**
+ * PROPS & EMITS
+ */
 const props = defineProps<Props>();
-defineEmits(['update:activeTabIdx']);
+const emit = defineEmits(['update:activeTabIdx']);
 
+/**
+ * COMPOSABLES
+ */
 const { t } = useI18n();
+const { addTransaction } = useTransactions();
 
+/**
+ * STATE
+ */
 const currentActionIndex = ref(0);
 
+/**
+ * METHODS
+ */
+async function handleTransaction(
+  tx: TransactionResponse,
+  network: Network
+): Promise<void> {
+  addTransaction({
+    id: tx.hash,
+    type: 'tx',
+    action: 'sync',
+    summary: `Sync veBal to ${network} network`,
+  });
+}
+
+async function handleAction(network: Network) {
+  try {
+    const tx = await props.sync(network);
+    console.log('Receipt', tx);
+    handleTransaction(tx, network);
+    return tx;
+  } catch (error) {
+    console.error(error);
+    return Promise.reject(error);
+  }
+}
+
+function handleSuccess() {
+  emit('update:activeTabIdx', 2);
+}
+
+/**
+ * COMPUTED
+ */
 const networkSyncSteps = computed(() => {
   const actions: TransactionActionInfo[] = [];
   props.chosenNetworks.forEach(network => {
@@ -36,14 +84,14 @@ const networkSyncSteps = computed(() => {
         network: networkLabelMap[network],
       }),
       action: async () => {
-        return await props.sync(network);
+        return handleAction(network);
       },
       stepTooltip: t('crossChainBoost.syncToNetwork', {
         network: networkLabelMap[network],
       }),
     });
   });
-
+  console.log('actions', actions);
   return actions;
 });
 </script>
@@ -96,6 +144,7 @@ const networkSyncSteps = computed(() => {
     <BalActionSteps
       :actions="networkSyncSteps"
       :spacerWidth="10"
+      @success="handleSuccess"
       @set-current-action-index="currentActionIndex = $event"
     />
   </div>

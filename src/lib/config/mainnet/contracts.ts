@@ -23,7 +23,7 @@ const contracts: Contracts = {
   feeDistributor: mainnet.FeeDistributor,
   feeDistributorDeprecated: '0x26743984e3357eFC59f2fd6C1aFDC310335a61c9',
   faucet: '',
-  omniVotingEscrow: '0xa224c9c7371e7da1e5de87bd7cb6688619c28eb2',
+  omniVotingEscrow: '0x96484f2aBF5e58b15176dbF1A799627B53F13B6d',
 };
 
 export default contracts;
