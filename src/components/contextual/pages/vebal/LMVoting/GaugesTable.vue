@@ -15,7 +15,6 @@ import {
   isUnknownType,
   poolURLFor,
 } from '@/composables/usePoolHelpers';
-import { isSameAddress } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -32,6 +31,7 @@ import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { poolMetadata } from '@/lib/config/metadata';
+import { isGaugeExpired } from './voting-utils';
 
 /**
  * TYPES
@@ -161,7 +161,7 @@ function getIsGaugeNew(addedTimestamp: number): boolean {
 }
 
 function getIsGaugeExpired(gaugeAddress: string): boolean {
-  return !!props.expiredGauges.some(item => isSameAddress(gaugeAddress, item));
+  return isGaugeExpired(props.expiredGauges, gaugeAddress);
 }
 
 function getHasUserVotes(userVotes: string): boolean {

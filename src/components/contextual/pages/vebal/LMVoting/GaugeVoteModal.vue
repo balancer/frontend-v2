@@ -2,7 +2,6 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { format } from 'date-fns';
-import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
@@ -35,6 +34,7 @@ type Props = {
   logoURIs: string[];
   poolURL: string;
   veBalLockInfo?: VeBalLockInfo | null;
+  isGaugeExpired: boolean;
 };
 
 const MINIMUM_LOCK_TIME = 86_400_000 * 7;
@@ -332,6 +332,7 @@ async function handleTransaction(tx) {
  */
 onMounted(() => {
   if (hasVotes.value) voteWeight.value = currentWeightNormalized.value;
+  if (props.isGaugeExpired) voteWeight.value = '0';
 });
 </script>
 
