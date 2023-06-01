@@ -95,6 +95,7 @@ const pools: Pools = {
       '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548', // bb-a-weth/ankreth
       '0x20a61b948e33879ce7f23e535cc7baa3bc66c5a9000000000000000000000555', // R/DAI
       '0xfcf77141908aa22bfeac216123c5feb2531f373e00000000000000000000054a', // sWETH/rETH
+      '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
     ],
   },
   Investment: {
@@ -401,6 +402,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c': {
+      name: 'DOLA/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -433,6 +440,7 @@ const pools: Pools = {
     '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e', // bb-a-weth / qeth
     '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // cbeth / bb-a-weth
     '0x3035917be42af437cbdd774be26b9ec90a2bd677000200000000000000000543', // inst / bb-inst-weth
+    '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
