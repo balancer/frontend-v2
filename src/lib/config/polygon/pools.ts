@@ -239,6 +239,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b': {
+      name: 'FRAX/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
