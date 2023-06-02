@@ -73,7 +73,13 @@ async function syncNetworks() {
       </div>
     </div>
 
-    <BalBtn block color="gradient" size="md" @click="syncNetworks">
+    <BalBtn
+      block
+      color="gradient"
+      size="md"
+      :disabled="chosenNetworks.size === 0"
+      @click="syncNetworks"
+    >
       {{ $t('next') }}
     </BalBtn>
   </div>

@@ -29,8 +29,11 @@ const syncTabs = [SyncSelectNetwork, SyncNetworkAction, SyncFinalState];
 
 const tabActiveIdx = ref(0);
 
+const isSyncedSuccessfull = ref(false);
+
 const closeModal = () => {
-  emit('closeModal');
+  emit('closeModal', isSyncedSuccessfull.value ? chosenNetworks.value : null);
+
   tabActiveIdx.value = 0;
   chosenNetworks.value = new Set();
 };
@@ -57,6 +60,7 @@ function toggleNetwork(network: number) {
         style="min-height: 470px"
         :chosenNetworks="chosenNetworks"
         @toggle-network="toggleNetwork"
+        @set-successful-synced="isSyncedSuccessfull = true"
       />
     </Transition>
   </BalModal>

@@ -23,7 +23,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
-const emit = defineEmits(['update:activeTabIdx']);
+const emit = defineEmits(['update:activeTabIdx', 'setSuccessfulSynced']);
 
 /**
  * COMPOSABLES
@@ -47,7 +47,7 @@ async function handleTransaction(
     id: tx.hash,
     type: 'tx',
     action: 'sync',
-    summary: `Sync veBal to ${network} network`,
+    summary: `Sync veBal to ${networkLabelMap[network]} network`,
   });
 }
 
@@ -64,6 +64,11 @@ async function handleAction(network: Network) {
 }
 
 function handleSuccess() {
+  localStorage.setItem(
+    'tempSyncingNetworks',
+    JSON.stringify(Array.from(props.chosenNetworks))
+  );
+  emit('setSuccessfulSynced');
   emit('update:activeTabIdx', 2);
 }
 

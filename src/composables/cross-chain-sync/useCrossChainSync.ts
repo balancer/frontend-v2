@@ -38,10 +38,20 @@ export const LayerZeroNetworkId = {
   [Network.POLYGON]: 109,
   [Network.ARBITRUM]: 110,
   [Network.OPTIMISM]: 111,
+  [Network.GNOSIS]: 145,
 };
 
 export function useCrossChainSync() {
   const { account, getSigner } = useWeb3();
+
+  const syncingNetworksFromStorage = localStorage.getItem(
+    'tempSyncingNetworks'
+  );
+
+  // as subgraph is lagging behind onchain data, we need to fake synced networks
+  const tempSyncingNetworks = ref<Network[]>(
+    syncingNetworksFromStorage ? JSON.parse(syncingNetworksFromStorage) : []
+  );
 
   /**
    * omniVotingEscrowLocks contains the user's veBAL data that is known by the bridge contract
@@ -89,15 +99,11 @@ export function useCrossChainSync() {
 
   const {
     data: arbitrumVotingEscrowResponse,
-    isLoading: isLoadingVotingEscrowArbitrum,
-    isRefetching: isRefetchingVotingEscrowArbitrum,
     refetch: refetchVotingEscrowArbitrum,
   } = useVotingEscrowLocksQuery(Network.ARBITRUM, remoteUser);
 
   const {
     data: polygonVotingEscrowResponse,
-    isLoading: isLoadingVotingEscrowPolygon,
-    isRefetching: isRefetchingVotingEscrowPolygon,
     refetch: refetchVotingEscrowPolygon,
   } = useVotingEscrowLocksQuery(Network.POLYGON, remoteUser);
 
@@ -209,31 +215,30 @@ export function useCrossChainSync() {
 
   // Returns networks lists by sync state synced/unsynced
   const networksBySyncState = computed<NetworknetworksBySyncState>(() => {
-    if (!networksSyncState.value)
+    if (!networksSyncState.value) {
       return {
         synced: [],
         unsynced: [],
+        syncing: [],
       };
+    }
+
+    const nArr = Object.keys(networksSyncState.value).map(v => Number(v));
 
     return {
-      synced: Object.keys(networksSyncState.value)
-        .map(v => Number(v))
-        .filter(
-          network =>
-            networksSyncState.value?.[network] === NetworkSyncState.Synced
-        ) as Network[],
-      unsynced: Object.keys(networksSyncState.value)
-        .map(v => Number(v))
-        .filter(
-          network =>
-            networksSyncState.value?.[network] === NetworkSyncState.Unsynced
-        ),
-      sincing: Object.keys(networksSyncState.value)
-        .map(v => Number(v))
-        .filter(
-          network =>
-            networksSyncState.value?.[network] === NetworkSyncState.Syncing
-        ),
+      synced: nArr.filter(
+        network =>
+          networksSyncState.value?.[network] === NetworkSyncState.Synced
+      ) as Network[],
+      unsynced: nArr.filter(
+        network =>
+          networksSyncState.value?.[network] === NetworkSyncState.Unsynced
+      ),
+      syncing: nArr.filter(
+        network =>
+          networksSyncState.value?.[network] === NetworkSyncState.Syncing ||
+          tempSyncingNetworks.value?.includes(network)
+      ),
     };
   });
 
@@ -249,6 +254,9 @@ export function useCrossChainSync() {
     const x = new BigNumber(slope).multipliedBy(
       Math.floor(Date.now() / 1000) - timestamp
     );
+
+    if (x.isLessThan(0)) return new BigNumber(bias).toFixed(4).toString();
+
     return new BigNumber(bias).minus(x).toFixed(4).toString();
   }
 
@@ -320,5 +328,6 @@ export function useCrossChainSync() {
     l2VeBalBalances,
     sync,
     refetch,
+    tempSyncingNetworks,
   };
 }
