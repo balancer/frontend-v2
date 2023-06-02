@@ -36,6 +36,10 @@ export class MockedContractWithSigner implements IContract {
   balanceOf() {
     return Promise.resolve(defaultContractBalanceBN);
   }
+
+  connect() {
+    return this;
+  }
 }
 
 export function initEthersContractWithDefaultMocks() {

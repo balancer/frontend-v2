@@ -53,6 +53,7 @@ export function useVotingEscrowLocksQuery(
     networkSubgraphGagesMap[networkId],
     QUERY_KEYS.Gauges.VotingEscrowLocksByNetworkId(networkId, account, user),
     () => ({
+      __name: 'VotingEscrowLocks',
       votingEscrowLocks: {
         __args: {
           where: {
