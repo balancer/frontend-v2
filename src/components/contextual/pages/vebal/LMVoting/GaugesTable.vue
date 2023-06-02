@@ -73,7 +73,7 @@ const { isWalletReady } = useWeb3();
 /**
  * DATA
  */
-const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
+const columns = computed((): ColumnDefinition<VotingGaugeWithVotes>[] => [
   {
     name: t('veBAL.liquidityMining.table.chain'),
     id: 'chain',
@@ -194,6 +194,7 @@ function getPickedTokens(tokens: PoolToken[]) {
 </script>
 
 <template>
+  isWalletReady {{ isWalletReady }}
   <BalCard
     shadow="lg"
     class="mt-4"
