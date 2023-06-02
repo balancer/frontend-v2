@@ -6,7 +6,7 @@ import useDebouncedRef from '@/composables/useDebouncedRed';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { poolURLFor } from '@/composables/usePoolHelpers';
 import useVotingGauges from '@/composables/useVotingGauges';
-import { bnum, isSameAddress, scale } from '@/lib/utils';
+import { bnum, scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 
 import GaugesTable from './GaugesTable.vue';
@@ -15,6 +15,7 @@ import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
 import { Network } from '@/lib/config';
 import GaugesFilters from './GaugesFilters.vue';
+import { isGaugeExpired } from './voting-utils';
 
 /**
  * DATA
@@ -91,9 +92,7 @@ const gaugesFilteredByExpiring = computed(() => {
     if (Number(gauge.userVotes) > 0) {
       return true;
     }
-    return !expiredGauges.value?.some(expGauge =>
-      isSameAddress(expGauge, gauge.address)
-    );
+    return !isGaugeExpired(expiredGauges.value, gauge.address);
   });
 });
 
@@ -133,6 +132,10 @@ function handleModalClose() {
 
 function handleVoteSuccess() {
   refetchVotingGauges();
+}
+
+function isExpired(gauge: VotingGaugeWithVotes) {
+  return isGaugeExpired(expiredGauges.value, gauge.address);
 }
 
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
@@ -305,6 +308,7 @@ watch(
     <GaugeVoteModal
       v-if="!!activeVotingGauge"
       :gauge="activeVotingGauge"
+      :isGaugeExpired="isExpired(activeVotingGauge)"
       :logoURIs="orderedTokenURIs(activeVotingGauge)"
       :poolURL="poolURLFor(activeVotingGauge.pool, activeVotingGauge.network)"
       :unallocatedVoteWeight="unallocatedVoteWeight"
