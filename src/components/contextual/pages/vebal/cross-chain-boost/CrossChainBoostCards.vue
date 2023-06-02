@@ -12,6 +12,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 import { useTokens } from '@/providers/tokens.provider';
 import BigNumber from 'bignumber.js';
+import { Network } from '@/lib/config';
 
 /**
  * COMPOSABLES
@@ -25,6 +26,7 @@ const {
   isLoading,
   sync,
   refetch,
+  tempSyncingNetworks,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -40,6 +42,20 @@ const isSyncModalOpen = ref(false);
 const isVebalBalanceZero = computed(() => {
   return new BigNumber(veBalBalance.value).isEqualTo(0);
 });
+
+/**
+ * METHODS
+ */
+function onCloseModal(chosenNetworks: Set<Network> | null) {
+  isSyncModalOpen.value = false;
+
+  if (!chosenNetworks) {
+    return;
+  }
+  chosenNetworks.forEach(network => {
+    tempSyncingNetworks.value.push(network);
+  });
+}
 </script>
 
 <template>
@@ -84,7 +100,8 @@ const isVebalBalanceZero = computed(() => {
               >
                 <IconLoaderWrapper
                   :isLoading="
-                    networksSyncState?.[network] === NetworkSyncState.Syncing
+                    networksSyncState?.[network] === NetworkSyncState.Syncing ||
+                    tempSyncingNetworks.includes(network)
                   "
                 >
                   <img
@@ -146,7 +163,7 @@ const isVebalBalanceZero = computed(() => {
       :sync="sync"
       :veBalBalance="fNum(veBalBalance, FNumFormats.token)"
       :l2VeBalBalances="l2VeBalBalances"
-      @close-modal="isSyncModalOpen = false"
+      @close-modal="onCloseModal"
     />
   </div>
 </template>
