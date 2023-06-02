@@ -467,7 +467,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x81f8f0bb1cb2a06649e51913a151f0e7ef6fa321.png",
+      "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321/logo.png",
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
