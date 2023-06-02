@@ -81,6 +81,8 @@ export class GaugeControllerDecorator {
     const votesDataMap = await this.multicaller.execute<RawVotesDataMap>();
 
     const decoratedGauges = votingGauges.map(gauge => {
+      console.log('KIO: ', votesDataMap.gauges);
+      console.log('KIO: ', gauge.address);
       return {
         id: gauge.address,
         ...gauge,
@@ -191,5 +193,3 @@ export class GaugeControllerDecorator {
     return new Multicaller(this.network.toString(), this.provider, this.abi);
   }
 }
-
-export const gaugeControllerDecorator = new GaugeControllerDecorator();
