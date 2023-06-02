@@ -101,17 +101,21 @@ const votesNextPeriodOverCap = computed((): boolean => {
   );
 });
 
-const voteTitle = computed(() =>
-  hasVotes.value
+const voteTitle = computed(() => {
+  if (props.isGaugeExpired)
+    return t('veBAL.liquidityMining.popover.title.remove');
+  return hasVotes.value
     ? t('veBAL.liquidityMining.popover.title.edit')
-    : t('veBAL.liquidityMining.popover.title.vote')
-);
+    : t('veBAL.liquidityMining.popover.title.vote');
+});
 
-const voteButtonText = computed(() =>
-  hasVotes.value
+const voteButtonText = computed(() => {
+  if (props.isGaugeExpired)
+    return t('veBAL.liquidityMining.popover.title.remove');
+  return hasVotes.value
     ? t('veBAL.liquidityMining.popover.button.edit')
-    : t('veBAL.liquidityMining.popover.button.vote')
-);
+    : t('veBAL.liquidityMining.popover.button.vote');
+});
 
 const votedToRecentlyWarning = computed(() => {
   if (isVotingTimeLocked(props.gauge.lastUserVoteTime)) {
@@ -200,11 +204,26 @@ const voteWarning = computed(
   }
 );
 
+const veBalExpired = computed(() => props.veBalLockInfo?.isExpired);
+
+const veBalExpiredWarning = {
+  title: t('veBAL.liquidityMining.popover.warnings.expiredVeBal.title'),
+  description: t(
+    'veBAL.liquidityMining.popover.warnings.expiredVeBal.description'
+  ),
+};
+
+const poolAndVeBalExpired = computed(
+  () => props.isGaugeExpired && veBalExpired.value
+);
+
 const voteError = computed(
   (): {
     title: string;
     description: string;
   } | null => {
+    if (veBalExpired.value) return veBalExpiredWarning;
+    if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
     if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
     if (noVeBalWarning.value) return noVeBalWarning.value;
     if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
@@ -416,6 +435,7 @@ onMounted(() => {
       </div>
       <BalForm class="vote-form">
         <BalTextInput
+          v-if="!isGaugeExpired"
           v-model="voteWeight"
           name="voteWeight"
           type="number"
@@ -442,14 +462,16 @@ onMounted(() => {
             </div>
           </template>
         </BalTextInput>
-        <div v-if="voteError" class="mt-2 text-sm text-secondary">
-          {{
-            t('veBAL.liquidityMining.popover.warnings.noVeBal.inputHintText')
-          }}
-        </div>
-        <div v-else :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
-          {{ remainingVotes }}
-        </div>
+        <template v-if="!poolAndVeBalExpired">
+          <div v-if="voteError" class="mt-2 text-sm text-secondary">
+            {{
+              t('veBAL.liquidityMining.popover.warnings.noVeBal.inputHintText')
+            }}
+          </div>
+          <div v-else :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
+            {{ remainingVotes }}
+          </div>
+        </template>
 
         <SubmitVoteBtn
           :disabled="voteButtonDisabled"
