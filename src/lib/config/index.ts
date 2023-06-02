@@ -1,6 +1,7 @@
 import { Config } from './types';
 
 import arbitrum from './arbitrum';
+import avalanche from './avalanche';
 import docker from './docker';
 import goerli from './goerli';
 import mainnet from './mainnet';
@@ -21,6 +22,7 @@ export enum Network {
   GNOSIS = 100,
   POLYGON = 137,
   ARBITRUM = 42161,
+  AVALANCHE = 43114,
   FANTOM = 250,
 }
 
@@ -31,6 +33,7 @@ const config: Record<Network | number, Config> = {
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,
   [Network.GNOSIS]: gnosisChain,
+  [Network.AVALANCHE]: avalanche,
   // @ts-ignore
   12345: test,
   // @ts-ignore

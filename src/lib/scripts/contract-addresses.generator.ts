@@ -28,7 +28,7 @@ async function generate() {
 
     fs.writeFileSync(
       `./src/assets/data/contracts/${network}.json`,
-      JSON.stringify(sortedContracts, null, 2)
+      JSON.stringify(sortedContracts, null, 2) + '\n'
     );
   });
 }
