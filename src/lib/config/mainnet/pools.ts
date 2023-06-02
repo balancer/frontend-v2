@@ -33,6 +33,9 @@ const pools: Pools = {
     'ComposableStable',
     'FX',
     'EulerLinear',
+    'Gyro2',
+    'Gyro3',
+    'GyroE',
   ],
   Stable: {
     AllowList: [
@@ -121,6 +124,7 @@ const pools: Pools = {
       '0x3035917be42af437cbdd774be26b9ec90a2bd677000200000000000000000543', // isnt/bb-inst-weth
       '0x1b6e13673f29688e27311b332af1527f1ebf1d28000200000000000000000546', // 80PSDN-20WETH
       '0x380aabe019ed2a9c2d632b51eddd30fd804d0fad000200000000000000000554', // R/wstETH
+      '0x382dc5b2eca1c1308eb7e2b40c0f571afb899ac8000100000000000000000557', // multi-token
     ],
   },
   Factories: {
@@ -274,6 +278,9 @@ const pools: Pools = {
       '0xec3626fee40ef95e7c0cbb1d495c8b67b34d398300000000000000000000053d',
       '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548',
       '0xdf2c03c12442c7a0895455a48569b889079ca52a000200000000000000000538',
+      '0x380aabe019ed2a9c2d632b51eddd30fd804d0fad000200000000000000000554',
+      '0x20a61b948e33879ce7f23e535cc7baa3bc66c5a9000000000000000000000555',
+      '0xfcf77141908aa22bfeac216123c5feb2531f373e00000000000000000000054a',
     ],
     AllowList: [],
   },

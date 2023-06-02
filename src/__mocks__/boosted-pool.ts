@@ -1,9 +1,6 @@
 import { Pool, PoolType } from '@/services/pool/types';
+import { DeepPartial } from '@tests/unit/types';
 import { mock } from 'vitest-mock-extended';
-
-type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>;
-};
 
 const pool: Pool = mock<Pool>();
 
