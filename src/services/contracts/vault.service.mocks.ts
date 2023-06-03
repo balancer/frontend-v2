@@ -1,21 +1,27 @@
 import { Network } from '@/lib/config';
 
 import { MetamaskConnectorMock } from '@/dependencies/wallets/wallet-connector-mocks';
-import { JsonRpcSigner } from '@ethersproject/providers';
-import { mockDeep } from 'vitest-mock-extended';
+import { JsonRpcSigner, TransactionResponse } from '@ethersproject/providers';
+import { mock, mockDeep } from 'vitest-mock-extended';
 import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 
-export const signerMock = mockDeep<JsonRpcSigner>();
+export const walletSignerMock = mockDeep<JsonRpcSigner>();
 export const blockNumber = 16741022;
 export const defaultUserAddress = '0xddd0c9C1b6C8537BeD0487C3fd64CF6140bd4ddd';
 
-signerMock.provider.getBlockNumber.mockImplementation(() =>
+export const defaultWalletTransactionResponse = mock<TransactionResponse>();
+
+walletSignerMock.provider.getBlockNumber.mockImplementation(() =>
   Promise.resolve(blockNumber)
 );
-signerMock.getChainId.mockImplementation(async () => Network.GOERLI);
-signerMock.getAddress.mockImplementation(async () => defaultUserAddress);
+walletSignerMock.getChainId.mockImplementation(async () => Network.GOERLI);
+walletSignerMock.getAddress.mockImplementation(async () => defaultUserAddress);
+
+walletSignerMock.sendTransaction.mockResolvedValue(
+  defaultWalletTransactionResponse
+);
 
 export const walletProviderMock = new MetamaskConnectorMock(
   'fake account'
 ) as unknown as WalletProvider;
-walletProviderMock.getSigner = () => signerMock;
+walletProviderMock.getSigner = () => walletSignerMock;
