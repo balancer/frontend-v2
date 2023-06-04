@@ -676,7 +676,7 @@ test('poolURLFor FX', async () => {
       }),
       Network.MAINNET
     )
-  ).toBe('https://app.xave.finance/#/pool');
+  ).toBe('https://app.xave.co/#/pool');
 });
 
 test('poolURLFor Arbitrum', async () => {
