@@ -6,6 +6,7 @@ import { configService } from '@/services/config/config.service';
 import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-voting-escrow';
 import { allEqual } from '@/lib/utils/array';
 import BigNumber from 'bignumber.js';
+import { txResponseMock } from '@/__mocks__/transactions';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -25,6 +26,11 @@ export interface NetworknetworksBySyncState {
 
 export type L2VeBalBalances = Record<number, string> | null;
 
+export interface TempSyncingNetworks {
+  networks: Network[];
+  syncTimestamp?: number;
+}
+
 // all networks that are supported by cross-chain sync feature
 export const allNetworks = [
   Network.POLYGON,
@@ -41,6 +47,8 @@ export const LayerZeroNetworkId = {
   [Network.GNOSIS]: 145,
 };
 
+const REFETCH_INTERVAL = 10_000;
+
 export function useCrossChainSync() {
   const { account, getSigner } = useWeb3();
 
@@ -49,8 +57,8 @@ export function useCrossChainSync() {
   );
 
   // as subgraph is lagging behind onchain data, we need to fake synced networks
-  const tempSyncingNetworks = ref<Network[]>(
-    syncingNetworksFromStorage ? JSON.parse(syncingNetworksFromStorage) : []
+  const tempSyncingNetworks = ref<Record<string, TempSyncingNetworks>>(
+    syncingNetworksFromStorage ? JSON.parse(syncingNetworksFromStorage) : {}
   );
 
   /**
@@ -60,7 +68,7 @@ export function useCrossChainSync() {
    */
   const {
     data: omniEscrowResponse,
-    isLoading: isLoadingOmniEscrow,
+    isInitialLoading: isLoadingOmniEscrow,
     isRefetching: isRefetchingOmniEscrow,
     refetch: refetchOmniEscrow,
   } = useOmniEscrowLocksQuery(account);
@@ -92,7 +100,7 @@ export function useCrossChainSync() {
    */
   const {
     data: mainnetVotingEscrowResponse,
-    isLoading: isLoadingVotingEscrow,
+    isInitialLoading: isLoadingVotingEscrow,
     isRefetching: isRefetchingVotingEscrow,
     refetch: refetchVotingEscrow,
   } = useVotingEscrowLocksQuery(Network.MAINNET, account);
@@ -125,9 +133,9 @@ export function useCrossChainSync() {
   const isLoading = computed(() => {
     return (
       isLoadingOmniEscrow.value ||
-      isRefetchingOmniEscrow.value ||
-      isLoadingVotingEscrow.value ||
-      isRefetchingVotingEscrow.value
+      // isRefetchingOmniEscrow.value ||
+      isLoadingVotingEscrow.value
+      // isRefetchingVotingEscrow.value
     );
   });
 
@@ -237,7 +245,7 @@ export function useCrossChainSync() {
       syncing: nArr.filter(
         network =>
           networksSyncState.value?.[network] === NetworkSyncState.Syncing ||
-          tempSyncingNetworks.value?.includes(network)
+          tempSyncingNetworks.value[account.value]?.networks.includes(network)
       ),
     };
   });
@@ -298,15 +306,15 @@ export function useCrossChainSync() {
     const { nativeFee } = tx;
     console.log('nativeFee', nativeFee);
 
-    const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
-      signer,
-      userAddress: account.value,
-      chainId: LayerZeroNetworkId[network],
-      nativeFee,
-    });
+    // const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
+    //   signer,
+    //   userAddress: account.value,
+    //   chainId: LayerZeroNetworkId[network],
+    //   nativeFee,
+    // });
 
-    console.log('sendUserBalanceTx', sendUserBalanceTx);
-    return sendUserBalanceTx;
+    // console.log('sendUserBalanceTx', sendUserBalanceTx);
+    return txResponseMock;
   }
 
   async function refetch() {
@@ -319,6 +327,35 @@ export function useCrossChainSync() {
     }
   }
 
+  let disposeRefetchOnInterval;
+  function startRefetchOnInterval() {
+    const i = setInterval(() => {
+      void refetch();
+    }, REFETCH_INTERVAL);
+
+    return () => {
+      clearInterval(i);
+    };
+  }
+
+  function setTempSyncingNetwors(syncingNetworks: Network[]) {
+    if (!tempSyncingNetworks.value[account.value]) {
+      tempSyncingNetworks.value[account.value] = {
+        networks: syncingNetworks,
+        syncTimestamp: Date.now(),
+      };
+    } else {
+      tempSyncingNetworks.value[account.value].networks = [
+        ...tempSyncingNetworks.value[account.value].networks,
+        ...syncingNetworks,
+      ];
+    }
+
+    tempSyncingNetworks.value[account.value].syncTimestamp = Date.now();
+
+    return tempSyncingNetworks.value;
+  }
+
   return {
     omniEscrowLocks,
     votingEscrowLocks,
@@ -329,5 +366,7 @@ export function useCrossChainSync() {
     sync,
     refetch,
     tempSyncingNetworks,
+    startRefetchOnInterval,
+    setTempSyncingNetwors,
   };
 }

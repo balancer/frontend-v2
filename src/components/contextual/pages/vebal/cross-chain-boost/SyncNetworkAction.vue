@@ -5,7 +5,10 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { networkLabelMap } from '@/composables/useNetwork';
 import { useI18n } from 'vue-i18n';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { L2VeBalBalances } from '@/composables/cross-chain-sync/useCrossChainSync';
+import {
+  L2VeBalBalances,
+  TempSyncingNetworks,
+} from '@/composables/cross-chain-sync/useCrossChainSync';
 import useTransactions from '@/composables/useTransactions';
 
 /**
@@ -17,6 +20,9 @@ type Props = {
   veBalBalance: string;
   l2VeBalBalances: L2VeBalBalances;
   sync(network: Network): Promise<TransactionResponse>;
+  setTempSyncingNetwors(
+    syncingNetworks: Network[]
+  ): Record<string, TempSyncingNetworks>;
 };
 
 /**
@@ -64,9 +70,12 @@ async function handleAction(network: Network) {
 }
 
 function handleSuccess() {
+  const tempSyncingNetworks = props.setTempSyncingNetwors(
+    Array.from(props.chosenNetworks)
+  );
   localStorage.setItem(
     'tempSyncingNetworks',
-    JSON.stringify(Array.from(props.chosenNetworks))
+    JSON.stringify(tempSyncingNetworks)
   );
   emit('setSuccessfulSynced');
   emit('update:activeTabIdx', 2);

@@ -18,7 +18,7 @@ import { Network } from '@/lib/config';
  * COMPOSABLES
  */
 const { dynamicDataLoading } = useTokens();
-const { isWalletReady } = useWeb3();
+const { account, isWalletReady } = useWeb3();
 const {
   networksSyncState,
   networksBySyncState,
@@ -27,6 +27,8 @@ const {
   sync,
   refetch,
   tempSyncingNetworks,
+  startRefetchOnInterval,
+  setTempSyncingNetwors,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -46,15 +48,9 @@ const isVebalBalanceZero = computed(() => {
 /**
  * METHODS
  */
-function onCloseModal(chosenNetworks: Set<Network> | null) {
-  isSyncModalOpen.value = false;
 
-  if (!chosenNetworks) {
-    return;
-  }
-  chosenNetworks.forEach(network => {
-    tempSyncingNetworks.value.push(network);
-  });
+function onCloseModal() {
+  isSyncModalOpen.value = false;
 }
 </script>
 
@@ -79,12 +75,12 @@ function onCloseModal(chosenNetworks: Set<Network> | null) {
         <BalCard>
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}
-            <img
+            <!-- <img
               class="cursor-pointer"
               src="@/assets/images/icons/update-unsynced.svg"
               alt=""
               @click="refetch"
-            />
+            /> -->
           </div>
           <div class="flex mb-5">
             <span
@@ -101,7 +97,7 @@ function onCloseModal(chosenNetworks: Set<Network> | null) {
                 <IconLoaderWrapper
                   :isLoading="
                     networksSyncState?.[network] === NetworkSyncState.Syncing ||
-                    tempSyncingNetworks.includes(network)
+                    tempSyncingNetworks[account]?.networks.includes(network)
                   "
                 >
                   <img
@@ -128,12 +124,12 @@ function onCloseModal(chosenNetworks: Set<Network> | null) {
         <BalCard>
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.syncedNetworks') }}
-            <img
+            <!-- <img
               class="cursor-pointer"
               src="@/assets/images/icons/update-synced.svg"
               alt=""
               @click="refetch"
-            />
+            /> -->
           </div>
           <span
             v-if="networksBySyncState.synced.length === 0"
@@ -161,6 +157,7 @@ function onCloseModal(chosenNetworks: Set<Network> | null) {
       :isVisible="isSyncModalOpen"
       :networksBySyncState="networksBySyncState"
       :sync="sync"
+      :setTempSyncingNetwors="setTempSyncingNetwors"
       :veBalBalance="fNum(veBalBalance, FNumFormats.token)"
       :l2VeBalBalances="l2VeBalBalances"
       @close-modal="onCloseModal"

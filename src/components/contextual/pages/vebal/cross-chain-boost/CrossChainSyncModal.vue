@@ -7,6 +7,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import {
   L2VeBalBalances,
   NetworknetworksBySyncState,
+  TempSyncingNetworks,
 } from '@/composables/cross-chain-sync/useCrossChainSync';
 
 type Props = {
@@ -15,6 +16,9 @@ type Props = {
   veBalBalance: string;
   l2VeBalBalances: L2VeBalBalances;
   sync(network: Network): Promise<TransactionResponse>;
+  setTempSyncingNetwors(
+    syncingNetworks: Network[]
+  ): Record<string, TempSyncingNetworks>;
 };
 
 withDefaults(defineProps<Props>(), {
@@ -32,7 +36,10 @@ const tabActiveIdx = ref(0);
 const isSyncedSuccessfull = ref(false);
 
 const closeModal = () => {
-  emit('closeModal', isSyncedSuccessfull.value ? chosenNetworks.value : null);
+  emit(
+    'closeModal',
+    isSyncedSuccessfull.value ? Array.from(chosenNetworks.value) : null
+  );
 
   tabActiveIdx.value = 0;
   chosenNetworks.value = new Set();
@@ -57,6 +64,7 @@ function toggleNetwork(network: number) {
         :veBalBalance="veBalBalance"
         :l2VeBalBalances="l2VeBalBalances"
         :sync="sync"
+        :setTempSyncingNetwors="setTempSyncingNetwors"
         style="min-height: 470px"
         :chosenNetworks="chosenNetworks"
         @toggle-network="toggleNetwork"
