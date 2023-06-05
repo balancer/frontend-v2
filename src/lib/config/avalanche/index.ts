@@ -23,14 +23,19 @@ const config: Config = {
   publicRpc: 'https://avalanche-mainnet.infura.io',
   explorer: 'https://snowtrace.io/',
   explorerName: 'Snowtrace',
-  subgraph: '',
+  subgraph:
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
-    main: [''],
-    aave: '',
-    gauge: '',
-    blocks: '',
+    main: [
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
+    ],
+    aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2-avalanche',
+    gauge:
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-avalanche',
+    blocks:
+      'https://api.thegraph.com/subgraphs/name/iliaazhel/avalanche-blocks',
   },
   bridgeUrl: 'https://core.app/bridge/',
   supportsEIP1559: false,
