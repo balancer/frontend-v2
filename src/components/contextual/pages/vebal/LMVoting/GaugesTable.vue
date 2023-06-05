@@ -194,7 +194,6 @@ function getPickedTokens(tokens: PoolToken[]) {
 </script>
 
 <template>
-  isWalletReady {{ isWalletReady }}
   <BalCard
     shadow="lg"
     class="mt-4"
