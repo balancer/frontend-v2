@@ -12,8 +12,8 @@ const networkSubgraphGagesMap = {
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon-beta',
   [Network.OPTIMISM]:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism-beta',
-  // [Network.GNOSIS]:
-  //   'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-beta',
+  [Network.GNOSIS]:
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-b',
 };
 
 export interface VotingEscrowLock {
