@@ -1,12 +1,15 @@
 import { Network } from '@/lib/config';
-import { useOmniEscrowLocksQuery } from '../queries/useOmniEscrowLocksQuery';
-import { useVotingEscrowLocksQuery } from '../queries/useVotingEscrowQuery';
+
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
 import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-voting-escrow';
 import { allEqual } from '@/lib/utils/array';
 import BigNumber from 'bignumber.js';
 import { txResponseMock } from '@/__mocks__/transactions';
+import { useOmniEscrowLocksQuery } from '@/composables/queries/useOmniEscrowLocksQuery';
+import { useVotingEscrowLocksQuery } from '@/composables/queries/useVotingEscrowQuery';
+import { safeInject } from './inject';
+import symbolKeys from '@/constants/symbol.keys';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -50,7 +53,7 @@ export const LayerZeroNetworkId = {
 
 const REFETCH_INTERVAL = 10_000;
 
-export function useCrossChainSync() {
+export const crossChainSyncProvider = () => {
   const { account, getSigner } = useWeb3();
 
   const syncingNetworksFromStorage = localStorage.getItem(
@@ -70,7 +73,6 @@ export function useCrossChainSync() {
   const {
     data: omniEscrowResponse,
     isInitialLoading: isLoadingOmniEscrow,
-    isRefetching: isRefetchingOmniEscrow,
     refetch: refetchOmniEscrow,
   } = useOmniEscrowLocksQuery(account);
 
@@ -102,7 +104,6 @@ export function useCrossChainSync() {
   const {
     data: mainnetVotingEscrowResponse,
     isInitialLoading: isLoadingVotingEscrow,
-    isRefetching: isRefetchingVotingEscrow,
     refetch: refetchVotingEscrow,
   } = useVotingEscrowLocksQuery(Network.MAINNET, account);
 
@@ -363,8 +364,10 @@ export function useCrossChainSync() {
   }
 
   function clearTempSyncingNetworks() {
+    if (!tempSyncingNetworks.value[account.value]) return;
+
     tempSyncingNetworks.value[account.value].networks =
-      tempSyncingNetworks.value[account.value].networks.filter(network => {
+      tempSyncingNetworks.value[account.value]?.networks.filter(network => {
         return !networksBySyncState.value.synced.includes(network);
       });
   }
@@ -399,4 +402,18 @@ export function useCrossChainSync() {
     refetchOnInterval,
     setTempSyncingNetwors,
   };
+};
+
+export type CrossChainSyncResponse = ReturnType<typeof crossChainSyncProvider>;
+export const CrossChainSyncProviderSymbol: InjectionKey<CrossChainSyncResponse> =
+  Symbol(symbolKeys.Providers.CrossChainSync);
+
+export function provideCrossChainSync() {
+  const crossChainSyncResponse = crossChainSyncProvider();
+  provide(CrossChainSyncProviderSymbol, crossChainSyncResponse);
+  return crossChainSyncResponse;
 }
+
+export const useCrossChainSync = (): CrossChainSyncResponse => {
+  return safeInject(CrossChainSyncProviderSymbol);
+};

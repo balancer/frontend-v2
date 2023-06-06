@@ -6,13 +6,13 @@ import SyncFinalState from '@/components/contextual/pages/vebal/cross-chain-boos
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import {
   L2VeBalBalances,
-  NetworknetworksBySyncState,
+  NetworksBySyncState,
   TempSyncingNetworks,
-} from '@/composables/cross-chain-sync/useCrossChainSync';
+} from '@/providers/cross-chain-sync.provider';
 
 type Props = {
   isVisible: boolean;
-  networksBySyncState: NetworknetworksBySyncState;
+  networksBySyncState: NetworksBySyncState;
   veBalBalance: string;
   l2VeBalBalances: L2VeBalBalances;
   sync(network: Network): Promise<TransactionResponse>;

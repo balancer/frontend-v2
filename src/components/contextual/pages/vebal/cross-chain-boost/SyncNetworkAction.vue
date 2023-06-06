@@ -8,7 +8,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import {
   L2VeBalBalances,
   TempSyncingNetworks,
-} from '@/composables/cross-chain-sync/useCrossChainSync';
+} from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
 
 /**

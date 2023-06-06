@@ -2,7 +2,7 @@
 import LightBulbIcon from '@/components/_global/icons/LightBulbIcon.vue';
 import { Network } from '@/lib/config';
 import { networkLabelMap } from '@/composables/useNetwork';
-import { L2VeBalBalances } from '@/composables/cross-chain-sync/useCrossChainSync';
+import { L2VeBalBalances } from '@/providers/cross-chain-sync.provider';
 
 type Props = {
   chosenNetworks: Set<Network>;

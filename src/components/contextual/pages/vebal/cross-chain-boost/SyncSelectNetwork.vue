@@ -2,13 +2,13 @@
 import { networkLabelMap } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import {
+  NetworksBySyncState,
   L2VeBalBalances,
-  NetworknetworksBySyncState,
   allNetworks,
-} from '@/composables/cross-chain-sync/useCrossChainSync';
+} from '@/providers/cross-chain-sync.provider';
 
 type Props = {
-  networksBySyncState: NetworknetworksBySyncState;
+  networksBySyncState: NetworksBySyncState;
   chosenNetworks: Set<Network>;
   veBalBalance: string;
   activeTabIdx: number;

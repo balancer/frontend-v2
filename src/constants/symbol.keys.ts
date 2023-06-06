@@ -13,5 +13,6 @@ export default {
     Wallets: 'provider.wallets',
     Pool: 'provider.pool',
     UserTokens: 'provider.userTokens',
+    CrossChainSync: 'provider.crossChainSync',
   },
 };
