@@ -20,7 +20,7 @@ const config: Config = {
   testNetwork: false,
   rpc: `https://avalanche-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://avalanche-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
-  publicRpc: 'https://avalanche-mainnet.infura.io',
+  publicRpc: 'https://avalanche.public-rpc.com',
   explorer: 'https://snowtrace.io/',
   explorerName: 'Snowtrace',
   subgraph:
