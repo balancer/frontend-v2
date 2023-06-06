@@ -112,6 +112,7 @@ const pools: Pools = {
       '0xbadcdaf6212b0bacf45cc32447cb615f85fe6adf000100000000000000000b87', // 50weth/50wsteth/50nex
       '0xb1cc24df1d3d2c6cb798b1129ddaae9e29d437c0000100000000000000000b8d', // staking defi pool
       '0x9841438683c2efbfb28c94ec341544b94e4f6dd5000100000000000000000b8f', // WBTC/USDC/PAXG/WETH
+      '0x945f337307ea76fdaa2590d083423850f64e247f000100000000000000000b98', // 27wstETH-7WMATIC-25WBTC-7USDC-18stMATIC-8WETH-8DAI
     ],
   },
   Factories: {
@@ -234,6 +235,12 @@ const pools: Pools = {
     },
     '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
       name: 'frxETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b': {
+      name: 'FRAX/Boosted Aave v3 USD',
       hasIcon: false,
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],

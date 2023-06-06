@@ -74,7 +74,7 @@
     "pool": {
       "id": "0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524",
       "address": "0xd689ABc77B82803F22c49dE5C8A0049Cc74D11fD",
-      "poolType": "Weighted",
+      "poolType": "Stable",
       "symbol": "veUSH",
       "tokens": [
         {
@@ -467,7 +467,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x81f8f0bb1cb2a06649e51913a151f0e7ef6fa321.png",
+      "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321/logo.png",
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
