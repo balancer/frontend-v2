@@ -42,6 +42,7 @@ export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
     subgraphs.gauge,
     queryKey,
     () => ({
+      __name: 'OmniEscrowLocks',
       omniVotingEscrowLocks: {
         __args: {
           where: {

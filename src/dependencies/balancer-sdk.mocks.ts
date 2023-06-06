@@ -10,6 +10,7 @@ import {
 import { RecoveryExitResponse } from '@/services/balancer/pools/exits/handlers/recovery-exit.handler';
 import { ExactInJoinResponse } from '@/services/balancer/pools/joins/handlers/exact-in-join.handler';
 import {
+  Migrations,
   Pool,
   PoolType,
   SubgraphPoolBase,
@@ -19,15 +20,9 @@ import {
 import { BigNumber } from '@ethersproject/bignumber';
 import { wethAddress } from '@tests/unit/builders/address';
 import { aPoolWithMethods } from '@tests/unit/builders/pool.builders';
+import { DeepPartial } from '@tests/unit/types';
 import { mock, mockDeep } from 'vitest-mock-extended';
 
-type DeepPartial<T> = T extends object
-  ? {
-      [P in keyof T]?: DeepPartial<T[P]>;
-    }
-  : T;
-
-// TODO: Improve builder to avoid DeepPartial and move to sor mocks to subfile
 export const defaultSorPools: DeepPartial<Pool[]> = [
   {
     id: '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
@@ -177,6 +172,15 @@ defaultRecoveryExit.attributes.exitPoolRequest = {
   userData: 'user data',
   toInternalBalance: true,
 };
+
+export const defaultGaugeToGaugeResponse = {
+  to: 'gauge2gaugeTo',
+  data: 'gaugeToGauge data',
+};
+
+export const migrationsMock = mock<Migrations>();
+migrationsMock.gauge2gauge.mockResolvedValue(defaultGaugeToGaugeResponse);
+
 export function generateBalancerSdkMock() {
   const balancerMock = mockDeep<typeof balancer>();
   balancerMock.sor.fetchPools.mockResolvedValue(true);
@@ -221,6 +225,9 @@ export function generateBalancerSdkMock() {
   });
 
   balancerMock.swaps.fetchPools.mockResolvedValue(true);
+
+  // @ts-ignore Ignore read-only error
+  balancerMock.migrationService = migrationsMock;
 
   return balancerMock;
 }

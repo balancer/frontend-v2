@@ -1,4 +1,5 @@
 import { isString } from 'lodash';
+import { inspect } from 'util';
 
 export function silenceConsoleLog(
   vi,
@@ -12,4 +13,8 @@ export function silenceConsoleLog(
 
       originalConsoleLog(message, optionalParams);
     });
+}
+
+export function logRawObject(reactiveObject) {
+  console.log(inspect(reactiveObject));
 }
