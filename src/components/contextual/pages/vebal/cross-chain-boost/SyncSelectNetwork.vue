@@ -4,7 +4,7 @@ import { Network } from '@/lib/config';
 import {
   NetworksBySyncState,
   L2VeBalBalances,
-  allNetworks,
+  supportedNetworks,
 } from '@/providers/cross-chain-sync.provider';
 
 type Props = {
@@ -46,7 +46,7 @@ async function syncNetworks() {
 
     <div class="mb-5 rounded-lg border-2 border-gray-200 dark:border-gray-800">
       <div
-        v-for="network in allNetworks"
+        v-for="network in supportedNetworks"
         :key="network"
         aria-disabled="true"
         class="border-b-2 last:border-b-0 dark:border-gray-800"

@@ -16,7 +16,7 @@ type Props = {
   veBalBalance: string;
   l2VeBalBalances: L2VeBalBalances;
   sync(network: Network): Promise<TransactionResponse>;
-  setTempSyncingNetwors(
+  setTempSyncingNetworks(
     syncingNetworks: Network[]
   ): Record<string, TempSyncingNetworks>;
 };
@@ -64,7 +64,7 @@ function toggleNetwork(network: number) {
         :veBalBalance="veBalBalance"
         :l2VeBalBalances="l2VeBalBalances"
         :sync="sync"
-        :setTempSyncingNetwors="setTempSyncingNetwors"
+        :setTempSyncingNetworks="setTempSyncingNetworks"
         style="min-height: 470px"
         :chosenNetworks="chosenNetworks"
         @toggle-network="toggleNetwork"

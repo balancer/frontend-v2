@@ -20,7 +20,7 @@ type Props = {
   veBalBalance: string;
   l2VeBalBalances: L2VeBalBalances;
   sync(network: Network): Promise<TransactionResponse>;
-  setTempSyncingNetwors(
+  setTempSyncingNetworks(
     syncingNetworks: Network[]
   ): Record<string, TempSyncingNetworks>;
 };
@@ -70,7 +70,7 @@ async function handleAction(network: Network) {
 }
 
 function handleSuccess() {
-  const tempSyncingNetworks = props.setTempSyncingNetwors(
+  const tempSyncingNetworks = props.setTempSyncingNetworks(
     Array.from(props.chosenNetworks)
   );
   localStorage.setItem(
