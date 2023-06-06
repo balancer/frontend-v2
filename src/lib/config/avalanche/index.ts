@@ -19,7 +19,7 @@ const config: Config = {
   visibleInUI: true,
   testNetwork: false,
   rpc: `https://avalanche-mainnet.infura.io/v3/${keys.infura}`,
-  ws: `wss://avalanche-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
+  ws: `wss://api.avax.network/ext/bc/C/ws`,
   publicRpc: 'https://avalanche.public-rpc.com',
   explorer: 'https://snowtrace.io/',
   explorerName: 'Snowtrace',
