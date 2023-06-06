@@ -12,7 +12,6 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 import { useTokens } from '@/providers/tokens.provider';
 import BigNumber from 'bignumber.js';
-import { Network } from '@/lib/config';
 
 /**
  * COMPOSABLES
@@ -25,9 +24,7 @@ const {
   l2VeBalBalances,
   isLoading,
   sync,
-  refetch,
   tempSyncingNetworks,
-  startRefetchOnInterval,
   setTempSyncingNetwors,
 } = useCrossChainSync();
 const { fNum } = useNumbers();

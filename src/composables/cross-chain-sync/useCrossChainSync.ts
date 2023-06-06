@@ -19,9 +19,10 @@ interface EscrowLockData {
   slope?: string;
 }
 
-export interface NetworknetworksBySyncState {
+export interface NetworksBySyncState {
   synced: Network[];
   unsynced: Network[];
+  syncing: Network[];
 }
 
 export type L2VeBalBalances = Record<number, string> | null;
@@ -222,7 +223,7 @@ export function useCrossChainSync() {
   }
 
   // Returns networks lists by sync state synced/unsynced
-  const networksBySyncState = computed<NetworknetworksBySyncState>(() => {
+  const networksBySyncState = computed<NetworksBySyncState>(() => {
     if (!networksSyncState.value) {
       return {
         synced: [],
@@ -320,21 +321,26 @@ export function useCrossChainSync() {
   async function refetch() {
     await Promise.all([refetchOmniEscrow(), refetchVotingEscrow()]);
     if (remoteUser.value) {
-      await Promise.all([
-        refetchVotingEscrowArbitrum(),
-        refetchVotingEscrowPolygon(),
-      ]);
+      const promises = networksBySyncState.value.syncing.map(network => {
+        if (network === Network.ARBITRUM) {
+          return refetchVotingEscrowArbitrum();
+        }
+        if (network === Network.POLYGON) {
+          return refetchVotingEscrowPolygon();
+        }
+      });
+      await Promise.all(promises);
     }
   }
 
   let disposeRefetchOnInterval;
-  function startRefetchOnInterval() {
-    const i = setInterval(() => {
+  function refetchOnInterval() {
+    disposeRefetchOnInterval = setInterval(() => {
       void refetch();
     }, REFETCH_INTERVAL);
 
     return () => {
-      clearInterval(i);
+      clearInterval(disposeRefetchOnInterval);
     };
   }
 
@@ -356,6 +362,30 @@ export function useCrossChainSync() {
     return tempSyncingNetworks.value;
   }
 
+  function clearTempSyncingNetworks() {
+    tempSyncingNetworks.value[account.value].networks =
+      tempSyncingNetworks.value[account.value].networks.filter(network => {
+        return !networksBySyncState.value.synced.includes(network);
+      });
+  }
+
+  watch(
+    () => networksBySyncState.value,
+    (newVal, prevVal) => {
+      console.log('newVal', newVal);
+      console.log('prevVal', prevVal);
+
+      if (newVal.syncing.length > 0 && !disposeRefetchOnInterval) {
+        refetchOnInterval();
+      }
+      if (newVal.syncing.length === 0 && disposeRefetchOnInterval) {
+        disposeRefetchOnInterval();
+      }
+
+      clearTempSyncingNetworks();
+    }
+  );
+
   return {
     omniEscrowLocks,
     votingEscrowLocks,
@@ -366,7 +396,7 @@ export function useCrossChainSync() {
     sync,
     refetch,
     tempSyncingNetworks,
-    startRefetchOnInterval,
+    refetchOnInterval,
     setTempSyncingNetwors,
   };
 }
