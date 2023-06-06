@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { buildNetworkIconUrlV2 } from '@/lib/utils/urls';
+import { buildNetworkIconURL } from '@/lib/utils/urls';
 import IconLoaderWrapper from './IconLoaderWrapper.vue';
 import CrossChainSyncModal from './CrossChainSyncModal.vue';
 
@@ -88,6 +88,7 @@ function onCloseModal() {
               <div
                 v-for="network in networksBySyncState.unsynced"
                 :key="network"
+                class="mr-2"
               >
                 <IconLoaderWrapper
                   :isLoading="
@@ -96,9 +97,9 @@ function onCloseModal() {
                   "
                 >
                   <img
-                    :src="buildNetworkIconUrlV2(network)"
+                    :src="buildNetworkIconURL(network)"
                     alt=""
-                    class="mr-2 rounded-full cursor-pointer"
+                    class="rounded-full w-[32px]"
                   />
                 </IconLoaderWrapper>
               </div>
@@ -137,7 +138,7 @@ function onCloseModal() {
             <div v-for="network in networksBySyncState.synced" :key="network">
               <IconLoaderWrapper :isLoading="false">
                 <img
-                  :src="buildNetworkIconUrlV2(network)"
+                  :src="buildNetworkIconURL(network)"
                   alt=""
                   class="mr-2 w-8 h-8 rounded-full cursor-pointer"
                 />
