@@ -117,28 +117,32 @@ export const crossChainSyncProvider = () => {
     refetch: refetchVotingEscrowPolygon,
   } = useVotingEscrowLocksQuery(Network.POLYGON, remoteUser);
 
-  const votingEscrowLocks = computed(() => {
-    const votingEscrowLocks =
-      mainnetVotingEscrowResponse.value?.votingEscrowLocks[0];
-    const votingEscrowLocksArbitrum =
-      arbitrumVotingEscrowResponse.value?.votingEscrowLocks[0];
-    const votingEscrowLocksPolygon =
-      polygonVotingEscrowResponse.value?.votingEscrowLocks[0];
+  const {
+    data: optimismVotingEscrowResponse,
+    refetch: refetchVotingEscrowOptimism,
+  } = useVotingEscrowLocksQuery(Network.OPTIMISM, remoteUser);
 
+  const {
+    data: gnosisVotingEscrowResponse,
+    refetch: refetchVotingEscrowGnosis,
+  } = useVotingEscrowLocksQuery(Network.GNOSIS, remoteUser);
+
+  const votingEscrowLocks = computed(() => {
     return {
-      [Network.MAINNET]: votingEscrowLocks,
-      [Network.ARBITRUM]: votingEscrowLocksArbitrum,
-      [Network.POLYGON]: votingEscrowLocksPolygon,
+      [Network.MAINNET]:
+        mainnetVotingEscrowResponse.value?.votingEscrowLocks[0],
+      [Network.ARBITRUM]:
+        arbitrumVotingEscrowResponse.value?.votingEscrowLocks[0],
+      [Network.POLYGON]:
+        polygonVotingEscrowResponse.value?.votingEscrowLocks[0],
+      [Network.OPTIMISM]:
+        optimismVotingEscrowResponse.value?.votingEscrowLocks[0],
+      [Network.GNOSIS]: gnosisVotingEscrowResponse.value?.votingEscrowLocks[0],
     };
   });
 
   const isLoading = computed(() => {
-    return (
-      isLoadingOmniEscrow.value ||
-      // isRefetchingOmniEscrow.value ||
-      isLoadingVotingEscrow.value
-      // isRefetchingVotingEscrow.value
-    );
+    return isLoadingOmniEscrow.value || isLoadingVotingEscrow.value;
   });
 
   const networksSyncState = computed(() => {
@@ -158,17 +162,32 @@ export const crossChainSyncProvider = () => {
     const bias = omniEscrowLocks.value?.bias;
     const slope = omniEscrowLocks.value?.slope;
 
+    // Mainnet
     const biasVotingEscrow = votingEscrowLocks.value[Network.MAINNET]?.bias;
     const slopeVotingEscrow = votingEscrowLocks.value[Network.MAINNET]?.slope;
 
+    // Arbitrum
     const biasVotingEscrowArb = votingEscrowLocks.value[Network.ARBITRUM]?.bias;
     const slopeVotingEscrowArb =
       votingEscrowLocks.value[Network.ARBITRUM]?.slope;
 
+    // Polygon
     const biasVotingEscrowPolygon =
       votingEscrowLocks.value[Network.POLYGON]?.bias;
     const slopeVotingEscrowPolygon =
       votingEscrowLocks.value[Network.POLYGON]?.slope;
+
+    // Optimism
+    const biasVotingEscrowOptimism =
+      votingEscrowLocks.value[Network.OPTIMISM]?.bias;
+    const slopeVotingEscrowOptimism =
+      votingEscrowLocks.value[Network.OPTIMISM]?.slope;
+
+    // Gnosis
+    const biasVotingEscrowGnosis =
+      votingEscrowLocks.value[Network.GNOSIS]?.bias;
+    const slopeVotingEscrowGnosis =
+      votingEscrowLocks.value[Network.GNOSIS]?.slope;
 
     return {
       [Network.ARBITRUM]: getNetworkSyncState(
@@ -180,6 +199,16 @@ export const crossChainSyncProvider = () => {
         { bias, slope },
         { bias: biasVotingEscrow, slope: slopeVotingEscrow },
         { bias: biasVotingEscrowPolygon, slope: slopeVotingEscrowPolygon }
+      ),
+      [Network.OPTIMISM]: getNetworkSyncState(
+        { bias, slope },
+        { bias: biasVotingEscrow, slope: slopeVotingEscrow },
+        { bias: biasVotingEscrowOptimism, slope: slopeVotingEscrowOptimism }
+      ),
+      [Network.GNOSIS]: getNetworkSyncState(
+        { bias, slope },
+        { bias: biasVotingEscrow, slope: slopeVotingEscrow },
+        { bias: biasVotingEscrowGnosis, slope: slopeVotingEscrowGnosis }
       ),
     };
   });
@@ -271,14 +300,27 @@ export const crossChainSyncProvider = () => {
   }
 
   const l2VeBalBalances = computed<L2VeBalBalances>(() => {
+    // Arbitrum
     const biasArb = votingEscrowLocks.value[Network.ARBITRUM]?.bias;
     const slopeArb = votingEscrowLocks.value[Network.ARBITRUM]?.slope;
     const timestampArb = votingEscrowLocks.value[Network.ARBITRUM]?.timestamp;
 
+    // Polygon
     const biasPolygon = votingEscrowLocks.value[Network.POLYGON]?.bias;
     const slopePolygon = votingEscrowLocks.value[Network.POLYGON]?.slope;
     const timestampPolygon =
       votingEscrowLocks.value[Network.POLYGON]?.timestamp;
+
+    // Optimism
+    const biasOptimism = votingEscrowLocks.value[Network.OPTIMISM]?.bias;
+    const slopeOptimism = votingEscrowLocks.value[Network.OPTIMISM]?.slope;
+    const timestampOptimism =
+      votingEscrowLocks.value[Network.OPTIMISM]?.timestamp;
+
+    // Gnosis
+    const biasGnosis = votingEscrowLocks.value[Network.GNOSIS]?.bias;
+    const slopeGnosis = votingEscrowLocks.value[Network.GNOSIS]?.slope;
+    const timestampGnosis = votingEscrowLocks.value[Network.GNOSIS]?.timestamp;
 
     return {
       [Network.ARBITRUM]: calculateVeBAlBalance(
@@ -290,6 +332,16 @@ export const crossChainSyncProvider = () => {
         biasPolygon,
         slopePolygon,
         timestampPolygon
+      ),
+      [Network.OPTIMISM]: calculateVeBAlBalance(
+        biasOptimism,
+        slopeOptimism,
+        timestampOptimism
+      ),
+      [Network.GNOSIS]: calculateVeBAlBalance(
+        biasGnosis,
+        slopeGnosis,
+        timestampGnosis
       ),
     };
   });
@@ -328,6 +380,12 @@ export const crossChainSyncProvider = () => {
         }
         if (network === Network.POLYGON) {
           return refetchVotingEscrowPolygon();
+        }
+        if (network === Network.OPTIMISM) {
+          return refetchVotingEscrowOptimism();
+        }
+        if (network === Network.GNOSIS) {
+          return refetchVotingEscrowGnosis();
         }
       });
       await Promise.all(promises);
