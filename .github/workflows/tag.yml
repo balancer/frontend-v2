@@ -16,7 +16,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Bump version
-        uses: 'phips28/gh-action-bump-version@v9.1.3'
+        uses: 'timjrobinson/gh-action-bump-version@master'
         with:
           commit-message: '{{version}}'
           minor-wording: ''
