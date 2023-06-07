@@ -245,6 +245,30 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45': {
+      name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44': {
+      name: 'stMATIC/Boosted Aave v3 wMATIC/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43': {
+      name: '2BRL/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
