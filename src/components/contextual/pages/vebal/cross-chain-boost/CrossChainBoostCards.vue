@@ -23,7 +23,7 @@ const {
   isLoading,
   sync,
   tempSyncingNetworks,
-  setTempSyncingNetwors,
+  setTempSyncingNetworks,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -153,7 +153,7 @@ function onCloseModal() {
       :isVisible="isSyncModalOpen"
       :networksBySyncState="networksBySyncState"
       :sync="sync"
-      :setTempSyncingNetwors="setTempSyncingNetwors"
+      :setTempSyncingNetworks="setTempSyncingNetworks"
       :veBalBalance="fNum(veBalBalance, FNumFormats.token)"
       :l2VeBalBalances="l2VeBalBalances"
       @close-modal="onCloseModal"
