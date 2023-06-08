@@ -1,3 +1,5 @@
+name: Allowlist pool
+
 on:
   workflow_dispatch:
     inputs:
