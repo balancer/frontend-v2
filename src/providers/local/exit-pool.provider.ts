@@ -44,6 +44,7 @@ import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
 import { POOLS } from '@/constants/pools';
+import { logOnlyAfterLastRetryAttempt } from '@/lib/utils/vue-query';
 
 /**
  * TYPES
@@ -62,7 +63,7 @@ export type AmountOut = {
  */
 export const exitPoolProvider = (
   pool: Ref<Pool>,
-  debounceQueryExitMillis = 1000,
+  debounceSimulateExitMillis = 1000,
   debounceGetSingleAssetMaxMillis = 1000
 ) => {
   /**
@@ -101,7 +102,10 @@ export const exitPoolProvider = (
   const { relayerSignature, relayerApprovalAction, relayerApprovalTx } =
     useRelayerApproval(RelayerType.BATCH);
 
-  const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
+  const debounceSimulateExit = debounce(
+    simulateExit,
+    debounceSimulateExitMillis
+  );
   const debounceGetSingleAssetMax = debounce(
     getSingleAssetMax,
     debounceGetSingleAssetMaxMillis,
@@ -115,7 +119,7 @@ export const exitPoolProvider = (
   );
 
   const queryExitQuery = useQuery<
-    Awaited<ReturnType<typeof debounceQueryExit>>,
+    Awaited<ReturnType<typeof debounceSimulateExit>>,
     Error
   >(
     QUERY_KEYS.Pools.Exits.QueryExit(
@@ -125,8 +129,12 @@ export const exitPoolProvider = (
       singleAmountOut,
       relayerSignature
     ),
-    debounceQueryExit,
-    reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
+    debounceSimulateExit,
+    reactive({
+      enabled: queriesEnabled,
+      refetchOnWindowFocus: false,
+      retry: logOnlyAfterLastRetryAttempt(logExitException),
+    })
   );
 
   const singleAssetMaxQuery = useQuery<
@@ -139,7 +147,11 @@ export const exitPoolProvider = (
       toRef(singleAmountOut, 'address')
     ),
     debounceGetSingleAssetMax,
-    reactive({ enabled: queriesEnabled, refetchOnWindowFocus: false })
+    reactive({
+      enabled: queriesEnabled,
+      refetchOnWindowFocus: false,
+      retry: logOnlyAfterLastRetryAttempt(logExitException),
+    })
   );
 
   /**
@@ -348,7 +360,7 @@ export const exitPoolProvider = (
   /**
    * Simulate exit transaction to get expected output and calculate price impact.
    */
-  async function queryExit() {
+  async function simulateExit() {
     if (!hasFetchedPoolsForSor.value) return null;
 
     // Single asset exit, and token out amount is 0 or less
@@ -385,8 +397,7 @@ export const exitPoolProvider = (
       isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
-      console.log('ERROR CONSTRUCT', error);
-      logExitException(error as Error);
+      // We log this error only after the last retry attempt (inside logOnlyAfterLastRetryAttempt)
       throw new Error('Failed to construct exit.', { cause: error });
     }
   }
@@ -429,7 +440,7 @@ export const exitPoolProvider = (
 
       return newMax;
     } catch (error) {
-      logExitException(error as Error);
+      // We log this error only after the last retry attempt (inside logOnlyAfterLastRetryAttempt)
       throw new Error('Failed to calculate max.', { cause: error });
     }
   }
@@ -457,7 +468,7 @@ export const exitPoolProvider = (
         toInternalBalance: shouldExitViaInternalBalance.value,
       });
     } catch (error) {
-      logExitException(error as Error);
+      logExitException(error);
       txError.value = (error as Error).message;
       throw error;
     }
@@ -482,7 +493,7 @@ export const exitPoolProvider = (
     isSingleAssetExit.value = value;
   }
 
-  async function logExitException(error: Error) {
+  async function logExitException(error: unknown) {
     const sender = await getSigner().getAddress();
     captureException(error, {
       level: 'fatal',
