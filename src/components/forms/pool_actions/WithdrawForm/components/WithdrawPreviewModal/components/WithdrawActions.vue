@@ -58,7 +58,7 @@ const {
   queryExitQuery,
   fiatTotalOut,
   approvalActions: exitPoolApprovalActions,
-  relayerApproval,
+  relayerApprovalTx,
   shouldExitViaInternalBalance,
   isTxPayloadReady,
   relayerSignature,
@@ -103,7 +103,7 @@ const txSummary = computed<string>(() => {
 const isBuildingTx = computed((): boolean => {
   return (
     !isTxPayloadReady.value &&
-    (!!relayerSignature.value || relayerApproval.isUnlocked.value)
+    (!!relayerSignature.value || relayerApprovalTx.isUnlocked.value)
   );
 });
 
