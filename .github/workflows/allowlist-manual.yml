@@ -1,0 +1,36 @@
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        type: choice
+        description: Network
+        required: true
+        options:
+          - mainnet
+          - polygon
+          - arbitrum
+          - gnosis-chain
+      poolType:
+        type: choice
+        description: Pool Type
+        required: true
+        options:
+          - Weighted
+          - Stable
+      poolId:
+        type: string
+        description: Pool ID
+        required: true
+      poolDescription:
+        type: string
+        description: Pool Description
+        required: false
+
+jobs:
+  allowlist-pool:
+    uses: ./.github/workflows/allowlist.yml
+    with:
+      network: ${{ github.event.inputs.network }}
+      poolType: ${{ github.event.inputs.poolType }}
+      poolId: ${{ github.event.inputs.poolId }}
+      poolDescription: ${{ github.event.inputs.poolDescription }}

@@ -1,37 +1,24 @@
 name: Allowlist pool
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       network:
-        type: choice
-        description: Network
+        type: string
         required: true
-        options:
-          - mainnet
-          - polygon
-          - arbitrum
-          - gnosis-chain
       poolType:
-        type: choice
-        description: Pool Type
+        type: string
         required: true
-        options:
-          - Weighted
-          - Stable
       poolId:
         type: string
-        description: Pool ID
         required: true
       poolDescription:
         type: string
-        description: Pool Description
         required: false
 
 jobs:
   allowlist-pool:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
