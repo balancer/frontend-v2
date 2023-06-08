@@ -385,7 +385,6 @@ export const exitPoolProvider = (
       isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
-      console.log('ERROR CONSTRUCT', error);
       logExitException(error as Error);
       throw new Error('Failed to construct exit.', { cause: error });
     }
