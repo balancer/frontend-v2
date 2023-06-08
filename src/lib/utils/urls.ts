@@ -2,7 +2,7 @@ import { Wallet } from '@/providers/wallet.provider';
 import config, { Network } from '@/lib/config';
 
 function getNetworkIconName(network: Network) {
-  return config[Number(network)].network;
+  return config[Number(network)].slug;
 }
 export function buildNetworkIconURL(network: Network | string): string {
   const networkName =
