@@ -1,4 +1,6 @@
-import usePoolGaugesQuery from '@/composables/queries/usePoolGaugesQuery';
+import usePoolGaugesQuery, {
+  PoolGauges,
+} from '@/composables/queries/usePoolGaugesQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, getAddressFromPoolId, isSameAddress } from '@/lib/utils';
@@ -181,24 +183,12 @@ export const poolStakingProvider = (_poolId?: string) => {
     if (!poolGauges.value?.pool?.gauges)
       throw new Error('Unable to unstake, no pool gauges');
 
-    const gaugesWithBalance = await Promise.all(
-      poolGauges.value.pool.gauges.map(async gauge => {
-        const gaugeInstance = new LiquidityGauge(gauge.id);
-        const balance = await gaugeInstance.balance(account.value);
-        return { ...gauge, balance: balance?.toString() };
-      })
+    const gaugesWithUserBalance = await filterGaugesWhereUserHasBalance(
+      poolGauges.value,
+      account.value
     );
-
-    const gaugeWithBalance = gaugesWithBalance.find(
-      gauge => gauge.balance !== '0'
-    );
-    if (!gaugeWithBalance) {
-      throw new Error(
-        `Attempted to call unstake, user doesn't have any balance for any gauges.`
-      );
-    }
-
-    const gauge = new LiquidityGauge(gaugeWithBalance.id);
+    const firstGaugeWithUserBalance = gaugesWithUserBalance[0];
+    const gauge = new LiquidityGauge(firstGaugeWithUserBalance.id);
     const balance = await gauge.balance(account.value);
     return await gauge.unstake(balance);
   }
@@ -268,4 +258,26 @@ export function providePoolStaking(poolId?: string) {
 
 export function usePoolStaking(): PoolStakingProviderResponse {
   return safeInject(PoolStakingProviderSymbol);
+}
+
+async function filterGaugesWhereUserHasBalance(
+  poolGauges: PoolGauges,
+  userAddress: string
+) {
+  // Insert user's balance in gauge objects
+  const gaugesWithBalance = await Promise.all(
+    poolGauges.pool.gauges.map(async gauge => {
+      const gaugeInstance = new LiquidityGauge(gauge.id);
+      const balance = await gaugeInstance.balance(userAddress);
+      return { ...gauge, balance: balance?.toString() };
+    })
+  );
+
+  const gaugesWhereUserHasBalance = gaugesWithBalance.filter(
+    gauge => gauge.balance !== '0'
+  );
+  if (gaugesWhereUserHasBalance.length === 0) {
+    throw new Error(`User doesn't have any balance for any gauges.`);
+  }
+  return gaugesWhereUserHasBalance;
 }

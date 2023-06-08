@@ -1,10 +1,10 @@
 [
   {
-    "address": "0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b",
+    "address": "0xb78543e00712C3ABBA10D0852f6E38FDE2AaBA4d",
     "network": 1,
     "isKilled": false,
     "addedTimestamp": 1648465251,
-    "relativeWeightCap": "null",
+    "relativeWeightCap": "0.10",
     "pool": {
       "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
       "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
@@ -74,7 +74,7 @@
     "pool": {
       "id": "0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524",
       "address": "0xd689ABc77B82803F22c49dE5C8A0049Cc74D11fD",
-      "poolType": "Weighted",
+      "poolType": "Stable",
       "symbol": "veUSH",
       "tokens": [
         {
