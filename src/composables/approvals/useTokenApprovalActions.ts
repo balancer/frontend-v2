@@ -108,6 +108,21 @@ export default function useTokenApprovalActions() {
     );
   }
 
+  /**
+   * Triggers ERC20 approval transaction for a given token, waits for
+   * confirmation and then triggers the transaction notification.
+   *
+   * @param {TokenInfo} token The token to approve.
+   * @param {string} normalizedAmount The amount to approve, normalized, if
+   * forceMax is false.
+   * @param {string} spender The contract address to give the approval too,
+   * typically the vault.
+   * @param {ApprovalAction} actionType The action type that follows the
+   * approval, used for labeling of tx notification.
+   * @param {boolean} forceMax If true, the approval will be for the maximum
+   * possible amount.
+   * @returns {Promise<TransactionResponse>} The transaction response.
+   */
   async function approveToken({
     token,
     normalizedAmount,
@@ -143,6 +158,20 @@ export default function useTokenApprovalActions() {
     return tx;
   }
 
+  /**
+   * Returns a list of TransactionActions to approve tokens for a given spender.
+   * Typically used to inject into BalActionSteps.
+   *
+   * @param {AmountToApprove[]} amountsToApprove The list of tokens and amounts
+   * to approve.
+   * @param {string} spender The contract address to give the approval too,
+   * typically the vault.
+   * @param {ApprovalAction} actionType The action type that follows the
+   * approval, used for labeling.
+   * @param {boolean} forceMaxApprovals If true, the approval will be for the
+   * maximum possible amount.
+   * @returns {Promise<TransactionActionInfo[]>} The list of TransactionActions.
+   */
   async function getTokenApprovalActions({
     amountsToApprove,
     spender,
