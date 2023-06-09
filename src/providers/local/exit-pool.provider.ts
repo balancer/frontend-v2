@@ -493,7 +493,7 @@ export const exitPoolProvider = (
     isSingleAssetExit.value = value;
   }
 
-  async function logExitException(error: Error) {
+  async function logExitException(error: unknown) {
     // Ignore error when queryExit fails once the tx has been confirmed
     if (txState.confirmed && queryError.value) return;
     const sender = await getSigner().getAddress();
