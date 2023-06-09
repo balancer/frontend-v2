@@ -141,7 +141,7 @@ const pools: Pools = {
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool', // mainnet stablephantom
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
-    '0xf9ac7b9df2b3454e841110cce5550bd5ac6f875f': 'composableStablePool', // ComposableStable
+    '0xfADa0f4547AB2de89D1304A668C39B3E09Aa7c76': 'composableStablePool', // ComposableStable
     '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
     '0xdba127fbc23fb20f5929c546af220a991b5c6e01': 'composableStablePool', // ComposableStable v2
     '0x5dd94da3644ddd055fcf6b3e1aa310bb7801eb8b': 'weightedPool', // weighted pool v3
