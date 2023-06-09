@@ -32,7 +32,8 @@ const config: Config = {
       'https://api.studio.thegraph.com/query/24660/balancer-polygon-zk-v2/version/latest',
     ],
     aave: '',
-    gauge: '',
+    gauge:
+      'https://api.studio.thegraph.com/query/24660/balancer-gauges-polygon-zk/version/latest/graphql',
     blocks: '',
   },
   bridgeUrl: 'https://wallet.polygon.technology/zkEVM-Bridge/bridge',
