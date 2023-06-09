@@ -16,7 +16,7 @@ const config: Config = {
   slug: 'zkevm',
   network: 'polygon-zkevm',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: false,
   rpc: `https://polygonzkevm-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   ws: ``,
@@ -24,12 +24,12 @@ const config: Config = {
   explorer: 'https://zkevm.polygonscan.com/',
   explorerName: 'Polygonscan',
   subgraph:
-    'https://api.studio.thegraph.com/query/24660/balancer-polygon-zkevm-v2/v0.0.2',
+    'https://api.studio.thegraph.com/query/24660/balancer-polygon-zk-v2/version/latest',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.studio.thegraph.com/query/24660/balancer-polygon-zkevm-v2/v0.0.2',
+      'https://api.studio.thegraph.com/query/24660/balancer-polygon-zk-v2/version/latest',
     ],
     aave: '',
     gauge: '',
