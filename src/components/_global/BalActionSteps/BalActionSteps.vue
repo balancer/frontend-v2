@@ -125,7 +125,12 @@ const actions = computed((): TransactionAction[] => {
         : actionInfo.confirmingLabel,
       pending: actionState.init || actionState.confirming,
       isSignAction: actionInfo.isSignAction,
-      promise: submit.bind(null, actionInfo.action, actionState),
+      promise: submit.bind(
+        null,
+        actionInfo.action,
+        actionState,
+        actionInfo.postActionValidation
+      ),
       step: {
         tooltip: actionInfo.stepTooltip,
         state: getStepState(actionState, idx),
@@ -175,7 +180,8 @@ function getStepState(
 
 async function submit(
   action: () => Promise<TransactionResponse>,
-  state: TransactionActionState
+  state: TransactionActionState,
+  postActionValidation?: () => Promise<boolean>
 ): Promise<void> {
   try {
     state.init = true;
@@ -191,7 +197,7 @@ async function submit(
       return;
     }
 
-    if (tx) handleTransaction(tx, state);
+    if (tx) handleTransaction(tx, state, postActionValidation);
   } catch (error) {
     state.init = false;
     state.confirming = false;
@@ -211,7 +217,8 @@ function handleSignAction(state: TransactionActionState) {
 
 async function handleTransaction(
   tx: TransactionResponse,
-  state: TransactionActionState
+  state: TransactionActionState,
+  postActionValidation?: () => Promise<boolean>
 ): Promise<void> {
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
@@ -233,7 +240,11 @@ async function handleTransaction(
       }
 
       state.confirming = false;
-      state.confirmed = true;
+
+      const isValid = await postActionValidation?.();
+      if (isValid || !postActionValidation) {
+        state.confirmed = true;
+      }
     },
     onTxFailed: () => {
       state.confirming = false;
