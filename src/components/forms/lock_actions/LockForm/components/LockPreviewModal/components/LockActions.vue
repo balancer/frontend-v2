@@ -77,6 +77,7 @@ const { txListener, getTxConfirmedAt } = useEthers();
 const { fNum } = useNumbers();
 const { totalVotes, unallocatedVotes } = useVotingGauges();
 const { networkSlug } = useNetwork();
+const { getTokenApprovalActions } = useTokenApprovalActions();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
@@ -90,18 +91,6 @@ const lockActions = props.lockType.map((lockType, actionIndex) => ({
 
 const actions = ref<TransactionActionInfo[]>([...lockActions]);
 
-const amountsToApprove = computed(() => [
-  {
-    address: props.lockablePoolTokenInfo.address,
-    amount: props.lockAmount,
-  },
-]);
-const { getTokenApprovalActions } = useTokenApprovalActions({
-  amountsToApprove,
-  spender: networkConfig.addresses.veBAL,
-  actionType: ApprovalAction.Locking,
-});
-
 /**
  * COMPUTED
  */
@@ -112,6 +101,13 @@ const lockActionStatesConfirmed = computed(() =>
 const shouldResubmitVotes = computed<boolean>(
   () => totalVotes !== unallocatedVotes.value
 );
+
+const amountsToApprove = computed(() => [
+  {
+    address: props.lockablePoolTokenInfo.address,
+    amount: props.lockAmount,
+  },
+]);
 
 /**
  * METHODS
@@ -216,7 +212,11 @@ watch(lockActionStatesConfirmed, () => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  const approvalActions = await getTokenApprovalActions();
+  const approvalActions = await getTokenApprovalActions({
+    amountsToApprove: amountsToApprove.value,
+    spender: networkConfig.addresses.veBAL,
+    actionType: ApprovalAction.Locking,
+  });
   actions.value.unshift(...approvalActions);
 });
 </script>

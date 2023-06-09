@@ -10,6 +10,7 @@ import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
+import { ApprovalAction } from '@/composables/approvals/types';
 
 /**
  * TYPES
@@ -65,6 +66,7 @@ const {
   createPoolTxHash,
 } = usePoolCreation();
 const { networkSlug } = useNetwork();
+const { getTokenApprovalActions } = useTokenApprovalActions();
 
 const actions = ref<TransactionActionInfo[]>([
   {
@@ -83,19 +85,6 @@ const actions = ref<TransactionActionInfo[]>([
   },
 ]);
 
-const amountsToApprove = computed(() => {
-  return props.amounts.map((amount, index) => {
-    return {
-      address: props.tokenAddresses[index],
-      amount,
-    };
-  });
-});
-const { getTokenApprovalActions } = useTokenApprovalActions({
-  amountsToApprove,
-  spender: networkConfig.addresses.vault,
-});
-
 /**
  * COMPUTED
  */
@@ -107,6 +96,13 @@ const requiredActions = computed(() => {
     return actions.value.filter(action => action.label === t('fundPool'));
   }
   return actions.value;
+});
+
+const amountsToApprove = props.amounts.map((amount, index) => {
+  return {
+    address: props.tokenAddresses[index],
+    amount,
+  };
 });
 
 const explorerLink = computed((): string =>
@@ -123,7 +119,11 @@ onBeforeMount(async () => {
     createState.isRestoredTxConfirmed = isConfirmed;
   }
 
-  const approvalActions = await getTokenApprovalActions();
+  const approvalActions = await getTokenApprovalActions({
+    amountsToApprove,
+    spender: networkConfig.addresses.vault,
+    actionType: ApprovalAction.AddLiquidity,
+  });
   actions.value = [...approvalActions, ...actions.value];
 });
 

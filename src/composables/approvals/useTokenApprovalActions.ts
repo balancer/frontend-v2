@@ -1,5 +1,4 @@
 import { MaxUint256 } from '@ethersproject/constants';
-import { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -21,18 +20,21 @@ export type AmountToApprove = {
 };
 
 interface Params {
-  amountsToApprove: Ref<AmountToApprove[]>;
+  amountsToApprove: AmountToApprove[];
   spender: string;
-  actionType?: ApprovalAction;
+  actionType: ApprovalAction;
   forceMaxApprovals?: boolean;
 }
 
-export default function useTokenApprovalActions({
-  amountsToApprove,
-  spender,
-  actionType = ApprovalAction.AddLiquidity,
-  forceMaxApprovals = true,
-}: Params) {
+interface ApproveTokenParams {
+  token: TokenInfo;
+  normalizedAmount: string;
+  spender: string;
+  actionType: ApprovalAction;
+  forceMax?: boolean;
+}
+
+export default function useTokenApprovalActions() {
   /**
    * COMPOSABLES
    */
@@ -42,7 +44,10 @@ export default function useTokenApprovalActions({
   const { getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
 
-  function actionLabel(symbol: string): string {
+  /**
+   * METHODS
+   */
+  function actionLabel(actionType: ApprovalAction, symbol: string): string {
     switch (actionType) {
       case ApprovalAction.Locking:
         return t('transactionSummary.approveForLocking', [symbol]);
@@ -53,7 +58,7 @@ export default function useTokenApprovalActions({
     }
   }
 
-  function actionTooltip(symbol: string): string {
+  function actionTooltip(actionType: ApprovalAction, symbol: string): string {
     switch (actionType) {
       case ApprovalAction.Locking:
         return t('transactionSummary.tooltips.approveForLocking', [symbol]);
@@ -64,7 +69,7 @@ export default function useTokenApprovalActions({
     }
   }
 
-  function summaryLabel(address: string): string {
+  function summaryLabel(actionType: ApprovalAction, address: string): string {
     switch (actionType) {
       case ApprovalAction.Locking:
         return t('transactionSummary.approveForLocking', [
@@ -81,13 +86,38 @@ export default function useTokenApprovalActions({
     }
   }
 
-  async function approveToken(
-    normalAmount: string,
-    token: TokenInfo
-  ): Promise<TransactionResponse> {
-    const amount = forceMaxApprovals
+  async function getApprovalsRequired(
+    amountsToApprove: AmountToApprove[],
+    spender: string
+  ): Promise<string[]> {
+    await refetchAllowances();
+    const tokenAddresses = amountsToApprove.map(ata => ata.address);
+    const amounts = amountsToApprove.map(ata => ata.amount);
+    return approvalsRequired(tokenAddresses, amounts, spender);
+  }
+
+  async function isApprovalValid(
+    amountToApprove: AmountToApprove,
+    spender: string
+  ): Promise<boolean> {
+    await refetchAllowances();
+    return !approvalRequired(
+      amountToApprove.address,
+      amountToApprove.amount,
+      spender
+    );
+  }
+
+  async function approveToken({
+    token,
+    normalizedAmount,
+    spender,
+    actionType,
+    forceMax = true,
+  }: ApproveTokenParams): Promise<TransactionResponse> {
+    const amount = forceMax
       ? MaxUint256.toString()
-      : parseUnits(normalAmount, token.decimals).toString();
+      : parseUnits(normalizedAmount, token.decimals).toString();
 
     const txBuilder = new TransactionBuilder(getSigner());
     const tx = await txBuilder.contract.sendTransaction({
@@ -103,7 +133,7 @@ export default function useTokenApprovalActions({
       id: tx.hash,
       type: 'tx',
       action: 'approve',
-      summary: summaryLabel(token.address),
+      summary: summaryLabel(actionType, token.address),
       details: {
         contractAddress: token.address,
         spender: spender,
@@ -113,41 +143,38 @@ export default function useTokenApprovalActions({
     return tx;
   }
 
-  async function getApprovalsRequired(): Promise<string[]> {
-    await refetchAllowances();
-    const tokenAddresses = amountsToApprove.value.map(ata => ata.address);
-    const amounts = amountsToApprove.value.map(ata => ata.amount);
-    return approvalsRequired(tokenAddresses, amounts, spender);
-  }
-
-  async function isApprovalValid(
-    amountToApprove: AmountToApprove
-  ): Promise<boolean> {
-    await refetchAllowances();
-    return !approvalRequired(
-      amountToApprove.address,
-      amountToApprove.amount,
+  async function getTokenApprovalActions({
+    amountsToApprove,
+    spender,
+    actionType,
+    forceMaxApprovals = true,
+  }: Params): Promise<TransactionActionInfo[]> {
+    const approvalsRequired = await getApprovalsRequired(
+      amountsToApprove,
       spender
     );
-  }
-
-  async function getTokenApprovalActions(): Promise<TransactionActionInfo[]> {
-    const approvalsRequired = await getApprovalsRequired();
 
     return approvalsRequired.map(address => {
       const token = getToken(address);
       const amountToApprove = findByAddress(
-        amountsToApprove.value,
+        amountsToApprove,
         address
       ) as AmountToApprove;
 
       return {
-        label: actionLabel(token.symbol),
+        label: actionLabel(actionType, token.symbol),
         loadingLabel: t('investment.preview.loadingLabel.approval'),
         confirmingLabel: t('confirming'),
-        stepTooltip: actionTooltip(token.symbol),
-        action: () => approveToken(amountToApprove.amount, token),
-        postActionValidation: () => isApprovalValid(amountToApprove),
+        stepTooltip: actionTooltip(actionType, token.symbol),
+        action: () =>
+          approveToken({
+            token,
+            normalizedAmount: amountToApprove.amount,
+            spender,
+            actionType,
+            forceMax: forceMaxApprovals,
+          }),
+        postActionValidation: () => isApprovalValid(amountToApprove, spender),
         actionInvalidReason: {
           title: 'Approval insufficient',
           description:
@@ -158,6 +185,7 @@ export default function useTokenApprovalActions({
   }
 
   return {
+    approveToken,
     getTokenApprovalActions,
   };
 }

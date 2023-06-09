@@ -48,6 +48,7 @@ import { useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
+import { ApprovalAction } from '@/composables/approvals/types';
 
 /**
  * TYPES
@@ -116,6 +117,7 @@ export const joinPoolProvider = (
   const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
+  const { getTokenApprovalActions } = useTokenApprovalActions();
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
     RelayerType.BATCH
   );
@@ -203,11 +205,6 @@ export const joinPoolProvider = (
     }));
   });
 
-  const { getTokenApprovalActions } = useTokenApprovalActions({
-    amountsToApprove,
-    spender: appNetworkConfig.addresses.vault,
-  });
-
   const isLoadingQuery = computed(
     (): boolean => queryJoinQuery.isFetching.value
   );
@@ -275,7 +272,12 @@ export const joinPoolProvider = (
 
   // Updates the approval actions like relayer approval and token approvals.
   async function setApprovalActions() {
-    const tokenApprovalActions = await getTokenApprovalActions();
+    const tokenApprovalActions = await getTokenApprovalActions({
+      amountsToApprove: amountsToApprove.value,
+      spender: appNetworkConfig.addresses.vault,
+      actionType: ApprovalAction.AddLiquidity,
+    });
+
     approvalActions.value = shouldSignRelayer.value
       ? [relayerApprovalAction.value, ...tokenApprovalActions]
       : tokenApprovalActions;
