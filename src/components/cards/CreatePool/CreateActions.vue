@@ -6,10 +6,10 @@ import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.v
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
+import useTokenApprovalActionsV2 from '@/composables/approvals/useTokenApprovalActionsV2';
 
 /**
  * TYPES
@@ -55,10 +55,6 @@ const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { networkConfig } = useConfig();
 const { isTxConfirmed } = useEthers();
-const { fetchTokenApprovalActions } = useTokenApprovalActions(
-  toRef(props, 'tokenAddresses'),
-  toRef(props, 'amounts')
-);
 const {
   createPool,
   joinPool,
@@ -87,6 +83,19 @@ const actions = ref<TransactionActionInfo[]>([
   },
 ]);
 
+const amountsToApprove = computed(() => {
+  return props.amounts.map((amount, index) => {
+    return {
+      address: props.tokenAddresses[index],
+      amount,
+    };
+  });
+});
+const { getTokenApprovalActions } = useTokenApprovalActionsV2({
+  amountsToApprove,
+  spender: networkConfig.addresses.vault,
+});
+
 /**
  * COMPUTED
  */
@@ -114,9 +123,7 @@ onBeforeMount(async () => {
     createState.isRestoredTxConfirmed = isConfirmed;
   }
 
-  const approvalActions = await fetchTokenApprovalActions(
-    networkConfig.addresses.vault
-  );
+  const approvalActions = await getTokenApprovalActions();
   actions.value = [...approvalActions, ...actions.value];
 });
 
