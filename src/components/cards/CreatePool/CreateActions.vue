@@ -9,7 +9,7 @@ import useEthers from '@/composables/useEthers';
 import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
-import useTokenApprovalActionsV2 from '@/composables/approvals/useTokenApprovalActionsV2';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 
 /**
  * TYPES
@@ -91,7 +91,7 @@ const amountsToApprove = computed(() => {
     };
   });
 });
-const { getTokenApprovalActions } = useTokenApprovalActionsV2({
+const { getTokenApprovalActions } = useTokenApprovalActions({
   amountsToApprove,
   spender: networkConfig.addresses.vault,
 });

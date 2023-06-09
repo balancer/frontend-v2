@@ -1,5 +1,4 @@
 import { ApprovalAction } from '@/composables/approvals/types';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { fiatValueOf } from '@/composables/usePoolHelpers';
 import useTransactions from '@/composables/useTransactions';
@@ -14,6 +13,7 @@ import {
 } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { useI18n } from 'vue-i18n';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 
 /**
  * TYPES
@@ -54,11 +54,17 @@ export function useStakePreview(props: StakePreviewProps, emit) {
       ? balanceFor(getAddress(props.pool.address))
       : stakedShares.value;
 
-  const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
-    ref<string[]>([props.pool.address]),
-    ref<string[]>([currentShares]),
-    ApprovalAction.Staking
-  );
+  const amountsToApprove = computed(() => [
+    {
+      address: props.pool.address,
+      amount: currentShares,
+    },
+  ]);
+  const { getTokenApprovalActions } = useTokenApprovalActions({
+    amountsToApprove,
+    spender: preferentialGaugeAddress.value || '',
+    actionType: ApprovalAction.Staking,
+  });
 
   const stakeAction = {
     label: t('stake'),
@@ -132,9 +138,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   async function loadApprovalsForGauge() {
     const approvalActions = await trackLoading(async () => {
       if (!preferentialGaugeAddress.value) return;
-      return await getTokenApprovalActionsForSpender(
-        preferentialGaugeAddress.value
-      );
+      return await getTokenApprovalActions();
     }, isLoadingApprovalsForGauge);
 
     if (approvalActions) stakeActions.value.unshift(...approvalActions);

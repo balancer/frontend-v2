@@ -45,7 +45,7 @@ import {
 } from 'vue';
 import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
-import useTokenApprovalActionsV2 from '@/composables/approvals/useTokenApprovalActionsV2';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 
@@ -203,7 +203,7 @@ export const joinPoolProvider = (
     }));
   });
 
-  const { getTokenApprovalActions } = useTokenApprovalActionsV2({
+  const { getTokenApprovalActions } = useTokenApprovalActions({
     amountsToApprove,
     spender: appNetworkConfig.addresses.vault,
   });
