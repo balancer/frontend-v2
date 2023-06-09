@@ -46,6 +46,7 @@ import {
 import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
+import useTokenApprovalActionsV2 from '@/composables/approvals/useTokenApprovalActionsV2';
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 
@@ -110,10 +111,9 @@ export const joinPoolProvider = (
    */
   const { getTokens, injectTokens, priceFor, nativeAsset, wrappedNativeAsset } =
     useTokens();
-
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
-  const { getSigner } = useWeb3();
+  const { getSigner, appNetworkConfig } = useWeb3();
   const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
@@ -196,18 +196,15 @@ export const joinPoolProvider = (
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
 
-  const tokensToApprove = computed(() => {
-    return amountsIn.value.map(amountIn => amountIn.address);
-  });
-
   const amountsToApprove = computed(() => {
-    return amountsIn.value.map(amountIn => amountIn.value);
+    return amountsIn.value.map(amountIn => ({
+      address: amountIn.address,
+      amount: amountIn.value,
+      spender: appNetworkConfig.addresses.vault,
+    }));
   });
 
-  const { getTokenApprovalActions } = useTokenApprovalActions(
-    tokensToApprove,
-    amountsToApprove
-  );
+  const {} = useTokenApprovalActionsV2(amountsToApprove);
 
   const isLoadingQuery = computed(
     (): boolean => queryJoinQuery.isFetching.value
