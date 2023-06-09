@@ -34,6 +34,7 @@ export type TransactionActionInfo = {
   confirmingLabel: string;
   stepTooltip: string;
   action: () => Promise<TransactionResponse>;
+  postActionValidation?: () => Promise<boolean>;
   isSignAction?: boolean;
   isStakeAction?: boolean;
   isUnstakeAction?: boolean;
