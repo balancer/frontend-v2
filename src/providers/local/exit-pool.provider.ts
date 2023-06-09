@@ -397,7 +397,7 @@ export const exitPoolProvider = (
       isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
-      // We log this error only after the last retry attempt (inside logOnlyAfterLastRetryAttempt)
+      // We will log this error (via logExitException) only after the last retry attempt (inside logOnlyAfterLastRetryAttempt)
       throw new Error('Failed to construct exit.', { cause: error });
     }
   }
@@ -440,7 +440,7 @@ export const exitPoolProvider = (
 
       return newMax;
     } catch (error) {
-      // We log this error only after the last retry attempt (inside logOnlyAfterLastRetryAttempt)
+      // We will log this error (via logExitException) only after the last retry attempt (inside logOnlyAfterLastRetryAttempt)
       throw new Error('Failed to calculate max.', { cause: error });
     }
   }
