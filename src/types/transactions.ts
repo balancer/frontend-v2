@@ -7,7 +7,7 @@ import { Step } from './index';
 
 export type TransactionError = {
   title: string;
-  description: string;
+  description?: string;
 };
 
 export type TransactionActionState = {
@@ -35,6 +35,7 @@ export type TransactionActionInfo = {
   stepTooltip: string;
   action: () => Promise<TransactionResponse>;
   postActionValidation?: () => Promise<boolean>;
+  actionInvalidReason?: TransactionError;
   isSignAction?: boolean;
   isStakeAction?: boolean;
   isUnstakeAction?: boolean;

@@ -45,7 +45,6 @@ import {
 } from 'vue';
 import { useUserSettings } from '../user-settings.provider';
 import { useQuery } from '@tanstack/vue-query';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTokenApprovalActionsV2 from '@/composables/approvals/useTokenApprovalActionsV2';
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
@@ -204,7 +203,10 @@ export const joinPoolProvider = (
     }));
   });
 
-  const {} = useTokenApprovalActionsV2(amountsToApprove);
+  const { getTokenApprovalActions } = useTokenApprovalActionsV2({
+    amountsToApprove,
+    spender: appNetworkConfig.addresses.vault,
+  });
 
   const isLoadingQuery = computed(
     (): boolean => queryJoinQuery.isFetching.value
@@ -272,8 +274,8 @@ export const joinPoolProvider = (
   }
 
   // Updates the approval actions like relayer approval and token approvals.
-  function setApprovalActions() {
-    const tokenApprovalActions = getTokenApprovalActions();
+  async function setApprovalActions() {
+    const tokenApprovalActions = await getTokenApprovalActions();
     approvalActions.value = shouldSignRelayer.value
       ? [relayerApprovalAction.value, ...tokenApprovalActions]
       : tokenApprovalActions;
@@ -292,7 +294,7 @@ export const joinPoolProvider = (
 
     try {
       joinPoolService.setJoinHandler(joinHandlerType.value);
-      setApprovalActions();
+      await setApprovalActions();
 
       console.log('joinHandler:', joinHandlerType.value);
       const output = await joinPoolService.queryJoin({
@@ -323,7 +325,7 @@ export const joinPoolProvider = (
       txError.value = '';
 
       joinPoolService.setJoinHandler(joinHandlerType.value);
-      setApprovalActions();
+      await setApprovalActions();
 
       console.log('joinHandler:', joinHandlerType.value);
       const joinRes = await joinPoolService.join({
@@ -406,7 +408,7 @@ export const joinPoolProvider = (
   });
 
   // relayerApprovalAction can change if the user changes their useSignatures setting.
-  watch(relayerApprovalAction, () => setApprovalActions());
+  watch(relayerApprovalAction, async () => await setApprovalActions());
 
   /**
    * LIFECYCLE
