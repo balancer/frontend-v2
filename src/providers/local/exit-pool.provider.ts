@@ -498,6 +498,8 @@ export const exitPoolProvider = (
   }
 
   async function logExitException(error: Error) {
+    // Ignore error when queryExit fails once the tx has been confirmed
+    if (txState.confirmed && queryError.value) return;
     const sender = await getSigner().getAddress();
     captureException(error, {
       level: 'fatal',
