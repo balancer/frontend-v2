@@ -7,6 +7,14 @@ import Hero from '@/components/contextual/pages/vebal/Hero.vue';
 import MyVeBAL from '@/components/contextual/pages/vebal/MyVeBAL/MyVeBAL.vue';
 import CrossChainBoostCards from '@/components/contextual/pages/vebal/cross-chain-boost/CrossChainBoostCards.vue';
 import { isVeBalSupported } from '@/composables/useVeBAL';
+
+import { provideUserStaking } from '@/providers/local/user-staking.provider';
+import { providerUserPools } from '@/providers/local/user-pools.provider';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+
+const userStaking = provideUserStaking();
+providerUserPools(userStaking);
+providePoolStaking();
 </script>
 
 <template>

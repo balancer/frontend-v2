@@ -24,6 +24,8 @@ const {
   sync,
   tempSyncingNetworks,
   setTempSyncingNetworks,
+  warningMessage,
+  infoMessage,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -59,6 +61,22 @@ function onCloseModal() {
         </template>
       </BalTooltip>
     </h3>
+    <BalAlert
+      v-if="warningMessage.title && !(isLoading || dynamicDataLoading)"
+      :title="warningMessage.title"
+      type="warning"
+      class="mb-4"
+    >
+      {{ warningMessage.text }}
+    </BalAlert>
+    <BalAlert
+      v-else-if="infoMessage.title"
+      :title="infoMessage.title"
+      type="tip"
+      class="mb-4"
+    >
+      {{ infoMessage.text }}
+    </BalAlert>
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
@@ -70,12 +88,6 @@ function onCloseModal() {
         <BalCard>
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}
-            <!-- <img
-              class="cursor-pointer"
-              src="@/assets/images/icons/update-unsynced.svg"
-              alt=""
-              @click="refetch"
-            /> -->
           </div>
           <div class="flex mb-5">
             <span
@@ -120,12 +132,6 @@ function onCloseModal() {
         <BalCard>
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.syncedNetworks') }}
-            <!-- <img
-              class="cursor-pointer"
-              src="@/assets/images/icons/update-synced.svg"
-              alt=""
-              @click="refetch"
-            /> -->
           </div>
           <span
             v-if="networksBySyncState.synced.length === 0"

@@ -1,6 +1,5 @@
 import { Network } from '@/lib/config';
 
-import { txResponseMock } from '@/__mocks__/transactions';
 import { useCrossChainNetwork } from '@/composables/queries/useCrossChainNetwork';
 import { useOmniEscrowLocksQuery } from '@/composables/queries/useOmniEscrowLocksQuery';
 import symbolKeys from '@/constants/symbol.keys';
@@ -164,6 +163,28 @@ export const crossChainSyncProvider = () => {
     return result;
   });
 
+  const warningMessage = computed(() => {
+    if (networksBySyncState.value.syncing.length > 0) {
+      return {
+        title: 'Wait until sync finalizes before restaking on L2',
+        text: 'Your veBAL is currently syncing to other networks. Wait until the sync is complete before re-staking any L2 positions in order for your new boosts to apply.',
+      };
+    }
+
+    return {
+      title: '',
+      text: '',
+    };
+  });
+
+  // TODO: add info message
+  const infoMessage = computed(() => {
+    return {
+      title: '',
+      text: '',
+    };
+  });
+
   async function sync(network: Network) {
     const contractAddress = configService.network.addresses.omniVotingEscrow;
     if (!contractAddress) throw new Error('No contract address found');
@@ -178,15 +199,14 @@ export const crossChainSyncProvider = () => {
     const { nativeFee } = tx;
     console.log('nativeFee', nativeFee);
 
-    // const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
-    //   signer,
-    //   userAddress: account.value,
-    //   chainId: LayerZeroNetworkId[network],
-    //   nativeFee,
-    // });
+    const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
+      signer,
+      userAddress: account.value,
+      chainId: LayerZeroNetworkId[network],
+      nativeFee,
+    });
 
-    // console.log('sendUserBalanceTx', sendUserBalanceTx);
-    return txResponseMock;
+    return sendUserBalanceTx;
   }
 
   async function refetch() {
@@ -214,7 +234,7 @@ export const crossChainSyncProvider = () => {
   }
 
   function setTempSyncingNetworks(syncingNetworks: Network[]) {
-    if (!tempSyncingNetworks.value[account.value]) {
+    if (!tempSyncingNetworks.value?.[account.value]) {
       tempSyncingNetworks.value[account.value] = {
         networks: syncingNetworks,
         syncTimestamp: Date.now(),
@@ -242,15 +262,12 @@ export const crossChainSyncProvider = () => {
 
   watch(
     () => networksBySyncState.value,
-    (newVal, prevVal) => {
-      console.log('newVal', newVal);
-      console.log('prevVal', prevVal);
-
+    newVal => {
       if (newVal.syncing.length > 0 && !disposeRefetchOnInterval) {
         refetchOnInterval();
       }
-      if (newVal.syncing.length === 0 && disposeRefetchOnInterval) {
-        disposeRefetchOnInterval();
+      if (newVal.syncing.length === 0) {
+        disposeRefetchOnInterval?.();
       }
 
       clearTempSyncingNetworks();
@@ -268,6 +285,8 @@ export const crossChainSyncProvider = () => {
     tempSyncingNetworks,
     refetchOnInterval,
     setTempSyncingNetworks,
+    warningMessage,
+    infoMessage,
   };
 };
 
