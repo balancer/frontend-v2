@@ -44,6 +44,7 @@ import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
 import { POOLS } from '@/constants/pools';
+import { shouldIgnoreError } from '@/lib/utils/vue-query';
 
 /**
  * TYPES
@@ -385,7 +386,7 @@ export const exitPoolProvider = (
       isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
-      logExitException(error as Error);
+      logExitException(error as Error, shouldIgnoreError(queryExitQuery));
       throw new Error('Failed to construct exit.', { cause: error });
     }
   }
@@ -428,7 +429,7 @@ export const exitPoolProvider = (
 
       return newMax;
     } catch (error) {
-      logExitException(error as Error);
+      logExitException(error as Error, shouldIgnoreError(singleAssetMaxQuery));
       throw new Error('Failed to calculate max.', { cause: error });
     }
   }
@@ -481,7 +482,8 @@ export const exitPoolProvider = (
     isSingleAssetExit.value = value;
   }
 
-  async function logExitException(error: Error) {
+  async function logExitException(error: Error, shouldIgnoreError = false) {
+    if (shouldIgnoreError) return;
     // Ignore error when queryExit fails once the tx has been confirmed
     if (txState.confirmed && queryError.value) return;
     const sender = await getSigner().getAddress();
