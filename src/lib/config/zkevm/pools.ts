@@ -45,10 +45,9 @@ const pools: Pools = {
     ],
   },
   Factories: {
-    '0x8eA89804145c007e7D226001A96955ad53836087': 'composableStablePool', // ComposableStable v4
-    '0x03F3Fb107e74F2EAC9358862E91ad3c692712054': 'weightedPool', // Weighted v4
+    '0x03f3fb107e74f2eac9358862e91ad3c692712054': 'weightedPool', // Weighted v4
     '0x8ea89804145c007e7d226001a96955ad53836087': 'composableStablePool', // ComposableStable V4
-    '0x6B1Da720Be2D11d95177ccFc40A917c2688f396c': 'erc4626Linear', // ERC4626 LinearPool
+    '0x6b1da720be2d11d95177ccfc40a917c2688f396c': 'erc4626Linear', // ERC4626 LinearPool
   },
   Stakable: {
     VotingGaugePools: [],
