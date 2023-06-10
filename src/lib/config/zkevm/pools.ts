@@ -47,7 +47,7 @@ const pools: Pools = {
   Factories: {
     '0x8eA89804145c007e7D226001A96955ad53836087': 'composableStablePool', // ComposableStable v4
     '0x03F3Fb107e74F2EAC9358862E91ad3c692712054': 'weightedPool', // Weighted v4
-    '0x8ea89804145c007e7d226001a96955ad53836087': 'weightedPool', // Weighted
+    '0x8ea89804145c007e7d226001a96955ad53836087': 'composableStablePool', // ComposableStable V4
     '0x6B1Da720Be2D11d95177ccFc40A917c2688f396c': 'erc4626Linear', // ERC4626 LinearPool
   },
   Stakable: {
