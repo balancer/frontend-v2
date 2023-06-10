@@ -412,6 +412,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a': {
+      name: 'cbETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
