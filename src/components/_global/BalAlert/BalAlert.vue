@@ -212,11 +212,11 @@ export default defineComponent({
 }
 
 .bal-alert-container {
-  @apply flex;
+  @apply flex flex-grow;
 }
 
 .bal-alert-content {
-  @apply flex whitespace-pre-wrap;
+  @apply flex whitespace-pre-wrap flex-grow;
 
   min-width: 0;
 }
