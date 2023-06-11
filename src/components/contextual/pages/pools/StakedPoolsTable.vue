@@ -38,8 +38,12 @@ const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting, account } = useWeb3();
 const { t } = useI18n();
 const networkName = configService.network.shortName;
-const { networksSyncState, tempSyncingNetworks, l2VeBalBalances } =
-  useCrossChainSync();
+const {
+  networksSyncState,
+  tempSyncingNetworks,
+  l2VeBalBalances,
+  isLoading: isLoadingSyncState,
+} = useCrossChainSync();
 /**
  * COMPUTED
  */
@@ -59,7 +63,7 @@ const hiddenColumns = computed(() => {
 const poolsToRenderKey = computed(() => JSON.stringify(stakedPools.value));
 const showVeBalSyncTip = computed(() => {
   const state = networksSyncState.value[networkId.value];
-  if (!state) return false;
+  if (!state || isLoadingSyncState.value) return false;
   return (
     state === NetworkSyncState.Unsynced &&
     !tempSyncingNetworks.value[account.value]?.networks.includes(
@@ -114,7 +118,7 @@ async function handleUnstakeSuccess() {
         class="mb-5 w-100"
       >
         <div class="flex items-center">
-          <div class="flex-1">{{ veBalSyncTip?.text }}</div>
+          <div class="flex-[2]">{{ veBalSyncTip?.text }}</div>
           <div class="flex flex-1 justify-end">
             <BalBtn color="gradient" @click="showProceedModal = true">
               Sync veBal
@@ -146,6 +150,9 @@ async function handleUnstakeSuccess() {
       @close="handleModalClose"
       @success="handleUnstakeSuccess"
     />
-    <ProceedToSyncModal :isVisible="showProceedModal" />
+    <ProceedToSyncModal
+      :isVisible="showProceedModal"
+      @close="showProceedModal = false"
+    />
   </div>
 </template>

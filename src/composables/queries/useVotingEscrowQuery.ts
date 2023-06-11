@@ -3,7 +3,7 @@ import useGraphQuery from './useGraphQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Network } from '@/lib/config';
 
-const networkSubgraphGagesMap = {
+export const networkSubgraphGagesMap = {
   [Network.MAINNET]:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-beta',
   [Network.ARBITRUM]:

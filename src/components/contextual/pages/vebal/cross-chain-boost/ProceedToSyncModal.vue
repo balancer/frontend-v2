@@ -19,7 +19,7 @@ const { networkId, getNetworkSlug } = useNetwork();
         {{ $t('modals.veBalRedirectModal.title') }}
       </h3>
     </template>
-    <div class="flex flex-col">
+    <div class="flex flex-col text-left">
       <p class="mb-5 whitespace-pre-line">
         The sync veBAL operation needs to be performed on Ethereum Mainnet,
         since that is where your veBAL balance lives.
