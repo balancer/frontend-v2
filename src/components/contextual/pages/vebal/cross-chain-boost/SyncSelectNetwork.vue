@@ -2,18 +2,21 @@
 import { networkLabelMap } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import {
-  NetworksBySyncState,
-  L2VeBalBalances,
   supportedNetworks,
+  useCrossChainSync,
 } from '@/providers/cross-chain-sync.provider';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
-  networksBySyncState: NetworksBySyncState;
   chosenNetworks: Set<Network>;
   veBalBalance: string;
   activeTabIdx: number;
-  l2VeBalBalances: L2VeBalBalances;
 };
+
+const { account } = useWeb3();
+const { networksBySyncState, l2VeBalBalances, tempSyncingNetworks } =
+  useCrossChainSync();
+
 const props = defineProps<Props>();
 const emit = defineEmits(['update:activeTabIdx', 'toggleNetwork']);
 
@@ -51,11 +54,13 @@ async function syncNetworks() {
         aria-disabled="true"
         class="border-b-2 last:border-b-0 dark:border-gray-800"
       >
+        {{ tempSyncingNetworks.value }}
         <div
           class="flex justify-between items-center p-4"
           :class="{
             'grayscale pointer-events-none opacity-40':
-              networksBySyncState.synced.includes(network),
+              networksBySyncState.synced.includes(network) ||
+              tempSyncingNetworks?.[account]?.networks.includes(network),
           }"
         >
           <BalCheckbox

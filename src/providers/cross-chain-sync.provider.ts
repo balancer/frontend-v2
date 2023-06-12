@@ -42,7 +42,7 @@ export const LayerZeroNetworkId = {
   [Network.GNOSIS]: 145,
 };
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 1000 * 30; // 30 seconds
 
 export const crossChainSyncProvider = () => {
   const { account, getSigner } = useWeb3();
@@ -258,6 +258,10 @@ export const crossChainSyncProvider = () => {
       tempSyncingNetworks.value[account.value]?.networks.filter(network => {
         return !networksBySyncState.value.synced.includes(network);
       });
+    localStorage.setItem(
+      'tempSyncingNetworks',
+      JSON.stringify(tempSyncingNetworks.value)
+    );
   }
 
   watch(
