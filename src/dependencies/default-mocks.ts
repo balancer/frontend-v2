@@ -8,6 +8,7 @@ import { initWalletConnectorsWithDefaultMocks } from './wallets/default-mocks';
 import { initBalancerApiWithDefaultMocks } from './balancer-api.mocks';
 import { initPoolsFallbackRepositoryWithDefaultMocks } from './PoolsFallbackRepository.mocks';
 import { initContractConcernWithDefaultMocks } from './contract.concern.mocks';
+import { initRelayerWithDefaultMocks } from './Relayer.mocks';
 
 export function initDependenciesWithDefaultMocks() {
   initMulticallWithDefaultMocks();
@@ -21,4 +22,5 @@ export function initDependenciesWithDefaultMocks() {
   initWalletConnectorsWithDefaultMocks();
   initPoolsFallbackRepositoryWithDefaultMocks();
   initContractConcernWithDefaultMocks();
+  initRelayerWithDefaultMocks();
 }

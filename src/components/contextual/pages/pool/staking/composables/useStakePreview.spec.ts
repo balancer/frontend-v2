@@ -2,21 +2,22 @@ import {
   aWeightedPool,
   defaultWeightedPoolSymbol,
 } from '@/__mocks__/weighted-pool';
+import { addTransactionMock } from '@/composables/__mocks__/useTransactions';
+import { defaultContractTransactionResponse } from '@/dependencies/contract.concern.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { sleep } from '@/lib/utils';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { provideUserData } from '@/providers/user-data.provider';
+import { mockWhenUserHasSharesInANonPreferentialGauge } from '@/services/balancer/gauges/__mocks__/gauge-mocks';
+import { walletProviderMock } from '@/services/contracts/vault.service.mocks';
+import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { firstCallParams } from '@tests/vitest/assertions';
 import {
   StakeAction,
   StakePreviewProps,
   useStakePreview,
 } from './useStakePreview';
-import { walletProviderMock } from '@/services/contracts/vault.service.mocks';
-import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
-import { defaultContractTransactionResponse } from '@/dependencies/contract.concern.mocks';
-import { addTransactionMock } from '@/composables/__mocks__/useTransactions';
-import { firstCallParams } from '@tests/vitest/assertions';
 
 initDependenciesWithDefaultMocks();
 walletServiceInstance.setUserProvider(computed(() => walletProviderMock));
@@ -110,6 +111,45 @@ test('Successfully creates and runs unstake action', async () => {
   const params = firstCallParams(addTransactionMock);
   expect(params.action).toBe('unstake');
   expect(params.details?.pool).toEqual(pool);
+});
+
+test('Successfully creates and runs restake action (unstake + stake)', async () => {
+  mockWhenUserHasSharesInANonPreferentialGauge();
+
+  const { props, loadStakeAction } = buildProps();
+
+  const { stakeActions } = await mountUseStakePreview(props);
+
+  await loadStakeAction('restake');
+
+  expect(stakeActions.value).toHaveLength(3);
+
+  const approvalAction = stakeActions.value[0];
+  expect(approvalAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: `Approve ${defaultWeightedPoolSymbol} for staking`,
+    loadingLabel: 'Confirm approval in wallet',
+    stepTooltip: `You must approve ${defaultWeightedPoolSymbol} to stake this token on Balancer. Approvals are required once per token, per wallet.`,
+  });
+
+  const unstakeAction = stakeActions.value[1];
+
+  expect(unstakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Unstake',
+    loadingLabel: 'Unstaking',
+    stepTooltip:
+      "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
+  });
+
+  const stakeAction = stakeActions.value[2];
+  expect(stakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Stake',
+    loadingLabel: 'Staking',
+    stepTooltip:
+      'Confirm staking of LP tokens to earn liquidity mining incentives on this pool',
+  });
 });
 
 test('Changes staking actions when action prop changes', async () => {

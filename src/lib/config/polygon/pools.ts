@@ -112,6 +112,7 @@ const pools: Pools = {
       '0xbadcdaf6212b0bacf45cc32447cb615f85fe6adf000100000000000000000b87', // 50weth/50wsteth/50nex
       '0xb1cc24df1d3d2c6cb798b1129ddaae9e29d437c0000100000000000000000b8d', // staking defi pool
       '0x9841438683c2efbfb28c94ec341544b94e4f6dd5000100000000000000000b8f', // WBTC/USDC/PAXG/WETH
+      '0x945f337307ea76fdaa2590d083423850f64e247f000100000000000000000b98', // 27wstETH-7WMATIC-25WBTC-7USDC-18stMATIC-8WETH-8DAI
     ],
   },
   Factories: {
@@ -234,6 +235,36 @@ const pools: Pools = {
     },
     '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
       name: 'frxETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b': {
+      name: 'FRAX/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45': {
+      name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44': {
+      name: 'stMATIC/Boosted Aave v3 wMATIC/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43': {
+      name: '2BRL/Boosted Aave v3 USD',
       hasIcon: false,
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],

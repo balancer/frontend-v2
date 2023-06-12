@@ -24,6 +24,7 @@ import {
 import { silenceConsoleLog } from '@tests/unit/console';
 import { groAddress, wethAddress } from '@tests/unit/builders/address';
 import { initRpcProviderServiceWithDefaultMocks } from '@/dependencies/rpc-provider.service.mocks';
+import { DeepPartial } from '@tests/unit/types';
 
 initBalancerApiWithDefaultMocks();
 initOldMulticallerWithDefaultMocks();
@@ -35,10 +36,6 @@ silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 /**
  * TYPES
  */
-type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>;
-};
-
 export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;

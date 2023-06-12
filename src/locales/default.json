@@ -929,8 +929,9 @@
     "unstakedPools": "Unstaked pools",
     "unstakeValueTooltip": "The approximate value of the LP tokens you will unstake.",
     "unstaking": "Unstaking",
+    "restaking": "Restaking",
     "unstakeTooltip": "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
-    "restakeTooltip": "Confirm unstaking of LP tokens. You'll be able to restake to earn liquidity mining incentives for this pool.",
+    "restakeTooltip": "Confirm restaking of LP tokens. You'll be again able to earn liquidity mining incentives for this pool.",
     "weeklyEarning": "weekly earning"
   },
   "stakeToGetExtra": "Stake this to earn extra",
@@ -1041,11 +1042,13 @@
       "popover": {
         "title": {
           "vote": "Gauge vote",
-          "edit": "Edit gauge vote"
+          "edit": "Edit gauge vote",
+          "remove": "Remove vote"
         },
         "button": {
           "vote": "Confirm Vote",
-          "edit": "Edit vote"
+          "edit": "Edit vote",
+          "remove": "Remove vote"
         },
         "actions": {
           "vote": {
@@ -1069,6 +1072,11 @@
             "title": "You need some veBAL to vote on gauges",
             "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.",
             "inputHintText": "You can't vote since you have no veBAL"
+          },
+          "expiredVeBal": {
+            "title": "You can't vote because your veBAL has expired",
+            "description": "You need some veBAL to vote on gauges. Unlock and relock your B-80BAL-20-WETH to get some veBAL.",
+            "inputHintText": "You can't vote because your veBAL has expired"
           },
           "veBalLockTooShort": {
             "title": "veBAL not locked for 7 days",
