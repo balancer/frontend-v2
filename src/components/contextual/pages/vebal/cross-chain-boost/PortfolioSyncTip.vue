@@ -23,7 +23,8 @@ const showVeBalSyncTip = computed(() => {
   return (
     !isLoadingSyncState.value &&
     state === NetworkSyncState.Unsynced &&
-    !tempSyncingNetworks.value[account.value].networks.includes(networkId.value)
+    !!tempSyncingNetworks.value[account.value] &&
+    tempSyncingNetworks.value[account.value].networks.includes(networkId.value)
   );
 });
 

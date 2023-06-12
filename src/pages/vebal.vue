@@ -3,7 +3,7 @@
  * veBAL page
  */
 import Hero from '@/components/contextual/pages/vebal/Hero.vue';
-import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
+// import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
 import MyVeBAL from '@/components/contextual/pages/vebal/MyVeBAL/MyVeBAL.vue';
 import CrossChainBoostCards from '@/components/contextual/pages/vebal/cross-chain-boost/CrossChainBoostCards.vue';
 import { isVeBalSupported } from '@/composables/useVeBAL';
@@ -36,7 +36,7 @@ providePoolStaking();
       class="xl:container xl:px-4 pt-16 xl:pt-20 xl:mx-auto"
     >
       <div class="xl:px-0 mb-16">
-        <LMVoting />
+        <!-- <LMVoting /> -->
       </div>
     </div>
     <div v-else class="text-center">
