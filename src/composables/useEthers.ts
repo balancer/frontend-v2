@@ -15,6 +15,7 @@ import useBlocknative from './useBlocknative';
 import { toJsTimestamp } from './useTime';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from './useTransactions';
+import { captureException } from '@sentry/browser';
 
 type ConfirmedTxCallback = (receipt: TransactionReceipt) => void;
 type FailedTxCallback = (txData: TransactionResponse) => void;
@@ -31,6 +32,15 @@ export default function useEthers() {
     const block = await rpcProviderService.jsonProvider.getBlock(
       receipt.blockNumber
     );
+
+    if (!block) {
+      captureException(
+        new Error(
+          `Failed to retrieve block ${receipt.blockNumber} when retrieving tx details`
+        )
+      );
+      return new Date(); // on some networks fetching the block fails.
+    }
 
     return new Date(toJsTimestamp(block.timestamp));
   }
