@@ -133,7 +133,7 @@
   "claimHero": {
     "title": "Claim liquidity incentives",
     "legacyTitle": "Claim legacy incentives",
-    "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra on Mainnet pools.",
+    "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra.",
     "legacyDescription": "Liquidity mining incentive systems before the launch of ve8020-tokenomics have been deprecated. If you provided liquidity before this change and have outstanding incentives you can claim them here.",
     "tipLabel": {
       "addLiquidity": "Add liquidity",
@@ -144,7 +144,7 @@
     "tips": {
       "addLiquidity": "To earn liquidity mining incentives, add liquidity to eligible pools across Ethereum Mainnet and supported Layer 2's like Polygon and Arbitrum (see the table on the veBAL page). Note: You'll earn swap fees with or without staking but you don't need to claim these as they are automatically added to your position.",
       "stake": "If you've provided liquidity in an eligible pool, you'll have an option to stake your Liquidity Provider (LP) tokens from that pool. Stake them to receive liquidity mining incentives in addition to any swap fees.",
-      "boost": "Get veBAL to boost your liquidity mining incentives by up to 2.5x (on Ethereum Mainnet only). The more veBAL you hold, the larger your boost. veBAL holders also earn protocol fees and can vote to direct future pool emissions. Note, there is no additional boost from holding veBAL on Layer 2 pools like Polygon and Arbitrum.",
+      "boost": "Get veBAL to boost your liquidity mining incentives by up to 2.5x, including on L2 networks via cross-chain boosts. The more veBAL you hold, the larger your boost. veBAL holders also earn protocol fees and can vote to direct future pool emissions.",
       "claim": "Token earnings from liquidity mining accumulate every block and can be claimed at any time. Some pools offer multiple token incentives (not just BAL). Additionally, veBAL holders also get a share of protocol revenue, in both bb-a-USD and BAL."
     }
   },
