@@ -8,6 +8,7 @@ import { WalletProvider } from '@/dependencies/wallets/Web3Provider';
 export const walletSignerMock = mockDeep<JsonRpcSigner>();
 export const blockNumber = 16741022;
 export const defaultUserAddress = '0xddd0c9C1b6C8537BeD0487C3fd64CF6140bd4ddd';
+export const vaultAddress = '0xba100000625a3754423978a60c9317c58a424e3D';
 
 export const defaultWalletTransactionResponse = mock<TransactionResponse>();
 
