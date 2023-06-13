@@ -938,65 +938,82 @@
         constituent stablecoin tokens. In addition, there are risks associated
         with the involvement of rate providers.
       </p>
-      <h5>Rate provider risk</h5>
-      <p>
-        Rate Providers are contracts that provide an exchange rate between two
-        assets. These exchange rates can come from any on-chain source, whether
-        that may be an oracle, a ratio of queryable balances, or another
-        calculation.
-      </p>
-      <p>
-        This introduces risks around the rate provider being able to supply
-        accurate and timely exchange rates between pool tokens.
-      </p>
-
-      <div id="oracles" class="!pb-0 risk">
-        <h6>Oracle risk</h6>
+      <div id="rate-provider-risk" class="!pb-0 risk">
+        <h5>Rate provider risk</h5>
         <p>
-          Oracles are data providers which supply external information to smart
-          contracts. Oracles, like Chainlink, may be used to source exchange
-          rates between pool tokens for a rate provider in Balancer MetaStable
-          pools. The risks of using Oracles to supply exchange rates include:
+          Rate Providers are contracts that provide an exchange rate between two
+          assets. These exchange rates can come from any on-chain source,
+          whether that may be an oracle, a ratio of queryable balances, or
+          another calculation.
         </p>
-        <ul>
-          <li>
-            Data accuracy: Oracles must provide accurate data for DeFi
-            applications to function correctly. Inaccurate data can cause
-            significant issues, such as incorrect pricing or faulty execution of
-            smart contracts.
-          </li>
-          <li>
-            Data availability: If an oracle experiences downtime or fails to
-            update its data feed, the DeFi applications relying on it might not
-            function correctly or become temporarily unusable, leading to
-            potential losses for users.
-          </li>
-          <li>
-            Latency: The time it takes for an oracle to fetch, process, and
-            transmit data to a smart contract can impact the performance and
-            efficiency of DeFi applications. High latency could lead to outdated
-            data or missed opportunities.
-          </li>
-          <li>
-            Oracle manipulation: Bad actors might attempt to manipulate an
-            oracle's data feed to influence the outcome of a smart contract or
-            profit from price discrepancies. This can lead to unintended
-            consequences, such as liquidations, loss of funds, or arbitrage
-            opportunities for attackers.
-          </li>
-          <li>
-            Centralization risk: If an oracle relies on a centralized data
-            source or a small number of data providers, it becomes a single
-            point of failure. This centralization goes against the core
-            principles of decentralization in the DeFi ecosystem and exposes the
-            system to potential manipulation or downtime.
-          </li>
-          <li>
-            Exploitation of vulnerabilities: Oracles themselves can have
-            security vulnerabilities, which, if exploited, can compromise the
-            entire DeFi system relying on them.
-          </li>
-        </ul>
+        <p>
+          This introduces risks around the rate provider being able to supply
+          accurate and timely exchange rates between pool tokens.
+        </p>
+
+        <div id="oracles" class="!pb-0 risk">
+          <h6>Oracle risk</h6>
+          <p>
+            Oracles are data providers which supply external information to
+            smart contracts. Oracles, like Chainlink, may be used to source
+            exchange rates between pool tokens for a rate provider in Balancer
+            MetaStable pools. The risks of using Oracles to supply exchange
+            rates include:
+          </p>
+          <ul>
+            <li>
+              Data accuracy: Oracles must provide accurate data for DeFi
+              applications to function correctly. Inaccurate data can cause
+              significant issues, such as incorrect pricing or faulty execution
+              of smart contracts.
+            </li>
+            <li>
+              Data availability: If an oracle experiences downtime or fails to
+              update its data feed, the DeFi applications relying on it might
+              not function correctly or become temporarily unusable, leading to
+              potential losses for users.
+            </li>
+            <li>
+              Latency: The time it takes for an oracle to fetch, process, and
+              transmit data to a smart contract can impact the performance and
+              efficiency of DeFi applications. High latency could lead to
+              outdated data or missed opportunities.
+            </li>
+            <li>
+              Oracle manipulation: Bad actors might attempt to manipulate an
+              oracle's data feed to influence the outcome of a smart contract or
+              profit from price discrepancies. This can lead to unintended
+              consequences, such as liquidations, loss of funds, or arbitrage
+              opportunities for attackers.
+            </li>
+            <li>
+              Centralization risk: If an oracle relies on a centralized data
+              source or a small number of data providers, it becomes a single
+              point of failure. This centralization goes against the core
+              principles of decentralization in the DeFi ecosystem and exposes
+              the system to potential manipulation or downtime.
+            </li>
+            <li>
+              Exploitation of vulnerabilities: Oracles themselves can have
+              security vulnerabilities, which, if exploited, can compromise the
+              entire DeFi system relying on them.
+            </li>
+          </ul>
+        </div>
+        <div id="rate-provider-bridges" class="!pb-0 risk">
+          <h6>Rate provider cross-chain bridge risk</h6>
+          <p>
+            Pools may use rate providers that are bridged between blockchain
+            networks.
+          </p>
+          <p>
+            For example, some pools on Polygon zkEVM use a rate provider that is
+            bridged from Ethereum Mainnet via the Layer Zero (an omnichain
+            messaging service). In these pools, LP's are exposed to risk of
+            significant losses if an incorrect rate is received via the
+            omnichain messaging service.
+          </p>
+        </div>
       </div>
     </div>
 
