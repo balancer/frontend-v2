@@ -41,7 +41,7 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   const { networkId } = useNetwork();
   const { t } = useI18n();
   const { isGnosisSafeApp } = useGnosisSafeApp();
-  const { action: transactionAction } = useRelayerApprovalTx(relayerType);
+  const relayerApprovalTx = useRelayerApprovalTx(relayerType);
   const { supportSignatures } = useUserSettings();
 
   const signatureAction: TransactionActionInfo = {
@@ -61,7 +61,7 @@ export default function useRelayerApproval(relayerType: RelayerType) {
     return !supportSignatures.value ||
       isGnosisSafeApp.value ||
       isWalletConnectWallet(connector.value?.id)
-      ? transactionAction.value
+      ? relayerApprovalTx.action.value
       : signatureAction;
   });
 
@@ -95,5 +95,6 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   return {
     relayerSignature,
     relayerApprovalAction,
+    relayerApprovalTx,
   };
 }

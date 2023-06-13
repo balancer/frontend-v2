@@ -51,7 +51,10 @@ export default function useUserGaugeSharesQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed((): boolean => isWalletReady.value);
+  const enabled = computed(
+    (): boolean =>
+      !!configService.network.subgraphs.gauge && isWalletReady.value
+  );
 
   const queryArgs = computed(() => {
     if (poolAddress?.value)
