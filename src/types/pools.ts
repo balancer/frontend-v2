@@ -10,7 +10,8 @@ export type FactoryType =
   | 'composableStablePool'
   | 'fx'
   | 'eulerLinear'
-  | 'gyroE';
+  | 'gyroE'
+  | 'erc4626Linear';
 
 export type PoolMetadata = {
   name?: string;

@@ -42,6 +42,7 @@ const pools: Pools = {
       '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a', // bb-a-usd aave v3
       '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400', // wsteth / bb-a-weth
       '0x161cd105034ac000d2aad75f06c26e943130bc0e000200000000000000000426', // nfte/weth
+      '0x542f16da0efb162d20bf4358efa095b70a100f9e000000000000000000000436', // tbtc
     ],
   },
   Investment: {
@@ -83,6 +84,7 @@ const pools: Pools = {
     '0x1c99324edc771c82a0dccb780cc7dda0045e50e7': 'composableStablePool', // ComposableStable V3
     '0xf1665e19bc105be4edd3739f88315cc699cc5b65': 'weightedPool', // Weighted Pool V3
     '0xc7e5ed1054a24ef31d827e6f86caa58b3bc168d7': 'weightedPool', // weighted pool v4
+    '0x2498a2b0d6462d2260eac50ae1c3e03f4829ba95': 'composableStablePool', // ComposableStable V4
   },
   Stakable: {
     VotingGaugePools: [
@@ -119,6 +121,7 @@ const pools: Pools = {
       '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
       '0x542f16da0efb162d20bf4358efa095b70a100f9e000000000000000000000436',
       '0xc9f52540976385a84bf416903e1ca3983c539e34000200000000000000000434',
+      '0xa231aea07bb5e79ae162f95903806fc5ad65ff1100020000000000000000043f',
     ],
     AllowList: [],
   },

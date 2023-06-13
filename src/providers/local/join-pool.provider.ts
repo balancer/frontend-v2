@@ -379,15 +379,19 @@ export const joinPoolProvider = (
       level: 'fatal',
       extra: {
         joinHandler: joinHandlerType.value,
-        params: {
-          amountsIn: amountsInWithValue.value,
-          tokensIn: tokensIn.value,
-          signer: sender,
-          slippageBsp: slippageBsp.value,
-          relayerSignature: relayerSignature.value,
-          approvalActions: approvalActions.value,
-          transactionDeadline: transactionDeadline.value,
-        },
+        params: JSON.stringify(
+          {
+            amountsIn: amountsInWithValue.value,
+            tokensIn: tokensIn.value,
+            signer: sender,
+            slippageBsp: slippageBsp.value,
+            relayerSignature: relayerSignature.value,
+            approvalActions: approvalActions.value,
+            transactionDeadline: transactionDeadline.value,
+          },
+          null,
+          2
+        ),
       },
     });
   }

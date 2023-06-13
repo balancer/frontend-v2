@@ -1,10 +1,10 @@
 [
   {
-    "address": "0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b",
+    "address": "0xb78543e00712C3ABBA10D0852f6E38FDE2AaBA4d",
     "network": 1,
     "isKilled": false,
     "addedTimestamp": 1648465251,
-    "relativeWeightCap": "null",
+    "relativeWeightCap": "0.10",
     "pool": {
       "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
       "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
@@ -64,6 +64,28 @@
     },
     "tokenLogoURIs": {
       "0xf17d23136B4FeAd139f54fB766c8795faae09660": "https://raw.githubusercontent.com/balancer/assets/master/assets/0xfd0205066521550d7d7ab19da8f72bb004b4c341.png"
+    }
+  },
+  {
+    "address": "0x5b79494824Bc256cD663648Ee1Aad251B32693A9",
+    "network": 1,
+    "addedTimestamp": 1679160753,
+    "relativeWeightCap": "null",
+    "pool": {
+      "id": "0xd689abc77b82803f22c49de5c8a0049cc74d11fd000200000000000000000524",
+      "address": "0xd689ABc77B82803F22c49dE5C8A0049Cc74D11fD",
+      "poolType": "Stable",
+      "symbol": "veUSH",
+      "tokens": [
+        {
+          "address": "0xd027Ef82dB658805C9Ba8053196cD6ED1Dd407E4",
+          "weight": "null",
+          "symbol": "veUSH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xf17d23136B4FeAd139f54fB766c8795faae09660": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe60779cc1b2c1d0580611c526a8df0e3f870ec48.png"
     }
   }
 ]

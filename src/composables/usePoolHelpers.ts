@@ -244,7 +244,7 @@ export function poolURLFor(
     return `https://app.element.fi/pools/${addressFor(pool.id)}`;
   }
   if (pool.poolType && pool.poolType.toString() === 'FX') {
-    return `https://app.xave.finance/#/pool`;
+    return `https://app.xave.co/#/pool`;
   }
 
   return `${appUrl()}/${getNetworkSlug(network)}/pool/${pool.id}`;
@@ -436,6 +436,18 @@ export function flatTokenTree(
  */
 export function tokensListExclBpt(pool: Pool): string[] {
   return removeAddress(pool.address, pool.tokensList);
+}
+
+/**
+ * Filters the tokenList by excluding the addresses of those tokens that have token.pool defined.
+ * This is useful in certain cases, for example, when we want to exclude tokens like bb-a-DAI or bb-ag-GNO in coingecko requests,
+ * as they will be missing.
+ */
+export function tokensListExclPoolTokens(pool: Pool): string[] {
+  return tokensListExclBpt(pool).filter(address => {
+    const token = findTokenInTree(pool, address);
+    return !token?.token?.pool;
+  });
 }
 
 /**

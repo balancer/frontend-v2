@@ -1,7 +1,7 @@
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, ref, watch } from 'vue';
 import useNetwork from '../useNetwork';
-import { Relayer, Vault } from '@balancer-labs/sdk';
+import { Vault } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { useI18n } from 'vue-i18n';
@@ -11,6 +11,7 @@ import useGnosisSafeApp from '@/composables/useGnosisSafeApp';
 import { COW_RELAYER_CONTRACT_ADDRESS } from '@/services/cowswap/constants';
 import { isWalletConnectWallet } from '@/services/web3/wallet-names';
 import { useUserSettings } from '@/providers/user-settings.provider';
+import { getRelayer } from '@/dependencies/Relayer';
 
 /**
  * TYPES
@@ -40,7 +41,7 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   const { networkId } = useNetwork();
   const { t } = useI18n();
   const { isGnosisSafeApp } = useGnosisSafeApp();
-  const { action: transactionAction } = useRelayerApprovalTx(relayerType);
+  const relayerApprovalTx = useRelayerApprovalTx(relayerType);
   const { supportSignatures } = useUserSettings();
 
   const signatureAction: TransactionActionInfo = {
@@ -60,7 +61,7 @@ export default function useRelayerApproval(relayerType: RelayerType) {
     return !supportSignatures.value ||
       isGnosisSafeApp.value ||
       isWalletConnectWallet(connector.value?.id)
-      ? transactionAction.value
+      ? relayerApprovalTx.action.value
       : signatureAction;
   });
 
@@ -68,6 +69,7 @@ export default function useRelayerApproval(relayerType: RelayerType) {
    * METHODS
    */
   async function signRelayerApproval(): Promise<void> {
+    const Relayer = getRelayer();
     const relayerAddress = relayerAddressMap[relayerType];
     const signer = getSigner();
     const signerAddress = await signer.getAddress();
@@ -93,5 +95,6 @@ export default function useRelayerApproval(relayerType: RelayerType) {
   return {
     relayerSignature,
     relayerApprovalAction,
+    relayerApprovalTx,
   };
 }

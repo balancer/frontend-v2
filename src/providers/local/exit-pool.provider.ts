@@ -1,4 +1,3 @@
-import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -39,25 +38,13 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import {
-  computed,
-  InjectionKey,
-  onBeforeMount,
-  provide,
-  ref,
-  reactive,
-  toRef,
-  watch,
-  onMounted,
-  Ref,
-  readonly,
-} from 'vue';
 import { useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
 import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
 import { POOLS } from '@/constants/pools';
+import { shouldIgnoreError } from '@/lib/utils/vue-query';
 
 /**
  * TYPES
@@ -112,10 +99,8 @@ export const exitPoolProvider = (
   const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
-  const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
-    RelayerType.BATCH
-  );
+  const { relayerSignature, relayerApprovalAction, relayerApprovalTx } =
+    useRelayerApproval(RelayerType.BATCH);
 
   const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
   const debounceGetSingleAssetMax = debounce(
@@ -187,7 +172,7 @@ export const exitPoolProvider = (
     (): boolean =>
       exitHandlerType.value === ExitHandler.Generalised &&
       // Check if Batch Relayer is either approved, or signed
-      !(relayerApproval.isUnlocked.value || relayerSignature.value)
+      !(relayerApprovalTx.isUnlocked.value || relayerSignature.value)
   );
 
   const approvalActions = computed((): TransactionActionInfo[] =>
@@ -401,7 +386,7 @@ export const exitPoolProvider = (
       isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
-      logExitException(error as Error);
+      logExitException(error as Error, shouldIgnoreError(queryExitQuery));
       throw new Error('Failed to construct exit.', { cause: error });
     }
   }
@@ -444,7 +429,7 @@ export const exitPoolProvider = (
 
       return newMax;
     } catch (error) {
-      logExitException(error as Error);
+      logExitException(error as Error, shouldIgnoreError(singleAssetMaxQuery));
       throw new Error('Failed to calculate max.', { cause: error });
     }
   }
@@ -497,25 +482,32 @@ export const exitPoolProvider = (
     isSingleAssetExit.value = value;
   }
 
-  async function logExitException(error: Error) {
+  async function logExitException(error: Error, shouldIgnoreError = false) {
+    if (shouldIgnoreError) return;
+    // Ignore error when queryExit fails once the tx has been confirmed
+    if (txState.confirmed && queryError.value) return;
     const sender = await getSigner().getAddress();
     captureException(error, {
       level: 'fatal',
       extra: {
         exitHandler: exitHandlerType.value,
-        params: {
-          exitType: exitType.value,
-          bptIn: _bptIn.value,
-          amountsOut: amountsOut.value,
-          signer: sender,
-          slippageBsp: slippageBsp.value,
-          tokenInfo: exitTokenInfo.value,
-          approvalActions: approvalActions.value,
-          bptInValid: bptInValid.value,
-          relayerSignature: relayerSignature.value,
-          transactionDeadline: transactionDeadline.value,
-          toInternalBalance: shouldExitViaInternalBalance.value,
-        },
+        params: JSON.stringify(
+          {
+            exitType: exitType.value,
+            bptIn: _bptIn.value,
+            amountsOut: amountsOut.value,
+            signer: sender,
+            slippageBsp: slippageBsp.value,
+            tokenInfo: exitTokenInfo.value,
+            approvalActions: approvalActions.value,
+            bptInValid: bptInValid.value,
+            relayerSignature: relayerSignature.value,
+            transactionDeadline: transactionDeadline.value,
+            toInternalBalance: shouldExitViaInternalBalance.value,
+          },
+          null,
+          2
+        ),
       },
     });
   }
@@ -589,7 +581,7 @@ export const exitPoolProvider = (
     shouldExitViaInternalBalance,
     isTxPayloadReady,
     relayerSignature,
-    relayerApproval,
+    relayerApprovalTx,
 
     // methods
     setIsSingleAssetExit,

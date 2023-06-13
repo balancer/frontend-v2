@@ -58,7 +58,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     align: 'right',
     width: 150,
     accessor: ({ amount, token }) =>
-      `${fNum(amount, FNumFormats.token)} ${token.symbol}`,
+      `${fNum(amount, FNumFormats.token)} ${token?.symbol}`,
   },
   {
     name: t('value'),
@@ -82,19 +82,29 @@ const columns = ref<ColumnDefinition<Reward>[]>([
  * COMPUTED
  */
 const rewardsData = computed((): Reward[] => {
-  return props.gauge.rewardTokens.map(tokenAddress => {
-    const token = getToken(tokenAddress);
-    const amount = formatUnits(
-      props.gauge.claimableRewards[tokenAddress],
-      token.decimals
-    );
+  return props.gauge.rewardTokens
+    .map(tokenAddress => {
+      const token = getToken(tokenAddress);
+      const amount = formatUnits(
+        props.gauge.claimableRewards[tokenAddress],
+        token?.decimals || 18
+      );
 
-    return {
-      token,
-      amount,
-      value: toFiat(amount, token.address),
-    };
-  });
+      if (
+        bnum(amount).isZero() ||
+        !token?.address ||
+        !token?.symbol ||
+        !token?.decimals
+      )
+        return null;
+
+      return {
+        token,
+        amount,
+        value: token?.address ? toFiat(amount, token?.address) : '0',
+      };
+    })
+    .filter(r => r !== null) as Reward[];
 });
 
 const totalRewardValue = computed((): string => {
@@ -121,7 +131,7 @@ const totalRewardValue = computed((): string => {
       <template #tokenColumnCell="{ token }">
         <div class="flex items-center py-4 px-6">
           <BalAsset :iconURI="token?.logoURI" />
-          <span class="ml-2">{{ token.name }}</span>
+          <span class="ml-2">{{ token?.name }}</span>
         </div>
       </template>
       <template #totalValueCell>
