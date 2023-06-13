@@ -25,15 +25,14 @@ const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
 const activeNetworkFilters = useDebouncedRef<Network[]>([], 500);
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 
-const networkFilters = Object.entries(configs)
-  .map(([network, config]) => {
-    if (
-      !config.testNetwork &&
-      config.pools.Stakable.VotingGaugePools.length > 0
-    )
-      return network;
+const networkFilters: Network[] = Object.entries(configs)
+  .filter(details => {
+    const config = details[1];
+    return (
+      !config.testNetwork && config.pools.Stakable.VotingGaugePools.length > 0
+    );
   })
-  .filter(network => !!network);
+  .map(details => Number(details[0]) as Network);
 
 /**
  * COMPOSABLES
