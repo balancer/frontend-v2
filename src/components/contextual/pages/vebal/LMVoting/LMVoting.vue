@@ -13,7 +13,7 @@ import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
-import { Network } from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import GaugesFilters from './GaugesFilters.vue';
 import { isGaugeExpired } from './voting-utils';
 
@@ -25,13 +25,15 @@ const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
 const activeNetworkFilters = useDebouncedRef<Network[]>([], 500);
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 
-const networkFilters = [
-  Network.MAINNET,
-  Network.POLYGON,
-  Network.ARBITRUM,
-  Network.OPTIMISM,
-  Network.GNOSIS,
-];
+const networkFilters = Object.entries(configs)
+  .map(([network, config]) => {
+    if (
+      !config.testNetwork &&
+      config.pools.Stakable.VotingGaugePools.length > 0
+    )
+      return network;
+  })
+  .filter(network => !!network);
 
 /**
  * COMPOSABLES
