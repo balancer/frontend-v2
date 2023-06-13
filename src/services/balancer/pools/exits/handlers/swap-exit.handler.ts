@@ -198,7 +198,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     maxSlippage: number,
     userAddress: string
   ) {
-    const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
+    const deadline = getTimestampSecondsFromNow(60).toString(); // 60 seconds from now
     const kind =
       exitType === ExitType.GivenIn
         ? SwapType.SwapExactIn
