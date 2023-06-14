@@ -45,7 +45,6 @@ const isVebalBalanceZero = computed(() => {
 /**
  * METHODS
  */
-
 function onCloseModal() {
   isSyncModalOpen.value = false;
 }
@@ -61,22 +60,26 @@ function onCloseModal() {
         </template>
       </BalTooltip>
     </h3>
-    <BalAlert
-      v-if="warningMessage.title && !(isLoading || dynamicDataLoading)"
-      :title="warningMessage.title"
-      type="warning"
-      class="mb-4"
-    >
-      {{ warningMessage.text }}
-    </BalAlert>
-    <BalAlert
-      v-else-if="infoMessage.title"
-      :title="infoMessage.title"
-      type="tip"
-      class="mb-4"
-    >
-      {{ infoMessage.text }}
-    </BalAlert>
+
+    <template v-if="!(isLoading || dynamicDataLoading)">
+      <BalAlert
+        v-if="warningMessage.title"
+        :title="warningMessage.title"
+        type="warning"
+        class="mb-4"
+      >
+        {{ warningMessage.text }}
+      </BalAlert>
+      <BalAlert
+        v-else-if="infoMessage.title"
+        :title="infoMessage.title"
+        type="tip"
+        class="mb-4"
+      >
+        {{ infoMessage.text }}
+      </BalAlert>
+    </template>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />

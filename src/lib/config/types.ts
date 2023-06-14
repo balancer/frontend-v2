@@ -43,6 +43,7 @@ export interface Contracts {
   veBAL: string;
   gaugeController: string;
   gaugeFactory: string;
+  gaugeWorkingBalanceHelper?: string;
   balancerMinter: string;
   tokenAdmin: string;
   veDelegationProxy: string;

@@ -41,7 +41,7 @@ defineProps<Props>();
         <div class="p-4 font-semibold text-black dark:text-gray-300 grow">
           {{ networkLabelMap[network] }}
         </div>
-        <div class="p-4 font-medium text-black text-emerald-600">
+        <div class="p-4 pr-0 font-medium text-black text-emerald-600">
           {{ veBalBalance }} veBAL
         </div>
       </div>

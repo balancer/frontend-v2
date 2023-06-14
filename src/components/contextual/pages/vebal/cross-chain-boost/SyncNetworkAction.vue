@@ -4,12 +4,16 @@ import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { TransactionActionInfo } from '@/types/transactions';
 import { networkLabelMap } from '@/composables/useNetwork';
 import { useI18n } from 'vue-i18n';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import {
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
 import {
   L2VeBalBalances,
   TempSyncingNetworks,
 } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
+import useEthers from '@/composables/useEthers';
 
 /**
  * TYPES
@@ -36,6 +40,7 @@ const emit = defineEmits(['update:activeTabIdx', 'setSuccessfulSynced']);
  */
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
+const { txListener } = useEthers();
 
 /**
  * STATE
@@ -54,6 +59,15 @@ async function handleTransaction(
     type: 'tx',
     action: 'sync',
     summary: `Sync veBal to ${networkLabelMap[network]} network`,
+  });
+
+  txListener(tx, {
+    onTxConfirmed: (receipt: TransactionReceipt) => {
+      console.log('Receipt', receipt);
+    },
+    onTxFailed: () => {
+      //
+    },
   });
 }
 
