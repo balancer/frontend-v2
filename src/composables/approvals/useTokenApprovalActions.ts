@@ -205,9 +205,8 @@ export default function useTokenApprovalActions() {
           }),
         postActionValidation: () => isApprovalValid(amountToApprove, spender),
         actionInvalidReason: {
-          title: 'Approval insufficient',
-          description:
-            "Approved amount isn't enough to cover the transaction, please try again.",
+          title: t('actionSteps.approve.invalidReason.title'),
+          description: t('actionSteps.approve.invalidReason.description'),
         },
       };
     });
