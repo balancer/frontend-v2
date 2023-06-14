@@ -66,6 +66,7 @@ export const crossChainSyncProvider = () => {
     data: omniEscrowResponse,
     isInitialLoading: isLoadingOmniEscrow,
     refetch: refetchOmniEscrow,
+    isError: isOmniEscrowError,
   } = useOmniEscrowLocksQuery(account);
 
   // if omniEscrowLocks is empty, then all networks are unsynced
@@ -154,6 +155,13 @@ export const crossChainSyncProvider = () => {
           tempSyncingNetworks.value[account.value]?.networks.includes(network)
       ),
     };
+  });
+
+  const hasError = computed(() => {
+    const hasVotingEscrowError = supportedNetworks.some(network => {
+      return crossChainNetworks[network].isError.value;
+    });
+    return isOmniEscrowError.value || hasVotingEscrowError;
   });
 
   const l2VeBalBalances = computed<L2VeBalBalances>(() => {
@@ -276,6 +284,7 @@ export const crossChainSyncProvider = () => {
   );
 
   return {
+    hasError,
     omniEscrowLocks,
     networksSyncState,
     isLoading,

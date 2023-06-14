@@ -19,6 +19,7 @@ export function useCrossChainNetwork(
   const {
     data: votingEscrowResponse,
     refetch,
+    isError,
     isInitialLoading: isLoading,
   } = useVotingEscrowLocksQuery(networkId, user);
 
@@ -31,7 +32,7 @@ export function useCrossChainNetwork(
     mainnetEscrowLock?: VotingEscrowLock
   ) {
     if (!omniEscrowLock || !mainnetEscrowLock || !votingEscrowLocks.value) {
-      return NetworkSyncState.Unknown;
+      return NetworkSyncState.Unsynced;
     }
 
     const biasOmni = omniEscrowLock.bias;
@@ -44,7 +45,7 @@ export function useCrossChainNetwork(
     const slopeNetwork = votingEscrowLocks.value.slope;
 
     if (!omniEscrowLock.slope || !mainnetEscrowLock.slope || !slopeNetwork)
-      return NetworkSyncState.Unknown;
+      return NetworkSyncState.Unsynced;
 
     const isSynced =
       allEqual([biasOmni, biasMainnet, biasNetwork]) &&
@@ -91,5 +92,6 @@ export function useCrossChainNetwork(
     refetch,
     calculateVeBAlBalance,
     isLoading,
+    isError,
   };
 }

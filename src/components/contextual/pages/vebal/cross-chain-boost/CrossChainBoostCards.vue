@@ -26,6 +26,7 @@ const {
   setTempSyncingNetworks,
   warningMessage,
   infoMessage,
+  hasError,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -61,6 +62,14 @@ function onCloseModal() {
         </template>
       </BalTooltip>
     </h3>
+
+    <BalAlert v-if="hasError" title="Error" type="error" class="mb-4">
+      <div>
+        Error has occured while fetching syncing states of some networks. Please
+        refresh the page.
+      </div>
+    </BalAlert>
+
     <BalAlert
       v-if="warningMessage.title && !(isLoading || dynamicDataLoading)"
       :title="warningMessage.title"
@@ -94,7 +103,7 @@ function onCloseModal() {
               v-if="networksBySyncState.unsynced.length === 0"
               class="text-sm text-gray-600"
             >
-              {{ $t('crossChainBoost.syncedAllDescription') }}
+              {{ hasError ? '—' : $t('crossChainBoost.syncedAllDescription') }}
             </span>
             <div v-else class="flex">
               <div
@@ -137,7 +146,7 @@ function onCloseModal() {
             v-if="networksBySyncState.synced.length === 0"
             class="text-sm text-gray-600"
           >
-            {{ $t('crossChainBoost.unsyncedAllDescription') }}
+            {{ hasError ? '—' : $t('crossChainBoost.unsyncedAllDescription') }}
           </span>
 
           <div v-else class="flex">
