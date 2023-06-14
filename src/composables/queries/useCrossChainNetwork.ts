@@ -30,7 +30,9 @@ export function useCrossChainNetwork(
     omniEscrowLock?: OmniEscrowLock | null,
     mainnetEscrowLock?: VotingEscrowLock
   ) {
-    if (!omniEscrowLock || !mainnetEscrowLock) return NetworkSyncState.Unsynced;
+    if (!omniEscrowLock || !mainnetEscrowLock || !votingEscrowLocks.value) {
+      return NetworkSyncState.Unknown;
+    }
 
     const biasOmni = omniEscrowLock.bias;
     const slopeOmni = omniEscrowLock.slope;
@@ -38,11 +40,11 @@ export function useCrossChainNetwork(
     const biasMainnet = mainnetEscrowLock.bias;
     const slopeMainnet = mainnetEscrowLock.slope;
 
-    const biasNetwork = votingEscrowLocks.value?.bias;
-    const slopeNetwork = votingEscrowLocks.value?.slope;
+    const biasNetwork = votingEscrowLocks.value.bias;
+    const slopeNetwork = votingEscrowLocks.value.slope;
 
     if (!omniEscrowLock.slope || !mainnetEscrowLock.slope || !slopeNetwork)
-      return NetworkSyncState.Unsynced;
+      return NetworkSyncState.Unknown;
 
     const isSynced =
       allEqual([biasOmni, biasMainnet, biasNetwork]) &&

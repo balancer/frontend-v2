@@ -12,6 +12,7 @@ export enum NetworkSyncState {
   Unsynced = 'Unsynced',
   Syncing = 'Syncing',
   Synced = 'Synced',
+  Unknown = 'Unknown',
 }
 export interface NetworksBySyncState {
   synced: Network[];
@@ -222,15 +223,11 @@ export const crossChainSyncProvider = () => {
     }
   }
 
-  let disposeRefetchOnInterval;
+  let disposeRefetchOnInterval: NodeJS.Timeout;
   function refetchOnInterval() {
     disposeRefetchOnInterval = setInterval(() => {
       void refetch();
     }, REFETCH_INTERVAL);
-
-    return () => {
-      clearInterval(disposeRefetchOnInterval);
-    };
   }
 
   function setTempSyncingNetworks(syncingNetworks: Network[]) {
@@ -267,14 +264,14 @@ export const crossChainSyncProvider = () => {
   watch(
     () => networksBySyncState.value,
     newVal => {
+      clearTempSyncingNetworks();
+
       if (newVal.syncing.length > 0 && !disposeRefetchOnInterval) {
         refetchOnInterval();
       }
-      if (newVal.syncing.length === 0) {
-        disposeRefetchOnInterval?.();
+      if (newVal.syncing.length === 0 && disposeRefetchOnInterval) {
+        clearInterval(disposeRefetchOnInterval);
       }
-
-      clearTempSyncingNetworks();
     }
   );
 
