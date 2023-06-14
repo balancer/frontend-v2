@@ -6,10 +6,11 @@ import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.v
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
+import { ApprovalAction } from '@/composables/approvals/types';
 
 /**
  * TYPES
@@ -55,10 +56,6 @@ const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { networkConfig } = useConfig();
 const { isTxConfirmed } = useEthers();
-const { fetchTokenApprovalActions } = useTokenApprovalActions(
-  toRef(props, 'tokenAddresses'),
-  toRef(props, 'amounts')
-);
 const {
   createPool,
   joinPool,
@@ -69,6 +66,7 @@ const {
   createPoolTxHash,
 } = usePoolCreation();
 const { networkSlug } = useNetwork();
+const { getTokenApprovalActions } = useTokenApprovalActions();
 
 const actions = ref<TransactionActionInfo[]>([
   {
@@ -100,6 +98,13 @@ const requiredActions = computed(() => {
   return actions.value;
 });
 
+const amountsToApprove = props.amounts.map((amount, index) => {
+  return {
+    address: props.tokenAddresses[index],
+    amount,
+  };
+});
+
 const explorerLink = computed((): string =>
   createState.receipt
     ? explorerLinks.txLink(createState.receipt.transactionHash)
@@ -114,9 +119,11 @@ onBeforeMount(async () => {
     createState.isRestoredTxConfirmed = isConfirmed;
   }
 
-  const approvalActions = await fetchTokenApprovalActions(
-    networkConfig.addresses.vault
-  );
+  const approvalActions = await getTokenApprovalActions({
+    amountsToApprove,
+    spender: networkConfig.addresses.vault,
+    actionType: ApprovalAction.AddLiquidity,
+  });
   actions.value = [...approvalActions, ...actions.value];
 });
 
