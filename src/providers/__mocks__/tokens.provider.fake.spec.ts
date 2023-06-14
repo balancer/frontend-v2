@@ -95,15 +95,13 @@ test('Fakes provided methods', async () => {
   const nativeAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
   expect(approvalRequired(nativeAddress, '100')).toBeFalse();
 
-  expect(
-    approvalsRequired(
-      [
-        { address: daiAddress, amount: '50' },
-        { address: wethAddress, amount: '75' },
-      ],
-      vaultAddress
-    )
-  ).toEqual([daiAddress, wethAddress]);
+  const amountsToApprove = [
+    { address: daiAddress, amount: '50' },
+    { address: wethAddress, amount: '75' },
+  ];
+  expect(approvalsRequired(amountsToApprove, vaultAddress)).toEqual(
+    amountsToApprove
+  );
 
   expect(priceFor('any address')).toBe(defaultTokenPrice);
   expect(balanceFor('any address')).toBe(defaultTokenBalance);
