@@ -46,6 +46,10 @@ describe('Generates links for', () => {
           "hash": "#composability-risk",
           "title": "Third party DeFi composability risks: Aave, Morpho",
         },
+        {
+          "hash": "#general-risks",
+          "title": "General Balancer protocol risks",
+        },
       ]
     `);
   });
@@ -67,6 +71,10 @@ describe('Generates links for', () => {
           "hash": "#mutable-attributes-risk",
           "title": "Mutable attributes risks",
         },
+        {
+          "hash": "#general-risks",
+          "title": "General Balancer protocol risks",
+        },
       ]
     `);
   });
@@ -83,6 +91,10 @@ describe('Generates links for', () => {
         {
           "hash": "#polygon",
           "title": "Layer 2 network risks: Polygon",
+        },
+        {
+          "hash": "#general-risks",
+          "title": "General Balancer protocol risks",
         },
       ]
     `);
@@ -115,6 +127,10 @@ describe('Generates links for', () => {
           {
             "hash": "#composable-pools",
             "title": "MetaStable pool risks",
+          },
+          {
+            "hash": "#general-risks",
+            "title": "General Balancer protocol risks",
           },
         ]
       `);
