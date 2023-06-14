@@ -7,6 +7,7 @@ import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-v
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
+import { txResponseMock } from '@/__mocks__/transactions';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -208,12 +209,7 @@ export const crossChainSyncProvider = () => {
     const { nativeFee } = tx;
     console.log('nativeFee', nativeFee);
 
-    const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
-      signer,
-      userAddress: account.value,
-      chainId: LayerZeroNetworkId[network],
-      nativeFee,
-    });
+    const sendUserBalanceTx = txResponseMock;
 
     return sendUserBalanceTx;
   }
