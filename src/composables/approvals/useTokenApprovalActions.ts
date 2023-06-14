@@ -4,7 +4,6 @@ import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 import { ApprovalAction } from './types';
-import { findByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { TokenInfo } from '@/types/TokenList';
 import { parseUnits } from '@ethersproject/units';
@@ -89,11 +88,9 @@ export default function useTokenApprovalActions() {
   async function getApprovalsRequired(
     amountsToApprove: AmountToApprove[],
     spender: string
-  ): Promise<string[]> {
+  ): Promise<AmountToApprove[]> {
     await refetchAllowances();
-    const tokenAddresses = amountsToApprove.map(ata => ata.address);
-    const amounts = amountsToApprove.map(ata => ata.amount);
-    return approvalsRequired(tokenAddresses, amounts, spender);
+    return approvalsRequired(amountsToApprove, spender);
   }
 
   async function isApprovalValid(
@@ -183,12 +180,8 @@ export default function useTokenApprovalActions() {
       spender
     );
 
-    return approvalsRequired.map(address => {
-      const token = getToken(address);
-      const amountToApprove = findByAddress(
-        amountsToApprove,
-        address
-      ) as AmountToApprove;
+    return approvalsRequired.map(amountToApprove => {
+      const token = getToken(amountToApprove.address);
 
       return {
         label: actionLabel(actionType, token.symbol),
