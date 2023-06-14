@@ -23,7 +23,7 @@ interface Params {
   amountsToApprove: AmountToApprove[];
   spender: string;
   actionType: ApprovalAction;
-  forceMaxApprovals?: boolean;
+  forceMax?: boolean;
 }
 
 interface ApproveTokenParams {
@@ -176,7 +176,7 @@ export default function useTokenApprovalActions() {
     amountsToApprove,
     spender,
     actionType,
-    forceMaxApprovals = true,
+    forceMax = true,
   }: Params): Promise<TransactionActionInfo[]> {
     const approvalsRequired = await getApprovalsRequired(
       amountsToApprove,
@@ -201,7 +201,7 @@ export default function useTokenApprovalActions() {
             normalizedAmount: amountToApprove.amount,
             spender,
             actionType,
-            forceMax: forceMaxApprovals,
+            forceMax,
           }),
         postActionValidation: () => isApprovalValid(amountToApprove, spender),
         actionInvalidReason: {
