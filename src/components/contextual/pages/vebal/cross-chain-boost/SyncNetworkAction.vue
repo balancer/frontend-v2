@@ -29,7 +29,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
-const emit = defineEmits(['update:activeTabIdx', 'setSuccessfulSynced']);
+const emit = defineEmits(['update:activeTabIdx']);
 
 /**
  * COMPOSABLES
@@ -70,14 +70,13 @@ async function handleAction(network: Network) {
 }
 
 function handleSuccess() {
-  const tempSyncingNetworks = props.setTempSyncingNetworks(
-    Array.from(props.chosenNetworks)
-  );
-  localStorage.setItem(
-    'tempSyncingNetworks',
-    JSON.stringify(tempSyncingNetworks)
-  );
-  emit('setSuccessfulSynced');
+  // const tempSyncingNetworks = props.setTempSyncingNetworks(
+  //   Array.from(props.chosenNetworks)
+  // );
+  // localStorage.setItem(
+  //   'tempSyncingNetworks',
+  //   JSON.stringify(tempSyncingNetworks)
+  // );
   emit('update:activeTabIdx', 2);
 }
 
