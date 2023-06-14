@@ -1,5 +1,4 @@
-import { RiskKey } from '@/components/contextual/pages/pool/risks/pool-risks';
-import { Pools } from '@/types/pools';
+import { Pools, RiskKey } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {},

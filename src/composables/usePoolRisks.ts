@@ -15,24 +15,8 @@ import {
 } from '@/composables/usePoolHelpers';
 import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
+import { RiskKey } from '@/types/pools';
 import { capitalize } from 'lodash';
-
-export enum RiskKey {
-  General = 'general-risks',
-  Weighted = 'weighted-pools',
-  Stable = 'stable-pools',
-  ComposableStable = 'composable-pools',
-  MetaStable = 'composable-pools',
-  Boosted = 'boosted-pools',
-  Arbitrum = 'arbitrum',
-  Polygon = 'polygon',
-  Optimism = 'optimism',
-  Gnosis = 'gnosis',
-  Mutable = 'mutable-attributes-risk',
-  Composability = 'composability-risk',
-  RateProvider = 'rate-provider-risk',
-  RateProviderBridge = 'rate-provider-bridges',
-}
 
 export const riskTitles = {
   [RiskKey.Weighted]: 'Weighted pool risks',

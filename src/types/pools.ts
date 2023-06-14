@@ -1,6 +1,4 @@
-import { RiskKey } from '@/components/contextual/pages/pool/risks/pool-risks';
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -20,6 +18,23 @@ export type PoolMetadata = {
   boosted?: boolean;
   boostedProtocols?: BoostedProtocol[];
 };
+
+export enum RiskKey {
+  General = 'general-risks',
+  Weighted = 'weighted-pools',
+  Stable = 'stable-pools',
+  ComposableStable = 'composable-pools',
+  MetaStable = 'composable-pools',
+  Boosted = 'boosted-pools',
+  Arbitrum = 'arbitrum',
+  Polygon = 'polygon',
+  Optimism = 'optimism',
+  Gnosis = 'gnosis',
+  Mutable = 'mutable-attributes-risk',
+  Composability = 'composability-risk',
+  RateProvider = 'rate-provider-risk',
+  RateProviderBridge = 'rate-provider-bridges',
+}
 
 export type NamedPools = {
   staBAL: string;

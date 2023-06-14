@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
-import { riskLinks, risksTitle, poolSpecificRisks } from './pool-risks';
+import {
+  riskLinks,
+  risksTitle,
+  poolSpecificRisks,
+} from '@/composables/usePoolRisks';
 
 /**
  * TYPES
@@ -19,7 +23,7 @@ defineProps<Props>();
   <div id="risks-section">
     <h3 class="px-4 lg:px-0 mb-5" v-text="$t('poolRisks.title')" />
 
-    <p v-if="poolSpecificRisks(pool)" class="px-4 lg:px-0 mb-5">
+    <p v-if="poolSpecificRisks(pool).length > 0" class="px-4 lg:px-0 mb-5">
       {{ poolSpecificRisks(pool) }}
     </p>
 

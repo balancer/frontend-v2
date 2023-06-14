@@ -3,7 +3,7 @@ import {
   generateThirdPartyComposabilityRisks,
   riskLinks,
   risksTitle,
-} from './pool-risks';
+} from './usePoolRisks';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { aPool } from '@tests/unit/builders/pool.builders';
 import { PoolType } from '@balancer-labs/sdk';
