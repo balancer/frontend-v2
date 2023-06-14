@@ -35,7 +35,7 @@ export const riskTitles = {
     'Rate provider cross-chain bridge risks: Layer Zero',
 };
 
-interface Risk {
+export interface Risk {
   title: string;
   hash: string;
 }
@@ -80,7 +80,9 @@ export function riskLinks(pool: Pool): Risk[] {
 
   if (hasOwner(pool)) result.push(mutableRisks);
 
-  return [...result, ...poolSpecificRisks(pool)];
+  result.push(aLink(RiskKey.General));
+
+  return result;
 }
 
 export function generateThirdPartyComposabilityRisks(pool): Risk | undefined {
