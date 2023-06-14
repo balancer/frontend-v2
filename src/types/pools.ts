@@ -1,3 +1,4 @@
+import { RiskKey } from '@/components/contextual/pages/pool/risks/pool-risks';
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 
 export type FactoryType =
@@ -105,6 +106,7 @@ export type Pools = {
   GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
   Issues?: Partial<Record<PoolWarning, string[]>>;
+  Risks?: Record<string, RiskKey[]>;
 };
 
 export enum PoolWarning {
