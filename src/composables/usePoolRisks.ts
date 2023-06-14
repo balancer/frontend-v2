@@ -51,14 +51,12 @@ function aLink(key: RiskKey, title?: string) {
 const weightedRisks = aLink(RiskKey.Weighted);
 const stableRisks = aLink(RiskKey.Stable);
 const composableRisks = aLink(RiskKey.ComposableStable);
-const metaStableRisks = aLink(RiskKey.ComposableStable);
+const metaStableRisks = aLink(RiskKey.MetaStable);
 const boostedRisks = aLink(RiskKey.Boosted);
-// L2 risks
 const arbitrumRisks = aLink(RiskKey.Arbitrum);
 const polygonRisks = aLink(RiskKey.Polygon);
 const optimismRisks = aLink(RiskKey.Optimism);
 const gnosisRisks = aLink(RiskKey.Gnosis);
-// Mutable risks
 const mutableRisks = aLink(RiskKey.Mutable);
 
 export function riskLinks(pool: Pool): Risk[] {
