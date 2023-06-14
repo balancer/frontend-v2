@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+import { RiskKey } from '@/types/pools';
+</script>
+
 <template>
   <div class="pb-4 risks">
     <div class="pb-3">
@@ -127,7 +131,7 @@
 
     <h2>Risks for Liquidity Providers (LPs)</h2>
 
-    <div id="general-risks" class="risk">
+    <div :id="RiskKey.General" class="risk">
       <h3>General risks</h3>
       <h4>Smart contract risk</h4>
       <p>
@@ -197,7 +201,7 @@
       </ul>
     </div>
 
-    <div id="economic-risk" class="risk">
+    <div :id="RiskKey.Economic" class="risk">
       <h4>Mechanism / Economic risk</h4>
       <p>
         An mechanism or economic exploit of a DeFi protocol occurs when an
@@ -236,7 +240,7 @@
         </li>
       </ul>
     </div>
-    <div id="toxic-token-risk" class="risk">
+    <div :id="RiskKey.ToxicToken" class="risk">
       <h4>Toxic pool token risk</h4>
       <p>
         A liquidity pool is only as good as its weakest token. This is because
@@ -279,7 +283,7 @@
         </li>
       </ul>
 
-      <div id="rebasing-tokens" class="risk">
+      <div :id="RiskKey.RebaseToken" class="risk">
         <h5>Rebasing tokens</h5>
         <p>
           Rebasing tokens are a type of cryptocurrency that adjusts the supply
@@ -355,7 +359,7 @@
       </ul>
     </div>
 
-    <div id="composability-risk" class="risk">
+    <div :id="RiskKey.Composability" class="risk">
       <h4>DeFi composability risks</h4>
       <p>
         DeFi composability refers to the ability of different DeFi protocols and
@@ -382,7 +386,7 @@
       </p>
     </div>
 
-    <div id="governance-risk" class="risk">
+    <div :id="RiskKey.Governance" class="risk">
       <h4>DAO Governance risk</h4>
       <p>
         Balancer currently uses off-chain voting mechanisms to signal the will
@@ -491,7 +495,7 @@
       </ul>
     </div>
 
-    <div id="flash-loans-risk" class="risk">
+    <div :id="RiskKey.FlashLoan" class="risk">
       <h4>Flash Loans risk</h4>
       <p>
         A Flash Loan is a type of loan where a user borrows assets with no
@@ -526,7 +530,7 @@
       </ul>
     </div>
 
-    <div id="mutable-attributes-risk" class="risk">
+    <div :id="RiskKey.Mutable" class="risk">
       <h4>Mutable pool attributes</h4>
       <p>
         Balancer is a flexible AMM that allows people to create different types
@@ -589,7 +593,7 @@
       </ul>
     </div>
 
-    <div id="join-exit-risk" class="risk">
+    <div :id="RiskKey.JoinExit" class="risk">
       <h4>Loss of funds on join/exit of a pool</h4>
       <h5>Due to high price impact</h5>
       <p>
@@ -659,7 +663,7 @@
       </ul>
     </div>
 
-    <div id="impermanent-loss-risk" class="risk">
+    <div :id="RiskKey.ImpermanentLoss" class="risk">
       <h4>Impermanent loss</h4>
       <p>
         Impermanent loss is a risk that liquidity providers (LPs) face when
@@ -723,7 +727,7 @@
       </ul>
     </div>
 
-    <div id="ui-risk" class="risk">
+    <div :id="RiskKey.UI" class="risk">
       <h4>User Interface (UI) risk</h4>
       <p>
         DeFi users, including liquidity providers and swappers, typically
@@ -791,7 +795,7 @@
       </ul>
     </div>
 
-    <div id="regulatory-risk" class="risk">
+    <div :id="RiskKey.Regulatory" class="risk">
       <h4>Regulatory risk</h4>
       <p>
         The regulatory frameworks applicable to blockchain transactions in
@@ -816,7 +820,7 @@
       </p>
     </div>
     <hr />
-    <div id="pool-type-risks" class="risk">
+    <div :id="RiskKey.PoolType" class="risk">
       <h3>Pool type risks</h3>
       <p>
         Balancer is designed to be infinitely extendible to allow for any
@@ -824,7 +828,7 @@
         more. The general risks of the most popular pool types are listed below.
       </p>
     </div>
-    <div id="weighted-pools" class="risk">
+    <div :id="RiskKey.Weighted" class="risk">
       <h4>Weighted Pools</h4>
       <p>
         Weighted Pools use&nbsp;<a
@@ -858,7 +862,7 @@
       </ul>
     </div>
 
-    <div id="stable-pools" class="risk">
+    <div :id="RiskKey.Stable" class="risk">
       <h4>Stable Pools</h4>
       <h5>Loss of stablecoin peg</h5>
       <p>
@@ -906,7 +910,7 @@
       </p>
     </div>
 
-    <div id="composable-pools" class="risk">
+    <div :id="RiskKey.ComposableStable" class="risk">
       <h4>Composable Stable Pools &amp; MetaStable Pools</h4>
       <p>
         Composable Stable Pools are designed for assets that are either expected
@@ -938,7 +942,7 @@
         constituent stablecoin tokens. In addition, there are risks associated
         with the involvement of rate providers.
       </p>
-      <div id="rate-provider-risk" class="!pb-0 risk">
+      <div :id="RiskKey.RateProvider" class="!pb-0 risk">
         <h5>Rate provider risk</h5>
         <p>
           Rate Providers are contracts that provide an exchange rate between two
@@ -951,7 +955,7 @@
           accurate and timely exchange rates between pool tokens.
         </p>
 
-        <div id="oracles" class="!pb-0 risk">
+        <div :id="RiskKey.Oracle" class="!pb-0 risk">
           <h6>Oracle risk</h6>
           <p>
             Oracles are data providers which supply external information to
@@ -1000,7 +1004,7 @@
             </li>
           </ul>
         </div>
-        <div id="rate-provider-bridges" class="!pb-0 risk">
+        <div :id="RiskKey.RateProviderBridge" class="!pb-0 risk">
           <h6>Rate provider cross-chain bridge risk</h6>
           <p>
             Pools may use rate providers that are bridged between blockchain
@@ -1017,7 +1021,7 @@
       </div>
     </div>
 
-    <div id="boosted-pools" class="risk">
+    <div :id="RiskKey.Boosted" class="risk">
       <h4>Boosted Pools</h4>
       <p>
         Typically, only 10% or less of the liquidity deposited into an AMM pool
@@ -1079,7 +1083,7 @@
       </p>
     </div>
     <hr />
-    <div id="network-risks" class="risk">
+    <div :id="RiskKey.Network" class="risk">
       <h3>Layer 2 network risks</h3>
       <p>
         Sidechains and Layer 2 networks can offer advantages over Ethereum
@@ -1100,7 +1104,7 @@
         the bridging process.
       </p>
     </div>
-    <div id="arbitrum" class="risk">
+    <div :id="RiskKey.Arbitrum" class="risk">
       <h4>Arbitrum One risks</h4>
       <p>
         <a class="link" href="https://arbitrum.io/">Arbitrum</a> is a Layer 2
@@ -1115,7 +1119,7 @@
       </p>
     </div>
 
-    <div id="optimism" class="risk">
+    <div :id="RiskKey.Optimism" class="risk">
       <h4>Optimism risks</h4>
       <p>
         <a class="link" href="https://www.optimism.io/">Optimism</a> is a Layer
@@ -1135,7 +1139,7 @@
       </p>
     </div>
 
-    <div id="polygon" class="risk">
+    <div :id="RiskKey.Polygon" class="risk">
       <h4>Polygon risks</h4>
       <p>
         <a class="link" href="https://polygon.technology/">Polygon</a> is
@@ -1150,7 +1154,7 @@
       </p>
     </div>
 
-    <div id="gnosis" class="risk">
+    <div :id="RiskKey.Gnosis" class="risk">
       <h4>Gnosis chain risks</h4>
       <p>
         <a class="link" href="https://www.gnosis.io/">Gnosis Chain</a>, formerly

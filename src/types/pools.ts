@@ -21,6 +21,18 @@ export type PoolMetadata = {
 
 export enum RiskKey {
   General = 'general-risks',
+  Economic = 'economic-risk',
+  ToxicToken = 'toxic-token-risk',
+  RebaseToken = 'rebasing-tokens',
+  Governance = 'governance-risk',
+  FlashLoan = 'flash-loans-risk',
+  JoinExit = 'join-exit-risk',
+  ImpermanentLoss = 'impermanent-loss-risk',
+  UI = 'ui-risk',
+  Regulatory = 'regulatory-risk',
+  PoolType = 'pool-type-risk',
+  Oracle = 'oracles',
+  Network = 'network-risks',
   Weighted = 'weighted-pools',
   Stable = 'stable-pools',
   ComposableStable = 'composable-pools',
