@@ -196,7 +196,7 @@ const lpVoteOverLimitWarning = computed(() => {
 const voteWarning = computed(
   (): {
     title: string;
-    description: string;
+    description?: string;
   } | null => {
     if (lpVoteOverLimitWarning.value) return lpVoteOverLimitWarning.value;
     if (voteState.error.value) return voteState.error.value;
