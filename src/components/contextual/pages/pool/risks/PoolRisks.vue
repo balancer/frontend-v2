@@ -17,20 +17,29 @@ type Props = {
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const _poolSpecificRisks = poolSpecificRisks(props.pool);
+const _poolGeneralRisks = riskLinks(props.pool);
+
+const hasSpecificRisks = _poolSpecificRisks.length > 0;
 </script>
 
 <template>
   <div id="risks-section">
-    <h3 class="px-4 lg:px-0 mb-5" v-text="$t('poolRisks.title')" />
+    <h3 class="px-4 lg:px-0 mb-3" v-text="$t('poolRisks.title')" />
 
-    <PoolRiskList :risks="poolSpecificRisks(pool)" />
+    <PoolRiskList
+      v-if="hasSpecificRisks"
+      :risks="_poolSpecificRisks"
+      class="mb-3"
+    />
 
     <p class="px-4 lg:px-0 mb-3">
       {{ risksTitle(pool) }}
     </p>
 
-    <PoolRiskList :risks="riskLinks(pool)" />
+    <PoolRiskList :risks="_poolGeneralRisks" />
   </div>
 </template>
 
