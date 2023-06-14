@@ -19,7 +19,7 @@ export function useCrossChainNetwork(
   const {
     data: votingEscrowResponse,
     refetch,
-    isLoading,
+    isInitialLoading: isLoading,
   } = useVotingEscrowLocksQuery(networkId, user);
 
   const votingEscrowLocks = computed(
