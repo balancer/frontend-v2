@@ -85,34 +85,5 @@
       "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
       "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png"
     }
-  },
-  {
-    "address": "0xe42382D005A620FaaA1B82543C9c04ED79Db03bA",
-    "network": 137,
-    "isKilled": false,
-    "addedTimestamp": 1663017781,
-    "relativeWeightCap": "null",
-    "pool": {
-      "id": "0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702",
-      "address": "0x726E324c29a1e49309672b244bdC4Ff62A270407",
-      "poolType": "FX",
-      "symbol": "XSGD-USDC",
-      "tokens": [
-        {
-          "address": "0xDC3326e71D45186F113a2F448984CA0e8D201995",
-          "weight": "null",
-          "symbol": "XSGD"
-        },
-        {
-          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-          "weight": "null",
-          "symbol": "USDC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0xDC3326e71D45186F113a2F448984CA0e8D201995": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x70e8dE73cE538DA2bEEd35d14187F6959a8ecA96/logo.png",
-      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png"
-    }
   }
 ]
