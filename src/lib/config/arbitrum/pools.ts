@@ -70,6 +70,7 @@ const pools: Pools = {
       '0x00e7ccb0e16fc07d0cb528efea2c130c41c2fc1600010000000000000000043d', // 25LDO/25wstETH/25RPL/25rETH
       '0xa231aea07bb5e79ae162f95903806fc5ad65ff1100020000000000000000043f', // dfx/weth
       '0xce2da1d3e5b5e4e1913f9ff65ee029d38682d8b900020000000000000000044e', // acid/weth
+      '0xd0dc20e6342db2de82692b8dc842301ff9121805000200000000000000000454', // nfte/wsteth-bb-a-weth
     ],
   },
   Factories: {
