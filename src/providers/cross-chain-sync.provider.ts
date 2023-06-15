@@ -7,7 +7,6 @@ import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-v
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
-import { txResponseMock } from '@/__mocks__/transactions';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -209,7 +208,12 @@ export const crossChainSyncProvider = () => {
     const { nativeFee } = tx;
     console.log('nativeFee', nativeFee);
 
-    const sendUserBalanceTx = txResponseMock;
+    const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
+      signer,
+      userAddress: account.value,
+      chainId: LayerZeroNetworkId[network],
+      nativeFee,
+    });
 
     return sendUserBalanceTx;
   }
@@ -247,8 +251,6 @@ export const crossChainSyncProvider = () => {
       ];
     }
 
-    console.log('tempSyncingNetworks', tempSyncingNetworks.value);
-
     tempSyncingNetworks.value[account.value].syncTimestamp = Date.now();
 
     return tempSyncingNetworks.value;
@@ -261,6 +263,7 @@ export const crossChainSyncProvider = () => {
       tempSyncingNetworks.value[account.value].networks.filter(network => {
         return !networksBySyncState.value.synced.includes(network);
       });
+
     localStorage.setItem(
       'tempSyncingNetworks',
       JSON.stringify(tempSyncingNetworks.value)
@@ -271,11 +274,16 @@ export const crossChainSyncProvider = () => {
     () => networksBySyncState.value,
     newVal => {
       if (newVal.synced.length > 0) {
-        clearTempSyncingNetworks();
+        const hasSyncingMismatch = newVal.syncing.some(network => {
+          return newVal.synced.includes(network);
+        });
+
+        if (hasSyncingMismatch) {
+          clearTempSyncingNetworks();
+        }
       }
 
       if (newVal.syncing.length > 0 && !disposeRefetchOnInterval) {
-        console.log('refetchOnInterval');
         refetchOnInterval();
       }
       if (newVal.syncing.length === 0 && disposeRefetchOnInterval) {

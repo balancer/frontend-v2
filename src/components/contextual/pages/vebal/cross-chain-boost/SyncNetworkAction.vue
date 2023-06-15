@@ -64,11 +64,11 @@ async function handleAction(network: Network) {
 
 function handleSuccess() {
   setTempSyncingNetworks(Array.from(props.chosenNetworks));
-  console.log('tempSyncingNetworks', tempSyncingNetworks.value);
-  // localStorage.setItem(
-  //   'tempSyncingNetworks',
-  //   JSON.stringify(tempSyncingNetworks)
-  // );
+
+  localStorage.setItem(
+    'tempSyncingNetworks',
+    JSON.stringify(tempSyncingNetworks.value)
+  );
   emit('update:activeTabIdx', 2);
 }
 
