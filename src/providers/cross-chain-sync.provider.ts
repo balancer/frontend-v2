@@ -256,7 +256,7 @@ export const crossChainSyncProvider = () => {
     return tempSyncingNetworks.value;
   }
 
-  function clearTempSyncingNetworks() {
+  function clearTempSyncingNetworksFromSynced() {
     if (!tempSyncingNetworks.value[account.value]) return;
 
     tempSyncingNetworks.value[account.value].networks =
@@ -279,7 +279,7 @@ export const crossChainSyncProvider = () => {
         });
 
         if (hasSyncingMismatch) {
-          clearTempSyncingNetworks();
+          clearTempSyncingNetworksFromSynced();
         }
       }
 
