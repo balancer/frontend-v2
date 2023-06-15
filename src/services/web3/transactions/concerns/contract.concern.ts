@@ -43,7 +43,7 @@ export class ContractConcern extends TransactionConcern {
       abi,
       this.signer
     );
-    console.log('Sending transaction', contractWithSigner);
+
     const block = await this.signer.provider.getBlockNumber();
     console.log(`Contract: ${contractAddress} Action: ${action}`);
     console.log('Params: ', JSON.stringify(params));
@@ -55,7 +55,7 @@ export class ContractConcern extends TransactionConcern {
         params,
         options
       );
-      console.log('Gas settings', gasSettings);
+
       const txOptions = { ...options, ...gasSettings };
 
       await Promise.all([

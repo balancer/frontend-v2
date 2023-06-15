@@ -47,14 +47,6 @@ defineProps<Props>();
       </div>
     </div>
 
-    <!-- <div class="flex items-center mb-4">
-      <BalIcon class="mr-2 dark:text-gray-200" size="18" name="clock" />
-      <div>Mon, Jan 17 2022, 10:32am PST</div>
-      <div class="grow"></div>
-      <div>Etherscan</div>
-      <BalIcon class="dark:text-gray-200" size="18" name="arrow-up-right" />
-    </div> -->
-
     <div
       class="flex p-4 dark:text-gray-200 bg-blue-200 rounded-xl border-blue-200 dark:bg-slate-700"
     >
