@@ -14,6 +14,7 @@ import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { deprecatedDetails } from '@/composables/usePoolHelpers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import { StakeAction } from './composables/useStakePreview';
+import StakingCardSyncAlert from '../../vebal/cross-chain-boost/StakingCardSyncAlert.vue';
 
 type Props = {
   pool: Pool;
@@ -172,6 +173,10 @@ function handlePreviewClose() {
                     <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                   </BalStack>
                 </BalStack>
+                <StakingCardSyncAlert
+                  :fiatValueOfStakedShares="fiatValueOfStakedShares"
+                  :fiatValueOfUnstakedShares="fiatValueOfUnstakedShares"
+                />
                 <BalStack
                   v-if="hasNonPrefGaugeBalance && !isAffected"
                   horizontal
