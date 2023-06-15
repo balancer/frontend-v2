@@ -83,7 +83,10 @@ export function useCrossChainNetwork(
 
     if (x.isLessThan(0)) return new BigNumber(bias).toFixed(4).toString();
 
-    return new BigNumber(bias).minus(x).toFixed(4).toString();
+    const balance = new BigNumber(bias).minus(x);
+    if (balance.isLessThan(0)) return new BigNumber(0).toFixed(4).toString();
+
+    return balance.toFixed(4).toString();
   }
 
   return {
