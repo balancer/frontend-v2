@@ -247,6 +247,8 @@ export const crossChainSyncProvider = () => {
       ];
     }
 
+    console.log('tempSyncingNetworks', tempSyncingNetworks.value);
+
     tempSyncingNetworks.value[account.value].syncTimestamp = Date.now();
 
     return tempSyncingNetworks.value;
@@ -256,7 +258,7 @@ export const crossChainSyncProvider = () => {
     if (!tempSyncingNetworks.value[account.value]) return;
 
     tempSyncingNetworks.value[account.value].networks =
-      tempSyncingNetworks.value[account.value]?.networks.filter(network => {
+      tempSyncingNetworks.value[account.value].networks.filter(network => {
         return !networksBySyncState.value.synced.includes(network);
       });
     localStorage.setItem(
@@ -268,9 +270,12 @@ export const crossChainSyncProvider = () => {
   watch(
     () => networksBySyncState.value,
     newVal => {
-      clearTempSyncingNetworks();
+      if (newVal.synced.length > 0) {
+        clearTempSyncingNetworks();
+      }
 
       if (newVal.syncing.length > 0 && !disposeRefetchOnInterval) {
+        console.log('refetchOnInterval');
         refetchOnInterval();
       }
       if (newVal.syncing.length === 0 && disposeRefetchOnInterval) {
