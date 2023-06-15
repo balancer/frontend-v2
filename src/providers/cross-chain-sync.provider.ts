@@ -12,6 +12,7 @@ export enum NetworkSyncState {
   Unsynced = 'Unsynced',
   Syncing = 'Syncing',
   Synced = 'Synced',
+  Unknown = 'Unknown',
 }
 export interface NetworksBySyncState {
   synced: Network[];
@@ -65,6 +66,7 @@ export const crossChainSyncProvider = () => {
     data: omniEscrowResponse,
     isInitialLoading: isLoadingOmniEscrow,
     refetch: refetchOmniEscrow,
+    isError: isOmniEscrowError,
   } = useOmniEscrowLocksQuery(account);
 
   // if omniEscrowLocks is empty, then all networks are unsynced
@@ -155,6 +157,13 @@ export const crossChainSyncProvider = () => {
     };
   });
 
+  const hasError = computed(() => {
+    const hasVotingEscrowError = supportedNetworks.some(network => {
+      return crossChainNetworks[network].isError.value;
+    });
+    return isOmniEscrowError.value || hasVotingEscrowError;
+  });
+
   const l2VeBalBalances = computed<L2VeBalBalances>(() => {
     const result = supportedNetworks.reduce((acc, network) => {
       acc[network] = crossChainNetworks[network].calculateVeBAlBalance();
@@ -222,15 +231,11 @@ export const crossChainSyncProvider = () => {
     }
   }
 
-  let disposeRefetchOnInterval;
+  let disposeRefetchOnInterval: NodeJS.Timeout;
   function refetchOnInterval() {
     disposeRefetchOnInterval = setInterval(() => {
       void refetch();
     }, REFETCH_INTERVAL);
-
-    return () => {
-      clearInterval(disposeRefetchOnInterval);
-    };
   }
 
   function setTempSyncingNetworks(syncingNetworks: Network[]) {
@@ -251,13 +256,14 @@ export const crossChainSyncProvider = () => {
     return tempSyncingNetworks.value;
   }
 
-  function clearTempSyncingNetworks() {
+  function clearTempSyncingNetworksFromSynced() {
     if (!tempSyncingNetworks.value[account.value]) return;
 
     tempSyncingNetworks.value[account.value].networks =
-      tempSyncingNetworks.value[account.value]?.networks.filter(network => {
+      tempSyncingNetworks.value[account.value].networks.filter(network => {
         return !networksBySyncState.value.synced.includes(network);
       });
+
     localStorage.setItem(
       'tempSyncingNetworks',
       JSON.stringify(tempSyncingNetworks.value)
@@ -267,18 +273,27 @@ export const crossChainSyncProvider = () => {
   watch(
     () => networksBySyncState.value,
     newVal => {
+      if (newVal.synced.length > 0) {
+        const hasSyncingMismatch = newVal.syncing.some(network => {
+          return newVal.synced.includes(network);
+        });
+
+        if (hasSyncingMismatch) {
+          clearTempSyncingNetworksFromSynced();
+        }
+      }
+
       if (newVal.syncing.length > 0 && !disposeRefetchOnInterval) {
         refetchOnInterval();
       }
-      if (newVal.syncing.length === 0) {
-        disposeRefetchOnInterval?.();
+      if (newVal.syncing.length === 0 && disposeRefetchOnInterval) {
+        clearInterval(disposeRefetchOnInterval);
       }
-
-      clearTempSyncingNetworks();
     }
   );
 
   return {
+    hasError,
     omniEscrowLocks,
     networksSyncState,
     isLoading,

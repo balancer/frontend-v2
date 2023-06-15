@@ -19,6 +19,7 @@ export function useCrossChainNetwork(
   const {
     data: votingEscrowResponse,
     refetch,
+    isError,
     isInitialLoading: isLoading,
   } = useVotingEscrowLocksQuery(networkId, user);
 
@@ -30,7 +31,9 @@ export function useCrossChainNetwork(
     omniEscrowLock?: OmniEscrowLock | null,
     mainnetEscrowLock?: VotingEscrowLock
   ) {
-    if (!omniEscrowLock || !mainnetEscrowLock) return NetworkSyncState.Unsynced;
+    if (!omniEscrowLock || !mainnetEscrowLock || !votingEscrowLocks.value) {
+      return NetworkSyncState.Unsynced;
+    }
 
     const biasOmni = omniEscrowLock.bias;
     const slopeOmni = omniEscrowLock.slope;
@@ -38,8 +41,8 @@ export function useCrossChainNetwork(
     const biasMainnet = mainnetEscrowLock.bias;
     const slopeMainnet = mainnetEscrowLock.slope;
 
-    const biasNetwork = votingEscrowLocks.value?.bias;
-    const slopeNetwork = votingEscrowLocks.value?.slope;
+    const biasNetwork = votingEscrowLocks.value.bias;
+    const slopeNetwork = votingEscrowLocks.value.slope;
 
     if (!omniEscrowLock.slope || !mainnetEscrowLock.slope || !slopeNetwork)
       return NetworkSyncState.Unsynced;
@@ -80,7 +83,10 @@ export function useCrossChainNetwork(
 
     if (x.isLessThan(0)) return new BigNumber(bias).toFixed(4).toString();
 
-    return new BigNumber(bias).minus(x).toFixed(4).toString();
+    const balance = new BigNumber(bias).minus(x);
+    if (balance.isLessThan(0)) return new BigNumber(0).toFixed(4).toString();
+
+    return balance.toFixed(4).toString();
   }
 
   return {
@@ -89,5 +95,6 @@ export function useCrossChainNetwork(
     refetch,
     calculateVeBAlBalance,
     isLoading,
+    isError,
   };
 }

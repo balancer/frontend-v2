@@ -5,15 +5,15 @@ import { Network } from '@/lib/config';
 
 export const networkSubgraphGagesMap = {
   [Network.MAINNET]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-beta',
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
   [Network.ARBITRUM]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum-beta',
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum',
   [Network.POLYGON]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon-beta',
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
   [Network.OPTIMISM]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism-beta',
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
   [Network.GNOSIS]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain-b',
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain',
 };
 
 export interface VotingEscrowLock {

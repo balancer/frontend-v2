@@ -8,10 +8,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import {
-  L2VeBalBalances,
-  TempSyncingNetworks,
-} from '@/providers/cross-chain-sync.provider';
+import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 
@@ -22,18 +19,13 @@ type Props = {
   chosenNetworks: Set<Network>;
   activeTabIdx: number;
   veBalBalance: string;
-  l2VeBalBalances: L2VeBalBalances;
-  sync(network: Network): Promise<TransactionResponse>;
-  setTempSyncingNetworks(
-    syncingNetworks: Network[]
-  ): Record<string, TempSyncingNetworks>;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
-const emit = defineEmits(['update:activeTabIdx', 'setSuccessfulSynced']);
+const emit = defineEmits(['update:activeTabIdx']);
 
 /**
  * COMPOSABLES
@@ -41,6 +33,8 @@ const emit = defineEmits(['update:activeTabIdx', 'setSuccessfulSynced']);
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener } = useEthers();
+const { l2VeBalBalances, sync, setTempSyncingNetworks, tempSyncingNetworks } =
+  useCrossChainSync();
 
 /**
  * STATE
@@ -73,7 +67,7 @@ async function handleTransaction(
 
 async function handleAction(network: Network) {
   try {
-    const tx = await props.sync(network);
+    const tx = await sync(network);
     console.log('Receipt', tx);
     handleTransaction(tx, network);
     return tx;
@@ -84,14 +78,12 @@ async function handleAction(network: Network) {
 }
 
 function handleSuccess() {
-  const tempSyncingNetworks = props.setTempSyncingNetworks(
-    Array.from(props.chosenNetworks)
-  );
+  setTempSyncingNetworks(Array.from(props.chosenNetworks));
+
   localStorage.setItem(
     'tempSyncingNetworks',
-    JSON.stringify(tempSyncingNetworks)
+    JSON.stringify(tempSyncingNetworks.value)
   );
-  emit('setSuccessfulSynced');
   emit('update:activeTabIdx', 2);
 }
 

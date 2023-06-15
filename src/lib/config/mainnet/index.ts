@@ -33,7 +33,7 @@ const config: Config = {
     ],
     aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-beta',
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
     blocks:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
   },
