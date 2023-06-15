@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { networkLabelMap } from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 
 /**
  * TYPES
@@ -96,7 +95,7 @@ function updateNetwork(network: number) {
         <BalCheckbox
           :modelValue="networkFiltersArr.includes(Number(network))"
           name="networkFilter"
-          :label="networkLabelMap[network]"
+          :label="configs[network].chainName"
           noMargin
           alignCheckbox="items-center"
           @input="updateNetwork(Number(network))"

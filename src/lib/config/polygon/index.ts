@@ -9,7 +9,7 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '137',
   chainId: 137,
-  chainName: 'Polygon',
+  chainName: 'Polygon PoS',
   name: 'Polygon Mainnet',
   shortName: 'Polygon',
   monorepoName: 'polygon',

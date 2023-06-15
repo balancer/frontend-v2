@@ -8,6 +8,7 @@ import {
   defaultTokenPrice,
   fakeTokensProvider,
 } from './tokens.provider.fake';
+import { vaultAddress } from '@/services/contracts/vault.service.mocks';
 
 async function mountFakeTokensProvider() {
   const { result } = mountComposable(() => fakeTokensProvider());
@@ -94,10 +95,13 @@ test('Fakes provided methods', async () => {
   const nativeAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
   expect(approvalRequired(nativeAddress, '100')).toBeFalse();
 
-  expect(approvalsRequired([daiAddress, wethAddress], ['50', '75'])).toEqual([
-    daiAddress,
-    wethAddress,
-  ]);
+  const amountsToApprove = [
+    { address: daiAddress, amount: '50' },
+    { address: wethAddress, amount: '75' },
+  ];
+  expect(approvalsRequired(amountsToApprove, vaultAddress)).toEqual(
+    amountsToApprove
+  );
 
   expect(priceFor('any address')).toBe(defaultTokenPrice);
   expect(balanceFor('any address')).toBe(defaultTokenBalance);
