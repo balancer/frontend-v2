@@ -45,7 +45,6 @@ const pools: Pools = {
       '0x542f16da0efb162d20bf4358efa095b70a100f9e000000000000000000000436', // tbtc
       '0x567ecfcb22205d279bb8eed3e066989902bf03d5000000000000000000000452', // dola/bb-a-usd
       '0x8bc65eed474d1a00555825c91feab6a8255c2107000000000000000000000453', // dola/usdc
-      '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
     ],
   },
   Investment: {
@@ -71,7 +70,6 @@ const pools: Pools = {
       '0x00e7ccb0e16fc07d0cb528efea2c130c41c2fc1600010000000000000000043d', // 25LDO/25wstETH/25RPL/25rETH
       '0xa231aea07bb5e79ae162f95903806fc5ad65ff1100020000000000000000043f', // dfx/weth
       '0xce2da1d3e5b5e4e1913f9ff65ee029d38682d8b900020000000000000000044e', // acid/weth
-      '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
     ],
   },
   Factories: {
@@ -168,12 +166,6 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
-    '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a': {
-      name: 'rETH/Boosted Aave v3 WETH',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -184,8 +176,6 @@ const pools: Pools = {
     '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/ bb-a-usd
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
     '0x567ecfcb22205d279bb8eed3e066989902bf03d5000000000000000000000452', // dola/bb-a-usd
-    '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
-    '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
   ],
   Deprecated: {
     // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
