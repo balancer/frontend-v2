@@ -1,50 +1,52 @@
 import { MaxUint256 } from '@ethersproject/constants';
-import { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-import useTokenApprovals, {
-  ApprovalStateMap,
-} from '@/composables/approvals/useTokenApprovals';
 import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 import { ApprovalAction } from './types';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { TokenInfo } from '@/types/TokenList';
+import { parseUnits } from '@ethersproject/units';
+import { TransactionResponse } from '@ethersproject/providers';
+import useTransactions from '../useTransactions';
 
 /**
  * TYPES
  */
-type ApprovalActionOptions = {
-  spender: string;
-  amount: string;
-  stateMap: ApprovalStateMap;
+export type AmountToApprove = {
+  address: string;
+  amount: string; // normalized amount
 };
 
-export default function useTokenApprovalActions(
-  tokenAddresses: Ref<string[]>,
-  amounts: Ref<string[]>,
-  actionType: ApprovalAction = ApprovalAction.AddLiquidity
-) {
+interface Params {
+  amountsToApprove: AmountToApprove[];
+  spender: string;
+  actionType: ApprovalAction;
+  forceMax?: boolean;
+}
+
+interface ApproveTokenParams {
+  token: TokenInfo;
+  normalizedAmount: string;
+  spender: string;
+  actionType: ApprovalAction;
+  forceMax?: boolean;
+}
+
+export default function useTokenApprovalActions() {
   /**
    * COMPOSABLES
    */
+  const { refetchAllowances, approvalsRequired, approvalRequired, getToken } =
+    useTokens();
   const { t } = useI18n();
-  const { getToken } = useTokens();
-  const { vaultApprovalStateMap, approveToken, getApprovalStateMapFor } =
-    useTokenApprovals(tokenAddresses, amounts, actionType);
-  const { appNetworkConfig } = useWeb3();
-  const vaultAddress = appNetworkConfig.addresses.vault;
-
-  /**
-   * STATE
-   */
-  // Approval actions based on Vault approvals for tokenAddresses
-  const tokenApprovalActions: TransactionActionInfo[] =
-    getTokenApprovalActions();
+  const { getSigner } = useWeb3();
+  const { addTransaction } = useTransactions();
 
   /**
    * METHODS
    */
-  function actionLabel(symbol: string): string {
+  function actionLabel(actionType: ApprovalAction, symbol: string): string {
     switch (actionType) {
       case ApprovalAction.Locking:
         return t('transactionSummary.approveForLocking', [symbol]);
@@ -55,7 +57,7 @@ export default function useTokenApprovalActions(
     }
   }
 
-  function actionTooltip(symbol: string): string {
+  function actionTooltip(actionType: ApprovalAction, symbol: string): string {
     switch (actionType) {
       case ApprovalAction.Locking:
         return t('transactionSummary.tooltips.approveForLocking', [symbol]);
@@ -66,54 +68,145 @@ export default function useTokenApprovalActions(
     }
   }
 
-  async function getTokenApprovalActionsForSpender(
-    spender: string,
-    amount: string = MaxUint256.toString()
-  ) {
-    const stateMap = await getApprovalStateMapFor(spender);
-    return getTokenApprovalActions({ spender, amount, stateMap });
+  function summaryLabel(actionType: ApprovalAction, address: string): string {
+    switch (actionType) {
+      case ApprovalAction.Locking:
+        return t('transactionSummary.approveForLocking', [
+          getToken(address)?.symbol,
+        ]);
+      case ApprovalAction.Staking:
+        return t('transactionSummary.approveForStaking', [
+          getToken(address)?.symbol,
+        ]);
+      default:
+        return t('transactionSummary.approveForInvesting', [
+          getToken(address)?.symbol,
+        ]);
+    }
   }
 
-  async function fetchTokenApprovalActions(
+  async function getApprovalsRequired(
+    amountsToApprove: AmountToApprove[],
     spender: string
-  ): Promise<TransactionActionInfo[]> {
-    const stateMap = await getApprovalStateMapFor(spender);
-    return getTokenApprovalActions({ stateMap });
+  ): Promise<AmountToApprove[]> {
+    await refetchAllowances();
+    return approvalsRequired(amountsToApprove, spender);
   }
 
-  // Approval actions based on Vault approvals for tokenAddresses
-  function getTokenApprovalActions(
-    options: Partial<ApprovalActionOptions> = {}
-  ): TransactionActionInfo[] {
-    const defaultOptions: ApprovalActionOptions = {
-      spender: vaultAddress,
-      amount: MaxUint256.toString(),
-      stateMap: vaultApprovalStateMap.value,
-    };
-    const { spender, amount, stateMap } = Object.assign(
-      defaultOptions,
-      options
+  async function isApprovalValid(
+    amountToApprove: AmountToApprove,
+    spender: string
+  ): Promise<boolean> {
+    await refetchAllowances();
+    return !approvalRequired(
+      amountToApprove.address,
+      amountToApprove.amount,
+      spender
+    );
+  }
+
+  /**
+   * Triggers ERC20 approval transaction for a given token, waits for
+   * confirmation and then triggers the transaction notification.
+   *
+   * @param {TokenInfo} token The token to approve.
+   * @param {string} normalizedAmount The amount to approve, normalized, if
+   * forceMax is false.
+   * @param {string} spender The contract address to give the approval too,
+   * typically the vault.
+   * @param {ApprovalAction} actionType The action type that follows the
+   * approval, used for labeling of tx notification.
+   * @param {boolean} forceMax If true, the approval will be for the maximum
+   * possible amount.
+   * @returns {Promise<TransactionResponse>} The transaction response.
+   */
+  async function approveToken({
+    token,
+    normalizedAmount,
+    spender,
+    actionType,
+    forceMax = true,
+  }: ApproveTokenParams): Promise<TransactionResponse> {
+    const amount = forceMax
+      ? MaxUint256.toString()
+      : parseUnits(normalizedAmount, token.decimals).toString();
+
+    const txBuilder = new TransactionBuilder(getSigner());
+    const tx = await txBuilder.contract.sendTransaction({
+      contractAddress: token.address,
+      abi: [
+        'function approve(address spender, uint256 amount) public returns (bool)',
+      ],
+      action: 'approve',
+      params: [spender, amount],
+    });
+
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'approve',
+      summary: summaryLabel(actionType, token.address),
+      details: {
+        contractAddress: token.address,
+        spender: spender,
+      },
+    });
+
+    return tx;
+  }
+
+  /**
+   * Returns a list of TransactionActions to approve tokens for a given spender.
+   * Typically used to inject into BalActionSteps.
+   *
+   * @param {AmountToApprove[]} amountsToApprove The list of tokens and amounts
+   * to approve.
+   * @param {string} spender The contract address to give the approval too,
+   * typically the vault.
+   * @param {ApprovalAction} actionType The action type that follows the
+   * approval, used for labeling.
+   * @param {boolean} forceMaxApprovals If true, the approval will be for the
+   * maximum possible amount.
+   * @returns {Promise<TransactionActionInfo[]>} The list of TransactionActions.
+   */
+  async function getTokenApprovalActions({
+    amountsToApprove,
+    spender,
+    actionType,
+    forceMax = true,
+  }: Params): Promise<TransactionActionInfo[]> {
+    const approvalsRequired = await getApprovalsRequired(
+      amountsToApprove,
+      spender
     );
 
-    return Object.keys(stateMap).map(address => {
-      const token = getToken(address);
-      const state = stateMap[address];
+    return approvalsRequired.map(amountToApprove => {
+      const token = getToken(amountToApprove.address);
+
       return {
-        label: actionLabel(token.symbol),
+        label: actionLabel(actionType, token.symbol),
         loadingLabel: t('investment.preview.loadingLabel.approval'),
         confirmingLabel: t('confirming'),
-        stepTooltip: actionTooltip(token.symbol),
-        action: () => {
-          return approveToken(token.address, { spender, state, amount });
+        stepTooltip: actionTooltip(actionType, token.symbol),
+        action: () =>
+          approveToken({
+            token,
+            normalizedAmount: amountToApprove.amount,
+            spender,
+            actionType,
+            forceMax,
+          }),
+        postActionValidation: () => isApprovalValid(amountToApprove, spender),
+        actionInvalidReason: {
+          title: t('actionSteps.approve.invalidReason.title'),
+          description: t('actionSteps.approve.invalidReason.description'),
         },
       };
     });
   }
 
   return {
-    tokenApprovalActions,
+    approveToken,
     getTokenApprovalActions,
-    getTokenApprovalActionsForSpender,
-    fetchTokenApprovalActions,
   };
 }

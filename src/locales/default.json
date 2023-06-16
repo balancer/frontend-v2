@@ -6,7 +6,11 @@
   "actions": "Actions",
   "actionSteps": {
     "approve": {
-      "loadingLabel": "Confirm approval in wallet"
+      "loadingLabel": "Confirm approval in wallet",
+      "invalidReason": {
+        "title": "Approval insufficient",
+        "description": "Approved amount isn't enough to cover the transaction, please try again."
+      }
     },
     "swap": {
       "loadingLabel": "Confirm swap in wallet"
