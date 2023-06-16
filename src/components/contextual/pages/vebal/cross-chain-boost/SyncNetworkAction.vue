@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { Network } from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { TransactionActionInfo } from '@/types/transactions';
-import { networkLabelMap } from '@/composables/useNetwork';
 import { useI18n } from 'vue-i18n';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
@@ -46,7 +45,7 @@ async function handleTransaction(
     id: tx.hash,
     type: 'tx',
     action: 'sync',
-    summary: `Sync veBal to ${networkLabelMap[network]} network`,
+    summary: `Sync veBal to ${configs[network].chainName} network`,
   });
 }
 
@@ -55,6 +54,13 @@ async function handleAction(network: Network) {
     const tx = await sync(network);
     console.log('Receipt', tx);
     handleTransaction(tx, network);
+
+    setTempSyncingNetworks(Array.from(props.chosenNetworks));
+    localStorage.setItem(
+      'tempSyncingNetworks',
+      JSON.stringify(tempSyncingNetworks.value)
+    );
+
     return tx;
   } catch (error) {
     console.error(error);
@@ -63,12 +69,6 @@ async function handleAction(network: Network) {
 }
 
 function handleSuccess() {
-  setTempSyncingNetworks(Array.from(props.chosenNetworks));
-
-  localStorage.setItem(
-    'tempSyncingNetworks',
-    JSON.stringify(tempSyncingNetworks.value)
-  );
   emit('update:activeTabIdx', 2);
 }
 
@@ -80,19 +80,19 @@ const networkSyncSteps = computed(() => {
   props.chosenNetworks.forEach(network => {
     actions.push({
       label: t('crossChainBoost.syncToNetwork', {
-        network: networkLabelMap[network],
+        network: configs[network].chainName,
       }),
       loadingLabel: t('crossChainBoost.syncingToNetwork', {
-        network: networkLabelMap[network],
+        network: configs[network].chainName,
       }),
       confirmingLabel: t('crossChainBoost.syncingToNetwork', {
-        network: networkLabelMap[network],
+        network: configs[network].chainName,
       }),
       action: async () => {
         return handleAction(network);
       },
       stepTooltip: t('crossChainBoost.syncToNetwork', {
-        network: networkLabelMap[network],
+        network: configs[network].chainName,
       }),
     });
   });
@@ -121,7 +121,7 @@ const networkSyncSteps = computed(() => {
           alt=""
           class="mr-2 w-8 h-8 rounded-full cursor-pointer"
         />
-        <div class="font-semibold">{{ networkLabelMap[network] }}</div>
+        <div class="font-semibold">{{ configs[network].chainName }}</div>
       </div>
 
       <div>

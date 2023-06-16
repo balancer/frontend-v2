@@ -270,9 +270,9 @@
     },
     "syncInitiatedModal": {
       "title": "veBAL sync initiated",
-      "description": "Your veBAL balance is now being synced to {0} networks. You’re eligible to receive boosted rates for any pool in which you stake on those networks.",
-      "warningTitle": "Your L2 veBAL balances should sync soon",
-      "warningDescription": "Your sync has been initiated but it may take up to an hour to update across L2s. Please wait until you see your updated veBAL balance on L2. Following the update, your new boosted rate will apply after anyone interacts with that pool gauge. If you’re feeling impatient, just unstake/restake to trigger it yourself."
+      "description": "Your veBAL balance is now being synced to the following networks:",
+      "warningTitle": "Your L2 veBAL sync is in progress",
+      "warningDescription": "Your sync has been initiated but it may take up to an hour to update across L2s. Wait until your veBAL balance syncs before ‘restaking’ from the old pool gauges to the new boost-aware pool gauges to get your max boost."
     },
     "syncNetworkAction": {
       "title": "This will sync your veBAL balance and give you a staking boost across the networks listed below."

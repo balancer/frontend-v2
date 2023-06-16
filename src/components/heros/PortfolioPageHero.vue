@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import AppHero from '@/components/heros/AppHero.vue';
 import { useLock } from '@/composables/useLock';
-import useNetwork, { networkLabelMap } from '@/composables/useNetwork';
+import useNetwork from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -11,8 +11,12 @@ import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
 import { useUserPools } from '@/providers/local/user-pools.provider';
 import { isVeBalSupported } from '@/composables/useVeBAL';
 import ProceedToSyncModal from '../contextual/pages/vebal/cross-chain-boost/ProceedToSyncModal.vue';
-import { Network } from '@/lib/config';
-import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
+import configs, { Network } from '@/lib/config';
+import {
+  useCrossChainSync,
+  veBalSyncSupportedNetworks,
+} from '@/providers/cross-chain-sync.provider';
+import { NetworkSyncState } from '@/providers/cross-chain-sync.provider';
 
 /**
  * COMPOSABLES
@@ -23,7 +27,11 @@ const { isWalletReady, isWalletConnecting } = useWeb3();
 const { totalFiatValue, isLoading: isLoadingPools } = useUserPools();
 const { totalLockedValue } = useLock();
 const { networkId } = useNetwork();
-const { l2VeBalBalances, isLoading: isLoadingSyncState } = useCrossChainSync();
+const {
+  l2VeBalBalances,
+  isLoading: isLoadingSyncState,
+  networksSyncState,
+} = useCrossChainSync();
 /**
  * COMPUTED
  */
@@ -42,9 +50,21 @@ const totalVeBalLabel = computed((): string =>
 
 const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
 
+const showVeBalBalanceTooltip = computed(() => {
+  if (!veBalSyncSupportedNetworks.includes(networkId.value)) {
+    return false;
+  }
+
+  if (networksSyncState.value[networkId.value] === NetworkSyncState.Synced) {
+    return false;
+  }
+
+  return true;
+});
+
 const veBalBalanceTooltip = computed(() => {
   return `Sync your veBAL balance from Ethereum Mainnet (L1) to ${
-    networkLabelMap[networkId.value]
+    configs[networkId.value].chainName
   } to get your max staking boost. Sync via the veBAL page on L1. Note: If you have just synced on L1, it may take up to an hour to display here.`;
 });
 </script>
@@ -76,7 +96,12 @@ const veBalBalanceTooltip = computed(() => {
           class="group flex items-center px-3 h-8 text-sm font-medium text-yellow-500 hover:text-white focus:text-white rounded-tr rounded-bl border border-yellow-500 transition-colors cursor-pointer vebal-banner"
           @click="showProceedModal = true"
         >
-          <span v-if="networkId !== Network.MAINNET">
+          <span
+            v-if="
+              networkId !== Network.MAINNET &&
+              Number(l2VeBalBalances?.[networkId]) > 0
+            "
+          >
             {{ l2VeBalBalances?.[networkId] }}
             {{ $t('veBAL.hero.tokens.veBAL') }}
           </span>
@@ -85,7 +110,10 @@ const veBalBalanceTooltip = computed(() => {
           >
           <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
 
-          <BalTooltip :text="veBalBalanceTooltip">
+          <BalTooltip
+            v-if="showVeBalBalanceTooltip"
+            :text="veBalBalanceTooltip"
+          >
             <template #activator>
               <img
                 src="/src/assets/images/icons/frame-loading.svg"

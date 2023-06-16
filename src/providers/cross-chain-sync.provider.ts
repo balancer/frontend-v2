@@ -28,7 +28,7 @@ export interface TempSyncingNetworks {
 }
 
 // all networks that are supported by cross-chain sync feature
-export const supportedNetworks = [
+export const veBalSyncSupportedNetworks = [
   Network.POLYGON,
   Network.ARBITRUM,
   Network.GNOSIS,
@@ -106,7 +106,7 @@ export const crossChainSyncProvider = () => {
   const crossChainNetworks: UseCrossChainNetworkResponse =
     {} as UseCrossChainNetworkResponse;
 
-  supportedNetworks.forEach(networkId => {
+  veBalSyncSupportedNetworks.forEach(networkId => {
     crossChainNetworks[networkId] = useCrossChainNetwork(networkId, remoteUser);
   });
 
@@ -117,7 +117,7 @@ export const crossChainSyncProvider = () => {
   });
 
   const networksSyncState = computed(() => {
-    const result = supportedNetworks.reduce((acc, network) => {
+    const result = veBalSyncSupportedNetworks.reduce((acc, network) => {
       acc[network] = crossChainNetworks[network].getNetworkSyncState(
         omniEscrowLocks.value,
         mainnetEscrowLocks.value
@@ -158,14 +158,14 @@ export const crossChainSyncProvider = () => {
   });
 
   const hasError = computed(() => {
-    const hasVotingEscrowError = supportedNetworks.some(network => {
+    const hasVotingEscrowError = veBalSyncSupportedNetworks.some(network => {
       return crossChainNetworks[network].isError.value;
     });
     return isOmniEscrowError.value || hasVotingEscrowError;
   });
 
   const l2VeBalBalances = computed<L2VeBalBalances>(() => {
-    const result = supportedNetworks.reduce((acc, network) => {
+    const result = veBalSyncSupportedNetworks.reduce((acc, network) => {
       acc[network] = crossChainNetworks[network].calculateVeBAlBalance();
       return acc;
     }, {});
