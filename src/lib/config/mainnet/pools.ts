@@ -438,7 +438,6 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Morpho],
     },
-
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -475,7 +474,6 @@ const pools: Pools = {
     '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
     '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
     '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
-
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
