@@ -167,6 +167,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0xd0dc20e6342db2de82692b8dc842301ff9121805000200000000000000000454': {
+      name: 'NFTE/wsteth-Boosted Aave v3 WETH',
+      hasIcon: true,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -177,6 +183,7 @@ const pools: Pools = {
     '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413', // stg/ bb-a-usd
     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412', // wsteth-bb-a-weth / bb-a-usd
     '0x567ecfcb22205d279bb8eed3e066989902bf03d5000000000000000000000452', // dola/bb-a-usd
+    '0xd0dc20e6342db2de82692b8dc842301ff9121805000200000000000000000454', // nfte/wsteth-bb-a-weth
   ],
   Deprecated: {
     // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
