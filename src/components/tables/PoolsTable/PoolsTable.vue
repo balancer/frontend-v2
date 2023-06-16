@@ -263,7 +263,8 @@ function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, pool.boost);
+  const boost = pool.boost || props?.boosts?.[pool.id];
+  return totalAprLabel(poolAPRs, boost);
 }
 
 function lockedUntil(lockEndDate?: number) {
