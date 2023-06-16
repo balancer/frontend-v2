@@ -46,6 +46,7 @@ export type DeprecatedDetails = {
   newPool?: string;
   suggestedPools?: string[];
   description?: string;
+  title?: string;
 };
 
 export enum PoolMigrationType {
