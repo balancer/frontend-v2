@@ -1,5 +1,4 @@
 import { ApprovalAction } from '@/composables/approvals/types';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { fiatValueOf } from '@/composables/usePoolHelpers';
 import useTransactions from '@/composables/useTransactions';
@@ -14,6 +13,7 @@ import {
 } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { useI18n } from 'vue-i18n';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 
 /**
  * TYPES
@@ -40,6 +40,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   const { fNum } = useNumbers();
   const { t } = useI18n();
   const { addTransaction } = useTransactions();
+  const { getTokenApprovalActions } = useTokenApprovalActions();
   const {
     stake,
     unstake,
@@ -53,12 +54,6 @@ export function useStakePreview(props: StakePreviewProps, emit) {
     props.action === 'stake'
       ? balanceFor(getAddress(props.pool.address))
       : stakedShares.value;
-
-  const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
-    ref<string[]>([props.pool.address]),
-    ref<string[]>([currentShares]),
-    ApprovalAction.Staking
-  );
 
   const stakeAction = {
     label: t('stake'),
@@ -96,6 +91,13 @@ export function useStakePreview(props: StakePreviewProps, emit) {
       .toString()
   );
 
+  const amountsToApprove = computed(() => [
+    {
+      address: props.pool.address,
+      amount: currentShares,
+    },
+  ]);
+
   /**
    * METHODS
    */
@@ -132,9 +134,12 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   async function loadApprovalsForGauge() {
     const approvalActions = await trackLoading(async () => {
       if (!preferentialGaugeAddress.value) return;
-      return await getTokenApprovalActionsForSpender(
-        preferentialGaugeAddress.value
-      );
+
+      return await getTokenApprovalActions({
+        amountsToApprove: amountsToApprove.value,
+        spender: preferentialGaugeAddress.value,
+        actionType: ApprovalAction.Staking,
+      });
     }, isLoadingApprovalsForGauge);
 
     if (approvalActions) stakeActions.value.unshift(...approvalActions);
