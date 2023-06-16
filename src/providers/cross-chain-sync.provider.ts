@@ -7,6 +7,7 @@ import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-v
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
+import configs from '@/lib/config';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -33,7 +34,7 @@ export const veBalSyncSupportedNetworks = [
   Network.ARBITRUM,
   Network.GNOSIS,
   Network.OPTIMISM,
-];
+].filter(network => configs[network].veBalSync);
 
 // https://layerzero.gitbook.io/docs/technical-reference/mainnet/supported-chain-ids
 export const LayerZeroNetworkId = {

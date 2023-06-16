@@ -8,6 +8,8 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '100',
   chainId: 100,
+  layerZeroChainId: 145,
+  veBalSync: true,
   chainName: 'Gnosis Chain',
   name: 'Gnosis Chain',
   shortName: 'Gnosis',
