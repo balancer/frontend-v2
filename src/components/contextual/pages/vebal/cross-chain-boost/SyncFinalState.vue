@@ -11,7 +11,12 @@ defineProps<Props>();
 
 <template>
   <div>
-    <div class="mb-3 text-xl font-bold">
+    <div class="flex items-center mb-3 text-xl font-bold">
+      <img
+        src="/src/assets/images/icons/success-check.svg"
+        alt=""
+        class="mr-2"
+      />
       {{ $t('crossChainBoost.syncInitiatedModal.title') }}
     </div>
     <div class="mb-6 text-sm text-gray-600 dark:text-gray-300">
