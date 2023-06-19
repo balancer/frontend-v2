@@ -51,7 +51,11 @@ function aLink(key: RiskKey, title?: string) {
 // Pool type risks
 const weightedRisks = aLink(RiskKey.Weighted);
 const stableRisks = aLink(RiskKey.Stable);
-const composableRisks = aLink(RiskKey.ComposableStable);
+const composableRisks = aLink(
+  RiskKey.ComposableStable,
+  // Explicit title because RiskKey.ComposableStable and RiskKey.MetaStable share the same key (hash)
+  'Composable Stable pool risks'
+);
 const metaStableRisks = aLink(RiskKey.MetaStable);
 const boostedRisks = aLink(RiskKey.Boosted);
 const arbitrumRisks = aLink(RiskKey.Arbitrum);

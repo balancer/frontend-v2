@@ -28,9 +28,9 @@ function withPolygon() {
   networkId.value = Network.POLYGON;
 }
 
-// function withGnosis() {
-//   networkId.value = Network.GNOSIS;
-// }
+function withGnosis() {
+  networkId.value = Network.GNOSIS;
+}
 
 describe('Generates links for', () => {
   test('a boosted pool with Aave and Morph boosted protocols', () => {
@@ -100,24 +100,26 @@ describe('Generates links for', () => {
     `);
   });
 
-  // This test is messed up because despite passing a ComposableStable pool
-  // here, the snapshot seems to be updated with another call with a MetaStable pools.
-  // test('a composable stable pool in Gnosis', () => {
-  //   withGnosis();
-  //   expect(riskLinks(aPool({ poolType: PoolType.ComposableStable })))
-  //     .toMatchInlineSnapshot(`
-  //     [
-  //       {
-  //         "hash": "#composable-pools",
-  //         "title": "Composable stable pool risks",
-  //       },
-  //       {
-  //         "hash": "#gnosis",
-  //         "title": "Layer 2 network risks: Gnosis",
-  //       },
-  //     ]
-  //   `);
-  // });
+  test('a composable stable pool in Gnosis', () => {
+    withGnosis();
+    expect(riskLinks(aPool({ poolType: PoolType.ComposableStable })))
+      .toMatchInlineSnapshot(`
+        [
+          {
+            "hash": "#composable-pools",
+            "title": "Composable Stable pool risks",
+          },
+          {
+            "hash": "#gnosis",
+            "title": "Layer 2 network risks: Gnosis",
+          },
+          {
+            "hash": "#general-risks",
+            "title": "General Balancer protocol risks",
+          },
+        ]
+      `);
+  });
 
   test('a composable stable pool with Delegate Owner', () => {
     withGoerli();
