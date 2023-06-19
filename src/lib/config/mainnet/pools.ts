@@ -99,6 +99,7 @@ const pools: Pools = {
       '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
       '0xdfe6e7e18f6cc65fa13c8d8966013d4fda74b6ba000000000000000000000558', // ankrETH/wstETH
       '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
+      '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
     ],
   },
   Investment: {
@@ -132,6 +133,7 @@ const pools: Pools = {
       '0x77b692c5ca2cceaeef4dcc959d6c3bd919710b6600020000000000000000055e', // 20USDC/80BREWSKI
       '0xb8e2cbb2455e80ad0eb536ae30a5290bdd7baa9100020000000000000000055f', // 20WETH/80BREWSKI
       '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
+      '0x18fdf15ff782e44c1f9b6c5846ff6b0f0004f6a2000200000000000000000560', // OHM/LUSD
     ],
   },
   Factories: {
@@ -430,6 +432,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e': {
+      name: 'wstETH/Boosted Morpho Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Morpho],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -465,6 +473,7 @@ const pools: Pools = {
     '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
     '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
     '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
+    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
