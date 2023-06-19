@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
-import { riskLinks, risksTitle, poolSpecificRisks } from './pool-risks';
+import {
+  riskLinks,
+  risksTitle,
+  poolSpecificRisks,
+} from '@/composables/usePoolRisks';
+import PoolRiskList from './PoolRiskList.vue';
 
 /**
  * TYPES
@@ -12,35 +17,29 @@ type Props = {
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const _poolSpecificRisks = poolSpecificRisks(props.pool);
+const _poolGeneralRisks = riskLinks(props.pool);
+
+const hasSpecificRisks = _poolSpecificRisks.length > 0;
 </script>
 
 <template>
   <div id="risks-section">
-    <h3 class="px-4 lg:px-0 mb-5" v-text="$t('poolRisks.title')" />
+    <h3 class="px-4 lg:px-0 mb-3" v-text="$t('poolRisks.title')" />
 
-    <p v-if="poolSpecificRisks(pool)" class="px-4 lg:px-0 mb-5">
-      {{ poolSpecificRisks(pool) }}
-    </p>
+    <PoolRiskList
+      v-if="hasSpecificRisks"
+      :risks="_poolSpecificRisks"
+      class="mb-3"
+    />
 
     <p class="px-4 lg:px-0 mb-3">
       {{ risksTitle(pool) }}
     </p>
 
-    <ul class="px-8 lg:px-4 list-disc">
-      <li
-        v-for="{ title, hash } in riskLinks(pool)"
-        :key="hash"
-        class="mb-1 link"
-      >
-        <router-link :to="{ name: 'risks', hash }">{{ title }}</router-link>
-      </li>
-      <li class="link">
-        <router-link :to="{ name: 'risks', hash: '#general-risks' }"
-          >General Balancer protocol risks</router-link
-        >
-      </li>
-    </ul>
+    <PoolRiskList :risks="_poolGeneralRisks" />
   </div>
 </template>
 
