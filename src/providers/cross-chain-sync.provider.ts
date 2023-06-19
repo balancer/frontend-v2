@@ -1,7 +1,10 @@
 import { Network } from '@/lib/config';
 
 import { useCrossChainNetwork } from '@/composables/queries/useCrossChainNetwork';
-import { useOmniEscrowLocksQuery } from '@/composables/queries/useOmniEscrowLocksQuery';
+import {
+  OmniEscrowLock,
+  useOmniEscrowLocksQuery,
+} from '@/composables/queries/useOmniEscrowLocksQuery';
 import symbolKeys from '@/constants/symbol.keys';
 import { OmniVotingEscrow } from '@/services/balancer/contracts/contracts/omni-voting-escrow';
 import { configService } from '@/services/config/config.service';
@@ -64,25 +67,21 @@ export const crossChainSyncProvider = () => {
     () => omniEscrowResponse.value?.omniVotingEscrowLocks.length === 0
   );
 
-  const omniEscrowLocks = computed(() => {
-    if (allNetworksUnsynced.value) return null;
+  const omniEscrowLocksMap = computed(() => {
+    if (allNetworksUnsynced.value || !omniEscrowResponse.value) return null;
 
-    const omniVotingEscrowLocks =
-      omniEscrowResponse.value?.omniVotingEscrowLocks[0];
-    return omniVotingEscrowLocks;
-  });
-
-  /**
-   * smart contracts can direct their veBAL boost to a different address on L2
-   * for regular UI users, remoteUser will be the same as localUser
-   */
-  const remoteUser = computed(() => {
-    return omniEscrowLocks.value?.remoteUser;
+    return omniEscrowResponse.value.omniVotingEscrowLocks.reduce(
+      (acc: Record<number, OmniEscrowLock>, item) => {
+        acc[item.dstChainId] = item;
+        return acc;
+      },
+      {}
+    );
   });
 
   const mainnetCrossChainNetwork = useCrossChainNetwork(
     Network.MAINNET,
-    account
+    omniEscrowLocksMap
   );
 
   const mainnetEscrowLocks = computed(
@@ -97,7 +96,10 @@ export const crossChainSyncProvider = () => {
     {} as UseCrossChainNetworkResponse;
 
   veBalSyncSupportedNetworks.forEach(networkId => {
-    crossChainNetworks[networkId] = useCrossChainNetwork(networkId, remoteUser);
+    crossChainNetworks[networkId] = useCrossChainNetwork(
+      networkId,
+      omniEscrowLocksMap
+    );
   });
 
   const isLoading = computed(() => {
@@ -109,7 +111,7 @@ export const crossChainSyncProvider = () => {
   const networksSyncState = computed(() => {
     const result = veBalSyncSupportedNetworks.reduce((acc, network) => {
       acc[network] = crossChainNetworks[network].getNetworkSyncState(
-        omniEscrowLocks.value,
+        omniEscrowLocksMap.value?.[configs[network].layerZeroChainId || ''],
         mainnetEscrowLocks.value
       );
       return acc;
@@ -219,7 +221,7 @@ export const crossChainSyncProvider = () => {
       refetchOmniEscrow(),
       mainnetCrossChainNetwork.refetch(),
     ]);
-    if (remoteUser.value) {
+    if (omniEscrowLocksMap.value) {
       const promises = networksBySyncState.value.syncing.map(networkId => {
         return crossChainNetworks[networkId].refetch();
       });
@@ -290,7 +292,7 @@ export const crossChainSyncProvider = () => {
 
   return {
     hasError,
-    omniEscrowLocks,
+    omniEscrowLocksMap,
     networksSyncState,
     isLoading,
     networksBySyncState,
