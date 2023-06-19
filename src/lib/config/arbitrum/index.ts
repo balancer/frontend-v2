@@ -10,7 +10,7 @@ const config: Config = {
   key: '42161',
   chainId: 42161,
   layerZeroChainId: 110,
-  veBalSync: true,
+  supportsVeBalSync: true,
   chainName: 'Arbitrum',
   name: 'Arbitrum',
   shortName: 'Arbitrum',

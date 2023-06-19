@@ -29,20 +29,9 @@ export interface TempSyncingNetworks {
 }
 
 // all networks that are supported by cross-chain sync feature
-export const veBalSyncSupportedNetworks = [
-  Network.POLYGON,
-  Network.ARBITRUM,
-  Network.GNOSIS,
-  Network.OPTIMISM,
-].filter(network => configs[network].veBalSync);
-
-// https://layerzero.gitbook.io/docs/technical-reference/mainnet/supported-chain-ids
-export const LayerZeroNetworkId = {
-  [Network.POLYGON]: 109,
-  [Network.ARBITRUM]: 110,
-  [Network.OPTIMISM]: 111,
-  [Network.GNOSIS]: 145,
-};
+export const veBalSyncSupportedNetworks = Object.keys(configs)
+  .filter(key => configs[Number(key)].supportsVeBalSync)
+  .map(key => Number(key));
 
 const REFETCH_INTERVAL = 1000 * 30; // 30 seconds
 
@@ -201,9 +190,15 @@ export const crossChainSyncProvider = () => {
     const signer = getSigner();
     const omniVotingEscrowContract = new OmniVotingEscrow(contractAddress);
 
+    const layerZeroChainId = configs[network].layerZeroChainId;
+
+    if (!layerZeroChainId) {
+      throw new Error('Must specify layer zero chain id');
+    }
+
     const tx = await omniVotingEscrowContract.estimateSendUserBalance(
       signer,
-      LayerZeroNetworkId[network]
+      layerZeroChainId
     );
 
     const { nativeFee } = tx;
@@ -212,7 +207,7 @@ export const crossChainSyncProvider = () => {
     const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
       signer,
       userAddress: account.value,
-      chainId: LayerZeroNetworkId[network],
+      chainId: layerZeroChainId,
       nativeFee,
     });
 

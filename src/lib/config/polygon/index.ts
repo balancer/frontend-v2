@@ -10,7 +10,7 @@ const config: Config = {
   key: '137',
   chainId: 137,
   layerZeroChainId: 109,
-  veBalSync: true,
+  supportsVeBalSync: true,
   chainName: 'Polygon PoS',
   name: 'Polygon Mainnet',
   shortName: 'Polygon',

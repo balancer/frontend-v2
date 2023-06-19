@@ -8,7 +8,7 @@ const config: Config = {
   key: '10',
   chainId: 10,
   layerZeroChainId: 111,
-  veBalSync: true,
+  supportsVeBalSync: true,
   chainName: 'Optimism',
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
