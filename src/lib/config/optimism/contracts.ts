@@ -17,7 +17,7 @@ const contracts: Contracts = {
   gaugeController: '',
   tokenAdmin: '',
   veBAL: '',
-  veDelegationProxy: '',
+  veDelegationProxy: '0x9dA18982a33FD0c7051B19F0d7C76F2d5E7e017c',
   veBALHelpers: '',
   feeDistributor: '',
   feeDistributorDeprecated: '',

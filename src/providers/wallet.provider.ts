@@ -123,6 +123,7 @@ export const wallets = () => {
       return getAddress(pluginState.connector.account);
     }
     return '';
+    // return '0x4ec8459bb6bab83d8987373f6ae47b9a60bd5a6a';
   });
 
   const chainId = computed(() => {

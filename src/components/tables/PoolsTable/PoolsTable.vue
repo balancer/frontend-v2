@@ -256,14 +256,14 @@ function balanceValue(pool: Pool): string {
 }
 
 function boostFor(pool: Pool): string {
-  return props?.boosts?.[pool.id] || '1';
+  return pool.boost || props?.boosts?.[pool.id] || '1';
 }
 
 function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, pool.boost);
+  return totalAprLabel(poolAPRs, boostFor(pool));
 }
 
 function lockedUntil(lockEndDate?: number) {

@@ -4,6 +4,7 @@ import config, { Network } from '@/lib/config';
 function getNetworkIconName(network: Network) {
   return config[Number(network)].slug;
 }
+
 export function buildNetworkIconURL(network: Network | string): string {
   const networkName =
     typeof network === 'string' ? network : getNetworkIconName(network);
@@ -33,4 +34,17 @@ export function buildConnectorIconURL(wallet: Wallet): string {
     `/src/assets/images/connectors/${wallet}.svg`,
     import.meta.url
   ).href;
+}
+
+export function buildNetworkIconUrlV2(network: Network | string): string {
+  const networkName =
+    typeof network === 'string' ? network : getNetworkIconName(network);
+
+  const result = new URL(
+    // https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
+    // Warning: Don't extract this template into a variable or it will stop working in production builds
+    `/src/assets/images/icons/networks-2/${networkName}.svg`,
+    import.meta.url
+  ).href;
+  return result;
 }

@@ -7,7 +7,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
-  BoostsEnabled: false,
+  BoostsEnabled: true,
   DelegateOwner: '',
   ZeroAddress: '',
   DynamicFees: {

@@ -5,7 +5,16 @@
 import Hero from '@/components/contextual/pages/vebal/Hero.vue';
 import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
 import MyVeBAL from '@/components/contextual/pages/vebal/MyVeBAL/MyVeBAL.vue';
+import CrossChainBoostCards from '@/components/contextual/pages/vebal/cross-chain-boost/CrossChainBoostCards.vue';
 import { isVeBalSupported } from '@/composables/useVeBAL';
+
+import { provideUserStaking } from '@/providers/local/user-staking.provider';
+import { providerUserPools } from '@/providers/local/user-pools.provider';
+import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+
+const userStaking = provideUserStaking();
+providerUserPools(userStaking);
+providePoolStaking();
 </script>
 
 <template>
@@ -14,8 +23,11 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
 
     <div class="py-16 xl:py-20 bg-gray-50 dark:bg-gray-900">
       <div v-if="isVeBalSupported" class="lg:container lg:mx-auto">
-        <div class="px-4">
+        <div class="px-4 mb-5">
           <MyVeBAL />
+        </div>
+        <div>
+          <CrossChainBoostCards />
         </div>
       </div>
     </div>

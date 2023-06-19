@@ -51,6 +51,7 @@ export interface Contracts {
   feeDistributorDeprecated: string;
   faucet: string;
   gaugeRewardsHelper?: string;
+  omniVotingEscrow?: string;
 }
 
 export interface RateProviders {
@@ -69,6 +70,7 @@ export interface Keys {
 export interface Config {
   key: string;
   chainId: Network | 12345 | 17;
+  layerZeroChainId?: number; // https://layerzero.gitbook.io/docs/technical-reference/mainnet/supported-chain-ids
   chainName: string;
   name: string;
   shortName: string;
@@ -95,6 +97,7 @@ export interface Config {
   bridgeUrl: string;
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
+  supportsVeBalSync?: boolean;
   blockTime: number;
   nativeAsset: {
     name: string;
