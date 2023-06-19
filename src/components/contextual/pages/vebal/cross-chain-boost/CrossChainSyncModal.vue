@@ -60,11 +60,7 @@ function toggleNetwork(network: number) {
       <component
         :is="syncTabs[tabActiveIdx]"
         v-model:activeTabIdx="tabActiveIdx"
-        :networksBySyncState="networksBySyncState"
         :veBalBalance="veBalBalance"
-        :l2VeBalBalances="l2VeBalBalances"
-        :sync="sync"
-        :setTempSyncingNetworks="setTempSyncingNetworks"
         style="min-height: 470px"
         :chosenNetworks="chosenNetworks"
         @toggle-network="toggleNetwork"

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Network } from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
-import useNetwork, { networkLabelMap } from '@/composables/useNetwork';
+import useNetwork from '@/composables/useNetwork';
 
 type Props = {
   isVisible: boolean;
@@ -26,9 +26,9 @@ const { networkId, getNetworkSlug } = useNetwork();
       </p>
 
       <p class="mb-5 whitespace-pre-line">
-        Ethereum Mainnet to {{ networkLabelMap[networkId] }} will enable you to
-        get boosted APR’s for any pools where you stake in the new boost-aware
-        gauges.
+        Ethereum Mainnet to {{ configs[networkId].chainName }} will enable you
+        to get boosted APR’s for any pools where you stake in the new
+        boost-aware gauges.
       </p>
       <BalBtn
         label="Go to Ethereum Mainnet"

@@ -25,6 +25,7 @@ export type NamedPools = {
   bbAaveUSD: {
     v1: string;
     v2: string;
+    v3: string;
   };
   xMatic: {
     v1: string;

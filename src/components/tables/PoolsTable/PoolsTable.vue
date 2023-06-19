@@ -256,14 +256,14 @@ function balanceValue(pool: Pool): string {
 }
 
 function boostFor(pool: Pool): string {
-  return props?.boosts?.[pool.id] || '1';
+  return pool.boost || props?.boosts?.[pool.id] || '1';
 }
 
 function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, pool.boost);
+  return totalAprLabel(poolAPRs, boostFor(pool));
 }
 
 function lockedUntil(lockEndDate?: number) {
@@ -316,7 +316,7 @@ function iconAddresses(pool: Pool) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="poolMetadata(pool.id)?.name" class="text-left">
+          <div v-if="poolMetadata(pool.id)?.name" class="pr-2 text-left">
             {{ poolMetadata(pool.id)?.name }}
           </div>
           <div v-else>

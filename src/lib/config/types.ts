@@ -71,6 +71,8 @@ export interface Keys {
 export interface Config {
   key: string;
   chainId: Network | 12345 | 17;
+  layerZeroChainId?: number;
+  veBalSync?: boolean;
   chainName: string;
   name: string;
   shortName: string;

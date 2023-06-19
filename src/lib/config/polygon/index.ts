@@ -9,7 +9,9 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '137',
   chainId: 137,
-  chainName: 'Polygon',
+  layerZeroChainId: 109,
+  veBalSync: true,
+  chainName: 'Polygon PoS',
   name: 'Polygon Mainnet',
   shortName: 'Polygon',
   monorepoName: 'polygon',

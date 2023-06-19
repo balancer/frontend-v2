@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { networkLabelMap } from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import {
-  supportedNetworks,
+  veBalSyncSupportedNetworks,
   useCrossChainSync,
 } from '@/providers/cross-chain-sync.provider';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -49,7 +48,7 @@ async function syncNetworks() {
 
     <div class="mb-5 rounded-lg border-2 border-gray-200 dark:border-gray-800">
       <div
-        v-for="network in supportedNetworks"
+        v-for="network in veBalSyncSupportedNetworks"
         :key="network"
         aria-disabled="true"
         class="border-b-2 last:border-b-0 dark:border-gray-800"
@@ -68,7 +67,7 @@ async function syncNetworks() {
             alignCheckbox="items-center"
             :name="network.toString()"
             :modelValue="chosenNetworks.has(network)"
-            :label="networkLabelMap[network]"
+            :label="configs[network].chainName"
             @input="toggleNetwork(network)"
           />
           <div class="text-gray-600">
