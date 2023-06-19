@@ -100,6 +100,7 @@ const pools: Pools = {
       '0xdfe6e7e18f6cc65fa13c8d8966013d4fda74b6ba000000000000000000000558', // ankrETH/wstETH
       '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
       '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
+      '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570', // vETH/WETH
     ],
   },
   Investment: {
