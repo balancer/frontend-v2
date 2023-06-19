@@ -14,7 +14,7 @@ type Props = {
 const props = defineProps<Props>();
 
 const { l2VeBalBalances, networksSyncState } = useCrossChainSync();
-const { hasNonPrefGaugeBalance } = usePoolStaking();
+const { hasNonPrefGaugeBalance, poolGauges } = usePoolStaking();
 const { networkId } = useNetwork();
 
 const tipText = computed(() => {
@@ -46,6 +46,7 @@ const tipText = computed(() => {
 });
 
 const warningAlert = computed(() => {
+  console.log('poolGauges', poolGauges.value);
   if (networksSyncState.value[networkId.value] === NetworkSyncState.Synced) {
     return {
       title: 'You are missing out on your max staking boost',

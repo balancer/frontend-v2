@@ -8,6 +8,7 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
 import configs from '@/lib/config';
+import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -266,6 +267,20 @@ export const crossChainSyncProvider = () => {
     );
   }
 
+  /**
+   * @see https://polygonscan.com/address/0x08fd003D8F1892D4EC684E6C3EE0128081be461b#code#F7#L133
+   * */
+  function getGaugeWorkingBalance() {
+    const contractAddress =
+      configService.network.addresses.gaugeWorkingBalanceHelper;
+    if (!contractAddress) throw new Error('No contract address found');
+
+    const signer = getSigner();
+    const workingBalanceHelperContract = new GaugeWorkingBalanceHelper(
+      contractAddress
+    );
+  }
+
   watch(
     () => networksBySyncState.value,
     newVal => {
@@ -302,6 +317,7 @@ export const crossChainSyncProvider = () => {
     setTempSyncingNetworks,
     warningMessage,
     infoMessage,
+    getGaugeWorkingBalance,
   };
 };
 

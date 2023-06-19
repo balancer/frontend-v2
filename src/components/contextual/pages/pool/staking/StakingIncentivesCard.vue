@@ -43,6 +43,7 @@ const {
   isRefetchingStakedShares,
   stakedShares,
   hasNonPrefGaugeBalance,
+  poolGauges,
 } = usePoolStaking();
 const { isAffected } = usePoolWarning(poolId);
 
