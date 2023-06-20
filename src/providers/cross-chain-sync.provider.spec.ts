@@ -30,9 +30,9 @@ initDependenciesWithDefaultMocks();
 describe('Returns correct Sync state by network', () => {
   it('When no omniEscrowLocks', async () => {
     mockOmniEscrowLocks([]);
-    const { omniEscrowLocks } = await mountCrossChainSync();
+    const { omniEscrowLocksMap } = await mountCrossChainSync();
 
-    expect(omniEscrowLocks.value).toBeNull();
+    expect(omniEscrowLocksMap.value).toBeNull();
     const { networksBySyncState } = await mountCrossChainSync();
 
     expect(networksBySyncState.value).toMatchInlineSnapshot(`
@@ -57,32 +57,14 @@ describe('Returns correct Sync state by network', () => {
     expect(networksBySyncState.value).toMatchInlineSnapshot(`
       {
         "synced": [
-          10,
-          100,
-          137,
           42161,
         ],
         "syncing": [],
-        "unsynced": [],
-      }
-    `);
-  });
-
-  it('When omni and voting locks are the same for the network', async () => {
-    mockOmniEscrowLocks([defaultOmniEscrowLockArbitrum]);
-
-    const { networksBySyncState } = await mountCrossChainSync();
-
-    expect(networksBySyncState.value).toMatchInlineSnapshot(`
-      {
-        "synced": [
+        "unsynced": [
           10,
           100,
           137,
-          42161,
         ],
-        "syncing": [],
-        "unsynced": [],
       }
     `);
   });
@@ -105,15 +87,15 @@ describe('Returns correct Sync state by network', () => {
 
     expect(networksBySyncState.value).toMatchInlineSnapshot(`
       {
-        "synced": [
+        "synced": [],
+        "syncing": [
+          42161,
+        ],
+        "unsynced": [
           10,
           100,
           137,
         ],
-        "syncing": [
-          42161,
-        ],
-        "unsynced": [],
       }
     `);
   });
@@ -126,9 +108,9 @@ test('Calculates L2 network balances', async () => {
   // calculations for the given bias/slope/timestamp given that today is 2023-01-01 (mocked in setup-vitest)
   expect(l2VeBalBalances.value).toMatchInlineSnapshot(`
     {
-      "10": "0.0904",
-      "100": "0.0904",
-      "137": "0.0904",
+      "10": "0.0000",
+      "100": "0.0000",
+      "137": "0.0000",
       "42161": "0.0904",
     }
   `);

@@ -8,8 +8,10 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 import { useTokens } from '@/providers/tokens.provider';
 import BigNumber from 'bignumber.js';
-import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
-import { NetworkSyncState } from '@/providers/cross-chain-sync.provider';
+import {
+  useCrossChainSync,
+  NetworkSyncState,
+} from '@/providers/cross-chain-sync.provider';
 
 /**
  * COMPOSABLES

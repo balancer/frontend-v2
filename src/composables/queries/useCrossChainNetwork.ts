@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import { allEqual } from '@/lib/utils/array';
 import BigNumber from 'bignumber.js';
 import { NetworkSyncState } from '@/providers/cross-chain-sync.provider';
@@ -7,11 +7,26 @@ import {
   VotingEscrowLock,
   useVotingEscrowLocksQuery,
 } from './useVotingEscrowQuery';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export function useCrossChainNetwork(
   networkId: Network,
-  user: ComputedRef<string | undefined>
+  omniEscrowMap: ComputedRef<Record<number, OmniEscrowLock> | null>
 ) {
+  const { account } = useWeb3();
+
+  /**
+   * smart contracts can direct their veBAL boost to a different address on L2
+   * for regular UI users, remoteUser will be the same as localUser
+   */
+  const remoteUser = computed(() => {
+    if (networkId === Network.MAINNET) {
+      return account.value;
+    }
+    const layerZeroChainId = configs[networkId].layerZeroChainId || '';
+    return omniEscrowMap.value?.[layerZeroChainId]?.remoteUser;
+  });
+
   /**
    * votingEscrowLocks contains the user's original veBAL data
    * slope and bias is how a user's "balance" is stored on the smart contract
@@ -21,7 +36,7 @@ export function useCrossChainNetwork(
     refetch,
     isError,
     isInitialLoading: isLoading,
-  } = useVotingEscrowLocksQuery(networkId, user);
+  } = useVotingEscrowLocksQuery(networkId, remoteUser);
 
   const votingEscrowLocks = computed(
     () => votingEscrowResponse.value?.votingEscrowLocks[0]
