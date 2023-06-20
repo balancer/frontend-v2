@@ -11,7 +11,7 @@ import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
-import veBalProxyABIL2 from '@/lib/abi/veDelegationPoxyL2.json';
+import veBalProxyABIL2 from '@/lib/abi/veDelegationProxyL2.json';
 import { networkId } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 
