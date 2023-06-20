@@ -43,7 +43,6 @@ const {
   isRefetchingStakedShares,
   stakedShares,
   hasNonPrefGaugeBalance,
-  poolGauges,
 } = usePoolStaking();
 const { isAffected } = usePoolWarning(poolId);
 
@@ -222,13 +221,6 @@ function handlePreviewClose() {
                     {{ $t('unstake') }}
                   </BalBtn>
                 </BalStack>
-                <BalAlert
-                  v-if="hasNonPrefGaugeBalance"
-                  :title="$t('staking.restakeGauge')"
-                  class="mt-2"
-                >
-                  {{ $t('staking.restakeGaugeDescription') }}
-                </BalAlert>
               </BalStack>
             </div>
           </template>

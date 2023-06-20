@@ -6,7 +6,6 @@ import { walletService as walletServiceInstance } from '@/services/web3/wallet.s
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
-import { Gauge } from '../../gauges/types';
 
 export class GaugeWorkingBalanceHelper {
   instance: Contract;
@@ -21,14 +20,14 @@ export class GaugeWorkingBalanceHelper {
   }
 
   async getWorkingBalanceToSupplyRatios(payload: {
-    gauge: Gauge;
+    gauge: string;
     userAddress: string;
     signer: JsonRpcSigner;
   }) {
     const { signer, gauge, userAddress } = payload;
     const txBuilder = new TransactionBuilder(signer);
 
-    return await txBuilder.contract.sendTransaction({
+    return await txBuilder.contract.callStatic<[BigNumber, BigNumber]>({
       contractAddress: this.address,
       abi: this.abi,
       action: 'getWorkingBalanceToSupplyRatios',

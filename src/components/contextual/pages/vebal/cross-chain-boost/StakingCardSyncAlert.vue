@@ -11,9 +11,9 @@ type Props = {
   fiatValueOfUnstakedShares: string;
 };
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
-const { l2VeBalBalances, networksSyncState } = useCrossChainSync();
+const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
 const { hasNonPrefGaugeBalance, poolGauges } = usePoolStaking();
 const { networkId } = useNetwork();
 
@@ -44,33 +44,52 @@ const tipText = computed(() => {
     text: '',
   };
 });
-
+const shouldShowWarningAlert = ref(false);
 const warningAlert = computed(() => {
-  console.log('poolGauges', poolGauges.value);
-  if (networksSyncState.value[networkId.value] === NetworkSyncState.Synced) {
+  if (shouldShowWarningAlert.value) {
     return {
       title: 'You are missing out on your max staking boost',
       text: 'You’ve synced new veBAL but it is not being used to increase your staking boost (since pool gauges don’t automatically recognize veBAL changes). Interact with a pool gauge to trigger an update (e.g. by claiming BAL, staking/unstaking or explicitly triggering an update).',
     };
   }
-  return {
-    title: '',
-    text: '',
-  };
+  return null;
 });
+
+watch(
+  () => poolGauges.value?.pool.preferentialGauge.id,
+  async val => {
+    if (!val) {
+      return;
+    }
+    console.log('val', val);
+    const balance = await getGaugeWorkingBalance(val);
+
+    // if the second number it returns is greater than the first, then show the message
+    if (balance[1]?.gt(balance[0])) {
+      shouldShowWarningAlert.value = true;
+    }
+  },
+  { immediate: true }
+);
+
+function triggerUpdate() {
+  //
+}
 </script>
 
 <template>
   <div class="flex">
     <BalAlert
-      v-if="warningAlert.title"
+      v-if="warningAlert"
       class="flex-grow"
       type="warning"
       :title="warningAlert.title"
     >
       <div class="flex flex-col">
         <span class="mb-1">{{ warningAlert.text }}</span>
-        <BalBtn size="sm" color="gradient"> Trigger update </BalBtn>
+        <BalBtn size="sm" color="gradient" @click="triggerUpdate">
+          Trigger update
+        </BalBtn>
       </div>
     </BalAlert>
 

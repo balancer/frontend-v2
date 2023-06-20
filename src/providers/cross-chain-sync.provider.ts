@@ -269,10 +269,7 @@ export const crossChainSyncProvider = () => {
     );
   }
 
-  /**
-   * @see https://polygonscan.com/address/0x08fd003D8F1892D4EC684E6C3EE0128081be461b#code#F7#L133
-   * */
-  function getGaugeWorkingBalance() {
+  async function getGaugeWorkingBalance(gaugeAddress: string) {
     const contractAddress =
       configService.network.addresses.gaugeWorkingBalanceHelper;
     if (!contractAddress) throw new Error('No contract address found');
@@ -281,6 +278,19 @@ export const crossChainSyncProvider = () => {
     const workingBalanceHelperContract = new GaugeWorkingBalanceHelper(
       contractAddress
     );
+    const balances =
+      await workingBalanceHelperContract.getWorkingBalanceToSupplyRatios({
+        signer,
+        userAddress: account.value,
+        gauge: gaugeAddress,
+      });
+
+    return balances;
+  }
+
+  // checkpoint
+  async function triggerGaugeUpdate() {
+    //
   }
 
   watch(
@@ -320,6 +330,7 @@ export const crossChainSyncProvider = () => {
     warningMessage,
     infoMessage,
     getGaugeWorkingBalance,
+    triggerGaugeUpdate,
   };
 };
 

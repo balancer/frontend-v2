@@ -22,6 +22,7 @@ const contracts: Contracts = {
   feeDistributor: '',
   feeDistributorDeprecated: '',
   faucet: '',
+  gaugeWorkingBalanceHelper: optimism.ChildChainGaugeWorkingBalanceHelper,
 };
 
 export default contracts;
