@@ -15,6 +15,7 @@ const config: Config = {
   monorepoName: 'polygon',
   slug: 'polygon',
   network: 'polygon',
+  trustWalletNetwork: 'polygon',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
