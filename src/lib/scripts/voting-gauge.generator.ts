@@ -485,10 +485,19 @@ function checkNodeJSVersion() {
   }
 }
 
+function checkRPCIsSet() {
+  if (!import.meta.env[`VITE_RPC_URL_1`]) {
+    throw new Error(
+      'This script requires the env variable VITE_RPC_URL_1 to be set to your RPC URL, as the default Infura RPC will not work with CLI apps.'
+    );
+  }
+}
+
 (async () => {
   console.log('Generating voting-gauges.json...');
 
   checkNodeJSVersion();
+  checkRPCIsSet();
 
   console.log('Fetching gauges info...');
   console.time('getGaugeInfo');
