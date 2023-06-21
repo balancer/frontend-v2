@@ -35,18 +35,20 @@ async function syncNetworks() {
       {{ $t('crossChainBoost.selectNetworkModal.title') }}
     </div>
 
-    <div class="mb-5 text-sm text-gray-600">
+    <div class="mb-5 text-sm text-secondary">
       {{ $t('crossChainBoost.selectNetworkModal.description') }}
     </div>
 
     <div
-      class="flex justify-between p-4 mb-3 rounded-lg border-2 border-gray-200 dark:border-gray-800 bg-slate-100 dark:bg-slate-800"
+      class="flex justify-between p-4 -mb-0.5 rounded-t-lg border-2 border-gray-200 dark:border-gray-800 bg-slate-100 dark:bg-slate-800"
     >
-      <span>Ethereum</span>
-      <div class="text-gray-600">{{ veBalBalance }} veBal</div>
+      <span class="font-semibold">Ethereum</span>
+      <div class="font-semibold">{{ veBalBalance }} veBAL</div>
     </div>
 
-    <div class="mb-5 rounded-lg border-2 border-gray-200 dark:border-gray-800">
+    <div
+      class="mb-5 rounded-b-lg border-2 border-gray-200 dark:border-gray-800"
+    >
       <div
         v-for="network in veBalSyncSupportedNetworks"
         :key="network"
@@ -68,10 +70,11 @@ async function syncNetworks() {
             :name="network.toString()"
             :modelValue="chosenNetworks.has(network)"
             :label="configs[network].chainName"
+            class="font-medium"
             @input="toggleNetwork(network)"
           />
-          <div class="text-gray-600">
-            {{ l2VeBalBalances?.[network] || '0.0000' }} veBal
+          <div class="font-medium">
+            {{ l2VeBalBalances?.[network] || '0.0000' }} veBAL
           </div>
         </div>
       </div>
