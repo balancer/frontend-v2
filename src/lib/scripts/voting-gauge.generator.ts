@@ -153,16 +153,8 @@ function getTrustWalletAssetsURI(
   log(
     `getTrustWalletAssetsURI network: ${network} tokenAddress: ${tokenAddress}`
   );
-  const networksMap = {
-    [Network.MAINNET]: 'ethereum',
-    [Network.ARBITRUM]: 'arbitrum',
-    [Network.POLYGON]: 'polygon',
-    [Network.GOERLI]: 'goerli',
-    [Network.OPTIMISM]: 'optimism',
-    [Network.GNOSIS]: 'xdai',
-  };
 
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
+  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${config[network].trustWalletNetwork}/assets/${tokenAddress}/logo.png`;
 }
 
 async function isValidLogo(uri: string | undefined): Promise<boolean> {
@@ -197,12 +189,7 @@ async function getTokenLogoURI(
   logoUri = await getAssetURIFromTokenlists(tokenAddress, network);
   if (await isValidLogo(logoUri)) return logoUri;
 
-  if (
-    network === Network.ARBITRUM ||
-    network === Network.OPTIMISM ||
-    network === Network.POLYGON ||
-    network === Network.GNOSIS
-  ) {
+  if (network !== Network.MAINNET && config[network].testNetwork === false) {
     const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
     logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
     if (await isValidLogo(logoUri)) return logoUri;
