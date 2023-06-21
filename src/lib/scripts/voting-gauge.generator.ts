@@ -476,8 +476,19 @@ async function getGaugeInfo(
   }
 }
 
+function checkNodeJSVersion() {
+  const nodeVersion = process.versions.node;
+  if (Number(nodeVersion.split('.')[0]) > 16) {
+    throw new Error(
+      `This script does not work with NodeJS > 16. You are using ${nodeVersion}. Please downgrade to continue.`
+    );
+  }
+}
+
 (async () => {
   console.log('Generating voting-gauges.json...');
+
+  checkNodeJSVersion();
 
   console.log('Fetching gauges info...');
   console.time('getGaugeInfo');
