@@ -15,43 +15,56 @@ import {
 } from '@/composables/usePoolHelpers';
 import { POOLS } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
+import { RiskKey } from '@/types/pools';
 import { capitalize } from 'lodash';
 
-interface Risk {
+export const riskTitles = {
+  [RiskKey.General]: 'General Balancer protocol risks',
+  [RiskKey.Weighted]: 'Weighted pool risks',
+  [RiskKey.Stable]: 'Stable pool risks',
+  [RiskKey.ComposableStable]: 'Composable stable pool risks',
+  [RiskKey.MetaStable]: 'MetaStable pool risks',
+  [RiskKey.Boosted]: 'Boosted pool risks',
+  [RiskKey.Arbitrum]: 'Layer 2 network risks: Arbitrum',
+  [RiskKey.Polygon]: 'Layer 2 network risks: Polygon',
+  [RiskKey.Optimism]: 'Layer 2 network risks: Optimism',
+  [RiskKey.Gnosis]: 'Layer 2 network risks: Gnosis',
+  [RiskKey.Mutable]: 'Mutable attributes risks',
+  [RiskKey.Composability]: 'Composability risks',
+  [RiskKey.RateProvider]: 'Rate provider risks',
+  [RiskKey.RateProviderBridge]:
+    'Rate provider cross-chain bridge risks: Layer Zero',
+};
+
+export interface Risk {
   title: string;
   hash: string;
 }
 
-function aLink(title: string, hash: string) {
+function aLink(key: RiskKey, title?: string) {
   return {
-    title,
-    hash,
+    title: title || riskTitles[key],
+    hash: `#${key}`,
   };
 }
 
 // Pool type risks
-const weightedRisks = aLink('Weighted pool risks', '#weighted-pools');
-const stableRisks = aLink('Stable pool risks', '#stable-pools');
+const weightedRisks = aLink(RiskKey.Weighted);
+const stableRisks = aLink(RiskKey.Stable);
 const composableRisks = aLink(
-  'Composable stable pool risks',
-  '#composable-pools'
+  RiskKey.ComposableStable,
+  // Explicit title because RiskKey.ComposableStable and RiskKey.MetaStable share the same key (hash)
+  'Composable Stable pool risks'
 );
-const metaStableRisks = aLink('MetaStable pool risks', '#composable-pools');
-const boostedRisks = aLink('Boosted pool risks', '#boosted-pools');
+const metaStableRisks = aLink(RiskKey.MetaStable);
+const boostedRisks = aLink(RiskKey.Boosted);
+const arbitrumRisks = aLink(RiskKey.Arbitrum);
+const polygonRisks = aLink(RiskKey.Polygon);
+const optimismRisks = aLink(RiskKey.Optimism);
+const gnosisRisks = aLink(RiskKey.Gnosis);
+const mutableRisks = aLink(RiskKey.Mutable);
 
-// L2 risks
-const arbitrumRisks = aLink('Layer 2 network risks: Arbitrum', '#arbitrum');
-const polygonRisks = aLink('Layer 2 network risks: Polygon', '#polygon');
-const optimismRisks = aLink('Layer 2 network risks: Optimism', '#optimism');
-const gnosisRisks = aLink('Layer 2 network risks: Gnosis', '#gnosis');
-
-// Mutable risks
-const mutableRisks = aLink(
-  'Mutable attributes risks',
-  '#mutable-attributes-risk'
-);
-
-export function riskLinks(pool: Pool) {
+export function riskLinks(pool: Pool): Risk[] {
   const result: Risk[] = [];
 
   if (isWeighted(pool.poolType)) result.push(weightedRisks);
@@ -72,6 +85,8 @@ export function riskLinks(pool: Pool) {
 
   if (hasOwner(pool)) result.push(mutableRisks);
 
+  result.push(aLink(RiskKey.General));
+
   return result;
 }
 
@@ -83,8 +98,8 @@ export function generateThirdPartyComposabilityRisks(pool): Risk | undefined {
     protocols?.includes(BoostedProtocol.Idle)
   )
     return aLink(
-      'Third party DeFi composability risks: May use multiple yield protocols',
-      '#composability-risk'
+      RiskKey.Composability,
+      'Third party DeFi composability risks: May use multiple yield protocols'
     );
 
   if (protocols?.includes(BoostedProtocol.Reaper))
@@ -92,10 +107,10 @@ export function generateThirdPartyComposabilityRisks(pool): Risk | undefined {
 
   if (protocols) {
     return aLink(
+      RiskKey.Composability,
       `Third party DeFi composability risks: ${protocols
         .map(protocol => capitalize(protocol))
-        .join(', ')}`,
-      '#composability-risk'
+        .join(', ')}`
     );
   }
 }
@@ -111,16 +126,16 @@ export function risksTitle(pool: Pool) {
 }
 
 function alsoWhenSpecificRisks(pool: Pool) {
-  if (poolSpecificRisks(pool)) return ' also';
+  if (poolSpecificRisks(pool).length > 0) return ' also';
   return '';
 }
 
-export function poolSpecificRisks(pool: Pool) {
-  // GOERLI ID for testing
-  if (
-    pool.id ===
-    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467'
-  )
-    return 'This pool has testing specific risks.';
-  return '';
+export function poolSpecificRisks(pool: Pool): Risk[] {
+  const risks = POOLS?.Risks?.[pool.id.toLowerCase()];
+
+  if (risks) {
+    return risks.map(risk => aLink(risk));
+  }
+
+  return [];
 }

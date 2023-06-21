@@ -48,6 +48,7 @@ import { useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
+import { ApprovalAction } from '@/composables/approvals/types';
 
 /**
  * TYPES
@@ -110,13 +111,13 @@ export const joinPoolProvider = (
    */
   const { getTokens, injectTokens, priceFor, nativeAsset, wrappedNativeAsset } =
     useTokens();
-
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
-  const { getSigner } = useWeb3();
+  const { getSigner, appNetworkConfig } = useWeb3();
   const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
+  const { getTokenApprovalActions } = useTokenApprovalActions();
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
     RelayerType.BATCH
   );
@@ -196,18 +197,13 @@ export const joinPoolProvider = (
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
 
-  const tokensToApprove = computed(() => {
-    return amountsIn.value.map(amountIn => amountIn.address);
-  });
-
   const amountsToApprove = computed(() => {
-    return amountsIn.value.map(amountIn => amountIn.value);
+    return amountsIn.value.map(amountIn => ({
+      address: amountIn.address,
+      amount: amountIn.value,
+      spender: appNetworkConfig.addresses.vault,
+    }));
   });
-
-  const { getTokenApprovalActions } = useTokenApprovalActions(
-    tokensToApprove,
-    amountsToApprove
-  );
 
   const isLoadingQuery = computed(
     (): boolean => queryJoinQuery.isFetching.value
@@ -275,8 +271,13 @@ export const joinPoolProvider = (
   }
 
   // Updates the approval actions like relayer approval and token approvals.
-  function setApprovalActions() {
-    const tokenApprovalActions = getTokenApprovalActions();
+  async function setApprovalActions() {
+    const tokenApprovalActions = await getTokenApprovalActions({
+      amountsToApprove: amountsToApprove.value,
+      spender: appNetworkConfig.addresses.vault,
+      actionType: ApprovalAction.AddLiquidity,
+    });
+
     approvalActions.value = shouldSignRelayer.value
       ? [relayerApprovalAction.value, ...tokenApprovalActions]
       : tokenApprovalActions;
@@ -295,7 +296,7 @@ export const joinPoolProvider = (
 
     try {
       joinPoolService.setJoinHandler(joinHandlerType.value);
-      setApprovalActions();
+      await setApprovalActions();
 
       console.log('joinHandler:', joinHandlerType.value);
       const output = await joinPoolService.queryJoin({
@@ -326,7 +327,7 @@ export const joinPoolProvider = (
       txError.value = '';
 
       joinPoolService.setJoinHandler(joinHandlerType.value);
-      setApprovalActions();
+      await setApprovalActions();
 
       console.log('joinHandler:', joinHandlerType.value);
       const joinRes = await joinPoolService.join({
@@ -409,7 +410,7 @@ export const joinPoolProvider = (
   });
 
   // relayerApprovalAction can change if the user changes their useSignatures setting.
-  watch(relayerApprovalAction, () => setApprovalActions());
+  watch(relayerApprovalAction, async () => await setApprovalActions());
 
   /**
    * LIFECYCLE

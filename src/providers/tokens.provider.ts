@@ -43,6 +43,7 @@ import {
 } from '@/types/TokenList';
 import useWeb3 from '@/services/web3/useWeb3';
 import { tokenListService } from '@/services/token-list/token-list.service';
+import { AmountToApprove } from '@/composables/approvals/useTokenApprovalActions';
 
 const { uris: tokenListUris } = tokenListService;
 
@@ -356,18 +357,20 @@ export const tokensProvider = (
   }
 
   /**
-   * Check which tokens require approvals for given amounts
-   * @returns a subset of the token addresses passed in.
+   * Check which tokens/amounts require approvals for the spender.
+   *
+   * @param {AmountToApprove[]} amountsToApprove - array of token addresses and amounts to check.
+   * @param {string} spender - Contract address of spender to check approvals against.
+   * @returns a subset of the amountsToApprove array.
    */
   function approvalsRequired(
-    tokenAddresses: string[],
-    amounts: string[],
-    contractAddress: string = networkConfig.addresses.vault
-  ): string[] {
-    return tokenAddresses.filter((address, index) => {
-      if (!contractAddress) return false;
+    amountsToApprove: AmountToApprove[],
+    spender: string
+  ): AmountToApprove[] {
+    return amountsToApprove.filter(({ address, amount }) => {
+      if (!spender) return false;
 
-      return approvalRequired(address, amounts[index], contractAddress);
+      return approvalRequired(address, amount, spender);
     });
   }
 

@@ -118,7 +118,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
     maxSlippage: number,
     userAddress: string
   ) {
-    const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
+    const deadline = getTimestampSecondsFromNow(60).toString(); // 60 seconds from now
     return this.sdk.swaps.buildSwap({
       userAddress,
       swapInfo,

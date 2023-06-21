@@ -511,6 +511,11 @@ export default function usePoolCreation() {
   function importState(state) {
     for (const key of Object.keys(poolCreationState)) {
       if (key === 'activeStep') continue;
+      if (key === 'seedTokens') {
+        const seedTokens = state['seedTokens'].filter(token => !!token.address);
+        poolCreationState['seedTokens'] = seedTokens;
+        continue;
+      }
       poolCreationState[key] = state[key];
     }
   }
@@ -540,15 +545,19 @@ export default function usePoolCreation() {
       hash
     );
     if (!details) return;
-    poolCreationState.seedTokens = details.tokens.map((token, i) => {
-      return {
-        tokenAddress: getAddress(token),
-        weight: Number(details.weights[i]) * 100,
-        isLocked: true,
-        amount: '0',
-        id: i.toString(),
-      };
-    });
+    poolCreationState.seedTokens = details.tokens
+      .map((token, i) => {
+        return {
+          tokenAddress: getAddress(token),
+          weight: Number(details.weights[i]) * 100,
+          isLocked: true,
+          amount: '0',
+          id: i.toString(),
+        };
+      })
+      .filter(token => {
+        return !!token.tokenAddress;
+      });
     poolCreationState.tokensList = details.tokens;
     poolCreationState.createPoolTxHash = hash;
     poolCreationState.activeStep = 3;

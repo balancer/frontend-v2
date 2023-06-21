@@ -1,5 +1,4 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -10,7 +9,8 @@ export type FactoryType =
   | 'composableStablePool'
   | 'fx'
   | 'eulerLinear'
-  | 'gyroE';
+  | 'gyroE'
+  | 'erc4626Linear';
 
 export type PoolMetadata = {
   name?: string;
@@ -19,11 +19,41 @@ export type PoolMetadata = {
   boostedProtocols?: BoostedProtocol[];
 };
 
+export enum RiskKey {
+  General = 'general-risks',
+  Economic = 'economic-risk',
+  ToxicToken = 'toxic-token-risk',
+  RebaseToken = 'rebasing-tokens',
+  Governance = 'governance-risk',
+  FlashLoan = 'flash-loans-risk',
+  JoinExit = 'join-exit-risk',
+  ImpermanentLoss = 'impermanent-loss-risk',
+  UI = 'ui-risk',
+  Regulatory = 'regulatory-risk',
+  PoolType = 'pool-type-risk',
+  Oracle = 'oracles',
+  Network = 'network-risks',
+  Weighted = 'weighted-pools',
+  Stable = 'stable-pools',
+  ComposableStable = 'composable-pools',
+  MetaStable = 'composable-pools',
+  Boosted = 'boosted-pools',
+  Arbitrum = 'arbitrum',
+  Polygon = 'polygon',
+  Optimism = 'optimism',
+  Gnosis = 'gnosis',
+  Mutable = 'mutable-attributes-risk',
+  Composability = 'composability-risk',
+  RateProvider = 'rate-provider-risk',
+  RateProviderBridge = 'rate-provider-bridges',
+}
+
 export type NamedPools = {
   staBAL: string;
   bbAaveUSD: {
     v1: string;
     v2: string;
+    v3: string;
   };
   xMatic: {
     v1: string;
@@ -44,6 +74,7 @@ export type DeprecatedDetails = {
   newPool?: string;
   suggestedPools?: string[];
   description?: string;
+  title?: string;
 };
 
 export enum PoolMigrationType {
@@ -103,6 +134,7 @@ export type Pools = {
   GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
   Issues?: Partial<Record<PoolWarning, string[]>>;
+  Risks?: Record<string, RiskKey[]>;
 };
 
 export enum PoolWarning {

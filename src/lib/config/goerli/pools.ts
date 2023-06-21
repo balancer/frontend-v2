@@ -1,5 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools } from '@/types/pools';
+import { Pools, RiskKey } from '@/types/pools';
 
 export const poolIdThatRequiresInternalBalanceExit =
   '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
@@ -26,6 +26,7 @@ const pools: Pools = {
     bbAaveUSD: {
       v1: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
       v2: '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7',
+      v3: '',
     },
     veBAL: '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
   },
@@ -73,6 +74,7 @@ const pools: Pools = {
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
     AllowList: [
       '0xbb372d299cc1afa14d5b8691ced1486fa0216f74000200000000000000000757', // DVT /WETH
+      '0x4dc5ef9b11fd462d78e197f8a98089933174b2c5000200000000000000000836', //tkn1/tkn2
     ],
   },
   Factories: {
@@ -146,6 +148,11 @@ const pools: Pools = {
     deprecatedid: {}, //Used for unit testing
   },
   ExitViaInternalBalance: [poolIdThatRequiresInternalBalanceExit],
+  Risks: {
+    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467': [
+      RiskKey.RateProviderBridge,
+    ],
+  },
 };
 
 export default pools;

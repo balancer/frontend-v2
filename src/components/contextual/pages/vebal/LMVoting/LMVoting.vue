@@ -6,15 +6,16 @@ import useDebouncedRef from '@/composables/useDebouncedRed';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { poolURLFor } from '@/composables/usePoolHelpers';
 import useVotingGauges from '@/composables/useVotingGauges';
-import { bnum, isSameAddress, scale } from '@/lib/utils';
+import { bnum, scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 
 import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
 import { orderedTokenURIs } from '@/composables/useVotingGauges';
-import { Network } from '@/lib/config';
+import configs, { Network } from '@/lib/config';
 import GaugesFilters from './GaugesFilters.vue';
+import { isGaugeExpired } from './voting-utils';
 
 /**
  * DATA
@@ -24,13 +25,14 @@ const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
 const activeNetworkFilters = useDebouncedRef<Network[]>([], 500);
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 
-const networkFilters = [
-  Network.MAINNET,
-  Network.POLYGON,
-  Network.ARBITRUM,
-  Network.OPTIMISM,
-  Network.GNOSIS,
-];
+const networkFilters: Network[] = Object.entries(configs)
+  .filter(details => {
+    const config = details[1];
+    return (
+      !config.testNetwork && config.pools.Stakable.VotingGaugePools.length > 0
+    );
+  })
+  .map(details => Number(details[0]) as Network);
 
 /**
  * COMPOSABLES
@@ -91,9 +93,7 @@ const gaugesFilteredByExpiring = computed(() => {
     if (Number(gauge.userVotes) > 0) {
       return true;
     }
-    return !expiredGauges.value?.some(expGauge =>
-      isSameAddress(expGauge, gauge.address)
-    );
+    return !isGaugeExpired(expiredGauges.value, gauge.address);
   });
 });
 
@@ -133,6 +133,10 @@ function handleModalClose() {
 
 function handleVoteSuccess() {
   refetchVotingGauges();
+}
+
+function isExpired(gauge: VotingGaugeWithVotes) {
+  return isGaugeExpired(expiredGauges.value, gauge.address);
 }
 
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
@@ -305,6 +309,7 @@ watch(
     <GaugeVoteModal
       v-if="!!activeVotingGauge"
       :gauge="activeVotingGauge"
+      :isGaugeExpired="isExpired(activeVotingGauge)"
       :logoURIs="orderedTokenURIs(activeVotingGauge)"
       :poolURL="poolURLFor(activeVotingGauge.pool, activeVotingGauge.network)"
       :unallocatedVoteWeight="unallocatedVoteWeight"
