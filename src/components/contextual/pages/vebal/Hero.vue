@@ -60,7 +60,7 @@ function navigateToGetVeBAL() {
           </BalBtn>
           <BalBtn
             tag="a"
-            href="https://docs.balancer.fi/ecosystem/vebal-and-gauges"
+            href="https://docs.balancer.fi/concepts/governance/veBAL/"
             target="_blank"
             rel="noreferrer"
             color="white"
