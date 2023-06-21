@@ -3,7 +3,6 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { parseUnits } from '@ethersproject/units';
 import { format } from 'date-fns';
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -14,11 +13,9 @@ import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useNetwork from '@/composables/useNetwork';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
@@ -26,6 +23,7 @@ import useVotingGauges from '@/composables/useVotingGauges';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { ApprovalAction } from '@/composables/approvals/types';
 import { captureException } from '@sentry/browser';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 
 /**
  * TYPES
@@ -76,14 +74,10 @@ const { networkConfig } = useConfig();
 const { getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
-  ref<string[]>([props.lockablePoolTokenInfo.address]),
-  ref<string[]>([props.lockAmount]),
-  ApprovalAction.Locking
-);
 const { fNum } = useNumbers();
 const { totalVotes, unallocatedVotes } = useVotingGauges();
 const { networkSlug } = useNetwork();
+const { getTokenApprovalActions } = useTokenApprovalActions();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
@@ -107,6 +101,13 @@ const lockActionStatesConfirmed = computed(() =>
 const shouldResubmitVotes = computed<boolean>(
   () => totalVotes !== unallocatedVotes.value
 );
+
+const amountsToApprove = computed(() => [
+  {
+    address: props.lockablePoolTokenInfo.address,
+    amount: props.lockAmount,
+  },
+]);
 
 /**
  * METHODS
@@ -211,16 +212,11 @@ watch(lockActionStatesConfirmed, () => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  const approvalAmount = parseUnits(
-    props.lockAmount,
-    props.lockablePoolTokenInfo.decimals
-  ).toString();
-
-  const approvalActions = await getTokenApprovalActionsForSpender(
-    configService.network.addresses.veBAL,
-    approvalAmount
-  );
-
+  const approvalActions = await getTokenApprovalActions({
+    amountsToApprove: amountsToApprove.value,
+    spender: networkConfig.addresses.veBAL,
+    actionType: ApprovalAction.Locking,
+  });
   actions.value.unshift(...approvalActions);
 });
 </script>

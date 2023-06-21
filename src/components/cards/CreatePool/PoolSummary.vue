@@ -62,6 +62,7 @@ const chartConfig = computed(() => {
       type: 'scroll',
       icon: 'circle',
       formatter: address => {
+        if (!address) return 'Unallocated';
         return `${getToken(address)?.symbol || 'Unallocated'}`;
       },
       selectedMode: false,
@@ -100,9 +101,9 @@ const chartConfig = computed(() => {
           ...seedTokens.value
             .filter(t => t.tokenAddress !== '')
             .map((t, i) => {
-              const tokenLogoURI = resolve(
-                getToken(t.tokenAddress)?.logoURI || ''
-              );
+              const tokenLogoURI = t.tokenAddress
+                ? resolve(getToken(t.tokenAddress)?.logoURI || '')
+                : '';
               return {
                 name: t.tokenAddress,
                 value: t.weight,

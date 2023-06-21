@@ -7,38 +7,37 @@ import tokens from './tokens';
 import rateProviders from './rateProviders';
 
 const config: Config = {
-  key: '42161',
-  chainId: 42161,
-  chainName: 'Arbitrum',
-  name: 'Arbitrum',
-  shortName: 'Arbitrum',
-  monorepoName: 'arbitrum',
-  slug: 'arbitrum',
-  network: 'arbitrum-one',
-  trustWalletNetwork: 'arbitrum',
+  key: '1101',
+  chainId: 1101,
+  chainName: 'Polygon zkEVM',
+  name: 'Polygon zkEVM Mainnet',
+  shortName: 'zkEVM',
+  monorepoName: 'zkevm',
+  slug: 'zkevm',
+  network: 'polygon-zkevm',
+  trustWalletNetwork: 'polygonzkevm',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://arbitrum-mainnet.infura.io/v3/${keys.infura}`,
-  ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
-  publicRpc: 'https://arb1.arbitrum.io/rpc',
-  explorer: 'https://arbiscan.io',
-  explorerName: 'Arbiscan',
+  rpc: `https://polygonzkevm-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
+  ws: ``,
+  publicRpc: 'https://zkevm-rpc.com',
+  explorer: 'https://zkevm.polygonscan.com/',
+  explorerName: 'Polygonscan',
   subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
+    'https://api.studio.thegraph.com/query/24660/balancer-polygon-zk-v2/version/latest',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
+      'https://api.studio.thegraph.com/query/24660/balancer-polygon-zk-v2/version/latest',
     ],
     aave: '',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum',
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
+      'https://api.studio.thegraph.com/query/24660/balancer-gauges-polygon-zk/version/latest',
+    blocks: '',
   },
-  bridgeUrl: 'https://bridge.arbitrum.io/',
+  bridgeUrl: 'https://wallet.polygon.technology/zkEVM-Bridge/bridge',
   supportsEIP1559: false,
   supportsElementPools: false,
   blockTime: 2,
@@ -54,10 +53,7 @@ const config: Config = {
   thirdParty: {
     coingecko: {
       nativeAssetId: 'ethereum',
-      platformId: 'arbitrum-one',
-    },
-    apyVision: {
-      networkName: 'arbitrum',
+      platformId: 'polygon-zkevm',
     },
   },
   addresses: {
