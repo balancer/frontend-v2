@@ -15,6 +15,7 @@ const config: Config = {
   monorepoName: 'avalanche',
   slug: 'avalanche',
   network: 'avalanche',
+  trustWalletNetwork: 'avalanchec',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
