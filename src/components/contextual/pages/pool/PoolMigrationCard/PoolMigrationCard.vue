@@ -3,6 +3,7 @@ import useNetwork from '@/composables/useNetwork';
 import {
   deprecatedDetails,
   gaugeMigrationDetails,
+  newVersionDetails,
 } from '@/composables/usePoolHelpers';
 import NewPoolData from './NewPoolData.vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -29,7 +30,10 @@ const { networkSlug } = useNetwork();
 const { t } = useI18n();
 
 const migrationInfo = computed(
-  () => deprecatedDetails(props.poolId) || gaugeMigrationDetails(props.poolId)
+  () =>
+    deprecatedDetails(props.poolId) ||
+    gaugeMigrationDetails(props.poolId) ||
+    newVersionDetails(props.poolId)
 );
 
 const newPoolQueryEnabled = computed(

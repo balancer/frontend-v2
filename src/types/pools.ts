@@ -49,6 +49,8 @@ export type DeprecatedDetails = {
   title?: string;
 };
 
+export type NewVersionAvailableDetails = DeprecatedDetails;
+
 export enum PoolMigrationType {
   AAVE_BOOSTED_POOL = 'aaveBoostedPool',
   STABAL3_POOL = 'stabal3Pool',
@@ -103,6 +105,7 @@ export type Pools = {
   ExitViaInternalBalance?: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;
+  NewVersionAvailable?: Record<string, NewVersionAvailableDetails>;
   GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
   Issues?: Partial<Record<PoolWarning, string[]>>;
