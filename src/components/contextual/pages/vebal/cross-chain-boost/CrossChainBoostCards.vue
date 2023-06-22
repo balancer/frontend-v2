@@ -123,7 +123,7 @@ function onCloseModal() {
                   <img
                     :src="buildNetworkIconURL(network)"
                     alt=""
-                    class="rounded-full w-[32px]"
+                    class="p-0.5 rounded-full w-[32px]"
                   />
                 </IconLoaderWrapper>
               </div>

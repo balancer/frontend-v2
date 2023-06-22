@@ -118,8 +118,8 @@ const networkSyncSteps = computed(() => {
 
 <template>
   <div class="flex flex-col">
-    <div class="mb-1.5 text-lg font-bold">Sync veBAL</div>
-    <div class="mb-5 text-sm text-gray-600">
+    <div class="mb-2 text-lg font-bold">Sync veBAL</div>
+    <div class="mb-5 text-sm text-secondary">
       {{ $t('crossChainBoost.syncNetworkAction.title') }}
     </div>
 
@@ -129,12 +129,12 @@ const networkSyncSteps = computed(() => {
       class="mb-4 rounded-lg border-2 border-gray-200 dark:border-gray-800"
     >
       <div
-        class="flex items-center py-1 px-4 border-b-2 border-gray-200 dark:border-gray-800 bg-slate-100 dark:bg-slate-800"
+        class="flex items-center py-1 px-3 border-b-2 border-gray-200 dark:border-gray-800 bg-slate-100 dark:bg-slate-800"
       >
         <img
           :src="buildNetworkIconURL(network)"
           alt=""
-          class="mr-2 w-8 h-8 rounded-full cursor-pointer"
+          class="p-0.5 mr-2 w-8 h-8 rounded-full cursor-pointer"
         />
         <div class="font-semibold">{{ configs[network].chainName }}</div>
       </div>
@@ -142,16 +142,18 @@ const networkSyncSteps = computed(() => {
       <div>
         <div class="flex border-b-2 last:border-b-0 dark:border-gray-800">
           <div class="p-4 w-6/12 text-gray-600 border-r-2 dark:border-gray-800">
-            <div class="font-medium dark:text-gray-300">
+            <div class="text-sm font-medium text-secondary">
               {{ $t('crossChainBoost.currentBalance') }}
             </div>
-            <div class="font-bold text-black dark:text-white">
+            <div class="text-lg font-semibold text-black dark:text-white">
               {{ l2VeBalBalances?.[network] || '0.0000' }} veBAL
             </div>
           </div>
-          <div class="p-4 w-6/12 text-gray-600 dark:text-gray-300">
-            <div>{{ $t('crossChainBoost.postSyncBalance') }}</div>
-            <div class="font-bold text-black dark:text-white">
+          <div class="p-4 w-6/12 text-secondary">
+            <div class="text-sm font-medium text-secondary">
+              {{ $t('crossChainBoost.postSyncBalance') }}
+            </div>
+            <div class="text-lg font-semibold text-black dark:text-white">
               {{ veBalBalance || '0.0000' }} veBAL
             </div>
           </div>
