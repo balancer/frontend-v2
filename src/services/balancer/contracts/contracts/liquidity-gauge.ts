@@ -1,6 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  JsonRpcSigner,
+  TransactionResponse,
+} from '@ethersproject/providers';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
@@ -14,6 +18,7 @@ import {
   EthersContract,
   getEthersContract,
 } from '@/dependencies/EthersContract';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 const MAX_REWARD_TOKENS = 8;
 
@@ -74,6 +79,21 @@ export class LiquidityGauge {
       contractAddress: this.address,
       abi: this.abi,
       action: 'claim_rewards()',
+    });
+  }
+
+  async checkpointUser(payload: {
+    gaugeAddress: string;
+    signer: JsonRpcSigner;
+  }): Promise<TransactionResponse> {
+    const { gaugeAddress, signer } = payload;
+    const txBuilder = new TransactionBuilder(signer);
+
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'user_checkpoint',
+      params: [gaugeAddress],
     });
   }
 

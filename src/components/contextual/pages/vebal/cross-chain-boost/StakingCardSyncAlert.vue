@@ -13,7 +13,10 @@ type Props = {
 
 defineProps<Props>();
 
-const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
+const shouldShowWarningAlert = ref(false);
+
+const { networksSyncState, getGaugeWorkingBalance, triggerGaugeUpdate } =
+  useCrossChainSync();
 const { hasNonPrefGaugeBalance, poolGauges } = usePoolStaking();
 const { networkId } = useNetwork();
 
@@ -44,7 +47,7 @@ const tipText = computed(() => {
     text: '',
   };
 });
-const shouldShowWarningAlert = ref(false);
+
 const warningAlert = computed(() => {
   if (shouldShowWarningAlert.value) {
     return {
@@ -55,26 +58,29 @@ const warningAlert = computed(() => {
   return null;
 });
 
-watch(
-  () => poolGauges.value?.pool.preferentialGauge.id,
-  async val => {
-    if (!val) {
-      return;
-    }
-    console.log('val', val);
-    const balance = await getGaugeWorkingBalance(val);
-
-    // if the second number it returns is greater than the first, then show the message
-    if (balance[1]?.gt(balance[0])) {
-      shouldShowWarningAlert.value = true;
-    }
-  },
-  { immediate: true }
-);
-
 function triggerUpdate() {
-  //
+  const id = poolGauges.value?.pool.preferentialGauge.id;
+  if (!id) {
+    throw new Error('No preferential gauge id');
+  }
+
+  void triggerGaugeUpdate(id);
 }
+
+onBeforeMount(async () => {
+  const id = poolGauges.value?.pool.preferentialGauge.id;
+
+  if (!id) {
+    return;
+  }
+
+  const balance = await getGaugeWorkingBalance(id);
+
+  // if the second number it returns is greater than the first, then show the message
+  if (balance[1]?.gt(balance[0])) {
+    shouldShowWarningAlert.value = true;
+  }
+});
 </script>
 
 <template>

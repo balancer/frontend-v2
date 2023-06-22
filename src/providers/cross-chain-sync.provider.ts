@@ -12,6 +12,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
 import configs from '@/lib/config';
 import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
+import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -289,8 +290,13 @@ export const crossChainSyncProvider = () => {
   }
 
   // checkpoint
-  async function triggerGaugeUpdate() {
+  async function triggerGaugeUpdate(gaugeAddress: string) {
     //
+    const gaugeContract = new LiquidityGauge(gaugeAddress);
+
+    const signer = getSigner();
+    const tx = await gaugeContract.checkpointUser({ signer, gaugeAddress });
+    console.log('tx', tx);
   }
 
   watch(
