@@ -1,3 +1,4 @@
+import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { Pools, RiskKey } from '@/types/pools';
 
 const pools: Pools = {
@@ -70,12 +71,14 @@ const pools: Pools = {
     '0xe274c9deb6ed34cfe4130f8d0a8a948dea5bb28600000000000000000000000d': {
       name: 'Balancer Boosted 0vix USD',
       hasIcon: false,
-      boosted: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Zerovix],
     },
     '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011': {
       name: 'wstETH/weth/Boosted 0vix USD',
       hasIcon: false,
-      boosted: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Zerovix],
     },
     '0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013': {
       name: 'wstETH/Boosted 0vix USD',
@@ -85,7 +88,8 @@ const pools: Pools = {
     '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015': {
       name: 'rETH/Boosted 0vix USD',
       hasIcon: false,
-      boosted: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Zerovix],
     },
   },
   Deep: [
