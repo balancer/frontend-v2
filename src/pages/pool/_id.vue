@@ -75,6 +75,7 @@ const {
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
   isDeprecatedPool,
+  isNewPoolAvailable,
 } = usePoolHelpers(poolQuery.data);
 //#endregion
 
@@ -318,7 +319,11 @@ watch(
             class="pool-locking"
           />
           <PoolMigrationCard
-            v-if="poolId && isWalletReady && isDeprecatedPool"
+            v-if="
+              poolId &&
+              isWalletReady &&
+              (isDeprecatedPool || isNewPoolAvailable)
+            "
             :poolId="poolId"
           />
         </BalStack>
