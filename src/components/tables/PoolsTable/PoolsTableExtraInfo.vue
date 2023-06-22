@@ -23,7 +23,7 @@ defineProps<Props>();
       <template #activator>
         <BoostedChip
           :metadata="poolMetadata(pool.id) as PoolMetadata"
-          class="ml-3"
+          class="ml-1"
         />
       </template>
     </BalTooltip>

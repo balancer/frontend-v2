@@ -125,7 +125,7 @@ const actions = computed((): TransactionAction[] => {
         : actionInfo.confirmingLabel,
       pending: actionState.init || actionState.confirming,
       isSignAction: actionInfo.isSignAction,
-      promise: submit.bind(null, actionInfo.action, actionState),
+      promise: submit.bind(null, actionInfo, actionState),
       step: {
         tooltip: actionInfo.stepTooltip,
         state: getStepState(actionState, idx),
@@ -174,9 +174,10 @@ function getStepState(
 }
 
 async function submit(
-  action: () => Promise<TransactionResponse>,
+  actionInfo: TransactionActionInfo,
   state: TransactionActionState
 ): Promise<void> {
+  const { action } = actionInfo;
   try {
     state.init = true;
     state.error = null;
@@ -191,7 +192,7 @@ async function submit(
       return;
     }
 
-    if (tx) handleTransaction(tx, state);
+    if (tx) handleTransaction(tx, state, actionInfo);
   } catch (error) {
     state.init = false;
     state.confirming = false;
@@ -211,8 +212,12 @@ function handleSignAction(state: TransactionActionState) {
 
 async function handleTransaction(
   tx: TransactionResponse,
-  state: TransactionActionState
+  state: TransactionActionState,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  actionInfo: TransactionActionInfo
 ): Promise<void> {
+  // const { postActionValidation, actionInvalidReason } = actionInfo;
+
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;
@@ -223,17 +228,23 @@ async function handleTransaction(
         await tx.wait(10);
       }
 
+      state.confirming = false;
+
+      // const isValid = await postActionValidation?.();
+      // if (isValid || !postActionValidation) {
       const confirmedAt = await getTxConfirmedAt(receipt);
       state.confirmedAt = dateTimeLabelFor(confirmedAt);
-
+      state.confirmed = true;
       if (currentActionIndex.value >= actions.value.length - 1) {
         emit('success', { receipt, confirmedAt: state.confirmedAt });
       } else {
         currentActionIndex.value += 1;
       }
-
-      state.confirming = false;
-      state.confirmed = true;
+      // } else {
+      //   // post action validation failed, display reason.
+      //   if (actionInvalidReason) state.error = actionInvalidReason;
+      //   state.init = false;
+      // }
     },
     onTxFailed: () => {
       state.confirming = false;

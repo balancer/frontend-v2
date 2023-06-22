@@ -20,7 +20,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { Connector } from '@/services/web3/connectors/connector';
 import { walletService } from '@/services/web3/wallet.service';
 import { getWeb3Provider } from '@/dependencies/wallets/Web3Provider';
-import { Network } from '@/lib/config';
+import config from '@/lib/config';
 import {
   getSafeConnector,
   initSafeConnector,
@@ -59,15 +59,6 @@ export const WalletNameMap: Record<Wallet, string> = {
   safe: 'Safe',
   walletlink: 'Coinbase Wallet',
   tally: 'Tally',
-};
-
-export const networkMap = {
-  [Network.MAINNET]: 'mainnet',
-  [Network.GOERLI]: 'goerli',
-  [Network.POLYGON]: 'polygon',
-  [Network.ARBITRUM]: 'arbitrum-one',
-  [Network.GNOSIS]: 'gnosis-chain',
-  [Network.AVALANCHE]: 'avalanche',
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -210,7 +201,9 @@ export const wallets = () => {
       const { account } = await connector.connect();
 
       setTag('wallet', wallet);
-      setTag('network', networkMap[chainId.value]);
+      if (connector?.chainId.value) {
+        setTag('network', config[connector.chainId.value].network);
+      }
 
       // listens to wallet/chain changed and disconnect events
       connector.registerListeners();

@@ -8,6 +8,7 @@ import mainnet from './mainnet';
 import optimism from './optimism';
 import polygon from './polygon';
 import gnosisChain from './gnosis-chain';
+import zkevm from './zkevm';
 import test from './test';
 
 // We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
@@ -21,9 +22,10 @@ export enum Network {
   KOVAN = 42,
   GNOSIS = 100,
   POLYGON = 137,
+  FANTOM = 250,
+  ZKEVM = 1101,
   ARBITRUM = 42161,
   AVALANCHE = 43114,
-  FANTOM = 250,
 }
 
 const config: Record<Network | number, Config> = {
@@ -33,6 +35,7 @@ const config: Record<Network | number, Config> = {
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,
   [Network.GNOSIS]: gnosisChain,
+  [Network.ZKEVM]: zkevm,
   [Network.AVALANCHE]: avalanche,
   // @ts-ignore
   12345: test,

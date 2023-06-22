@@ -117,6 +117,7 @@ export const defaultGeneralizedJoinResponse = {
   minOut: '20',
   expectedOut: '10',
   priceImpact: defaultPriceImpact.toString(),
+  value: BigNumber.from(0),
 };
 
 export const defaultGeneralizedExitResponse: ExitResponse = {
