@@ -291,12 +291,13 @@ export const crossChainSyncProvider = () => {
 
   // checkpoint
   async function triggerGaugeUpdate(gaugeAddress: string) {
-    //
     const gaugeContract = new LiquidityGauge(gaugeAddress);
 
     const signer = getSigner();
     const tx = await gaugeContract.checkpointUser({ signer, gaugeAddress });
     console.log('tx', tx);
+
+    return tx;
   }
 
   watch(

@@ -5,6 +5,7 @@ import {
   useCrossChainSync,
 } from '@/providers/cross-chain-sync.provider';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
+import CheckpointGaugeModal from './CheckpointGaugeModal.vue';
 
 type Props = {
   fiatValueOfStakedShares: string;
@@ -13,7 +14,8 @@ type Props = {
 
 defineProps<Props>();
 
-const shouldShowWarningAlert = ref(false);
+const shouldShowWarningAlert = ref(true);
+const showCheckpointModal = ref(false);
 
 const { networksSyncState, getGaugeWorkingBalance, triggerGaugeUpdate } =
   useCrossChainSync();
@@ -42,10 +44,7 @@ const tipText = computed(() => {
     };
   }
 
-  return {
-    title: '',
-    text: '',
-  };
+  return null;
 });
 
 const warningAlert = computed(() => {
@@ -58,15 +57,6 @@ const warningAlert = computed(() => {
   return null;
 });
 
-function triggerUpdate() {
-  const id = poolGauges.value?.pool.preferentialGauge.id;
-  if (!id) {
-    throw new Error('No preferential gauge id');
-  }
-
-  void triggerGaugeUpdate(id);
-}
-
 onBeforeMount(async () => {
   const id = poolGauges.value?.pool.preferentialGauge.id;
 
@@ -74,11 +64,15 @@ onBeforeMount(async () => {
     return;
   }
 
-  const balance = await getGaugeWorkingBalance(id);
+  try {
+    const balance = await getGaugeWorkingBalance(id);
 
-  // if the second number it returns is greater than the first, then show the message
-  if (balance[1]?.gt(balance[0])) {
-    shouldShowWarningAlert.value = true;
+    // if the second number it returns is greater than the first, then show the message
+    if (balance[1]?.gt(balance[0])) {
+      shouldShowWarningAlert.value = true;
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 </script>
@@ -93,19 +87,24 @@ onBeforeMount(async () => {
     >
       <div class="flex flex-col">
         <span class="mb-1">{{ warningAlert.text }}</span>
-        <BalBtn size="sm" color="gradient" @click="triggerUpdate">
+        <BalBtn size="sm" color="gradient" @click="showCheckpointModal = true">
           Trigger update
         </BalBtn>
       </div>
     </BalAlert>
 
     <BalAlert
-      v-else-if="tipText.title"
+      v-else-if="tipText"
       class="flex-grow"
       type="tip"
       :title="tipText.title"
     >
       {{ tipText.text }}
     </BalAlert>
+
+    <CheckpointGaugeModal
+      :isVisible="showCheckpointModal"
+      @close="showCheckpointModal = false"
+    />
   </div>
 </template>
