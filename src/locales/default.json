@@ -1489,7 +1489,8 @@
     "extendLock": "Extend lock",
     "increaseLock": "Increase lock",
     "unlock": "Unlock",
-    "sync": "Sync"
+    "sync": "Sync",
+    "userGaugeCheckpoint": "Pool gauge veBAL update"
   },
   "transactionDeadline": "Transaction deadline",
   "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed transactions incur fees for swaps between ERC-20 tokens.",

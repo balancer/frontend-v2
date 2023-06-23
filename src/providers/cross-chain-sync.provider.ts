@@ -295,7 +295,6 @@ export const crossChainSyncProvider = () => {
 
     const signer = getSigner();
     const tx = await gaugeContract.checkpointUser({ signer, gaugeAddress });
-    console.log('tx', tx);
 
     return tx;
   }

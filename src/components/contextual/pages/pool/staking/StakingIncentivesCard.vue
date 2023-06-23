@@ -15,6 +15,8 @@ import { deprecatedDetails } from '@/composables/usePoolHelpers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import { StakeAction } from './composables/useStakePreview';
 import StakingCardSyncAlert from '../../vebal/cross-chain-boost/StakingCardSyncAlert.vue';
+import useNetwork from '@/composables/useNetwork';
+import { Network } from '@/lib/config';
 
 type Props = {
   pool: Pool;
@@ -45,6 +47,7 @@ const {
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
 const { isAffected } = usePoolWarning(poolId);
+const { networkId } = useNetwork();
 
 /**
  * COMPUTED
@@ -174,6 +177,7 @@ function handlePreviewClose() {
                   </BalStack>
                 </BalStack>
                 <StakingCardSyncAlert
+                  v-if="networkId !== Network.MAINNET"
                   :fiatValueOfStakedShares="fiatValueOfStakedShares"
                   :fiatValueOfUnstakedShares="fiatValueOfUnstakedShares"
                 />
@@ -221,6 +225,13 @@ function handlePreviewClose() {
                     {{ $t('unstake') }}
                   </BalBtn>
                 </BalStack>
+                <BalAlert
+                  v-if="hasNonPrefGaugeBalance && networkId === Network.MAINNET"
+                  :title="$t('staking.restakeGauge')"
+                  class="mt-2"
+                >
+                  {{ $t('staking.restakeGaugeDescription') }}
+                </BalAlert>
               </BalStack>
             </div>
           </template>

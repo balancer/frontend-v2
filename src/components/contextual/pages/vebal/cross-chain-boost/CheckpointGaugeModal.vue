@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
+import useTransactions from '@/composables/useTransactions';
 
 interface Props {
   isVisible?: boolean;
@@ -14,15 +15,43 @@ const emit = defineEmits(['close']);
 
 const { poolGauges } = usePoolStaking();
 const { triggerGaugeUpdate } = useCrossChainSync();
+const { addTransaction } = useTransactions();
 
-function triggerUpdate() {
-  const id = poolGauges.value?.pool.preferentialGauge.id;
-  if (!id) {
-    throw new Error('No preferential gauge id');
+async function triggerUpdate() {
+  try {
+    const id = poolGauges.value?.pool.preferentialGauge.id;
+    if (!id) {
+      throw new Error('No preferential gauge id');
+    }
+
+    const tx = await triggerGaugeUpdate(id);
+
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'userGaugeCheckpoint',
+      summary: '',
+    });
+
+    console.log('tx', tx);
+    return tx;
+  } catch (e) {
+    console.error(e);
+    return Promise.reject(e);
   }
-
-  void triggerGaugeUpdate(id);
 }
+
+const actions = [
+  {
+    label: 'Confirm pool gauge update',
+    loadingLabel: '',
+    confirmingLabel: 'Confirming pool gauge update',
+    action: async () => {
+      return triggerUpdate();
+    },
+    stepTooltip: '',
+  },
+];
 </script>
 
 <template>
@@ -40,9 +69,7 @@ function triggerUpdate() {
         you can also trigger the update by claiming any BAL incentives.
       </span>
 
-      <BalBtn color="gradient" @click="triggerUpdate">
-        Confirm pool gauge update
-      </BalBtn>
+      <BalActionSteps :actions="actions" />
     </div>
   </BalModal>
 </template>

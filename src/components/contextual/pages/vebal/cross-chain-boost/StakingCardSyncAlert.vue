@@ -14,11 +14,10 @@ type Props = {
 
 defineProps<Props>();
 
-const shouldShowWarningAlert = ref(true);
+const shouldShowWarningAlert = ref(false);
 const showCheckpointModal = ref(false);
 
-const { networksSyncState, getGaugeWorkingBalance, triggerGaugeUpdate } =
-  useCrossChainSync();
+const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
 const { hasNonPrefGaugeBalance, poolGauges } = usePoolStaking();
 const { networkId } = useNetwork();
 
