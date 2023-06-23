@@ -1,4 +1,5 @@
-import { Pools } from '@/types/pools';
+import { BoostedProtocol } from '@/composables/useBoostedPool';
+import { Pools, RiskKey } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {},
@@ -29,6 +30,8 @@ const pools: Pools = {
       '0xe274c9deb6ed34cfe4130f8d0a8a948dea5bb28600000000000000000000000d',
       '0xdf725fde6e89981fb30d9bf999841ac2c160b512000000000000000000000010',
       '0x1d0a8a31cdb04efac3153237526fb15cc65a252000000000000000000000000f',
+      '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015',
+      '0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013',
     ],
   },
   Investment: {
@@ -68,12 +71,14 @@ const pools: Pools = {
     '0xe274c9deb6ed34cfe4130f8d0a8a948dea5bb28600000000000000000000000d': {
       name: 'Balancer Boosted 0vix USD',
       hasIcon: false,
-      boosted: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Zerovix],
     },
     '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011': {
       name: 'wstETH/weth/Boosted 0vix USD',
       hasIcon: false,
-      boosted: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Zerovix],
     },
     '0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013': {
       name: 'wstETH/Boosted 0vix USD',
@@ -83,7 +88,8 @@ const pools: Pools = {
     '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015': {
       name: 'rETH/Boosted 0vix USD',
       hasIcon: false,
-      boosted: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Zerovix],
     },
   },
   Deep: [
@@ -96,6 +102,23 @@ const pools: Pools = {
   GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [],
+  Risks: {
+    '0x1d0a8a31cdb04efac3153237526fb15cc65a252000000000000000000000000f': [
+      RiskKey.RateProviderBridge,
+    ],
+    '0xe1f2c039a68a216de6dd427be6c60decf405762a00000000000000000000000e': [
+      RiskKey.RateProviderBridge,
+    ],
+    '0xdf725fde6e89981fb30d9bf999841ac2c160b512000000000000000000000010': [
+      RiskKey.RateProviderBridge,
+    ],
+    '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015': [
+      RiskKey.RateProviderBridge,
+    ],
+    '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011': [
+      RiskKey.RateProviderBridge,
+    ],
+  },
 };
 
 export default pools;

@@ -78,6 +78,7 @@ export interface Config {
   monorepoName?: string;
   slug: string;
   network: string;
+  trustWalletNetwork?: string;
   unknown: boolean;
   visibleInUI: boolean;
   testNetwork: boolean;

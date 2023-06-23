@@ -99,6 +99,9 @@ const pools: Pools = {
       '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
       '0xdfe6e7e18f6cc65fa13c8d8966013d4fda74b6ba000000000000000000000558', // ankrETH/wstETH
       '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
+      '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
+      '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570', // vETH/WETH
+      '0x0bbc7b78ff8453c40718e290b33f1d00ee67274e000000000000000000000563', // baoeth/beth
     ],
   },
   Investment: {
@@ -132,6 +135,8 @@ const pools: Pools = {
       '0x77b692c5ca2cceaeef4dcc959d6c3bd919710b6600020000000000000000055e', // 20USDC/80BREWSKI
       '0xb8e2cbb2455e80ad0eb536ae30a5290bdd7baa9100020000000000000000055f', // 20WETH/80BREWSKI
       '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
+      '0x18fdf15ff782e44c1f9b6c5846ff6b0f0004f6a2000200000000000000000560', // OHM/LUSD
+      '0x3b9fb87f7d081ceddb1289258fa5660d955317b6000200000000000000000544', // baoeth/bao
     ],
   },
   Factories: {
@@ -292,6 +297,9 @@ const pools: Pools = {
       '0xdfe6e7e18f6cc65fa13c8d8966013d4fda74b6ba000000000000000000000558',
       '0x1a44e35d5451e0b78621a1b3e7a53dfaa306b1d000000000000000000000051b',
       '0x18fdf15ff782e44c1f9b6c5846ff6b0f0004f6a2000200000000000000000560',
+      '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a',
+      '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b',
+      '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e',
     ],
     AllowList: [],
   },
@@ -430,6 +438,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e': {
+      name: 'wstETH/Boosted Morpho Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Morpho],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -465,6 +479,7 @@ const pools: Pools = {
     '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
     '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
     '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
+    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
@@ -522,6 +537,18 @@ const pools: Pools = {
       newPool:
         '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e',
       description: 'deprecatedPool.gaugeKilledReason',
+    },
+    '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
+      newPool:
+        '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504',
+      description: 'deprecatedPool.newVersion',
+      title: 'announcement',
+    },
+    '0x9c6d47ff73e0f5e51be5fd53236e3f595c5793f200020000000000000000042c': {
+      newPool:
+        '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a',
+      description: 'deprecatedPool.newVersion',
+      title: 'announcement',
     },
   },
   GaugeMigration: {},
