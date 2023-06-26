@@ -268,7 +268,6 @@ async function filterGaugesWhereUserHasBalance(
   // Insert user's balance in gauge objects
   const gaugesWithBalance = await Promise.all(
     poolGauges.pool.gauges.map(async gauge => {
-      console.log('gauge.id', gauge);
       const gaugeInstance = new LiquidityGauge(gauge.id);
       const balance = await gaugeInstance.balance(userAddress);
       return { ...gauge, balance: balance?.toString() };

@@ -56,7 +56,7 @@ const warningAlert = computed(() => {
   return null;
 });
 
-onBeforeMount(async () => {
+async function setWarningAlertState() {
   const id = poolGauges.value?.pool.preferentialGauge.id;
 
   if (!id) {
@@ -73,6 +73,10 @@ onBeforeMount(async () => {
   } catch (error) {
     console.log(error);
   }
+}
+
+onBeforeMount(() => {
+  void setWarningAlertState();
 });
 </script>
 

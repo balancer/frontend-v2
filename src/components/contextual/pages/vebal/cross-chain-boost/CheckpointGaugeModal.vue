@@ -32,8 +32,6 @@ async function triggerUpdate() {
       action: 'userGaugeCheckpoint',
       summary: '',
     });
-
-    console.log('tx', tx);
     return tx;
   } catch (e) {
     console.error(e);
