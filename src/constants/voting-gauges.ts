@@ -19,7 +19,6 @@ export type VotingGauge = {
     symbol: string | undefined;
     tokens: Pick<PoolToken, 'address' | 'weight' | 'symbol'>[];
   };
-  tokenLogoURIs: Record<string, string | undefined>;
 };
 
 export const GOERLI_VOTING_GAUGES: VotingGauge[] = (

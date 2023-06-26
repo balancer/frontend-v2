@@ -12,17 +12,16 @@ import fetch from 'isomorphic-fetch';
 import path from 'path';
 
 import { VotingGauge } from '@/constants/voting-gauges';
-import { getPlatformId } from '@/services/coingecko/coingecko.service';
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
-import vebalGauge from '../../../public/data/vebal-gauge.json';
-import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
-import config from '../config';
-import { isSameAddress } from '../utils';
-import { formatUnits } from '@ethersproject/units';
-import { flatten, mapValues } from 'lodash';
 import { configService } from '@/services/config/config.service';
 import { Multicaller } from '@/services/multicalls/multicaller';
 import { StaticJsonRpcBatchProvider } from '@/services/rpc-provider/static-json-rpc-batch-provider';
+import { formatUnits } from '@ethersproject/units';
+import { flatten, mapValues } from 'lodash';
+import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
+import vebalGauge from '../../../public/data/vebal-gauge.json';
+import config from '../config';
+import { getTokenLogoUris } from './token-logos';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -30,7 +29,7 @@ require('dotenv').config({
 
 const log = debug('balancer:voting-gauge-generator');
 
-type GaugeInfo = {
+export type GaugeInfo = {
   address: string;
   isKilled: boolean;
   network: Network;
@@ -71,131 +70,6 @@ async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   const weights = mapValues(result, weight => formatUnits(weight, 18));
 
   return weights;
-}
-
-function getBalancerAssetsURI(tokenAddress: string, network?: Network): string {
-  if (network)
-    return `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${network.toString()}_${tokenAddress.toLowerCase()}.png`;
-  return `https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/${tokenAddress.toLowerCase()}.png`;
-}
-
-function isValidResponse(response: Response) {
-  if (response.status === 200) {
-    return true;
-  } else {
-    console.error('Asset URI not found from token list:', response.url);
-  }
-}
-
-async function getAssetURIFromTokenlists(
-  tokenAddress: string,
-  network: Network
-): Promise<string> {
-  log(
-    `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`
-  );
-
-  const tokenListURIs = configService.getNetworkConfig(network).tokenlists;
-  const allURIs = [
-    ...Object.values(tokenListURIs.Balancer),
-    ...tokenListURIs.External,
-  ].filter(uri => uri.includes('https'));
-
-  log('getAssetURIFromTokenlists fetching Tokens');
-  const responses = await Promise.all(allURIs.map(uri => fetch(uri)));
-  const validResponses = await Promise.all(responses.filter(isValidResponse));
-  const tokenLists = await Promise.all(
-    validResponses.map(response => response.json())
-  );
-  const allTokens = tokenLists
-    .map(tokenList => tokenList.tokens)
-    .flat()
-    .filter(token => token.chainId === network);
-
-  log('getAssetURIFromTokenlists finding token');
-  const token = allTokens.find(token =>
-    isSameAddress(token.address, tokenAddress)
-  );
-  return token?.logoURI ? token.logoURI : '';
-}
-
-async function getMainnetTokenAddresss(
-  tokenAddress: string,
-  network: Network
-): Promise<string> {
-  log(
-    `getMainnetTokenAddress network: ${network} tokenAddress: ${tokenAddress}`
-  );
-  const coingeckoEndpoint = `https://api.coingecko.com/api/v3/coins/${getPlatformId(
-    network.toString()
-  )}/contract/${tokenAddress.toLowerCase()}`;
-
-  const response = await fetch(coingeckoEndpoint);
-
-  try {
-    const data = await response.json();
-    return getAddress(data.platforms.ethereum);
-  } catch {
-    console.error(
-      'Token not found on Mainnet:',
-      tokenAddress,
-      'chainId:',
-      network
-    );
-    return '';
-  }
-}
-
-function getTrustWalletAssetsURI(
-  tokenAddress: string,
-  network: Network
-): string {
-  log(
-    `getTrustWalletAssetsURI network: ${network} tokenAddress: ${tokenAddress}`
-  );
-
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${config[network].trustWalletNetwork}/assets/${tokenAddress}/logo.png`;
-}
-
-async function isValidLogo(uri: string | undefined): Promise<boolean> {
-  try {
-    if (!uri) return false;
-
-    const response = await fetch(uri);
-    if (response.status === 200) return true;
-    return false;
-  } catch (error) {
-    console.log('Failed to fetch', uri);
-    return false;
-  }
-}
-
-async function getTokenLogoURI(
-  tokenAddress: string,
-  network: Network
-): Promise<string> {
-  log(`getTokenLogoURI network: ${network} tokenAddress: ${tokenAddress}`);
-  let logoUri = '';
-
-  logoUri = getBalancerAssetsURI(tokenAddress);
-  if (await isValidLogo(logoUri)) return logoUri;
-
-  logoUri = getBalancerAssetsURI(tokenAddress, network);
-  if (await isValidLogo(logoUri)) return logoUri;
-
-  logoUri = getTrustWalletAssetsURI(tokenAddress, network);
-  if (await isValidLogo(logoUri)) return logoUri;
-
-  logoUri = await getAssetURIFromTokenlists(tokenAddress, network);
-  if (await isValidLogo(logoUri)) return logoUri;
-
-  if (network !== Network.MAINNET && config[network].testNetwork === false) {
-    const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
-    logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
-    if (await isValidLogo(logoUri)) return logoUri;
-  }
-
-  return '';
 }
 
 async function getPoolInfo(
@@ -538,6 +412,7 @@ function checkRPCIsSet() {
 
   console.log('\nFetching voting gauges info...');
   console.time('getVotingGauges');
+  const allTokensWithNetwork = {};
   let votingGauges = await Promise.all(
     validGauges.map(
       async ({
@@ -550,13 +425,9 @@ function checkRPCIsSet() {
       }) => {
         const pool = await getPoolInfo(poolId, network);
 
-        const tokenLogoURIs = {};
-        for (let i = 0; i < pool.tokens.length; i++) {
-          tokenLogoURIs[pool.tokens[i].address] = await getTokenLogoURI(
-            pool.tokens[i].address,
-            network
-          );
-        }
+        pool.tokens.forEach(
+          token => (allTokensWithNetwork[token.address] = network)
+        );
 
         return {
           address,
@@ -565,11 +436,11 @@ function checkRPCIsSet() {
           relativeWeightCap,
           addedTimestamp,
           pool,
-          tokenLogoURIs,
         };
       }
     )
   );
+
   console.timeEnd('getVotingGauges');
 
   votingGauges = [
@@ -578,12 +449,21 @@ function checkRPCIsSet() {
     ...votingGauges,
   ];
 
-  const jsonFilePath = path.resolve(
+  let jsonFilePath = path.resolve(
     __dirname,
     '../../../src/data/voting-gauges.json'
   );
 
   fs.writeFile(jsonFilePath, JSON.stringify(votingGauges, null, 2), err => {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  console.log('\nSaving token logo URIs...');
+  const logoUris = await getTokenLogoUris(allTokensWithNetwork);
+  jsonFilePath = path.resolve(__dirname, '../../../src/data/token-logos.json');
+  fs.writeFile(jsonFilePath, JSON.stringify(logoUris, null, 2), err => {
     if (err) {
       console.log(err);
     }

@@ -1,11 +1,11 @@
 import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
-import { computed, onUnmounted, ref } from 'vue';
 
 import {
   GOERLI_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
   VotingGauge,
 } from '@/constants/voting-gauges';
+import tokenLogoUris from '@/data/token-logos.json';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
 import { isGoerli } from './useNetwork';
@@ -25,7 +25,7 @@ export function orderedGaugeTokens(
 
 export function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   return orderedGaugeTokens(gauge.pool).map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || ''
+    token => tokenLogoUris[token?.address || ''] || ''
   );
 }
 
