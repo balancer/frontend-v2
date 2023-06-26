@@ -1,0 +1,14 @@
+name: Allowlist Pool Webhook
+
+on:
+  repository_dispatch:
+    types: ['allowlist_pool']
+
+jobs:
+  allowlist-pool:
+    uses: ./.github/workflows/allowlist.yml
+    with:
+      network: ${{ github.event.client_payload.network }}
+      poolType: ${{ github.event.client_payload.poolType }}
+      poolId: ${{ github.event.client_payload.poolId }}
+      poolDescription: ${{ github.event.client_payload.poolDescription }}

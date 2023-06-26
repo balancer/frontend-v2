@@ -1,5 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools } from '@/types/pools';
+import { Pools, RiskKey } from '@/types/pools';
 
 export const poolIdThatRequiresInternalBalanceExit =
   '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
@@ -148,6 +148,11 @@ const pools: Pools = {
     deprecatedid: {}, //Used for unit testing
   },
   ExitViaInternalBalance: [poolIdThatRequiresInternalBalanceExit],
+  Risks: {
+    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467': [
+      RiskKey.RateProviderBridge,
+    ],
+  },
 };
 
 export default pools;

@@ -1,5 +1,4 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -19,6 +18,35 @@ export type PoolMetadata = {
   boosted?: boolean;
   boostedProtocols?: BoostedProtocol[];
 };
+
+export enum RiskKey {
+  General = 'general-risks',
+  Economic = 'economic-risk',
+  ToxicToken = 'toxic-token-risk',
+  RebaseToken = 'rebasing-tokens',
+  Governance = 'governance-risk',
+  FlashLoan = 'flash-loans-risk',
+  JoinExit = 'join-exit-risk',
+  ImpermanentLoss = 'impermanent-loss-risk',
+  UI = 'ui-risk',
+  Regulatory = 'regulatory-risk',
+  PoolType = 'pool-type-risk',
+  Oracle = 'oracles',
+  Network = 'network-risks',
+  Weighted = 'weighted-pools',
+  Stable = 'stable-pools',
+  ComposableStable = 'composable-pools',
+  MetaStable = 'composable-pools',
+  Boosted = 'boosted-pools',
+  Arbitrum = 'arbitrum',
+  Polygon = 'polygon',
+  Optimism = 'optimism',
+  Gnosis = 'gnosis',
+  Mutable = 'mutable-attributes-risk',
+  Composability = 'composability-risk',
+  RateProvider = 'rate-provider-risk',
+  RateProviderBridge = 'rate-provider-bridges',
+}
 
 export type NamedPools = {
   staBAL: string;
@@ -46,7 +74,10 @@ export type DeprecatedDetails = {
   newPool?: string;
   suggestedPools?: string[];
   description?: string;
+  title?: string;
 };
+
+export type NewVersionAvailableDetails = DeprecatedDetails;
 
 export enum PoolMigrationType {
   AAVE_BOOSTED_POOL = 'aaveBoostedPool',
@@ -102,9 +133,11 @@ export type Pools = {
   ExitViaInternalBalance?: string[];
   BrandedRedirect?: Record<string, string>;
   Deprecated?: Record<string, DeprecatedDetails>;
+  NewVersionAvailable?: Record<string, NewVersionAvailableDetails>;
   GaugeMigration?: Record<string, DeprecatedDetails>;
   Migrations?: Record<string, PoolMigrationInfo>;
   Issues?: Partial<Record<PoolWarning, string[]>>;
+  Risks?: Record<string, RiskKey[]>;
 };
 
 export enum PoolWarning {

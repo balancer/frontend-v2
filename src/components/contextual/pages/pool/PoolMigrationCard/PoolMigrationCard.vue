@@ -3,6 +3,7 @@ import useNetwork from '@/composables/useNetwork';
 import {
   deprecatedDetails,
   gaugeMigrationDetails,
+  newVersionDetails,
 } from '@/composables/usePoolHelpers';
 import NewPoolData from './NewPoolData.vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -29,7 +30,10 @@ const { networkSlug } = useNetwork();
 const { t } = useI18n();
 
 const migrationInfo = computed(
-  () => deprecatedDetails(props.poolId) || gaugeMigrationDetails(props.poolId)
+  () =>
+    deprecatedDetails(props.poolId) ||
+    gaugeMigrationDetails(props.poolId) ||
+    newVersionDetails(props.poolId)
 );
 
 const newPoolQueryEnabled = computed(
@@ -92,6 +96,15 @@ const description = computed(() => {
 
   return t('migrateCard.description');
 });
+
+const title = computed(() => {
+  const cardTitle = migrationInfo.value?.title;
+  if (cardTitle) {
+    return t(cardTitle);
+  }
+
+  return t('migrateCard.title');
+});
 </script>
 
 <template>
@@ -104,7 +117,7 @@ const description = computed(() => {
       <div class="flex flex-col items-center text-white">
         <div class="container pt-5">
           <div class="mb-2 text-3xl font-bold text-opacity-90">
-            {{ $t('migrateCard.title') }}
+            {{ title }}
           </div>
           <div class="mb-3 text-sm font-medium text-opacity-80">
             {{ description }}
