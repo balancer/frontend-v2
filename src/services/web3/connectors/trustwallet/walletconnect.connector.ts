@@ -5,7 +5,7 @@ import { WalletError } from '@/types';
 import { Connector, ConnectorId } from '../connector';
 import { Network } from '@/lib/config';
 
-const { MAINNET, POLYGON, ARBITRUM, GNOSIS } = Network;
+const { MAINNET, POLYGON, ARBITRUM, GNOSIS, ZKEVM } = Network;
 
 export class WalletConnectConnector extends Connector {
   id = ConnectorId.WalletConnect;
@@ -19,6 +19,7 @@ export class WalletConnectConnector extends Connector {
         [POLYGON]: configService.getNetworkRpc(POLYGON),
         [ARBITRUM]: configService.getNetworkRpc(ARBITRUM),
         [GNOSIS]: configService.getNetworkRpc(GNOSIS),
+        [ZKEVM]: configService.getNetworkRpc(ZKEVM),
       },
       showQrModal: true,
     });
