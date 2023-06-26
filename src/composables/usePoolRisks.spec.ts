@@ -3,7 +3,7 @@ import {
   generateThirdPartyComposabilityRisks,
   riskLinks,
   risksTitle,
-} from './pool-risks';
+} from './usePoolRisks';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { aPool } from '@tests/unit/builders/pool.builders';
 import { PoolType } from '@balancer-labs/sdk';
@@ -46,6 +46,10 @@ describe('Generates links for', () => {
           "hash": "#composability-risk",
           "title": "Third party DeFi composability risks: Aave, Morpho",
         },
+        {
+          "hash": "#general-risks",
+          "title": "General Balancer protocol risks",
+        },
       ]
     `);
   });
@@ -67,6 +71,10 @@ describe('Generates links for', () => {
           "hash": "#mutable-attributes-risk",
           "title": "Mutable attributes risks",
         },
+        {
+          "hash": "#general-risks",
+          "title": "General Balancer protocol risks",
+        },
       ]
     `);
   });
@@ -84,6 +92,10 @@ describe('Generates links for', () => {
           "hash": "#polygon",
           "title": "Layer 2 network risks: Polygon",
         },
+        {
+          "hash": "#general-risks",
+          "title": "General Balancer protocol risks",
+        },
       ]
     `);
   });
@@ -92,17 +104,21 @@ describe('Generates links for', () => {
     withGnosis();
     expect(riskLinks(aPool({ poolType: PoolType.ComposableStable })))
       .toMatchInlineSnapshot(`
-      [
-        {
-          "hash": "#composable-pools",
-          "title": "Composable stable pool risks",
-        },
-        {
-          "hash": "#gnosis",
-          "title": "Layer 2 network risks: Gnosis",
-        },
-      ]
-    `);
+        [
+          {
+            "hash": "#composable-pools",
+            "title": "Composable Stable pool risks",
+          },
+          {
+            "hash": "#gnosis",
+            "title": "Layer 2 network risks: Gnosis",
+          },
+          {
+            "hash": "#general-risks",
+            "title": "General Balancer protocol risks",
+          },
+        ]
+      `);
   });
 
   test('a composable stable pool with Delegate Owner', () => {
@@ -113,6 +129,10 @@ describe('Generates links for', () => {
           {
             "hash": "#composable-pools",
             "title": "MetaStable pool risks",
+          },
+          {
+            "hash": "#general-risks",
+            "title": "General Balancer protocol risks",
           },
         ]
       `);

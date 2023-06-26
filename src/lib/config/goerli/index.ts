@@ -15,6 +15,7 @@ const config: Config = {
   monorepoName: 'goerli',
   slug: 'goerli',
   network: 'goerli',
+  trustWalletNetwork: 'goerli',
   unknown: false,
   visibleInUI: true,
   testNetwork: true,

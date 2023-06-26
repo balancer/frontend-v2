@@ -12,6 +12,7 @@ export enum BoostedProtocol {
   Reaper = 'reaper',
   Tetu = 'tetu',
   Granary = 'granary',
+  Zerovix = '0vix',
 }
 
 export const boostedProtocolIconPaths: Record<BoostedProtocol, string> = {
@@ -65,6 +66,10 @@ export const boostedProtocolIconPaths: Record<BoostedProtocol, string> = {
   ).href,
   [BoostedProtocol.Tetu]: new URL(
     '@/assets/images/icons/protocols/tetu.png',
+    import.meta.url
+  ).href,
+  [BoostedProtocol.Zerovix]: new URL(
+    '@/assets/images/icons/protocols/0vix.svg',
     import.meta.url
   ).href,
 };

@@ -1,5 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools } from '@/types/pools';
+import { Pools, RiskKey } from '@/types/pools';
 
 export const poolIdThatRequiresInternalBalanceExit =
   '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
@@ -64,6 +64,7 @@ const pools: Pools = {
       '0x00a62d31b6c776b6813543bc99ff265f7222dbe100000000000000000000011e',
       '0x0c925fce89a22e36ebd9b3c6e0262234e853d2f600000000000000000000019c',
       '0x1542b8783e5e884b6fe7422dd2f71a42c5edb86d0000000000000000000002f3',
+      '0xa7c0335079841076dfff02f621730927e896dd9700020000000000000000083a', // uniETH / WETH
     ],
   },
   Investment: {
@@ -148,6 +149,11 @@ const pools: Pools = {
     deprecatedid: {}, //Used for unit testing
   },
   ExitViaInternalBalance: [poolIdThatRequiresInternalBalanceExit],
+  Risks: {
+    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467': [
+      RiskKey.RateProviderBridge,
+    ],
+  },
 };
 
 export default pools;
