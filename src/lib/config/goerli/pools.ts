@@ -75,6 +75,7 @@ const pools: Pools = {
     AllowList: [
       '0xbb372d299cc1afa14d5b8691ced1486fa0216f74000200000000000000000757', // DVT /WETH
       '0x4dc5ef9b11fd462d78e197f8a98089933174b2c5000200000000000000000836', //tkn1/tkn2
+      '0xa7c0335079841076dfff02f621730927e896dd9700020000000000000000083a', // uniETH / WETH
     ],
   },
   Factories: {
