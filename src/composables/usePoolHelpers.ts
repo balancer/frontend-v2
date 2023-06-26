@@ -13,7 +13,7 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { DeprecatedDetails } from '@/types/pools';
+import { DeprecatedDetails, NewVersionAvailableDetails } from '@/types/pools';
 
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from './useAPR';
@@ -581,6 +581,17 @@ export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
 }
 
 /**
+ * Checks if pool ID is included in the list of pools that have a new version available (but are not deprecated yet)
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list
+ */
+export function newVersionDetails(
+  id: string
+): NewVersionAvailableDetails | undefined {
+  return POOLS.NewVersionAvailable?.[id.toLowerCase()];
+}
+
+/**
  * Checks if pool ID is included in the list of deprecated pools
  * @param {string} id - The pool ID to check
  * @returns {boolean} True if included in list
@@ -730,6 +741,10 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     return !!pool.value && !!POOLS.Deprecated?.[pool.value.id];
   });
 
+  const isNewPoolAvailable = computed(() => {
+    return !!pool.value && !!POOLS.NewVersionAvailable?.[pool.value.id];
+  });
+
   return {
     // computed
     isStablePool,
@@ -750,6 +765,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
+    isNewPoolAvailable,
     poolJoinTokens,
     // methods
     isStable,

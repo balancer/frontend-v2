@@ -8,6 +8,7 @@ const pools: Pools = {
     bbAaveUSD: {
       v1: '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
       v2: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+      v3: '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502',
     },
     veBAL: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
   },
@@ -97,6 +98,12 @@ const pools: Pools = {
       '0xfcf77141908aa22bfeac216123c5feb2531f373e00000000000000000000054a', // sWETH/rETH
       '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
       '0xdfe6e7e18f6cc65fa13c8d8966013d4fda74b6ba000000000000000000000558', // ankrETH/wstETH
+      '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
+      '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
+      '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570', // vETH/WETH
+      '0x0bbc7b78ff8453c40718e290b33f1d00ee67274e000000000000000000000563', // baoeth/beth
+      '0x911fc393355fe415a667893d55fff6703c57c72e000200000000000000000574', // 50ETHx-50WETH
+      '0xd8721e92ba0f8235b375e9ec9a7b697ec4e2d6c6000200000000000000000575', // 80BIDS-20WETH
     ],
   },
   Investment: {
@@ -129,6 +136,12 @@ const pools: Pools = {
       '0x382dc5b2eca1c1308eb7e2b40c0f571afb899ac8000100000000000000000557', // multi-token
       '0x77b692c5ca2cceaeef4dcc959d6c3bd919710b6600020000000000000000055e', // 20USDC/80BREWSKI
       '0xb8e2cbb2455e80ad0eb536ae30a5290bdd7baa9100020000000000000000055f', // 20WETH/80BREWSKI
+      '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
+      '0x18fdf15ff782e44c1f9b6c5846ff6b0f0004f6a2000200000000000000000560', // OHM/LUSD
+      '0x3b9fb87f7d081ceddb1289258fa5660d955317b6000200000000000000000544', // baoeth/bao
+      '0x4729f67394030472e853cb61954fe784bfb36c3b000100000000000000000569', // 25WBTC-50USDC-25WETH
+      '0xd8721e92ba0f8235b375e9ec9a7b697ec4e2d6c6000200000000000000000575', // 80BIDS-20WETH
+      '0x911fc393355fe415a667893d55fff6703c57c72e000200000000000000000574', // 50ETHx-50WETH
     ],
   },
   Factories: {
@@ -142,6 +155,7 @@ const pools: Pools = {
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool', // mainnet stablephantom
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
     '0xf9ac7b9df2b3454e841110cce5550bd5ac6f875f': 'composableStablePool', // ComposableStable
+    '0xfada0f4547ab2de89d1304a668c39b3e09aa7c76': 'composableStablePool', // ComposableStable v4
     '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
     '0xdba127fbc23fb20f5929c546af220a991b5c6e01': 'composableStablePool', // ComposableStable v2
     '0x5dd94da3644ddd055fcf6b3e1aa310bb7801eb8b': 'weightedPool', // weighted pool v3
@@ -286,6 +300,11 @@ const pools: Pools = {
       '0x20a61b948e33879ce7f23e535cc7baa3bc66c5a9000000000000000000000555',
       '0xfcf77141908aa22bfeac216123c5feb2531f373e00000000000000000000054a',
       '0xdfe6e7e18f6cc65fa13c8d8966013d4fda74b6ba000000000000000000000558',
+      '0x1a44e35d5451e0b78621a1b3e7a53dfaa306b1d000000000000000000000051b',
+      '0x18fdf15ff782e44c1f9b6c5846ff6b0f0004f6a2000200000000000000000560',
+      '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a',
+      '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b',
+      '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e',
     ],
     AllowList: [],
   },
@@ -412,6 +431,24 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a': {
+      name: 'cbETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a': {
+      name: 'rETH/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e': {
+      name: 'wstETH/Boosted Morpho Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Morpho],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -445,6 +482,9 @@ const pools: Pools = {
     '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a', // cbeth / bb-a-weth
     '0x3035917be42af437cbdd774be26b9ec90a2bd677000200000000000000000543', // inst / bb-inst-weth
     '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c', // DOLA/bb-a-usd
+    '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
+    '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
+    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
@@ -465,6 +505,20 @@ const pools: Pools = {
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // Euler Boosted USD/wstETH
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // Euler Boosted USD/dola
   ],
+  NewVersionAvailable: {
+    '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
+      newPool:
+        '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504',
+      description: 'newVersion.Aave3',
+      title: 'announcement',
+    },
+    '0x9c6d47ff73e0f5e51be5fd53236e3f595c5793f200020000000000000000042c': {
+      newPool:
+        '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a',
+      description: 'newVersion.Aave3',
+      title: 'announcement',
+    },
+  },
   Deprecated: {
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {},
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {},

@@ -1,6 +1,6 @@
 # Balancer Frontend App (v2)
 
-Official frontend app for the Balancer protocol (v2).
+Official frontend app for the Balancer protocol (v2)
 
 ## Development
 

@@ -25,14 +25,6 @@ const NETWORK_ID =
 if (windowAvailable) localStorage.setItem('networkId', NETWORK_ID.toString());
 export const networkSlug = config[NETWORK_ID].slug;
 export const networkConfig = config[NETWORK_ID];
-export const networkLabelMap = {
-  [Network.MAINNET]: 'Ethereum',
-  [Network.POLYGON]: 'Polygon',
-  [Network.ARBITRUM]: 'Arbitrum',
-  [Network.GOERLI]: 'Goerli',
-  [Network.OPTIMISM]: 'Optimism',
-  [Network.GNOSIS]: 'Gnosis chain',
-};
 
 /**
  * COMPUTED
@@ -171,7 +163,6 @@ export default function useNetwork() {
     getNetworkSlug,
     getSubdomain,
     handleNetworkSlug,
-    networkLabelMap,
     appNetworkConfig,
   };
 }
