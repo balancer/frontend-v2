@@ -137,6 +137,7 @@ const pools: Pools = {
       '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
       '0x18fdf15ff782e44c1f9b6c5846ff6b0f0004f6a2000200000000000000000560', // OHM/LUSD
       '0x3b9fb87f7d081ceddb1289258fa5660d955317b6000200000000000000000544', // baoeth/bao
+      '0x4729f67394030472e853cb61954fe784bfb36c3b000100000000000000000569', // 25WBTC-50USDC-25WETH
     ],
   },
   Factories: {
@@ -500,6 +501,20 @@ const pools: Pools = {
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // Euler Boosted USD/wstETH
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // Euler Boosted USD/dola
   ],
+  NewVersionAvailable: {
+    '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
+      newPool:
+        '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504',
+      description: 'newVersion.Aave3',
+      title: 'announcement',
+    },
+    '0x9c6d47ff73e0f5e51be5fd53236e3f595c5793f200020000000000000000042c': {
+      newPool:
+        '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a',
+      description: 'newVersion.Aave3',
+      title: 'announcement',
+    },
+  },
   Deprecated: {
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {},
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {},
@@ -537,18 +552,6 @@ const pools: Pools = {
       newPool:
         '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e',
       description: 'deprecatedPool.gaugeKilledReason',
-    },
-    '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
-      newPool:
-        '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504',
-      description: 'deprecatedPool.newVersion',
-      title: 'announcement',
-    },
-    '0x9c6d47ff73e0f5e51be5fd53236e3f595c5793f200020000000000000000042c': {
-      newPool:
-        '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a',
-      description: 'deprecatedPool.newVersion',
-      title: 'announcement',
     },
   },
   GaugeMigration: {},
