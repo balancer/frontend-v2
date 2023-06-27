@@ -10,8 +10,7 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 /**
  * TYPES
  */
-type QueryResponse = SubgraphMetadata[];
-type QueryOptions = UseQueryOptions<QueryResponse>;
+type QueryOptions = UseQueryOptions<SubgraphMetadata>;
 
 /**
  * @summary Fetches Pool Metadata list from subgraph
@@ -41,10 +40,8 @@ export default function useMetadataQuery(
   const queryFn = async () => {
     if (!pool.value && !storedPool) throw new Error('No pool');
 
-    return await metadataSubgraphService.pools.get({
-      where: {
-        id: id.toLowerCase(),
-      },
+    return await metadataSubgraphService.pool.get({
+      id: id.toLowerCase(),
     });
   };
 
@@ -56,7 +53,7 @@ export default function useMetadataQuery(
     ...options,
   });
 
-  return useQuery<QueryResponse>(
+  return useQuery<SubgraphMetadata>(
     queryKey,
     queryFn,
     queryOptions as QueryOptions

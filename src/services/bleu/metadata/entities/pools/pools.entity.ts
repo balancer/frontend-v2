@@ -8,10 +8,10 @@ export class MetadataEntity {
     private readonly query: QueryBuilder = metadataQueryBuilder
   ) {}
 
-  public async get(args = {}, attrs = {}): Promise<SubgraphMetadata[]> {
-    const queryName = 'Pools';
+  public async get(args = {}, attrs = {}): Promise<SubgraphMetadata> {
+    const queryName = 'Pool';
     const query = this.query(args, attrs, queryName);
     const data = await this.service.client.get(query);
-    return data.pools;
+    return data.pool;
   }
 }

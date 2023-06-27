@@ -11,11 +11,10 @@ export class MetadataSubgraphClient {
     try {
       if (!this.url) {
         return {
-          pools: [],
+          pool: {},
         };
       }
       const payload = this.payloadFor(query);
-      console.log({ url: this.url });
       const {
         data: { data },
       } = await axios.post(this.url, payload);

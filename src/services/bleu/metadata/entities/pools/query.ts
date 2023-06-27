@@ -16,7 +16,7 @@ export const metadataQueryBuilder = (
   name: string | undefined = undefined
 ) => ({
   __name: name,
-  pools: {
+  pool: {
     __args: merge({}, defaultArgs, args),
     ...merge({}, defaultAttrs, attrs),
   },

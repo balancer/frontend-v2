@@ -258,7 +258,7 @@ const QUERY_KEYS = {
     ],
   },
   Metadata: {
-    Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }],
+    Current: (id: string) => ['pool', 'current', { id }],
   },
 };
 

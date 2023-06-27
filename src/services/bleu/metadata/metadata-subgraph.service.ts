@@ -2,10 +2,10 @@ import { MetadataEntity } from './entities/pools/pools.entity';
 import { metadataSubgraphClient } from './metadata-subgraph.client';
 
 export class MetadataSubgraphService {
-  pools: MetadataEntity;
+  pool: MetadataEntity;
 
   constructor(readonly client = metadataSubgraphClient) {
-    this.pools = new MetadataEntity(this);
+    this.pool = new MetadataEntity(this);
   }
 }
 
