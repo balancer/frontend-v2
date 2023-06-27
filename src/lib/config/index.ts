@@ -6,6 +6,7 @@ import gnosisChain from './gnosis-chain';
 import mainnet from './mainnet';
 import optimism from './optimism';
 import polygon from './polygon';
+import sepolia from './sepolia';
 import zkevm from './zkevm';
 
 // We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
@@ -19,6 +20,7 @@ export enum Network {
   FANTOM = 250,
   ZKEVM = 1101,
   ARBITRUM = 42161,
+  SEPOLIA = 11155111,
 }
 
 const config: Record<Network | number, Config> = {
@@ -29,6 +31,7 @@ const config: Record<Network | number, Config> = {
   [Network.OPTIMISM]: optimism,
   [Network.GNOSIS]: gnosisChain,
   [Network.ZKEVM]: zkevm,
+  [Network.SEPOLIA]: sepolia,
 };
 
 export default config;
