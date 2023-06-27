@@ -37,6 +37,8 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum',
     blocks:
       'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
+    metadata:
+      'https://api.thegraph.com/subgraphs/name/bleu-studio/bal-pools-metadata-arb',
   },
   bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,

@@ -37,6 +37,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
     blocks:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+    metadata: '',
   },
   bridgeUrl: '',
   supportsEIP1559: true,

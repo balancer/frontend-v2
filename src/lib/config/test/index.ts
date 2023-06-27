@@ -24,6 +24,7 @@ const config: Config = {
     aave: '',
     gauge: '',
     blocks: '',
+    metadata: '',
   },
   bridgeUrl: '',
   supportsEIP1559: true,

@@ -36,6 +36,8 @@ const config: Config = {
     gauge:
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
     blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
+    metadata:
+      'https://api.thegraph.com/subgraphs/name/bleu-studio/balancer-pools-metadata-matic',
   },
   bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,

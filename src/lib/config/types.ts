@@ -92,6 +92,7 @@ export interface Config {
     aave: string;
     gauge: string;
     blocks: string;
+    metadata: string;
   };
   bridgeUrl: string;
   supportsEIP1559: boolean;
