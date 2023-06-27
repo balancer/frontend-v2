@@ -14,12 +14,12 @@ const { networkSlug } = useNetwork();
       >
         <div class="z-10 max-w-3xl">
           <h5 class="mb-1 font-bold text-white">
-            Balancer is live on Polygon zkEVM
+            Get ready for BAL incentives for Polygon zkEVM
           </h5>
           <p class="md:text-sm leading-6 text-white">
-            Polygon zkEVM Beta harnesses the power of ZK proofs to reduce
-            transaction cost and massively increase throughput, all while
-            inheriting the security of Ethereum L1.
+            BAL incentives on selected Polygon zkEVM pools go live on Thursday
+            29 June. veBAL holders can vote for these pools now. LPs can prepare
+            by bridging and adding liquidity to the Polygon zkEVM network.
           </p>
         </div>
         <div class="z-10 mt-4">
