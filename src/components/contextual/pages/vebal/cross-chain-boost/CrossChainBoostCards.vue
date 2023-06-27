@@ -7,7 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 import { useTokens } from '@/providers/tokens.provider';
-import BigNumber from 'bignumber.js';
+import { bnum } from '@/lib/utils';
 import {
   useCrossChainSync,
   NetworkSyncState,
@@ -42,7 +42,7 @@ const isSyncModalOpen = ref(false);
  * COMPUTED
  */
 const isVebalBalanceZero = computed(() => {
-  return new BigNumber(veBalBalance.value).isEqualTo(0);
+  return bnum(veBalBalance.value).isEqualTo(0);
 });
 
 /**

@@ -44,7 +44,6 @@ providePoolStaking();
         {{ $t('veBAL.notSupported.title') }}
       </div>
       <div>{{ $t('veBAL.notSupported.description') }}</div>
-      <div></div>
     </div>
   </div>
 </template>

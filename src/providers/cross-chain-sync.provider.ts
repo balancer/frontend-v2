@@ -204,7 +204,6 @@ export const crossChainSyncProvider = () => {
     );
 
     const { nativeFee } = tx;
-    console.log('nativeFee', nativeFee);
 
     const sendUserBalanceTx = await omniVotingEscrowContract.sendUserBalance({
       signer,

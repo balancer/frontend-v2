@@ -1,6 +1,5 @@
 import configs, { Network } from '@/lib/config';
 import { allEqual } from '@/lib/utils/array';
-import BigNumber from 'bignumber.js';
 import { NetworkSyncState } from '@/providers/cross-chain-sync.provider';
 import { OmniEscrowLock } from './useOmniEscrowLocksQuery';
 import {
@@ -8,6 +7,7 @@ import {
   useVotingEscrowLocksQuery,
 } from './useVotingEscrowQuery';
 import useWeb3 from '@/services/web3/useWeb3';
+import { bnum } from '@/lib/utils';
 
 export function useCrossChainNetwork(
   networkId: Network,
@@ -89,17 +89,16 @@ export function useCrossChainNetwork(
     const slope = votingEscrowLocks.value?.slope;
     const timestamp = votingEscrowLocks.value?.timestamp;
 
-    if (!bias || !slope || !timestamp)
-      return new BigNumber(0).toFixed(4).toString();
+    if (!bias || !slope || !timestamp) return bnum(0).toFixed(4).toString();
 
-    const x = new BigNumber(slope).multipliedBy(
+    const x = bnum(slope).multipliedBy(
       Math.floor(Date.now() / 1000) - timestamp
     );
 
-    if (x.isLessThan(0)) return new BigNumber(bias).toFixed(4).toString();
+    if (x.isLessThan(0)) return bnum(bias).toFixed(4).toString();
 
-    const balance = new BigNumber(bias).minus(x);
-    if (balance.isLessThan(0)) return new BigNumber(0).toFixed(4).toString();
+    const balance = bnum(bias).minus(x);
+    if (balance.isLessThan(0)) return bnum(0).toFixed(4).toString();
 
     return balance.toFixed(4).toString();
   }

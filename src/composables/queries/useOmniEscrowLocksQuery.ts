@@ -1,8 +1,7 @@
 import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery from './useGraphQuery';
 import useNetwork from '../useNetwork';
-import { networkSubgraphGagesMap } from './useVotingEscrowQuery';
-import { Network } from '@/lib/config';
+import config, { Network } from '@/lib/config';
 
 const attrs = {
   id: true,
@@ -41,7 +40,7 @@ export function useOmniEscrowLocksQuery(account: ComputedRef<string>) {
   const queryKey = QUERY_KEYS.Gauges.OmniEscrowLocks(networkId, account);
 
   return useGraphQuery<OmniEscrowLockResponse>(
-    networkSubgraphGagesMap[Network.MAINNET],
+    config[Network.MAINNET].subgraphs.gauge,
     queryKey,
     () => ({
       __name: 'OmniEscrowLocks',

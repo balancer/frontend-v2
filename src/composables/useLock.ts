@@ -65,7 +65,7 @@ export function useLock({ enabled = true }: Options = {}) {
       : '0'
   );
 
-  const poolShares = computed(() => {
+  const bptPrice = computed(() => {
     if (!lockPool.value) return bnum(0);
     return bnum(lockPool.value.totalLiquidity).div(lockPool.value.totalShares);
   });
@@ -76,7 +76,7 @@ export function useLock({ enabled = true }: Options = {}) {
   });
 
   const fiatTotal = computed(() =>
-    poolShares.value.times(bptBalance.value).toString()
+    bptPrice.value.times(bptBalance.value).toString()
   );
 
   return {
