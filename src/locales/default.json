@@ -810,6 +810,7 @@
   "poolManager": "Pool Manager",
   "poolManagement": "Pool management",
   "poolDetails": "Pool details",
+  "poolCustomMetadata": "Pool custom details",
   "poolOwner": "Pool Owner",
   "delegateOwner": {
     "title": "Delegate owner",
@@ -1618,9 +1619,9 @@
     "feesFixed": "fixed forever",
     "feesEditableGovernance": "this may be edited via Governance",
     "feesEditableOwner": "this may be edited by the Pool Owner",
-    "immutable": "This pool is immutable. No attributes can ever be changed.",
-    "immutableFeesEditableByGovernance": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance.",
-    "immutableFeesEditableByOwner": "The attributes of this pool are immutable, except for swap fees which can be edited by the Pool Owner."
+    "immutable": "This pool is immutable. No attributes other than custom can ever be changed.",
+    "immutableFeesEditableByGovernance": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance and the custom attributes which can be edited by the Pool Owner.",
+    "immutableFeesEditableByOwner": "The attributes of this pool are immutable, except for swap fees and the custom attributes which can be edited by the Pool Owner."
   },
   "myWalletCard": {
     "title": {

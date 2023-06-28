@@ -2,7 +2,6 @@
 import { POOLS } from '@/constants/pools';
 import { poolMetadata } from '@/lib/config/metadata';
 import { shortenLabel } from '@/lib/utils';
-import { SubgraphMetadata } from '@/services/bleu/metadata/types';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
@@ -14,8 +13,15 @@ import { useI18n } from 'vue-i18n';
 type Props = {
   pool: Pool;
   loading: boolean;
-  metadata: SubgraphMetadata;
+  metadata: MetadataType;
 };
+
+type MetadataType = {
+  title: string;
+  value: string;
+  key?: string;
+  [key: string]: any;
+}[];
 
 /**
  * PROPS
@@ -23,6 +29,11 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
 });
+
+/**
+ * STATE
+ */
+const poolCustomMetadata = ref<MetadataType>([]);
 
 /**
  * COMPOSABLES
@@ -108,18 +119,6 @@ const data = computed(() => {
   ];
 });
 
-const poolMetadataCID = computed(() => {
-  const { metadataCID } = props.metadata;
-  return {
-    title: t('poolMetadataCID'),
-    value: `${metadataCID}`,
-  };
-});
-
-console.log({
-  poolMetadataCID: poolMetadataCID.value,
-});
-
 const poolOwnerData = computed(() => {
   const { owner } = props.pool;
   if (owner === POOLS.ZeroAddress) {
@@ -159,6 +158,26 @@ const poolManagementText = computed(() => {
 
   return t('poolAttrs.immutableFeesEditableByOwner');
 });
+
+watch(
+  () => props.metadata,
+  newMetadata => {
+    if (Array.isArray(newMetadata)) {
+      poolCustomMetadata.value = [
+        {
+          title: t('attribute'),
+          value: t('details'),
+        },
+        ...newMetadata.map(item => ({
+          ...item,
+          title: item.key as string,
+          key: undefined,
+        })),
+      ];
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -171,5 +190,7 @@ const poolManagementText = computed(() => {
         {{ poolManagementText }}
       </div>
     </template>
+    <h3 class="px-4 lg:px-0 mt-12 mb-5" v-text="$t('poolCustomMetadata')" />
+    <BalDetailsTable class="mb-12" :tableData="poolCustomMetadata" />
   </div>
 </template>
