@@ -36,6 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
  * STATE
  */
 const poolCustomMetadata = ref<MetadataType>([]);
+const poolName = ref<string>();
 
 /**
  * COMPOSABLES
@@ -82,7 +83,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: poolMetadata(id)?.name || name,
+      value: poolName.value || poolMetadata(id)?.name || name,
     },
     {
       title: t('poolSymbol'),
@@ -181,12 +182,26 @@ watch(
           title: t('attribute'),
           value: t('details'),
         },
-        ...newMetadata.map(item => ({
-          ...item,
-          title: item.key as string,
-          key: undefined,
-        })),
+        ...newMetadata
+          .filter(item => item.key?.toLowerCase() !== 'name')
+          .map(item => ({
+            ...item,
+            title: item.key as string,
+            key: undefined,
+          })),
       ];
+    }
+  },
+  { immediate: true }
+);
+watch(
+  () => props.metadata,
+  newMetadata => {
+    if (Array.isArray(newMetadata)) {
+      const nameItem = newMetadata.find(item => item.key === 'name');
+      poolName.value = nameItem ? nameItem.value : undefined;
+    } else {
+      poolName.value = undefined;
     }
   },
   { immediate: true }
@@ -203,8 +218,16 @@ watch(
         {{ poolManagementText }}
       </div>
     </template>
-    <h3 class="px-4 lg:px-0 mt-12 mb-5" v-text="$t('poolCustomMetadata')" />
-    <BalDetailsTable class="mb-12" :tableData="poolCustomMetadata" />
+    <h3
+      v-if="poolCustomMetadata.values.length > 0"
+      class="px-4 lg:px-0 mt-12 mb-5"
+      v-text="$t('poolCustomMetadata')"
+    />
+    <BalDetailsTable
+      v-if="poolCustomMetadata.values.length > 0"
+      class="mb-12"
+      :tableData="poolCustomMetadata"
+    />
     <BalAlert
       v-if="poolCustomMetadata && isPoolOwner"
       type="warning"
