@@ -6,6 +6,8 @@ import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
 import { useI18n } from 'vue-i18n';
+import { EXTERNAL_LINKS } from '@/constants/links';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -39,7 +41,12 @@ const poolCustomMetadata = ref<MetadataType>([]);
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { explorerLinks: explorer } = useWeb3();
+const { explorerLinks: explorer, account } = useWeb3();
+const { network } = configService;
+const networkName =
+  network.shortName.toLocaleLowerCase() === 'mainnet'
+    ? 'ethereum'
+    : network.shortName.toLocaleLowerCase();
 
 function formSwapFeesHint(owner: string): string {
   if (owner === POOLS.ZeroAddress) {
@@ -159,6 +166,12 @@ const poolManagementText = computed(() => {
   return t('poolAttrs.immutableFeesEditableByOwner');
 });
 
+const isPoolOwner = computed(() => {
+  return (
+    account.value.toLocaleLowerCase() === props.pool.owner?.toLocaleLowerCase()
+  );
+});
+
 watch(
   () => props.metadata,
   newMetadata => {
@@ -192,5 +205,26 @@ watch(
     </template>
     <h3 class="px-4 lg:px-0 mt-12 mb-5" v-text="$t('poolCustomMetadata')" />
     <BalDetailsTable class="mb-12" :tableData="poolCustomMetadata" />
+    <BalAlert
+      v-if="poolCustomMetadata && isPoolOwner"
+      type="warning"
+      :title="$t('poolCustomMetadataOwner.title')"
+      class="mt-2"
+      block
+    >
+      {{ $t('poolCustomMetadataOwner.description') }}
+      <BalLink
+        v-if="poolCustomMetadata"
+        :href="`${EXTERNAL_LINKS.Bleu.Metadata}${networkName}/pool/${props.pool.id}`"
+        external
+        noStyle
+      >
+        <BalIcon
+          name="arrow-up-right"
+          size="sm"
+          class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+        />
+      </BalLink>
+    </BalAlert>
   </div>
 </template>

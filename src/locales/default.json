@@ -811,6 +811,10 @@
   "poolManagement": "Pool management",
   "poolDetails": "Pool details",
   "poolCustomMetadata": "Pool custom details",
+  "poolCustomMetadataOwner": {
+    "title": "Change custom pool attributes",
+    "description": "As the pool owner, it's possible to edit, add and delete custom attributes on Bleu's Pool Metadata app"
+  },
   "poolOwner": "Pool Owner",
   "delegateOwner": {
     "title": "Delegate owner",
