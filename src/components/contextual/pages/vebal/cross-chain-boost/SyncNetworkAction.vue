@@ -111,7 +111,7 @@ const networkSyncSteps = computed(() => {
       }),
     });
   });
-  console.log('actions', actions);
+
   return actions;
 });
 </script>

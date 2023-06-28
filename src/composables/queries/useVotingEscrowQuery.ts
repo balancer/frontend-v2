@@ -1,20 +1,7 @@
 import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery from './useGraphQuery';
 import useWeb3 from '@/services/web3/useWeb3';
-import { Network } from '@/lib/config';
-
-export const networkSubgraphGagesMap = {
-  [Network.MAINNET]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
-  [Network.ARBITRUM]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum',
-  [Network.POLYGON]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
-  [Network.OPTIMISM]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
-  [Network.GNOSIS]:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain',
-};
+import config, { Network } from '@/lib/config';
 
 export interface VotingEscrowLock {
   id: string;
@@ -54,7 +41,7 @@ export function useVotingEscrowLocksQuery(
   });
 
   return useGraphQuery<VotingEscrowLockResponse>(
-    networkSubgraphGagesMap[networkId],
+    config[networkId].subgraphs.gauge,
     QUERY_KEYS.Gauges.VotingEscrowLocksByNetworkId(networkId, account, user),
     () => ({
       __name: 'VotingEscrowLocks',
