@@ -12,6 +12,7 @@ import {
   useCrossChainSync,
   NetworkSyncState,
 } from '@/providers/cross-chain-sync.provider';
+import configs, { Network } from '@/lib/config';
 
 /**
  * COMPOSABLES
@@ -48,6 +49,19 @@ const isVebalBalanceZero = computed(() => {
 /**
  * METHODS
  */
+
+function getLoadingTooltipText(networkId: Network) {
+  return `Syncing on ${configs[networkId].chainName} usually takes around 5 mins. 
+  Wait until it completes before restaking or triggering a gauge update on your
+  ${configs[networkId].chainName} pools to get your maximum veBAL boost.`;
+}
+
+function checkIfNetworkSyncing(network: Network) {
+  return (
+    networksSyncState.value?.[network] === NetworkSyncState.Syncing ||
+    tempSyncingNetworks.value[account.value]?.networks.includes(network)
+  );
+}
 function onCloseModal() {
   isSyncModalOpen.value = false;
 }
@@ -114,18 +128,50 @@ function onCloseModal() {
                 :key="network"
                 class="mr-2"
               >
-                <IconLoaderWrapper
-                  :isLoading="
-                    networksSyncState?.[network] === NetworkSyncState.Syncing ||
-                    tempSyncingNetworks[account]?.networks.includes(network)
-                  "
-                >
-                  <img
-                    :src="buildNetworkIconURL(network)"
-                    alt=""
-                    class="p-0.5 rounded-full w-[32px]"
-                  />
-                </IconLoaderWrapper>
+                <BalTooltip width="44" textAlign="center">
+                  <template #activator>
+                    <IconLoaderWrapper
+                      :isLoading="checkIfNetworkSyncing(network)"
+                    >
+                      <img
+                        :src="buildNetworkIconURL(network)"
+                        alt=""
+                        class="p-0.5 rounded-full w-[32px]"
+                      />
+                    </IconLoaderWrapper>
+                  </template>
+
+                  <div v-if="checkIfNetworkSyncing(network)">
+                    {{ getLoadingTooltipText(network) }}
+                  </div>
+                  <div v-else>
+                    <div class="flex">
+                      <div class="flex justify-center p-1 mr-1 align-center">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                      </div>
+                      <div>
+                        <div class="text-sm text-gray-600">Ethereum veBal</div>
+                        <div class="text-lg font-bold">
+                          {{ Number(veBalBalance).toFixed(4) }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex">
+                      <div class="flex justify-center p-1 mr-1 align-center">
+                        <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+                      </div>
+                      <div>
+                        <div class="text-sm text-gray-600">
+                          {{ configs[network].chainName }} veBal
+                        </div>
+                        <div class="text-lg font-bold">
+                          {{ l2VeBalBalances?.[network] }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </BalTooltip>
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ type Props = {
 };
 
 defineProps<Props>();
+defineEmits(['close']);
 </script>
 
 <template>
@@ -52,10 +53,15 @@ defineProps<Props>();
     <BalAlert
       type="tip"
       :title="$t('crossChainBoost.syncInitiatedModal.warningTitle')"
+      class="mb-8"
     >
       <div>
         {{ $t('crossChainBoost.syncInitiatedModal.warningDescription') }}.
       </div>
     </BalAlert>
+
+    <BalBtn color="gray" outline block @click="$emit('close')">
+      {{ $t('close') }}
+    </BalBtn>
   </div>
 </template>
