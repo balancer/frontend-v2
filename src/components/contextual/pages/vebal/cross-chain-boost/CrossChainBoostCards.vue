@@ -51,7 +51,9 @@ const isVebalBalanceZero = computed(() => {
  */
 
 function getLoadingTooltipText(networkId: Network) {
-  return `Syncing on ${configs[networkId].chainName} usually takes around 5 mins. 
+  const time = networkId === Network.POLYGON ? 30 : 5;
+
+  return `Syncing on ${configs[networkId].chainName} usually takes around ${time} mins. 
   Wait until it completes before restaking or triggering a gauge update on your
   ${configs[networkId].chainName} pools to get your maximum veBAL boost.`;
 }

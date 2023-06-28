@@ -13,6 +13,7 @@ import { safeInject } from './inject';
 import configs from '@/lib/config';
 import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import { useI18n } from 'vue-i18n';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -42,6 +43,7 @@ const REFETCH_INTERVAL = 1000 * 30; // 30 seconds
 
 export const crossChainSyncProvider = () => {
   const { account, getSigner } = useWeb3();
+  const { t } = useI18n();
 
   const syncingNetworksFromStorage = localStorage.getItem(
     'tempSyncingNetworks'
@@ -169,8 +171,8 @@ export const crossChainSyncProvider = () => {
   const warningMessage = computed(() => {
     if (networksBySyncState.value.syncing.length > 0) {
       return {
-        title: 'Wait until sync finalizes before restaking on L2',
-        text: 'Your veBAL is currently syncing to other networks. Wait until the sync is complete before re-staking any L2 positions in order for your new boosts to apply.',
+        title: t('crossChainBoost.syncProcessWarning.title'),
+        text: t('crossChainBoost.syncProcessWarning.description'),
       };
     }
 
