@@ -45,6 +45,10 @@ export default function useMetadataQuery(
       id: id.toLowerCase(),
     });
 
+    if (!customPoolMetadata) {
+      return [];
+    }
+
     return (await ipfsService.get(customPoolMetadata.metadataCID).then(res => {
       return res;
     })) as Promise<SubgraphMetadataCID[]>;
