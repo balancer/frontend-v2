@@ -15,10 +15,10 @@ import { configService } from '@/services/config/config.service';
 type Props = {
   pool: Pool;
   loading: boolean;
-  metadata: MetadataType;
+  metadata: MetadataList;
 };
 
-type MetadataType = {
+type MetadataList = {
   title: string;
   value: string;
   key?: string;
@@ -35,8 +35,9 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * STATE
  */
-const poolCustomMetadata = ref<MetadataType>([]);
-const poolName = ref<string>();
+const poolCustomMetadata = ref<MetadataList>([]);
+const customMetadataPoolName = ref<string>();
+const isCustomMetadata = ref(false);
 
 /**
  * COMPOSABLES
@@ -83,7 +84,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: poolName.value || poolMetadata(id)?.name || name,
+      value: customMetadataPoolName.value || poolMetadata(id)?.name || name,
     },
     {
       title: t('poolSymbol'),
@@ -199,9 +200,20 @@ watch(
   newMetadata => {
     if (Array.isArray(newMetadata)) {
       const nameItem = newMetadata.find(item => item.key === 'name');
-      poolName.value = nameItem ? nameItem.value : undefined;
+      customMetadataPoolName.value = nameItem ? nameItem.value : undefined;
     } else {
-      poolName.value = undefined;
+      customMetadataPoolName.value = undefined;
+    }
+  },
+  { immediate: true }
+);
+watch(
+  () => props.metadata,
+  newMetadata => {
+    if (Array.isArray(newMetadata)) {
+      isCustomMetadata.value = newMetadata.length > 0;
+    } else {
+      isCustomMetadata.value = false;
     }
   },
   { immediate: true }
@@ -219,12 +231,12 @@ watch(
       </div>
     </template>
     <h3
-      v-if="poolCustomMetadata.values.length > 0"
+      v-if="isCustomMetadata"
       class="px-4 lg:px-0 mt-12 mb-5"
       v-text="$t('poolCustomMetadata')"
     />
     <BalDetailsTable
-      v-if="poolCustomMetadata.values.length > 0"
+      v-if="isCustomMetadata"
       class="mb-12"
       :tableData="poolCustomMetadata"
     />
