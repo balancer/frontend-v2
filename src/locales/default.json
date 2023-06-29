@@ -242,8 +242,8 @@
     "currentBalance": "Current balance",
     "postSyncBalance": "Post-sync balance",
     "syncedNetworks": "Synced networks",
-    "syncToNetwork": "Sync veBal to {network}",
-    "syncingToNetwork": "Syncing veBal to {network}",
+    "syncToNetwork": "Sync veBAL to {network}",
+    "syncingToNetwork": "Syncing veBAL to {network}",
     "unsyncedNetworks": "Unsynced networks",
     "unsyncedAllDescription": "Sync veBAL across networks for a boosted APR on your staked positions.",
     "syncedAllDescription": "All networks are synced",
@@ -262,11 +262,11 @@
     },
     "selectNetworkModal": {
       "title": "Sync veBAL: Select networks",
-      "description": "Layer 2 (L2) networks don’t know your veBAL balance from Ethereum, unless you sync it. Each network costs additional gas to sync, so it’s best to only sync networks where you plan to stake."
+      "description": "Layer 2 networks don’t know your veBAL balance from Ethereum, unless you sync it. Each network costs additional gas to sync, so it’s best to only sync networks where you plan to stake."
     },
     "syncNetworkModal": {
-      "title": "Sync veBal",
-      "singleNetworkTitle": "Sync veBal to {0}",
+      "title": "Sync veBAL",
+      "singleNetworkTitle": "Sync veBAL to {0}",
       "description": "This will sync your veBAL balance and give you a staking boost on {0}."
     },
     "syncInitiatedModal": {

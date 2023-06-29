@@ -21,7 +21,7 @@ providePoolStaking();
   <div>
     <Hero v-if="isVeBalSupported" v-once />
 
-    <div class="py-16 xl:py-20 bg-gray-50 dark:bg-gray-900">
+    <div class="py-16 xl:py-20 bg-gray-50 dark:bg-gray-850/50">
       <div v-if="isVeBalSupported" class="lg:container lg:mx-auto">
         <div class="px-4 mb-5">
           <MyVeBAL />

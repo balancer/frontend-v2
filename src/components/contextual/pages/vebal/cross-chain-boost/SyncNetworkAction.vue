@@ -51,7 +51,7 @@ async function handleTransaction(
     id: tx.hash,
     type: 'tx',
     action: 'sync',
-    summary: `Sync veBal to ${configs[network].chainName} network`,
+    summary: `Sync veBAL to ${configs[network].chainName} network`,
   });
 
   txListener(tx, {
