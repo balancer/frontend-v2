@@ -241,7 +241,7 @@ watch(
       :tableData="poolCustomMetadata"
     />
     <BalAlert
-      v-if="poolCustomMetadata && isPoolOwner"
+      v-if="isPoolOwner"
       type="warning"
       :title="$t('poolCustomMetadataOwner.title')"
       class="mt-2"
@@ -249,7 +249,6 @@ watch(
     >
       {{ $t('poolCustomMetadataOwner.description') }}
       <BalLink
-        v-if="poolCustomMetadata"
         :href="`${EXTERNAL_LINKS.Bleu.Metadata}${networkName}/pool/${props.pool.id}`"
         external
         noStyle
