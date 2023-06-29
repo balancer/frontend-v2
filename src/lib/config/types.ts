@@ -68,7 +68,7 @@ export interface Keys {
 
 export interface Config {
   key: string;
-  chainId: Network | 12345 | 17;
+  chainId: Network;
   chainName: string;
   name: string;
   shortName: string;
