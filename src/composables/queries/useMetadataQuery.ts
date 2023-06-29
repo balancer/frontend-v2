@@ -2,15 +2,16 @@ import { reactive } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import { SubgraphMetadata } from '@/services/bleu/metadata/types';
+import { SubgraphMetadataCID } from '@/services/bleu/metadata/types';
 import { metadataSubgraphService } from '@/services/bleu/metadata/metadata-subgraph.service';
 import usePoolQuery from './usePoolQuery';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
+import { ipfsService } from '@/services/ipfs/ipfs.service';
 
 /**
  * TYPES
  */
-type QueryOptions = UseQueryOptions<SubgraphMetadata>;
+type QueryOptions = UseQueryOptions<SubgraphMetadataCID[]>;
 
 /**
  * @summary Fetches Pool Metadata list from subgraph
@@ -40,9 +41,13 @@ export default function useMetadataQuery(
   const queryFn = async () => {
     if (!pool.value && !storedPool) throw new Error('No pool');
 
-    return await metadataSubgraphService.pool.get({
+    const customPoolMetadata = await metadataSubgraphService.pool.get({
       id: id.toLowerCase(),
     });
+
+    return (await ipfsService.get(customPoolMetadata.metadataCID).then(res => {
+      return res;
+    })) as Promise<SubgraphMetadataCID[]>;
   };
 
   /**
@@ -53,7 +58,7 @@ export default function useMetadataQuery(
     ...options,
   });
 
-  return useQuery<SubgraphMetadata>(
+  return useQuery<SubgraphMetadataCID[]>(
     queryKey,
     queryFn,
     queryOptions as QueryOptions

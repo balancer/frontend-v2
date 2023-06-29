@@ -12,3 +12,10 @@ export interface SubgraphMetadata {
   address: string;
   metadataCID: string;
 }
+
+export interface SubgraphMetadataCID {
+  typename: string;
+  value: string;
+  key: string;
+  description: string;
+}

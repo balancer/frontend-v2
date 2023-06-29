@@ -15,15 +15,22 @@ import { configService } from '@/services/config/config.service';
 type Props = {
   pool: Pool;
   loading: boolean;
-  metadata: MetadataList;
+  customMetadata: SubgraphMetadataCID[];
 };
 
-type MetadataList = {
+type SubgraphMetadataCID = {
+  typename: string;
+  value: string;
+  key: string;
+  description: string;
+};
+
+type TableAttributes = {
   title: string;
   value: string;
-  key?: string;
-  [key: string]: any;
-}[];
+  link?: string;
+  tooltip?: string;
+};
 
 /**
  * PROPS
@@ -35,7 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * STATE
  */
-const poolCustomMetadata = ref<MetadataList>([]);
+const poolCustomMetadata = ref<TableAttributes[]>([]);
 const customMetadataPoolName = ref<string>();
 const isCustomMetadata = ref(false);
 
@@ -175,7 +182,7 @@ const isPoolOwner = computed(() => {
 });
 
 watch(
-  () => props.metadata,
+  () => props.customMetadata,
   newMetadata => {
     if (Array.isArray(newMetadata)) {
       poolCustomMetadata.value = [
@@ -196,7 +203,7 @@ watch(
   { immediate: true }
 );
 watch(
-  () => props.metadata,
+  () => props.customMetadata,
   newMetadata => {
     if (Array.isArray(newMetadata)) {
       const nameItem = newMetadata.find(item => item.key === 'name');
@@ -208,7 +215,7 @@ watch(
   { immediate: true }
 );
 watch(
-  () => props.metadata,
+  () => props.customMetadata,
   newMetadata => {
     if (Array.isArray(newMetadata)) {
       isCustomMetadata.value = newMetadata.length > 0;

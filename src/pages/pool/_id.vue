@@ -39,7 +39,6 @@ import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationC
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import PoolRisks from '@/components/contextual/pages/pool/risks/PoolRisks.vue';
 import useMetadataQuery from '@/composables/queries/useMetadataQuery';
-import { ipfsService } from '@/services/ipfs/ipfs.service';
 
 /**
  * STATE
@@ -94,18 +93,10 @@ const snapshots = computed(() => poolSnapshotsQuery.data.value);
 const poolMetadataQuery = useMetadataQuery(poolId);
 const isLoadingMetadata = computed(() => poolMetadataQuery.isLoading.value);
 
-const poolMetadataCID = computed(() => {
-  if (!poolMetadataQuery.data.value) return null;
-  return poolMetadataQuery.data.value.metadataCID;
+const customPoolMetadata = computed(() => {
+  if (!poolMetadataQuery.data.value) return [];
+  return poolMetadataQuery.data.value;
 });
-
-async function getPoolMetadata() {
-  if (!poolMetadataCID || !poolMetadataCID.value) return '';
-
-  return await ipfsService.get(poolMetadataCID.value).then(res => {
-    return res;
-  });
-}
 //#endregion
 
 //#region historical prices query
@@ -129,7 +120,6 @@ const poolApr = computed(() => aprQuery.data.value);
 //#region Intersection Observer
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
 const isSentinelIntersected = ref(false);
-const poolMetadataResult = ref<any>(null);
 let observer: IntersectionObserver | undefined;
 
 function addIntersectionObserver(): void {
@@ -234,11 +224,6 @@ watch(
     }
   }
 );
-watchEffect(async () => {
-  if (poolMetadataCID.value) {
-    poolMetadataResult.value = await getPoolMetadata();
-  }
-});
 </script>
 
 <template>
@@ -306,7 +291,7 @@ watchEffect(async () => {
             <PoolContractDetails
               :pool="pool"
               :loading="isLoadingMetadata"
-              :metadata="poolMetadataResult"
+              :customMetadata="customPoolMetadata"
             />
             <PoolRisks :pool="pool" />
           </template>
