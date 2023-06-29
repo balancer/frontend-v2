@@ -2,14 +2,12 @@ import { Config } from './types';
 
 import arbitrum from './arbitrum';
 import avalanche from './avalanche';
-import docker from './docker';
 import goerli from './goerli';
+import gnosisChain from './gnosis-chain';
 import mainnet from './mainnet';
 import optimism from './optimism';
 import polygon from './polygon';
-import gnosisChain from './gnosis-chain';
 import zkevm from './zkevm';
-import test from './test';
 
 // We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
 export enum Network {
@@ -37,10 +35,6 @@ const config: Record<Network | number, Config> = {
   [Network.GNOSIS]: gnosisChain,
   [Network.ZKEVM]: zkevm,
   [Network.AVALANCHE]: avalanche,
-  // @ts-ignore
-  12345: test,
-  // @ts-ignore
-  17: docker,
 };
 
 export default config;

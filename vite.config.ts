@@ -149,7 +149,6 @@ export default defineConfig(({ mode }) => {
           'node_modules/**',
           'src/components/_global/BalBtn/button-options.js',
         ],
-        transformMixedEsModules: true, // Enable @walletconnect/web3-provider which has some code in CommonJS
       },
     },
     test: {
