@@ -90,7 +90,7 @@ function onCloseModal() {
 
     <template v-if="!(isLoading || dynamicDataLoading)">
       <BalAlert
-        v-if="warningMessage.title"
+        v-if="warningMessage"
         :title="warningMessage.title"
         type="warning"
         class="mb-4"
@@ -98,7 +98,7 @@ function onCloseModal() {
         {{ warningMessage.text }}
       </BalAlert>
       <BalAlert
-        v-else-if="infoMessage.title"
+        v-else-if="infoMessage"
         :title="infoMessage.title"
         type="tip"
         class="mb-4"

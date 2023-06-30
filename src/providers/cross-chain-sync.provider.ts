@@ -185,18 +185,22 @@ export const crossChainSyncProvider = () => {
       };
     }
 
-    return {
-      title: '',
-      text: '',
-    };
+    return null;
   });
 
-  // TODO: add info message
   const infoMessage = computed(() => {
-    return {
-      title: '',
-      text: '',
-    };
+    if (warningMessage.value) {
+      return null;
+    }
+
+    if (networksBySyncState.value.synced.length > 0) {
+      return {
+        title: t('crossChainBoost.updateGauge.title'),
+        text: t('crossChainBoost.updateGauge.description'),
+      };
+    }
+
+    return null;
   });
 
   async function sync(network: Network) {
