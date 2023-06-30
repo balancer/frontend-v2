@@ -11,6 +11,9 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
 import configs from '@/lib/config';
+import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
+import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import { useI18n } from 'vue-i18n';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -40,6 +43,7 @@ const REFETCH_INTERVAL = 1000 * 30; // 30 seconds
 
 export const crossChainSyncProvider = () => {
   const { account, getSigner } = useWeb3();
+  const { t } = useI18n();
 
   const syncingNetworksFromStorage = localStorage.getItem(
     'tempSyncingNetworks'
@@ -119,7 +123,7 @@ export const crossChainSyncProvider = () => {
     return result;
   });
 
-  // Returns networks lists by sync state synced/unsynced
+  // Returns networks lists by sync state
   const networksBySyncState = computed<NetworksBySyncState>(() => {
     if (!networksSyncState.value) {
       return {
@@ -149,6 +153,15 @@ export const crossChainSyncProvider = () => {
     };
   });
 
+  // List of networks to show in unsynced networks card
+  const showingUnsyncedNetworks = computed(() => {
+    const commonArr = [
+      ...networksBySyncState.value.unsynced,
+      ...networksBySyncState.value.syncing,
+    ];
+    return [...new Set(commonArr)];
+  });
+
   const hasError = computed(() => {
     const hasVotingEscrowError = veBalSyncSupportedNetworks.some(network => {
       return crossChainNetworks[network].isError.value;
@@ -167,23 +180,27 @@ export const crossChainSyncProvider = () => {
   const warningMessage = computed(() => {
     if (networksBySyncState.value.syncing.length > 0) {
       return {
-        title: 'Wait until sync finalizes before restaking on L2',
-        text: 'Your veBAL is currently syncing to other networks. Wait until the sync is complete before re-staking any L2 positions in order for your new boosts to apply.',
+        title: t('crossChainBoost.syncProcessWarning.title'),
+        text: t('crossChainBoost.syncProcessWarning.description'),
       };
     }
 
-    return {
-      title: '',
-      text: '',
-    };
+    return null;
   });
 
-  // TODO: add info message
   const infoMessage = computed(() => {
-    return {
-      title: '',
-      text: '',
-    };
+    if (warningMessage.value) {
+      return null;
+    }
+
+    if (networksBySyncState.value.synced.length > 0) {
+      return {
+        title: t('crossChainBoost.updateGauge.title'),
+        text: t('crossChainBoost.updateGauge.description'),
+      };
+    }
+
+    return null;
   });
 
   async function sync(network: Network) {
@@ -267,6 +284,35 @@ export const crossChainSyncProvider = () => {
     );
   }
 
+  async function getGaugeWorkingBalance(gaugeAddress: string) {
+    const contractAddress =
+      configService.network.addresses.gaugeWorkingBalanceHelper;
+    if (!contractAddress) throw new Error('No contract address found');
+
+    const signer = getSigner();
+    const workingBalanceHelperContract = new GaugeWorkingBalanceHelper(
+      contractAddress
+    );
+
+    return workingBalanceHelperContract.getWorkingBalanceToSupplyRatios({
+      signer,
+      userAddress: account.value,
+      gauge: gaugeAddress,
+    });
+  }
+
+  // checkpoint
+  async function triggerGaugeUpdate(gaugeAddress: string) {
+    const gaugeContract = new LiquidityGauge(gaugeAddress);
+
+    const signer = getSigner();
+
+    return gaugeContract.checkpointUser({
+      signer,
+      userAddress: account.value,
+    });
+  }
+
   watch(
     () => networksBySyncState.value,
     newVal => {
@@ -290,6 +336,7 @@ export const crossChainSyncProvider = () => {
   );
 
   return {
+    showingUnsyncedNetworks,
     hasError,
     omniEscrowLocksMap,
     networksSyncState,
@@ -303,6 +350,8 @@ export const crossChainSyncProvider = () => {
     setTempSyncingNetworks,
     warningMessage,
     infoMessage,
+    getGaugeWorkingBalance,
+    triggerGaugeUpdate,
   };
 };
 

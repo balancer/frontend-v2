@@ -3,9 +3,13 @@ import configs, { Network } from '@/lib/config';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { TransactionActionInfo } from '@/types/transactions';
 import { useI18n } from 'vue-i18n';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import {
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
+import useEthers from '@/composables/useEthers';
 
 /**
  * TYPES
@@ -27,8 +31,10 @@ const emit = defineEmits(['update:activeTabIdx']);
  */
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
+const { txListener } = useEthers();
 const { l2VeBalBalances, sync, setTempSyncingNetworks, tempSyncingNetworks } =
   useCrossChainSync();
+
 /**
  * STATE
  */
@@ -45,7 +51,16 @@ async function handleTransaction(
     id: tx.hash,
     type: 'tx',
     action: 'sync',
-    summary: `Sync veBal to ${configs[network].chainName} network`,
+    summary: `Sync veBAL to ${configs[network].chainName} network`,
+  });
+
+  txListener(tx, {
+    onTxConfirmed: (receipt: TransactionReceipt) => {
+      console.log('Receipt', receipt);
+    },
+    onTxFailed: () => {
+      //
+    },
   });
 }
 

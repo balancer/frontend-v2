@@ -12,6 +12,7 @@ import {
   useCrossChainSync,
   NetworkSyncState,
 } from '@/providers/cross-chain-sync.provider';
+import configs, { Network } from '@/lib/config';
 
 /**
  * COMPOSABLES
@@ -29,6 +30,7 @@ const {
   warningMessage,
   infoMessage,
   hasError,
+  showingUnsyncedNetworks,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -49,6 +51,20 @@ const isVebalBalanceZero = computed(() => {
  * METHODS
  */
 
+function getLoadingTooltipText(networkId: Network) {
+  const time = networkId === Network.POLYGON ? 30 : 5;
+
+  return `Syncing on ${configs[networkId].chainName} usually takes around ${time} mins. 
+  Wait until it completes before restaking or triggering a gauge update on your
+  ${configs[networkId].chainName} pools to get your maximum veBAL boost.`;
+}
+
+function checkIfNetworkSyncing(network: Network) {
+  return (
+    networksSyncState.value?.[network] === NetworkSyncState.Syncing ||
+    tempSyncingNetworks.value[account.value]?.networks.includes(network)
+  );
+}
 function onCloseModal() {
   isSyncModalOpen.value = false;
 }
@@ -56,14 +72,14 @@ function onCloseModal() {
 
 <template>
   <div class="py-5 px-4">
-    <h3 class="mb-3">
+    <h4 class="mb-3">
       {{ $t('crossChainBoost.title') }}
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
           <BalIcon name="info" size="sm" class="text-gray-400" />
         </template>
       </BalTooltip>
-    </h3>
+    </h4>
 
     <BalAlert v-if="hasError" title="Error" type="error" class="mb-4">
       <div>
@@ -72,27 +88,32 @@ function onCloseModal() {
       </div>
     </BalAlert>
 
-    <BalAlert
-      v-if="warningMessage.title && !(isLoading || dynamicDataLoading)"
-      :title="warningMessage.title"
-      type="warning"
-      class="mb-4"
-    >
-      {{ warningMessage.text }}
-    </BalAlert>
-    <BalAlert
-      v-else-if="infoMessage.title"
-      :title="infoMessage.title"
-      type="tip"
-      class="mb-4"
-    >
-      {{ infoMessage.text }}
-    </BalAlert>
+    <template v-if="!(isLoading || dynamicDataLoading)">
+      <BalAlert
+        v-if="warningMessage"
+        :title="warningMessage.title"
+        type="warning"
+        class="mb-4"
+      >
+        {{ warningMessage.text }}
+      </BalAlert>
+      <BalAlert
+        v-else-if="infoMessage"
+        :title="infoMessage.title"
+        type="tip"
+        class="mb-4"
+      >
+        {{ infoMessage.text }}
+      </BalAlert>
+    </template>
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
       </template>
-      <div v-else-if="!isWalletReady || isVebalBalanceZero">
+      <div
+        v-else-if="!isWalletReady || isVebalBalanceZero"
+        class="text-sm text-secondary"
+      >
         {{ $t('crossChainBoost.emptyState') }}
       </div>
       <template v-else>
@@ -100,31 +121,63 @@ function onCloseModal() {
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}
           </div>
-          <div class="flex mb-5">
+          <div class="flex mb-3">
             <span
-              v-if="networksBySyncState.unsynced.length === 0"
-              class="text-sm text-gray-600"
+              v-if="showingUnsyncedNetworks.length === 0"
+              class="text-sm text-secondary"
             >
               {{ hasError ? '—' : $t('crossChainBoost.syncedAllDescription') }}
             </span>
             <div v-else class="flex">
               <div
-                v-for="network in networksBySyncState.unsynced"
+                v-for="network in showingUnsyncedNetworks"
                 :key="network"
                 class="mr-2"
               >
-                <IconLoaderWrapper
-                  :isLoading="
-                    networksSyncState?.[network] === NetworkSyncState.Syncing ||
-                    tempSyncingNetworks[account]?.networks.includes(network)
-                  "
-                >
-                  <img
-                    :src="buildNetworkIconURL(network)"
-                    alt=""
-                    class="p-0.5 rounded-full w-[32px]"
-                  />
-                </IconLoaderWrapper>
+                <BalTooltip width="44" textAlign="center">
+                  <template #activator>
+                    <IconLoaderWrapper
+                      :isLoading="checkIfNetworkSyncing(network)"
+                    >
+                      <img
+                        :src="buildNetworkIconURL(network)"
+                        alt=""
+                        class="p-0.5 rounded-full w-[32px]"
+                      />
+                    </IconLoaderWrapper>
+                  </template>
+
+                  <div v-if="checkIfNetworkSyncing(network)">
+                    {{ getLoadingTooltipText(network) }}
+                  </div>
+                  <div v-else>
+                    <div class="flex mb-2">
+                      <div class="flex justify-center p-1 mr-1 align-center">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                      </div>
+                      <div>
+                        <div class="text-sm text-secondary">Ethereum veBAL</div>
+                        <div class="text-lg font-bold">
+                          {{ Number(veBalBalance).toFixed(4) }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex">
+                      <div class="flex justify-center p-1 mr-1 align-center">
+                        <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+                      </div>
+                      <div>
+                        <div class="text-sm text-secondary">
+                          {{ configs[network].chainName }} veBAL
+                        </div>
+                        <div class="text-lg font-bold">
+                          {{ l2VeBalBalances?.[network] }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </BalTooltip>
               </div>
             </div>
           </div>
@@ -146,7 +199,7 @@ function onCloseModal() {
           </div>
           <span
             v-if="networksBySyncState.synced.length === 0"
-            class="text-sm text-gray-600"
+            class="text-sm text-secondary"
           >
             {{ hasError ? '—' : $t('crossChainBoost.unsyncedAllDescription') }}
           </span>

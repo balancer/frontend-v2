@@ -49,7 +49,8 @@ export type TransactionAction =
   | 'unstake'
   | 'stake'
   | 'restake'
-  | 'sync';
+  | 'sync'
+  | 'userGaugeCheckpoint';
 
 export type TransactionType = 'order' | 'tx';
 

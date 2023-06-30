@@ -65,6 +65,7 @@ function toggleNetwork(network: number) {
         :chosenNetworks="chosenNetworks"
         @toggle-network="toggleNetwork"
         @set-successful-synced="isSyncedSuccessfull = true"
+        @close="closeModal"
       />
     </Transition>
   </BalModal>

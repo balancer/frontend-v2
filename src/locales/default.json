@@ -242,15 +242,15 @@
     "currentBalance": "Current balance",
     "postSyncBalance": "Post-sync balance",
     "syncedNetworks": "Synced networks",
-    "syncToNetwork": "Sync veBal to {network}",
-    "syncingToNetwork": "Syncing veBal to {network}",
+    "syncToNetwork": "Sync veBAL to {network}",
+    "syncingToNetwork": "Syncing veBAL to {network}",
     "unsyncedNetworks": "Unsynced networks",
     "unsyncedAllDescription": "Sync veBAL across networks for a boosted APR on your staked positions.",
     "syncedAllDescription": "All networks are synced",
     "emptyState": "Once you have some veBAL, sync your balance here to other networks.",
     "syncProcessWarning": {
-      "title": "Wait until sync finalizes before restaking on L2",
-      "description": "Your veBAL is currently syncing to other networks. Wait until the sync is complete before re-staking any L2 positions in order for your new boosts to apply."
+      "title": "Wait until sync finalizes before restaking / triggering a gauge update on L2",
+      "description": "Your sync has been initiated but it may take up to 30 mins to update across L2s. After it syncs, you will still need to trigger an update of each pool gauge on L2 where you stake to get your new max boost. You can do this by restaking into the new veBAL-aware pool gauge or by explicitly triggering an update on the pool page."
     },
     "syncComplete": {
       "title": "Remember to restake to the new boost-aware L2 pool gauges",
@@ -262,11 +262,11 @@
     },
     "selectNetworkModal": {
       "title": "Sync veBAL: Select networks",
-      "description": "Layer 2 (L2) networks don’t know your veBAL balance from Ethereum, unless you sync it. Each network costs additional gas to sync, so it’s best to only sync networks where you plan to stake."
+      "description": "Layer 2 networks don’t know your veBAL balance from Ethereum, unless you sync it. Each network costs additional gas to sync, so it’s best to only sync networks where you plan to stake."
     },
     "syncNetworkModal": {
-      "title": "Sync veBal",
-      "singleNetworkTitle": "Sync veBal to {0}",
+      "title": "Sync veBAL",
+      "singleNetworkTitle": "Sync veBAL to {0}",
       "description": "This will sync your veBAL balance and give you a staking boost on {0}."
     },
     "syncInitiatedModal": {
@@ -278,7 +278,7 @@
     "syncNetworkAction": {
       "title": "This will sync your veBAL balance and give you a staking boost across the networks listed below."
     },
-    "syncInProgress": "A sync operation is currently in progress. Wait until it completes before restaking any of your positions on [Arbitrum] to get your maximum veBAL boost."
+    "syncInProgress": "A sync operation is currently in progress. Wait until it completes before restaking any of your positions on {network} to get your maximum veBAL boost."
   },
   "migratePool": {
     "aaveBoostedPool": {
@@ -1493,7 +1493,8 @@
     "extendLock": "Extend lock",
     "increaseLock": "Increase lock",
     "unlock": "Unlock",
-    "sync": "Sync"
+    "sync": "Sync",
+    "userGaugeCheckpoint": "Pool gauge veBAL update"
   },
   "transactionDeadline": "Transaction deadline",
   "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed transactions incur fees for swaps between ERC-20 tokens.",

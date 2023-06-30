@@ -23,6 +23,7 @@ const contracts: Contracts = {
   feeDistributorDeprecated: '',
   faucet: '',
   gaugeRewardsHelper: gnosis.ChildChainGaugeRewardHelper,
+  gaugeWorkingBalanceHelper: gnosis.ChildChainGaugeWorkingBalanceHelper,
 };
 
 export default contracts;

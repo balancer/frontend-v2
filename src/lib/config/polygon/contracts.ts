@@ -24,6 +24,7 @@ const contracts: Contracts = {
   feeDistributorDeprecated: '',
   faucet: '',
   gaugeRewardsHelper: polygon.ChildChainGaugeRewardHelper,
+  gaugeWorkingBalanceHelper: polygon.ChildChainGaugeWorkingBalanceHelper,
 };
 
 export default contracts;

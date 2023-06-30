@@ -24,6 +24,7 @@ const contracts: Contracts = {
   feeDistributorDeprecated: '',
   faucet: '',
   gaugeRewardsHelper: arbitrum.ChildChainGaugeRewardHelper,
+  gaugeWorkingBalanceHelper: arbitrum.ChildChainGaugeWorkingBalanceHelper,
 };
 
 export default contracts;
