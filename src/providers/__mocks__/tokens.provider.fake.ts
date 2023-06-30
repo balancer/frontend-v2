@@ -89,6 +89,11 @@ export const fakeTokensProvider = (
   /**
    * METHODS
    */
+  async function injectSpenders(addresses: string[]): Promise<void> {
+    //TODO: add logic test scenarios using spenders in a more realistic way
+    return Promise.resolve();
+  }
+
   /**
    * Fetch price for a token
    */
@@ -147,6 +152,7 @@ export const fakeTokensProvider = (
     refetchBalances,
     refetchAllowances,
     hasBalance,
+    injectSpenders,
     priceFor,
     balanceFor,
     getMaxBalanceFor,
