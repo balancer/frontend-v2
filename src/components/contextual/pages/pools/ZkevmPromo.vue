@@ -14,7 +14,7 @@ const { networkSlug } = useNetwork();
       >
         <div class="z-10 max-w-3xl">
           <h5 class="mb-1 font-bold text-white">
-            Get ready for BAL incentives for Polygon zkEVM
+            Get ready for BAL incentives on Polygon zkEVM
           </h5>
           <p class="md:text-sm leading-6 text-white">
             BAL incentives on selected Polygon zkEVM pools go live on Thursday
