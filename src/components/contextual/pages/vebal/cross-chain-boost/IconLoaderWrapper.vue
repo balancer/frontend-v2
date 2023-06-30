@@ -20,7 +20,7 @@ withDefaults(defineProps<Props>(), {
   position: absolute;
   top: -2px;
   right: -3px;
-  border: 2px solid #f3f3f3;
+  border: 2px solid transparent;
   border-radius: 50%;
   border-top: 2px solid #f97316;
   border-right: 2px solid #f97316;

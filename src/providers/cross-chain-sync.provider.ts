@@ -123,7 +123,7 @@ export const crossChainSyncProvider = () => {
     return result;
   });
 
-  // Returns networks lists by sync state synced/unsynced
+  // Returns networks lists by sync state
   const networksBySyncState = computed<NetworksBySyncState>(() => {
     if (!networksSyncState.value) {
       return {
@@ -151,6 +151,15 @@ export const crossChainSyncProvider = () => {
           tempSyncingNetworks.value[account.value]?.networks.includes(network)
       ),
     };
+  });
+
+  // List of networks to show in unsynced networks card
+  const showingUnsyncedNetworks = computed(() => {
+    const commonArr = [
+      ...networksBySyncState.value.unsynced,
+      ...networksBySyncState.value.syncing,
+    ];
+    return [...new Set(commonArr)];
   });
 
   const hasError = computed(() => {
@@ -323,6 +332,7 @@ export const crossChainSyncProvider = () => {
   );
 
   return {
+    showingUnsyncedNetworks,
     hasError,
     omniEscrowLocksMap,
     networksSyncState,

@@ -30,6 +30,7 @@ const {
   warningMessage,
   infoMessage,
   hasError,
+  showingUnsyncedNetworks,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -119,14 +120,14 @@ function onCloseModal() {
           </div>
           <div class="flex mb-5">
             <span
-              v-if="networksBySyncState.unsynced.length === 0"
+              v-if="showingUnsyncedNetworks.length === 0"
               class="text-sm text-gray-600"
             >
               {{ hasError ? '—' : $t('crossChainBoost.syncedAllDescription') }}
             </span>
             <div v-else class="flex">
               <div
-                v-for="network in networksBySyncState.unsynced"
+                v-for="network in showingUnsyncedNetworks"
                 :key="network"
                 class="mr-2"
               >

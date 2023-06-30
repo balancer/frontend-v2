@@ -6,6 +6,7 @@ import {
 } from '@/providers/cross-chain-sync.provider';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import CheckpointGaugeModal from './CheckpointGaugeModal.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
   fiatValueOfStakedShares: string;
@@ -20,6 +21,7 @@ const showCheckpointModal = ref(false);
 const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
 const { hasNonPrefGaugeBalance, poolGauges } = usePoolStaking();
 const { networkId } = useNetwork();
+const { isMismatchedNetwork } = useWeb3();
 
 const tipText = computed(() => {
   if (hasNonPrefGaugeBalance.value) {
@@ -57,6 +59,10 @@ const warningAlert = computed(() => {
 });
 
 async function setWarningAlertState() {
+  if (isMismatchedNetwork.value) {
+    return;
+  }
+
   const id = poolGauges.value?.pool.preferentialGauge.id;
 
   if (!id) {
