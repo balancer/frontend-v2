@@ -51,7 +51,7 @@ const tipText = computed(() => {
 const warningAlert = computed(() => {
   if (shouldShowWarningAlert.value) {
     return {
-      title: 'You are missing out on your max staking boost',
+      title: 'You are not getting your max staking boost',
       text: 'You’ve synced new veBAL but it is not being used to increase your staking boost (since pool gauges don’t automatically recognize veBAL changes). Interact with a pool gauge to trigger an update (e.g. by claiming BAL, staking/unstaking or explicitly triggering an update).',
     };
   }
@@ -95,10 +95,16 @@ onBeforeMount(() => {
       :title="warningAlert.title"
     >
       <div class="flex flex-col">
-        <span class="mb-1">{{ warningAlert.text }}</span>
-        <BalBtn size="sm" color="gradient" @click="showCheckpointModal = true">
-          Trigger update
-        </BalBtn>
+        <span class="mb-3">{{ warningAlert.text }}</span>
+        <div class="mb-2">
+          <BalBtn
+            size="sm"
+            color="gradient"
+            @click="showCheckpointModal = true"
+          >
+            Trigger update
+          </BalBtn>
+        </div>
       </div>
     </BalAlert>
 

@@ -72,14 +72,14 @@ function onCloseModal() {
 
 <template>
   <div class="py-5 px-4">
-    <h3 class="mb-3">
+    <h4 class="mb-3">
       {{ $t('crossChainBoost.title') }}
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
           <BalIcon name="info" size="sm" class="text-gray-400" />
         </template>
       </BalTooltip>
-    </h3>
+    </h4>
 
     <BalAlert v-if="hasError" title="Error" type="error" class="mb-4">
       <div>
@@ -110,7 +110,10 @@ function onCloseModal() {
       <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
       </template>
-      <div v-else-if="!isWalletReady || isVebalBalanceZero">
+      <div
+        v-else-if="!isWalletReady || isVebalBalanceZero"
+        class="text-sm text-secondary"
+      >
         {{ $t('crossChainBoost.emptyState') }}
       </div>
       <template v-else>
@@ -118,10 +121,10 @@ function onCloseModal() {
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}
           </div>
-          <div class="flex mb-5">
+          <div class="flex mb-3">
             <span
               v-if="showingUnsyncedNetworks.length === 0"
-              class="text-sm text-gray-600"
+              class="text-sm text-secondary"
             >
               {{ hasError ? '—' : $t('crossChainBoost.syncedAllDescription') }}
             </span>
@@ -148,12 +151,12 @@ function onCloseModal() {
                     {{ getLoadingTooltipText(network) }}
                   </div>
                   <div v-else>
-                    <div class="flex">
+                    <div class="flex mb-2">
                       <div class="flex justify-center p-1 mr-1 align-center">
                         <div class="w-2 h-2 bg-green-400 rounded-full"></div>
                       </div>
                       <div>
-                        <div class="text-sm text-gray-600">Ethereum veBal</div>
+                        <div class="text-sm text-secondary">Ethereum veBAL</div>
                         <div class="text-lg font-bold">
                           {{ Number(veBalBalance).toFixed(4) }}
                         </div>
@@ -165,8 +168,8 @@ function onCloseModal() {
                         <div class="w-2 h-2 rounded-full bg-rose-500"></div>
                       </div>
                       <div>
-                        <div class="text-sm text-gray-600">
-                          {{ configs[network].chainName }} veBal
+                        <div class="text-sm text-secondary">
+                          {{ configs[network].chainName }} veBAL
                         </div>
                         <div class="text-lg font-bold">
                           {{ l2VeBalBalances?.[network] }}
@@ -196,7 +199,7 @@ function onCloseModal() {
           </div>
           <span
             v-if="networksBySyncState.synced.length === 0"
-            class="text-sm text-gray-600"
+            class="text-sm text-secondary"
           >
             {{ hasError ? '—' : $t('crossChainBoost.unsyncedAllDescription') }}
           </span>

@@ -56,7 +56,7 @@ const veBalSyncTip = computed(() => {
       <div class="flex-[2]">{{ veBalSyncTip?.text }}</div>
       <div class="flex flex-1 justify-end">
         <BalBtn color="gradient" @click="$emit('showProceedModal')">
-          Sync veBal
+          Sync veBAL
         </BalBtn>
       </div>
     </div>
