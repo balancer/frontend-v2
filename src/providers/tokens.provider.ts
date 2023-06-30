@@ -53,7 +53,7 @@ const { uris: tokenListUris } = tokenListService;
 export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
-  allowanceContracts: string[];
+  spenders: string[];
   injectedPrices: TokenPrices;
 }
 
@@ -87,7 +87,7 @@ export const tokensProvider = (
   const state: TokensProviderState = reactive({
     loading: true,
     injectedTokens: {},
-    allowanceContracts: compact([
+    spenders: compact([
       networkConfig.addresses.vault,
       networkConfig.tokens.Addresses.wstETH,
       configService.network.addresses.veBAL,
@@ -173,7 +173,7 @@ export const tokensProvider = (
     isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
-  } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
+  } = useAllowancesQuery(tokens, toRef(state, 'spenders'));
 
   const prices = computed(
     (): TokenPrices => (priceData.value ? priceData.value : {})
@@ -279,6 +279,21 @@ export const tokensProvider = (
   }
 
   /**
+   * Injects contract addresses that could possibly spend the users tokens into
+   * the spenders map. E.g. This is used for injecting gauges into the map as they
+   * must be allowed to spend a users BPT in order to stake the BPT in the gauge.
+   */
+  async function injectSpenders(addresses: string[]): Promise<void> {
+    addresses = addresses.filter(a => a).map(getAddress);
+
+    state.spenders = [...new Set(state.spenders.concat(addresses))];
+
+    // Wait for balances/allowances to be fetched for newly injected tokens.
+    await nextTick();
+    await forChange(onchainDataLoading, false);
+  }
+
+  /**
    * Given query, filters tokens map by name, symbol or address.
    * If address is provided, search for address in tokens or injectToken
    */
@@ -344,14 +359,16 @@ export const tokensProvider = (
   function approvalRequired(
     tokenAddress: string,
     amount: string,
-    contractAddress = networkConfig.addresses.vault
+    spenderAddress = networkConfig.addresses.vault
   ): boolean {
     if (!amount || bnum(amount).eq(0)) return false;
-    if (!contractAddress) return false;
+    if (!spenderAddress) return false;
     if (isSameAddress(tokenAddress, nativeAsset.address)) return false;
 
     const allowance = bnum(
-      (allowances.value[contractAddress] || {})[getAddress(tokenAddress)]
+      (allowances.value[getAddress(spenderAddress)] || {})[
+        getAddress(tokenAddress)
+      ]
     );
     return allowance.lt(amount);
   }
@@ -510,6 +527,7 @@ export const tokensProvider = (
     refetchBalances,
     refetchAllowances,
     injectTokens,
+    injectSpenders,
     searchTokens,
     hasBalance,
     approvalRequired,

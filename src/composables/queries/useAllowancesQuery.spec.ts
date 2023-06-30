@@ -35,14 +35,14 @@ test('Returns token allowances from balancer SDK', async () => {
 
   initMulticall(generateMulticallMock(processCall));
 
-  const allowanceContracts = ref([
+  const spenders = ref([
     '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
     '0x6320cD32aA674d2898A68ec82e869385Fc5f7E2f',
     '0x33A99Dcc4C85C014cf12626959111D5898bbCAbF',
   ]);
 
   const { result } = mountComposable(() =>
-    useAllowancesQuery(tokens, allowanceContracts)
+    useAllowancesQuery(tokens, spenders)
   );
 
   const data = await waitForQueryData(result);
