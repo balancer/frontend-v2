@@ -293,14 +293,12 @@ export const crossChainSyncProvider = () => {
     const workingBalanceHelperContract = new GaugeWorkingBalanceHelper(
       contractAddress
     );
-    const balances =
-      await workingBalanceHelperContract.getWorkingBalanceToSupplyRatios({
-        signer,
-        userAddress: account.value,
-        gauge: gaugeAddress,
-      });
 
-    return balances;
+    return workingBalanceHelperContract.getWorkingBalanceToSupplyRatios({
+      signer,
+      userAddress: account.value,
+      gauge: gaugeAddress,
+    });
   }
 
   // checkpoint
@@ -308,12 +306,11 @@ export const crossChainSyncProvider = () => {
     const gaugeContract = new LiquidityGauge(gaugeAddress);
 
     const signer = getSigner();
-    const tx = await gaugeContract.checkpointUser({
+
+    return gaugeContract.checkpointUser({
       signer,
       userAddress: account.value,
     });
-
-    return tx;
   }
 
   watch(

@@ -7,6 +7,7 @@ import {
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import CheckpointGaugeModal from './CheckpointGaugeModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import config from '@/lib/config';
 
 type Props = {
   fiatValueOfStakedShares: string;
@@ -30,8 +31,9 @@ const tipText = computed(() => {
     if (
       networksSyncState.value[networkId.value] === NetworkSyncState.Unsynced
     ) {
-      text =
-        'After your veBAL syncs to [Arbitrum], restake to move from the deprecated pool gauge to the new boost-aware pool gauge. If you restake before the veBAL syncs, you’ll need to perform another interaction on the gauge to start receiving your staking boost.';
+      text = `After your veBAL syncs to ${
+        config[networkId.value].chainName
+      }, restake to move from the deprecated pool gauge to the new boost-aware pool gauge. If you restake before the veBAL syncs, you’ll need to perform another interaction on the gauge to start receiving your staking boost.`;
     }
 
     if (networksSyncState.value[networkId.value] === NetworkSyncState.Synced) {
@@ -69,20 +71,21 @@ async function setWarningAlertState() {
   }
 
   try {
+    emit('shouldStakingCardBeOpened');
+
     const balance = await getGaugeWorkingBalance(id);
 
     // if the second number it returns is greater than the first, then show the message
     if (balance[1]?.gt(balance[0])) {
       shouldShowWarningAlert.value = true;
-      emit('shouldStakingCardBeOpened');
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-onBeforeMount(() => {
-  void setWarningAlertState();
+onMounted(() => {
+  setWarningAlertState();
 });
 </script>
 

@@ -278,7 +278,7 @@
     "syncNetworkAction": {
       "title": "This will sync your veBAL balance and give you a staking boost across the networks listed below."
     },
-    "syncInProgress": "A sync operation is currently in progress. Wait until it completes before restaking any of your positions on [Arbitrum] to get your maximum veBAL boost."
+    "syncInProgress": "A sync operation is currently in progress. Wait until it completes before restaking any of your positions on {network} to get your maximum veBAL boost."
   },
   "migratePool": {
     "aaveBoostedPool": {
