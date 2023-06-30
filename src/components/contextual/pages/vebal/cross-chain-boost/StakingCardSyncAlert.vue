@@ -14,7 +14,7 @@ type Props = {
 };
 
 defineProps<Props>();
-
+const emit = defineEmits(['shouldStakingCardBeOpened']);
 const shouldShowWarningAlert = ref(false);
 const showCheckpointModal = ref(false);
 
@@ -62,7 +62,6 @@ async function setWarningAlertState() {
   if (isMismatchedNetwork.value) {
     return;
   }
-
   const id = poolGauges.value?.pool.preferentialGauge.id;
 
   if (!id) {
@@ -75,6 +74,7 @@ async function setWarningAlertState() {
     // if the second number it returns is greater than the first, then show the message
     if (balance[1]?.gt(balance[0])) {
       shouldShowWarningAlert.value = true;
+      emit('shouldStakingCardBeOpened');
     }
   } catch (error) {
     console.log(error);

@@ -33,7 +33,7 @@ const emit = defineEmits<{
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref<StakeAction>('stake');
 const poolId = computed(() => props.pool.id);
-
+const isOpenedByDefault = ref(false);
 /**
  * COMPOSABLES
  */
@@ -109,6 +109,7 @@ function handlePreviewClose() {
             },
           ]"
           :reCalcKey="hasNonPrefGaugeBalance ? 0 : 1"
+          :isOpenedByDefault="isOpenedByDefault"
         >
           <template #staking-handle>
             <button
@@ -180,6 +181,7 @@ function handlePreviewClose() {
                   v-if="networkId !== Network.MAINNET"
                   :fiatValueOfStakedShares="fiatValueOfStakedShares"
                   :fiatValueOfUnstakedShares="fiatValueOfUnstakedShares"
+                  @should-staking-card-be-opened="isOpenedByDefault = true"
                 />
                 <BalStack
                   v-if="hasNonPrefGaugeBalance && !isAffected"
