@@ -15,7 +15,7 @@ type Props = {
 
 defineProps<Props>();
 
-const shouldShowWarningAlert = ref(true);
+const shouldShowWarningAlert = ref(false);
 const showCheckpointModal = ref(false);
 
 const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
