@@ -53,4 +53,7 @@ export const EXTERNAL_LINKS = {
   Sense: {
     Home: 'https://sense.finance/',
   },
+  Bleu: {
+    Metadata: 'https://tools.balancer.blue/metadata/',
+  },
 };

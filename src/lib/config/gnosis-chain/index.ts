@@ -35,6 +35,8 @@ const config: Config = {
     gauge:
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain',
     blocks: '',
+    metadata:
+      'https://api.thegraph.com/subgraphs/name/bleu-studio/balancer-pools-metadata-gnosis',
   },
   bridgeUrl: 'https://bridge.gnosischain.com/',
   supportsEIP1559: true,

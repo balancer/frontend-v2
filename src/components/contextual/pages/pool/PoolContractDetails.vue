@@ -6,24 +6,56 @@ import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
 import { useI18n } from 'vue-i18n';
+import { EXTERNAL_LINKS } from '@/constants/links';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
+  loading: boolean;
+  customMetadata: SubgraphMetadataCID[];
+};
+
+type SubgraphMetadataCID = {
+  typename: string;
+  value: string;
+  key: string;
+  description: string;
+};
+
+type TableAttributes = {
+  title: string;
+  value: string;
+  link?: string;
+  tooltip?: string;
 };
 
 /**
  * PROPS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  loading: false,
+});
+
+/**
+ * STATE
+ */
+const poolCustomMetadata = ref<TableAttributes[]>([]);
+const customMetadataPoolName = ref<string>();
+const isCustomMetadata = ref(false);
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { explorerLinks: explorer } = useWeb3();
+const { explorerLinks: explorer, account } = useWeb3();
+const { network } = configService;
+const networkName =
+  network.shortName.toLocaleLowerCase() === 'mainnet'
+    ? 'ethereum'
+    : network.shortName.toLocaleLowerCase();
 
 function formSwapFeesHint(owner: string): string {
   if (owner === POOLS.ZeroAddress) {
@@ -59,7 +91,7 @@ const data = computed(() => {
     },
     {
       title: t('poolName'),
-      value: poolMetadata(id)?.name || name,
+      value: customMetadataPoolName.value || poolMetadata(id)?.name || name,
     },
     {
       title: t('poolSymbol'),
@@ -142,12 +174,62 @@ const poolManagementText = computed(() => {
 
   return t('poolAttrs.immutableFeesEditableByOwner');
 });
+
+const isPoolOwner = computed(() => {
+  return (
+    account.value.toLocaleLowerCase() === props.pool.owner?.toLocaleLowerCase()
+  );
+});
+
+watch(
+  () => props.customMetadata,
+  newMetadata => {
+    if (Array.isArray(newMetadata)) {
+      poolCustomMetadata.value = [
+        {
+          title: t('attribute'),
+          value: t('details'),
+        },
+        ...newMetadata
+          .filter(item => item.key?.toLowerCase() !== 'name')
+          .map(item => ({
+            ...item,
+            title: item.key as string,
+            key: undefined,
+          })),
+      ];
+    }
+  },
+  { immediate: true }
+);
+watch(
+  () => props.customMetadata,
+  newMetadata => {
+    if (Array.isArray(newMetadata)) {
+      const nameItem = newMetadata.find(item => item.key === 'name');
+      customMetadataPoolName.value = nameItem ? nameItem.value : undefined;
+    } else {
+      customMetadataPoolName.value = undefined;
+    }
+  },
+  { immediate: true }
+);
+watch(
+  () => props.customMetadata,
+  newMetadata => {
+    if (Array.isArray(newMetadata)) {
+      isCustomMetadata.value = newMetadata.length > 0;
+    } else {
+      isCustomMetadata.value = false;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
   <div class="mb-5">
     <h3 class="px-4 lg:px-0 mb-5" v-text="$t('poolDetails')" />
-
     <BalDetailsTable class="mb-12" :tableData="data" />
     <template v-if="poolManagementText">
       <h4 class="px-4 lg:px-0 mb-2" v-text="$t('poolManagement')" />
@@ -155,5 +237,35 @@ const poolManagementText = computed(() => {
         {{ poolManagementText }}
       </div>
     </template>
+    <h3
+      v-if="isCustomMetadata"
+      class="px-4 lg:px-0 mt-12 mb-5"
+      v-text="$t('poolCustomMetadata')"
+    />
+    <BalDetailsTable
+      v-if="isCustomMetadata"
+      class="mb-12"
+      :tableData="poolCustomMetadata"
+    />
+    <BalAlert
+      v-if="isPoolOwner"
+      type="warning"
+      :title="$t('poolCustomMetadataOwner.title')"
+      class="mt-2"
+      block
+    >
+      {{ $t('poolCustomMetadataOwner.description') }}
+      <BalLink
+        :href="`${EXTERNAL_LINKS.Bleu.Metadata}${networkName}/pool/${props.pool.id}`"
+        external
+        noStyle
+      >
+        <BalIcon
+          name="arrow-up-right"
+          size="sm"
+          class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+        />
+      </BalLink>
+    </BalAlert>
   </div>
 </template>

@@ -257,6 +257,9 @@ const QUERY_KEYS = {
       { receipt },
     ],
   },
+  Metadata: {
+    Current: (id: string) => ['pool', 'current', { id }],
+  },
 };
 
 export default QUERY_KEYS;

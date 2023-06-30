@@ -33,6 +33,8 @@ const config: Config = {
     gauge:
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
     blocks: '',
+    metadata:
+      'https://api.thegraph.com/subgraphs/name/bleu-studio/balancer-pools-metadata-op',
   },
   bridgeUrl: '',
   supportsEIP1559: false,

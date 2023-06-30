@@ -34,6 +34,8 @@ const config: Config = {
     gauge:
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-goerli',
     blocks: 'https://api.thegraph.com/subgraphs/name/blocklytics/goerli-blocks',
+    metadata:
+      'https://api.thegraph.com/subgraphs/name/bleu-studio/bal-pools-metadata-goerli',
   },
   bridgeUrl: '',
   supportsEIP1559: true,
