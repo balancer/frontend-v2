@@ -213,10 +213,9 @@ function handleSignAction(state: TransactionActionState) {
 async function handleTransaction(
   tx: TransactionResponse,
   state: TransactionActionState,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   actionInfo: TransactionActionInfo
 ): Promise<void> {
-  // const { postActionValidation, actionInvalidReason } = actionInfo;
+  const { postActionValidation, actionInvalidReason } = actionInfo;
 
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
@@ -230,21 +229,21 @@ async function handleTransaction(
 
       state.confirming = false;
 
-      // const isValid = await postActionValidation?.();
-      // if (isValid || !postActionValidation) {
-      const confirmedAt = await getTxConfirmedAt(receipt);
-      state.confirmedAt = dateTimeLabelFor(confirmedAt);
-      state.confirmed = true;
-      if (currentActionIndex.value >= actions.value.length - 1) {
-        emit('success', { receipt, confirmedAt: state.confirmedAt });
+      const isValid = await postActionValidation?.();
+      if (isValid || !postActionValidation) {
+        const confirmedAt = await getTxConfirmedAt(receipt);
+        state.confirmedAt = dateTimeLabelFor(confirmedAt);
+        state.confirmed = true;
+        if (currentActionIndex.value >= actions.value.length - 1) {
+          emit('success', { receipt, confirmedAt: state.confirmedAt });
+        } else {
+          currentActionIndex.value += 1;
+        }
       } else {
-        currentActionIndex.value += 1;
+        // post action validation failed, display reason.
+        if (actionInvalidReason) state.error = actionInvalidReason;
+        state.init = false;
       }
-      // } else {
-      //   // post action validation failed, display reason.
-      //   if (actionInvalidReason) state.error = actionInvalidReason;
-      //   state.init = false;
-      // }
     },
     onTxFailed: () => {
       state.confirming = false;
