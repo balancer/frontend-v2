@@ -39,7 +39,7 @@ silenceConsoleLog(vi, message => message.startsWith('Fetching'));
 export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
-  allowanceContracts: string[];
+  spenders: string[];
   injectedPrices: TokenPrices;
 }
 
