@@ -15,7 +15,7 @@ type Props = {
 
 defineProps<Props>();
 
-const shouldShowWarningAlert = ref(false);
+const shouldShowWarningAlert = ref(true);
 const showCheckpointModal = ref(false);
 
 const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
@@ -120,6 +120,7 @@ onBeforeMount(() => {
     <CheckpointGaugeModal
       :isVisible="showCheckpointModal"
       @close="showCheckpointModal = false"
+      @success="shouldShowWarningAlert = false"
     />
   </div>
 </template>

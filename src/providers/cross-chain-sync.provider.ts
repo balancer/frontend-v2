@@ -304,7 +304,10 @@ export const crossChainSyncProvider = () => {
     const gaugeContract = new LiquidityGauge(gaugeAddress);
 
     const signer = getSigner();
-    const tx = await gaugeContract.checkpointUser({ signer, gaugeAddress });
+    const tx = await gaugeContract.checkpointUser({
+      signer,
+      userAddress: account.value,
+    });
 
     return tx;
   }

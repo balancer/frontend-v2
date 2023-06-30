@@ -56,7 +56,7 @@ defineEmits(['close']);
       class="mb-8"
     >
       <div>
-        {{ $t('crossChainBoost.syncInitiatedModal.warningDescription') }}.
+        {{ $t('crossChainBoost.syncInitiatedModal.warningDescription') }}
       </div>
     </BalAlert>
 

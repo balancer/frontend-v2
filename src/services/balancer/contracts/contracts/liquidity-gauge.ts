@@ -83,17 +83,17 @@ export class LiquidityGauge {
   }
 
   async checkpointUser(payload: {
-    gaugeAddress: string;
+    userAddress: string;
     signer: JsonRpcSigner;
   }): Promise<TransactionResponse> {
-    const { gaugeAddress, signer } = payload;
+    const { userAddress, signer } = payload;
     const txBuilder = new TransactionBuilder(signer);
 
     return await txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'user_checkpoint',
-      params: [gaugeAddress],
+      params: [userAddress],
     });
   }
 

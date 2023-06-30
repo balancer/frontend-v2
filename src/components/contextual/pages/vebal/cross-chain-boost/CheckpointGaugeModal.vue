@@ -11,11 +11,13 @@ withDefaults(defineProps<Props>(), {
   isVisible: false,
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'success']);
 
 const { poolGauges } = usePoolStaking();
 const { triggerGaugeUpdate } = useCrossChainSync();
 const { addTransaction } = useTransactions();
+
+const showCloseBtn = ref(false);
 
 async function triggerUpdate() {
   try {
@@ -32,6 +34,8 @@ async function triggerUpdate() {
       action: 'userGaugeCheckpoint',
       summary: '',
     });
+    emit('success');
+
     return tx;
   } catch (e) {
     console.error(e);
@@ -42,7 +46,7 @@ async function triggerUpdate() {
 const actions = [
   {
     label: 'Confirm pool gauge update',
-    loadingLabel: '',
+    loadingLabel: 'Confirming pool gauge update',
     confirmingLabel: 'Confirming pool gauge update',
     action: async () => {
       return triggerUpdate();
@@ -67,7 +71,17 @@ const actions = [
         you can also trigger the update by claiming any BAL incentives.
       </span>
 
-      <BalActionSteps :actions="actions" />
+      <BalActionSteps :actions="actions" @success="showCloseBtn = true" />
+
+      <BalBtn
+        v-if="showCloseBtn"
+        color="gray"
+        outline
+        block
+        @click="$emit('close')"
+      >
+        {{ $t('close') }}
+      </BalBtn>
     </div>
   </BalModal>
 </template>
