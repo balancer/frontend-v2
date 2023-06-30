@@ -249,8 +249,8 @@
     "syncedAllDescription": "All networks are synced",
     "emptyState": "Once you have some veBAL, sync your balance here to other networks.",
     "syncProcessWarning": {
-      "title": "Wait until sync finalizes before restaking on L2",
-      "description": "Your veBAL is currently syncing to other networks. Wait until the sync is complete before re-staking any L2 positions in order for your new boosts to apply. This should take around 5 mins (or 30 mins on Polygon)."
+      "title": "Wait until sync finalizes before restaking / triggering a gauge update on L2",
+      "description": "Your sync has been initiated but it may take up to 30 mins to update across L2s. After it syncs, you will still need to trigger an update of each pool gauge on L2 where you stake to get your new max boost. You can do this by restaking into the new veBAL-aware pool gauge or by explicitly triggering an update on the pool page."
     },
     "syncComplete": {
       "title": "Remember to restake to the new boost-aware L2 pool gauges",
