@@ -18,7 +18,7 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: 'https://poa-xdai.gateway.pokt.network/v1/lb/91bc0e12a76e7a84dd76189d',
+  rpc: 'https://rpc.gnosischain.com',
   ws: 'wss://rpc.gnosischain.com/wss',
   publicRpc: 'https://rpc.gnosis.gateway.fm',
   explorer: 'https://gnosisscan.io',
