@@ -37,8 +37,13 @@ export default function useTokenApprovalActions() {
   /**
    * COMPOSABLES
    */
-  const { approvalsRequired, approvalRequired, getToken, injectSpenders } =
-    useTokens();
+  const {
+    refetchAllowances,
+    approvalsRequired,
+    approvalRequired,
+    getToken,
+    injectSpenders,
+  } = useTokens();
   const { t } = useI18n();
   const { getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
@@ -99,6 +104,7 @@ export default function useTokenApprovalActions() {
     spender: string
   ): Promise<boolean> {
     await injectSpenders([spender]);
+    await refetchAllowances();
 
     return !approvalRequired(
       amountToApprove.address,
