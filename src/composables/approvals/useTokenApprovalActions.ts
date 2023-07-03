@@ -37,7 +37,7 @@ export default function useTokenApprovalActions() {
   /**
    * COMPOSABLES
    */
-  const { refetchAllowances, approvalsRequired, approvalRequired, getToken } =
+  const { approvalsRequired, approvalRequired, getToken, injectSpenders } =
     useTokens();
   const { t } = useI18n();
   const { getSigner } = useWeb3();
@@ -89,7 +89,8 @@ export default function useTokenApprovalActions() {
     amountsToApprove: AmountToApprove[],
     spender: string
   ): Promise<AmountToApprove[]> {
-    await refetchAllowances();
+    await injectSpenders([spender]);
+
     return approvalsRequired(amountsToApprove, spender);
   }
 
@@ -97,7 +98,8 @@ export default function useTokenApprovalActions() {
     amountToApprove: AmountToApprove,
     spender: string
   ): Promise<boolean> {
-    await refetchAllowances();
+    await injectSpenders([spender]);
+
     return !approvalRequired(
       amountToApprove.address,
       amountToApprove.amount,
