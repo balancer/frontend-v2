@@ -19,3 +19,8 @@ export interface SubgraphMetadataCID {
   key: string;
   description: string;
 }
+
+export interface SubgraphMetadataIPFS {
+  poolId: string;
+  metadata: SubgraphMetadataCID[];
+}

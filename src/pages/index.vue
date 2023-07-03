@@ -10,6 +10,14 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import usePools from '@/composables/pools/usePools';
 import ZkevmPromo from '@/components/contextual/pages/pools/ZkevmPromo.vue';
+import useMetadatasQuery from '@/composables/queries/useMetadatasQuery';
+import { SubgraphMetadataIPFS } from '@/services/bleu/metadata/types';
+
+/**
+ * STATE
+ */
+const poolsId = computed(() => pools.value?.map(pool => pool.id)); // Assuming pools is an array of objects with an id field.
+const customPoolsMetadata = ref([] as SubgraphMetadataIPFS[]);
 
 // COMPOSABLES
 const router = useRouter();
@@ -29,6 +37,23 @@ const { networkSlug, networkConfig } = useNetwork();
 
 const isPaginated = computed(() => pools.value.length >= 10);
 
+const poolsMetadataQuery = useMetadatasQuery(poolsId.value, {
+  enabled: !!poolsId.value,
+});
+
+const isMetadataLoading = computed(() => poolsMetadataQuery.isLoading.value);
+
+/**
+ * WATCH
+ */
+watch(
+  () => poolsMetadataQuery.data.value,
+  value => {
+    if (!value) return;
+    customPoolsMetadata.value = value;
+  }
+);
+
 /**
  * METHODS
  */
@@ -39,6 +64,7 @@ function navigateToCreatePool() {
 function onColumnSort(columnId: string) {
   poolsSortField.value = columnId;
 }
+console.log('oi');
 </script>
 
 <template>
@@ -96,6 +122,8 @@ function onColumnSort(columnId: string) {
           :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
           :isLoadingMore="poolsIsFetchingNextPage"
           :isPaginated="isPaginated"
+          :isMetadataLoading="isMetadataLoading"
+          :customPoolsMetadata="customPoolsMetadata"
           skeletonClass="pools-table-loading-height"
           @on-column-sort="onColumnSort"
           @load-more="loadMorePools"

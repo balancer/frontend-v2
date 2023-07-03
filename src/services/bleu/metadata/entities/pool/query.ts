@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 
 const defaultArgs = {
-  first: 99,
+  first: 1,
 };
 
 const defaultAttrs = {
@@ -10,13 +10,13 @@ const defaultAttrs = {
   metadataCID: true,
 };
 
-export const metadatasQueryBuilder = (
+export const metadataQueryBuilder = (
   args = {},
   attrs = {},
   name: string | undefined = undefined
 ) => ({
   __name: name,
-  pools: {
+  pool: {
     __args: merge({}, defaultArgs, args),
     ...merge({}, defaultAttrs, attrs),
   },

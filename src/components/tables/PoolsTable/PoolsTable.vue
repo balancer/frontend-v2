@@ -18,8 +18,6 @@ import {
   absMaxApr,
   fiatValueOf,
   isMigratablePool,
-  isStableLike,
-  orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
@@ -30,11 +28,11 @@ import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { configService } from '@/services/config/config.service';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
-import TokenPills from './TokenPills/TokenPills.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
+import { SubgraphMetadataIPFS } from '@/services/bleu/metadata/types';
 
 /**
  * TYPES
@@ -56,6 +54,8 @@ type Props = {
   skeletonClass?: string;
   shares?: Record<string, string>;
   boosts?: Record<string, string>;
+  isMetadataLoading?: boolean;
+  customPoolsMetadata?: SubgraphMetadataIPFS[];
 };
 
 /**
@@ -99,6 +99,15 @@ const wideCompositionWidth = computed(() => {
   if (upToSmallBreakpoint.value) return 250;
   return 350;
 });
+
+watch(
+  () => props.isMetadataLoading,
+  () => {
+    if (!props.isMetadataLoading) {
+      console.log('customPoolsMetadata', props.customPoolsMetadata);
+    }
+  }
+);
 
 /**
  * DATA
@@ -316,7 +325,7 @@ function iconAddresses(pool: Pool) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="poolMetadata(pool.id)?.name" class="pr-2 text-left">
+          <!-- <div v-if="poolMetadata(pool.id)?.name" class="pr-2 text-left">
             {{ poolMetadata(pool.id)?.name }}
           </div>
           <div v-else>
@@ -326,7 +335,7 @@ function iconAddresses(pool: Pool) {
               :selectedTokens="selectedTokens"
               :pickedTokens="selectedTokens"
             />
-          </div>
+          </div> -->
           <PoolsTableExtraInfo :pool="pool" />
         </div>
       </template>
