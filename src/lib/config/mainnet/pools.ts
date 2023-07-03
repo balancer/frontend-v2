@@ -117,6 +117,7 @@ const pools: Pools = {
     // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
     AllowList: [
+      '0x8e6c196e201942246cef85718c5d3a5622518053000200000000000000000582', // 80LE/20WETH
       '0x67f117350eab45983374f4f83d275d8a5d62b1bf0001000000000000000004f2', // GRAIN/OATH/USDC/WETH
       '0x0fadd10f606554fec1574f28398469d98d68d297000200000000000000000503', // 80XEX/20USDC
       '0x42fbd9f666aacc0026ca1b88c94259519e03dd67000200000000000000000507', // COIL/USDC

@@ -117,6 +117,7 @@ const pools: Pools = {
       '0x7f6a9b65cf1fc091b0e012c2908f0f711dfc95b5000200000000000000000bab', // 80mooMvxMVLP-20wUSDR
       '0xed35f28f837e96f81240ebb82e0e3f518c7e8a2f000100000000000000000bb5', // STARV2-SuperPoolV1
       '0xb49bd41ed56340674e2d2d3cfbfa9807e4e1fe27000100000000000000000bc2', // 25SUSHI-25WETH-25AAVE-25agEUR
+      '0xca0f8eb1b81e1a69fac97f1c898e0938c768eb20000200000000000000000bc1', // 30WBTC-702BRL (BRZ)
     ],
   },
   Factories: {
@@ -289,6 +290,7 @@ const pools: Pools = {
     '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45', // wsteth-bb-a-weth/bb-am-usd
     '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42', // frxETH / bb-a-weth
     '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b', // frax / bb-am-usd
+    '0xca0f8eb1b81e1a69fac97f1c898e0938c768eb20000200000000000000000bc1', // 30WBTC-702BRL (BRZ)
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
