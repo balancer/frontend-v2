@@ -40,6 +40,7 @@ describe('useTransactionErrors', () => {
       expect(isUserRejected(rejectionError)).toBe(true);
     });
 
+    // See https://balancer-labs.sentry.io/issues/4199718124/events/f1a41824e66141b4806c50db5f081f7b/
     it('Should return true if its a user error where they are out of gas', () => {
       const rejectionError = {
         code: 5002,
