@@ -23,12 +23,16 @@ const config: Config = {
   ws: `wss://sepolia.infura.io/ws/v3/${keys.infura}`,
   explorer: 'https://sepolia.etherscan.io',
   explorerName: 'Etherscan',
-  subgraph: '',
+  subgraph:
+    'https://api.studio.thegraph.com/query/24660/balancer-sepolia-v2/version/latest',
   poolsUrlV2: '',
   subgraphs: {
-    main: [''],
+    main: [
+      'https://api.studio.thegraph.com/query/24660/balancer-sepolia-v2/version/latest',
+    ],
     aave: '',
-    gauge: '',
+    gauge:
+      'https://api.studio.thegraph.com/query/24660/balancer-gauges-sepolia-beta/version/latest',
     blocks: '',
   },
   bridgeUrl: '',
