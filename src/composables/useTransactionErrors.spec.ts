@@ -39,5 +39,14 @@ describe('useTransactionErrors', () => {
       const rejectionError = { a: -500, b: 'Cancelled by User' };
       expect(isUserRejected(rejectionError)).toBe(true);
     });
+
+    it('Should return true if its a user error where they are out of gas', () => {
+      const rejectionError = {
+        code: 5002,
+        message:
+          "User rejected methods. Your wallet doesn't have enough Ethereum to start this transfer.",
+      };
+      expect(isUserRejected(rejectionError)).toBe(true);
+    });
   });
 });
