@@ -33,5 +33,11 @@ describe('useTransactionErrors', () => {
       rejectionError.code = 4001;
       expect(isUserRejected(rejectionError)).toBe(true);
     });
+
+    // See https://balancer-labs.sentry.io/issues/4199718124/events/74a6db95ab424cd6a286af7a00076d2c/
+    it('Should return true if the error is an object with a and b parameters', () => {
+      const rejectionError = { a: -500, b: 'Cancelled by User' };
+      expect(isUserRejected(rejectionError)).toBe(true);
+    });
   });
 });

@@ -48,6 +48,9 @@ export function isUserRejected(error): boolean {
   )
     return true;
 
+  if (error.b && userRejectionMessages.includes(error.b.toLowerCase()))
+    return true;
+
   if (error?.code && error.code === 4001) {
     return true;
   }
