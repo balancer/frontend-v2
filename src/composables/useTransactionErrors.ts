@@ -6,45 +6,54 @@ export function isUserRejected(error): boolean {
   if (!error) return false;
 
   const userRejectionMessages = [
-    'user rejected transaction',
-    'request rejected',
-    'user rejected methods.',
-    'user rejected the transaction',
-    'rejected by user',
-    'user canceled',
-    'cancelled by user',
-    'transaction declined',
-    'transaction was rejected',
-    'user denied transaction signature',
+    /user rejected transaction/,
+    /request rejected/,
+    /user rejected methods./,
+    /user rejected the transaction/,
+    /rejected by user/,
+    /user canceled/,
+    /cancelled by user/,
+    /transaction declined/,
+    /transaction was rejected/,
+    /user denied transaction signature/,
+    /user disapproved requested methods/,
   ];
 
   if (
     typeof error === 'string' &&
-    userRejectionMessages.includes(error.toLowerCase())
+    userRejectionMessages.some(msg => msg.test(error.toLowerCase()))
   )
     return true;
 
   if (
     error.message &&
-    userRejectionMessages.includes(error.message.toLowerCase())
+    userRejectionMessages.some(msg => msg.test(error.message.toLowerCase()))
   )
     return true;
 
   if (
     typeof error.reason === 'string' &&
-    userRejectionMessages.includes(error.reason.toLowerCase())
+    userRejectionMessages.some(msg => msg.test(error.reason.toLowerCase()))
   )
     return true;
 
   if (
     error.cause?.message &&
-    userRejectionMessages.includes(error.cause.message.toLowerCase())
+    userRejectionMessages.some(msg =>
+      msg.test(error.cause.message.toLowerCase())
+    )
   )
     return true;
 
   if (
     typeof error.cause === 'string' &&
-    userRejectionMessages.includes(error.cause.toLowerCase())
+    userRejectionMessages.some(msg => msg.test(error.cause.toLowerCase()))
+  )
+    return true;
+
+  if (
+    error.b &&
+    userRejectionMessages.some(msg => msg.test(error.b.toLowerCase()))
   )
     return true;
 
@@ -57,7 +66,7 @@ export function isUserRejected(error): boolean {
   return false;
 }
 
-export default function useTranasactionErrors() {
+export default function useTransactionErrors() {
   /**
    * COMPOSABLES
    */
