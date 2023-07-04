@@ -308,10 +308,10 @@ export default function useSor({
           tokenOutAddress.toLowerCase()
         );
 
-        let tokenInAmount = BigNumber.from(deltas[tokenInPosition]).abs();
-        let tokenOutAmount = BigNumber.from(deltas[tokenOutPosition]).abs();
-
         if (swapType === SwapType.SwapExactOut) {
+          let tokenInAmount = deltas[tokenInPosition]
+            ? BigNumber.from(deltas[tokenInPosition]).abs()
+            : BigNumber.from(0);
           tokenInAmount = await mutateAmount({
             amount: tokenInAmount,
             address: tokenInAddressInput.value,
@@ -324,6 +324,9 @@ export default function useSor({
         }
 
         if (swapType === SwapType.SwapExactIn) {
+          let tokenOutAmount = deltas[tokenOutPosition]
+            ? BigNumber.from(deltas[tokenOutPosition]).abs()
+            : BigNumber.from(0);
           tokenOutAmount = await mutateAmount({
             amount: tokenOutAmount,
             address: tokenOutAddressInput.value,
