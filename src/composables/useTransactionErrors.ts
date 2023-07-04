@@ -57,7 +57,7 @@ export function isUserRejected(error): boolean {
   return false;
 }
 
-export default function useTranasactionErrors() {
+export default function useTransactionErrors() {
   /**
    * COMPOSABLES
    */

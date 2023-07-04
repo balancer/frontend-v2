@@ -1,7 +1,7 @@
 import { WalletError } from '@/types';
 import { isUserRejected } from './useTransactionErrors';
 
-describe('userTransactionErrors', () => {
+describe('useTransactionErrors', () => {
   describe('isUserRejected', () => {
     it('Should return false for a non-user error', () => {
       const error = new Error('Unsupported Exit Type For Pool');

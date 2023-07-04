@@ -43,7 +43,7 @@ import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import useTranasactionErrors from '../useTransactionErrors';
+import useTransactionErrors from '../useTransactionErrors';
 
 type SorState = {
   validationErrors: {
@@ -204,7 +204,7 @@ export default function useSor({
   const { fNum, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
-  const { isUserRejected } = useTranasactionErrors();
+  const { isUserRejected } = useTransactionErrors();
   const { swapIn, swapOut } = useSwapper();
 
   onMounted(async () => {
