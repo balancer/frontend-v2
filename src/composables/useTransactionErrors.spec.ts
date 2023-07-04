@@ -49,5 +49,14 @@ describe('useTransactionErrors', () => {
       };
       expect(isUserRejected(rejectionError)).toBe(true);
     });
+
+    // See https://balancer-labs.sentry.io/issues/4199718124/events/57d26b71647046f2be3620f3c0165714/
+    it('Should return true if its a user error as an object', () => {
+      const rejectionError = {
+        code: 5001,
+        message: 'User disapproved requested methods',
+      };
+      expect(isUserRejected(rejectionError)).toBe(true);
+    });
   });
 });
