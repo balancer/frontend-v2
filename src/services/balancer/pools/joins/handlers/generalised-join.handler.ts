@@ -67,6 +67,16 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
 
     console.log({ simulationType });
 
+    console.log('inputs', {
+      poolId,
+      tokenAddresses,
+      evmAmountsIn,
+      signerAddress,
+      slippage,
+      simulationType,
+      relayerSignature,
+    });
+
     this.lastJoinRes = await this.sdk.pools.generalisedJoin(
       poolId,
       tokenAddresses,
