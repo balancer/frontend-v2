@@ -14,6 +14,8 @@ import configs from '@/lib/config';
 import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { useI18n } from 'vue-i18n';
+import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client';
+import { retryPromiseWithDelay } from '@/lib/utils/promise';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -32,6 +34,10 @@ export type L2VeBalBalances = Record<number, string> | null;
 export interface TempSyncingNetworks {
   networks: Network[];
   syncTimestamp?: number;
+}
+
+export interface SyncTxHashes {
+  [key: string]: string;
 }
 
 // all networks that are supported by cross-chain sync feature
@@ -53,6 +59,14 @@ export const crossChainSyncProvider = () => {
   const tempSyncingNetworks = ref<Record<string, TempSyncingNetworks>>(
     syncingNetworksFromStorage ? JSON.parse(syncingNetworksFromStorage) : {}
   );
+
+  const syncTxHashesFromStorage = localStorage.getItem('syncTxHashes');
+
+  const syncTxHashes = ref<Record<string, SyncTxHashes>>(
+    syncTxHashesFromStorage ? JSON.parse(syncTxHashesFromStorage) : {}
+  );
+
+  const syncLayerZeroTxLinks = ref<Record<string, string>>({});
 
   /**
    * omniVotingEscrowLocks contains the user's veBAL data that is known by the bridge contract
@@ -270,6 +284,15 @@ export const crossChainSyncProvider = () => {
     return tempSyncingNetworks.value;
   }
 
+  async function setSyncTxHashes(network: Network, txHash: string) {
+    syncTxHashes.value[account.value] = {
+      ...syncTxHashes.value[account.value],
+      [network]: txHash,
+    };
+
+    localStorage.setItem('syncTxHashes', JSON.stringify(syncTxHashes.value));
+  }
+
   function clearTempSyncingNetworksFromSynced() {
     if (!tempSyncingNetworks.value[account.value]) return;
 
@@ -313,6 +336,20 @@ export const crossChainSyncProvider = () => {
     });
   }
 
+  async function getLayerZeroTxLink(txHash: string) {
+    const { messages } = await getMessagesBySrcTxHash(101, txHash);
+    const message = messages[0];
+
+    if (!message) {
+      throw new Error('No message found in Layer Zero');
+    }
+
+    const { srcUaAddress, dstUaAddress, dstChainId, srcUaNonce } = message;
+    const link = `https://layerzeroscan.com/101/address/${srcUaAddress}/message/${dstChainId}/address/${dstUaAddress}/nonce/${srcUaNonce}`;
+
+    return link;
+  }
+
   watch(
     () => networksBySyncState.value,
     newVal => {
@@ -335,6 +372,24 @@ export const crossChainSyncProvider = () => {
     }
   );
 
+  watch(
+    () => [syncTxHashes.value, account.value],
+    async values => {
+      const val = values[0];
+      if (!val || !val[account.value]) return;
+
+      for (const network of Object.keys(val[account.value])) {
+        const hash = syncTxHashes.value[account.value][network];
+        syncLayerZeroTxLinks.value[network] = await retryPromiseWithDelay(
+          getLayerZeroTxLink(hash),
+          3,
+          2000
+        );
+      }
+    },
+    { immediate: true, deep: true }
+  );
+
   return {
     showingUnsyncedNetworks,
     hasError,
@@ -352,6 +407,10 @@ export const crossChainSyncProvider = () => {
     infoMessage,
     getGaugeWorkingBalance,
     triggerGaugeUpdate,
+    getLayerZeroTxLink,
+    syncTxHashes,
+    setSyncTxHashes,
+    syncLayerZeroTxLinks,
   };
 };
 

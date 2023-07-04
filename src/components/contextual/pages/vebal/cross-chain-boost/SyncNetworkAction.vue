@@ -32,8 +32,13 @@ const emit = defineEmits(['update:activeTabIdx']);
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener } = useEthers();
-const { l2VeBalBalances, sync, setTempSyncingNetworks, tempSyncingNetworks } =
-  useCrossChainSync();
+const {
+  l2VeBalBalances,
+  sync,
+  setTempSyncingNetworks,
+  tempSyncingNetworks,
+  setSyncTxHashes,
+} = useCrossChainSync();
 
 /**
  * STATE
@@ -57,6 +62,7 @@ async function handleTransaction(
   txListener(tx, {
     onTxConfirmed: (receipt: TransactionReceipt) => {
       console.log('Receipt', receipt);
+      setSyncTxHashes(network, tx.hash);
     },
     onTxFailed: () => {
       //
@@ -75,7 +81,7 @@ async function handleAction(network: Network) {
       'tempSyncingNetworks',
       JSON.stringify(tempSyncingNetworks.value)
     );
-
+    setSyncTxHashes(network, tx.hash);
     return tx;
   } catch (error) {
     console.error(error);
