@@ -24,6 +24,7 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { ApprovalAction } from '@/composables/approvals/types';
 import { captureException } from '@sentry/browser';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
+import { isUserRejected } from '@/composables/useTransactionErrors';
 
 /**
  * TYPES
@@ -187,13 +188,15 @@ async function submit(lockType: LockType, actionIndex: number) {
 
     // An exception is already logged in balancerContractsService, but we should
     // log another here in case any exceptions are thrown before it's sent
-    captureException(error, {
-      level: 'fatal',
-      extra: {
-        lockType,
-        props,
-      },
-    });
+    if (!isUserRejected(error)) {
+      captureException(error, {
+        level: 'fatal',
+        extra: {
+          lockType,
+          props,
+        },
+      });
+    }
 
     return Promise.reject(error);
   }

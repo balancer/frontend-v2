@@ -49,6 +49,7 @@ import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalAct
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 import { ApprovalAction } from '@/composables/approvals/types';
+import { isUserRejected } from '@/composables/useTransactionErrors';
 
 /**
  * TYPES
@@ -375,6 +376,8 @@ export const joinPoolProvider = (
   }
 
   async function logJoinException(error: Error) {
+    if (isUserRejected(error)) return;
+
     const sender = await getSigner().getAddress();
     captureException(error, {
       level: 'fatal',
