@@ -31,7 +31,6 @@ const {
   infoMessage,
   hasError,
   showingUnsyncedNetworks,
-  getLayerZeroTxLink,
   syncLayerZeroTxLinks,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
@@ -68,7 +67,6 @@ function checkIfNetworkSyncing(network: Network) {
 }
 function onCloseModal() {
   isSyncModalOpen.value = false;
-  void getLayerZeroTxLink('');
 }
 </script>
 
