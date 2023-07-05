@@ -21,6 +21,8 @@ import {
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
+  orderedPoolTokens,
+  isStableLike,
 } from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -32,7 +34,7 @@ import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
-import { SubgraphMetadataIPFS } from '@/services/bleu/metadata/types';
+import PoolName from './PoolName.vue';
 
 /**
  * TYPES
@@ -54,8 +56,6 @@ type Props = {
   skeletonClass?: string;
   shares?: Record<string, string>;
   boosts?: Record<string, string>;
-  isMetadataLoading?: boolean;
-  customPoolsMetadata?: SubgraphMetadataIPFS[];
 };
 
 /**
@@ -100,18 +100,14 @@ const wideCompositionWidth = computed(() => {
   return 350;
 });
 
-watch(
-  () => props.isMetadataLoading,
-  () => {
-    if (!props.isMetadataLoading) {
-      console.log('customPoolsMetadata', props.customPoolsMetadata);
-    }
-  }
-);
-
 /**
  * DATA
  */
+
+const poolIds = computed(() => {
+  return props.data?.map(pool => pool.id) || [];
+});
+
 const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: 'Icons',
@@ -325,17 +321,13 @@ function iconAddresses(pool: Pool) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <!-- <div v-if="poolMetadata(pool.id)?.name" class="pr-2 text-left">
-            {{ poolMetadata(pool.id)?.name }}
-          </div>
-          <div v-else>
-            <TokenPills
-              :tokens="orderedPoolTokens(pool, pool.tokens)"
-              :isStablePool="isStableLike(pool.poolType)"
-              :selectedTokens="selectedTokens"
-              :pickedTokens="selectedTokens"
-            />
-          </div> -->
+          <PoolName
+            :poolIds="poolIds"
+            :poolId="pool?.id"
+            :selectedTokens="selectedTokens"
+            :tokens="orderedPoolTokens(pool, pool.tokens)"
+            :isStablePool="isStableLike(pool.poolType)"
+          />
           <PoolsTableExtraInfo :pool="pool" />
         </div>
       </template>

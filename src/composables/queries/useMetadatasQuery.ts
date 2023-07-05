@@ -65,7 +65,6 @@ export default function useMetadatasQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: true,
     ...options,
   });
 
