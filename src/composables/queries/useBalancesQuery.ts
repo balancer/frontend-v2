@@ -21,6 +21,7 @@ type QueryOptions = UseQueryOptions<QueryResponse>;
  */
 export default function useBalancesQuery(
   tokens: Ref<TokenInfoMap> = ref({}),
+  isEnabled = ref(true),
   options: QueryOptions = {}
 ) {
   /**
@@ -32,7 +33,7 @@ export default function useBalancesQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => isWalletReady.value);
+  const enabled = computed(() => isWalletReady.value && isEnabled.value);
   const tokenAddresses = computed(() => Object.keys(tokens.value));
 
   /**

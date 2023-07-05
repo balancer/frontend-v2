@@ -164,7 +164,7 @@ export const tokensProvider = (
     isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
-  } = useBalancesQuery(tokens, { enabled: queriesEnabled });
+  } = useBalancesQuery(tokens, queriesEnabled);
 
   const {
     data: allowanceData,
@@ -173,9 +173,7 @@ export const tokensProvider = (
     isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
-  } = useAllowancesQuery(tokens, toRef(state, 'spenders'), {
-    enabled: queriesEnabled,
-  });
+  } = useAllowancesQuery(tokens, toRef(state, 'spenders'), queriesEnabled);
 
   const prices = computed(
     (): TokenPrices => (priceData.value ? priceData.value : {})
