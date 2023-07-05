@@ -3,9 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 
 export function isUserRejected(error): boolean {
-  if (!error) return false;
-
-  const userRejectionMessages = [
+  const messages = [
     /user rejected transaction/,
     /request rejected/,
     /user rejected methods./,
@@ -19,42 +17,49 @@ export function isUserRejected(error): boolean {
     /user disapproved requested methods/,
   ];
 
+  return isErrorType(error, messages);
+}
+
+export function isUserNotEnoughGas(error): boolean {
+  const messages = [/insufficient funds for gas/];
+
+  return isErrorType(error, messages);
+}
+
+function isErrorType(error, messages: RegExp[]): boolean {
+  if (!error) return false;
+
   if (
     typeof error === 'string' &&
-    userRejectionMessages.some(msg => msg.test(error.toLowerCase()))
+    messages.some(msg => msg.test(error.toLowerCase()))
   )
     return true;
 
   if (
     error.message &&
-    userRejectionMessages.some(msg => msg.test(error.message.toLowerCase()))
+    messages.some(msg => msg.test(error.message.toLowerCase()))
   )
     return true;
 
   if (
     typeof error.reason === 'string' &&
-    userRejectionMessages.some(msg => msg.test(error.reason.toLowerCase()))
+    messages.some(msg => msg.test(error.reason.toLowerCase()))
   )
     return true;
 
   if (
     error.cause?.message &&
-    userRejectionMessages.some(msg =>
-      msg.test(error.cause.message.toLowerCase())
-    )
+    messages.some(msg => msg.test(error.cause.message.toLowerCase()))
   )
     return true;
 
   if (
     typeof error.cause === 'string' &&
-    userRejectionMessages.some(msg => msg.test(error.cause.toLowerCase()))
+    messages.some(msg => msg.test(error.cause.toLowerCase()))
   )
     return true;
 
-  if (
-    error.b &&
-    userRejectionMessages.some(msg => msg.test(error.b.toLowerCase()))
-  )
+  if (error.b && messages.some(msg => msg.test(error.b.toLowerCase())))
     return true;
 
   if (error?.code && error.code === 4001) {
@@ -102,6 +107,7 @@ export default function useTransactionErrors() {
    */
   function parseError(error): TransactionError | null {
     if (isUserRejected(error)) return null; // User rejected transaction
+    if (isUserNotEnoughGas(error)) return null; // User does not have enough gas
     if (error?.code && error.code === 'UNPREDICTABLE_GAS_LIMIT')
       return cannotEstimateGasError;
 
