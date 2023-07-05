@@ -49,7 +49,10 @@ defineEmits(['close']);
         <div class="p-4 font-semibold text-black dark:text-gray-300 grow">
           {{ configs[network].chainName }}
         </div>
-        <div class="p-4 pr-0 text-sm font-medium text-gray-600">
+        <div
+          class="p-4 text-sm font-medium text-gray-600"
+          :class="{ 'pr-0': syncLayerZeroTxLinks[network] }"
+        >
           {{ veBalBalance }} veBAL
         </div>
 
