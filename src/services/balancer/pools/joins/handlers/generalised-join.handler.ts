@@ -32,9 +32,9 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, encodedCall } = this.lastJoinRes;
+    const { to, encodedCall, value } = this.lastJoinRes;
 
-    return txBuilder.raw.sendTransaction({ to, data: encodedCall });
+    return txBuilder.raw.sendTransaction({ to, data: encodedCall, value });
   }
 
   async queryJoin({
@@ -71,7 +71,6 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
 
     console.log({ simulationType });
 
-    console.log('tokenAddresses', tokenAddresses);
     this.lastJoinRes = await this.sdk.pools.generalisedJoin(
       poolId,
       tokenAddresses,
