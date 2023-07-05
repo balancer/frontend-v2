@@ -71,6 +71,11 @@ function isErrorType(error, messages: RegExp[]): boolean {
   return false;
 }
 
+// Errors that are caused by the user or the state of their wallet.
+export function isUserError(error): boolean {
+  return isUserRejected(error) || isUserNotEnoughGas(error);
+}
+
 export default function useTransactionErrors() {
   /**
    * COMPOSABLES
@@ -106,8 +111,7 @@ export default function useTransactionErrors() {
    * METHODS
    */
   function parseError(error): TransactionError | null {
-    if (isUserRejected(error)) return null; // User rejected transaction
-    if (isUserNotEnoughGas(error)) return null; // User does not have enough gas
+    if (isUserError(error)) return null;
     if (error?.code && error.code === 'UNPREDICTABLE_GAS_LIMIT')
       return cannotEstimateGasError;
 
