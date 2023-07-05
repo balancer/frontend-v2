@@ -41,8 +41,8 @@ const FocussedLayout = defineAsyncComponent(
 const ContentLayout = defineAsyncComponent(
   () => import('@/pages/_layouts/ContentLayout.vue')
 );
-const JoinExitLayout = defineAsyncComponent(
-  () => import('@/pages/_layouts/JoinExitLayout.vue')
+const PoolLayout = defineAsyncComponent(
+  () => import('@/pages/_layouts/PoolLayout.vue')
 );
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
@@ -57,7 +57,7 @@ const Layouts = {
   ContentLayout: ContentLayout,
   DefaultLayout: DefaultLayout,
   FocussedLayout: FocussedLayout,
-  JoinExitLayout: JoinExitLayout,
+  PoolLayout: PoolLayout,
 };
 /**
  * COMPOSABLES
