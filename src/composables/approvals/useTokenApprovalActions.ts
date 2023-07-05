@@ -95,6 +95,7 @@ export default function useTokenApprovalActions() {
     spender: string
   ): Promise<AmountToApprove[]> {
     await injectSpenders([spender]);
+    await refetchAllowances();
 
     return approvalsRequired(amountsToApprove, spender);
   }
