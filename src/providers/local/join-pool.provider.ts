@@ -243,13 +243,13 @@ export const joinPoolProvider = (
   }
 
   /**
-   * Adds amountsIn with no value for array of token addresses.
+   * Sets amountsIn with no value for array of token addresses.
    *
    * @param {string[]} tokensIn - Array of token addresses.
    */
-  function addTokensIn(tokensIn: string[]) {
-    tokensIn.forEach(address =>
-      amountsIn.value.push({ address, value: '', valid: true })
+  function setTokensIn(tokensIn: string[]) {
+    setAmountsIn(
+      tokensIn.map(address => ({ address, value: '', valid: true }))
     );
   }
 
@@ -284,22 +284,31 @@ export const joinPoolProvider = (
       : tokenApprovalActions;
   }
 
+  // Checks amountsIn for valid inputs and updates price impact state if
+  // invalid.
+  function validateAmountsIn(): boolean {
+    if (!hasAmountsIn.value) {
+      priceImpact.value = 0;
+      return false;
+    }
+
+    return true;
+  }
+
   /**
    * Simulate join transaction to get expected output and calculate price impact.
    */
   async function queryJoin() {
     // If form is empty or inputs are not valid, clear the price impact and
     // return early
-    if (!hasAmountsIn.value) {
-      priceImpact.value = 0;
-      return null;
-    }
+    if (!validateAmountsIn()) return null;
 
     try {
       joinPoolService.setJoinHandler(joinHandlerType.value);
       await setApprovalActions();
 
       console.log('joinHandler:', joinHandlerType.value);
+      if (!validateAmountsIn()) return null;
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
@@ -456,7 +465,7 @@ export const joinPoolProvider = (
 
     // Methods
     setAmountsIn,
-    addTokensIn,
+    setTokensIn,
     resetAmounts,
     join,
     resetTxState,

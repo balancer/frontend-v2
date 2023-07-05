@@ -469,7 +469,6 @@ export const tokensProvider = (
   ): string {
     let maxAmount;
     const tokenBalance = balanceFor(tokenAddress) || '0';
-    console.log({ tokenBalance });
     const tokenBalanceBN = bnum(tokenBalance);
 
     if (tokenAddress === nativeAsset.address && !disableNativeAssetBuffer) {
