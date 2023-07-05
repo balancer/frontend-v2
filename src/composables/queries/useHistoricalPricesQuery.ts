@@ -64,12 +64,21 @@ export default function useHistoricalPricesQuery(
      */
     const aggregateBy = shapshotDaysNum <= 90 ? 'hour' : 'day';
 
-    return await coingeckoService.prices.getTokensHistorical(
-      tokensList,
-      shapshotDaysNum,
-      1,
-      aggregateBy
-    );
+    // if the coingecko query fails for this query key, we can pretty safely assume it'll keep failing
+    // by returning an empty object we signal to stop retrying this hook.
+    try {
+      const historicalPrices =
+        await coingeckoService.prices.getTokensHistorical(
+          tokensList,
+          shapshotDaysNum,
+          1,
+          aggregateBy
+        );
+
+      return historicalPrices;
+    } catch {
+      return {};
+    }
   };
 
   const queryOptions = reactive({
