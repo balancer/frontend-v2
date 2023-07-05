@@ -164,7 +164,10 @@ function onCloseModal() {
                       {{ getLoadingTooltipText(network) }}
                     </span>
 
-                    <span class="font-bold">
+                    <span
+                      v-if="syncLayerZeroTxLinks[network]"
+                      class="font-bold"
+                    >
                       Click this icon to view Layerzero transaction
                     </span>
                   </div>
