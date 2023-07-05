@@ -31,6 +31,7 @@ const {
   infoMessage,
   hasError,
   showingUnsyncedNetworks,
+  syncLayerZeroTxLinks,
 } = useCrossChainSync();
 const { fNum } = useNumbers();
 const { veBalBalance } = useVeBal();
@@ -39,7 +40,6 @@ const { veBalBalance } = useVeBal();
  * STATE
  */
 const isSyncModalOpen = ref(false);
-
 /**
  * COMPUTED
  */
@@ -136,19 +136,38 @@ function onCloseModal() {
               >
                 <BalTooltip width="44" textAlign="center">
                   <template #activator>
-                    <IconLoaderWrapper
-                      :isLoading="checkIfNetworkSyncing(network)"
+                    <BalLink
+                      :href="syncLayerZeroTxLinks[network]"
+                      external
+                      noStyle
+                      class="group flex items-center"
                     >
-                      <img
-                        :src="buildNetworkIconURL(network)"
-                        alt=""
-                        class="p-0.5 rounded-full w-[32px]"
-                      />
-                    </IconLoaderWrapper>
+                      <IconLoaderWrapper
+                        :isLoading="checkIfNetworkSyncing(network)"
+                      >
+                        <img
+                          :src="buildNetworkIconURL(network)"
+                          alt=""
+                          class="p-0.5 rounded-full w-[32px]"
+                        />
+                      </IconLoaderWrapper>
+                    </BalLink>
                   </template>
 
-                  <div v-if="checkIfNetworkSyncing(network)">
-                    {{ getLoadingTooltipText(network) }}
+                  <div
+                    v-if="checkIfNetworkSyncing(network)"
+                    class="flex flex-col"
+                  >
+                    <span class="mb-1">
+                      {{ getLoadingTooltipText(network) }}
+                    </span>
+
+                    <span
+                      v-if="syncLayerZeroTxLinks[network]"
+                      class="font-bold"
+                    >
+                      Click this icon to view Layerzero transaction
+                    </span>
                   </div>
                   <div v-else>
                     <div class="flex mb-2">

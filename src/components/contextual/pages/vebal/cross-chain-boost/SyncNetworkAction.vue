@@ -3,10 +3,7 @@ import configs, { Network } from '@/lib/config';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { TransactionActionInfo } from '@/types/transactions';
 import { useI18n } from 'vue-i18n';
-import {
-  TransactionReceipt,
-  TransactionResponse,
-} from '@ethersproject/abstract-provider';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
@@ -32,8 +29,13 @@ const emit = defineEmits(['update:activeTabIdx']);
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener } = useEthers();
-const { l2VeBalBalances, sync, setTempSyncingNetworks, tempSyncingNetworks } =
-  useCrossChainSync();
+const {
+  l2VeBalBalances,
+  sync,
+  setTempSyncingNetworks,
+  tempSyncingNetworks,
+  setSyncTxHashes,
+} = useCrossChainSync();
 
 /**
  * STATE
@@ -55,8 +57,8 @@ async function handleTransaction(
   });
 
   txListener(tx, {
-    onTxConfirmed: (receipt: TransactionReceipt) => {
-      console.log('Receipt', receipt);
+    onTxConfirmed: () => {
+      setSyncTxHashes(network, tx.hash);
     },
     onTxFailed: () => {
       //
@@ -67,7 +69,7 @@ async function handleTransaction(
 async function handleAction(network: Network) {
   try {
     const tx = await sync(network);
-    console.log('Receipt', tx);
+
     handleTransaction(tx, network);
 
     setTempSyncingNetworks(Array.from(props.chosenNetworks));
@@ -75,6 +77,8 @@ async function handleAction(network: Network) {
       'tempSyncingNetworks',
       JSON.stringify(tempSyncingNetworks.value)
     );
+
+    setSyncTxHashes(network, tx.hash);
 
     return tx;
   } catch (error) {

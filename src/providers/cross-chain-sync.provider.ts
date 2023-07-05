@@ -14,6 +14,7 @@ import configs from '@/lib/config';
 import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { useI18n } from 'vue-i18n';
+import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -34,12 +35,17 @@ export interface TempSyncingNetworks {
   syncTimestamp?: number;
 }
 
+export interface SyncTxHashes {
+  [key: string]: string;
+}
+
 // all networks that are supported by cross-chain sync feature
 export const veBalSyncSupportedNetworks = Object.keys(configs)
   .filter(key => configs[Number(key)].supportsVeBalSync)
   .map(key => Number(key));
 
 const REFETCH_INTERVAL = 1000 * 30; // 30 seconds
+const REFETCH_GET_LAYER_ZERO_TX_LINKS_INTERVAL = 1000 * 5;
 
 export const crossChainSyncProvider = () => {
   const { account, getSigner } = useWeb3();
@@ -53,6 +59,14 @@ export const crossChainSyncProvider = () => {
   const tempSyncingNetworks = ref<Record<string, TempSyncingNetworks>>(
     syncingNetworksFromStorage ? JSON.parse(syncingNetworksFromStorage) : {}
   );
+
+  const syncTxHashesFromStorage = localStorage.getItem('syncTxHashes');
+
+  const syncTxHashes = ref<Record<string, SyncTxHashes>>(
+    syncTxHashesFromStorage ? JSON.parse(syncTxHashesFromStorage) : {}
+  );
+
+  const syncLayerZeroTxLinks = ref<Record<string, string>>({});
 
   /**
    * omniVotingEscrowLocks contains the user's veBAL data that is known by the bridge contract
@@ -270,6 +284,15 @@ export const crossChainSyncProvider = () => {
     return tempSyncingNetworks.value;
   }
 
+  async function setSyncTxHashes(network: Network, txHash: string) {
+    syncTxHashes.value[account.value] = {
+      ...syncTxHashes.value[account.value],
+      [network]: txHash,
+    };
+
+    localStorage.setItem('syncTxHashes', JSON.stringify(syncTxHashes.value));
+  }
+
   function clearTempSyncingNetworksFromSynced() {
     if (!tempSyncingNetworks.value[account.value]) return;
 
@@ -313,6 +336,21 @@ export const crossChainSyncProvider = () => {
     });
   }
 
+  async function getLayerZeroTxLink(txHash: string) {
+    const { messages } = await getMessagesBySrcTxHash(101, txHash);
+    const message = messages[0];
+
+    if (!message) {
+      console.error('No message found in Layer Zero');
+      return '';
+    }
+
+    const { srcUaAddress, dstUaAddress, dstChainId, srcUaNonce } = message;
+    const link = `https://layerzeroscan.com/101/address/${srcUaAddress}/message/${dstChainId}/address/${dstUaAddress}/nonce/${srcUaNonce}`;
+
+    return link;
+  }
+
   watch(
     () => networksBySyncState.value,
     newVal => {
@@ -335,6 +373,40 @@ export const crossChainSyncProvider = () => {
     }
   );
 
+  let disposeRefetchLayerZeroTxLink: NodeJS.Timeout;
+  function getLayerZeroTxLinkOnInterval(networks: string[]) {
+    if (disposeRefetchLayerZeroTxLink) {
+      clearInterval(disposeRefetchLayerZeroTxLink);
+    }
+    let retryCount = 0;
+    disposeRefetchLayerZeroTxLink = setInterval(async () => {
+      for (const network of networks) {
+        const hash = syncTxHashes.value[account.value][network];
+        syncLayerZeroTxLinks.value[network] = await getLayerZeroTxLink(hash);
+      }
+
+      retryCount++;
+
+      if (
+        networks.every(network => syncLayerZeroTxLinks.value[network]) ||
+        retryCount > 10
+      ) {
+        clearInterval(disposeRefetchLayerZeroTxLink);
+      }
+    }, REFETCH_GET_LAYER_ZERO_TX_LINKS_INTERVAL);
+  }
+
+  watch(
+    () => [syncTxHashes.value, account.value],
+    async values => {
+      const val = values[0];
+      if (!val || !val[account.value]) return;
+
+      getLayerZeroTxLinkOnInterval(Object.keys(val[account.value]));
+    },
+    { immediate: true, deep: true }
+  );
+
   return {
     showingUnsyncedNetworks,
     hasError,
@@ -352,6 +424,10 @@ export const crossChainSyncProvider = () => {
     infoMessage,
     getGaugeWorkingBalance,
     triggerGaugeUpdate,
+    getLayerZeroTxLink,
+    syncTxHashes,
+    setSyncTxHashes,
+    syncLayerZeroTxLinks,
   };
 };
 
