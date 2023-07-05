@@ -9,7 +9,6 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import usePools from '@/composables/pools/usePools';
-import ZkevmPromo from '@/components/contextual/pages/pools/ZkevmPromo.vue';
 
 // COMPOSABLES
 const router = useRouter();
@@ -45,7 +44,6 @@ function onColumnSort(columnId: string) {
   <div>
     <HomePageHero />
     <div class="xl:container xl:px-4 pt-10 md:pt-8 xl:mx-auto">
-      <ZkevmPromo />
       <BalStack vertical>
         <div class="px-4 xl:px-0">
           <div class="flex justify-between items-end mb-2">
