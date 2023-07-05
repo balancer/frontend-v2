@@ -69,7 +69,7 @@ async function handleTransaction(
 async function handleAction(network: Network) {
   try {
     const tx = await sync(network);
-    console.log('Receipt', tx);
+
     handleTransaction(tx, network);
 
     setTempSyncingNetworks(Array.from(props.chosenNetworks));
@@ -77,9 +77,9 @@ async function handleAction(network: Network) {
       'tempSyncingNetworks',
       JSON.stringify(tempSyncingNetworks.value)
     );
-    setTimeout(() => {
-      setSyncTxHashes(network, tx.hash);
-    }, 5000);
+
+    setSyncTxHashes(network, tx.hash);
+
     return tx;
   } catch (error) {
     console.error(error);
