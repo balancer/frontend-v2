@@ -196,7 +196,7 @@ export default function useSor({
   const poolsLoading = ref(true);
 
   // COMPOSABLES
-  const { getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
+  const { account, getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
@@ -635,7 +635,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
       return;
     } else if (wrapType.value == WrapType.Unwrap) {
@@ -655,7 +655,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
       return;
     }
@@ -679,7 +679,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -700,7 +700,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
     }
   }
@@ -797,11 +797,22 @@ export default function useSor({
     return amount;
   }
 
-  function handleSwapException(error: Error) {
+  function handleSwapException(
+    error: Error,
+    tokenIn: string,
+    tokenOut: string
+  ) {
     if (!isUserError(error)) {
       console.trace(error);
       state.submissionError = t('swapException', ['Balancer']);
-      captureException(new Error(state.submissionError, { cause: error }));
+      captureException(new Error(state.submissionError, { cause: error }), {
+        level: 'fatal',
+        extra: {
+          sender: account.value,
+          tokenIn,
+          tokenOut,
+        },
+      });
     }
     swapping.value = false;
     confirming.value = false;
