@@ -21,7 +21,7 @@ import useTransactions from '../useTransactions';
 import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
 import { Goals, trackGoal } from '../useFathom';
-import useTranasactionErrors from '../useTransactionErrors';
+import { isUserError } from '../useTransactionErrors';
 import { useI18n } from 'vue-i18n';
 import { useApp } from '@/composables/useApp';
 
@@ -93,7 +93,6 @@ export default function useCowswap({
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
   const { balanceFor } = useTokens();
-  const { isUserRejected } = useTranasactionErrors();
   const { t } = useI18n();
 
   // DATA
@@ -238,7 +237,7 @@ export default function useCowswap({
       confirming.value = false;
       trackGoal(Goals.CowswapSwap);
     } catch (error) {
-      if (!isUserRejected(error)) {
+      if (!isUserError(error)) {
         console.trace(error);
         state.submissionError = t('swapException', ['Cowswap']);
         captureException(new Error(state.submissionError, { cause: error }), {
