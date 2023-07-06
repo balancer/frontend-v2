@@ -42,6 +42,7 @@ export default function initSentry(app: App) {
       tracesSampleRate: 1.0,
       environment: import.meta.env.MODE,
       release: `frontend-v2@${version}`,
+      ignoreErrors: ['error loading dynamically imported module'], // https://docs.sentry.io/platforms/javascript/configuration/filtering/#using-platformidentifier-nameignore-errors-
     });
   }
 }
