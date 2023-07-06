@@ -1,32 +1,13 @@
 <script setup lang="ts">
-import Footer from '@/components/footer/Footer.vue';
-import AppNav from '@/components/navs/AppNav/AppNav.vue';
+import DefaultLayout from '@/components/layouts/DefaultLayout.vue';
 </script>
 
 <template>
-  <div>
-    <div class="app-body">
-      <AppNav />
-      <div class="pb-16">
-        <router-view v-slot="{ Component }" :key="$route.path">
-          <transition appear name="appear">
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </div>
-    </div>
-    <Footer />
-  </div>
+  <DefaultLayout>
+    <router-view v-slot="{ Component }" :key="$route.path">
+      <transition appear name="appear">
+        <component :is="Component" />
+      </transition>
+    </router-view>
+  </DefaultLayout>
 </template>
-
-<style>
-.VueQueryDevtoolsPanel + button {
-  @apply text-black bg-gray-100 p-2 rounded text-sm;
-}
-
-.app-body {
-  @apply mb-8;
-
-  min-height: calc(100vh - 2rem);
-}
-</style>

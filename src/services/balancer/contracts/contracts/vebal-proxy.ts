@@ -11,6 +11,9 @@ import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { walletService as walletServiceInstance } from '@/services/web3/wallet.service';
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
+import veBalProxyABIL2 from '@/lib/abi/veDelegationProxyL2.json';
+import { networkId } from '@/composables/useNetwork';
+import { Network } from '@/lib/config';
 
 export class VeBALProxy {
   instance: EthersContract;
@@ -18,7 +21,9 @@ export class VeBALProxy {
   constructor(
     public readonly address: string,
     private readonly provider = rpcProviderService.jsonProvider,
-    private readonly abi = veBalProxyABI,
+    private readonly abi = networkId.value === Network.MAINNET
+      ? veBalProxyABI
+      : veBalProxyABIL2,
     private readonly config = configService,
     private readonly walletService = walletServiceInstance
   ) {
@@ -29,6 +34,11 @@ export class VeBALProxy {
   async getAdjustedBalance(address: string) {
     const balance = await this.instance.adjustedBalanceOf(getAddress(address));
     return formatUnits(balance, 18);
+  }
+
+  async getVeBalTotalSupplyL2() {
+    const totalSupply = await this.instance.totalSupply();
+    return formatUnits(totalSupply, 18);
   }
 
   async getAdjustedBalances(addresses: string) {

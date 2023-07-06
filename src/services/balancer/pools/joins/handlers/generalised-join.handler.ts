@@ -4,8 +4,10 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { bnum, selectByAddress } from '@/lib/utils';
+import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { configService } from '@/services/config/config.service';
+import { AddressZero } from '@ethersproject/constants';
 
 type JoinResponse = Awaited<
   ReturnType<BalancerSDK['pools']['generalisedJoin']>
@@ -30,9 +32,9 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     }
 
     const txBuilder = new TransactionBuilder(params.signer);
-    const { to, encodedCall } = this.lastJoinRes;
+    const { to, encodedCall, value } = this.lastJoinRes;
 
-    return txBuilder.raw.sendTransaction({ to, data: encodedCall });
+    return txBuilder.raw.sendTransaction({ to, data: encodedCall, value });
   }
 
   async queryJoin({
@@ -52,7 +54,9 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
       return parseFixed(value || '0', token.decimals).toString();
     });
 
-    const tokenAddresses: string[] = amountsIn.map(({ address }) => address);
+    const tokenAddresses: string[] = amountsIn.map(({ address }) =>
+      this.formatTokenAddress(address)
+    );
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
@@ -95,5 +99,19 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
       bptOut,
       priceImpact,
     };
+  }
+
+  /**
+   * If native asset addres, replaces with zero address because the vault only checks
+   * for the zero address when joining with native asset.
+   */
+  private formatTokenAddress(address: string): string {
+    const { nativeAsset } = configService.network.tokens.Addresses;
+
+    if (isSameAddress(address, nativeAsset)) {
+      return AddressZero;
+    }
+
+    return address;
   }
 }

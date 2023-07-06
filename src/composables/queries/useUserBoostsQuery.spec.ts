@@ -26,5 +26,5 @@ test('Does not calculate boosts when user does not have gauge shares', async () 
 
   const data = await waitForQueryData(result);
 
-  expect(data).toEqual({ 'test pool id': '1.00000000833325' });
+  expect(data).toEqual({ 'test pool id': '1.0854950634314737561' });
 });

@@ -36,9 +36,8 @@ export default function useVotingGauges() {
   const _votingGauges = computed((): VotingGauge[] => {
     if (isGoerli.value) {
       return GOERLI_VOTING_GAUGES as VotingGauge[];
-    } else {
-      return MAINNET_VOTING_GAUGES as VotingGauge[];
     }
+    return MAINNET_VOTING_GAUGES as VotingGauge[];
   });
 
   // Fetch onchain votes data for given votingGauges

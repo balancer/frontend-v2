@@ -9,6 +9,7 @@ import { buildJoinParams } from '@tests/unit/builders/join-exit.builders';
 import {
   defaultGasLimit,
   defaultTransactionResponse,
+  defaultTxValue,
 } from '@tests/unit/builders/signer';
 import { GeneralisedJoinHandler } from './generalised-join.handler';
 import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
@@ -31,5 +32,6 @@ test('Successfully executes a generalized join transaction', async () => {
     data: defaultGeneralizedJoinResponse.encodedCall,
     to: defaultGeneralizedJoinResponse.to,
     gasLimit: defaultGasLimit,
+    value: defaultTxValue,
   });
 });
