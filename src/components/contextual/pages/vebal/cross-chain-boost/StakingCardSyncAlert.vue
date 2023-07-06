@@ -20,7 +20,7 @@ const shouldShowWarningAlert = ref(false);
 const showCheckpointModal = ref(false);
 
 const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
-const { hasNonPrefGaugeBalance, poolGauges } = usePoolStaking();
+const { hasNonPrefGaugeBalance, poolGauges, stakedShares } = usePoolStaking();
 const { networkId } = useNetwork();
 const { isMismatchedNetwork } = useWeb3();
 
@@ -64,6 +64,11 @@ async function setWarningAlertState() {
   if (isMismatchedNetwork.value) {
     return;
   }
+
+  if (Number(stakedShares.value) === 0) {
+    return;
+  }
+
   const id = poolGauges.value?.pool.preferentialGauge.id;
 
   if (!id) {
