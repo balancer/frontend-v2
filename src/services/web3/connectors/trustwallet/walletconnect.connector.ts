@@ -1,29 +1,34 @@
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
-import ConfigService from '@/services/config/config.service';
-import config from '@/lib/config';
+import { configService } from '@/services/config/config.service';
 import { WalletError } from '@/types';
-import { Network } from '@/lib/config';
 import { Connector, ConnectorId } from '../connector';
-import { Config } from '@/lib/config/types';
+import { Network } from '@/lib/config';
+import useDarkMode from '@/composables/useDarkMode';
+
+const { MAINNET, POLYGON, ARBITRUM, GNOSIS, ZKEVM } = Network;
 
 export class WalletConnectConnector extends Connector {
   id = ConnectorId.WalletConnect;
   async connect() {
-    const configService = new ConfigService();
-    const rpcUrls: Record<number, string> = {};
-    Object.values(config).forEach((c: Config) => {
-      if (!c.visibleInUI) return;
-      rpcUrls[c.chainId] = configService.getNetworkRpc(c.chainId as Network);
-    });
-    const provider = new WalletConnectProvider({
-      rpc: rpcUrls,
+    const provider = await EthereumProvider.init({
+      projectId: 'ee9c0c7e1b8b86ebdfb8fd93bb116ca8',
+      chains: [MAINNET],
+      optionalChains: [POLYGON, ARBITRUM, GNOSIS],
+      rpcMap: {
+        [MAINNET]: configService.getNetworkRpc(MAINNET),
+        [POLYGON]: configService.getNetworkRpc(POLYGON),
+        [ARBITRUM]: configService.getNetworkRpc(ARBITRUM),
+        [GNOSIS]: configService.getNetworkRpc(GNOSIS),
+        [ZKEVM]: configService.getNetworkRpc(ZKEVM),
+      },
+      showQrModal: true,
+      qrModalOptions: { themeMode: useDarkMode().darkMode ? 'dark' : 'light' },
     });
     this.provider = provider;
 
     try {
       const accounts = await provider.enable();
-
       const chainId = await provider.request({ method: 'eth_chainId' });
       this.handleChainChanged(chainId);
       this.handleAccountsChanged(accounts);
@@ -37,8 +42,7 @@ export class WalletConnectConnector extends Connector {
       }
     }
     return {
-      // TODO type this
-      provider: provider as any,
+      provider,
       account: this.account,
       chainId: this.chainId,
     };

@@ -70,7 +70,7 @@ export interface Keys {
 
 export interface Config {
   key: string;
-  chainId: Network | 12345 | 17;
+  chainId: Network;
   layerZeroChainId?: number; // https://layerzero.gitbook.io/docs/technical-reference/mainnet/supported-chain-ids
   chainName: string;
   name: string;
