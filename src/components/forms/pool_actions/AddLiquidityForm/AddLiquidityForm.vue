@@ -63,6 +63,7 @@ const {
   queryError,
   setAmountsIn,
   addTokensIn,
+  propAmountsGiven,
 } = useJoinPool();
 
 const { tokensWithBalance } = useUserTokens();
@@ -192,6 +193,8 @@ watch(
       :weight="tokenWeight(pool, amountIn.address)"
       :options="tokenOptions(amountIn.address)"
       :aria-label="'Amount of: ' + getTokenInputLabel(amountIn.address)"
+      :hint="'hint'"
+      :hintAmount="'100'"
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="excludedTokens"

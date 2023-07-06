@@ -89,11 +89,7 @@ const {
           </BalTooltip>
         </div>
         <div
-          v-if="
-            isWalletReady &&
-            hasBalanceForAllTokens &&
-            supportsProportionalOptimization
-          "
+          v-if="isWalletReady && supportsProportionalOptimization"
           class="text-sm font-semibold"
         >
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">

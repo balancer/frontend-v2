@@ -50,6 +50,7 @@ import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 import { ApprovalAction } from '@/composables/approvals/types';
 import { isUserError } from '@/composables/useTransactionErrors';
+import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
 
 /**
  * TYPES
@@ -229,9 +230,21 @@ export const joinPoolProvider = (
     (): boolean => !isStableLike(pool.value.poolType)
   );
 
+  // Is native asset being used as an amountIn.
+  const useNativeAsset = computed((): boolean => {
+    return amountsIn.value.some(amountIn =>
+      isSameAddress(amountIn.address, nativeAsset.address)
+    );
+  });
+
   /**
    * METHODS
    */
+  const { getPropMax, propAmountsGiven } = usePropMaxJoin(
+    pool.value,
+    tokensIn,
+    useNativeAsset
+  );
 
   /**
    * Sets full amountsIn state.
@@ -467,6 +480,8 @@ export const joinPoolProvider = (
     resetTxState,
     setIsSingleAssetJoin,
     setJoinWithNativeAsset,
+    getPropMax,
+    propAmountsGiven,
 
     // queries
     queryJoinQuery,

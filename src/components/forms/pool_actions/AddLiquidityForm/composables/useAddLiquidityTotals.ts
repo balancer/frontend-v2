@@ -1,6 +1,5 @@
 import { useJoinPool } from '@/providers/local/join-pool.provider';
 
-import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
 import { isWrappedNativeAsset } from '@/composables/usePoolHelpers';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { useUserTokens } from '@/providers/local/user-tokens.provider';
@@ -16,20 +15,12 @@ export function useAddLiquidityTotals(pool: Pool) {
     highPriceImpact,
     supportsProportionalOptimization,
     amountsIn,
-    tokensIn,
     setAmountsIn,
+    getPropMax,
   } = useJoinPool();
 
   const { isWethOrEth, nativeAsset, balanceFor } = useTokens();
   const { tokensWithBalanceFrom, tokensWithoutBalanceFrom } = useUserTokens();
-
-  const useNativeAsset = computed((): boolean => {
-    return amountsIn.value.some(amountIn =>
-      isSameAddress(amountIn.address, nativeAsset.address)
-    );
-  });
-
-  const { getPropMax } = usePropMaxJoin(pool, tokensIn, useNativeAsset);
 
   /**
    * COMPUTED
