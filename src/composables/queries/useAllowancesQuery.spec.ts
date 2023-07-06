@@ -42,7 +42,7 @@ test('Returns token allowances from balancer SDK', async () => {
   ]);
 
   const { result } = mountComposable(() =>
-    useAllowancesQuery(tokens, spenders)
+    useAllowancesQuery({ tokens, contractAddresses: spenders })
   );
 
   const data = await waitForQueryData(result);
