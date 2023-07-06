@@ -15,6 +15,7 @@ export function isUserRejected(error): boolean {
     /transaction was rejected/,
     /user denied transaction signature/,
     /user disapproved requested methods/,
+    /canceled/,
   ];
 
   return isErrorType(error, messages);
