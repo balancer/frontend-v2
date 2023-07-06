@@ -2,30 +2,28 @@
 import Page from '@/components/contextual/pages/pool/add-liquidity/Page.vue';
 import { useIntervalFn } from '@vueuse/core';
 import { oneSecondInMs } from '@/composables/useTime';
-import { balancer, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { usePool } from '@/providers/local/pool.provider';
 import Col2Layout from '@/components/layouts/Col2Layout.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useRoute } from 'vue-router';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
+import { Pool } from '@balancer-labs/sdk';
+
+const sdk = getBalancerSDK();
 
 /**
  * STATE
  */
 const route = useRoute();
 const poolId = (route.params.id as string).toLowerCase();
-
-/**
- * PROVIDERS
- */
-providePoolStaking(poolId);
+const sdkPool = ref<Pool | undefined>();
 
 /**
  * COMPOSABLES
  */
-const { pool, isLoadingPool, refetchOnchainPoolData } = usePool();
+const { pool, isLoadingPool } = usePool();
 const { isDeepPool } = usePoolHelpers(pool);
 const { isMobile } = useBreakpoints();
 
@@ -41,16 +39,21 @@ const isLoading = computed(
   (): boolean => isLoadingPool.value || isLoadingSor.value
 );
 
+/**
+ * METHODS
+ */
 async function refetchOnchainPoolDataSDK() {
-  const sdk = getBalancerSDK();
-  const pool = await sdk.poolsOnChain.refresh(poolId);
-  console.log('refetched sdk pool', pool);
+  if (sdkPool.value) await sdk.data.poolsOnChain.refresh(sdkPool.value);
+  console.log('Refetched onchain pool data');
 }
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent
 // overfetching a request on short blocktime networks like Polygon.
-useIntervalFn(refetchOnchainPoolData, oneSecondInMs * 20);
 useIntervalFn(refetchOnchainPoolDataSDK, oneSecondInMs * 20);
+
+onBeforeMount(async () => {
+  sdkPool.value = await sdk.pools.find(poolId);
+});
 </script>
 
 <template>

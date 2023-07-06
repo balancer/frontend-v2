@@ -7,6 +7,17 @@ import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import WithdrawPage from '@/components/contextual/pages/pool/withdraw/WithdrawPage.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { usePool } from '@/providers/local/pool.provider';
+import { Pool } from '@balancer-labs/sdk';
+import { getBalancerSDK } from '@/dependencies/balancer-sdk';
+
+const sdk = getBalancerSDK();
+
+/**
+ * STATE
+ */
+const route = useRoute();
+const poolId = (route.params.id as string).toLowerCase();
+const sdkPool = ref<Pool | undefined>();
 
 /**
  * COMPOSABLES
@@ -31,6 +42,22 @@ const isLoading = computed(
   (): boolean =>
     isLoadingPool.value || isLoadingSor.value || balanceQueryLoading.value
 );
+
+/**
+ * METHODS
+ */
+async function refetchOnchainPoolDataSDK() {
+  if (sdkPool.value) await sdk.data.poolsOnChain.refresh(sdkPool.value);
+  console.log('Refetched onchain pool data');
+}
+
+// Instead of refetching pool data on every block, we refetch every 20s to prevent
+// overfetching a request on short blocktime networks like Polygon.
+useIntervalFn(refetchOnchainPoolDataSDK, oneSecondInMs * 20);
+
+onBeforeMount(async () => {
+  sdkPool.value = await sdk.pools.find(poolId);
+});
 </script>
 
 <template>
