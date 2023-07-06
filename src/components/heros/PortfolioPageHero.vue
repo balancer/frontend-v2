@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
 
 import AppHero from '@/components/heros/AppHero.vue';
 import { useLock } from '@/composables/useLock';
@@ -11,17 +10,28 @@ import useWeb3 from '@/services/web3/useWeb3';
 import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
 import { useUserPools } from '@/providers/local/user-pools.provider';
 import { isVeBalSupported } from '@/composables/useVeBAL';
+import ProceedToSyncModal from '../contextual/pages/vebal/cross-chain-boost/ProceedToSyncModal.vue';
+import configs, { Network } from '@/lib/config';
+import {
+  useCrossChainSync,
+  veBalSyncSupportedNetworks,
+} from '@/providers/cross-chain-sync.provider';
+import { NetworkSyncState } from '@/providers/cross-chain-sync.provider';
 
 /**
  * COMPOSABLES
  */
-const router = useRouter();
+const showProceedModal = ref(false);
 const { fNum } = useNumbers();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { totalFiatValue, isLoading: isLoadingPools } = useUserPools();
 const { totalLockedValue } = useLock();
-const { networkSlug } = useNetwork();
-
+const { networkId } = useNetwork();
+const {
+  l2VeBalBalances,
+  isLoading: isLoadingSyncState,
+  networksSyncState,
+} = useCrossChainSync();
 /**
  * COMPUTED
  */
@@ -39,6 +49,24 @@ const totalVeBalLabel = computed((): string =>
 );
 
 const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
+
+const showVeBalBalanceTooltip = computed(() => {
+  if (!veBalSyncSupportedNetworks.includes(networkId.value)) {
+    return false;
+  }
+
+  if (networksSyncState.value[networkId.value] === NetworkSyncState.Synced) {
+    return false;
+  }
+
+  return true;
+});
+
+const veBalBalanceTooltip = computed(() => {
+  return `Sync your veBAL balance from Ethereum Mainnet (L1) to ${
+    configs[networkId.value].chainName
+  } to get your max staking boost. Sync via the veBAL page on L1. Note: If you have just synced on L1, it may take up to an hour to display here.`;
+});
 </script>
 
 <template>
@@ -59,19 +87,41 @@ const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
       </div>
       <div v-if="!isVeBalSupported" class="inline-block relative mt-2">
         <BalLoadingBlock
-          v-if="isLoadingTotalValue"
+          v-if="isLoadingTotalValue || isLoadingSyncState"
           class="mx-auto w-40 h-8"
           white
         />
         <div
           v-else
           class="group flex items-center px-3 h-8 text-sm font-medium text-yellow-500 hover:text-white focus:text-white rounded-tr rounded-bl border border-yellow-500 transition-colors cursor-pointer vebal-banner"
-          @click="router.push({ name: 'vebal', params: { networkSlug } })"
+          @click="showProceedModal = true"
         >
-          <span v-if="totalLockedValue === '0'"
+          <span
+            v-if="
+              networkId !== Network.MAINNET &&
+              Number(l2VeBalBalances?.[networkId]) > 0
+            "
+          >
+            {{ l2VeBalBalances?.[networkId] }}
+            {{ $t('veBAL.hero.tokens.veBAL') }}
+          </span>
+          <span v-else-if="totalLockedValue === '0'"
             >{{ totalLockedValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
           >
           <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
+
+          <BalTooltip
+            v-if="showVeBalBalanceTooltip"
+            :text="veBalBalanceTooltip"
+          >
+            <template #activator>
+              <img
+                src="/src/assets/images/icons/frame-loading.svg"
+                alt=""
+                class="rounded-full"
+              />
+            </template>
+          </BalTooltip>
         </div>
       </div>
     </template>
@@ -81,6 +131,11 @@ const isLoadingTotalValue = computed((): boolean => isLoadingPools.value);
       </div>
       <HeroConnectWalletButton class="mt-4" />
     </template>
+
+    <ProceedToSyncModal
+      :isVisible="showProceedModal"
+      @close="showProceedModal = false"
+    />
   </AppHero>
 </template>
 

@@ -9,6 +9,8 @@ import { LiquidityGauge } from '../balancer/contracts/contracts/liquidity-gauge'
 import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
 import { UserBoosts } from '@/composables/queries/useUserBoostsQuery';
+import { networkId } from '@/composables/useNetwork';
+import { Network } from '@/lib/config';
 
 export class StakingRewardsService {
   async getWorkingSupplyForGauges(gaugeAddresses: string[]) {
@@ -43,15 +45,20 @@ export class StakingRewardsService {
       configService.network.addresses.veDelegationProxy
     );
 
-    const getVebalInfo = await new BalancerContractsService().veBAL.getLockInfo(
-      userAddress
-    );
+    let veBALTotalSupply = '0';
+    if (networkId.value === Network.MAINNET) {
+      const lockInfo = await new BalancerContractsService().veBAL.getLockInfo(
+        userAddress
+      );
+      veBALTotalSupply = lockInfo.totalSupply;
+    } else {
+      // get l2 veBAL total supply from delegation proxy
+      veBALTotalSupply = await veBalProxy.getVeBalTotalSupplyL2();
+    }
+
     // need to use veBAL balance from the proxy as the balance from the proxy takes
     // into account the amount of delegated veBAL as well
-    const getVeBALBalance = veBalProxy.getAdjustedBalance(userAddress);
-
-    const [{ totalSupply: veBALTotalSupply }, userVeBALBalance] =
-      await Promise.all([getVebalInfo, getVeBALBalance]);
+    const userVeBALBalance = await veBalProxy.getAdjustedBalance(userAddress);
 
     return {
       veBALTotalSupply,

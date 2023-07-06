@@ -10,6 +10,7 @@ import { provideTokens } from '@/providers/tokens.provider';
 import { provideUserData } from '@/providers/user-data.provider';
 import { provideWallets } from './providers/wallet.provider';
 import { createProviderComponent } from './providers/createProviderComponent';
+import { provideCrossChainSync } from './providers/cross-chain-sync.provider';
 
 // The other providers call useWallets so we need to provide it in a higher level
 const WalletsProvider = createProviderComponent(() => provideWallets());
@@ -18,6 +19,7 @@ const GlobalProvider = createProviderComponent(() => {
   const tokenLists = provideTokenLists();
   provideTokens(userSettings, tokenLists);
   provideUserData();
+  provideCrossChainSync();
 });
 
 /**

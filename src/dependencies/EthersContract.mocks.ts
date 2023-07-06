@@ -7,6 +7,7 @@ export const defaultAdjustedBalance = '55555';
 
 export const defaultBatchSwapResponse = 'Batch Swap response';
 
+export const defaultTotalSupply = '9747054';
 export const defaultContractBalance = '321';
 export const defaultContractBalanceBN = BigNumber.from(defaultContractBalance);
 interface IContract {
@@ -33,8 +34,15 @@ export class MockedContractWithSigner implements IContract {
   adjustedBalanceOf() {
     return defaultAdjustedBalance;
   }
+  totalSupply() {
+    return Promise.resolve(defaultTotalSupply);
+  }
   balanceOf() {
     return Promise.resolve(defaultContractBalanceBN);
+  }
+
+  connect() {
+    return this;
   }
 }
 

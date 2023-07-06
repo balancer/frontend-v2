@@ -2,6 +2,8 @@ import {
   defaultGaugeShares,
   defaultPoolGauges,
   defaultPoolId,
+  omniEscrowLocksHandler,
+  votingEscrowLockHandler,
 } from '@/services/balancer/gauges/__mocks__/gauge-mocks';
 import gaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
 import { graphql } from 'msw';
@@ -51,4 +53,6 @@ export const graphqlHandlers = [
       })
     );
   }),
+  votingEscrowLockHandler(),
+  omniEscrowLocksHandler(),
 ];
