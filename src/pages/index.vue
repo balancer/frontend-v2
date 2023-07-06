@@ -16,8 +16,9 @@ import LS_KEYS from '@/constants/local-storage.keys';
  * STATE
  */
 const route = useRoute();
+const urlSortParam = route.query?.sort as string | undefined;
 const initSortCol =
-  route.query?.sort || lsGet(LS_KEYS.App.PoolSorting) || 'totalLiquidity';
+  urlSortParam || lsGet(LS_KEYS.App.PoolSorting) || 'totalLiquidity';
 
 /**
  * COMPOSABLES
