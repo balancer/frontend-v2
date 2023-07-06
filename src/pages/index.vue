@@ -9,8 +9,17 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import usePools from '@/composables/pools/usePools';
+import { lsGet, lsSet } from '@/lib/utils';
+import LS_KEYS from '@/constants/local-storage.keys';
 
-// COMPOSABLES
+/**
+ * STATE
+ */
+const initSortCol = lsGet(LS_KEYS.App.PoolSorting) || 'totalLiquidity';
+
+/**
+ * COMPOSABLES
+ */
 const router = useRouter();
 const { appNetworkConfig } = useNetwork();
 const isElementSupported = appNetworkConfig.supportsElementPools;
@@ -37,6 +46,7 @@ function navigateToCreatePool() {
 
 function onColumnSort(columnId: string) {
   poolsSortField.value = columnId;
+  lsSet(LS_KEYS.App.PoolSorting, columnId);
 }
 </script>
 
@@ -91,6 +101,7 @@ function onColumnSort(columnId: string) {
           :isLoading="isLoading"
           :selectedTokens="selectedTokens"
           class="mb-8"
+          :sortColumn="initSortCol"
           :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
           :isLoadingMore="poolsIsFetchingNextPage"
           :isPaginated="isPaginated"
