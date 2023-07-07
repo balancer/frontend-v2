@@ -10,8 +10,6 @@ import {
   toRef,
   toRefs,
 } from 'vue';
-import { captureException } from '@sentry/browser';
-
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery, {
@@ -79,6 +77,8 @@ export const tokensProvider = (
   /**
    * STATE
    */
+  const queriesEnabled = ref(false);
+
   const nativeAsset: NativeAsset = {
     ...networkConfig.nativeAsset,
     chainId: networkConfig.chainId,
@@ -164,7 +164,7 @@ export const tokensProvider = (
     isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
-  } = useBalancesQuery(tokens);
+  } = useBalancesQuery({ tokens, isEnabled: queriesEnabled });
 
   const {
     data: allowanceData,
@@ -173,7 +173,11 @@ export const tokensProvider = (
     isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
-  } = useAllowancesQuery(tokens, toRef(state, 'spenders'));
+  } = useAllowancesQuery({
+    tokens,
+    contractAddresses: toRef(state, 'spenders'),
+    isEnabled: queriesEnabled,
+  });
 
   const prices = computed(
     (): TokenPrices => (priceData.value ? priceData.value : {})
@@ -398,10 +402,6 @@ export const tokensProvider = (
     try {
       const price = selectByAddressFast(prices.value, getAddress(address));
       if (!price) {
-        captureException(new Error('Could not find price for token'), {
-          level: 'info',
-          extra: { address },
-        });
         return 0;
       }
       return price;
@@ -500,6 +500,7 @@ export const tokensProvider = (
     // Inject veBAL because it's not in tokenlists.
     const { veBAL } = configService.network.addresses;
     await injectTokens([veBAL]);
+    queriesEnabled.value = true;
     state.loading = false;
   });
 

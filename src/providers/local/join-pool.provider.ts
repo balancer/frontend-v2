@@ -49,7 +49,7 @@ import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalAct
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 import { ApprovalAction } from '@/composables/approvals/types';
-import { isUserRejected } from '@/composables/useTransactionErrors';
+import { isUserError } from '@/composables/useTransactionErrors';
 
 /**
  * TYPES
@@ -118,7 +118,8 @@ export const joinPoolProvider = (
   const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
-  const { getTokenApprovalActions } = useTokenApprovalActions();
+  const { getTokenApprovalActions, updateAllowancesFor } =
+    useTokenApprovalActions();
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
     RelayerType.BATCH
   );
@@ -277,6 +278,7 @@ export const joinPoolProvider = (
       amountsToApprove: amountsToApprove.value,
       spender: appNetworkConfig.addresses.vault,
       actionType: ApprovalAction.AddLiquidity,
+      skipAllowanceCheck: true, // Done once beforeMount
     });
 
     approvalActions.value = shouldSignRelayer.value
@@ -376,7 +378,7 @@ export const joinPoolProvider = (
   }
 
   async function logJoinException(error: Error) {
-    if (isUserRejected(error)) return;
+    if (isUserError(error)) return;
 
     const sender = await getSigner().getAddress();
     captureException(error, {
@@ -422,6 +424,9 @@ export const joinPoolProvider = (
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactored probably won't be required.
     injectTokens(poolJoinTokens.value);
+
+    // Make sure allowances on the vault are up to date.
+    updateAllowancesFor(appNetworkConfig.addresses.vault);
   });
 
   onMounted(() => (isMounted.value = true));

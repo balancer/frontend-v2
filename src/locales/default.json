@@ -138,7 +138,7 @@
   "claimHero": {
     "title": "Claim liquidity incentives",
     "legacyTitle": "Claim legacy incentives",
-    "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra on Mainnet pools.",
+    "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra.",
     "legacyDescription": "Liquidity mining incentive systems before the launch of ve8020-tokenomics have been deprecated. If you provided liquidity before this change and have outstanding incentives you can claim them here.",
     "tipLabel": {
       "addLiquidity": "Add liquidity",
@@ -149,7 +149,7 @@
     "tips": {
       "addLiquidity": "To earn liquidity mining incentives, add liquidity to eligible pools across Ethereum Mainnet and supported Layer 2's like Polygon and Arbitrum (see the table on the veBAL page). Note: You'll earn swap fees with or without staking but you don't need to claim these as they are automatically added to your position.",
       "stake": "If you've provided liquidity in an eligible pool, you'll have an option to stake your Liquidity Provider (LP) tokens from that pool. Stake them to receive liquidity mining incentives in addition to any swap fees.",
-      "boost": "Get veBAL to boost your liquidity mining incentives by up to 2.5x (on Ethereum Mainnet only). The more veBAL you hold, the larger your boost. veBAL holders also earn protocol fees and can vote to direct future pool emissions. Note, there is no additional boost from holding veBAL on Layer 2 pools like Polygon and Arbitrum.",
+      "boost": "Get veBAL to boost your liquidity mining incentives by up to 2.5x, including on L2 networks via cross-chain boosts. The more veBAL you hold, the larger your boost. veBAL holders also earn protocol fees and can vote to direct future pool emissions.",
       "claim": "Token earnings from liquidity mining accumulate every block and can be claimed at any time. Some pools offer multiple token incentives (not just BAL). Additionally, veBAL holders also get a share of protocol revenue, in both bb-a-USD and BAL."
     }
   },
@@ -234,6 +234,51 @@
     "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}.",
     "zeroWeightTitle": "You’ve included a token with zero weight",
     "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%."
+  },
+  "crossChainBoost": {
+    "title": "Cross chain veBAL boosts",
+    "infoDescription": "Sidechains & Layer 2 networks like Polygon and Arbitrum don’t know your veBAL balance on Ethereum Mainnet, unless you sync it. On any network where you stake, you should sync your veBAL balance to get your max possible boost. Resync after acquiring more veBAL to continue boosting to your max.",
+    "sync": "Sync",
+    "currentBalance": "Current balance",
+    "postSyncBalance": "Post-sync balance",
+    "syncedNetworks": "Synced networks",
+    "syncToNetwork": "Sync veBAL to {network}",
+    "syncingToNetwork": "Syncing veBAL to {network}",
+    "unsyncedNetworks": "Unsynced networks",
+    "unsyncedAllDescription": "Sync veBAL across networks for a boosted APR on your staked positions.",
+    "syncedAllDescription": "All networks are synced",
+    "emptyState": "Once you have some veBAL, sync your balance here to other networks.",
+    "syncProcessWarning": {
+      "title": "Wait until sync finalizes before restaking / triggering a gauge update on L2",
+      "description": "Your sync has been initiated but it may take up to 30 mins to update across L2s. Once your veBAL is synced, you will need to interact with each gauge to register your new max boost. You can either claim, restake, or click the Update button, which will appear on each individual pool page staking section."
+    },
+    "syncComplete": {
+      "title": "Remember to restake to the new boost-aware L2 pool gauges",
+      "description": "To get boosted yield on L2 networks, go to your Portfolio page on the L2 network and restake from the deprecated pool gauges to the new boost-aware pool gauges."
+    },
+    "updateGauge": {
+      "title": "Trigger pool gauge updates to get your boosts sooner",
+      "description": "Pool gauges don’t automatically recognize changes in veBAL until triggered. Updates are triggered when any user interacts with a gauge, such as by claiming BAL, staking or unstaking. Trigger individual gauges yourself for your boosts to apply immediately."
+    },
+    "selectNetworkModal": {
+      "title": "Sync veBAL: Select networks",
+      "description": "Layer 2 networks don’t know your veBAL balance from Ethereum, unless you sync it. Each network costs additional gas to sync, so it’s best to only sync networks where you plan to stake."
+    },
+    "syncNetworkModal": {
+      "title": "Sync veBAL",
+      "singleNetworkTitle": "Sync veBAL to {0}",
+      "description": "This will sync your veBAL balance and give you a staking boost on {0}."
+    },
+    "syncInitiatedModal": {
+      "title": "veBAL sync initiated",
+      "description": "Your veBAL balance is now being synced to the following networks:",
+      "warningTitle": "Your L2 veBAL sync is in progress",
+      "warningDescription": "Your sync has been initiated but it may take up to 30 mins to update across L2s. Please check the your portfolio on the destination chain/s after this time, there will be actions available to update boost on your positions. You can also update all your positions by claiming rewards on the synced chain."
+    },
+    "syncNetworkAction": {
+      "title": "This will sync your veBAL balance and give you a staking boost across the networks listed below."
+    },
+    "syncInProgress": "A sync operation is currently in progress. Wait until it completes before restaking any of your positions on {network} to get your maximum veBAL boost."
   },
   "migratePool": {
     "aaveBoostedPool": {
@@ -1447,7 +1492,9 @@
     "createLock": "Lock",
     "extendLock": "Extend lock",
     "increaseLock": "Increase lock",
-    "unlock": "Unlock"
+    "unlock": "Unlock",
+    "sync": "Sync",
+    "userGaugeCheckpoint": "Pool gauge veBAL update"
   },
   "transactionDeadline": "Transaction deadline",
   "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed transactions incur fees for swaps between ERC-20 tokens.",

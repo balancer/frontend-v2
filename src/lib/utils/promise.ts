@@ -8,7 +8,13 @@ export async function retryPromiseWithDelay<T>(
   try {
     return await promise;
   } catch (e) {
-    if (retryCount === 1) {
+    const responseStatusCode = (e as any)?.response?.status || 0;
+
+    if (
+      retryCount === 1 ||
+      responseStatusCode === 404 ||
+      responseStatusCode === 429
+    ) {
       return Promise.reject(e);
     }
     console.log('retrying promise', retryCount, 'time');

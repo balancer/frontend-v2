@@ -28,7 +28,7 @@ import useEthers from '../useEthers';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
-import useTranasactionErrors from '../useTransactionErrors';
+import { isUserError } from '../useTransactionErrors';
 import { useI18n } from 'vue-i18n';
 
 type JoinExitState = {
@@ -91,7 +91,6 @@ export default function useJoinExit({
   const { addTransaction } = useTransactions();
   const { txListener } = useEthers();
   const { fNum } = useNumbers();
-  const { isUserRejected } = useTranasactionErrors();
   const { t } = useI18n();
 
   const hasValidationError = computed(
@@ -237,7 +236,7 @@ export default function useJoinExit({
         },
       });
     } catch (error) {
-      if (!isUserRejected(error)) {
+      if (!isUserError(error)) {
         console.trace(error);
         state.submissionError = t('swapException', ['Relayer']);
         captureException(new Error(state.submissionError, { cause: error }), {

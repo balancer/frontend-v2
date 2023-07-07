@@ -14,15 +14,20 @@ import useNetwork from '../useNetwork';
  */
 type QueryResponse = ContractAllowancesMap;
 type QueryOptions = UseQueryOptions<QueryResponse>;
+interface QueryInputs {
+  tokens: Ref<TokenInfoMap>;
+  contractAddresses: Ref<string[]>;
+  isEnabled?: Ref<boolean>;
+}
 
 /**
  * Fetches all allowances for given tokens for each provided contract address.
  */
-export default function useAllowancesQuery(
-  tokens: Ref<TokenInfoMap> = ref({}),
-  contractAddresses: Ref<string[]> = ref([]),
-  options: QueryOptions = {}
-) {
+export default function useAllowancesQuery({
+  tokens,
+  contractAddresses,
+  isEnabled = ref(true),
+}: QueryInputs) {
   /**
    * COMPOSABLES
    */
@@ -32,7 +37,7 @@ export default function useAllowancesQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => isWalletReady.value);
+  const enabled = computed(() => isWalletReady.value && isEnabled.value);
   const tokenAddresses = computed(() => Object.keys(tokens.value));
 
   /**
@@ -62,7 +67,6 @@ export default function useAllowancesQuery(
     enabled,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
-    ...options,
   });
 
   return useQuery<QueryResponse>(

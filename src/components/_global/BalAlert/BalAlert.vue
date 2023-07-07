@@ -9,14 +9,18 @@
       </div>
       <div :class="['bal-alert-content', contentClasses]">
         <div>
-          <h5 :class="['bal-alert-title', titleClasses, textSizeClass]">
+          <h5 :class="['bal-alert-title mb-1', titleClasses, textSizeClass]">
             <slot name="title">
               {{ title }}
             </slot>
           </h5>
           <p
             v-if="$slots.default || description"
-            :class="['bal-alert-description', descriptionColor, textSizeClass]"
+            :class="[
+              'bal-alert-description font-normal',
+              descriptionColor,
+              textSizeClass,
+            ]"
           >
             <slot>
               {{ description }}
@@ -212,11 +216,11 @@ export default defineComponent({
 }
 
 .bal-alert-container {
-  @apply flex;
+  @apply flex flex-grow;
 }
 
 .bal-alert-content {
-  @apply flex whitespace-pre-wrap;
+  @apply flex whitespace-pre-wrap flex-grow;
 
   min-width: 0;
 }

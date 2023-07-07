@@ -91,12 +91,13 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id',
     name: 'pool',
     component: PoolPage,
+    meta: { layout: 'PoolLayout' },
   },
   {
     path: '/:networkSlug/pool/:id/add-liquidity',
     name: 'add-liquidity',
     component: PoolAddLiquidityPage,
-    meta: { layout: 'JoinExitLayout' },
+    meta: { layout: 'PoolLayout' },
   },
   {
     path: '/:networkSlug/pool/:id/invest',
@@ -109,7 +110,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/withdraw',
     name: 'withdraw',
     component: PoolWithdrawPage,
-    meta: { layout: 'JoinExitLayout' },
+    meta: { layout: 'PoolLayout' },
   },
   {
     path: '/:networkSlug/vebal',

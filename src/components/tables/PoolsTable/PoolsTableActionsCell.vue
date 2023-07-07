@@ -60,7 +60,8 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
     </BalBtn>
     <BalBtn
       v-else-if="poolsType === 'staked'"
-      color="gradient"
+      class="dark:text-gray-300 dark:border-gray-300"
+      outline
       size="sm"
       @click.prevent.stop="emit('click:unstake', pool)"
     >

@@ -36,9 +36,8 @@ export default function useVotingGauges() {
   const _votingGauges = computed((): VotingGauge[] => {
     if (isTestnet.value) {
       return votingGaugesForNetwork(networkId.value);
-    } else {
-      return MAINNET_VOTING_GAUGES as VotingGauge[];
     }
+    return MAINNET_VOTING_GAUGES as VotingGauge[];
   });
 
   // Fetch onchain votes data for given votingGauges

@@ -22,7 +22,7 @@ const pools: Pools = {
     PerPool: 10,
     PerPoolInitial: 5,
   },
-  BoostsEnabled: false,
+  BoostsEnabled: true,
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
@@ -119,6 +119,7 @@ const pools: Pools = {
       '0xed35f28f837e96f81240ebb82e0e3f518c7e8a2f000100000000000000000bb5', // STARV2-SuperPoolV1
       '0xb49bd41ed56340674e2d2d3cfbfa9807e4e1fe27000100000000000000000bc2', // 25SUSHI-25WETH-25AAVE-25agEUR
       '0xca0f8eb1b81e1a69fac97f1c898e0938c768eb20000200000000000000000bc1', // 30WBTC-702BRL (BRZ)
+      '0x2e1fd968a7185f52cfb933e51b5bb7f8f43e6105000100000000000000000bc5', // 10WBTC-10USDC-40WETH-40NEX
     ],
   },
   Factories: {

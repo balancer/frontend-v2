@@ -17,10 +17,12 @@ type Props = {
   dependencies?: unknown;
   showSectionBorder?: boolean;
   reCalcKey?: number;
+  isOpenedByDefault?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   showSectionBorder: true,
+  isOpenedByDefault: false,
   reCalcKey: 0,
 });
 
@@ -154,13 +156,13 @@ watch(
           />
         </button>
         <div
-          v-if="activeSection === section.id"
+          v-if="activeSection === section.id || isOpenedByDefault"
           ref="accordionHeightSetterElement"
           class="relative"
         >
           <!-- content -->
           <div
-            v-if="isContentVisible"
+            v-if="isContentVisible || isOpenedByDefault"
             ref="activeSectionElement"
             :class="{
               'border-b dark:border-gray-900 active-section rounded-b':

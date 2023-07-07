@@ -23,6 +23,7 @@ interface Params {
   spender: string;
   actionType: ApprovalAction;
   forceMax?: boolean;
+  skipAllowanceCheck?: boolean;
 }
 
 interface ApproveTokenParams {
@@ -90,11 +91,19 @@ export default function useTokenApprovalActions() {
     }
   }
 
+  async function updateAllowancesFor(spender: string): Promise<void> {
+    await injectSpenders([spender]);
+    await refetchAllowances();
+  }
+
   async function getApprovalsRequired(
     amountsToApprove: AmountToApprove[],
-    spender: string
+    spender: string,
+    skipAllowanceCheck = false
   ): Promise<AmountToApprove[]> {
-    await injectSpenders([spender]);
+    if (!skipAllowanceCheck) {
+      await updateAllowancesFor(spender);
+    }
 
     return approvalsRequired(amountsToApprove, spender);
   }
@@ -103,8 +112,7 @@ export default function useTokenApprovalActions() {
     amountToApprove: AmountToApprove,
     spender: string
   ): Promise<boolean> {
-    await injectSpenders([spender]);
-    await refetchAllowances();
+    await updateAllowancesFor(spender);
 
     return !approvalRequired(
       amountToApprove.address,
@@ -182,10 +190,12 @@ export default function useTokenApprovalActions() {
     spender,
     actionType,
     forceMax = true,
+    skipAllowanceCheck = false,
   }: Params): Promise<TransactionActionInfo[]> {
     const approvalsRequired = await getApprovalsRequired(
       amountsToApprove,
-      spender
+      spender,
+      skipAllowanceCheck
     );
 
     return approvalsRequired.map(amountToApprove => {
@@ -216,5 +226,6 @@ export default function useTokenApprovalActions() {
   return {
     approveToken,
     getTokenApprovalActions,
+    updateAllowancesFor,
   };
 }
