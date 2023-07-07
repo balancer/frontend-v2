@@ -11,6 +11,13 @@ import useNetwork from '@/composables/useNetwork';
 import usePools from '@/composables/pools/usePools';
 import { lsGet, lsSet } from '@/lib/utils';
 import LS_KEYS from '@/constants/local-storage.keys';
+import { useIntersectionObserver } from '@vueuse/core';
+
+const featuredProtocols = ref<HTMLDivElement | null>(null);
+const targetIsVisible = ref(false);
+useIntersectionObserver(featuredProtocols, ([{ isIntersecting }]) => {
+  targetIsVisible.value = isIntersecting;
+});
 
 /**
  * STATE
@@ -112,7 +119,11 @@ function onColumnSort(columnId: string) {
           @on-column-sort="onColumnSort"
           @load-more="loadMorePools"
         />
-        <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
+        <div
+          v-if="isElementSupported"
+          ref="featuredProtocols"
+          class="p-4 xl:p-0 mt-16"
+        >
           <FeaturedProtocols />
         </div>
       </BalStack>
