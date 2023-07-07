@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { captureException } from '@sentry/browser';
 
-import { isGoerli } from '@/composables/useNetwork';
+import { isTestnet } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
 
 const ClaimPage = () => import('@/pages/claim/index.vue');
@@ -163,7 +163,7 @@ const routes: RouteRecordRaw[] = [
 /**
  * TESTNET ONLY ROUTES
  */
-if (isGoerli.value) {
+if (isTestnet.value) {
   routes.push({
     path: '/:networkSlug/faucet',
     name: 'faucet',

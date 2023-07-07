@@ -2,7 +2,6 @@ import { BlockNumberResponse } from './types';
 import { blockSubgraphService } from './subgraph/block-subgraph.service';
 import { getSecondsSince, oneHourInSecs } from '@/composables/useTime';
 import { bnum } from '@/lib/utils';
-import { isGnosis, isGoerli } from '@/composables/useNetwork';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { configService } from '../config/config.service';
 
@@ -17,7 +16,7 @@ export default class BlockService {
     timestamp: string,
     useRange = true
   ): Promise<number> {
-    if (isGnosis.value || isGoerli.value)
+    if (!this.config.network.subgraphs.blocks)
       return this.fetchBlockByApprox(timestamp);
     return this.fetchBlockByTimeWithGraph(timestamp, useRange);
   }
