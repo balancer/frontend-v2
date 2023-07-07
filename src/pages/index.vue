@@ -13,10 +13,12 @@ import { lsGet, lsSet } from '@/lib/utils';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { useIntersectionObserver } from '@vueuse/core';
 
-const featuredProtocols = ref<HTMLDivElement | null>(null);
-const targetIsVisible = ref(false);
-useIntersectionObserver(featuredProtocols, ([{ isIntersecting }]) => {
-  targetIsVisible.value = isIntersecting;
+const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
+const isFeaturedProtocolsVisible = ref(false);
+useIntersectionObserver(featuredProtocolsSentinel, ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    isFeaturedProtocolsVisible.value = true;
+  }
 });
 
 /**
@@ -119,10 +121,10 @@ function onColumnSort(columnId: string) {
           @on-column-sort="onColumnSort"
           @load-more="loadMorePools"
         />
+        <div ref="featuredProtocolsSentinel" />
         <div
-          v-if="isElementSupported"
-          ref="featuredProtocols"
-          class="p-4 xl:p-0 mt-16"
+          v-if="isElementSupported && isFeaturedProtocolsVisible"
+          class="p-4 xl:p-0 mt-12"
         >
           <FeaturedProtocols />
         </div>
