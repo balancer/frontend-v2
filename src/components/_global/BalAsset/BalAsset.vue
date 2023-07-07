@@ -77,6 +77,8 @@ watch(iconSRC, newURL => {
       v-if="iconSRC && !error"
       :src="iconSRC"
       alt="icon"
+      :width="size"
+      :height="size"
       class="bg-white rounded-full"
       loading="lazy"
       @error="error = true"
