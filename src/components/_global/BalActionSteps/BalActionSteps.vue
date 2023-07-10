@@ -7,7 +7,6 @@
  * Useful if there are an arbitrary number of actions the user must take such as
  * "approve n tokens, then add liquidity to a pool.""
  */
-import { ChainId } from '@aave/protocol-js';
 import {
   TransactionReceipt,
   TransactionResponse,
@@ -17,7 +16,6 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTransactionErrors from '@/composables/useTransactionErrors';
-import { configService } from '@/services/config/config.service';
 import { Step, StepState } from '@/types';
 import {
   TransactionAction,
@@ -27,6 +25,7 @@ import {
 import signature from '@/assets/images/icons/signature.svg';
 import { captureException } from '@sentry/core';
 import { useI18n } from 'vue-i18n';
+import { postConfirmationDelay } from '@/composables/useTransactions';
 
 /**
  * TYPES
@@ -221,11 +220,7 @@ async function handleTransaction(
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;
 
-      // need to explicity wait for a number of confirmations
-      // on polygon
-      if (Number(configService.network.chainId) === ChainId.polygon) {
-        await tx.wait(10);
-      }
+      await postConfirmationDelay(tx);
 
       state.confirming = false;
 
