@@ -2,7 +2,7 @@ import { captureException } from '@sentry/browser';
 import { ScopeContext } from '@sentry/types/types/scope';
 import debounce from 'lodash/debounce';
 
-type BalancerExceptionAction = 'swap' | 'joinPool' | 'exitPool' | 'lock';
+type BalancerExceptionAction = 'swap' | 'joinPool' | 'exitPool';
 
 export function captureBalancerException(
   error: Error,
@@ -19,7 +19,7 @@ export function captureBalancerException(
 
   debounce(() => {
     captureException(
-      new Error(`${messagePrefix}: ${reason}`, { cause: error }),
+      getErrorForAction(action, `${messagePrefix}: ${reason}`, error),
       {
         ...captureContext,
         extra: {
@@ -46,3 +46,22 @@ function getReasonAndBalErrorFromError(error: Error): {
     balError: balError && balError[0] ? balError[0].slice(-3) : null,
   };
 }
+
+function getErrorForAction(
+  action: BalancerExceptionAction,
+  message: string,
+  originalError: Error
+) {
+  switch (action) {
+    case 'swap':
+      return new SwapError(message, { cause: originalError });
+    case 'joinPool':
+      return new JoinPoolError(message, { cause: originalError });
+    case 'exitPool':
+      return new ExitPoolError(message, { cause: originalError });
+  }
+}
+
+class SwapError extends Error {}
+class JoinPoolError extends Error {}
+class ExitPoolError extends Error {}
