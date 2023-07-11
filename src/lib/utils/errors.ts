@@ -17,7 +17,11 @@ export function captureBalancerException(
   }
 
   captureException(
-    getErrorForAction(action, `${messagePrefix}: ${reason}`, error),
+    getErrorForAction(
+      action,
+      `${balError ? `BAL#${balError} ` : ''}${messagePrefix}: ${reason}`,
+      error
+    ),
     {
       ...captureContext,
       extra: {
