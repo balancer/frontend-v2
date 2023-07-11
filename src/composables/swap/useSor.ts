@@ -822,7 +822,7 @@ export default function useSor({
           tags: {
             action: 'swap',
             swapType: 'balancer',
-            balError: balError || undefined,
+            balError: balError?.slice(-3) || undefined,
           },
         }
       );
