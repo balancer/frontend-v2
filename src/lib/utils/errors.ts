@@ -1,6 +1,5 @@
 import { captureException } from '@sentry/browser';
 import { ScopeContext } from '@sentry/types/types/scope';
-import debounce from 'lodash/debounce';
 
 type BalancerExceptionAction = 'swap' | 'joinPool' | 'exitPool';
 
@@ -17,20 +16,18 @@ export function captureBalancerException(
     tags.balError = balError;
   }
 
-  debounce(() => {
-    captureException(
-      getErrorForAction(action, `${messagePrefix}: ${reason}`, error),
-      {
-        ...captureContext,
-        extra: {
-          ...captureContext?.extra,
-          reason,
-          balError,
-        },
-        tags,
-      }
-    );
-  }, 1000);
+  captureException(
+    getErrorForAction(action, `${messagePrefix}: ${reason}`, error),
+    {
+      ...captureContext,
+      extra: {
+        ...captureContext?.extra,
+        reason,
+        balError,
+      },
+      tags,
+    }
+  );
 }
 
 function getReasonAndBalErrorFromError(error: Error): {
@@ -54,7 +51,7 @@ function getErrorForAction(
 ) {
   switch (action) {
     case 'swap':
-      return new SwapError(message, { cause: originalError });
+      return new BatchSwapError(message, { cause: originalError });
     case 'joinPool':
       return new JoinPoolError(message, { cause: originalError });
     case 'exitPool':
@@ -62,6 +59,12 @@ function getErrorForAction(
   }
 }
 
-class SwapError extends Error {}
-class JoinPoolError extends Error {}
-class ExitPoolError extends Error {}
+class BatchSwapError extends Error {
+  name = 'BatchSwapError';
+}
+class JoinPoolError extends Error {
+  name = 'JoinPoolError';
+}
+class ExitPoolError extends Error {
+  name = 'ExitPoolError';
+}
