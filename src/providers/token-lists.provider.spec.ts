@@ -76,28 +76,9 @@ describe('Token lists provider should', () => {
     ]);
   });
 
-  test('provide default TokenList', async () => {
+  test('provide allowlisted TokenList', async () => {
     const { result } = mountComposableWithTokenLists();
-    expect(tokenListSymbols(result.defaultTokenList.value)).toEqual([
-      'BAL',
-      'DAI',
-      'USDT',
-      'USDC',
-      'WETH',
-      'WBTC',
-      'miMATIC',
-      // Explicitly added to test tokens-5.json to simplify testing:
-      'bb-a-USD',
-      'bb-a-USDT',
-      'test-pool-symbol',
-      'bb-a-DAI',
-      'GRO',
-    ]);
-  });
-
-  test('provide vetted TokenList', async () => {
-    const { result } = mountComposableWithTokenLists();
-    expect(tokenListSymbols(result.vettedTokenList.value)).toEqual([
+    expect(tokenListSymbols(result.allowlistedTokenList.value)).toEqual([
       'BAL',
       'bb-a-DAI',
       'bb-a-USDC',

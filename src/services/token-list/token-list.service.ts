@@ -11,10 +11,8 @@ interface TokenListUris {
   All: string[];
   Balancer: {
     All: string[];
-    // Compliant list for exchange
-    Default: string;
-    // Extended list to include LBP tokens
-    Vetted: string;
+    // Allowlisted tokens list from tokenslist repo
+    Allowlisted: string;
   };
   Approved: string[];
   External: string[];
@@ -36,9 +34,9 @@ export default class TokenListService {
       this.appNetwork
     ).tokenlists;
 
-    const balancerLists = [Balancer.Default, Balancer.Vetted];
+    const balancerLists = [Balancer.Allowlisted];
     const All = [...balancerLists, ...External];
-    const Approved = [Balancer.Default, ...External];
+    const Approved = [Balancer.Allowlisted, ...External];
 
     return {
       All,
