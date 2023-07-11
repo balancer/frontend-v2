@@ -144,6 +144,7 @@ const pools: Pools = {
       '0x4729f67394030472e853cb61954fe784bfb36c3b000100000000000000000569', // 25WBTC-50USDC-25WETH
       '0x911fc393355fe415a667893d55fff6703c57c72e000200000000000000000574', // 50ETHx-50WETH
       '0x8334215586e93ee85e3f1a281eaf66e52015754d00020000000000000000057e', // 50WETH-50FIEF
+      '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d', // bbaweth-ethx
     ],
   },
   Factories: {
@@ -454,6 +455,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Morpho],
     },
+    '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d': {
+      name: 'ETHx/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -490,6 +497,7 @@ const pools: Pools = {
     '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a', // reth/bb-a-weth
     '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
     '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
+    '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d', // bbaweth-ethx
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
