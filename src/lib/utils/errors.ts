@@ -40,7 +40,7 @@ function getReasonAndBalErrorFromError(error: Error): {
 } {
   const reason: string =
     (error as { reason?: string }).reason || 'no reason available';
-  const balError = reason.match(/BAL#([0-9])\d\d/g);
+  const balError = reason.match(/BAL#[0-9]{3}/g);
 
   return {
     reason: reason,
