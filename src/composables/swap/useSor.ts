@@ -44,6 +44,7 @@ import { SwapQuote } from './types';
 import { captureException } from '@sentry/browser';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { isUserError } from '../useTransactionErrors';
+import { getReasonAndBalErrorFromError } from '@/lib/utils/errors';
 
 type SorState = {
   validationErrors: {
@@ -805,14 +806,26 @@ export default function useSor({
     if (!isUserError(error)) {
       console.trace(error);
       state.submissionError = t('swapException', ['Balancer']);
-      captureException(new Error(state.submissionError, { cause: error }), {
-        level: 'fatal',
-        extra: {
-          sender: account.value,
-          tokenIn,
-          tokenOut,
-        },
-      });
+      const { reason, balError } = getReasonAndBalErrorFromError(error);
+
+      captureException(
+        new Error(`${state.submissionError}: ${reason}`, { cause: error }),
+        {
+          level: 'fatal',
+          extra: {
+            sender: account.value,
+            tokenIn,
+            tokenOut,
+            reason,
+            balError,
+          },
+          tags: {
+            action: 'swap',
+            swapType: 'balancer',
+            balError: balError || undefined,
+          },
+        }
+      );
     }
     swapping.value = false;
     confirming.value = false;
