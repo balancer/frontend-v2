@@ -1,9 +1,15 @@
+import debounce from 'lodash/debounce';
 import { captureException } from '@sentry/browser';
 import { ScopeContext } from '@sentry/types/types/scope';
 
 type BalancerExceptionAction = 'swap' | 'joinPool' | 'exitPool';
 
-export function captureBalancerException(
+export const captureBalancerException = debounce(
+  _captureBalancerException,
+  1000
+);
+
+function _captureBalancerException(
   error: Error,
   action: BalancerExceptionAction,
   messagePrefix: string,
