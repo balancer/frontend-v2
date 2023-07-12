@@ -16,6 +16,7 @@ export function isUserRejected(error): boolean {
     /user denied transaction signature/,
     /user disapproved requested methods/,
     /canceled/,
+    /user rejected signing/,
   ];
 
   return isErrorType(error, messages);
@@ -24,6 +25,11 @@ export function isUserRejected(error): boolean {
 export function isUserNotEnoughGas(error): boolean {
   const messages = [/insufficient funds for gas/];
 
+  return isErrorType(error, messages);
+}
+
+export function isFaucetRefillError(error): boolean {
+  const messages = [/execution reverted: ERR_NEEDS_REFILL/];
   return isErrorType(error, messages);
 }
 
@@ -44,7 +50,9 @@ function isErrorType(error, messages: RegExp[]): boolean {
 
   if (
     typeof error.reason === 'string' &&
-    messages.some(msg => msg.test(error.reason.toLowerCase()))
+    messages.some(
+      msg => msg.test(error.reason) || msg.test(error.reason.toLowerCase())
+    )
   )
     return true;
 
