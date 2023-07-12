@@ -8,9 +8,7 @@ import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import useEthers from '@/composables/useEthers';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
-import { dateTimeLabelFor } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { Pool } from '@/services/pool/types';
@@ -43,7 +41,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const { fNum } = useNumbers();
 const { addTransaction } = useTransactions();
-const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isStakablePool } = usePoolStaking();
 const { isMismatchedNetwork } = useWeb3();
@@ -76,9 +73,12 @@ const actions = computed((): TransactionActionInfo[] => [
 /**
  * METHODS
  */
-async function handleTransaction(tx): Promise<void> {
+async function handleSuccess(
+  receipt: TransactionReceipt,
+  confirmedAt: string
+): Promise<void> {
   addTransaction({
-    id: tx.hash,
+    id: receipt.transactionHash,
     type: 'tx',
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
@@ -90,28 +90,16 @@ async function handleTransaction(tx): Promise<void> {
       pool: props.pool,
     },
   });
-
-  await txListener(tx, {
-    onTxConfirmed: async (receipt: TransactionReceipt) => {
-      emit('success', receipt);
-      txState.receipt = receipt;
-
-      const confirmedAt = await getTxConfirmedAt(receipt);
-      txState.confirmedAt = dateTimeLabelFor(confirmedAt);
-      txState.confirmed = true;
-      txState.confirming = false;
-    },
-    onTxFailed: () => {
-      console.error('Invest failed');
-      txState.confirming = false;
-    },
-  });
+  txState.receipt = receipt;
+  txState.confirmedAt = confirmedAt;
+  txState.confirmed = true;
+  txState.confirming = false;
+  emit('success', receipt);
 }
 
-onUnmounted(() => {
-  // Reset tx state after Invest Modal is closed. Ready for another Invest transaction
-  resetTxState();
-});
+function handleFailed() {
+  txState.confirming = false;
+}
 
 async function submit(): Promise<TransactionResponse> {
   txState.init = true;
@@ -120,7 +108,6 @@ async function submit(): Promise<TransactionResponse> {
     console.log('tx', tx);
     txState.confirming = true;
 
-    handleTransaction(tx);
     return tx;
   } catch (error) {
     txState.confirming = false;
@@ -131,6 +118,14 @@ async function submit(): Promise<TransactionResponse> {
     txState.init = false;
   }
 }
+
+/**
+ * LIFECYCLE
+ */
+onUnmounted(() => {
+  // Reset tx state after Invest Modal is closed. Ready for another Invest transaction
+  resetTxState();
+});
 </script>
 
 <template>
@@ -139,6 +134,8 @@ async function submit(): Promise<TransactionResponse> {
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
       :disabled="rektPriceImpact || isMismatchedNetwork"
+      @success="handleSuccess"
+      @failed="handleFailed"
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />

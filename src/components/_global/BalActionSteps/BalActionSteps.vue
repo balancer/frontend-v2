@@ -51,7 +51,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'success', value: any): void;
+  (e: 'success', tx: TransactionReceipt, confirmedAt: string): void;
+  (e: 'failed'): void;
   (e: 'setCurrentActionIndex', value: number): void;
 }>();
 
@@ -230,7 +231,7 @@ async function handleTransaction(
         state.confirmedAt = dateTimeLabelFor(confirmedAt);
         state.confirmed = true;
         if (currentActionIndex.value >= actions.value.length - 1) {
-          emit('success', { receipt, confirmedAt: state.confirmedAt });
+          emit('success', receipt, state.confirmedAt);
         } else {
           currentActionIndex.value += 1;
         }
@@ -242,6 +243,7 @@ async function handleTransaction(
     },
     onTxFailed: () => {
       state.confirming = false;
+      emit('failed');
     },
   });
 }
