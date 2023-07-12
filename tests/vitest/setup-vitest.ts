@@ -10,6 +10,10 @@ vi.mock('@/services/web3/useWeb3');
 vi.mock('@/composables/useEthers');
 vi.mock('@/composables/useTransactions');
 
+// 1 Jan 2023
+const mockDate = new Date(2023, 0, 1);
+vi.setSystemTime(mockDate);
+
 //Globally silence time tracing to avoid noise in tests
 beforeAll(() => {
   vi.spyOn(console, 'time').mockImplementation(noop);

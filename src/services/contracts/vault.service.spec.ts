@@ -128,6 +128,7 @@ describe('vault.service', () => {
           expect.any(Number), // expect.any(Number) refers to the deadline from calculateValidTo(transactionDeadline)
         ],
         options: {},
+        shouldLogFailure: false,
       });
     });
   });

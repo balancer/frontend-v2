@@ -45,7 +45,7 @@ const { isMigratablePool } = usePoolHelpers(toRef(props, 'pool'));
 const { stakedShares } = usePoolStaking();
 const { networkSlug } = useNetwork();
 const router = useRouter();
-const { totalLockedValue } = useLock();
+const { totalLockedValue } = useLock({ enabled: isVeBalPool(props.pool.id) });
 
 /**
  * COMPUTED

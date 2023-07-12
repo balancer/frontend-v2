@@ -14,6 +14,9 @@ import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { deprecatedDetails } from '@/composables/usePoolHelpers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import { StakeAction } from './composables/useStakePreview';
+import StakingCardSyncAlert from '../../vebal/cross-chain-boost/StakingCardSyncAlert.vue';
+import useNetwork from '@/composables/useNetwork';
+import { Network } from '@/lib/config';
 
 type Props = {
   pool: Pool;
@@ -30,7 +33,7 @@ const emit = defineEmits<{
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref<StakeAction>('stake');
 const poolId = computed(() => props.pool.id);
-
+const isOpenedByDefault = ref(false);
 /**
  * COMPOSABLES
  */
@@ -44,6 +47,7 @@ const {
   hasNonPrefGaugeBalance,
 } = usePoolStaking();
 const { isAffected } = usePoolWarning(poolId);
+const { networkId } = useNetwork();
 
 /**
  * COMPUTED
@@ -105,6 +109,7 @@ function handlePreviewClose() {
             },
           ]"
           :reCalcKey="hasNonPrefGaugeBalance ? 0 : 1"
+          :isOpenedByDefault="isOpenedByDefault"
         >
           <template #staking-handle>
             <button
@@ -172,6 +177,12 @@ function handlePreviewClose() {
                     <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                   </BalStack>
                 </BalStack>
+                <StakingCardSyncAlert
+                  v-if="networkId !== Network.MAINNET"
+                  :fiatValueOfStakedShares="fiatValueOfStakedShares"
+                  :fiatValueOfUnstakedShares="fiatValueOfUnstakedShares"
+                  @should-staking-card-be-opened="isOpenedByDefault = true"
+                />
                 <BalStack
                   v-if="hasNonPrefGaugeBalance && !isAffected"
                   horizontal
@@ -217,7 +228,7 @@ function handlePreviewClose() {
                   </BalBtn>
                 </BalStack>
                 <BalAlert
-                  v-if="hasNonPrefGaugeBalance"
+                  v-if="hasNonPrefGaugeBalance && networkId === Network.MAINNET"
                   :title="$t('staking.restakeGauge')"
                   class="mt-2"
                 >

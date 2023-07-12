@@ -240,6 +240,7 @@ export const poolStakingProvider = (_poolId?: string) => {
     refetchAllPoolStakingData,
     stake,
     unstake,
+    poolGauges,
   };
 };
 

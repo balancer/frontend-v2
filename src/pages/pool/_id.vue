@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-
 import {
   PoolChart,
   PoolStatCards,
@@ -15,9 +13,7 @@ import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
 import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
-import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
-import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import {
   isVeBalPool,
   preMintedBptIndex,
@@ -31,13 +27,13 @@ import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 import { PoolToken } from '@/services/pool/types';
-import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
 import metaService from '@/services/meta/meta.service';
 import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import PoolRisks from '@/components/contextual/pages/pool/risks/PoolRisks.vue';
+import { usePool } from '@/providers/local/pool.provider';
 
 /**
  * STATE
@@ -48,36 +44,24 @@ const poolId = (route.params.id as string).toLowerCase();
 const isRestakePreviewVisible = ref(false);
 
 /**
- * PROVIDERS
- */
-providePoolStaking(poolId);
-
-/**
  * COMPOSABLES
  */
-const { t } = useI18n();
-
 const { prices, priceQueryLoading } = useTokens();
 const { isWalletReady } = useWeb3();
-const { addAlert, removeAlert } = useAlerts();
 const _isVeBalPool = isVeBalPool(poolId);
-
-//#region pool query
-const poolQuery = usePoolQuery(poolId, undefined, undefined);
-const pool = computed(() => poolQuery.data.value);
-const poolQueryLoading = computed(
-  () => poolQuery.isLoading.value || Boolean(poolQuery.error.value)
-);
-const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
-
+const { pool, isLoadingPool } = usePool();
 const {
   isStableLikePool,
   isLiquidityBootstrappingPool,
   isComposableStableLikePool,
   isDeprecatedPool,
   isNewPoolAvailable,
-} = usePoolHelpers(poolQuery.data);
-//#endregion
+} = usePoolHelpers(pool);
+
+/**
+ * COMPUTED
+ */
+const loadingPool = computed(() => isLoadingPool.value || !pool.value);
 
 //#region pool snapshot query
 const poolSnapshotsQuery = usePoolSnapshotsQuery(poolId, undefined, {
@@ -189,22 +173,6 @@ function setRestakeVisibility(value: boolean): void {
 /**
  * WATCHERS
  */
-watch(poolQuery.error, () => {
-  if (poolQuery.error.value) {
-    addAlert({
-      id: 'pool-fetch-error',
-      label: t('alerts.pool-fetch-error'),
-      type: AlertType.ERROR,
-      persistent: true,
-      action: poolQuery.refetch,
-      actionLabel: t('alerts.retry-label'),
-      priority: AlertPriority.MEDIUM,
-    });
-  } else {
-    removeAlert('pool-fetch-error');
-  }
-});
-
 watch(
   () => pool.value,
   () => {

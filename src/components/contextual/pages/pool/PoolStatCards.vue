@@ -8,6 +8,8 @@ import { isLBP, totalAprLabel } from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
+import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -33,6 +35,8 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { fNum } = useNumbers();
 const { t } = useI18n();
+const { l2VeBalBalances } = useCrossChainSync();
+const { networkId } = useNetwork();
 
 /**
  * COMPUTED
@@ -42,6 +46,20 @@ const aprLabel = computed((): string => {
   if (!poolAPRs) return '0';
 
   return totalAprLabel(poolAPRs, props.pool?.boost);
+});
+
+const syncVeBalTooltip = computed(() => {
+  const vebalBalance = Number(l2VeBalBalances.value?.[networkId.value]);
+
+  if (vebalBalance > 0) {
+    return 'Remember to resync if you have acquired more veBAL since your last sync, to get a higher boosted staking rate. Resync on the veBAL page on Ethereum Mainnet.';
+  }
+
+  if (vebalBalance === 0) {
+    return 'If you have veBAL, sync your balance on the veBAL page on Ethereum Mainnet to get higher boosted staking rates across L2 networks.';
+  }
+
+  return '';
 });
 
 const stats = computed(() => {
@@ -80,6 +98,7 @@ const stats = computed(() => {
           ? '-'
           : aprLabel.value,
       loading: props.loadingApr,
+      tooltip: syncVeBalTooltip.value,
     },
   ];
 });
@@ -112,7 +131,12 @@ const stats = computed(() => {
             },
           ]"
         >
-          {{ stat.value }}
+          <span :class="{ 'mr-2': stat.tooltip }">{{ stat.value }}</span>
+          <BalTooltip v-if="stat.tooltip" :text="stat.tooltip">
+            <template #activator>
+              <BalIcon name="info" size="sm" class="text-gray-400" />
+            </template>
+          </BalTooltip>
         </div>
       </BalCard>
     </template>

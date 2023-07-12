@@ -3,49 +3,65 @@ import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 
 export function isUserRejected(error): boolean {
-  if (!error) return false;
-
-  const userRejectionMessages = [
-    'user rejected transaction',
-    'request rejected',
-    'user rejected methods.',
-    'user rejected the transaction',
-    'rejected by user',
-    'user canceled',
-    'cancelled by user',
-    'transaction declined',
-    'transaction was rejected',
-    'user denied transaction signature',
+  const messages = [
+    /user rejected transaction/,
+    /request rejected/,
+    /user rejected methods./,
+    /user rejected the transaction/,
+    /rejected by user/,
+    /user canceled/,
+    /cancelled by user/,
+    /transaction declined/,
+    /transaction was rejected/,
+    /user denied transaction signature/,
+    /user disapproved requested methods/,
+    /canceled/,
+    /user rejected signing/,
   ];
+
+  return isErrorType(error, messages);
+}
+
+export function isUserNotEnoughGas(error): boolean {
+  const messages = [/insufficient funds for gas/];
+
+  return isErrorType(error, messages);
+}
+
+function isErrorType(error, messages: RegExp[]): boolean {
+  if (!error) return false;
 
   if (
     typeof error === 'string' &&
-    userRejectionMessages.includes(error.toLowerCase())
+    messages.some(msg => msg.test(error.toLowerCase()))
   )
     return true;
 
   if (
     error.message &&
-    userRejectionMessages.includes(error.message.toLowerCase())
+    messages.some(msg => msg.test(error.message.toLowerCase()))
   )
     return true;
 
   if (
     typeof error.reason === 'string' &&
-    userRejectionMessages.includes(error.reason.toLowerCase())
+    messages.some(msg => msg.test(error.reason.toLowerCase()))
   )
     return true;
 
   if (
     error.cause?.message &&
-    userRejectionMessages.includes(error.cause.message.toLowerCase())
+    messages.some(msg => msg.test(error.cause.message.toLowerCase()))
   )
     return true;
 
   if (
     typeof error.cause === 'string' &&
-    userRejectionMessages.includes(error.cause.toLowerCase())
+    messages.some(msg => msg.test(error.cause.toLowerCase()))
   )
+    return true;
+
+  if (error.b && messages.some(msg => msg.test(error.b.toLowerCase())))
     return true;
 
   if (error?.code && error.code === 4001) {
@@ -57,7 +73,12 @@ export function isUserRejected(error): boolean {
   return false;
 }
 
-export default function useTranasactionErrors() {
+// Errors that are caused by the user or the state of their wallet.
+export function isUserError(error): boolean {
+  return isUserRejected(error) || isUserNotEnoughGas(error);
+}
+
+export default function useTransactionErrors() {
   /**
    * COMPOSABLES
    */
@@ -92,7 +113,7 @@ export default function useTranasactionErrors() {
    * METHODS
    */
   function parseError(error): TransactionError | null {
-    if (isUserRejected(error)) return null; // User rejected transaction
+    if (isUserError(error)) return null;
     if (error?.code && error.code === 'UNPREDICTABLE_GAS_LIMIT')
       return cannotEstimateGasError;
 

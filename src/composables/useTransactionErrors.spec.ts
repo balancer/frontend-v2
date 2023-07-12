@@ -1,7 +1,7 @@
 import { WalletError } from '@/types';
 import { isUserRejected } from './useTransactionErrors';
 
-describe('userTransactionErrors', () => {
+describe('useTransactionErrors', () => {
   describe('isUserRejected', () => {
     it('Should return false for a non-user error', () => {
       const error = new Error('Unsupported Exit Type For Pool');
@@ -31,6 +31,31 @@ describe('userTransactionErrors', () => {
     it('Should return true if the error code is 4001', () => {
       const rejectionError = new Error('Something went wrong') as WalletError;
       rejectionError.code = 4001;
+      expect(isUserRejected(rejectionError)).toBe(true);
+    });
+
+    // See https://balancer-labs.sentry.io/issues/4199718124/events/74a6db95ab424cd6a286af7a00076d2c/
+    it('Should return true if the error is an object with a and b parameters', () => {
+      const rejectionError = { a: -500, b: 'Cancelled by User' };
+      expect(isUserRejected(rejectionError)).toBe(true);
+    });
+
+    // See https://balancer-labs.sentry.io/issues/4199718124/events/f1a41824e66141b4806c50db5f081f7b/
+    it('Should return true if its a user error where they are out of gas', () => {
+      const rejectionError = {
+        code: 5002,
+        message:
+          "User rejected methods. Your wallet doesn't have enough Ethereum to start this transfer.",
+      };
+      expect(isUserRejected(rejectionError)).toBe(true);
+    });
+
+    // See https://balancer-labs.sentry.io/issues/4199718124/events/57d26b71647046f2be3620f3c0165714/
+    it('Should return true if its a user error as an object', () => {
+      const rejectionError = {
+        code: 5001,
+        message: 'User disapproved requested methods',
+      };
       expect(isUserRejected(rejectionError)).toBe(true);
     });
   });
