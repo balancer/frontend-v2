@@ -28,6 +28,11 @@ export function isUserNotEnoughGas(error): boolean {
   return isErrorType(error, messages);
 }
 
+export function isFaucetRefillError(error): boolean {
+  const messages = [/execution reverted: ERR_NEEDS_REFILL/];
+  return isErrorType(error, messages);
+}
+
 function isErrorType(error, messages: RegExp[]): boolean {
   if (!error) return false;
 
@@ -45,7 +50,9 @@ function isErrorType(error, messages: RegExp[]): boolean {
 
   if (
     typeof error.reason === 'string' &&
-    messages.some(msg => msg.test(error.reason.toLowerCase()))
+    messages.some(
+      msg => msg.test(error.reason) || msg.test(error.reason.toLowerCase())
+    )
   )
     return true;
 
