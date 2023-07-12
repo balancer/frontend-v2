@@ -6,7 +6,9 @@ import { StaticJsonRpcBatchProvider } from './static-json-rpc-batch-provider';
 vi.mock('@ethersproject/providers', () => {
   return {
     JsonRpcProvider: vi.fn().mockImplementation(() => {
-      return {};
+      return {
+        once: vi.fn(),
+      };
     }),
     WebSocketProvider: vi.fn().mockImplementation(() => {
       return {
