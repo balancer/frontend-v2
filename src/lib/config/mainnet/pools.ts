@@ -104,6 +104,10 @@ const pools: Pools = {
       '0x0bbc7b78ff8453c40718e290b33f1d00ee67274e000000000000000000000563', // baoeth/beth
       '0x911fc393355fe415a667893d55fff6703c57c72e000200000000000000000574', // 50ETHx-50WETH
       '0xd8721e92ba0f8235b375e9ec9a7b697ec4e2d6c6000200000000000000000575', // 80BIDS-20WETH
+      '0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b', // wstETH-rETH-sfrxETH-BPT
+      '0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593', // bb-a-USD
+      '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594', // wstETH-bb-a-WETH-BPT
+      '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e', // B-wstETH/bb-ma3-weth
     ],
   },
   Investment: {
@@ -449,7 +453,7 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
-    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e': {
+    '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e': {
       name: 'wstETH/Boosted Morpho Aave v3 WETH',
       hasIcon: false,
       boosted: true,
@@ -457,6 +461,18 @@ const pools: Pools = {
     },
     '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d': {
       name: 'ETHx/Boosted Aave v3 WETH',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594': {
+      name: 'wstETH/Boosted Aave v3  WETH',
       hasIcon: false,
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
@@ -498,6 +514,9 @@ const pools: Pools = {
     '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
     '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
     '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d', // bbaweth-ethx
+    '0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593', // bb-a-USD
+    '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594', // wstETH-bb-a-WETH-BPT
+    '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e', // B-wstETH/bb-ma3-weth
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
