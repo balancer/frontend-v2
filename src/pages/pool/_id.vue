@@ -253,8 +253,8 @@ watch(
       </div>
 
       <BrandedRedirectCard
-        v-if="showBrandedRedirectCard"
-        :poolType="pool.poolType"
+        v-if="showBrandedRedirectCard && pool"
+        :poolType="pool?.poolType"
         class="order-1 lg:order-2 px-4 lg:px-0"
       />
 
