@@ -1,5 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { PoolWarning, Pools, PoolType } from '@/types/pools';
+import { PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {
@@ -358,10 +358,10 @@ const pools: Pools = {
   },
   GaugeMigration: {},
   BrandedRedirect: {
-    [PoolType.FX]: 'xave',
-    [PoolType.Gyro2]: 'gyro',
-    [PoolType.Gyro3]: 'gyro',
-    [PoolType.GyroE]: 'gyro',
+    FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
   },
   Issues: {
     [PoolWarning.PoolProtocolFeeVulnWarning]: [

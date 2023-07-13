@@ -1,5 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { PoolWarning, Pools, PoolType } from '@/types/pools';
+import { PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {
@@ -597,7 +597,7 @@ const pools: Pools = {
   },
   GaugeMigration: {},
   BrandedRedirect: {
-    [PoolType.FX]: 'xave',
+    FX: 'xave',
   },
   ExitViaInternalBalance: [
     '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC

@@ -1,32 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  ComposableStable = 'ComposableStable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  LiquidityBootstrapping = 'LiquidityBootstrapping',
-  Element = 'Element',
-  Gyro2 = 'Gyro2',
-  Gyro3 = 'Gyro3',
-  GyroE = 'GyroE',
-  Managed = 'Managed',
-  AaveLinear = 'AaveLinear',
-  Linear = 'Linear',
-  EulerLinear = 'EulerLinear',
-  ERC4626Linear = 'ERC4626Linear',
-  BeefyLinear = 'BeefyLinear',
-  GearboxLinear = 'GearboxLinear',
-  MidasLinear = 'MidasLinear',
-  ReaperLinear = 'ReaperLinear',
-  SiloLinear = 'SiloLinear',
-  TetuLinear = 'TetuLinear',
-  YearnLinear = 'YearnLinear',
-  FX = 'FX',
-}
-
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -159,7 +132,7 @@ export type Pools = {
   BoostedApr: string[];
   DisabledJoins: string[];
   ExitViaInternalBalance?: string[];
-  BrandedRedirect?: Partial<Record<PoolType, string>>;
+  BrandedRedirect?: Partial<Record<string, string>>;
   Deprecated?: Record<string, DeprecatedDetails>;
   NewVersionAvailable?: Record<string, NewVersionAvailableDetails>;
   GaugeMigration?: Record<string, DeprecatedDetails>;
