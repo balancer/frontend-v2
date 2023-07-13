@@ -6,58 +6,56 @@ import tokenlists from './tokenlists';
 import tokens from './tokens';
 import rateProviders from './rateProviders';
 
+//TODO: Main Subgraph, Gauge Subgraph, Balancer API, Element Pools, Gauge Type & Weight
+
 const config: Config = {
   key: '245022926',
   chainId: 245022926,
   chainName: 'Neon Devnet',
   name: 'Neon Devnet',
-  shortName: 'Mainnet',
-  monorepoName: 'mainnet',
+  shortName: 'neon-devnet',
+  monorepoName: 'neon-devnet',
   slug: 'neon-devnet',
-  network: 'mainnet',
-  trustWalletNetwork: 'ethereum',
+  network: 'neon-devnet',
+  trustWalletNetwork: 'neondevnet',
   unknown: false,
   visibleInUI: true,
-  testNetwork: false,
-  rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
-  ws: `wss://mainnet.infura.io/ws/v3/${keys.infura}`,
-  explorer: 'https://etherscan.io',
-  explorerName: 'Etherscan',
+  testNetwork: true,
+  rpc: `https://devnet.neonevm.org`,
+  ws: `wss://devnet.neonevm.org`,
+  explorer: 'https://devnet.neonscan.org/',
+  explorerName: 'Neonscan',
   subgraph: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
   balancerApi: 'https://api.balancer.fi',
-  poolsUrlV2:
-    'https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json',
+  poolsUrlV2: '',
   subgraphs: {
     main: [
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
       `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM`,
     ],
-    aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
+    aave: '',
     gauge:
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
     blocks:
-      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+      '',
   },
-  bridgeUrl: '',
-  supportsEIP1559: true,
-  supportsElementPools: true,
-  blockTime: 12,
+  bridgeUrl: 'https://devnet.neonpass.live',
+  supportsEIP1559: false,
+  supportsElementPools: false,
+  blockTime: 2,
   nativeAsset: {
-    name: 'Ether',
+    name: 'Neon',
     address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-    symbol: 'ETH',
+    symbol: 'NEON',
     decimals: 18,
-    deeplinkId: 'ether',
-    logoURI: 'tokens/eth.png',
+    deeplinkId: 'neon',
+    logoURI: 'tokens/neon.png',
     minTransactionBuffer: '0.05',
   },
   thirdParty: {
     coingecko: {
-      nativeAssetId: 'ethereum',
-      platformId: 'ethereum',
-    },
-    apyVision: {
-      networkName: 'eth',
+      nativeAssetId: 'neon',
+      platformId: 'neon',
     },
   },
   addresses: {
@@ -67,8 +65,8 @@ const config: Config = {
   tokens,
   keys,
   gauges: {
-    type: 2,
-    weight: 100,
+    type: 3,
+    weight: 0,
   },
   tokenlists,
   rateProviders,
