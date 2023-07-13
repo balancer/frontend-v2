@@ -3,9 +3,9 @@ import { TokenListURLMap } from '@/types/TokenList';
 const tokenlists: TokenListURLMap = {
   Balancer: {
     Default:
-      'https://github.com/neonlabsorg/token-list/blob/main/tokenlist.json',
+      'https://raw.githubusercontent.com/neonlabsorg/token-list/main/tokenlist.json',
     Vetted:
-      'https://github.com/neonlabsorg/token-list/blob/main/tokenlist.json',
+      'https://raw.githubusercontent.com/neonlabsorg/token-list/main/tokenlist.json',
   },
   External: [],
 };
