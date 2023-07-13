@@ -95,6 +95,9 @@ const pools: Pools = {
       '0xe19ed40a47f9b0cea4ca6d372df66107758913ec000000000000000000000b41', // 2brl
       '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42', // bb-a-weth/frxeth
       '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b', // frax/bb-am-usd
+      '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2', // stMATIC-bb-a-WMATIC
+      '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3', // MaticX-bb-a-WMATIC
+      '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4', // truMATIC/bb-a-WMATIC
     ],
   },
   Investment: {
@@ -121,6 +124,10 @@ const pools: Pools = {
       '0xca0f8eb1b81e1a69fac97f1c898e0938c768eb20000200000000000000000bc1', // 30WBTC-702BRL (BRZ)
       '0x2e1fd968a7185f52cfb933e51b5bb7f8f43e6105000100000000000000000bc5', // 10WBTC-10USDC-40WETH-40NEX
       '0x3c2f277eedac899f67116ad598664f0f91bac210000100000000000000000bcd', // 20AGA-20RNDR-20MANA-20DIMO-20AGAr
+      '0xe833723690873780b967ad94a1218eb410319411000200000000000000000bc8', // wstETHUSDC
+      '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
+      '0x2814a9f16d7b5b5826df47f702f16279ccd799c8000200000000000000000bd1', // 50wMatic-50stMatic
+      '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
     ],
   },
   Factories: {
@@ -277,6 +284,24 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2': {
+      name: 'stMATIC/Boosted Aave v3 WMATIC',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3': {
+      name: 'maticX/Boosted Aave v3 WMATIC',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
+    '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4': {
+      name: 'truMATIC/Boosted Aave v3 WMATIC',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
@@ -294,6 +319,9 @@ const pools: Pools = {
     '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42', // frxETH / bb-a-weth
     '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b', // frax / bb-am-usd
     '0xca0f8eb1b81e1a69fac97f1c898e0938c768eb20000200000000000000000bc1', // 30WBTC-702BRL (BRZ)
+    '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2', // stMATIC-bb-a-WMATIC
+    '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3', // MaticX-bb-a-WMATIC
+    '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4', // truMATIC/bb-a-WMATIC
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
@@ -333,6 +361,8 @@ const pools: Pools = {
     '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
       'xave',
     '0xf0ad209e2e969eaaa8c882aac71f02d8a047d5c2000200000000000000000b49':
+      'gyro',
+    '0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7':
       'gyro',
   },
   Issues: {

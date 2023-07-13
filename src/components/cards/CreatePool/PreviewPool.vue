@@ -43,7 +43,7 @@ const {
   goBack,
   setActiveStep,
   sortSeedTokens,
-  getScaledAmounts,
+  getAmounts,
   saveState,
   getPoolSymbol,
 } = usePoolCreation();
@@ -89,7 +89,7 @@ const tokenAddresses = computed((): string[] => {
 });
 
 const tokenAmounts = computed((): string[] => {
-  return getScaledAmounts();
+  return getAmounts();
 });
 
 const hasMissingPoolNameOrSymbol = computed(() => {
