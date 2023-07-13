@@ -43,8 +43,10 @@ const isLoading = computed(
  * METHODS
  */
 async function refetchOnchainPoolDataSDK() {
-  if (sdkPool.value) await sdk.data.poolsOnChain.refresh(sdkPool.value);
-  console.log('Refetched onchain pool data');
+  if (sdkPool.value) {
+    await sdk.data.poolsOnChain.refresh(sdkPool.value);
+    console.log('Refetched onchain pool data');
+  }
 }
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent
