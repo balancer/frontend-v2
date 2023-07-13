@@ -24,6 +24,7 @@ import { isPolygon, isZkevm } from './useNetwork';
 const WEEK_MS = 86_400_000 * 7;
 // Please update the schema version when making changes to the transaction structure.
 const TRANSACTIONS_SCHEMA_VERSION = '1.1.3';
+const MAX_CACHED_TRANSACTIONS = 10;
 
 export type TransactionStatus =
   | 'pending'
@@ -332,7 +333,14 @@ export default function useTransactions() {
       status: 'pending',
     };
 
-    setTransactions(transactionsMap);
+    const filteredTxs = Object.entries(transactionsMap)
+      .sort(
+        ([, transactionA], [, transactionB]) =>
+          transactionB.addedTime - transactionA.addedTime
+      )
+      .filter((_, index) => index < MAX_CACHED_TRANSACTIONS);
+
+    setTransactions(Object.fromEntries(filteredTxs));
     addNotificationForTransaction(newTransaction.id, newTransaction.type);
   }
 
