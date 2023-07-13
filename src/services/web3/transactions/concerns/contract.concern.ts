@@ -23,6 +23,7 @@ export type SendTransactionOpts = {
   action: string;
   params?: any[];
   options?: TransactionRequest;
+  shouldLogFailure?: boolean;
 };
 
 export class ContractConcern extends TransactionConcern {
@@ -36,6 +37,7 @@ export class ContractConcern extends TransactionConcern {
     action,
     params = [],
     options = {},
+    shouldLogFailure = true,
   }: SendTransactionOpts): Promise<TransactionResponse> {
     const EthersContract = getEthersContract();
     const contractWithSigner = new EthersContract(
@@ -69,7 +71,7 @@ export class ContractConcern extends TransactionConcern {
     } catch (err) {
       const error = err as WalletError;
 
-      if (this.shouldLogFailure(error)) {
+      if (shouldLogFailure && this.shouldLogFailure(error)) {
         await this.logFailedTx(
           error,
           contractWithSigner,
