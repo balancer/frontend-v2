@@ -3,14 +3,11 @@ import { TokenListURLMap } from '@/types/TokenList';
 const tokenlists: TokenListURLMap = {
   Balancer: {
     Default:
-      'https://raw.githubusercontent.com/balancer/tokenlists/main/generated/listed-old.tokenlist.json',
+      'https://github.com/neonlabsorg/token-list/blob/main/tokenlist.json',
     Vetted:
-      'https://raw.githubusercontent.com/balancer/tokenlists/main/generated/balancer.tokenlist.json',
+      'https://github.com/neonlabsorg/token-list/blob/main/tokenlist.json',
   },
-  External: [
-    'ipns://tokens.uniswap.org',
-    'https://www.gemini.com/uniswap/manifest.json',
-  ],
+  External: [],
 };
 
 export default tokenlists;
