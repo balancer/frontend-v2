@@ -163,7 +163,8 @@ const poolPremintedBptIndex = computed(() => {
 });
 
 const showBrandedRedirectCard = computed(() => {
-  return POOLS.BrandedRedirect?.[poolId] || false;
+  if (!pool.value) return false;
+  return POOLS.BrandedRedirect?.[pool.value.poolType] || false;
 });
 
 function setRestakeVisibility(value: boolean): void {
@@ -253,7 +254,7 @@ watch(
 
       <BrandedRedirectCard
         v-if="showBrandedRedirectCard"
-        :poolId="poolId"
+        :poolType="pool.poolType"
         class="order-1 lg:order-2 px-4 lg:px-0"
       />
 

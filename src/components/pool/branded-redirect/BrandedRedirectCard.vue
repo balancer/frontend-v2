@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { BRANDED_REDIRECT_DATA } from './constants';
 import { POOLS } from '@/constants/pools';
+import { PoolType } from '@balancer-labs/sdk';
 
 const props = defineProps<{
-  poolId: string;
+  poolType: PoolType | undefined;
 }>();
 
 const redirectData = computed(() => {
-  const brand = POOLS.BrandedRedirect?.[props.poolId];
+  if (!props.poolType) return;
+  const brand = POOLS.BrandedRedirect?.[props.poolType];
   if (!brand) return;
   return BRANDED_REDIRECT_DATA[brand];
 });

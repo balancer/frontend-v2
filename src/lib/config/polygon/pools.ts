@@ -1,5 +1,6 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { PoolWarning, Pools } from '@/types/pools';
+import { PoolType } from '@balancer-labs/sdk';
 
 const pools: Pools = {
   IdsMap: {
@@ -358,12 +359,10 @@ const pools: Pools = {
   },
   GaugeMigration: {},
   BrandedRedirect: {
-    '0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702':
-      'xave',
-    '0xf0ad209e2e969eaaa8c882aac71f02d8a047d5c2000200000000000000000b49':
-      'gyro',
-    '0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7':
-      'gyro',
+    [PoolType.FX]: 'xave',
+    [PoolType.Gyro2]: 'gyro',
+    [PoolType.Gyro3]: 'gyro',
+    [PoolType.GyroE]: 'gyro',
   },
   Issues: {
     [PoolWarning.PoolProtocolFeeVulnWarning]: [
