@@ -1,4 +1,4 @@
-import { GraphQLArgs } from '@balancer-labs/sdk';
+import { GraphQLArgs } from '@sobal/sdk';
 import { POOLS } from '@/constants/pools';
 import { merge } from 'lodash';
 

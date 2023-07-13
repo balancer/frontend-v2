@@ -1,4 +1,4 @@
-import { toNormalizedWeights } from '@balancer-labs/sdk';
+import { toNormalizedWeights } from '@sobal/sdk';
 import { formatUnits } from '@ethersproject/units';
 
 import { isStableLike, isWeightedLike } from '@/composables/usePoolHelpers';

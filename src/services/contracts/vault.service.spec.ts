@@ -1,9 +1,4 @@
-import {
-  FundManagement,
-  SingleSwap,
-  SwapType,
-  SwapV2,
-} from '@balancer-labs/sdk';
+import { FundManagement, SingleSwap, SwapType, SwapV2 } from '@sobal/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 
 import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';

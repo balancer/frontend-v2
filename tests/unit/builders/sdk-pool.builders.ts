@@ -1,4 +1,4 @@
-import { AprBreakdown, Pool } from '@balancer-labs/sdk';
+import { AprBreakdown, Pool } from '@sobal/sdk';
 
 // BAL 80% WETH 20% is the default pool used in builders
 export const defaultSdkPool = {

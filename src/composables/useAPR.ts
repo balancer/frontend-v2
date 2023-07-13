@@ -1,5 +1,5 @@
 import { bnum } from '@/lib/utils';
-import { AprBreakdown } from '@balancer-labs/sdk';
+import { AprBreakdown } from '@sobal/sdk';
 
 /**
  * @summary A pool has staking rewards if there either a BAL

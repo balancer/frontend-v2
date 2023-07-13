@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Pool } from '@/services/pool/types';
-import { AprBreakdown } from '@balancer-labs/sdk';
+import { AprBreakdown } from '@sobal/sdk';
 import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

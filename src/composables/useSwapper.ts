@@ -1,4 +1,4 @@
-import { BatchSwapStep, SwapType, SwapV2 } from '@balancer-labs/sdk';
+import { BatchSwapStep, SwapType, SwapV2 } from '@sobal/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 

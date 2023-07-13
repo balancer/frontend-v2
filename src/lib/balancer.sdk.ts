@@ -1,4 +1,4 @@
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK } from '@sobal/sdk';
 import { Network } from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 import { ref } from 'vue';

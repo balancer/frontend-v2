@@ -19,7 +19,7 @@ import { balancerService } from '@/services/balancer/balancer.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { useTokens } from '@/providers/tokens.provider';
-import { PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@sobal/sdk';
 import { wNativeAssetAddress } from '../usePoolHelpers';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';

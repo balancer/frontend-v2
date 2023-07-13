@@ -73,7 +73,7 @@ module.exports = {
               'Please import from src/dependencies to make this dependency more testable',
           },
           {
-            group: ['@balancer-labs/sdk'],
+            group: ['@sobal/sdk'],
             importNames: ['PoolsFallbackRepository'],
             message:
               'Please import from src/dependencies to make this dependency more testable',
@@ -103,7 +103,7 @@ module.exports = {
               'Please import from src/dependencies to make this dependency more testable',
           },
           {
-            group: ['@balancer-labs/sdk'],
+            group: ['@sobal/sdk'],
             importNames: ['Network'],
             message:
               'Please import Network from @/lib/config to avoid adding SDK to bundle',

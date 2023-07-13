@@ -7,7 +7,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isLBP, totalAprLabel } from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
-import { AprBreakdown } from '@balancer-labs/sdk';
+import { AprBreakdown } from '@sobal/sdk';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useNetwork from '@/composables/useNetwork';
 

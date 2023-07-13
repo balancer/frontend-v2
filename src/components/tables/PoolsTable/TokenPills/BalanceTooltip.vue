@@ -6,7 +6,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
-import { PoolToken } from '@balancer-labs/sdk';
+import { PoolToken } from '@sobal/sdk';
 
 /**
  * TYPES

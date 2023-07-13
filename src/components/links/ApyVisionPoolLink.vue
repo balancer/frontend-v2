@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useApyVisionHelpers } from '@/composables/external/useApyVisionHelpers';
 import { getAddressFromPoolId } from '@/lib/utils';
-import { PoolToken } from '@balancer-labs/sdk';
+import { PoolToken } from '@sobal/sdk';
 
 /**
  * TYPES

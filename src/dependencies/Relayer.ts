@@ -1,4 +1,4 @@
-import { Relayer } from '@balancer-labs/sdk';
+import { Relayer } from '@sobal/sdk';
 import { handleDependencyError } from '.';
 
 let _Relayer: typeof Relayer = Relayer;

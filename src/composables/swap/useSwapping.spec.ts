@@ -6,7 +6,7 @@ import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContrac
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { provideTokenLists } from '@/providers/token-lists.provider';
 import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
-import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
+import { BalancerSDK, SwapInfo } from '@sobal/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { mock, mockDeep } from 'vitest-mock-extended';

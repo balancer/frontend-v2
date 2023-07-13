@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PoolToken } from '@balancer-labs/sdk';
+import { PoolToken } from '@sobal/sdk';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 

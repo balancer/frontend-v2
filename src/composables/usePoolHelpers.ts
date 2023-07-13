@@ -1,4 +1,4 @@
-import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
+import { AprBreakdown, PoolType } from '@sobal/sdk';
 import { getAddress } from '@ethersproject/address';
 
 import { APR_THRESHOLD } from '@/constants/pools';

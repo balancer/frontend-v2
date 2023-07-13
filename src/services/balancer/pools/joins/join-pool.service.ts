@@ -10,7 +10,7 @@ import {
 } from './handlers/join-pool.handler';
 import { GeneralisedJoinHandler } from './handlers/generalised-join.handler';
 
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK } from '@sobal/sdk';
 import { ExactInJoinHandler } from './handlers/exact-in-join.handler';
 
 export enum JoinHandler {

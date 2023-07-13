@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 
 import { POOLS } from '@/constants/pools';
-import { GraphQLArgs } from '@balancer-labs/sdk';
+import { GraphQLArgs } from '@sobal/sdk';
 
 const defaultArgs: GraphQLArgs = {
   first: 1000,

@@ -2,11 +2,7 @@ import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import { Network } from '@/lib/config';
 import { PoolsQueryBuilder } from '@/types/subgraph';
-import {
-  GraphQLArgs,
-  GraphQLQuery,
-  PoolsSubgraphRepository,
-} from '@balancer-labs/sdk';
+import { GraphQLArgs, GraphQLQuery, PoolsSubgraphRepository } from '@sobal/sdk';
 import _ from 'lodash';
 import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';

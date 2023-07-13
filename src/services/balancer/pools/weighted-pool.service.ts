@@ -1,4 +1,4 @@
-import { toNormalizedWeights } from '@balancer-labs/sdk';
+import { toNormalizedWeights } from '@sobal/sdk';
 import {
   Vault__factory,
   WeightedPool__factory,

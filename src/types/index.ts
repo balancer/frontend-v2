@@ -1,4 +1,4 @@
-import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
+import { BatchSwapStep, SwapV2 } from '@sobal/sdk';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 export type RuleFunction = (val: string | number) => string | boolean;

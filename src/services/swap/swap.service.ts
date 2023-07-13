@@ -4,7 +4,7 @@ import {
   SingleSwap,
   SwapType,
   SwapV2,
-} from '@balancer-labs/sdk';
+} from '@sobal/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';

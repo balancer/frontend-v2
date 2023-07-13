@@ -1,9 +1,4 @@
-import {
-  SubgraphPoolBase,
-  SwapType,
-  SwapTypes,
-  parseFixed,
-} from '@balancer-labs/sdk';
+import { SubgraphPoolBase, SwapType, SwapTypes, parseFixed } from '@sobal/sdk';
 import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import {
   AddressZero,

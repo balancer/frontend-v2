@@ -1,7 +1,7 @@
 import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
 import { computed, reactive, Ref, ref } from 'vue';
 
-import { GraphQLArgs } from '@balancer-labs/sdk';
+import { GraphQLArgs } from '@sobal/sdk';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { useTokens } from '@/providers/tokens.provider';

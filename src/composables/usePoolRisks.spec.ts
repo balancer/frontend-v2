@@ -6,7 +6,7 @@ import {
 } from './usePoolRisks';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { aPool } from '@tests/unit/builders/pool.builders';
-import { PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@sobal/sdk';
 import { networkId } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
 import { POOLS } from '@/constants/pools';

@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { Pool } from '@/services/pool/types';
-import { PoolToken } from '@balancer-labs/sdk';
+import { PoolToken } from '@sobal/sdk';
 
 /**
  * TYPES

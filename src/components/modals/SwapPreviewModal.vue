@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import { SubgraphPoolBase } from '@sobal/sdk';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 import { computed, ref, watch } from 'vue';

@@ -5,7 +5,7 @@ import {
   GraphQLArgs,
   GraphQLQuery,
   PoolsBalancerAPIRepository,
-} from '@balancer-labs/sdk';
+} from '@sobal/sdk';
 import _ from 'lodash';
 
 import Service from '../../balancer-api.service';

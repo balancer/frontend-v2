@@ -12,10 +12,10 @@ import {
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
-import { AprBreakdown } from '@balancer-labs/sdk';
+import { AprBreakdown } from '@sobal/sdk';
 import { networkId } from '@/composables/useNetwork';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { Pool as SDKPool } from '@balancer-labs/sdk';
+import { Pool as SDKPool } from '@sobal/sdk';
 import { captureException } from '@sentry/browser';
 
 export default class PoolService {
