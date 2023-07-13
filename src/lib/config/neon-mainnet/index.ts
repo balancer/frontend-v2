@@ -36,7 +36,7 @@ const config: Config = {
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
     blocks: '',
   },
-  bridgeUrl: 'https://www.neonpass.live',
+  bridgeUrl: 'https://neonpass.live',
   supportsEIP1559: false,
   supportsElementPools: false,
   blockTime: 2,
