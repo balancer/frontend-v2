@@ -7,6 +7,8 @@ import mainnet from './mainnet';
 import optimism from './optimism';
 import polygon from './polygon';
 import zkevm from './zkevm';
+import neonMainnet from './neon-mainnet';
+import neonDevnet from './neon-devnet';
 
 // We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
 export enum Network {
@@ -19,6 +21,8 @@ export enum Network {
   FANTOM = 250,
   ZKEVM = 1101,
   ARBITRUM = 42161,
+  NEON_MAINNET = 245022934,
+  NEON_DEVNET = 245022926,
 }
 
 const config: Record<Network | number, Config> = {
@@ -29,6 +33,8 @@ const config: Record<Network | number, Config> = {
   [Network.OPTIMISM]: optimism,
   [Network.GNOSIS]: gnosisChain,
   [Network.ZKEVM]: zkevm,
+  [Network.NEON_MAINNET]: neonMainnet,
+  [Network.NEON_DEVNET]: neonDevnet,
 };
 
 export default config;
