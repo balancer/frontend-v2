@@ -1,5 +1,31 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { PoolType } from '@/services/pool/types';
+
+export enum PoolType {
+  Weighted = 'Weighted',
+  Investment = 'Investment',
+  Stable = 'Stable',
+  ComposableStable = 'ComposableStable',
+  MetaStable = 'MetaStable',
+  StablePhantom = 'StablePhantom',
+  LiquidityBootstrapping = 'LiquidityBootstrapping',
+  Element = 'Element',
+  Gyro2 = 'Gyro2',
+  Gyro3 = 'Gyro3',
+  GyroE = 'GyroE',
+  Managed = 'Managed',
+  AaveLinear = 'AaveLinear',
+  Linear = 'Linear',
+  EulerLinear = 'EulerLinear',
+  ERC4626Linear = 'ERC4626Linear',
+  BeefyLinear = 'BeefyLinear',
+  GearboxLinear = 'GearboxLinear',
+  MidasLinear = 'MidasLinear',
+  ReaperLinear = 'ReaperLinear',
+  SiloLinear = 'SiloLinear',
+  TetuLinear = 'TetuLinear',
+  YearnLinear = 'YearnLinear',
+  FX = 'FX',
+}
 
 export type FactoryType =
   | 'oracleWeightedPool'
