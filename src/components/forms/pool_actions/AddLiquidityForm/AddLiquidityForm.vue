@@ -61,8 +61,7 @@ const {
   hasValidInputs,
   hasAmountsIn,
   queryError,
-  setAmountsIn,
-  addTokensIn,
+  setTokensIn,
 } = useJoinPool();
 
 const { tokensWithBalance } = useUserTokens();
@@ -101,14 +100,13 @@ const joinTokensWithoutBalance = computed<string[]>(() =>
 );
 
 async function initializeTokensForm(isSingleAssetJoin: boolean) {
-  setAmountsIn([]);
   if (isSingleAssetJoin) {
     // Single asset joins are only relevant for Composable pools where swap
     // joins are possible. In this case we want to default to the wrapped native
     // asset.
-    addTokensIn([wrappedNativeAsset.value.address]);
+    setTokensIn([wrappedNativeAsset.value.address]);
   } else {
-    addTokensIn(joinTokensWithBalance.value);
+    setTokensIn(joinTokensWithBalance.value);
   }
 }
 
