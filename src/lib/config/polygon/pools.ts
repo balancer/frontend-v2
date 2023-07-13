@@ -1,6 +1,6 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { PoolWarning, Pools } from '@/types/pools';
-import { PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@/services/pool/types';
 
 const pools: Pools = {
   IdsMap: {

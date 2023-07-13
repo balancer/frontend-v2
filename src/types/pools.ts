@@ -1,5 +1,6 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@/services/pool/types';
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'

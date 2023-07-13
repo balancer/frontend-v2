@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BRANDED_REDIRECT_DATA } from './constants';
 import { POOLS } from '@/constants/pools';
-import { PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@/services/pool/types';
 
 const props = defineProps<{
   poolType: PoolType | undefined;
