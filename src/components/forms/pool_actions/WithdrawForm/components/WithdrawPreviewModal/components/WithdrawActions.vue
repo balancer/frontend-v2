@@ -111,22 +111,11 @@ async function handleSuccess(
   receipt: TransactionReceipt,
   confirmedAt: string
 ): Promise<void> {
-  addTransaction({
-    id: receipt.transactionHash,
-    type: 'tx',
-    action: 'withdraw',
-    summary: txSummary.value,
-    details: {
-      total: fNum(fiatTotalOut.value, FNumFormats.fiat),
-      pool: props.pool,
-    },
-  });
-
-  emit('success', receipt);
   txState.confirmed = true;
   txState.confirming = false;
   txState.receipt = receipt;
   txState.confirmedAt = confirmedAt;
+  emit('success', receipt);
 }
 
 function handleFailed(): void {
@@ -139,6 +128,17 @@ async function submit(): Promise<TransactionResponse> {
     const tx = await exit();
 
     txState.confirming = true;
+
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'withdraw',
+      summary: txSummary.value,
+      details: {
+        total: fNum(fiatTotalOut.value, FNumFormats.fiat),
+        pool: props.pool,
+      },
+    });
 
     return tx;
   } catch (error) {

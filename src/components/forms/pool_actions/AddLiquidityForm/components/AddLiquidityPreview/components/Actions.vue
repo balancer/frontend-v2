@@ -77,19 +77,6 @@ async function handleSuccess(
   receipt: TransactionReceipt,
   confirmedAt: string
 ): Promise<void> {
-  addTransaction({
-    id: receipt.transactionHash,
-    type: 'tx',
-    action: 'invest',
-    summary: t('transactionSummary.investInPool', [
-      fNum(fiatValueOut.value, FNumFormats.fiat),
-      poolWeightsLabel(props.pool),
-    ]),
-    details: {
-      total: fNum(fiatValueOut.value, FNumFormats.fiat),
-      pool: props.pool,
-    },
-  });
   txState.receipt = receipt;
   txState.confirmedAt = confirmedAt;
   txState.confirmed = true;
@@ -105,8 +92,21 @@ async function submit(): Promise<TransactionResponse> {
   txState.init = true;
   try {
     const tx = await join();
-    console.log('tx', tx);
     txState.confirming = true;
+
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'invest',
+      summary: t('transactionSummary.investInPool', [
+        fNum(fiatValueOut.value, FNumFormats.fiat),
+        poolWeightsLabel(props.pool),
+      ]),
+      details: {
+        total: fNum(fiatValueOut.value, FNumFormats.fiat),
+        pool: props.pool,
+      },
+    });
 
     return tx;
   } catch (error) {
