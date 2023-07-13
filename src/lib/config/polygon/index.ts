@@ -19,7 +19,7 @@ const config: Config = {
   network: 'polygon',
   trustWalletNetwork: 'polygon',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: false,
   rpc: `https://polygon-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.alchemy}`,

@@ -17,7 +17,7 @@ const config: Config = {
   network: 'mainnet',
   trustWalletNetwork: 'ethereum',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: false,
   rpc: `https://mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://mainnet.infura.io/ws/v3/${keys.infura}`,

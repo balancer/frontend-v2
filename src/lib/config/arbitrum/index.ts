@@ -19,7 +19,7 @@ const config: Config = {
   network: 'arbitrum-one',
   trustWalletNetwork: 'arbitrum',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: false,
   rpc: `https://arbitrum-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,

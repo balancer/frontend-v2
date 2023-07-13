@@ -18,7 +18,7 @@ const config: Config = {
   network: 'gnosis-chain',
   trustWalletNetwork: 'xdai',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: false,
   rpc: 'https://rpc.gnosischain.com',
   ws: 'wss://rpc.gnosischain.com/wss',

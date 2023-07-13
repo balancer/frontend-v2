@@ -17,7 +17,7 @@ const config: Config = {
   network: 'goerli',
   trustWalletNetwork: 'goerli',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: true,
   rpc: `https://goerli.infura.io/v3/${keys.infura}`,
   ws: `wss://goerli.infura.io/ws/v3/${keys.infura}`,
