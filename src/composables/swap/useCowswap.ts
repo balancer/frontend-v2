@@ -244,6 +244,10 @@ export default function useCowswap({
           level: 'fatal',
           extra: {
             sender: account.value,
+            tokenIn: tokenIn.value,
+            tokenOut: tokenOut.value,
+            tokenInAmount: tokenInAmountInput.value,
+            tokenOutAmount: tokenOutAmountInput.value,
             quote,
           },
         });
