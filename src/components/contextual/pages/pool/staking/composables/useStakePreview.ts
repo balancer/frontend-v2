@@ -145,7 +145,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
     if (approvalActions) stakeActions.value.unshift(...approvalActions);
   }
 
-  async function handleSuccess({ receipt }) {
+  async function handleSuccess(receipt: TransactionReceipt) {
     isActionConfirmed.value = true;
     confirmationReceipt.value = receipt;
     await Promise.all([refetchBalances(), refetchAllPoolStakingData()]);
