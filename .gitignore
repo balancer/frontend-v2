@@ -38,3 +38,6 @@ stats.html
 
 #Auto generated component types
 components.d.ts
+
+# Local Netlify folder
+.netlify
