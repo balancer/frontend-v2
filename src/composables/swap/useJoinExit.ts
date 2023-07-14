@@ -239,8 +239,9 @@ export default function useJoinExit({
       if (!isUserError(error)) {
         console.trace(error);
         state.submissionError = t('swapException', ['Relayer']);
+        const level = configService.network.testNetwork ? 'error' : 'fatal';
         captureException(new Error(state.submissionError, { cause: error }), {
-          level: 'fatal',
+          level,
           extra: {
             sender: account.value,
             swapInfo: swapInfo.value,

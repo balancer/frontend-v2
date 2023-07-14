@@ -390,8 +390,9 @@ export const joinPoolProvider = (
     if (isUserError(error)) return;
 
     const sender = await getSigner().getAddress();
+    const level = appNetworkConfig.testNetwork ? 'error' : 'fatal';
     captureException(error, {
-      level: 'fatal',
+      level,
       extra: {
         joinHandler: joinHandlerType.value,
         params: JSON.stringify(

@@ -189,8 +189,9 @@ async function submit(lockType: LockType, actionIndex: number) {
     // An exception is already logged in balancerContractsService, but we should
     // log another here in case any exceptions are thrown before it's sent
     if (!isUserError(error)) {
+      const level = networkConfig.testNetwork ? 'error' : 'fatal';
       captureException(error, {
-        level: 'fatal',
+        level,
         extra: {
           lockType,
           props,

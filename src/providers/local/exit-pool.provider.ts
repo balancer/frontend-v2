@@ -45,6 +45,7 @@ import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
 import { POOLS } from '@/constants/pools';
 import { shouldIgnoreError } from '@/lib/utils/vue-query';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -487,8 +488,9 @@ export const exitPoolProvider = (
     // Ignore error when queryExit fails once the tx has been confirmed
     if (txState.confirmed && queryError.value) return;
     const sender = await getSigner().getAddress();
+    const level = configService.network.testNetwork ? 'error' : 'fatal';
     captureException(error, {
-      level: 'fatal',
+      level,
       extra: {
         exitHandler: exitHandlerType.value,
         params: JSON.stringify(
