@@ -12,7 +12,7 @@ const tokens: TokenConstants = {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0x11adC2d986E334137b9ad0a0F290771F31e9517F', // WNEON
     WETH: '0x46E986B5b0f87F1026ff52Ce20340467199F891D', // WETH (SOLLET)
-    BAL: '',
+    BAL: '0x0000000000000000000000000000000000000000',
   },
 };
 

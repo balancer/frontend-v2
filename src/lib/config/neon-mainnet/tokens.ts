@@ -10,9 +10,9 @@ const tokens: TokenConstants = {
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-    wNativeAsset: '0x202C35e517Fa803B537565c40F0a6965D7204609', // WNEON
+    wNativeAsset: '0x202C35e517Fa803B537565c40F0a6965D7204609', // wNEON
     WETH: '0xcFFd84d468220c11be64dc9dF64eaFE02AF60e8A', // WETH (WORMHOLE)
-    BAL: '',
+    BAL: '0x0000000000000000000000000000000000000000',
   },
 };
 
