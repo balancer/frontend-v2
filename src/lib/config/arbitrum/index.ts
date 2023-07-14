@@ -28,7 +28,7 @@ const config: Config = {
   explorerName: 'Arbiscan',
   subgraph:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://api.sobal.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [

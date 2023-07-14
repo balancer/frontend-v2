@@ -24,7 +24,7 @@ const config: Config = {
   explorer: 'https://mainnet.neonscan.org/',
   explorerName: 'Neonscan',
   subgraph: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://api.sobal.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [

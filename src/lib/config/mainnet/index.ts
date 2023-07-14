@@ -24,7 +24,7 @@ const config: Config = {
   explorer: 'https://etherscan.io',
   explorerName: 'Etherscan',
   subgraph: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://api.sobal.fi',
   poolsUrlV2:
     'https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json',
   subgraphs: {

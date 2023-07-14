@@ -20,10 +20,10 @@ export default class ConfigService {
   public get env(): Env {
     return {
       APP_ENV: import.meta.env.VITE_ENV || 'development',
-      APP_DOMAIN: import.meta.env.VITE_DOMAIN || 'app.balancer.fi',
-      APP_HOST: import.meta.env.VITE_HOST || 'balancer.fi',
+      APP_DOMAIN: import.meta.env.VITE_DOMAIN || 'app.sobal.fi',
+      APP_HOST: import.meta.env.VITE_HOST || 'sobal.fi',
       API_URL:
-        import.meta.env.VITE_API_URL || 'https://api-v3.balancer.fi/graphql',
+        import.meta.env.VITE_API_URL || 'https://api-v3.sobal.fi/graphql',
       IPFS_NODE: import.meta.env.VITE_IPFS_NODE || 'cloudflare-ipfs.com',
       BLOCKNATIVE_DAPP_ID:
         import.meta.env.VITE_BLOCKNATIVE_DAPP_ID || 'MISSING_KEY',

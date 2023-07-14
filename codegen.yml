@@ -1,7 +1,7 @@
 overwrite: true
 generates:
   src/services/api/graphql/generated/api-types.ts:
-    schema: ${BALANCER_API_URL:https://api-v3.balancer.fi/graphql}
+    schema: ${BALANCER_API_URL:https://api-v3.sobal.fi/graphql}
     documents: 'src/**/*.graphql'
     plugins:
       - typescript
@@ -13,7 +13,7 @@ generates:
         Bytes: string
         BigDecimal: string
   src/services/api/graphql/generated/api-schema.graphql:
-    schema: ${BALANCER_API_URL:https://api-v3.balancer.fi/graphql}
+    schema: ${BALANCER_API_URL:https://api-v3.sobal.fi/graphql}
     plugins:
       - schema-ast
 hooks:
