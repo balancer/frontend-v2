@@ -287,15 +287,10 @@ export function useErrorMsg() {
 
   function formatErrorMsg(error): TransactionError | null {
     if (isUserError(error)) return null;
-    if (error?.code && error.code === 'UNPREDICTABLE_GAS_LIMIT')
+    if (isErrorOfType(error, [/UNPREDICTABLE_GAS_LIMIT/]))
       return cannotEstimateGasError;
-
-    if (error?.message) {
-      if (error.message.includes('-32010')) return gasTooLowError;
-      if (error.message.includes('BAL#507')) return slippageError;
-
-      return defaultError(error.message);
-    }
+    if (isErrorOfType(error, [/-32010/])) return gasTooLowError;
+    if (isErrorOfType(error, [/BAL#507/])) return slippageError;
 
     return defaultError();
   }
