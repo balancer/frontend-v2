@@ -172,6 +172,7 @@ const pools: Pools = {
     '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx', // fx
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
+    '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
   },
   Stakable: {
     VotingGaugePools: [
