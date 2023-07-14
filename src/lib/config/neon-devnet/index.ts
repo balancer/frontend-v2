@@ -25,17 +25,13 @@ const config: Config = {
   ws: `wss://devnet.neonevm.org`,
   explorer: 'https://devnet.neonscan.org/',
   explorerName: 'Neonscan',
-  subgraph: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
-  balancerApi: 'https://api.balancer.fi',
+  subgraph: 'https://ch2-graph.neontest.xyz/subgraphs/name/sobal/sobal-test',
+  balancerApi: 'https://api.sobal.fi',
   poolsUrlV2: '',
   subgraphs: {
-    main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
-      `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM`,
-    ],
+    main: ['https://ch2-graph.neontest.xyz/subgraphs/name/sobal/sobal-test'],
     aave: '',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
+    gauge: '',
     blocks: '',
   },
   bridgeUrl: 'https://devnet.neonpass.live',
