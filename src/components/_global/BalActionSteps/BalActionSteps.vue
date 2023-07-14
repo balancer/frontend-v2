@@ -223,8 +223,6 @@ async function handleTransaction(
 
       await postConfirmationDelay(tx);
 
-      state.confirming = false;
-
       const isValid = await postActionValidation?.();
       if (isValid || !postActionValidation) {
         const confirmedAt = await getTxConfirmedAt(receipt);
@@ -240,6 +238,7 @@ async function handleTransaction(
         if (actionInvalidReason) state.error = actionInvalidReason;
         state.init = false;
       }
+      state.confirming = false;
     },
     onTxFailed: () => {
       state.confirming = false;
