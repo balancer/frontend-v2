@@ -184,7 +184,7 @@ function isUserNotEnoughGas(error): boolean {
 }
 
 /**
- * Checks if error is caused by user not having enough funds.
+ * Checks if error is a testnet faucet refill error.
  */
 function isFaucetRefillError(error): boolean {
   const messages = [/execution reverted: ERR_NEEDS_REFILL/];
@@ -205,7 +205,7 @@ export function shouldCaptureQueryError(
   query: UseQueryReturnType<any, any> | undefined
 ): boolean {
   if (!query) return true;
-  return query.failureCount.value > 1;
+  return query.failureCount.value <= 1;
 }
 
 /**
