@@ -5,7 +5,6 @@ import {
   TransactionResponse,
   TransactionRequest,
 } from '@ethersproject/providers';
-import { captureException } from '@sentry/browser';
 import { ContractInterface } from 'ethers';
 import {
   verifyNetwork,
@@ -16,6 +15,7 @@ import {
   EthersContract,
   getEthersContract,
 } from '@/dependencies/EthersContract';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 export type SendTransactionOpts = {
   contractAddress: string;
@@ -71,7 +71,7 @@ export class ContractConcern extends TransactionConcern {
     } catch (err) {
       const error = err as WalletError;
 
-      if (shouldLogFailure && this.shouldLogFailure(error)) {
+      if (shouldLogFailure) {
         await this.logFailedTx(
           error,
           contractWithSigner,
@@ -116,13 +116,16 @@ export class ContractConcern extends TransactionConcern {
     const msgValue = overrides.value ? overrides.value.toString() : 0;
     const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?rawFunctionInput=${calldata}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&contractAddress=${contract.address}&network=${chainId}`;
 
-    captureException(error, {
-      level: 'fatal',
-      extra: {
-        action,
-        sender,
-        simulate,
-        originalError: error?.data?.originalError,
+    captureBalancerException({
+      error,
+      context: {
+        level: 'fatal',
+        extra: {
+          action,
+          sender,
+          simulate,
+          originalError: error?.data?.originalError,
+        },
       },
     });
   }

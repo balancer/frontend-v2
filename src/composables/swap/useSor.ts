@@ -42,8 +42,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { isUserError } from '../useTransactionErrors';
-import { captureBalancerException } from '@/lib/utils/errors';
+import { captureBalancerException, isUserError } from '@/lib/utils/errors';
 
 type SorState = {
   validationErrors: {
@@ -806,14 +805,19 @@ export default function useSor({
       console.trace(error);
       state.submissionError = t('swapException', ['Balancer']);
 
-      captureBalancerException(error, 'swap', state.submissionError, {
-        extra: {
-          sender: account.value,
-          tokenIn,
-          tokenOut,
-        },
-        tags: {
-          swapType: 'balancer',
+      captureBalancerException({
+        error,
+        action: 'swap',
+        msgPrefix: state.submissionError,
+        context: {
+          extra: {
+            sender: account.value,
+            tokenIn,
+            tokenOut,
+          },
+          tags: {
+            swapType: 'balancer',
+          },
         },
       });
     }

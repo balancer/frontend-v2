@@ -711,6 +711,7 @@ watch(blockNumber, () => {
       <BalActionSteps
         v-else
         :actions="actions"
+        primaryActionType="swap"
         :disabled="disableSubmitButton || showPriceUpdateError"
       />
       <BalAlert

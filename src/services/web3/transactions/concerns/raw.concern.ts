@@ -9,8 +9,8 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/providers';
-import { captureException } from '@sentry/browser';
 import { TransactionConcern } from './transaction.concern';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 export class RawConcern extends TransactionConcern {
   constructor(private readonly signer: JsonRpcSigner) {
@@ -36,10 +36,7 @@ export class RawConcern extends TransactionConcern {
       return await this.signer.sendTransaction(txOptions);
     } catch (err) {
       const error = err as WalletError;
-
-      if (this.shouldLogFailure(error)) {
-        await this.logFailedTx(options, error);
-      }
+      await this.logFailedTx(options, error);
       return Promise.reject(error);
     }
   }
@@ -60,13 +57,16 @@ export class RawConcern extends TransactionConcern {
     const block = await this.signer.provider.getBlockNumber();
     const msgValue = options.value ? options.value.toString() : 0;
     const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?contractAddress=${options.to}&rawFunctionInput=${options.data}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&network=${chainId}`;
-    captureException(error, {
-      level: 'fatal',
-      extra: {
-        sender,
-        simulate,
-        options,
-        originalError: error?.data?.originalError,
+    captureBalancerException({
+      error,
+      context: {
+        level: 'fatal',
+        extra: {
+          sender,
+          simulate,
+          options,
+          originalError: error?.data?.originalError,
+        },
       },
     });
   }
