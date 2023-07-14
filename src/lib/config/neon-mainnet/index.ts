@@ -52,7 +52,7 @@ const config: Config = {
   thirdParty: {
     coingecko: {
       nativeAssetId: 'neon',
-      platformId: 'neon',
+      platformId: 'neon-evm',
     },
   },
   addresses: {
