@@ -98,8 +98,8 @@ class UnlockError extends Error {
 class StakeError extends Error {
   name = 'StakeError';
 }
-class UnstakError extends Error {
-  name = 'UnstakError';
+class UnstakeError extends Error {
+  name = 'UnstakeError';
 }
 function getErrorForAction(
   action: TransactionAction | 'unknown',
@@ -126,7 +126,7 @@ function getErrorForAction(
     case 'stake':
       return new StakeError(message, { cause: originalError });
     case 'unstake':
-      return new UnstakError(message, { cause: originalError });
+      return new UnstakeError(message, { cause: originalError });
     default:
       return new Error(message, { cause: originalError });
   }
