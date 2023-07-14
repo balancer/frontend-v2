@@ -71,6 +71,36 @@ function getReasonAndBalErrorFromError(error): {
   };
 }
 
+class BatchSwapError extends Error {
+  name = 'BatchSwapError';
+}
+class JoinPoolError extends Error {
+  name = 'JoinPoolError';
+}
+class ExitPoolError extends Error {
+  name = 'ExitPoolError';
+}
+class CreatePoolError extends Error {
+  name = 'CreatePoolError';
+}
+class CheckpointGaugeError extends Error {
+  name = 'CheckpointGaugeError';
+}
+class VebalSyncError extends Error {
+  name = 'VebalSyncError';
+}
+class ExtendLockError extends Error {
+  name = 'ExtendLockError';
+}
+class UnlockError extends Error {
+  name = 'UnlockError';
+}
+class StakeError extends Error {
+  name = 'StakeError';
+}
+class UnstakError extends Error {
+  name = 'UnstakError';
+}
 function getErrorForAction(
   action: TransactionAction | 'unknown',
   message: string,
@@ -83,19 +113,23 @@ function getErrorForAction(
       return new JoinPoolError(message, { cause: originalError });
     case 'withdraw':
       return new ExitPoolError(message, { cause: originalError });
+    case 'createPool':
+      return new CreatePoolError(message, { cause: originalError });
+    case 'userGaugeCheckpoint':
+      return new CheckpointGaugeError(message, { cause: originalError });
+    case 'sync':
+      return new VebalSyncError(message, { cause: originalError });
+    case 'extendLock':
+      return new ExtendLockError(message, { cause: originalError });
+    case 'unlock':
+      return new UnlockError(message, { cause: originalError });
+    case 'stake':
+      return new StakeError(message, { cause: originalError });
+    case 'unstake':
+      return new UnstakError(message, { cause: originalError });
     default:
       return new Error(message, { cause: originalError });
   }
-}
-
-class BatchSwapError extends Error {
-  name = 'BatchSwapError';
-}
-class JoinPoolError extends Error {
-  name = 'JoinPoolError';
-}
-class ExitPoolError extends Error {
-  name = 'ExitPoolError';
 }
 
 /**
