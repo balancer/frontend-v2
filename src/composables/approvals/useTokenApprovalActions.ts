@@ -9,6 +9,8 @@ import { TokenInfo } from '@/types/TokenList';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
 import useTransactions from '../useTransactions';
+import { configService } from '@/services/config/config.service';
+import { flatten } from 'lodash';
 
 /**
  * TYPES
@@ -44,6 +46,7 @@ export default function useTokenApprovalActions() {
     approvalRequired,
     getToken,
     injectSpenders,
+    allowanceFor,
   } = useTokens();
   const { t } = useI18n();
   const { getSigner } = useWeb3();
@@ -198,29 +201,64 @@ export default function useTokenApprovalActions() {
       skipAllowanceCheck
     );
 
-    return approvalsRequired.map(amountToApprove => {
-      const token = getToken(amountToApprove.address);
+    return flatten(
+      approvalsRequired.map(amountToApprove => {
+        const token = getToken(amountToApprove.address);
+        const actions: TransactionActionInfo[] = [];
+        /**
+         * Some tokens require setting approved amount to 0 before changing the
+         * approval amount. This injects another action to do that.
+         */
+        if (
+          configService.network.tokens.DoubleApprovalRequired?.includes(
+            token.address
+          ) &&
+          allowanceFor(token.address, spender).gt(0)
+        ) {
+          actions.push({
+            label: actionLabel(actionType, token.symbol),
+            loadingLabel: t('investment.preview.loadingLabel.approval'),
+            confirmingLabel: t('confirming'),
+            stepTooltip: t('transactionSummary.tooltips.unapprove', [
+              token.symbol,
+            ]),
+            action: () =>
+              approveToken({
+                token,
+                normalizedAmount: '0',
+                spender,
+                actionType,
+                forceMax,
+              }),
+            actionInvalidReason: {
+              title: t('actionSteps.approve.invalidReason.title'),
+              description: t('actionSteps.approve.invalidReason.description'),
+            },
+          });
+        }
 
-      return {
-        label: actionLabel(actionType, token.symbol),
-        loadingLabel: t('investment.preview.loadingLabel.approval'),
-        confirmingLabel: t('confirming'),
-        stepTooltip: actionTooltip(actionType, token.symbol),
-        action: () =>
-          approveToken({
-            token,
-            normalizedAmount: amountToApprove.amount,
-            spender,
-            actionType,
-            forceMax,
-          }),
-        postActionValidation: () => isApprovalValid(amountToApprove, spender),
-        actionInvalidReason: {
-          title: t('actionSteps.approve.invalidReason.title'),
-          description: t('actionSteps.approve.invalidReason.description'),
-        },
-      };
-    });
+        actions.push({
+          label: actionLabel(actionType, token.symbol),
+          loadingLabel: t('investment.preview.loadingLabel.approval'),
+          confirmingLabel: t('confirming'),
+          stepTooltip: actionTooltip(actionType, token.symbol),
+          action: () =>
+            approveToken({
+              token,
+              normalizedAmount: amountToApprove.amount,
+              spender,
+              actionType,
+              forceMax,
+            }),
+          postActionValidation: () => isApprovalValid(amountToApprove, spender),
+          actionInvalidReason: {
+            title: t('actionSteps.approve.invalidReason.title'),
+            description: t('actionSteps.approve.invalidReason.description'),
+          },
+        });
+        return actions;
+      })
+    );
   }
 
   return {
