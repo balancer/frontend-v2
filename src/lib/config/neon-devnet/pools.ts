@@ -40,7 +40,10 @@ const pools: Pools = {
     AllowList: [],
   },
   Factories: {
-    '0x3ED2C9dE3973c51685aE8337563a66Ae895C6139': 'weightedPool', // weighted pool
+    '0xc828AbdEbe975d4d6e0345eB48d569A49A194A84': 'weightedPool', // weighted pool v4
+    '0x04EF81349F5A2049D2D8261f33b7dC5bc0B33889': 'managedPool', // managed pool v2
+    '0x2297E369aa665f1cE2eCB9eBe4Ec0E6D9f02f72D': 'composableStablePool', // composable stable v5
+    '0x2818b8F2752F0AAE3938c64943aEA2a1a9258246': 'erc4626Linear', // erc4626 linear pool v4
   },
   Stakable: {
     VotingGaugePools: [],
