@@ -107,6 +107,8 @@ export default function useEthers() {
       if (receipt != null) {
         finalizeTransaction(txHash, 'tx', receipt);
       }
+      console.log('receipt', receipt);
+      console.log('receipt string', JSON.stringify(receipt));
       callbacks.onTxConfirmed(receipt);
       if (shouldRefetchBalances && !supportsBlocknative.value) {
         refetchBalances();
