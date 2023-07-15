@@ -1,16 +1,15 @@
 <template>
   <div class="pb-4">
     <div class="subsection">
-      <h1>Balancer Cookies&nbsp;Policy</h1>
+      <h1>Sobal Cookies&nbsp;Policy</h1>
       <p><em>Last Updated: June 2022</em></p>
     </div>
     <div class="subsection">
       <h2>Introduction and Scope of Policy</h2>
       <p>
-        This Cookies Policy (“Policy”) applies to your interaction with the
-        Balancer Foundation, its subsidiary, Balancer OpCo Limited, and material
-        service providers operating under a legal agreement (“Balancer
-        Foundation,” “Balancer,” “we,” “our,” or “us”).
+        This Cookies Policy (“Policy”) applies to your interaction with Sobal
+        and material service providers operating under a legal agreement
+        ("Sobal,” “we,” “our,” or “us”).
       </p>
     </div>
 
@@ -25,9 +24,8 @@
 
       <p>
         We do not generally use cookies. We do not intentionally collect
-        information to customize your experience on the website or the
-        Balancer.fi user interface (UI) to the Balancer Protocol. (“Sites” or
-        “Site”).
+        information to customize your experience on the website or the Sobal.fi
+        user interface (UI) to the Sobal Protocol. (“Sites” or “Site”).
       </p>
       <p>
         Industry standards are currently evolving, and we may not separately

@@ -62,14 +62,14 @@ function isActive(page: string): boolean {
     >
       {{ $t('portfolio') }}
     </DesktopLinkItem>
-    <DesktopLinkItem
+    <!-- <DesktopLinkItem
       :to="{ name: 'vebal', params: { networkSlug } }"
       :active="isActive('vebal')"
       prefetch
       @click="trackGoal(Goals.ClickNavVebal)"
     >
       veBAL
-    </DesktopLinkItem>
+    </DesktopLinkItem> -->
   </div>
 </template>
 

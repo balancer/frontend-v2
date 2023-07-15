@@ -8,7 +8,7 @@
     aria-labelledby="mailTitle"
     role="img"
   >
-    <title id="mailTitle">Link to Balancer Lab's contact email address</title>
+    <title id="mailTitle">Link to Sobal's contact email address</title>
     <g fill-rule="nonzero" fill="none">
       <path
         class="bg"

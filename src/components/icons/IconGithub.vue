@@ -8,7 +8,7 @@
     aria-labelledby="githubTitle"
     role="img"
   >
-    <title id="githubTitle">Link to Balancer Lab's Github</title>
+    <title id="githubTitle">Link to Sobal's Github</title>
     <g fill="none">
       <path
         class="bg"
