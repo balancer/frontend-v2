@@ -35,17 +35,18 @@ function _captureBalancerException({
 
   const balError = getBalError(error);
   const message = formatErrorMsgForSentry(error, balError, msgPrefix);
-  const _error = constructError(message, action, error);
   const metadata = (error as WalletError).metadata || {};
   const tags = getTags(action, context, balError, metadata);
+  const originalError = getOriginalError(error);
 
+  const _error = constructError(message, action, error);
   captureException(_error, {
     ...context,
     extra: {
       ...context?.extra,
       ...metadata,
       balError,
-      originalError: (error as WalletError).data?.originalError,
+      originalError,
     },
     tags,
   });
@@ -85,6 +86,19 @@ function getBalError(error): string | null {
   const balError = reason.match(/BAL#[0-9]{3}/g);
 
   return balError && balError[0] ? balError[0].slice(-3) : null;
+}
+
+/**
+ * Try to find the original error.
+ */
+function getOriginalError(error: Error | unknown): Error | undefined {
+  if ((error as WalletError).data?.originalError) {
+    return (error as WalletError).data?.originalError as Error;
+  } else if ((error as Error).cause instanceof Error) {
+    return (error as Error).cause as Error;
+  }
+
+  return undefined;
 }
 
 /**
