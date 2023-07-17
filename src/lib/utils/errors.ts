@@ -101,6 +101,10 @@ class StakeError extends Error {
 class UnstakeError extends Error {
   name = 'UnstakeError';
 }
+class SorFetchPoolsError extends Error {
+  name = 'SorFetchPoolsError';
+}
+
 function getErrorForAction(
   action: TransactionAction | 'unknown',
   message: string,
@@ -127,6 +131,8 @@ function getErrorForAction(
       return new StakeError(message, { cause: originalError });
     case 'unstake':
       return new UnstakeError(message, { cause: originalError });
+    case 'sorFetchPools':
+      return new SorFetchPoolsError(message, { cause: originalError });
     default:
       return new Error(message, { cause: originalError });
   }
