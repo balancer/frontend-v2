@@ -37,7 +37,7 @@ function _captureBalancerException({
   const message = formatErrorMsgForSentry(error, balError, msgPrefix);
 
   const _error = getErrorForAction(action, message, error);
-  const metadata = (error as WalletError).metadata || undefined;
+  const metadata = (error as WalletError).metadata || {};
 
   if (balError) {
     tags.balError = balError;
