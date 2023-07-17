@@ -128,6 +128,7 @@ const pools: Pools = {
       '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
       '0x2814a9f16d7b5b5826df47f702f16279ccd799c8000200000000000000000bd1', // 50wMatic-50stMatic
       '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
+      '0xa5a935833f6a5312715f182733eab088452335d7000100000000000000000bee', // 30WBTC-20stMATIC-bb-a-WMATIC
     ],
   },
   Factories: {
@@ -147,6 +148,7 @@ const pools: Pools = {
     '0x627d759314d5c4007b461a74ebafa7ebc5dfed71': 'fx', // fx
     '0xfc8a407bba312ac761d8bfe04ce1201904842b76': 'weightedPool', // weighted pool v4
     '0x1a79a24db0f73e9087205287761fc9c5c305926b': 'gyroE',
+    '0xe2fa4e1d17725e72dcdafe943ecf45df4b9e285b': 'composableStablePool', // ComposableStable V5
   },
   Stakable: {
     VotingGaugePools: [
