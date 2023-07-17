@@ -43,7 +43,6 @@ export default function useMetadatasQuery(
       pool => pool.metadataCID
     );
 
-    console.log({ customPoolsMetadataCID });
 
     const IPFSList = (await Promise.all(
       customPoolsMetadataCID.map(cid =>
