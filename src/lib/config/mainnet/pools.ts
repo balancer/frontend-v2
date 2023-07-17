@@ -157,6 +157,7 @@ const pools: Pools = {
       '0x3de27efa2f1aa663ae5d458857e731c129069f29000200000000000000000588', // wstETH-AAVE
       '0xb2b918f2d628b4c8ff237b0a1c6ac3bea222fedc00020000000000000000059c', // gho/ohm
       '0x7d98f308db99fdd04bbf4217a4be8809f38faa6400020000000000000000059b', // wstETH/ohm
+      '0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5', // idle/usdc
     ],
   },
   Factories: {
