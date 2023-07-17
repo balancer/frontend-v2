@@ -29,7 +29,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
 import {
   computed,
@@ -44,12 +43,12 @@ import {
   watch,
 } from 'vue';
 import { useUserSettings } from '../user-settings.provider';
-import { useQuery } from '@tanstack/vue-query';
+import { UseQueryReturnType, useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 import { ApprovalAction } from '@/composables/approvals/types';
-import { isUserError } from '@/composables/useTransactionErrors';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 /**
  * TYPES
@@ -326,7 +325,7 @@ export const joinPoolProvider = (
 
       return output;
     } catch (error) {
-      logJoinException(error as Error);
+      logJoinException(error as Error, queryJoinQuery);
       throwQueryError('Failed to construct join.', error);
     }
   }
@@ -354,7 +353,6 @@ export const joinPoolProvider = (
 
       return joinRes;
     } catch (error) {
-      console.log(error);
       logJoinException(error as Error);
       txError.value = (error as Error).message;
       throw error;
@@ -386,28 +384,33 @@ export const joinPoolProvider = (
     }
   }
 
-  async function logJoinException(error: Error) {
-    if (isUserError(error)) return;
-
+  async function logJoinException(
+    error: Error,
+    query?: UseQueryReturnType<any, any>
+  ) {
     const sender = await getSigner().getAddress();
-    const level = appNetworkConfig.testNetwork ? 'error' : 'fatal';
-    captureException(error, {
-      level,
-      extra: {
-        joinHandler: joinHandlerType.value,
-        params: JSON.stringify(
-          {
-            amountsIn: amountsInWithValue.value,
-            tokensIn: tokensIn.value,
-            signer: sender,
-            slippageBsp: slippageBsp.value,
-            relayerSignature: relayerSignature.value,
-            approvalActions: approvalActions.value,
-            transactionDeadline: transactionDeadline.value,
-          },
-          null,
-          2
-        ),
+    captureBalancerException({
+      error,
+      action: 'invest',
+      query,
+      context: {
+        level: 'fatal',
+        extra: {
+          joinHandler: joinHandlerType.value,
+          params: JSON.stringify(
+            {
+              amountsIn: amountsInWithValue.value,
+              tokensIn: tokensIn.value,
+              signer: sender,
+              slippageBsp: slippageBsp.value,
+              relayerSignature: relayerSignature.value,
+              approvalActions: approvalActions.value,
+              transactionDeadline: transactionDeadline.value,
+            },
+            null,
+            2
+          ),
+        },
       },
     });
   }

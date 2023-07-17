@@ -175,6 +175,7 @@ watch(blockNumber, () => {
     <BalActionSteps
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
+      primaryActionType="withdraw"
       :disabled="isMismatchedNetwork"
       :isLoading="isBuildingTx"
       :loadingLabel="

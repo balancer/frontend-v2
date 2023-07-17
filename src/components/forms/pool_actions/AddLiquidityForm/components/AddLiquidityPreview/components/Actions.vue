@@ -133,6 +133,7 @@ onUnmounted(() => {
     <BalActionSteps
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
+      primaryActionType="invest"
       :disabled="rektPriceImpact || isMismatchedNetwork"
       @success="handleSuccess"
       @failed="handleFailed"
