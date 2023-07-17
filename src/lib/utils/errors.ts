@@ -123,35 +123,17 @@ function getTags(
   return tags;
 }
 
-class BatchSwapError extends Error {
-  name = 'BatchSwapError';
-}
-class JoinPoolError extends Error {
-  name = 'JoinPoolError';
-}
-class ExitPoolError extends Error {
-  name = 'ExitPoolError';
-}
-class CreatePoolError extends Error {
-  name = 'CreatePoolError';
-}
-class CheckpointGaugeError extends Error {
-  name = 'CheckpointGaugeError';
-}
-class VebalSyncError extends Error {
-  name = 'VebalSyncError';
-}
-class ExtendLockError extends Error {
-  name = 'ExtendLockError';
-}
-class UnlockError extends Error {
-  name = 'UnlockError';
-}
-class StakeError extends Error {
-  name = 'StakeError';
-}
-class UnstakeError extends Error {
-  name = 'UnstakeError';
+class SentryError extends Error {
+  constructor(name: string, message: string, cause: Error | unknown) {
+    super(message);
+
+    if (Error.captureStackTrace && cause instanceof Error) {
+      Error.captureStackTrace(cause, SentryError);
+    }
+
+    this.name = name;
+    this.cause = cause;
+  }
 }
 
 function constructError(
@@ -161,27 +143,27 @@ function constructError(
 ) {
   switch (action) {
     case 'swap':
-      return new BatchSwapError(message, { cause: originalError });
+      return new SentryError('BatchSwapError', message, originalError);
     case 'invest':
-      return new JoinPoolError(message, { cause: originalError });
+      return new SentryError('JoinPoolError', message, originalError);
     case 'withdraw':
-      return new ExitPoolError(message, { cause: originalError });
+      return new SentryError('ExitPoolError', message, originalError);
     case 'createPool':
-      return new CreatePoolError(message, { cause: originalError });
+      return new SentryError('CreatePoolError', message, originalError);
     case 'userGaugeCheckpoint':
-      return new CheckpointGaugeError(message, { cause: originalError });
+      return new SentryError('CheckpointGaugeError', message, originalError);
     case 'sync':
-      return new VebalSyncError(message, { cause: originalError });
+      return new SentryError('VebalSyncError', message, originalError);
     case 'extendLock':
-      return new ExtendLockError(message, { cause: originalError });
+      return new SentryError('ExtendLockError', message, originalError);
     case 'unlock':
-      return new UnlockError(message, { cause: originalError });
+      return new SentryError('UnlockError', message, originalError);
     case 'stake':
-      return new StakeError(message, { cause: originalError });
+      return new SentryError('StakeError', message, originalError);
     case 'unstake':
-      return new UnstakeError(message, { cause: originalError });
+      return new SentryError('UnstakeError', message, originalError);
     default:
-      return new Error(message, { cause: originalError });
+      return new SentryError('Error', message, originalError);
   }
 }
 
