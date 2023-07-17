@@ -208,7 +208,11 @@ async function submit(
     state.init = false;
     state.confirming = false;
     state.error = formatErrorMsg(error);
-    captureBalancerException({ error, action: props.primaryActionType });
+    captureBalancerException({
+      error,
+      action: props.primaryActionType,
+      context: { level: 'fatal' },
+    });
   }
 }
 
