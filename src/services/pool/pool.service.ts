@@ -16,7 +16,7 @@ import { AprBreakdown } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { Pool as SDKPool } from '@balancer-labs/sdk';
-import { captureException } from '@sentry/browser';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 export default class PoolService {
   constructor(public pool: Pool) {
@@ -53,7 +53,7 @@ export default class PoolService {
         totalLiquidity = sdkTotalLiquidity;
       }
     } catch (error) {
-      captureException(error);
+      captureBalancerException({ error });
       console.error(`Failed to calc liquidity for: ${this.pool.id}`, error);
     }
 
@@ -70,7 +70,7 @@ export default class PoolService {
       const sdkApr = await getBalancerSDK().pools.apr(this.pool);
       if (sdkApr) apr = sdkApr;
     } catch (error) {
-      captureException(error);
+      captureBalancerException({ error });
       console.error(`Failed to calc APR for: ${this.pool.id}`, error);
     }
 

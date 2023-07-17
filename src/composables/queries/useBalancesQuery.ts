@@ -15,14 +15,18 @@ import useNetwork from '../useNetwork';
  */
 type QueryResponse = BalanceMap;
 type QueryOptions = UseQueryOptions<QueryResponse>;
+interface QueryInputs {
+  tokens: Ref<TokenInfoMap>;
+  isEnabled?: Ref<boolean>;
+}
 
 /**
  * Fetches all balances for provided tokens.
  */
-export default function useBalancesQuery(
-  tokens: Ref<TokenInfoMap> = ref({}),
-  options: QueryOptions = {}
-) {
+export default function useBalancesQuery({
+  tokens,
+  isEnabled = ref(true),
+}: QueryInputs) {
   /**
    * COMPOSABLES
    */
@@ -32,7 +36,7 @@ export default function useBalancesQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => isWalletReady.value);
+  const enabled = computed(() => isWalletReady.value && isEnabled.value);
   const tokenAddresses = computed(() => Object.keys(tokens.value));
 
   /**
@@ -51,7 +55,6 @@ export default function useBalancesQuery(
     enabled,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
-    ...options,
   });
 
   return useQuery<QueryResponse>(

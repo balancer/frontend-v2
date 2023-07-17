@@ -23,6 +23,7 @@ const contracts: Contracts = {
   feeDistributorDeprecated: '0x7F91dcdE02F72b478Dc73cB21730cAcA907c8c44',
   faucet: '0xccb0F4Cf5D3F97f4a55bb5f5cA321C3ED033f244',
   gaugeRewardsHelper: goerli.ChildChainGaugeRewardHelper,
+  omniVotingEscrow: '0x96484f2aBF5e58b15176dbF1A799627B53F13B6d',
 };
 
 export default contracts;

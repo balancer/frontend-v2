@@ -14,9 +14,7 @@ test('Returns token balances', async () => {
     [daiAddress]: aTokenInfo({ address: daiAddress }),
   });
 
-  const { result } = mountComposable(() =>
-    useBalancesQuery(tokens, { keepPreviousData: true })
-  );
+  const { result } = mountComposable(() => useBalancesQuery({ tokens }));
 
   const data = await waitForQueryData(result);
 

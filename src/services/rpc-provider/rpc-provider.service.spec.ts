@@ -1,4 +1,4 @@
-import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { StaticJsonRpcBatchProvider } from './static-json-rpc-batch-provider';
@@ -6,9 +6,6 @@ import { StaticJsonRpcBatchProvider } from './static-json-rpc-batch-provider';
 vi.mock('@ethersproject/providers', () => {
   return {
     JsonRpcProvider: vi.fn().mockImplementation(() => {
-      return {};
-    }),
-    WebSocketProvider: vi.fn().mockImplementation(() => {
       return {
         once: vi.fn(),
       };
@@ -30,12 +27,10 @@ describe('RPC provider service', () => {
     StaticJsonRpcBatchProvider,
     true
   );
-  const MockedWebSocketProvider = vi.mocked(WebSocketProvider, true);
 
   beforeEach(() => {
     MockedJsonRpcProvider.mockClear();
     MockedStaticJsonRpcBatchProvider.mockClear();
-    MockedWebSocketProvider.mockClear();
   });
 
   it('Instantiates the provider service', () => {
@@ -50,6 +45,6 @@ describe('RPC provider service', () => {
 
   it('Calls the WebSocketProvider', () => {
     new RpcProviderService().initBlockListener(() => ({}));
-    expect(WebSocketProvider).toHaveBeenCalledTimes(1);
+    expect(MockedJsonRpcProvider).toHaveBeenCalledTimes(1);
   });
 });

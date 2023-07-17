@@ -1,8 +1,15 @@
+import { OmniEscrowLock } from '@/composables/queries/useOmniEscrowLocksQuery';
 import { PoolGauges } from '@/composables/queries/usePoolGaugesQuery';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
+import { VotingEscrowLock } from '@/composables/queries/useVotingEscrowQuery';
 import { server } from '@tests/msw/server';
-import { graphql } from 'msw';
-import { aGaugeShareResponse, aPoolGaugesResponse } from './gauge-builders';
+import { graphql, RequestHandler } from 'msw';
+import {
+  aGaugeShareResponse,
+  anOmniEscrowLock,
+  aPoolGaugesResponse,
+  aVotingEscrowLock,
+} from './gauge-builders';
 
 export const defaultPoolId =
   '0xe053685f16968a350c8dea6420281a41f72ce3aa00020000000000000000006b';
@@ -69,4 +76,83 @@ export function mockGQLGaugeResponses(
       return res(ctx.data(poolGauges));
     })
   );
+}
+
+export const defaultOmniEscrowLocks: OmniEscrowLock[] = [];
+export const defaultVotingEscrowLocks: VotingEscrowLock[] = [];
+
+export function mockWhenNoSynchronizedNetworks() {
+  const gaugeShare = aGaugeShareResponse();
+  gaugeShare.gauge.id = defaultNonPreferentialGaugeAddress;
+
+  mockGQLGaugeResponses([gaugeShare], aPoolGaugesResponse());
+}
+
+export const defaultMainnetVotingEscrowLockId = 'mainnet lock id';
+export const defaultArbitrumVotingEscrowLockId = 'arbitrum lock id';
+
+export const defaultUserAddress = '0x953185149e26faa31b1246723f00410728166931';
+export const LayerZeroArbitrum = '110';
+export const defaultBias = '0.198089123517832428';
+export const defaultSlope = '0.000000006341958396';
+export const defaultTimestamp = 1655552507;
+
+export const defaultMainnetVotingEscrowLock = aVotingEscrowLock({
+  id: defaultMainnetVotingEscrowLockId,
+});
+
+export const defaultArbitrumVotingEscrowLock = aVotingEscrowLock({
+  id: defaultArbitrumVotingEscrowLockId,
+});
+
+export const defaultOmniEscrowLockArbitrum = anOmniEscrowLock({
+  id: defaultArbitrumVotingEscrowLockId,
+});
+
+export function omniEscrowLocksHandler(omniEscrowLocks: OmniEscrowLock[] = []) {
+  return graphql.query('OmniEscrowLocks', (_, res, ctx) => {
+    return res(
+      ctx.data({
+        omniVotingEscrowLocks: omniEscrowLocks,
+      })
+    );
+  });
+}
+
+export function votingEscrowLockHandler(
+  mainnetEscrowLocks: VotingEscrowLock[] = [defaultMainnetVotingEscrowLock],
+  arbitrumEscrowLocks: VotingEscrowLock[] = [defaultArbitrumVotingEscrowLock]
+) {
+  return graphql.query('VotingEscrowLocks', (req, res, ctx) => {
+    // Default is mainnet
+    let locks: VotingEscrowLock[] = mainnetEscrowLocks;
+
+    if (req.url.pathname.includes('arbitrum')) locks = arbitrumEscrowLocks;
+
+    return res(
+      ctx.data({
+        votingEscrowLocks: locks,
+      })
+    );
+  });
+}
+
+export function mockVotingEscrowLocks(
+  mainnetEscrowLocks: VotingEscrowLock[],
+  arbitrumEscrowLocks: VotingEscrowLock[]
+) {
+  return mockGQL(
+    votingEscrowLockHandler(mainnetEscrowLocks, arbitrumEscrowLocks)
+  );
+}
+
+export function mockOmniEscrowLocks(omniEscrowLocks: OmniEscrowLock[]) {
+  return mockGQL(omniEscrowLocksHandler(omniEscrowLocks));
+}
+
+export function mockGQL(
+  gqlResponseMocks: Array<RequestHandler> | RequestHandler
+) {
+  if (Array.isArray(gqlResponseMocks)) return server.use(...gqlResponseMocks);
+  server.use(gqlResponseMocks);
 }

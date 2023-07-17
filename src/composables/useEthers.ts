@@ -15,7 +15,7 @@ import useBlocknative from './useBlocknative';
 import { toJsTimestamp } from './useTime';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from './useTransactions';
-import { captureException } from '@sentry/browser';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 type ConfirmedTxCallback = (receipt: TransactionReceipt) => void;
 type FailedTxCallback = (txData: TransactionResponse) => void;
@@ -34,11 +34,10 @@ export default function useEthers() {
     );
 
     if (!block) {
-      captureException(
-        new Error(
-          `Failed to retrieve block ${receipt.blockNumber} when retrieving tx details`
-        )
+      const error = new Error(
+        `Failed to retrieve block ${receipt.blockNumber} when retrieving tx details`
       );
+      captureBalancerException({ error });
       return new Date(); // on some networks fetching the block fails.
     }
 

@@ -7,10 +7,6 @@ vi.mock('@/services/web3/useWeb3');
 
 describe('useVotingGauges', () => {
   describe('votingPeriodEnd', () => {
-    beforeAll(() => {
-      vi.useFakeTimers();
-    });
-
     it('Should work for an arbitrary time', () => {
       vi.setSystemTime(Date.UTC(2022, 3, 23, 15, 24, 38)); // Sun Apr 23 2022 15:24:38 GMT+0000
       const { result } = mount(() => useVotingGauges());
@@ -44,10 +40,6 @@ describe('useVotingGauges', () => {
       const { result } = mount(() => useVotingGauges());
       const { votingPeriodEnd } = result;
       expect(votingPeriodEnd.value).toEqual([6, 23, 59, 59]);
-    });
-
-    afterAll(() => {
-      vi.useRealTimers();
     });
   });
 });

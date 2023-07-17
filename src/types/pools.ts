@@ -1,4 +1,5 @@
 import { BoostedProtocol } from '@/composables/useBoostedPool';
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -131,7 +132,7 @@ export type Pools = {
   BoostedApr: string[];
   DisabledJoins: string[];
   ExitViaInternalBalance?: string[];
-  BrandedRedirect?: Record<string, string>;
+  BrandedRedirect?: Partial<Record<string, string>>;
   Deprecated?: Record<string, DeprecatedDetails>;
   NewVersionAvailable?: Record<string, NewVersionAvailableDetails>;
   GaugeMigration?: Record<string, DeprecatedDetails>;

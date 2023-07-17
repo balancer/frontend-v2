@@ -10,6 +10,7 @@ defaultTransactionResponse.data = 'default data';
 
 export const defaultGasLimit = 2;
 const defaultEstimatedGas = BigNumber.from(defaultGasLimit);
+export const defaultTxValue = BigNumber.from(0);
 
 export function aSigner(...options: Partial<JsonRpcSigner>[]): JsonRpcSigner {
   const defaultSigner = mock<JsonRpcSigner>();

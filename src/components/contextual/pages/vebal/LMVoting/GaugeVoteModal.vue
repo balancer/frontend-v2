@@ -394,21 +394,6 @@ onMounted(() => {
           </li>
         </ul>
       </div>
-      <BalAlert
-        v-if="voteWarning"
-        type="warning"
-        :title="voteWarning.title"
-        :description="voteWarning.description"
-        class="mb-4 w-full rounded"
-      />
-      <BalAlert
-        v-if="voteError"
-        type="error"
-        :title="voteError.title"
-        :description="voteError.description"
-        block
-        class="mt-2 mb-4"
-      />
 
       <div
         class="flex justify-between items-center p-2 mb-4 rounded-lg border dark:border-gray-800"
@@ -473,9 +458,26 @@ onMounted(() => {
           </div>
         </template>
 
+        <BalAlert
+          v-if="voteWarning"
+          type="warning"
+          :title="voteWarning.title"
+          :description="voteWarning.description"
+          class="my-2 w-full rounded"
+        />
+        <BalAlert
+          v-if="voteError"
+          type="error"
+          :title="voteError.title"
+          :description="voteError.description"
+          block
+          class="mt-2 mb-4"
+        />
+
         <SubmitVoteBtn
           :disabled="voteButtonDisabled"
           :loading="transactionInProgress"
+          :receipt="voteState.receipt.value"
           class="mt-4"
           :loadingLabel="
             voteState.state.value === State.TRANSACTION_INITIALIZED

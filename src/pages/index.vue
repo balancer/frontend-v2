@@ -9,14 +9,31 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import usePools from '@/composables/pools/usePools';
-import ZkevmPromo from '@/components/contextual/pages/pools/ZkevmPromo.vue';
+import { lsGet, lsSet } from '@/lib/utils';
+import LS_KEYS from '@/constants/local-storage.keys';
+import { useIntersectionObserver } from '@vueuse/core';
+
+// COMPOSABLES
+const poolIds = ref<string[]>([]);
+const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
+const isFeaturedProtocolsVisible = ref(false);
+useIntersectionObserver(featuredProtocolsSentinel, ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    isFeaturedProtocolsVisible.value = true;
+  }
+});
 
 /**
  * STATE
  */
+const route = useRoute();
+const urlSortParam = route.query?.sort as string | undefined;
+const initSortCol =
+  urlSortParam || lsGet(LS_KEYS.App.PoolSorting) || 'totalLiquidity';
 
-const poolIds = ref<string[]>([]);
-// COMPOSABLES
+/**
+ * COMPOSABLES
+ */
 const router = useRouter();
 const { appNetworkConfig } = useNetwork();
 const isElementSupported = appNetworkConfig.supportsElementPools;
@@ -44,6 +61,7 @@ function navigateToCreatePool() {
 
 function onColumnSort(columnId: string) {
   poolsSortField.value = columnId;
+  lsSet(LS_KEYS.App.PoolSorting, columnId);
 }
 
 /**
@@ -59,7 +77,6 @@ watch(pools, () => {
   <div>
     <HomePageHero />
     <div class="xl:container xl:px-4 pt-10 md:pt-8 xl:mx-auto">
-      <ZkevmPromo />
       <BalStack vertical>
         <div class="px-4 xl:px-0">
           <div class="flex justify-between items-end mb-2">
@@ -107,6 +124,7 @@ watch(pools, () => {
           :isLoading="isLoading"
           :selectedTokens="selectedTokens"
           class="mb-8"
+          :sortColumn="initSortCol"
           :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
           :isLoadingMore="poolsIsFetchingNextPage"
           :isPaginated="isPaginated"
@@ -115,7 +133,11 @@ watch(pools, () => {
           @on-column-sort="onColumnSort"
           @load-more="loadMorePools"
         />
-        <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
+        <div ref="featuredProtocolsSentinel" />
+        <div
+          v-if="isElementSupported && isFeaturedProtocolsVisible"
+          class="p-4 xl:p-0 mt-12"
+        >
           <FeaturedProtocols />
         </div>
       </BalStack>

@@ -41,9 +41,8 @@ import { isMainnet } from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
-import { captureException } from '@sentry/browser';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import useTranasactionErrors from '../useTransactionErrors';
+import { captureBalancerException, isUserError } from '@/lib/utils/errors';
 
 type SorState = {
   validationErrors: {
@@ -196,7 +195,7 @@ export default function useSor({
   const poolsLoading = ref(true);
 
   // COMPOSABLES
-  const { getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
+  const { account, getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
@@ -204,7 +203,6 @@ export default function useSor({
   const { fNum, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
-  const { isUserRejected } = useTranasactionErrors();
   const { swapIn, swapOut } = useSwapper();
 
   onMounted(async () => {
@@ -308,10 +306,10 @@ export default function useSor({
           tokenOutAddress.toLowerCase()
         );
 
-        let tokenInAmount = BigNumber.from(deltas[tokenInPosition]).abs();
-        let tokenOutAmount = BigNumber.from(deltas[tokenOutPosition]).abs();
-
         if (swapType === SwapType.SwapExactOut) {
+          let tokenInAmount = deltas[tokenInPosition]
+            ? BigNumber.from(deltas[tokenInPosition]).abs()
+            : BigNumber.from(0);
           tokenInAmount = await mutateAmount({
             amount: tokenInAmount,
             address: tokenInAddressInput.value,
@@ -324,6 +322,9 @@ export default function useSor({
         }
 
         if (swapType === SwapType.SwapExactIn) {
+          let tokenOutAmount = deltas[tokenOutPosition]
+            ? BigNumber.from(deltas[tokenOutPosition]).abs()
+            : BigNumber.from(0);
           tokenOutAmount = await mutateAmount({
             amount: tokenOutAmount,
             address: tokenOutAddressInput.value,
@@ -633,7 +634,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
       return;
     } else if (wrapType.value == WrapType.Unwrap) {
@@ -653,7 +654,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
       return;
     }
@@ -677,7 +678,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -698,7 +699,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
     }
   }
@@ -795,11 +796,30 @@ export default function useSor({
     return amount;
   }
 
-  function handleSwapException(error: Error) {
-    if (!isUserRejected(error)) {
+  function handleSwapException(
+    error: Error,
+    tokenIn: string,
+    tokenOut: string
+  ) {
+    if (!isUserError(error)) {
       console.trace(error);
       state.submissionError = t('swapException', ['Balancer']);
-      captureException(new Error(state.submissionError, { cause: error }));
+
+      captureBalancerException({
+        error,
+        action: 'swap',
+        msgPrefix: state.submissionError,
+        context: {
+          extra: {
+            sender: account.value,
+            tokenIn,
+            tokenOut,
+          },
+          tags: {
+            swapType: 'balancer',
+          },
+        },
+      });
     }
     swapping.value = false;
     confirming.value = false;

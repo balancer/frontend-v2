@@ -8,13 +8,17 @@ import { useUserStaking } from '@/providers/local/user-staking.provider';
 import { Pool } from '@/services/pool/types';
 import { useUserPools } from '@/providers/local/user-pools.provider';
 import StakePreviewModal from '../pool/staking/StakePreviewModal.vue';
+import ProceedToSyncModal from '@/components/contextual/pages/vebal/cross-chain-boost/ProceedToSyncModal.vue';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+
+import PortfolioSyncTip from '../vebal/cross-chain-boost/PortfolioSyncTip.vue';
 
 /**
  * STATE
  */
 const showUnstakeModal = ref(false);
 const poolToUnstake = ref<Pool | undefined>();
+const showProceedModal = ref(false);
 
 /**
  * PROVIDERS
@@ -26,6 +30,7 @@ providePoolStaking();
  */
 const { stakedPools, poolBoostsMap, stakedShares, isLoading } =
   useUserStaking();
+
 const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
@@ -73,6 +78,7 @@ async function handleUnstakeSuccess() {
       <h5 class="px-4 xl:px-0">
         {{ $t('staking.stakedPools') }}
       </h5>
+      <PortfolioSyncTip @show-proceed-modal="showProceedModal = true" />
       <PoolsTable
         :key="poolsToRenderKey"
         :data="stakedPools"
@@ -96,6 +102,10 @@ async function handleUnstakeSuccess() {
       action="unstake"
       @close="handleModalClose"
       @success="handleUnstakeSuccess"
+    />
+    <ProceedToSyncModal
+      :isVisible="showProceedModal"
+      @close="showProceedModal = false"
     />
   </div>
 </template>
