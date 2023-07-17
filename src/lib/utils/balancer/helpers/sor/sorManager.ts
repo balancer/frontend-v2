@@ -116,7 +116,11 @@ export class SorManager {
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = false;
 
-      captureBalancerException({ error: err, context: { level: 'fatal' } });
+      captureBalancerException({
+        error: err,
+        msgPrefix: 'SORFetchPools',
+        context: { level: 'fatal' },
+      });
     }
     console.log(
       `[SorManager] V2 fetchPools result: ${this.fetchStatus.v2success}`
