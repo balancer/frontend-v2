@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 import { TransactionAction } from '@/composables/useTransactions';
 import { UseQueryReturnType } from '@tanstack/vue-query';
+import { configService } from '@/services/config/config.service';
 
 interface Params {
   error: Error | unknown;
@@ -22,19 +23,19 @@ export const captureBalancerException = debounce(
 function _captureBalancerException({
   error,
   action = 'unknown',
-  msgPrefix = 'Error',
+  msgPrefix = '',
   context = {},
   query,
 }: Params): void {
   if (!shouldCaptureError(error, query)) return;
   console.error(error);
 
-  const { reason, balError } = getReasonAndBalErrorFromError(error);
+  const balError = getBalError(error);
   const tags: { [key: string]: string } = { ...context?.tags, action };
 
   if (balError) tags.balError = balError;
 
-  const message = formatErrorMsgForSentry(balError, msgPrefix, reason);
+  const message = formatErrorMsgForSentry(error, balError, msgPrefix);
 
   const _error = getErrorForAction(action, message, error);
 
@@ -42,7 +43,6 @@ function _captureBalancerException({
     ...context,
     extra: {
       ...context?.extra,
-      reason,
       balError,
     },
     tags,
@@ -50,25 +50,39 @@ function _captureBalancerException({
 }
 
 function formatErrorMsgForSentry(
+  error,
   balError: string | null,
-  messagePrefix: string,
-  reason: string
+  msgPrefix: string
 ): string {
-  return `${balError ? `BAL#${balError} ` : ''}${messagePrefix}: ${reason}`;
+  let msg = '';
+  if (typeof error.reason === 'string') {
+    msg = error.reason;
+  } else if (typeof error.message === 'string') {
+    msg = error.message;
+  } else if (typeof error.case === 'string') {
+    msg = error.case;
+  } else if (typeof error.cause.message === 'string') {
+    msg = error.cause.message;
+  } else if (typeof error === 'string') {
+    msg = error;
+  } else {
+    msg = 'Unable to extract error message';
+  }
+
+  const balErrorStr = balError ? `BAL#${balError}` : '';
+
+  return `${msgPrefix} ${balErrorStr} ${msg}`.replace(/\s+/g, '');
 }
 
-function getReasonAndBalErrorFromError(error): {
-  reason: string;
-  balError: string | null;
-} {
+/**
+ * Checks for BAL error code in reason and returns it if found.
+ */
+function getBalError(error): string | null {
   const reason: string =
     (error as { reason?: string }).reason || 'no reason available';
   const balError = reason.match(/BAL#[0-9]{3}/g);
 
-  return {
-    reason: reason,
-    balError: balError && balError[0] ? balError[0].slice(-3) : null,
-  };
+  return balError && balError[0] ? balError[0].slice(-3) : null;
 }
 
 class BatchSwapError extends Error {
@@ -262,7 +276,7 @@ export function shouldCaptureError(
   query: UseQueryReturnType<any, any> | undefined
 ): boolean {
   return (
-    process.env.APP_ENV !== 'development' &&
+    !configService.isDevEnv &&
     !isUserError(error) &&
     !isFaucetRefillError(error) &&
     !isBotError(error) &&

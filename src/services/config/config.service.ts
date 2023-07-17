@@ -46,6 +46,10 @@ export default class ConfigService {
     };
   }
 
+  public get isDevEnv(): boolean {
+    return this.env.APP_ENV === 'development';
+  }
+
   public get network(): Config {
     return configs[networkId.value];
   }
