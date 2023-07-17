@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { configService } from '@/services/config/config.service';
+import { SubgraphMetadataCID } from '@/services/bleu/metadata/types';
 
 /**
  * TYPES
@@ -16,13 +17,6 @@ type Props = {
   pool: Pool;
   loading: boolean;
   customMetadata: SubgraphMetadataCID[];
-};
-
-type SubgraphMetadataCID = {
-  typename: string;
-  value: string;
-  key: string;
-  description: string;
 };
 
 type TableAttributes = {
