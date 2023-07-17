@@ -3,13 +3,12 @@ import {
   verifyNetwork,
   verifyTransactionSender,
 } from '@/providers/wallet.provider';
-import { WalletError } from '@/types';
+import { WalletError, WalletErrorMetadata } from '@/types';
 import {
   JsonRpcSigner,
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/providers';
-import { captureException } from '@sentry/browser';
 import { TransactionConcern } from './transaction.concern';
 
 export class RawConcern extends TransactionConcern {
@@ -36,10 +35,8 @@ export class RawConcern extends TransactionConcern {
       return await this.signer.sendTransaction(txOptions);
     } catch (err) {
       const error = err as WalletError;
+      error.metadata = await this.getErrorMetadata(options);
 
-      if (this.shouldLogFailure(error)) {
-        await this.logFailedTx(options, error);
-      }
       return Promise.reject(error);
     }
   }
@@ -51,23 +48,21 @@ export class RawConcern extends TransactionConcern {
     return await this.signer.call(options);
   }
 
-  private async logFailedTx(
-    options: TransactionRequest,
-    error: WalletError
-  ): Promise<void> {
+  private async getErrorMetadata(
+    options: TransactionRequest
+  ): Promise<WalletErrorMetadata> {
     const sender = await this.signer.getAddress();
     const chainId = await this.signer.getChainId();
     const block = await this.signer.provider.getBlockNumber();
     const msgValue = options.value ? options.value.toString() : 0;
-    const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?contractAddress=${options.to}&rawFunctionInput=${options.data}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&network=${chainId}`;
-    captureException(error, {
-      level: 'fatal',
-      extra: {
-        sender,
-        simulate,
-        options,
-        originalError: error?.data?.originalError,
-      },
-    });
+
+    return {
+      simulation: `https://dashboard.tenderly.co/balancer/v2/simulator/new?contractAddress=${options.to}&rawFunctionInput=${options.data}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&network=${chainId}`,
+      sender,
+      block,
+      chainId,
+      ethValue: msgValue,
+      options,
+    };
   }
 }
