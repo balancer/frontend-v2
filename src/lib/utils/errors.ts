@@ -221,7 +221,10 @@ function isUserNotEnoughGas(error): boolean {
  * Checks if error is a testnet faucet refill error.
  */
 function isFaucetRefillError(error): boolean {
-  const messages = [/execution reverted: ERR_NEEDS_REFILL/];
+  const messages = [
+    /execution reverted: ERR_NEEDS_REFILL/,
+    /execution reverted: ERR_DRIP_THROTTLE/,
+  ];
   return isErrorOfType(error, messages);
 }
 
