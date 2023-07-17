@@ -103,8 +103,10 @@ export class SorManager {
 
       if (!v2result) {
         captureBalancerException({
-          action: 'sorFetchPools',
-          error: new Error(),
+          error: new Error('SOR Fetch pools failed'),
+          context: {
+            level: 'fatal',
+          },
         });
       }
     } catch (err) {
@@ -114,7 +116,7 @@ export class SorManager {
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = false;
 
-      captureBalancerException({ action: 'sorFetchPools', error: err });
+      captureBalancerException({ error: err, context: { level: 'fatal' } });
     }
     console.log(
       `[SorManager] V2 fetchPools result: ${this.fetchStatus.v2success}`

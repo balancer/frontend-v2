@@ -55,8 +55,7 @@ export type TransactionAction =
   | 'stake'
   | 'restake'
   | 'sync'
-  | 'userGaugeCheckpoint'
-  | 'sorFetchPools';
+  | 'userGaugeCheckpoint';
 
 export type TransactionType = 'order' | 'tx';
 
