@@ -97,17 +97,14 @@ export const exitPoolProvider = (
   const { txState, txInProgress } = useTxState();
   const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
-  const { getSigner } = useWeb3();
+  const { account, getSigner } = useWeb3();
   const { relayerSignature, relayerApprovalAction, relayerApprovalTx } =
     useRelayerApproval(RelayerType.BATCH);
 
   const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
   const debounceGetSingleAssetMax = debounce(
     getSingleAssetMax,
-    debounceGetSingleAssetMaxMillis,
-    {
-      leading: true,
-    }
+    debounceGetSingleAssetMaxMillis
   );
 
   const queriesEnabled = computed(
@@ -119,6 +116,7 @@ export const exitPoolProvider = (
     Error
   >(
     QUERY_KEYS.Pools.Exits.QueryExit(
+      account,
       bptIn,
       hasFetchedPoolsForSor,
       isSingleAssetExit,
@@ -134,6 +132,7 @@ export const exitPoolProvider = (
     Error
   >(
     QUERY_KEYS.Pools.Exits.SingleAssetMax(
+      account,
       hasFetchedPoolsForSor,
       isSingleAssetExit,
       toRef(singleAmountOut, 'address')
@@ -394,10 +393,11 @@ export const exitPoolProvider = (
    * Fetch maximum amount out given bptBalance as bptIn.
    */
   async function getSingleAssetMax() {
+    singleAmountOut.max = '0';
     if (!hasFetchedPoolsForSor.value) return null;
     if (!isSingleAssetExit.value) return null;
 
-    // If the user has not BPT, there is no maximum amount out.
+    // If the user has no BPT, there is no maximum amount out.
     if (!hasBpt.value) return null;
 
     const singleAssetMaxedExitHandler = shouldUseSwapExit.value
@@ -405,7 +405,6 @@ export const exitPoolProvider = (
       : ExitHandler.ExactIn;
 
     exitPoolService.setExitHandler(singleAssetMaxedExitHandler);
-    singleAmountOut.max = '';
 
     console.log('exitHandler:', exitHandlerType.value);
     try {
