@@ -115,6 +115,7 @@ class StakeError extends Error {
 class UnstakeError extends Error {
   name = 'UnstakeError';
 }
+
 function getErrorForAction(
   action: TransactionAction | 'unknown',
   message: string,
