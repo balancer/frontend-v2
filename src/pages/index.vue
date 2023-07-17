@@ -29,7 +29,7 @@ const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
   selectedTokens,
   poolsSortField
 );
-const poolsId = computed(() => pools.value?.map(pool => pool.id)); // Assuming pools is an array of objects with an id field.
+const poolsId = computed(() => pools.value?.map(pool => pool.id));
 const { upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
 

@@ -2,15 +2,9 @@ import { reactive } from 'vue';
 import { useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import {
-  SubgraphMetadataIPFS,
-  // SubgraphMetadataCID,
-} from '@/services/bleu/metadata/types';
+import { SubgraphMetadataIPFS } from '@/services/bleu/metadata/types';
 import { metadatasSubgraphService } from '@/services/bleu/metadata/metadata-subgraph.service';
 import { ipfsService } from '@/services/ipfs/ipfs.service';
-// import usePoolQuery from './usePoolQuery';
-// import { poolsStoreService } from '@/services/pool/pools-store.service';
-// import { ipfsService } from '@/services/ipfs/ipfs.service';
 
 /**
  * TYPES
@@ -43,8 +37,7 @@ export default function useMetadatasQuery(
       pool => pool.metadataCID
     );
 
-
-    const IPFSList = (await Promise.all(
+    const ipfsPoolMetadatas = (await Promise.all(
       customPoolsMetadataCID.map(cid =>
         ipfsService.get(cid).then(res => {
           return {
@@ -55,7 +48,7 @@ export default function useMetadatasQuery(
         })
       )
     )) as SubgraphMetadataIPFS[];
-    return IPFSList;
+    return ipfsPoolMetadatas;
   };
 
   /**
