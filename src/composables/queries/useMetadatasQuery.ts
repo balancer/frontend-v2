@@ -35,7 +35,6 @@ export default function useMetadatasQuery(
         id_in: ids.map(id => id.toLowerCase()),
       },
     });
-    console.log({ ids });
 
     if (!customPoolsMetadata) {
       return [];
