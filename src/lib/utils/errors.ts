@@ -229,6 +229,15 @@ function isFaucetRefillError(error): boolean {
 }
 
 /**
+ * Checks if error is a bot associated error.
+ */
+function isBotError(error): boolean {
+  const messages = [/ResourceExhausted/];
+
+  return isErrorOfType(error, messages);
+}
+
+/**
  * Checks if error is caused by the user or the state of their wallet.
  */
 export function isUserError(error): boolean {
@@ -256,6 +265,7 @@ export function shouldCaptureError(
     process.env.APP_ENV !== 'development' &&
     !isUserError(error) &&
     !isFaucetRefillError(error) &&
+    !isBotError(error) &&
     shouldCaptureQueryError(query)
   );
 }
