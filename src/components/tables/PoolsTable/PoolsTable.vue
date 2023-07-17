@@ -21,8 +21,6 @@ import {
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
-  orderedPoolTokens,
-  isStableLike,
 } from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -323,10 +321,8 @@ function iconAddresses(pool: Pool) {
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <PoolName
             :poolIds="poolIds"
-            :poolId="pool?.id"
+            :pool="pool"
             :selectedTokens="selectedTokens"
-            :tokens="orderedPoolTokens(pool, pool.tokens)"
-            :isStablePool="isStableLike(pool.poolType)"
           />
           <PoolsTableExtraInfo :pool="pool" />
         </div>

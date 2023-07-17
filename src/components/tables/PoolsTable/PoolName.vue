@@ -2,14 +2,13 @@
 import useMetadatasQuery from '@/composables/queries/useMetadatasQuery';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import { poolMetadataCustomName } from '@/lib/config/metadata';
-import { PoolToken } from '@balancer-labs/sdk';
+import { Pool } from '@balancer-labs/sdk';
+import { isStableLike, orderedPoolTokens } from '@/composables/usePoolHelpers';
 
 type Props = {
   poolIds: string[];
-  poolId: string;
-  tokens: PoolToken[];
-  isStablePool?: boolean;
   selectedTokens?: string[];
+  pool: Pool;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -21,19 +20,19 @@ const poolsMetadataQuery = useMetadatasQuery(props.poolIds);
 const customName = computed(
   () =>
     poolsMetadataQuery.data.value
-      ?.find(pool => pool.poolId.toLowerCase() === props.poolId.toLowerCase())
+      ?.find(pool => pool.poolId.toLowerCase() === props.pool.id.toLowerCase())
       ?.metadata.filter(metadata => metadata.key === 'name')[0].value
 );
 </script>
 
 <template>
-  <div v-if="poolMetadataCustomName(props.poolId, customName)">
-    {{ poolMetadataCustomName(props.poolId, customName) }}
+  <div v-if="poolMetadataCustomName(props.pool.id, customName)">
+    {{ poolMetadataCustomName(props.pool.id, customName) }}
   </div>
   <div v-else>
     <TokenPills
-      :tokens="tokens"
-      :isStablePool="isStablePool"
+      :tokens="orderedPoolTokens(pool, pool.tokens)"
+      :isStablePool="isStableLike(pool.poolType)"
       :selectedTokens="selectedTokens"
       :pickedTokens="selectedTokens"
     />
