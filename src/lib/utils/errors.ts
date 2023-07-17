@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 import { TransactionAction } from '@/composables/useTransactions';
 import { UseQueryReturnType } from '@tanstack/vue-query';
+import { WalletError } from '@/types';
 import { configService } from '@/services/config/config.service';
 
 interface Params {
@@ -33,17 +34,26 @@ function _captureBalancerException({
   const balError = getBalError(error);
   const tags: { [key: string]: string } = { ...context?.tags, action };
 
-  if (balError) tags.balError = balError;
-
   const message = formatErrorMsgForSentry(error, balError, msgPrefix);
 
   const _error = getErrorForAction(action, message, error);
+  const metadata = (error as WalletError).metadata || {};
+
+  if (balError) {
+    tags.balError = balError;
+  }
+
+  if (metadata?.chainId) {
+    tags.chainId = `${metadata.chainId}`;
+  }
 
   captureException(_error, {
     ...context,
     extra: {
       ...context?.extra,
+      ...metadata,
       balError,
+      originalError: (error as WalletError).data?.originalError,
     },
     tags,
   });
