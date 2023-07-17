@@ -73,7 +73,7 @@ function formatErrorMsgForSentry(
 
   const balErrorStr = balError ? `BAL#${balError}` : '';
 
-  return `${msgPrefix} ${balErrorStr} ${msg}`.replace(/\s+/g, '');
+  return `${msgPrefix} ${balErrorStr} ${msg}`;
 }
 
 /**
