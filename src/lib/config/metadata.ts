@@ -12,7 +12,5 @@ export function poolMetadataCustomName(
   id: string,
   customName?: string
 ): string | undefined {
-  if (POOLS.Metadata[id.toLowerCase()])
-    return POOLS.Metadata[id.toLowerCase()].name;
-  return customName;
+  return POOLS.Metadata[id.toLowerCase()]?.name || customName;
 }
