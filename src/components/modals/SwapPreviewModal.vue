@@ -11,7 +11,6 @@ import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
-// import useTokenApproval from '@/composables/approvals/useTokenApproval';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { ApprovalAction } from '@/composables/approvals/types';
 import { UseSwapping } from '@/composables/swap/useSwapping';
@@ -436,7 +435,7 @@ function handlePriceUpdate() {
 }
 
 const tokenApprovalSpender = computed<string>(() => {
-  if (props.swapping.isWrap.value && !props.swapping.isEthSwap.value) {
+  if (props.swapping.isWrap.value && !props.swapping.isNativeAssetSwap.value) {
     // If we're wrapping a token other than native ETH
     // we need to approve the underlying on the wrapper
     return props.swapping.tokenOut.value.address;
