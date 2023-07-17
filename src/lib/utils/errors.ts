@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 import { TransactionAction } from '@/composables/useTransactions';
 import { UseQueryReturnType } from '@tanstack/vue-query';
-import { WalletError } from '@/types';
+import { WalletError, WalletErrorMetadata } from '@/types';
 import { configService } from '@/services/config/config.service';
 
 interface Params {
@@ -15,6 +15,8 @@ interface Params {
   context?: Partial<ScopeContext>;
   query?: UseQueryReturnType<any, any>;
 }
+
+type ErrorTags = { [key: string]: string };
 
 export const captureBalancerException = debounce(
   _captureBalancerException,
@@ -32,20 +34,10 @@ function _captureBalancerException({
   console.error(error);
 
   const balError = getBalError(error);
-  const tags: { [key: string]: string } = { ...context?.tags, action };
-
   const message = formatErrorMsgForSentry(error, balError, msgPrefix);
-
-  const _error = getErrorForAction(action, message, error);
+  const _error = constructError(message, action, error);
   const metadata = (error as WalletError).metadata || {};
-
-  if (balError) {
-    tags.balError = balError;
-  }
-
-  if (metadata?.chainId) {
-    tags.chainId = `${metadata.chainId}`;
-  }
+  const tags = getTags(action, context, balError, metadata);
 
   captureException(_error, {
     ...context,
@@ -95,6 +87,28 @@ function getBalError(error): string | null {
   return balError && balError[0] ? balError[0].slice(-3) : null;
 }
 
+/**
+ * Extract tags for Sentry from error.
+ */
+function getTags(
+  action: TransactionAction | 'unknown',
+  context: Partial<ScopeContext>,
+  balError: string | null,
+  metadata: WalletErrorMetadata
+): ErrorTags {
+  const tags: { [key: string]: string } = { ...context?.tags, action };
+
+  if (balError) {
+    tags.balError = balError;
+  }
+
+  if (metadata?.chainId) {
+    tags.chainId = `${metadata.chainId}`;
+  }
+
+  return tags;
+}
+
 class BatchSwapError extends Error {
   name = 'BatchSwapError';
 }
@@ -126,9 +140,9 @@ class UnstakeError extends Error {
   name = 'UnstakeError';
 }
 
-function getErrorForAction(
-  action: TransactionAction | 'unknown',
+function constructError(
   message: string,
+  action: TransactionAction | 'unknown',
   originalError: Error | unknown
 ) {
   switch (action) {
