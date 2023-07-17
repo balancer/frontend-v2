@@ -11,6 +11,7 @@ import {
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/browser';
 import { TransactionConcern } from './transaction.concern';
+import { configService } from '@/services/config/config.service';
 
 export class RawConcern extends TransactionConcern {
   constructor(private readonly signer: JsonRpcSigner) {
@@ -60,8 +61,10 @@ export class RawConcern extends TransactionConcern {
     const block = await this.signer.provider.getBlockNumber();
     const msgValue = options.value ? options.value.toString() : 0;
     const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?contractAddress=${options.to}&rawFunctionInput=${options.data}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&network=${chainId}`;
+    const level = configService.network.testNetwork ? 'error' : 'fatal';
+
     captureException(error, {
-      level: 'fatal',
+      level,
       extra: {
         sender,
         simulate,

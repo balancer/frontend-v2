@@ -16,6 +16,7 @@ import {
   EthersContract,
   getEthersContract,
 } from '@/dependencies/EthersContract';
+import { configService } from '@/services/config/config.service';
 
 export type SendTransactionOpts = {
   contractAddress: string;
@@ -115,9 +116,10 @@ export class ContractConcern extends TransactionConcern {
     const calldata = contract.interface.encodeFunctionData(action, params);
     const msgValue = overrides.value ? overrides.value.toString() : 0;
     const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?rawFunctionInput=${calldata}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&contractAddress=${contract.address}&network=${chainId}`;
+    const level = configService.network.testNetwork ? 'error' : 'fatal';
 
     captureException(error, {
-      level: 'fatal',
+      level,
       extra: {
         action,
         sender,
