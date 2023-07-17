@@ -55,7 +55,6 @@ export default function useMetadatasQuery(
         })
       )
     )) as SubgraphMetadataIPFS[];
-    console.log({ IPFSList });
     return IPFSList;
   };
 
