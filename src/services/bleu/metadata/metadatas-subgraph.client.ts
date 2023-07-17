@@ -2,7 +2,7 @@ import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 import { configService } from '@/services/config/config.service';
-export class MetadataSubgraphClient {
+export class MetadatasSubgraphClient {
   constructor(
     public readonly url: string = configService.network.subgraphs.metadata
   ) {}
@@ -11,7 +11,7 @@ export class MetadataSubgraphClient {
     try {
       if (!this.url) {
         return {
-          pool: {},
+          pools: [],
         };
       }
       const payload = this.payloadFor(query);
@@ -20,7 +20,7 @@ export class MetadataSubgraphClient {
       } = await axios.post(this.url, payload);
       return data;
     } catch (error) {
-      console.error('MetadataSubgraphClient request failed', error);
+      console.error('MetadatasSubgraphClient request failed', error);
       throw error;
     }
   }
@@ -30,4 +30,4 @@ export class MetadataSubgraphClient {
   }
 }
 
-export const metadataSubgraphClient = new MetadataSubgraphClient();
+export const metadatasSubgraphClient = new MetadatasSubgraphClient();

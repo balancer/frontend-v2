@@ -18,8 +18,6 @@ import {
   absMaxApr,
   fiatValueOf,
   isMigratablePool,
-  isStableLike,
-  orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
@@ -30,11 +28,11 @@ import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { configService } from '@/services/config/config.service';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
-import TokenPills from './TokenPills/TokenPills.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
+import PoolName from './PoolName.vue';
 
 /**
  * TYPES
@@ -103,6 +101,11 @@ const wideCompositionWidth = computed(() => {
 /**
  * DATA
  */
+
+const poolIds = computed(() => {
+  return props.data?.map(pool => pool.id) || [];
+});
+
 const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: 'Icons',
@@ -316,17 +319,11 @@ function iconAddresses(pool: Pool) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="poolMetadata(pool.id)?.name" class="pr-2 text-left">
-            {{ poolMetadata(pool.id)?.name }}
-          </div>
-          <div v-else>
-            <TokenPills
-              :tokens="orderedPoolTokens(pool, pool.tokens)"
-              :isStablePool="isStableLike(pool.poolType)"
-              :selectedTokens="selectedTokens"
-              :pickedTokens="selectedTokens"
-            />
-          </div>
+          <PoolName
+            :poolIds="poolIds"
+            :pool="pool"
+            :selectedTokens="selectedTokens"
+          />
           <PoolsTableExtraInfo :pool="pool" />
         </div>
       </template>

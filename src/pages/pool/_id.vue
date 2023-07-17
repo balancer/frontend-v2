@@ -38,7 +38,7 @@ import metaService from '@/services/meta/meta.service';
 import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationCard/PoolMigrationCard.vue';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import PoolRisks from '@/components/contextual/pages/pool/risks/PoolRisks.vue';
-import useMetadataQuery from '@/composables/queries/useMetadataQuery';
+import useMetadatasQuery from '@/composables/queries/useMetadatasQuery';
 
 /**
  * STATE
@@ -90,12 +90,12 @@ const snapshots = computed(() => poolSnapshotsQuery.data.value);
 //#endregion
 
 //#region pool snapshot query
-const poolMetadataQuery = useMetadataQuery(poolId);
-const isLoadingMetadata = computed(() => poolMetadataQuery.isLoading.value);
+const poolsMetadataQuery = useMetadatasQuery([poolId]);
+const isLoadingMetadata = computed(() => poolsMetadataQuery.isLoading.value);
 
-const customPoolMetadata = computed(() => {
-  if (!poolMetadataQuery.data.value) return [];
-  return poolMetadataQuery.data.value;
+const customPoolsMetadata = computed(() => {
+  if (!poolsMetadataQuery.data.value) return [];
+  return poolsMetadataQuery.data.value;
 });
 //#endregion
 
@@ -291,7 +291,7 @@ watch(
             <PoolContractDetails
               :pool="pool"
               :loading="isLoadingMetadata"
-              :customMetadata="customPoolMetadata"
+              :customMetadata="customPoolsMetadata[0].metadata"
             />
             <PoolRisks :pool="pool" />
           </template>

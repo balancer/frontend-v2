@@ -11,6 +11,11 @@ import useNetwork from '@/composables/useNetwork';
 import usePools from '@/composables/pools/usePools';
 import ZkevmPromo from '@/components/contextual/pages/pools/ZkevmPromo.vue';
 
+/**
+ * STATE
+ */
+
+const poolIds = ref<string[]>([]);
 // COMPOSABLES
 const router = useRouter();
 const { appNetworkConfig } = useNetwork();
@@ -24,6 +29,7 @@ const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
   selectedTokens,
   poolsSortField
 );
+const poolsId = computed(() => pools.value?.map(pool => pool.id));
 const { upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
 
@@ -39,6 +45,14 @@ function navigateToCreatePool() {
 function onColumnSort(columnId: string) {
   poolsSortField.value = columnId;
 }
+
+/**
+ * WATCH
+ */
+
+watch(pools, () => {
+  poolIds.value = pools.value.map(pool => pool.id);
+});
 </script>
 
 <template>
@@ -96,6 +110,7 @@ function onColumnSort(columnId: string) {
           :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
           :isLoadingMore="poolsIsFetchingNextPage"
           :isPaginated="isPaginated"
+          :poolsId="poolsId"
           skeletonClass="pools-table-loading-height"
           @on-column-sort="onColumnSort"
           @load-more="loadMorePools"

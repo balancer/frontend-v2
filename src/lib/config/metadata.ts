@@ -7,3 +7,10 @@ import { PoolMetadata } from '@/types/pools';
 export function poolMetadata(id: string): PoolMetadata | undefined {
   return POOLS.Metadata[id.toLowerCase()];
 }
+
+export function poolMetadataCustomName(
+  id: string,
+  customName?: string
+): string | undefined {
+  return POOLS.Metadata[id.toLowerCase()]?.name || customName;
+}

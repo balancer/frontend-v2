@@ -36,7 +36,8 @@ const config: Config = {
     gauge:
       'https://api.studio.thegraph.com/query/24660/balancer-gauges-polygon-zk/version/latest',
     blocks: '',
-    metadata: '',
+    metadata:
+      'https://api.studio.thegraph.com/query/49707/balacer-pool-metadata-zkevm/version/latest',
   },
   bridgeUrl: 'https://wallet.polygon.technology/zkEVM-Bridge/bridge',
   supportsEIP1559: false,
