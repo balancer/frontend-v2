@@ -9,13 +9,21 @@ import { includesAddress } from '..';
 const { stETH: stEthAddress, wstETH: wstEthAddress } =
   configService.network.tokens.Addresses;
 
-const MAINNET_RATE_PROVIDER_ADDRESS =
-  '0x72d07d7dca67b8a406ad1ec34ce969c90bfee768';
-
 type ConversionParams = {
   amount: BigNumber;
   isWrap: boolean; // e.g. is stETH to wstETH
 };
+
+function getRateProviderAddress() {
+  if (!wstEthAddress)
+    throw new Error('Unknown wstEthAddress, cannot perform lido unwrap');
+  const rateProviderInfo =
+    configService.network.rateProviders[wstEthAddress.toLowerCase()];
+  if (!rateProviderInfo || Object.keys(rateProviderInfo).length === 0)
+    throw new Error('Lido rate provider not set in config');
+  const rateProvider = Object.keys(rateProviderInfo)[0];
+  return rateProvider;
+}
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   if (!tokenInAddress || !tokenOutAddress || !stEthAddress) return false;
@@ -71,7 +79,7 @@ export function getWstETHByStETH(stETHAmount: BigNumberish) {
 export async function convertStEthWrap({ amount, isWrap }: ConversionParams) {
   try {
     const rateProvider = new Contract(
-      MAINNET_RATE_PROVIDER_ADDRESS,
+      getRateProviderAddress(),
       ['function getRate() external view returns (uint256)'],
       rpcProviderService.jsonProvider
     );
