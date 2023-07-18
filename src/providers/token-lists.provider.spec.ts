@@ -78,7 +78,7 @@ describe('Token lists provider should', () => {
 
   test('provide allowlisted TokenList', async () => {
     const { result } = mountComposableWithTokenLists();
-    expect(tokenListSymbols(result.allowlistedTokenList.value)).toEqual([
+    expect(tokenListSymbols(result.balancerTokenList.value)).toEqual([
       'BAL',
       'bb-a-DAI',
       'bb-a-USDC',

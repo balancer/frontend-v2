@@ -35,10 +35,10 @@ function doesRequireAllowListing(pool: Pool, account: string): boolean {
 
 export function useDisabledJoinPool(pool: Pool) {
   const { account } = useWeb3();
-  const { allowlistedTokenList } = useTokenLists();
+  const { balancerTokenList } = useTokenLists();
 
   const notVettedTokens = computed(() => {
-    const vettedTokenAddresses = allowlistedTokenList.value.tokens.map(
+    const vettedTokenAddresses = balancerTokenList.value.tokens.map(
       t => t.address
     );
 

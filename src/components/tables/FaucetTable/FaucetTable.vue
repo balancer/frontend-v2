@@ -17,11 +17,11 @@ import { useTokens } from '@/providers/tokens.provider';
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
-const { allowlistedTokenList } = useTokenLists();
+const { balancerTokenList } = useTokenLists();
 const { priceFor, balanceFor } = useTokens();
 
 const tokens = computed(() => {
-  const tokensWithValues = Object.values(allowlistedTokenList.value.tokens)
+  const tokensWithValues = Object.values(balancerTokenList.value.tokens)
     .map(token => {
       const balance = balanceFor(token.address);
       const price = priceFor(token.address);

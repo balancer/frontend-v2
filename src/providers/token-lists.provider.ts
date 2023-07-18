@@ -52,7 +52,7 @@ const activeTokenLists = computed(
 /**
  * All allowlisted tokens from tokenlists repo
  */
-const allowlistedTokenList = computed(
+const balancerTokenList = computed(
   (): TokenList => allTokenLists.value[uris.Balancer.Allowlisted]
 );
 
@@ -123,7 +123,7 @@ export const tokenListsProvider = () => {
     activeTokenLists,
     balancerTokenLists,
     approvedTokenLists,
-    allowlistedTokenList,
+    balancerTokenList,
     // methods
     toggleTokenList,
     isActiveList,
