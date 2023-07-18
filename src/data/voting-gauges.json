@@ -5361,6 +5361,180 @@
     }
   },
   {
+    "address": "0x54f220a891f468629027C3Cc8A58722D4F576402",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4",
+      "address": "0xb266aC3b7C98D7Bcb28731Dac0eF42DbA1b276bE",
+      "poolType": "ComposableStable",
+      "symbol": "truMATIC-bb-a-WMATIC-BPT",
+      "tokens": [
+        {
+          "address": "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488",
+          "weight": "null",
+          "symbol": "bb-a-WMATIC"
+        },
+        {
+          "address": "0xC1381c17d29A22dF5c3015C3D83ebd90AbD0e6b3",
+          "weight": "null",
+          "symbol": "fxTruMATIC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488": "",
+      "0xC1381c17d29A22dF5c3015C3D83ebd90AbD0e6b3": ""
+    }
+  },
+  {
+    "address": "0x24E8787B4AC5325Fd082BC30b9fe7eb2F01304c7",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2",
+      "address": "0xAC2CaE8D2f78A4a8F92f20dbe74042Cd0a8d5Af3",
+      "poolType": "ComposableStable",
+      "symbol": "stMATIC-bb-a-WMATIC-BPT",
+      "tokens": [
+        {
+          "address": "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4",
+          "weight": "null",
+          "symbol": "stMATIC"
+        },
+        {
+          "address": "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488",
+          "weight": "null",
+          "symbol": "bb-a-WMATIC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png",
+      "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488": ""
+    }
+  },
+  {
+    "address": "0xb7b9B9D35e7F9E324C762235FB69848175C03A19",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3",
+      "address": "0x402cFDb7781fa85d52F425352661128250B79e12",
+      "poolType": "ComposableStable",
+      "symbol": "MaticX-bb-a-WMATIC-BPT",
+      "tokens": [
+        {
+          "address": "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488",
+          "weight": "null",
+          "symbol": "bb-a-WMATIC"
+        },
+        {
+          "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
+          "weight": "null",
+          "symbol": "MaticX"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x16C9a4D841E88E52b51936106010F27085a529EC": "",
+      "0x4B718E0E2fEA1dA68b763CD50C446FbA03CEB2Ea": ""
+    }
+  },
+  {
+    "address": "0xF7d515DC47d5BD57786494628ed766d6bF31cd39",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0xdf725fde6e89981fb30d9bf999841ac2c160b512000000000000000000000010",
+      "address": "0xDF725FdE6E89981Fb30D9bF999841aC2C160b512",
+      "poolType": "ComposableStable",
+      "symbol": "B-wstETH/rETH-STABLE",
+      "tokens": [
+        {
+          "address": "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5d8cff95d7a57c0bf50b30b43c7cc0d52825d4a9.png",
+      "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb23c20efce6e24acca0cef9b7b7aa196b84ec942.png"
+    }
+  },
+  {
+    "address": "0xc85679E41f1F98E694D9F8983fdD484F98F2eB02",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013",
+      "address": "0x9e2D87f904862671eb49cB358E74284762cC9F42",
+      "poolType": "Weighted",
+      "symbol": "B-wstETH/bboUSD",
+      "tokens": [
+        {
+          "address": "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9",
+          "weight": "0.5",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xe274c9deb6ed34cfe4130F8D0A8a948deA5bB286",
+          "weight": "0.5",
+          "symbol": "bb-o-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5d8cff95d7a57c0bf50b30b43c7cc0d52825d4a9.png",
+      "0xe274c9deb6ed34cfe4130F8D0A8a948deA5bB286": ""
+    }
+  },
+  {
+    "address": "0x7949426d750FEFC25754F149B2FB446B60c39387",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015",
+      "address": "0x6F34a44FCe1506352A171232163E7716Dd073ade",
+      "poolType": "Weighted",
+      "symbol": "B-rETH-bboUSD",
+      "tokens": [
+        {
+          "address": "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942",
+          "weight": "0.5",
+          "symbol": "rETH"
+        },
+        {
+          "address": "0xe274c9deb6ed34cfe4130F8D0A8a948deA5bB286",
+          "weight": "0.5",
+          "symbol": "bb-o-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb23c20efce6e24acca0cef9b7b7aa196b84ec942.png",
+      "0xe274c9deb6ed34cfe4130F8D0A8a948deA5bB286": ""
+    }
+  },
+  {
     "address": "0x6823DcA6D70061F2AE2AAA21661795A2294812bF",
     "network": 42161,
     "isKilled": true,
