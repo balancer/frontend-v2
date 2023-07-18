@@ -41,3 +41,33 @@ test('Gets approval actions for spender', async () => {
   });
   expect(actions).toBeArray();
 });
+
+test.skip('Asks for approval twice for tokens that require double approval with an already approved amount', async () => {
+  const { getTokenApprovalActions } = await mountUseTokenApprovalActions();
+
+  const actions = await getTokenApprovalActions({
+    amountsToApprove,
+    spender: vaultAddress,
+    actionType: ApprovalAction.AddLiquidity,
+  });
+  expect(actions.length).toBe(2);
+  // The first action should not re-validate as it's setting the token amount to 0
+  expect(actions[0].postActionValidation).toBeUndefined();
+  // The second action should validate as it's checking the approved amount is correct
+  expect(actions[1].postActionValidation).toBeDefined();
+});
+
+test.skip('Asks for approval once for tokens that require double approval without an already approved amount', async () => {
+  const { getTokenApprovalActions } = await mountUseTokenApprovalActions();
+
+  const actions = await getTokenApprovalActions({
+    amountsToApprove,
+    spender: vaultAddress,
+    actionType: ApprovalAction.AddLiquidity,
+  });
+  expect(actions.length).toBe(2);
+  // The first action should not re-validate as it's setting the token amount to 0
+  expect(actions[0].postActionValidation).toBeUndefined();
+  // The second action should validate as it's checking the approved amount is correct
+  expect(actions[1].postActionValidation).toBeDefined();
+});
