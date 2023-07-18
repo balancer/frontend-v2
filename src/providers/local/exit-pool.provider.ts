@@ -322,7 +322,7 @@ export const exitPoolProvider = (
   // Are amounts valid for transaction? That is bptIn and amountsOut.
   const validAmounts = computed((): boolean => {
     return isSingleAssetExit.value
-      ? amountsOut.value.every(ao => ao.valid)
+      ? amountsOut.value.every(ao => ao.valid && bnum(ao.value).gt(0))
       : bptInValid.value && bnum(bptIn.value).gt(0);
   });
 
@@ -351,10 +351,13 @@ export const exitPoolProvider = (
    * Simulate exit transaction to get expected output and calculate price impact.
    */
   async function queryExit() {
+    // This is so we can render - in UI instead of 0. If we set to 0 then it can be misleading.
+    priceImpact.value = -1;
+
     if (!hasFetchedPoolsForSor.value) return null;
 
     // Single asset exit, and token out amount is 0 or less
-    if (isSingleAssetExit.value && !hasAmountsOut.value) return null;
+    if (isSingleAssetExit.value && !validAmounts.value) return null;
 
     // Proportional exit, and BPT in is 0 or less
     if (!isSingleAssetExit.value && !hasBptIn.value) return null;
