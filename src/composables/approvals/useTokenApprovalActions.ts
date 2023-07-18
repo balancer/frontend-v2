@@ -58,6 +58,8 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.approveForLocking', [symbol]);
       case ApprovalAction.Staking:
         return t('transactionSummary.approveForStaking', [symbol]);
+      case ApprovalAction.Swapping:
+        return t('transactionSummary.approveForSwapping', [symbol]);
       default:
         return t('transactionSummary.approveForInvesting', [symbol]);
     }
@@ -69,6 +71,8 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.tooltips.approveForLocking', [symbol]);
       case ApprovalAction.Staking:
         return t('transactionSummary.tooltips.approveForStaking', [symbol]);
+      case ApprovalAction.Swapping:
+        return t('transactionSummary.tooltips.approveForSwapping', [symbol]);
       default:
         return t('transactionSummary.tooltips.approveForInvesting', [symbol]);
     }
@@ -82,6 +86,10 @@ export default function useTokenApprovalActions() {
         ]);
       case ApprovalAction.Staking:
         return t('transactionSummary.approveForStaking', [
+          getToken(address)?.symbol,
+        ]);
+      case ApprovalAction.Swapping:
+        return t('transactionSummary.approveForSwapping', [
           getToken(address)?.symbol,
         ]);
       default:
