@@ -134,8 +134,8 @@ class SentryError extends Error {
   constructor(name: string, message: string, cause: Error | unknown) {
     super(message);
 
-    if (Error.captureStackTrace && cause instanceof Error) {
-      Error.captureStackTrace(cause, SentryError);
+    if (cause instanceof Error && cause.stack) {
+      this.stack = cause.stack;
     }
 
     this.name = name;
