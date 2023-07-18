@@ -92,7 +92,7 @@
     "@vue/test-utils": "^2.3.2",
     "@vueuse/core": "^4.3.4",
     "@walletconnect/ethereum-provider": "^2.9.0",
-    "@walletconnect/modal": "^2.5.9",
+    "@walletconnect/modal": "^2.6.0",
     "animejs": "^3.2.1",
     "autoprefixer": "^10.4.13",
     "axios": "0.21.2",
