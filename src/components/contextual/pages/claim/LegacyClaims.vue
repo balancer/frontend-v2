@@ -7,7 +7,6 @@ import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
-import useTransactionErrors from '@/composables/useTransactionErrors';
 import useTransactions from '@/composables/useTransactions';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
@@ -18,6 +17,7 @@ import {
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionError } from '@/types/transactions';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
+import { useErrorMsg } from '@/lib/utils/errors';
 
 type Props = {
   merkleOrchardVersion: MerkleOrchardVersion;
@@ -55,7 +55,7 @@ const { account, getProvider, isMismatchedNetwork } = useWeb3();
 const { txListener } = useEthers();
 const { addTransaction } = useTransactions();
 const { priceFor, getToken } = useTokens();
-const { parseError } = useTransactionErrors();
+const { formatErrorMsg } = useErrorMsg();
 
 const BALTokenAddress = getAddress(TOKENS.Addresses.BAL);
 
@@ -149,7 +149,7 @@ async function claimAvailableRewards() {
       });
     } catch (e) {
       console.log(e);
-      claimError.value = parseError(e);
+      claimError.value = formatErrorMsg(e);
       isClaiming.value = false;
     }
   }

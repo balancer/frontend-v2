@@ -11,9 +11,11 @@ import useRelayerApproval, {
   RelayerType,
 } from '@/composables/approvals/useRelayerApproval';
 import useRelayerApprovalTx from '@/composables/approvals/useRelayerApprovalTx';
-import useTokenApproval from '@/composables/approvals/useTokenApproval';
+import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
+import { ApprovalAction } from '@/composables/approvals/types';
 import { UseSwapping } from '@/composables/swap/useSwapping';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNetwork from '@/composables/useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { FiatCurrency } from '@/constants/currency';
@@ -22,7 +24,6 @@ import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
@@ -43,9 +44,10 @@ const emit = defineEmits(['swap', 'close']);
  */
 const { t } = useI18n();
 const { fNum, toFiat } = useNumbers();
-const { tokens, balanceFor, approvalRequired } = useTokens();
+const { balanceFor } = useTokens();
 const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
 const { slippage } = useUserSettings();
+const { networkConfig } = useNetwork();
 
 /**
  * STATE
@@ -56,6 +58,7 @@ const lastQuote = ref<SwapQuote | null>(
 const priceUpdated = ref(false);
 const priceUpdateAccepted = ref(false);
 const showSummaryInFiat = ref(false);
+const loadingApprovals = ref(true);
 
 /**
  * COMPUTED
@@ -102,7 +105,7 @@ const exceedsBalance = computed(() => {
 });
 
 const disableSubmitButton = computed(() => {
-  return !!exceedsBalance.value || !!props.error;
+  return !!exceedsBalance.value || !!props.error || !!loadingApprovals.value;
 });
 
 const summary = computed(() => {
@@ -257,11 +260,8 @@ const isStETHSwap = computed(
     wrapType.value === WrapType.NonWrap
 );
 
-const tokenApproval = useTokenApproval(
-  addressIn,
-  props.swapping.tokenInAmountInput,
-  tokens
-);
+const { getTokenApprovalActions } = useTokenApprovalActions();
+const tokenApprovalActions = ref<TransactionActionInfo[]>([]);
 
 const {
   relayerSignature: batchRelayerSignature,
@@ -281,19 +281,6 @@ const pools = computed<SubgraphPoolBase[]>(() => {
   return props.swapping.sor.pools.value;
 });
 
-const requiresTokenApproval = computed(() => {
-  if (props.swapping.isWrap.value && !props.swapping.isEthSwap.value) {
-    return approvalRequired(
-      props.swapping.tokenIn.value.address,
-      props.swapping.tokenInAmountInput.value,
-      props.swapping.tokenOut.value.address
-    );
-  } else if (props.swapping.requiresTokenApproval.value) {
-    return !tokenApproval.isUnlockedV2.value;
-  }
-  return false;
-});
-
 const requiresBatchRelayerApproval = computed(
   () =>
     props.swapping.isJoinExitSwap.value &&
@@ -311,13 +298,6 @@ const requiresCowswapRelayerApproval = computed(
 const requiresLidoRelayerApproval = computed(
   () =>
     props.swapping.isBalancerSwap.value && !lidoRelayerApproval.isUnlocked.value
-);
-
-const showTokenApprovalStep = computed(
-  () =>
-    requiresTokenApproval.value ||
-    tokenApproval.approved.value ||
-    tokenApproval.approving.value
 );
 
 const showBatchRelayerApprovalStep = computed(
@@ -347,8 +327,7 @@ const requiresApproval = computed(
   () =>
     requiresBatchRelayerApproval.value ||
     requiresCowswapRelayerApproval.value ||
-    requiresLidoRelayerApproval.value ||
-    requiresTokenApproval.value
+    requiresLidoRelayerApproval.value
 );
 
 const showPriceUpdateError = computed(
@@ -367,18 +346,8 @@ const actions = computed((): TransactionActionInfo[] => {
     actions.push(batchRelayerApprovalAction.value);
   }
 
-  if (showTokenApprovalStep.value) {
-    actions.push({
-      label: t('transactionSummary.approveForSwapping', [
-        props.swapping.tokenIn.value.symbol,
-      ]),
-      loadingLabel: t('actionSteps.approve.loadingLabel'),
-      confirmingLabel: t('confirming'),
-      action: approveToken,
-      stepTooltip: t(
-        'swapSummary.transactionTypesTooltips.tokenApproval.content'
-      ),
-    });
+  if (tokenApprovalActions.value.length > 0) {
+    actions.push(tokenApprovalActions.value[0]);
   }
 
   actions.push({
@@ -466,21 +435,38 @@ function handlePriceUpdate() {
   }
 }
 
-async function approveToken(): Promise<TransactionResponse> {
-  if (props.swapping.isWrap.value && !props.swapping.isEthSwap.value) {
+const tokenApprovalSpender = computed<string>(() => {
+  if (props.swapping.isWrap.value && !props.swapping.isNativeAssetSwap.value) {
     // If we're wrapping a token other than native ETH
     // we need to approve the underlying on the wrapper
-    return tokenApproval.approveSpender(props.swapping.tokenOut.value.address);
+    return props.swapping.tokenOut.value.address;
   } else {
-    return tokenApproval.approveV2();
+    return networkConfig.addresses.vault;
   }
-}
+});
 
 /**
  * WATCHERS
  */
 watch(blockNumber, () => {
   handlePriceUpdate();
+});
+
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(async () => {
+  tokenApprovalActions.value = await getTokenApprovalActions({
+    amountsToApprove: [
+      {
+        address: addressIn.value,
+        amount: props.swapping.tokenInAmountInput.value,
+      },
+    ],
+    spender: tokenApprovalSpender.value,
+    actionType: ApprovalAction.Swapping,
+  });
+  loadingApprovals.value = false;
 });
 </script>
 
@@ -711,6 +697,7 @@ watch(blockNumber, () => {
       <BalActionSteps
         v-else
         :actions="actions"
+        primaryActionType="swap"
         :disabled="disableSubmitButton || showPriceUpdateError"
       />
       <BalAlert

@@ -62,6 +62,8 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.approveForLocking', [symbol]);
       case ApprovalAction.Staking:
         return t('transactionSummary.approveForStaking', [symbol]);
+      case ApprovalAction.Swapping:
+        return t('transactionSummary.approveForSwapping', [symbol]);
       case ApprovalAction.Unapprove:
         return t('transactionSummary.unapprove', [symbol]);
       default:
@@ -75,27 +77,12 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.tooltips.approveForLocking', [symbol]);
       case ApprovalAction.Staking:
         return t('transactionSummary.tooltips.approveForStaking', [symbol]);
+      case ApprovalAction.Swapping:
+        return t('transactionSummary.tooltips.approveForSwapping', [symbol]);
       case ApprovalAction.Unapprove:
         return t('transactionSummary.tooltips.unapprove', [symbol]);
       default:
         return t('transactionSummary.tooltips.approveForInvesting', [symbol]);
-    }
-  }
-
-  function summaryLabel(actionType: ApprovalAction, address: string): string {
-    switch (actionType) {
-      case ApprovalAction.Locking:
-        return t('transactionSummary.approveForLocking', [
-          getToken(address)?.symbol,
-        ]);
-      case ApprovalAction.Staking:
-        return t('transactionSummary.approveForStaking', [
-          getToken(address)?.symbol,
-        ]);
-      default:
-        return t('transactionSummary.approveForInvesting', [
-          getToken(address)?.symbol,
-        ]);
     }
   }
 
@@ -171,7 +158,7 @@ export default function useTokenApprovalActions() {
       id: tx.hash,
       type: 'tx',
       action: 'approve',
-      summary: summaryLabel(actionType, token.address),
+      summary: actionLabel(actionType, token.symbol),
       details: {
         contractAddress: token.address,
         spender: spender,

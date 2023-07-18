@@ -15,23 +15,25 @@ import {
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import useTransactionErrors from '@/composables/useTransactionErrors';
 import { Step, StepState } from '@/types';
 import {
-  TransactionAction,
   TransactionActionInfo,
   TransactionActionState,
 } from '@/types/transactions';
 import signature from '@/assets/images/icons/signature.svg';
-import { captureException } from '@sentry/core';
 import { useI18n } from 'vue-i18n';
-import { postConfirmationDelay } from '@/composables/useTransactions';
+import {
+  TransactionAction,
+  postConfirmationDelay,
+} from '@/composables/useTransactions';
+import { captureBalancerException, useErrorMsg } from '@/lib/utils/errors';
 
 /**
  * TYPES
  */
 type Props = {
   actions: TransactionActionInfo[];
+  primaryActionType: TransactionAction;
   disabled?: boolean;
   // override action state loading prop and show
   // loading for all steps
@@ -39,6 +41,15 @@ type Props = {
   // override action state loading label
   // for all steps
   loadingLabel?: string;
+};
+
+type BalStepAction = {
+  label: string;
+  loadingLabel: string;
+  pending: boolean;
+  step: Step;
+  promise: () => Promise<void>;
+  isSignAction?: boolean;
 };
 
 /**
@@ -108,14 +119,14 @@ watch(
  * COMPOSABLES
  */
 const { txListener, getTxConfirmedAt } = useEthers();
-const { parseError } = useTransactionErrors();
+const { formatErrorMsg } = useErrorMsg();
 const { t } = useI18n();
 
 /**
  * COMPUTED
  */
 
-const actions = computed((): TransactionAction[] => {
+const actions = computed((): BalStepAction[] => {
   return _actions.value.map((actionInfo, idx) => {
     const actionState = actionStates.value[idx];
     return {
@@ -135,7 +146,7 @@ const actions = computed((): TransactionAction[] => {
 });
 
 const currentAction = computed(
-  (): TransactionAction | undefined => actions.value[currentActionIndex.value]
+  (): BalStepAction | undefined => actions.value[currentActionIndex.value]
 );
 
 const currentActionState = computed(
@@ -196,11 +207,12 @@ async function submit(
   } catch (error) {
     state.init = false;
     state.confirming = false;
-    state.error = parseError(error);
-    if (state.error) {
-      console.error(error);
-      captureException(error);
-    }
+    state.error = formatErrorMsg(error);
+    captureBalancerException({
+      error,
+      action: props.primaryActionType,
+      context: { level: 'fatal' },
+    });
   }
 }
 
@@ -223,8 +235,6 @@ async function handleTransaction(
 
       await postConfirmationDelay(tx);
 
-      state.confirming = false;
-
       const isValid = await postActionValidation?.();
       if (isValid || !postActionValidation) {
         const confirmedAt = await getTxConfirmedAt(receipt);
@@ -240,6 +250,7 @@ async function handleTransaction(
         if (actionInvalidReason) state.error = actionInvalidReason;
         state.init = false;
       }
+      state.confirming = false;
     },
     onTxFailed: () => {
       state.confirming = false;
