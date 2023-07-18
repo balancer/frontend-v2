@@ -347,7 +347,7 @@ const actions = computed((): TransactionActionInfo[] => {
   }
 
   if (tokenApprovalActions.value.length > 0) {
-    actions.push(tokenApprovalActions.value[0]);
+    actions.push(...tokenApprovalActions.value);
   }
 
   actions.push({
