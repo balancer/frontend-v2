@@ -58,6 +58,7 @@ const lastQuote = ref<SwapQuote | null>(
 const priceUpdated = ref(false);
 const priceUpdateAccepted = ref(false);
 const showSummaryInFiat = ref(false);
+const loadingApprovals = ref(true);
 
 /**
  * COMPUTED
@@ -104,7 +105,7 @@ const exceedsBalance = computed(() => {
 });
 
 const disableSubmitButton = computed(() => {
-  return !!exceedsBalance.value || !!props.error;
+  return !!exceedsBalance.value || !!props.error || !!loadingApprovals.value;
 });
 
 const summary = computed(() => {
@@ -465,6 +466,7 @@ onBeforeMount(async () => {
     spender: tokenApprovalSpender.value,
     actionType: ApprovalAction.Swapping,
   });
+  loadingApprovals.value = false;
 });
 </script>
 
