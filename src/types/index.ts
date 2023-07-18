@@ -49,6 +49,13 @@ export interface WalletErrorMetadata {
   ethValue?: string | number;
 }
 
+export interface ErrorWithMetadata extends Error {
+  metadata?: {
+    action: string;
+    [key: string]: any;
+  };
+}
+
 export type BatchSwap = {
   amountTokenOut: string;
   swaps: SwapV2[];
