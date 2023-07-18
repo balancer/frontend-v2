@@ -1529,9 +1529,10 @@
     "stake": "{amount} in {pool}",
     "unstake": "{amount} from {pool}",
     "approveForInvesting": "Approve {0} for adding liquidity",
-    "approveForSwapping": "Approve {0} for swapping",
     "approveForLocking": "Approve {0} for locking",
     "approveForStaking": "Approve {0} for staking",
+    "approveForSwapping": "Approve {0} for swapping",
+    "unapprove": "Unapprove {0}",
     "extendLock": "Lock until {0}",
     "unlock": "Unlock {0}",
     "approveRelayer": "Approve {0} relayer",
@@ -1548,7 +1549,8 @@
       "approveForInvesting": "You must approve {0} to add liquidity for this token on Balancer. Approvals are required once per token, per wallet.",
       "approveForLocking": "You must approve {0} to lock this token. Approvals are required once per token, per wallet.",
       "approveForStaking": "You must approve {0} to stake this token on Balancer. Approvals are required once per token, per wallet.",
-      "approveForSwapping": "You must approve {0} to swap this token on Balancer. Approvals are required once per token, per wallet."
+      "approveForSwapping": "You must approve {0} to swap this token on Balancer. Approvals are required once per token, per wallet.",
+      "unapprove": "You must unapprove {0} before a new approval value can be set"
     }
   },
   "transactionType": "Transaction type",
