@@ -209,7 +209,7 @@ async function submit(
     state.confirming = false;
     state.error = formatErrorMsg(error);
     captureBalancerException({
-      error,
+      error: (error as Error)?.cause || error,
       action: props.primaryActionType,
       context: { level: 'fatal' },
     });
