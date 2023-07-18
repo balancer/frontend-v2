@@ -15,6 +15,7 @@ import {
   CowSwapQuoteResponse,
   PriceQuoteParams,
 } from './types';
+import { ErrorWithMetadata } from '@/types';
 
 export const API_URLS = {
   [Network.MAINNET]: 'https://api.cow.fi/mainnet/api',
@@ -56,7 +57,18 @@ export default class CowswapProtocolService {
       'create'
     );
 
-    throw new Error(errorMessage);
+    const error: ErrorWithMetadata = new Error(errorMessage);
+    error.metadata = {
+      action: 'cowSwapSendSignedOrder',
+      url: `${this.baseURL}/orders`,
+      data: JSON.stringify({
+        ...order,
+        signingScheme: getSigningSchemeApiValue(order.signingScheme),
+        from: owner,
+      }),
+    };
+
+    throw error;
   }
 
   public async sendSignedOrderCancellation(params: {
@@ -86,7 +98,18 @@ export default class CowswapProtocolService {
       'delete'
     );
 
-    throw new Error(errorMessage);
+    const error: ErrorWithMetadata = new Error(errorMessage);
+    error.metadata = {
+      action: 'cowSwapSendSignedOrderCancellation',
+      url: `${this.baseURL}/orders/${cancellation.orderUid}`,
+      data: JSON.stringify({
+        signature: cancellation.signature,
+        signingScheme: getSigningSchemeApiValue(cancellation.signingScheme),
+        from: owner,
+      }),
+    };
+
+    throw error;
   }
 
   public async getOrder(orderId: OrderID) {
