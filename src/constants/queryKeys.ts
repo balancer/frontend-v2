@@ -91,6 +91,7 @@ const QUERY_KEYS = {
     },
     Exits: {
       QueryExit: (
+        account: Ref<string>,
         bptIn: Ref<unknown>,
         hasFetchedPoolsForSor: Ref<unknown>,
         isSingleAssetExit: Ref<unknown>,
@@ -99,6 +100,7 @@ const QUERY_KEYS = {
       ) => [
         ...QUERY_EXIT_ROOT_KEY,
         {
+          account,
           bptIn,
           hasFetchedPoolsForSor,
           isSingleAssetExit,
@@ -107,6 +109,7 @@ const QUERY_KEYS = {
         },
       ],
       SingleAssetMax: (
+        bptBalance: Ref<string>,
         hasFetchedPoolsForSor: Ref<unknown>,
         isSingleAssetExit: Ref<unknown>,
         singleAmountOut: unknown
@@ -114,6 +117,7 @@ const QUERY_KEYS = {
         POOLS_ROOT_KEY,
         'singleAssetMax',
         {
+          bptBalance,
           hasFetchedPoolsForSor,
           isSingleAssetExit,
           singleAmountOut,
