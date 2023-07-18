@@ -109,7 +109,7 @@ const QUERY_KEYS = {
         },
       ],
       SingleAssetMax: (
-        account: Ref<string>,
+        bptBalance: Ref<string>,
         hasFetchedPoolsForSor: Ref<unknown>,
         isSingleAssetExit: Ref<unknown>,
         singleAmountOut: unknown
@@ -117,7 +117,7 @@ const QUERY_KEYS = {
         POOLS_ROOT_KEY,
         'singleAssetMax',
         {
-          account,
+          bptBalance,
           hasFetchedPoolsForSor,
           isSingleAssetExit,
           singleAmountOut,

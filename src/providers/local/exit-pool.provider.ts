@@ -104,12 +104,18 @@ export const exitPoolProvider = (
   const debounceQueryExit = debounce(queryExit, debounceQueryExitMillis);
   const debounceGetSingleAssetMax = debounce(
     getSingleAssetMax,
-    debounceGetSingleAssetMaxMillis
+    debounceGetSingleAssetMaxMillis,
+    {
+      leading: true,
+    }
   );
 
   const queriesEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
   );
+
+  // The user's BPT balance.
+  const bptBalance = computed((): string => balanceFor(pool.value.address));
 
   const queryExitQuery = useQuery<
     Awaited<ReturnType<typeof debounceQueryExit>>,
@@ -132,7 +138,7 @@ export const exitPoolProvider = (
     Error
   >(
     QUERY_KEYS.Pools.Exits.SingleAssetMax(
-      account,
+      bptBalance,
       hasFetchedPoolsForSor,
       isSingleAssetExit,
       toRef(singleAmountOut, 'address')
@@ -301,9 +307,6 @@ export const exitPoolProvider = (
 
     return bptIn.value;
   });
-
-  // The user's BPT balance.
-  const bptBalance = computed((): string => balanceFor(pool.value.address));
 
   // User has a balance of BPT.
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
