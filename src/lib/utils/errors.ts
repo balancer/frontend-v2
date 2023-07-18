@@ -110,7 +110,10 @@ function getTags(
   balError: string | null,
   metadata: WalletErrorMetadata
 ): ErrorTags {
-  const tags: { [key: string]: string } = { ...context?.tags, action };
+  const tags: { [key: string]: string } = {
+    ...context?.tags,
+    action,
+  };
 
   if (balError) {
     tags.balError = balError;
@@ -118,6 +121,10 @@ function getTags(
 
   if (metadata?.chainId) {
     tags.chainId = `${metadata.chainId}`;
+  }
+
+  if (metadata.action) {
+    tags.action = metadata.action;
   }
 
   return tags;
