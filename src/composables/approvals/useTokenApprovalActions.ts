@@ -201,7 +201,7 @@ export default function useTokenApprovalActions() {
     actionType,
     forceMax = true,
   }: ApproveTokenParams): TransactionActionInfo {
-    const action = {
+    return {
       label: actionLabel(actionType, token.symbol),
       loadingLabel: t('investment.preview.loadingLabel.approval'),
       confirmingLabel: t('confirming'),
@@ -226,7 +226,6 @@ export default function useTokenApprovalActions() {
         description: t('actionSteps.approve.invalidReason.description'),
       },
     };
-    return action;
   }
 
   /**
