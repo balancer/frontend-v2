@@ -591,7 +591,7 @@ export default function useSor({
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value) || '0';
 
     txListener(tx, {
-      onTxConfirmed: () => {
+      onTxConfirmed: async () => {
         trackGoal(Goals.Swapped, bnum(swapUSDValue).times(100).toNumber() || 0);
         swapping.value = false;
         latestTxHash.value = tx.hash;
