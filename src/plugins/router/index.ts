@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import { captureException } from '@sentry/browser';
 
 import { isGoerli } from '@/composables/useNetwork';
@@ -182,7 +182,7 @@ if (isGoerli.value) {
 // }
 
 export const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
