@@ -38,13 +38,12 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { useQuery } from '@tanstack/vue-query';
+import { UseQueryReturnType, useQuery } from '@tanstack/vue-query';
 import debounce from 'debounce-promise';
-import { captureException } from '@sentry/browser';
 import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
 import { POOLS } from '@/constants/pools';
-import { shouldIgnoreError } from '@/lib/utils/vue-query';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 /**
  * TYPES
@@ -98,7 +97,7 @@ export const exitPoolProvider = (
   const { txState, txInProgress } = useTxState();
   const { transactionDeadline } = useApp();
   const { slippageBsp } = useUserSettings();
-  const { getSigner } = useWeb3();
+  const { account, getSigner } = useWeb3();
   const { relayerSignature, relayerApprovalAction, relayerApprovalTx } =
     useRelayerApproval(RelayerType.BATCH);
 
@@ -115,11 +114,15 @@ export const exitPoolProvider = (
     (): boolean => isMounted.value && !txInProgress.value
   );
 
+  // The user's BPT balance.
+  const bptBalance = computed((): string => balanceFor(pool.value.address));
+
   const queryExitQuery = useQuery<
     Awaited<ReturnType<typeof debounceQueryExit>>,
     Error
   >(
     QUERY_KEYS.Pools.Exits.QueryExit(
+      account,
       bptIn,
       hasFetchedPoolsForSor,
       isSingleAssetExit,
@@ -135,6 +138,7 @@ export const exitPoolProvider = (
     Error
   >(
     QUERY_KEYS.Pools.Exits.SingleAssetMax(
+      bptBalance,
       hasFetchedPoolsForSor,
       isSingleAssetExit,
       toRef(singleAmountOut, 'address')
@@ -304,9 +308,6 @@ export const exitPoolProvider = (
     return bptIn.value;
   });
 
-  // The user's BPT balance.
-  const bptBalance = computed((): string => balanceFor(pool.value.address));
-
   // User has a balance of BPT.
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
@@ -386,7 +387,7 @@ export const exitPoolProvider = (
       isTxPayloadReady.value = output.txReady;
       return output;
     } catch (error) {
-      logExitException(error as Error, shouldIgnoreError(queryExitQuery));
+      logExitException(error as Error, queryExitQuery);
       throw new Error('Failed to construct exit.', { cause: error });
     }
   }
@@ -395,10 +396,11 @@ export const exitPoolProvider = (
    * Fetch maximum amount out given bptBalance as bptIn.
    */
   async function getSingleAssetMax() {
+    singleAmountOut.max = '0';
     if (!hasFetchedPoolsForSor.value) return null;
     if (!isSingleAssetExit.value) return null;
 
-    // If the user has not BPT, there is no maximum amount out.
+    // If the user has no BPT, there is no maximum amount out.
     if (!hasBpt.value) return null;
 
     const singleAssetMaxedExitHandler = shouldUseSwapExit.value
@@ -406,7 +408,6 @@ export const exitPoolProvider = (
       : ExitHandler.ExactIn;
 
     exitPoolService.setExitHandler(singleAssetMaxedExitHandler);
-    singleAmountOut.max = '';
 
     console.log('exitHandler:', exitHandlerType.value);
     try {
@@ -429,7 +430,7 @@ export const exitPoolProvider = (
 
       return newMax;
     } catch (error) {
-      logExitException(error as Error, shouldIgnoreError(singleAssetMaxQuery));
+      logExitException(error as Error, singleAssetMaxQuery);
       throw new Error('Failed to calculate max.', { cause: error });
     }
   }
@@ -482,32 +483,40 @@ export const exitPoolProvider = (
     isSingleAssetExit.value = value;
   }
 
-  async function logExitException(error: Error, shouldIgnoreError = false) {
-    if (shouldIgnoreError) return;
+  async function logExitException(
+    error: Error,
+    query?: UseQueryReturnType<any, any>
+  ) {
     // Ignore error when queryExit fails once the tx has been confirmed
     if (txState.confirmed && queryError.value) return;
+
     const sender = await getSigner().getAddress();
-    captureException(error, {
-      level: 'fatal',
-      extra: {
-        exitHandler: exitHandlerType.value,
-        params: JSON.stringify(
-          {
-            exitType: exitType.value,
-            bptIn: _bptIn.value,
-            amountsOut: amountsOut.value,
-            signer: sender,
-            slippageBsp: slippageBsp.value,
-            tokenInfo: exitTokenInfo.value,
-            approvalActions: approvalActions.value,
-            bptInValid: bptInValid.value,
-            relayerSignature: relayerSignature.value,
-            transactionDeadline: transactionDeadline.value,
-            toInternalBalance: shouldExitViaInternalBalance.value,
-          },
-          null,
-          2
-        ),
+    captureBalancerException({
+      error,
+      action: 'withdraw',
+      query,
+      context: {
+        level: 'fatal',
+        extra: {
+          exitHandler: exitHandlerType.value,
+          params: JSON.stringify(
+            {
+              exitType: exitType.value,
+              bptIn: _bptIn.value,
+              amountsOut: amountsOut.value,
+              signer: sender,
+              slippageBsp: slippageBsp.value,
+              tokenInfo: exitTokenInfo.value,
+              approvalActions: approvalActions.value,
+              bptInValid: bptInValid.value,
+              relayerSignature: relayerSignature.value,
+              transactionDeadline: transactionDeadline.value,
+              toInternalBalance: shouldExitViaInternalBalance.value,
+            },
+            null,
+            2
+          ),
+        },
       },
     });
   }

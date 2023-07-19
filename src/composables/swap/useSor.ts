@@ -41,9 +41,8 @@ import { isMainnet } from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
-import { captureException } from '@sentry/browser';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { isUserError } from '../useTransactionErrors';
+import { captureBalancerException, isUserError } from '@/lib/utils/errors';
 
 type SorState = {
   validationErrors: {
@@ -805,12 +804,20 @@ export default function useSor({
     if (!isUserError(error)) {
       console.trace(error);
       state.submissionError = t('swapException', ['Balancer']);
-      captureException(new Error(state.submissionError, { cause: error }), {
-        level: 'fatal',
-        extra: {
-          sender: account.value,
-          tokenIn,
-          tokenOut,
+
+      captureBalancerException({
+        error,
+        action: 'swap',
+        msgPrefix: state.submissionError,
+        context: {
+          extra: {
+            sender: account.value,
+            tokenIn,
+            tokenOut,
+          },
+          tags: {
+            swapType: 'balancer',
+          },
         },
       });
     }

@@ -3,8 +3,6 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 
-import { Step } from './index';
-
 export type TransactionError = {
   title: string;
   description?: string;
@@ -17,15 +15,6 @@ export type TransactionActionState = {
   confirmedAt: string;
   error?: TransactionError | null;
   receipt?: TransactionReceipt;
-};
-
-export type TransactionAction = {
-  label: string;
-  loadingLabel: string;
-  pending: boolean;
-  step: Step;
-  promise: () => Promise<void>;
-  isSignAction?: boolean;
 };
 
 export type TransactionActionInfo = {

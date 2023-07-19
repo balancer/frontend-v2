@@ -71,7 +71,11 @@ const actions = [
         you can also trigger the update by claiming any BAL incentives.
       </span>
 
-      <BalActionSteps :actions="actions" @success="showCloseBtn = true" />
+      <BalActionSteps
+        :actions="actions"
+        primaryActionType="userGaugeCheckpoint"
+        @success="showCloseBtn = true"
+      />
 
       <BalBtn
         v-if="showCloseBtn"

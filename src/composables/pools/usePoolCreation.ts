@@ -375,6 +375,13 @@ export default function usePoolCreation() {
     return optimisedLiquidity;
   }
 
+  function getAmounts() {
+    const amounts = poolCreationState.seedTokens.map((token: PoolSeedToken) => {
+      return token.amount;
+    });
+    return amounts;
+  }
+
   function getScaledAmounts() {
     const scaledAmounts: string[] = poolCreationState.seedTokens.map(
       (token: PoolSeedToken) => {
@@ -583,6 +590,7 @@ export default function usePoolCreation() {
     updateTokenColors,
     goBack,
     getPoolSymbol,
+    getAmounts,
     getScaledAmounts,
     createPool,
     joinPool,

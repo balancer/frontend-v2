@@ -15,6 +15,7 @@ import {
   WRAPPED_NATIVE_ASSET_ADDRESS,
 } from '@/constants/tokens';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 const SWAP_COST = import.meta.env.VITE_SWAP_COST || '100000';
 
@@ -99,12 +100,27 @@ export class SorManager {
       const v2result = await this.sorV2.fetchPools();
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = v2result;
+
+      if (!v2result) {
+        captureBalancerException({
+          error: new Error('SOR Fetch pools failed'),
+          context: {
+            level: 'fatal',
+          },
+        });
+      }
     } catch (err) {
       console.log(
         `[SorManager] V2 fetchPools issue: ${(err as Error).message}`
       );
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = false;
+
+      captureBalancerException({
+        error: err,
+        msgPrefix: 'SORFetchPools',
+        context: { level: 'fatal' },
+      });
     }
     console.log(
       `[SorManager] V2 fetchPools result: ${this.fetchStatus.v2success}`

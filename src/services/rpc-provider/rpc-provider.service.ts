@@ -1,5 +1,5 @@
 import { Network } from '@/lib/config';
-import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 import { configService } from '@/services/config/config.service';
 
@@ -15,8 +15,8 @@ export default class RpcProviderService {
   ) {}
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
-    const wsProvider = new WebSocketProvider(this.config.ws);
-    wsProvider.once('block', newBlockNumber => {
+    const blockProvider = new JsonRpcProvider(this.config.rpc);
+    blockProvider.once('block', newBlockNumber => {
       let currentBlockNumber = newBlockNumber;
       newBlockHandler(currentBlockNumber);
       setInterval(() => {
