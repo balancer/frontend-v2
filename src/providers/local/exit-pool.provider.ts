@@ -71,6 +71,7 @@ export const exitPoolProvider = (
   const isMounted = ref(false);
   const isSingleAssetExit = ref<boolean>(false);
   const priceImpact = ref<number>(0);
+  const priceImpactValid = ref<boolean>(true);
   const highPriceImpactAccepted = ref<boolean>(false);
   const bptIn = ref<string>('0');
   const bptInValid = ref<boolean>(true);
@@ -352,7 +353,7 @@ export const exitPoolProvider = (
    */
   async function queryExit() {
     // This is so we can render - in UI instead of 0. If we set to 0 then it can be misleading.
-    priceImpact.value = -1;
+    priceImpactValid.value = false;
 
     if (!hasFetchedPoolsForSor.value) return null;
 
@@ -388,6 +389,8 @@ export const exitPoolProvider = (
         valid: true,
       }));
       isTxPayloadReady.value = output.txReady;
+
+      priceImpactValid.value = true;
       return output;
     } catch (error) {
       logExitException(error as Error, queryExitQuery);
@@ -565,6 +568,7 @@ export const exitPoolProvider = (
     isSingleAssetExit: readonly(isSingleAssetExit),
     propAmountsOut: readonly(propAmountsOut),
     priceImpact: readonly(priceImpact),
+    priceImpactValid: readonly(priceImpactValid),
     exitPoolService,
 
     // computed
