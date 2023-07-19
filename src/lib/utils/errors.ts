@@ -266,6 +266,15 @@ function isUserNotEnoughGas(error): boolean {
 }
 
 /**
+ * Checks if error is caused by user's RPC
+ */
+function isBadRpcError(error): boolean {
+  const messages = [/invalid rpc url/];
+
+  return isErrorOfType(error, messages);
+}
+
+/**
  * Checks if error is a testnet faucet refill error.
  */
 function isFaucetRefillError(error): boolean {
@@ -289,7 +298,9 @@ function isBotError(error): boolean {
  * Checks if error is caused by the user or the state of their wallet.
  */
 export function isUserError(error): boolean {
-  return isUserRejected(error) || isUserNotEnoughGas(error);
+  return (
+    isUserRejected(error) || isUserNotEnoughGas(error) || isBadRpcError(error)
+  );
 }
 
 /**
