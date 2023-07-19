@@ -236,6 +236,7 @@ function isErrorOfType(error: any, messages: RegExp[]): boolean {
  */
 function isUserRejected(error): boolean {
   const messages = [
+    /rejected/,
     /user rejected transaction/,
     /request rejected/,
     /user rejected methods./,
