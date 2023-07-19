@@ -222,6 +222,10 @@ function isErrorOfType(error: any, messages: RegExp[]): boolean {
     return true;
   }
 
+  if (error.cause?.code && error.cause?.code === 4001) {
+    return true;
+  }
+
   if (error.cause instanceof Error) return isUserRejected(error.cause);
 
   return false;
@@ -232,10 +236,12 @@ function isErrorOfType(error: any, messages: RegExp[]): boolean {
  */
 function isUserRejected(error): boolean {
   const messages = [
+    /rejected/,
     /user rejected transaction/,
     /request rejected/,
     /user rejected methods./,
     /user rejected the transaction/,
+    /user rejected the request/,
     /rejected by user/,
     /user canceled/,
     /cancelled by user/,
