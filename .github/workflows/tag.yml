@@ -22,7 +22,7 @@ jobs:
           minor-wording: ''
           major-wording: ''
         env:
-          GITHUB_TOKEN: ${{ secrets.TIM_PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BALOPCO_BUMPTAG_PAT }}
       - name: Create tag
         uses: Klemensas/action-autotag@stable
         with:
