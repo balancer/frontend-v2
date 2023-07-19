@@ -9,6 +9,7 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '11155111',
   chainId: 11155111,
+  layerZeroChainId: 10161,
   chainName: 'Sepolia',
   name: 'Ethereum Testnet Sepolia',
   shortName: 'Sepolia',

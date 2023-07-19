@@ -21,7 +21,7 @@ const pools: Pools = {
   DynamicFees: {
     Gauntlet: [],
   },
-  BlockList: [],
+  BlockList: [''],
   IncludedPoolTypes: [
     'Weighted',
     'Stable',
