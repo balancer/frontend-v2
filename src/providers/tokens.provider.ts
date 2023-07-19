@@ -272,7 +272,7 @@ export const tokensProvider = (
 
     const newTokens = await new TokenService().metadata.get(
       injectable,
-      omit(allTokenLists.value, tokenListUris.Balancer.Default)
+      omit(allTokenLists.value, tokenListUris.Balancer.Allowlisted)
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
