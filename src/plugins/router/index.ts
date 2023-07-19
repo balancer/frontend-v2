@@ -153,6 +153,15 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug?',
     name: 'home',
     component: HomePage,
+    beforeEnter: (to, from, next) => {
+      /* Clean pathname when it does not contain hash to avoid vercel 404
+       when vercel redirects to app.balancer.fi/ethereum/ instead of app.balancer.fi/#/ethereum
+       after deployments */
+      if (window.location.pathname !== '/') {
+        window.location.pathname = '';
+      }
+      return next();
+    },
   },
   {
     path: '/:pathMatch(.*)*',
