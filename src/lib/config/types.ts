@@ -26,6 +26,7 @@ export type TokenConstants = {
   };
   PriceChainMap?: Record<string, string>;
   DisableInternalBalanceWithdrawals?: string[];
+  DoubleApprovalRequired?: string[];
 };
 
 export interface Contracts {
