@@ -69,7 +69,9 @@ const hasValidInputs = computed(
 
 // Limit token select modal to a subset.
 const subsetTokens = computed((): string[] => {
-  if (isPreMintedBptType(pool.value.poolType)) return [];
+  if (!pool.value.isInRecoveryMode && isPreMintedBptType(pool.value.poolType))
+    return [];
+
   if (isWrappedNativeAssetPool.value)
     return [nativeAsset.address, ...pool.value.tokensList];
 
