@@ -57,7 +57,7 @@ export default function useSwapping(
 
   const tokenOut = computed(() => getToken(tokenOutAddressInput.value));
 
-  const isEthSwap = computed(
+  const isNativeAssetSwap = computed(
     () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
   );
 
@@ -70,7 +70,7 @@ export default function useSwapping(
   );
 
   const requiresTokenApproval = computed(() => {
-    if (wrapType.value === WrapType.Unwrap || isEthSwap.value) {
+    if (wrapType.value === WrapType.Unwrap || isNativeAssetSwap.value) {
       return false;
     }
     return true;
@@ -105,7 +105,7 @@ export default function useSwapping(
   const swapRoute = computed<SwapRoute>(() => {
     if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
-    } else if (isEthSwap.value) {
+    } else if (isNativeAssetSwap.value) {
       return 'balancer';
     }
 
@@ -145,7 +145,7 @@ export default function useSwapping(
   const isWrapUnwrapSwap = computed(() => swapRoute.value === 'wrapUnwrap');
 
   const isGaslessSwappingDisabled = computed(
-    () => isEthSwap.value || isWrapUnwrapSwap.value
+    () => isNativeAssetSwap.value || isWrapUnwrapSwap.value
   );
 
   const hasSwapQuote = computed(
@@ -349,7 +349,7 @@ export default function useSwapping(
     // computed
     isWrap,
     isUnwrap,
-    isEthSwap,
+    isNativeAssetSwap,
     tokenIn,
     tokenOut,
     tokenInAmountScaled,

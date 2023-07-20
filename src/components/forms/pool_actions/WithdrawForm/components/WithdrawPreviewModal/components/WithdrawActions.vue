@@ -7,9 +7,7 @@ import { ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import useEthers from '@/composables/useEthers';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
-import { dateTimeLabelFor } from '@/composables/useTime';
 import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
 // Types
@@ -45,7 +43,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const { blockNumber, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
-const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 const { fNum } = useNumbers();
@@ -110,31 +107,20 @@ const isBuildingTx = computed((): boolean => {
 /**
  * METHODS
  */
-async function handleTransaction(tx): Promise<void> {
-  addTransaction({
-    id: tx.hash,
-    type: 'tx',
-    action: 'withdraw',
-    summary: txSummary.value,
-    details: {
-      total: fNum(fiatTotalOut.value, FNumFormats.fiat),
-      pool: props.pool,
-    },
-  });
+async function handleSuccess(
+  receipt: TransactionReceipt,
+  confirmedAt: string
+): Promise<void> {
+  txState.confirmed = true;
+  txState.confirming = false;
+  txState.receipt = receipt;
+  txState.confirmedAt = confirmedAt;
+  emit('success', receipt);
+}
 
-  txState.confirmed = await txListener(tx, {
-    onTxConfirmed: async (receipt: TransactionReceipt) => {
-      emit('success', receipt);
-      txState.confirming = false;
-      txState.receipt = receipt;
-
-      const confirmedAt = await getTxConfirmedAt(receipt);
-      txState.confirmedAt = dateTimeLabelFor(confirmedAt);
-    },
-    onTxFailed: () => {
-      txState.confirming = false;
-    },
-  });
+function handleFailed(): void {
+  txState.confirming = false;
+  emit('error');
 }
 
 async function submit(): Promise<TransactionResponse> {
@@ -143,7 +129,17 @@ async function submit(): Promise<TransactionResponse> {
 
     txState.confirming = true;
 
-    handleTransaction(tx);
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'withdraw',
+      summary: txSummary.value,
+      details: {
+        total: fNum(fiatTotalOut.value, FNumFormats.fiat),
+        pool: props.pool,
+      },
+    });
+
     return tx;
   } catch (error) {
     txState.confirming = false;
@@ -179,11 +175,14 @@ watch(blockNumber, () => {
     <BalActionSteps
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
+      primaryActionType="withdraw"
       :disabled="isMismatchedNetwork"
       :isLoading="isBuildingTx"
       :loadingLabel="
         isBuildingTx ? $t('withdraw.preview.loadingLabel.building') : undefined
       "
+      @success="handleSuccess"
+      @failed="handleFailed"
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />

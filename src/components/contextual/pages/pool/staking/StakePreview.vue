@@ -83,6 +83,7 @@ const assetRowWidth = computed(
     <BalActionSteps
       v-if="!isActionConfirmed"
       :actions="stakeActions"
+      :primaryActionType="action"
       :isLoading="isLoadingApprovalsForGauge"
       :disabled="isStakeAndZero || isMismatchedNetwork"
       @success="handleSuccess"

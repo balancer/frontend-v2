@@ -6,7 +6,7 @@ import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
-import { usePoolHelpers } from '@/composables/usePoolHelpers';
+import { isFx, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
@@ -244,7 +244,7 @@ function symbolFor(titleTokenIndex: number): string {
     block
   />
   <BalAlert
-    v-if="hasNonPrefGaugeBalance && !isAffected"
+    v-if="hasNonPrefGaugeBalance && !isAffected && !isFx(pool.poolType)"
     :title="$t('staking.restakeGauge')"
     :type="'warning'"
     class="mt-2"
