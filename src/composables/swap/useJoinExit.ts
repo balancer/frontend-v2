@@ -226,7 +226,7 @@ export default function useJoinExit({
       }
 
       await txListener(tx, {
-        onTxConfirmed: () => {
+        onTxConfirmed: async () => {
           confirming.value = false;
           relayerApprovalQuery.refetch();
         },

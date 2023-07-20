@@ -113,6 +113,7 @@ const pools: Pools = {
       '0x3fa8c89704e5d07565444009e5d9e624b40be813000000000000000000000599', // gho/lusd
       '0x9a172e1cb0e99f7e6dcc4c52e4655e8f337d5c0000000000000000000000059a', // gho/mai
       '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598', // gho/bb-a-usd
+      '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7', // dusd-bb-a-usd
     ],
   },
   Investment: {
@@ -505,6 +506,12 @@ const pools: Pools = {
       boosted: true,
       boostedProtocols: [BoostedProtocol.Aave],
     },
+    '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7': {
+      name: 'DUSD/Boosted Aave v3 USD',
+      hasIcon: false,
+      boosted: true,
+      boostedProtocols: [BoostedProtocol.Aave],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -548,6 +555,7 @@ const pools: Pools = {
     '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594', // wstETH-bb-a-WETH-BPT
     '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e', // B-wstETH/bb-ma3-weth
     '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598', // gho/bb-a-usd
+    '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7', // dusd-bb-a-usd
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
