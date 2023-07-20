@@ -579,7 +579,7 @@ const pools: Pools = {
   NewVersionAvailable: {
     '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
       newPool:
-        '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504',
+        '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594',
       description: 'newVersion.Aave3',
       title: 'announcement',
     },
@@ -587,6 +587,12 @@ const pools: Pools = {
       newPool:
         '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a',
       description: 'newVersion.Aave3',
+      title: 'announcement',
+    },
+    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467': {
+      newPool:
+        '0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b',
+      description: 'newVersion.BalIncentives',
       title: 'announcement',
     },
   },
