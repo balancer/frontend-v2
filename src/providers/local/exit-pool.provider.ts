@@ -361,7 +361,8 @@ export const exitPoolProvider = (
     if (isSingleAssetExit.value && !validAmounts.value) return null;
 
     // Proportional exit, and BPT in is 0 or less
-    if (!isSingleAssetExit.value && !hasBptIn.value) return null;
+    if (!isSingleAssetExit.value && !hasBptIn.value && _bptIn.value !== '')
+      return null;
 
     exitPoolService.setExitHandler(exitHandlerType.value);
 
