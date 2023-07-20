@@ -17,7 +17,7 @@ const config: Config = {
   network: 'avalanche',
   trustWalletNetwork: 'avalanchec',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: false,
   rpc: `https://avalanche-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://api.avax.network/ext/bc/C/ws`,
