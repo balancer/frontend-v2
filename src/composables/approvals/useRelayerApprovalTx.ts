@@ -100,7 +100,7 @@ export default function useRelayerApprovalTx(
     });
 
     approved.value = await txListener(tx, {
-      onTxConfirmed: () => {
+      onTxConfirmed: async () => {
         approving.value = false;
         relayerApproval.refetch();
       },

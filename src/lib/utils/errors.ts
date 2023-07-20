@@ -257,10 +257,25 @@ function isUserRejected(error): boolean {
 }
 
 /**
- * Checks if error is caused by user not having enough gas.
+ * Checks if error is caused by user not having enough gas or setting gas too low.
  */
 function isUserNotEnoughGas(error): boolean {
-  const messages = [/insufficient funds for gas/];
+  const messages = [
+    /insufficient funds for gas/,
+    /the signed fee is insufficient/,
+    /EffectivePriorityFeePerGas too low/,
+    /Комиссия за газ обновлена/i,
+    /insufficient eth to pay the network fees/,
+  ];
+
+  return isErrorOfType(error, messages);
+}
+
+/**
+ * Checks if error is caused by user's wallet having bad config / state
+ */
+function isWalletConfigError(error): boolean {
+  const messages = [/invalid rpc url/, /nonce has already been used/];
 
   return isErrorOfType(error, messages);
 }
@@ -289,7 +304,11 @@ function isBotError(error): boolean {
  * Checks if error is caused by the user or the state of their wallet.
  */
 export function isUserError(error): boolean {
-  return isUserRejected(error) || isUserNotEnoughGas(error);
+  return (
+    isUserRejected(error) ||
+    isUserNotEnoughGas(error) ||
+    isWalletConfigError(error)
+  );
 }
 
 /**
