@@ -369,8 +369,6 @@ export default function useSor({
       return;
     }
 
-    amount = bnum(amount).toString();
-
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
 
