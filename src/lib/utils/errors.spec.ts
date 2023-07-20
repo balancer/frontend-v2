@@ -22,6 +22,11 @@ describe('useTransactionErrors', () => {
       expect(isUserError(new Error('Transaction was rejected'))).toBe(true);
     });
 
+    it('Should return true for common bad wallet config issues', () => {
+      expect(isUserError(new Error('invalid rpc url'))).toBe(true);
+      expect(isUserError(new Error('nonce has already been used'))).toBe(true);
+    });
+
     it('Should return true if the error message is in the cause', () => {
       const rejectionError = new Error('Something went wrong');
       rejectionError.cause = new Error('User rejected the transaction');
@@ -50,11 +55,29 @@ describe('useTransactionErrors', () => {
       expect(isUserError(rejectionError)).toBe(true);
     });
 
+    // See https://balancer-labs.sentry.io/issues/4327549689/events/0c8872a3076a4843bd7b836474160a44/
+    it('Should return true if the not enough gas error is in russian', () => {
+      const rejectionError = {
+        message:
+          'Комиссия за газ обновлена, и вам необходимо больше 0.00007039 ETH для завершения этой транзакции.',
+      };
+      expect(isUserError(rejectionError)).toBe(true);
+    });
+
     // See https://balancer-labs.sentry.io/issues/4199718124/events/57d26b71647046f2be3620f3c0165714/
     it('Should return true if its a user error as an object', () => {
       const rejectionError = {
         code: 5001,
         message: 'User disapproved requested methods',
+      };
+      expect(isUserError(rejectionError)).toBe(true);
+    });
+
+    // See https://balancer-labs.sentry.io/issues/4327541491/events/9f490b42607646eb9065ebdd630226d2/
+    it('Should return true if the cowswap fee has changed since the user received their quote', () => {
+      const rejectionError = {
+        message:
+          "Error: The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
       };
       expect(isUserError(rejectionError)).toBe(true);
     });
