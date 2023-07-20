@@ -11,13 +11,12 @@ import {
 } from '@/lib/utils/promise';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-import useBlocknative from './useBlocknative';
 import { toJsTimestamp } from './useTime';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from './useTransactions';
 import { captureBalancerException } from '@/lib/utils/errors';
 
-type ConfirmedTxCallback = (receipt: TransactionReceipt) => void;
+type ConfirmedTxCallback = (receipt: TransactionReceipt) => Promise<void>;
 type FailedTxCallback = (txData: TransactionResponse) => void;
 
 // keep a record of processed txs
@@ -25,7 +24,6 @@ export const processedTxs = ref<Set<string>>(new Set(''));
 
 export default function useEthers() {
   const { finalizeTransaction, updateTransaction } = useTransactions();
-  const { supportsBlocknative } = useBlocknative();
   const { refetchBalances } = useTokens();
 
   async function getTxConfirmedAt(receipt: TransactionReceipt): Promise<Date> {
@@ -50,7 +48,7 @@ export default function useEthers() {
       txListener(
         tx,
         {
-          onTxConfirmed: () => {
+          onTxConfirmed: async () => {
             resolve(true);
           },
           onTxFailed: () => {
@@ -106,9 +104,9 @@ export default function useEthers() {
       if (receipt != null) {
         finalizeTransaction(txHash, 'tx', receipt);
       }
-      callbacks.onTxConfirmed(receipt);
-      if (shouldRefetchBalances && !supportsBlocknative.value) {
-        refetchBalances();
+      await callbacks.onTxConfirmed(receipt);
+      if (shouldRefetchBalances) {
+        await refetchBalances();
       }
       confirmed = true;
     } catch (error) {

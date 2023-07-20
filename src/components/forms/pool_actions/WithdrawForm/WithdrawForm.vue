@@ -14,6 +14,7 @@ import {
 } from '@/composables/usePoolHelpers';
 import { useI18n } from 'vue-i18n';
 import { Pool } from '@/services/pool/types';
+import useNetwork from '@/composables/useNetwork';
 
 type Props = {
   pool: Pool;
@@ -37,7 +38,8 @@ const showPreview = ref(false);
 const { t } = useI18n();
 const { veBalTokenInfo } = useVeBal();
 const { wrappedNativeAsset, nativeAsset } = useTokens();
-
+const router = useRouter();
+const { networkSlug } = useNetwork();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 const {
@@ -52,6 +54,7 @@ const {
   hasAcceptedHighPriceImpact,
   hasAmountsOut,
   validAmounts,
+  hasBpt,
 } = useExitPool();
 
 const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
@@ -90,6 +93,10 @@ const excludedTokens = computed((): string[] => {
  * CALLBACKS
  */
 onBeforeMount(() => {
+  // If user has no BPT when mounting this component, redirect back to pool page
+  if (!hasBpt.value)
+    router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
+
   singleAmountOut.address = isPreMintedBptType(pool.value.poolType)
     ? wrappedNativeAsset.value.address
     : pool.value.tokensList[0];

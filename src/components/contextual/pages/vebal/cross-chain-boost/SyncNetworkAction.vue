@@ -57,7 +57,7 @@ async function handleTransaction(
   });
 
   txListener(tx, {
-    onTxConfirmed: () => {
+    onTxConfirmed: async () => {
       setSyncTxHashes(network, tx.hash);
     },
     onTxFailed: () => {
