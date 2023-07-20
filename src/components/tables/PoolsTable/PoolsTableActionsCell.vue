@@ -72,7 +72,13 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       tag="router-link"
       :to="{
         name: 'get-vebal',
-        query: { networkSlug, returnRoute: $route.name },
+        query: {
+          networkSlug,
+          returnRoute: $route.name,
+          returnParams: JSON.stringify({
+            networkSlug,
+          }),
+        },
       }"
       color="gradient-pink-yellow"
       size="sm"
