@@ -56,7 +56,10 @@ const composableRisks = aLink(
   // Explicit title because RiskKey.ComposableStable and RiskKey.MetaStable share the same key (hash)
   'Composable Stable pool risks'
 );
-const metaStableRisks = aLink(RiskKey.MetaStable);
+const metaStableRisks = aLink(
+  RiskKey.ComposableStable,
+  riskTitles[RiskKey.MetaStable]
+);
 const boostedRisks = aLink(RiskKey.Boosted);
 const arbitrumRisks = aLink(RiskKey.Arbitrum);
 const polygonRisks = aLink(RiskKey.Polygon);
