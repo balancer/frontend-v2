@@ -18,7 +18,7 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div>
+  <div class="flex items-center">
     <BalTooltip v-if="isBoosted(pool)" :text="$t('boostedTooltip')" width="56">
       <template #activator>
         <BoostedChip

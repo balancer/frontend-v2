@@ -22,7 +22,7 @@ const width = 20 + (iconURIs.length - 1) * 16;
 <template>
   <div
     data-testid="boosted-chip"
-    class="flex relative items-center py-1 pr-1.5 pl-2 max-h-10 bg-gradient-to-tr from-yellow-500 to-pink-500 rounded"
+    class="flex relative items-center py-1 pr-1.5 pl-2 mr-1 max-h-10 bg-gradient-to-tr from-yellow-500 to-pink-500 rounded"
   >
     <BalAssetSet
       v-if="hasIcons"
