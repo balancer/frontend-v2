@@ -40,6 +40,7 @@ function _captureBalancerException({
   const originalError = getOriginalError(error);
 
   const _error = constructError(message, action, error);
+
   captureException(_error, {
     ...context,
     extra: {
@@ -49,6 +50,7 @@ function _captureBalancerException({
       originalError,
     },
     tags,
+    fingerprint: [_error.name],
   });
 }
 
@@ -251,6 +253,7 @@ function isUserRejected(error): boolean {
     /user disapproved requested methods/,
     /canceled/,
     /user rejected signing/,
+    /user cancelled/,
   ];
 
   return isErrorOfType(error, messages);
