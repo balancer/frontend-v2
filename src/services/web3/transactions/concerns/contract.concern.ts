@@ -104,9 +104,15 @@ export class ContractConcern extends TransactionConcern {
     block: number,
     overrides: any
   ): Promise<WalletErrorMetadata> {
-    const sender = await this.signer.getAddress();
-    const chainId = await this.signer.getChainId();
-    const calldata = contract.interface.encodeFunctionData(action, params);
+    let sender, chainId, calldata;
+    try {
+      sender = await this.signer.getAddress();
+      chainId = await this.signer.getChainId();
+      calldata = contract.interface.encodeFunctionData(action, params);
+    } catch (err) {
+      console.error('Threw second error when collecting error metadata: ', err);
+    }
+
     const msgValue = overrides.value ? overrides.value.toString() : 0;
 
     return {
