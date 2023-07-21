@@ -112,6 +112,7 @@
   "builtOnBalancer": "Built on Balancer protocol",
   "boosted": "Boosted",
   "boostedTooltip": "This pool has a Boosted Pool component. In addition to accumulating swap fees, Boosted pools also generate yield for LPs by lending excess liquidity to other yield generating DeFi protocols.",
+  "clpTooltip": "Designed for capital efficiency,  ‘Concentrated Liquidity Pools’ (CLPs) are a class of AMMs that price the exchange of assets within a defined range. As such, any CLP only provides liquidity for trading activity restricted to this specific region.",
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",

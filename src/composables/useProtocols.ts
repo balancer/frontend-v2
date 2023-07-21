@@ -1,4 +1,4 @@
-export enum BoostedProtocol {
+export enum Protocol {
   Aave = 'aave',
   Agave = 'agave',
   Beefy = 'beefy',
@@ -15,60 +15,60 @@ export enum BoostedProtocol {
   Zerovix = '0vix',
 }
 
-export const boostedProtocolIconPaths: Record<BoostedProtocol, string> = {
-  [BoostedProtocol.Aave]: new URL(
+export const protocolIconPaths: Record<Protocol, string> = {
+  [Protocol.Aave]: new URL(
     '@/assets/images/icons/protocols/aave.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Agave]: new URL(
+  [Protocol.Agave]: new URL(
     '@/assets/images/icons/protocols/agave.png',
     import.meta.url
   ).href,
-  [BoostedProtocol.Beefy]: new URL(
+  [Protocol.Beefy]: new URL(
     '@/assets/images/icons/protocols/beefy.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Euler]: new URL(
+  [Protocol.Euler]: new URL(
     '@/assets/images/icons/protocols/euler.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Yearn]: new URL(
+  [Protocol.Yearn]: new URL(
     '@/assets/images/icons/protocols/yearn.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Gearbox]: new URL(
+  [Protocol.Gearbox]: new URL(
     '@/assets/images/icons/protocols/gearbox.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Idle]: new URL(
+  [Protocol.Idle]: new URL(
     '@/assets/images/icons/protocols/idle.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Morpho]: new URL(
+  [Protocol.Morpho]: new URL(
     '@/assets/images/icons/protocols/morpho.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Tessera]: new URL(
+  [Protocol.Tessera]: new URL(
     '@/assets/images/icons/protocols/tessera.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Sturdy]: new URL(
+  [Protocol.Sturdy]: new URL(
     '@/assets/images/icons/protocols/sturdy.png',
     import.meta.url
   ).href,
-  [BoostedProtocol.Reaper]: new URL(
+  [Protocol.Reaper]: new URL(
     '@/assets/images/icons/protocols/reaper.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Granary]: new URL(
+  [Protocol.Granary]: new URL(
     '@/assets/images/icons/protocols/granary.svg',
     import.meta.url
   ).href,
-  [BoostedProtocol.Tetu]: new URL(
+  [Protocol.Tetu]: new URL(
     '@/assets/images/icons/protocols/tetu.png',
     import.meta.url
   ).href,
-  [BoostedProtocol.Zerovix]: new URL(
+  [Protocol.Zerovix]: new URL(
     '@/assets/images/icons/protocols/0vix.svg',
     import.meta.url
   ).href,

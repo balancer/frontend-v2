@@ -1,4 +1,4 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
+import { Protocol } from '@/composables/useProtocols';
 import {
   isArbitrum,
   isGnosis,
@@ -93,17 +93,13 @@ export function riskLinks(pool: Pool): Risk[] {
 export function generateThirdPartyComposabilityRisks(pool): Risk | undefined {
   const protocols = boostedProtocols(pool);
 
-  if (
-    protocols?.includes(BoostedProtocol.Tetu) ||
-    protocols?.includes(BoostedProtocol.Idle)
-  )
+  if (protocols?.includes(Protocol.Tetu) || protocols?.includes(Protocol.Idle))
     return aLink(
       RiskKey.Composability,
       'Third party DeFi composability risks: May use multiple yield protocols'
     );
 
-  if (protocols?.includes(BoostedProtocol.Reaper))
-    protocols.push(BoostedProtocol.Granary);
+  if (protocols?.includes(Protocol.Reaper)) protocols.push(Protocol.Granary);
 
   if (protocols) {
     return aLink(

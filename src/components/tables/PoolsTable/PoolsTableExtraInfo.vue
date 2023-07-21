@@ -2,13 +2,14 @@
 import {
   isLiquidityBootstrapping,
   isBoosted,
+  protocolsFor,
+  isClp,
 } from '@/composables/usePoolHelpers';
-import { poolMetadata } from '@/lib/config/metadata';
 import { Pool } from '@/services/pool/types';
-import { PoolMetadata } from '@/types/pools';
+import { PoolFeature } from '@/types/pools';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
-import BoostedChip from '@/components/chips/BoostedChip.vue';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
+import PoolFeatureChip from '@/components/chips/PoolFeatureChip.vue';
 
 type Props = {
   pool: Pool;
@@ -21,8 +22,19 @@ defineProps<Props>();
   <div>
     <BalTooltip v-if="isBoosted(pool)" :text="$t('boostedTooltip')" width="56">
       <template #activator>
-        <BoostedChip
-          :metadata="poolMetadata(pool.id) as PoolMetadata"
+        <PoolFeatureChip
+          :feature="PoolFeature.Boosted"
+          :protocols="protocolsFor(pool, PoolFeature.Boosted)"
+          class="ml-1"
+        />
+      </template>
+    </BalTooltip>
+
+    <BalTooltip v-if="isClp(pool)" :text="$t('clpTooltip')" width="56">
+      <template #activator>
+        <PoolFeatureChip
+          :feature="PoolFeature.CLP"
+          :protocols="protocolsFor(pool, PoolFeature.CLP)"
           class="ml-1"
         />
       </template>
