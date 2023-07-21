@@ -2,6 +2,7 @@
 import { POOLS } from '@/constants/pools';
 import { poolMetadata } from '@/lib/config/metadata';
 import { shortenLabel } from '@/lib/utils';
+import { formatPercentage } from '@/lib/utils/numbers';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
@@ -77,7 +78,7 @@ const data = computed(() => {
       : null,
     {
       title: t('swapFees'),
-      value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner || '')})`,
+      value: `${formatPercentage(swapFee)} (${formSwapFeesHint(owner || '')})`,
     },
     {
       title: t('poolManager'),
