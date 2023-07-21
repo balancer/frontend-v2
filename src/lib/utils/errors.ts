@@ -251,6 +251,7 @@ function isUserRejected(error): boolean {
     /user disapproved requested methods/,
     /canceled/,
     /user rejected signing/,
+    /user cancelled/,
   ];
 
   return isErrorOfType(error, messages);
