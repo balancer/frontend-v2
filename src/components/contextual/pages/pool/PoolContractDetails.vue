@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import useNumbers from '@/composables/useNumbers';
 import { POOLS } from '@/constants/pools';
 import { poolMetadata } from '@/lib/config/metadata';
 import { shortenLabel } from '@/lib/utils';
-import { formatPercentage } from '@/lib/utils/numbers';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
@@ -25,6 +25,7 @@ const props = defineProps<Props>();
  */
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
+const { fNum } = useNumbers();
 
 function formSwapFeesHint(owner: string): string {
   if (owner === POOLS.ZeroAddress) {
@@ -78,7 +79,9 @@ const data = computed(() => {
       : null,
     {
       title: t('swapFees'),
-      value: `${formatPercentage(swapFee)} (${formSwapFeesHint(owner || '')})`,
+      value: `${fNum(swapFee, { style: 'percent' })} (${formSwapFeesHint(
+        owner || ''
+      )})`,
     },
     {
       title: t('poolManager'),
