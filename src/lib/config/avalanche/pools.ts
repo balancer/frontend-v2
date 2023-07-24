@@ -21,6 +21,9 @@ const pools: Pools = {
     'MetaStable',
     'ComposableStable',
     'FX',
+    'Gyro2',
+    'Gyro3',
+    'GyroE',
   ],
   Stable: {
     AllowList: [
