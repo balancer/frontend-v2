@@ -33,11 +33,14 @@ const pools: Pools = {
     // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
     AllowList: [
       '0xe4a4565ad31a3af8286bc6e6dbb20ba76752557700010000000000000000000b',
-      '0xbf7a12046f7f5a9403fe2f75e1e5c531da3cf55300020000000000000000000c',
       '0x3bde1563903ebb564ca37d5736afbb850929cfd7000200000000000000000017', // ankrAVAX-ankrETH
     ],
   },
-  Factories: {},
+  Factories: {
+    '0x230a59f4d9adc147480f03b0d3fffecd56c3289a': 'weightedPool',
+    '0x3b1eb8eb7b43882b385ab30533d9a2bef9052a98': 'composableStablePool',
+    '0xe42ffa682a26ef8f25891db4882932711d42e467': 'composableStablePool',
+  },
   Stakable: {
     VotingGaugePools: [],
     AllowList: [],
