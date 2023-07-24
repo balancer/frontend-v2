@@ -1,6 +1,7 @@
 import { Config } from './types';
 
 import arbitrum from './arbitrum';
+import avalanche from './avalanche';
 import goerli from './goerli';
 import gnosisChain from './gnosis-chain';
 import mainnet from './mainnet';
@@ -19,6 +20,7 @@ export enum Network {
   FANTOM = 250,
   ZKEVM = 1101,
   ARBITRUM = 42161,
+  AVALANCHE = 43114,
 }
 
 const config: Record<Network | number, Config> = {
@@ -29,6 +31,7 @@ const config: Record<Network | number, Config> = {
   [Network.OPTIMISM]: optimism,
   [Network.GNOSIS]: gnosisChain,
   [Network.ZKEVM]: zkevm,
+  [Network.AVALANCHE]: avalanche,
 };
 
 export default config;
