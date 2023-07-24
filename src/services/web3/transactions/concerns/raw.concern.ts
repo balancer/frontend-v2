@@ -35,7 +35,11 @@ export class RawConcern extends TransactionConcern {
       return await this.signer.sendTransaction(txOptions);
     } catch (err) {
       const error = err as WalletError;
-      error.metadata = await this.getErrorMetadata(options);
+      try {
+        error.metadata = await this.getErrorMetadata(options);
+      } catch (metaErr) {
+        console.error('Failed to set error metadata', metaErr);
+      }
 
       return Promise.reject(error);
     }
