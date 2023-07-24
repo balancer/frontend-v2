@@ -50,7 +50,12 @@ export class ExactOutExitHandler implements ExitPoolHandler {
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     if (!tokenOut)
-      throw new Error('Could not find exit token in pool tokens list.');
+      throw new Error(
+        'Could not find exit token in pool tokens list: ' +
+          amountsOut[0].address +
+          ' allTokens: ' +
+          JSON.stringify(Object.keys(tokenInfo))
+      );
 
     const tokenOutAddress = formatAddressForSor(tokenOut.address);
     const nativeAssetExit = isSameAddress(tokenOutAddress, POOLS.ZeroAddress);
