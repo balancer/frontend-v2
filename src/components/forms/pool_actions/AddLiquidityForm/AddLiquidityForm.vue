@@ -132,7 +132,7 @@ function tokenOptions(address: string): string[] {
  * When changing tokens, clear the amount value
  */
 function onTokenChange() {
-  if (isSingleAssetJoin.value) {
+  if (isSingleAssetJoin.value && amountsIn.value.length > 0) {
     amountsIn.value[0].value = '';
   }
 }
