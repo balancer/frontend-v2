@@ -3,13 +3,14 @@ import {
   isLiquidityBootstrapping,
   isBoosted,
   protocolsFor,
-  isClp,
+  isGyro,
 } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 import { PoolFeature } from '@/types/pools';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import PoolFeatureChip from '@/components/chips/PoolFeatureChip.vue';
+import { Protocol } from '@/composables/useProtocols';
 
 type Props = {
   pool: Pool;
@@ -30,11 +31,11 @@ defineProps<Props>();
       </template>
     </BalTooltip>
 
-    <BalTooltip v-if="isClp(pool)" :text="$t('clpTooltip')" width="56">
+    <BalTooltip v-if="isGyro(pool)" :text="$t('clpTooltip')" width="56">
       <template #activator>
         <PoolFeatureChip
           :feature="PoolFeature.CLP"
-          :protocols="protocolsFor(pool, PoolFeature.CLP)"
+          :protocols="[Protocol.Gyro]"
           class="ml-1"
         />
       </template>

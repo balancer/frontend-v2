@@ -103,9 +103,9 @@ export function isBoosted(pool: Pool) {
   );
 }
 
-export function isClp(pool: Pool) {
-  return !!Object.keys(poolMetadata(pool.id)?.features || {}).includes(
-    PoolFeature.CLP
+export function isGyro(pool: Pool) {
+  return [PoolType.Gyro2, PoolType.Gyro3, PoolType.GyroE].includes(
+    pool.poolType
   );
 }
 
