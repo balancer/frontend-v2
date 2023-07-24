@@ -68,13 +68,17 @@ export class ContractConcern extends TransactionConcern {
     } catch (err) {
       const error = err as WalletError;
 
-      error.metadata = await this.getErrorMetadata(
-        contractWithSigner,
-        action,
-        params,
-        block,
-        options
-      );
+      try {
+        error.metadata = await this.getErrorMetadata(
+          contractWithSigner,
+          action,
+          params,
+          block,
+          options
+        );
+      } catch (metaErr) {
+        console.error('Failed to set error metadata', metaErr);
+      }
 
       return Promise.reject(error);
     }

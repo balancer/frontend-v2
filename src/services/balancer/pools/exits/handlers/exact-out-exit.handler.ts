@@ -14,6 +14,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
+import { tokensListExclBpt } from '@/composables/usePoolHelpers';
 
 export type ExitExactOutResponse = ReturnType<
   PoolWithMethods['buildExitExactTokensOut']
@@ -62,7 +63,7 @@ export class ExactOutExitHandler implements ExitPoolHandler {
 
     const poolTokensList = nativeAssetExit
       ? this.replaceWethWithEth(this.pool.value.tokensList)
-      : this.pool.value.tokensList;
+      : tokensListExclBpt(this.pool.value);
     const tokenOutIndex = indexOfAddress(poolTokensList, tokenOutAddress);
 
     const amountOut = amountsOut[0].value;
