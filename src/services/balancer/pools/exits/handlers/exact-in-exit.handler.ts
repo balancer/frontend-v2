@@ -59,7 +59,12 @@ export class ExactInExitHandler implements ExitPoolHandler {
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     if (!tokenOut)
-      throw new Error('Could not find exit token in pool tokens list.');
+      throw new Error(
+        'Could not find exit token in pool tokens list: ' +
+          amountsOut[0].address +
+          ' allTokens: ' +
+          JSON.stringify(Object.keys(tokenInfo))
+      );
 
     const isSingleTokenExit = amountsOut.length === 1;
     const evmBptIn = parseFixed(bptIn, 18).toString();
