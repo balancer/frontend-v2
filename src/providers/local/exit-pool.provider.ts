@@ -24,6 +24,7 @@ import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import {
   bnSum,
   bnum,
+  includesAddress,
   isSameAddress,
   removeAddress,
   selectByAddress,
@@ -188,7 +189,8 @@ export const exitPoolProvider = (
     (): boolean =>
       isSingleAssetExit.value &&
       isDeep(pool.value) &&
-      isPreMintedBptType(pool.value.poolType)
+      isPreMintedBptType(pool.value.poolType) &&
+      !includesAddress(pool.value.tokensList, singleAmountOut.address)
   );
 
   const shouldUseGeneralisedExit = computed(
