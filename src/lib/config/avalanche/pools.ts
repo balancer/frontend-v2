@@ -15,7 +15,13 @@ const pools: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  IncludedPoolTypes: ['Weighted', 'Stable', 'MetaStable'],
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'ComposableStable',
+    'FX',
+  ],
   Stable: {
     AllowList: [
       '0xa1d14d922a575232066520eda11e27760946c991000000000000000000000012', // Boosted Aave v3 USD
