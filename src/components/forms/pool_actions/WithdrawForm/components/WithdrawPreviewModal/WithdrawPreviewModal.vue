@@ -42,6 +42,7 @@ const withdrawalConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { networkSlug } = useNetwork();
+const router = useRouter();
 
 const {
   bptIn,
@@ -52,6 +53,7 @@ const {
   fiatAmountsOut,
   isSingleAssetExit,
   shouldExitViaInternalBalance,
+  hasBpt,
 } = useExitPool();
 
 /**
@@ -106,7 +108,13 @@ const amountsOutMap = computed((): AmountMap => {
  * METHODS
  */
 function handleClose(): void {
-  emit('close');
+  // If user has withdrawn everything, send back to pool page. Else, close
+  // modal.
+  if (!hasBpt.value) {
+    router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
+  } else {
+    emit('close');
+  }
 }
 </script>
 

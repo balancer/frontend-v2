@@ -1,5 +1,5 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { PoolWarning, Pools } from '@/types/pools';
+import { Protocol } from '@/composables/useProtocols';
+import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {
@@ -129,6 +129,7 @@ const pools: Pools = {
       '0x2814a9f16d7b5b5826df47f702f16279ccd799c8000200000000000000000bd1', // 50wMatic-50stMatic
       '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
       '0xa5a935833f6a5312715f182733eab088452335d7000100000000000000000bee', // 30WBTC-20stMATIC-bb-a-WMATIC
+      '0xaaf737aeb1e5f1dc9429de4a639fe16c42fa1fe3000200000000000000000bf9', // 50fireEP-50FBX
     ],
   },
   Factories: {
@@ -220,92 +221,137 @@ const pools: Pools = {
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
       name: 'Balancer Boosted Tetu USD',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Tetu],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Tetu],
+        },
+      },
     },
     '0x71bd10c2a590b5858f5576550c163976a48af906000000000000000000000b27': {
       name: 'Balancer Boosted Tetu MATIC',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Tetu],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Tetu],
+        },
+      },
     },
     '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
       name: 'stMATIC/Boosted Aave v3 WMATIC',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
       name: 'maticX/Boosted Aave v3 WMATIC',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38': {
       name: 'wstETH/Boosted Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
       name: 'frxETH/Boosted Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b': {
       name: 'FRAX/Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45': {
       name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44': {
       name: 'stMATIC/Boosted Aave v3 wMATIC/Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43': {
       name: '2BRL/Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2': {
       name: 'stMATIC/Boosted Aave v3 WMATIC',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3': {
       name: 'maticX/Boosted Aave v3 WMATIC',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4': {
       name: 'truMATIC/Boosted Aave v3 WMATIC',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
   },
   Deep: [

@@ -139,7 +139,7 @@ async function claimAvailableRewards() {
       });
 
       txListener(tx, {
-        onTxConfirmed: () => {
+        onTxConfirmed: async () => {
           isClaiming.value = false;
           userClaimsQuery.refetch();
         },
