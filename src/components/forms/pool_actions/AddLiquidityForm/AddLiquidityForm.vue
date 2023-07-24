@@ -129,6 +129,15 @@ function tokenOptions(address: string): string[] {
 }
 
 /**
+ * When changing tokens, clear the amount value
+ */
+function onTokenChange() {
+  if (isSingleAssetJoin.value) {
+    amountsIn.value[0].value = '';
+  }
+}
+
+/**
  * CALLBACKS
  */
 onBeforeMount(() => {
@@ -193,6 +202,7 @@ watch(
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="excludedTokens"
+      @update:address="onTokenChange"
     />
 
     <MissingPoolTokensAlert
