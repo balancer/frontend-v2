@@ -45,7 +45,7 @@ function getFeatureLabel(): string {
   <div
     data-testid="feature-chip"
     :class="[
-      'flex relative items-center py-1 pr-1.5 pl-2 max-h-10 rounded',
+      'flex relative items-center py-1 pr-1.5 pl-2 mr-1 max-h-10 rounded',
       getFeatureClasses(),
     ]"
   >
