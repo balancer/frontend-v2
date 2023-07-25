@@ -98,6 +98,11 @@ const pools: Pools = {
       '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2', // stMATIC-bb-a-WMATIC
       '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3', // MaticX-bb-a-WMATIC
       '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4', // truMATIC/bb-a-WMATIC
+      '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4', // bb-t-USD
+      '0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5', // bb-am-USD
+      '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc', // wstETH-bb-a-WETH-BPT
+      '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8', // frxETH-bb-a-WETH
+      '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6', // FRAX-bb-am-USD
     ],
   },
   Investment: {
@@ -130,6 +135,7 @@ const pools: Pools = {
       '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
       '0xa5a935833f6a5312715f182733eab088452335d7000100000000000000000bee', // 30WBTC-20stMATIC-bb-a-WMATIC
       '0xaaf737aeb1e5f1dc9429de4a639fe16c42fa1fe3000200000000000000000bf9', // 50fireEP-50FBX
+      '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7', // 2BRL-bbamUSD
     ],
   },
   Factories: {
@@ -214,6 +220,12 @@ const pools: Pools = {
       '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4',
       '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2',
       '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3',
+      '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4',
+      '0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5',
+      '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8',
+      '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7',
+      '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6',
+      '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc',
     ],
     AllowList: [],
   },
@@ -227,7 +239,7 @@ const pools: Pools = {
         },
       },
     },
-    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
+    '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4': {
       name: 'Balancer Boosted Tetu USD',
       hasIcon: true,
       features: {
@@ -263,7 +275,7 @@ const pools: Pools = {
         },
       },
     },
-    '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38': {
+    '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc': {
       name: 'wstETH/Boosted Aave v3 WETH',
       hasIcon: false,
       features: {
@@ -272,7 +284,7 @@ const pools: Pools = {
         },
       },
     },
-    '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
+    '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8': {
       name: 'frxETH/Boosted Aave v3 WETH',
       hasIcon: false,
       features: {
@@ -281,7 +293,7 @@ const pools: Pools = {
         },
       },
     },
-    '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b': {
+    '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6': {
       name: 'FRAX/Boosted Aave v3 USD',
       hasIcon: false,
       features: {
@@ -290,7 +302,7 @@ const pools: Pools = {
         },
       },
     },
-    '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37': {
+    '0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
       features: {
@@ -317,7 +329,7 @@ const pools: Pools = {
         },
       },
     },
-    '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43': {
+    '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7': {
       name: '2BRL/Boosted Aave v3 USD',
       hasIcon: false,
       features: {
@@ -373,6 +385,12 @@ const pools: Pools = {
     '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2', // stMATIC-bb-a-WMATIC
     '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3', // MaticX-bb-a-WMATIC
     '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4', // truMATIC/bb-a-WMATIC
+    '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4', // bb-t-USD
+    '0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5', // bb-am-USD
+    '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc', // wstETH-bb-a-WETH-BPT
+    '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8', // frxETH-bb-a-WETH
+    '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6', // FRAX-bb-am-USD
+    '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7', // 2BRL-bbamUSD
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
