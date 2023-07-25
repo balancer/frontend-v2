@@ -57,6 +57,7 @@ const emit = defineEmits<{
 /**
  * STATE
  */
+const isLoadingApprovals = ref(true);
 const lockActionStates = reactive<LockActionState[]>(
   props.lockType.map(() => ({
     init: false,
@@ -213,6 +214,7 @@ onBeforeMount(async () => {
     actionType: ApprovalAction.Locking,
   });
   actions.value.unshift(...approvalActions);
+  isLoadingApprovals.value = false;
 });
 </script>
 
@@ -221,6 +223,7 @@ onBeforeMount(async () => {
     <BalActionSteps
       v-if="!lockActionStatesConfirmed"
       :actions="actions"
+      :isLoading="isLoadingApprovals"
       primaryActionType="extendLock"
     />
     <template v-else>
