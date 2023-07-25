@@ -54,6 +54,7 @@ const pools: Pools = {
       '0x4a2f6ae7f3e5d715689530873ec35593dc28951b000000000000000000000481', // reth/cbeth/wseth
       '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b', // dai+/usd+
       '0xd6d20527c7b0669989ee082b9d3a1c63af742290000000000000000000000483', // dola/usd+
+      '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e', // DOLA/bbaUSD
     ],
   },
   Investment: {
@@ -85,6 +86,7 @@ const pools: Pools = {
       '0x93b48e950380adcf6d67c392f20d44fb88d258dc000200000000000000000465', // usdc.e/usdc
       '0x0e1cdc10a131d07636fb4cf322f79b8df551dd9e00020000000000000000046a', // 50BAL-50WETH
       '0xfcc9a8d58e41cbf582cff798148750637eadb1ff00020000000000000000046c', // 50RDNT-50USDC.e
+      '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f', // 50STG-50bbaUSD
     ],
   },
   Factories: {
@@ -152,6 +154,9 @@ const pools: Pools = {
       '0xbe0f30217be1e981add883848d0773a86d2d2cd4000000000000000000000471',
       '0x45c4d1376943ab28802b995acffc04903eb5223f000000000000000000000470',
       '0xc6eee8cb7643ec2f05f46d569e9ec8ef8b41b389000000000000000000000475',
+      '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f',
+      '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e',
+      '0x3fd4954a851ead144c2ff72b1f5a38ea5976bd54000000000000000000000480',
     ],
     AllowList: [],
   },
@@ -174,7 +179,7 @@ const pools: Pools = {
         },
       },
     },
-    '0xd3d5d45f4edf82ba0dfaf061d230766032a10e07000200000000000000000413': {
+    '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f': {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
       features: {
@@ -246,6 +251,15 @@ const pools: Pools = {
         },
       },
     },
+    '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e': {
+      name: 'DOLA/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -263,6 +277,8 @@ const pools: Pools = {
     '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b', // dai+/usd+
     '0xd6d20527c7b0669989ee082b9d3a1c63af742290000000000000000000000483', // dola/usd+
     '0x9cebf13bb702f253abf1579294694a1edad00eaa000000000000000000000486', // bb-a-usdc/bb-a-usdc.e
+    '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e', // DOLA/bbaUSD
+    '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f', // 50STG-50bbaUSD
   ],
   Deprecated: {
     // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
