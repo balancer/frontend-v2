@@ -9,6 +9,9 @@ import { TokenInfo } from '@/types/TokenList';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
 import useTransactions from '../useTransactions';
+import { configService } from '@/services/config/config.service';
+import { flatten } from 'lodash';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -44,6 +47,7 @@ export default function useTokenApprovalActions() {
     approvalRequired,
     getToken,
     injectSpenders,
+    allowanceFor,
   } = useTokens();
   const { t } = useI18n();
   const { getSigner } = useWeb3();
@@ -58,6 +62,10 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.approveForLocking', [symbol]);
       case ApprovalAction.Staking:
         return t('transactionSummary.approveForStaking', [symbol]);
+      case ApprovalAction.Swapping:
+        return t('transactionSummary.approveForSwapping', [symbol]);
+      case ApprovalAction.Unapprove:
+        return t('transactionSummary.unapprove', [symbol]);
       default:
         return t('transactionSummary.approveForInvesting', [symbol]);
     }
@@ -69,25 +77,12 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.tooltips.approveForLocking', [symbol]);
       case ApprovalAction.Staking:
         return t('transactionSummary.tooltips.approveForStaking', [symbol]);
+      case ApprovalAction.Swapping:
+        return t('transactionSummary.tooltips.approveForSwapping', [symbol]);
+      case ApprovalAction.Unapprove:
+        return t('transactionSummary.tooltips.unapprove', [symbol]);
       default:
         return t('transactionSummary.tooltips.approveForInvesting', [symbol]);
-    }
-  }
-
-  function summaryLabel(actionType: ApprovalAction, address: string): string {
-    switch (actionType) {
-      case ApprovalAction.Locking:
-        return t('transactionSummary.approveForLocking', [
-          getToken(address)?.symbol,
-        ]);
-      case ApprovalAction.Staking:
-        return t('transactionSummary.approveForStaking', [
-          getToken(address)?.symbol,
-        ]);
-      default:
-        return t('transactionSummary.approveForInvesting', [
-          getToken(address)?.symbol,
-        ]);
     }
   }
 
@@ -112,6 +107,8 @@ export default function useTokenApprovalActions() {
     amountToApprove: AmountToApprove,
     spender: string
   ): Promise<boolean> {
+    if (bnum(amountToApprove.amount).eq(0)) return true;
+
     await updateAllowancesFor(spender);
 
     return !approvalRequired(
@@ -161,7 +158,7 @@ export default function useTokenApprovalActions() {
       id: tx.hash,
       type: 'tx',
       action: 'approve',
-      summary: summaryLabel(actionType, token.address),
+      summary: actionLabel(actionType, token.symbol),
       details: {
         contractAddress: token.address,
         spender: spender,
@@ -169,6 +166,66 @@ export default function useTokenApprovalActions() {
     });
 
     return tx;
+  }
+
+  /**
+   * Some tokens require setting their approval amount to 0 first before being
+   * able to adjust the value up again. This returns true for tokens that requires
+   * this and false otherwise.
+   */
+  function isDoubleApprovalRequired(token, spender): boolean {
+    return !!(
+      configService.network.tokens.DoubleApprovalRequired?.includes(
+        token.address
+      ) && allowanceFor(token.address, spender).gt(0)
+    );
+  }
+
+  /**
+   * Create an action for BalActionSteps that approves a token for spending.
+   * @param {TokenInfo} token The token to approve.
+   * @param {string} normalizedAmount The amount to approve, normalized, if
+   * forceMax is false.
+   * @param {string} spender The contract address to give the approval too,
+   * typically the vault.
+   * @param {ApprovalAction} actionType The action type that follows the
+   * approval, used for labeling of tx notification.
+   * @param {boolean} forceMax If true, the approval will be for the maximum
+   * possible amount.
+   * @returns {TransactionActionInfo} The transaction
+   */
+  function createApprovalAction({
+    token,
+    normalizedAmount,
+    spender,
+    actionType,
+    forceMax = true,
+  }: ApproveTokenParams): TransactionActionInfo {
+    return {
+      label: actionLabel(actionType, token.symbol),
+      loadingLabel: t('investment.preview.loadingLabel.approval'),
+      confirmingLabel: t('confirming'),
+      stepTooltip: actionTooltip(actionType, token.symbol),
+      action: () => {
+        return approveToken({
+          token,
+          normalizedAmount,
+          spender,
+          actionType,
+          forceMax,
+        });
+      },
+      postActionValidation: () => {
+        return isApprovalValid(
+          { address: token.address, amount: normalizedAmount },
+          spender
+        );
+      },
+      actionInvalidReason: {
+        title: t('actionSteps.approve.invalidReason.title'),
+        description: t('actionSteps.approve.invalidReason.description'),
+      },
+    };
   }
 
   /**
@@ -198,29 +255,40 @@ export default function useTokenApprovalActions() {
       skipAllowanceCheck
     );
 
-    return approvalsRequired.map(amountToApprove => {
-      const token = getToken(amountToApprove.address);
+    return flatten(
+      approvalsRequired.map(amountToApprove => {
+        const token = getToken(amountToApprove.address);
+        const actions: TransactionActionInfo[] = [];
 
-      return {
-        label: actionLabel(actionType, token.symbol),
-        loadingLabel: t('investment.preview.loadingLabel.approval'),
-        confirmingLabel: t('confirming'),
-        stepTooltip: actionTooltip(actionType, token.symbol),
-        action: () =>
-          approveToken({
+        /**
+         * Some tokens require setting approved amount to 0 before changing the
+         * approval amount. This injects another action to do that.
+         */
+        if (isDoubleApprovalRequired(token, spender)) {
+          actions.push(
+            createApprovalAction({
+              token,
+              normalizedAmount: '0',
+              spender,
+              actionType: ApprovalAction.Unapprove,
+              forceMax: false,
+            })
+          );
+        }
+
+        actions.push(
+          createApprovalAction({
             token,
             normalizedAmount: amountToApprove.amount,
             spender,
             actionType,
             forceMax,
-          }),
-        postActionValidation: () => isApprovalValid(amountToApprove, spender),
-        actionInvalidReason: {
-          title: t('actionSteps.approve.invalidReason.title'),
-          description: t('actionSteps.approve.invalidReason.description'),
-        },
-      };
-    });
+          })
+        );
+
+        return actions;
+      })
+    );
   }
 
   return {

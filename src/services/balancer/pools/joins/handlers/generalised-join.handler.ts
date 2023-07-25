@@ -62,12 +62,17 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
     const poolId = this.pool.value.id;
     const hasInvalidAmounts = amountsIn.some(item => !item.valid);
 
+    const isNativeAssetJoin = amountsIn.some(item =>
+      isSameAddress(item.address, configService.network.nativeAsset.address)
+    );
+
     // Static call simulation is more accurate than VaultModel, but requires relayer approval,
     // token approvals, and account to have enought token balance.
-    const simulationType: SimulationType =
-      !hasInvalidAmounts && !approvalActions.length
-        ? SimulationType.Static
-        : SimulationType.VaultModel;
+    const simulationType = this.getSimulationType({
+      isNativeAssetJoin,
+      hasInvalidAmounts,
+      approvalActionsLength: approvalActions.length,
+    });
 
     console.log({ simulationType });
 
@@ -99,6 +104,24 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
       bptOut,
       priceImpact,
     };
+  }
+
+  private getSimulationType({
+    isNativeAssetJoin,
+    hasInvalidAmounts,
+    approvalActionsLength,
+  }: {
+    isNativeAssetJoin: boolean;
+    hasInvalidAmounts: boolean;
+    approvalActionsLength: number;
+  }): SimulationType {
+    if (isNativeAssetJoin) {
+      return SimulationType.VaultModel;
+    }
+    if (!hasInvalidAmounts && !approvalActionsLength) {
+      return SimulationType.Static;
+    }
+    return SimulationType.VaultModel;
   }
 
   /**

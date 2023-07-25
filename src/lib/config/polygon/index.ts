@@ -10,7 +10,6 @@ const config: Config = {
   key: '137',
   chainId: 137,
   layerZeroChainId: 109,
-  supportsVeBalSync: true,
   chainName: 'Polygon PoS',
   name: 'Polygon Mainnet',
   shortName: 'Polygon',
@@ -42,6 +41,7 @@ const config: Config = {
   bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   blockTime: 4,
   nativeAsset: {
     name: 'Matic',

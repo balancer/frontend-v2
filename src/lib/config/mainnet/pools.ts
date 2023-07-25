@@ -1,5 +1,5 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { PoolWarning, Pools } from '@/types/pools';
+import { Protocol } from '@/composables/useProtocols';
+import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {
@@ -104,6 +104,23 @@ const pools: Pools = {
       '0x0bbc7b78ff8453c40718e290b33f1d00ee67274e000000000000000000000563', // baoeth/beth
       '0x911fc393355fe415a667893d55fff6703c57c72e000200000000000000000574', // 50ETHx-50WETH
       '0xd8721e92ba0f8235b375e9ec9a7b697ec4e2d6c6000200000000000000000575', // 80BIDS-20WETH
+      '0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d', // R/bbsDAI
+      '0x4cbde5c4b4b53ebe4af4adb85404725985406163000000000000000000000595', // ETHx/WETH
+      '0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b', // wstETH-rETH-sfrxETH-BPT
+      '0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593', // bb-a-USD
+      '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594', // wstETH-bb-a-WETH-BPT
+      '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e', // B-wstETH/bb-ma3-weth
+      '0x3fa8c89704e5d07565444009e5d9e624b40be813000000000000000000000599', // gho/lusd
+      '0x9a172e1cb0e99f7e6dcc4c52e4655e8f337d5c0000000000000000000000059a', // gho/mai
+      '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598', // gho/bb-a-usd
+      '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7', // dusd-bb-a-usd
+      '0x9b692f571b256140a39a34676bffa30634c586e100000000000000000000059d', // bb-i-USD
+      '0xdd59f89b5b07b7844d72996fc9d83d81acc8219600000000000000000000059e', // uniETH-WETH
+      '0xb54e6aadbf1ac1a3ef2a56e358706f0f8e320a0300000000000000000000059f', // vETH/WETH
+      '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3', // cbETH-bb-a-WETH
+      '0x1bd2f176a812e312077bca87e37c08432bb09f3e0000000000000000000005a1', // qETH-bb-a-WETH
+      '0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0', // swETH-bb-a-WETH
+      '0xe8c56405bc405840154d9b572927f4197d110de10000000000000000000005a4', // rETH/bbaWETH
     ],
   },
   Investment: {
@@ -145,6 +162,11 @@ const pools: Pools = {
       '0x911fc393355fe415a667893d55fff6703c57c72e000200000000000000000574', // 50ETHx-50WETH
       '0x8334215586e93ee85e3f1a281eaf66e52015754d00020000000000000000057e', // 50WETH-50FIEF
       '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d', // bbaweth-ethx
+      '0x3de27efa2f1aa663ae5d458857e731c129069f29000200000000000000000588', // wstETH-AAVE
+      '0xb2b918f2d628b4c8ff237b0a1c6ac3bea222fedc00020000000000000000059c', // gho/ohm
+      '0x7d98f308db99fdd04bbf4217a4be8809f38faa6400020000000000000000059b', // wstETH/ohm
+      '0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5', // idle/usdc
+      '0x064bcc35bfe023fe717a87574fae9333f98aae4d0002000000000000000005a6', // 80RATE/20WETH
     ],
   },
   Factories: {
@@ -165,6 +187,7 @@ const pools: Pools = {
     '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx', // fx
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
+    '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
   },
   Stakable: {
     VotingGaugePools: [
@@ -311,6 +334,27 @@ const pools: Pools = {
       '0xbfce47224b4a938865e3e2727dc34e0faa5b1d82000000000000000000000527',
       '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570',
       '0x9d7f992c900fbea0ec314bdd71b7cc1becf76a33000200000000000000000573',
+      '0x4cbde5c4b4b53ebe4af4adb85404725985406163000000000000000000000595',
+      '0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d',
+      '0x3fa8c89704e5d07565444009e5d9e624b40be813000000000000000000000599',
+      '0x7d98f308db99fdd04bbf4217a4be8809f38faa6400020000000000000000059b',
+      '0xb2b918f2d628b4c8ff237b0a1c6ac3bea222fedc00020000000000000000059c',
+      '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598',
+      '0x9a172e1cb0e99f7e6dcc4c52e4655e8f337d5c0000000000000000000000059a',
+      '0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b',
+      '0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593',
+      '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594',
+      '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e',
+      '0x9b692f571b256140a39a34676bffa30634c586e100000000000000000000059d',
+      '0xdd59f89b5b07b7844d72996fc9d83d81acc8219600000000000000000000059e',
+      '0xb54e6aadbf1ac1a3ef2a56e358706f0f8e320a0300000000000000000000059f',
+      '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3',
+      '0x1bd2f176a812e312077bca87e37c08432bb09f3e0000000000000000000005a1',
+      '0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0',
+      '0xe8c56405bc405840154d9b572927f4197d110de10000000000000000000005a4',
+      '0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5',
+      '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7',
+      '0x759fabc513accd292ada967c4dd7bb94da39232e0002000000000000000005a8',
     ],
     AllowList: [],
   },
@@ -318,20 +362,29 @@ const pools: Pools = {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f': {
       name: 'Balancer Boosted Euler USD',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Euler],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Euler],
+        },
+      },
     },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
@@ -341,125 +394,221 @@ const pools: Pools = {
       name: 'AuraBAL Stable Pool',
       hasIcon: false,
     },
-    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
+    '0x9b692f571b256140a39a34676bffa30634c586e100000000000000000000059d': {
       name: 'Balancer Idle JuniorBY Boosted StablePool',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Idle],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Idle],
+        },
+      },
     },
     '0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499': {
       name: 'Balancer Boosted Yearn USD',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Yearn],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Yearn],
+        },
+      },
     },
     '0x99c88ad7dc566616548adde8ed3effa730eb6c3400000000000000000000049a': {
       name: 'Balancer Boosted Gearbox USD',
       hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Gearbox],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Gearbox],
+        },
+      },
     },
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476': {
       name: 'Euler Boosted USD/DOLA',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Euler],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Euler],
+        },
+      },
     },
     '0x483006684f422a9448023b2382615c57c5ecf18f000000000000000000000488': {
       name: 'Euler Boosted USD/TUSD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Euler],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Euler],
+        },
+      },
     },
     '0xb5e3de837f869b0248825e0175da73d4e8c3db6b000200000000000000000474': {
       name: 'Euler Boosted USD/rETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Euler],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Euler],
+        },
+      },
     },
     '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475': {
       name: 'Euler Boosted USD/TEMPLE',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Euler],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Euler],
+        },
+      },
     },
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473': {
       name: 'Euler Boosted USD/wstETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Euler],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Euler],
+        },
+      },
     },
     '0x779d01f939d78a918a3de18cc236ee89221dfd4e0000000000000000000004c7': {
       name: 'Balancer Boosted Sturdy USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Sturdy],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Sturdy],
+        },
+      },
     },
     '0xcaa052584b462198a5a9356c28bce0634d65f65c0000000000000000000004db': {
       name: 'Balancer Boosted Morpho-Aave USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Morpho, BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Morpho, Protocol.Aave],
+        },
+      },
     },
     '0xfebb0bbf162e64fb9d0dfe186e517d84c395f016000000000000000000000502': {
       name: 'Balancer Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504': {
       name: 'wstETH/Boosted Aave v3  WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505': {
       name: 'STG/Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
-    '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e': {
+    '0x1bd2f176a812e312077bca87e37c08432bb09f3e0000000000000000000005a1': {
       name: 'qETH/Boosted Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
-    '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e': {
+    '0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0': {
       name: 'swETH/Boosted Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
     '0xf57c794f42da72b38c8f610ff3b5e8502e48cbde00000000000000000000055c': {
       name: 'DOLA/Boosted Aave v3 USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
-    '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a': {
+    '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3': {
       name: 'cbETH/Boosted Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
-    '0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a': {
+    '0xe8c56405bc405840154d9b572927f4197d110de10000000000000000000005a4': {
       name: 'rETH/Boosted Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
-    '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e': {
+    '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e': {
       name: 'wstETH/Boosted Morpho Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Morpho],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Morpho],
+        },
+      },
     },
-    '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d': {
+    '0x4cbde5c4b4b53ebe4af4adb85404725985406163000000000000000000000595': {
       name: 'ETHx/Boosted Aave v3 WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593': {
+      name: 'Balancer Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594': {
+      name: 'wstETH/Boosted Aave v3  WETH',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598': {
+      name: 'GHO/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7': {
+      name: 'DUSD/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
     },
   },
   Deep: [
@@ -498,6 +647,18 @@ const pools: Pools = {
     '0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b', // OHM/bbaDAI
     '0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e', // wstETH/morpho weth
     '0x4228290ee9cab692938ff0b4ba303fbcdb68e9f200020000000000000000057d', // bbaweth-ethx
+    '0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d', // R/bbsDAI
+    '0x4cbde5c4b4b53ebe4af4adb85404725985406163000000000000000000000595', // ETHx/WETH
+    '0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593', // bb-a-USD
+    '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594', // wstETH-bb-a-WETH-BPT
+    '0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e', // B-wstETH/bb-ma3-weth
+    '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598', // gho/bb-a-usd
+    '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7', // dusd-bb-a-usd
+    '0x9b692f571b256140a39a34676bffa30634c586e100000000000000000000059d', // bb-i-USD
+    '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3', // cbETH-bb-a-WETH
+    '0x1bd2f176a812e312077bca87e37c08432bb09f3e0000000000000000000005a1', // qETH-bb-a-WETH
+    '0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0', // swETH-bb-a-WETH
+    '0xe8c56405bc405840154d9b572927f4197d110de10000000000000000000005a4', // rETH/bbaWETH
   ],
   BoostedApr: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
@@ -521,7 +682,7 @@ const pools: Pools = {
   NewVersionAvailable: {
     '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
       newPool:
-        '0xe0fcbf4d98f0ad982db260f86cf28b49845403c5000000000000000000000504',
+        '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594',
       description: 'newVersion.Aave3',
       title: 'announcement',
     },
@@ -529,6 +690,12 @@ const pools: Pools = {
       newPool:
         '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a',
       description: 'newVersion.Aave3',
+      title: 'announcement',
+    },
+    '0x5aee1e99fe86960377de9f88689616916d5dcabe000000000000000000000467': {
+      newPool:
+        '0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b',
+      description: 'newVersion.BalIncentives',
       title: 'announcement',
     },
   },
@@ -573,8 +740,7 @@ const pools: Pools = {
   },
   GaugeMigration: {},
   BrandedRedirect: {
-    '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce':
-      'xave',
+    FX: 'xave',
   },
   ExitViaInternalBalance: [
     '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC

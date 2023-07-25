@@ -24,6 +24,15 @@ const tokens: TokenConstants = {
     '0x4d19F33948b99800B6113Ff3e83beC9b537C85d2',
     '0xe025E3ca2bE02316033184551D4d3Aa22024D9DC',
   ],
+  /**
+   * The approval function for these tokens doesn't allow setting a new approval
+   * level if the current level is > 0. Thus they must be approved in two steps
+   * first setting to 0 then setting to the required amount.
+   */
+  DoubleApprovalRequired: [
+    '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+    '0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c', // ENJ
+  ],
 };
 
 export default tokens;

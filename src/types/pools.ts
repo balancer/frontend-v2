@@ -1,4 +1,5 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
+import { Protocol } from '@/composables/useProtocols';
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -12,11 +13,21 @@ export type FactoryType =
   | 'gyroE'
   | 'erc4626Linear';
 
+export enum PoolFeature {
+  Boosted = 'boosted',
+  CLP = 'clp',
+}
+
+export type PoolFeatures = {
+  [key in PoolFeature]?: {
+    featureProtocols?: Protocol[];
+  };
+};
+
 export type PoolMetadata = {
   name?: string;
   hasIcon?: boolean;
-  boosted?: boolean;
-  boostedProtocols?: BoostedProtocol[];
+  features?: PoolFeatures;
 };
 
 export enum RiskKey {
@@ -36,7 +47,7 @@ export enum RiskKey {
   Weighted = 'weighted-pools',
   Stable = 'stable-pools',
   ComposableStable = 'composable-pools',
-  MetaStable = 'composable-pools',
+  MetaStable = 'meta-stable-pools',
   Boosted = 'boosted-pools',
   Arbitrum = 'arbitrum',
   Polygon = 'polygon',
@@ -131,7 +142,7 @@ export type Pools = {
   BoostedApr: string[];
   DisabledJoins: string[];
   ExitViaInternalBalance?: string[];
-  BrandedRedirect?: Record<string, string>;
+  BrandedRedirect?: Partial<Record<string, string>>;
   Deprecated?: Record<string, DeprecatedDetails>;
   NewVersionAvailable?: Record<string, NewVersionAvailableDetails>;
   GaugeMigration?: Record<string, DeprecatedDetails>;

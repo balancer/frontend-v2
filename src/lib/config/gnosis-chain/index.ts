@@ -62,10 +62,7 @@ const config: Config = {
   },
   pools,
   tokens,
-  keys: {
-    infura: 'daaa68ec242643719749dd1caba2fc66',
-    alchemy: 'oGLgncMVHNWltnK0nTfiryxQ6gYemKQO',
-  },
+  keys: {},
   gauges: {
     type: 2,
     weight: 100,

@@ -262,10 +262,10 @@ export default defineComponent({
     });
     const title = computed(() => {
       if (swapping.wrapType.value === WrapType.Wrap) {
-        return `${t('wrap')} ${swapping.tokenIn.value.symbol}`;
+        return `${t('wrap')} ${swapping.tokenIn.value?.symbol}`;
       }
       if (swapping.wrapType.value === WrapType.Unwrap) {
-        return `${t('unwrap')} ${swapping.tokenOut.value.symbol}`;
+        return `${t('unwrap')} ${swapping.tokenOut.value?.symbol}`;
       }
       return t('swap');
     });

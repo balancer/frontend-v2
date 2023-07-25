@@ -18,6 +18,7 @@ import {
   StakePreviewProps,
   useStakePreview,
 } from './useStakePreview';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
 initDependenciesWithDefaultMocks();
 walletServiceInstance.setUserProvider(computed(() => walletProviderMock));
@@ -185,7 +186,7 @@ test('Handles staking action success', async () => {
 
   expect(isActionConfirmed.value).toBeFalse();
 
-  await handleSuccess({ receipt: vi.fn });
+  await handleSuccess({} as TransactionReceipt);
 
   expect(isActionConfirmed.value).toBeTrue();
   expect(emit).toHaveBeenCalledOnceWith('success');

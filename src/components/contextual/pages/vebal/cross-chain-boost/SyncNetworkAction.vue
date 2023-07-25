@@ -57,7 +57,7 @@ async function handleTransaction(
   });
 
   txListener(tx, {
-    onTxConfirmed: () => {
+    onTxConfirmed: async () => {
       setSyncTxHashes(network, tx.hash);
     },
     onTxFailed: () => {
@@ -169,6 +169,7 @@ const networkSyncSteps = computed(() => {
 
     <BalActionSteps
       :actions="networkSyncSteps"
+      primaryActionType="sync"
       :spacerWidth="10"
       @success="handleSuccess"
       @set-current-action-index="currentActionIndex = $event"

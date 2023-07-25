@@ -61,8 +61,7 @@ const {
   hasValidInputs,
   hasAmountsIn,
   queryError,
-  setAmountsIn,
-  addTokensIn,
+  setTokensIn,
 } = useJoinPool();
 
 const { tokensWithBalance } = useUserTokens();
@@ -101,14 +100,13 @@ const joinTokensWithoutBalance = computed<string[]>(() =>
 );
 
 async function initializeTokensForm(isSingleAssetJoin: boolean) {
-  setAmountsIn([]);
   if (isSingleAssetJoin) {
     // Single asset joins are only relevant for Composable pools where swap
     // joins are possible. In this case we want to default to the wrapped native
     // asset.
-    addTokensIn([wrappedNativeAsset.value.address]);
+    setTokensIn([wrappedNativeAsset.value.address]);
   } else {
-    addTokensIn(joinTokensWithBalance.value);
+    setTokensIn(joinTokensWithBalance.value);
   }
 }
 
@@ -122,12 +120,23 @@ function getTokenInputLabel(address: string): string | undefined {
  * the native asset instead.
  */
 function tokenOptions(address: string): string[] {
+  if (isSingleAssetJoin.value) return [];
+
   return includesAddress(
     [wrappedNativeAsset.value.address, nativeAsset.address],
     address
   )
     ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
+}
+
+/**
+ * When changing tokens, clear the amount value
+ */
+function onTokenChange() {
+  if (isSingleAssetJoin.value && amountsIn.value.length > 0) {
+    amountsIn.value[0].value = '';
+  }
 }
 
 /**
@@ -195,6 +204,7 @@ watch(
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="excludedTokens"
+      @update:address="onTokenChange"
     />
 
     <MissingPoolTokensAlert
