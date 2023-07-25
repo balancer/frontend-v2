@@ -2,13 +2,13 @@ import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
 import { computed, onUnmounted, ref } from 'vue';
 
 import {
-  GOERLI_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
   VotingGauge,
+  votingGaugesForNetwork,
 } from '@/constants/voting-gauges';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
-import { isGoerli } from './useNetwork';
+import { networkId, isTestnet } from './useNetwork';
 import { orderedPoolTokens } from '@/composables/usePoolHelpers';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { Pool, PoolToken } from '@/services/pool/types';
@@ -34,8 +34,8 @@ export default function useVotingGauges() {
 
   // Hard coded list of voting gauges
   const _votingGauges = computed((): VotingGauge[] => {
-    if (isGoerli.value) {
-      return GOERLI_VOTING_GAUGES as VotingGauge[];
+    if (isTestnet.value) {
+      return votingGaugesForNetwork(networkId.value);
     }
     return MAINNET_VOTING_GAUGES as VotingGauge[];
   });
