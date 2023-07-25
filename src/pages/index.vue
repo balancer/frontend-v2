@@ -12,6 +12,7 @@ import usePools from '@/composables/pools/usePools';
 import { lsGet, lsSet } from '@/lib/utils';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { useIntersectionObserver } from '@vueuse/core';
+import AvalanchePromo from '@/components/contextual/pages/pools/AvalanchePromo.vue';
 
 const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
 const isFeaturedProtocolsVisible = ref(false);
@@ -66,6 +67,7 @@ function onColumnSort(columnId: string) {
   <div>
     <HomePageHero />
     <div class="xl:container xl:px-4 pt-10 md:pt-8 xl:mx-auto">
+      <AvalanchePromo />
       <BalStack vertical>
         <div class="px-4 xl:px-0">
           <div class="flex justify-between items-end mb-2">
