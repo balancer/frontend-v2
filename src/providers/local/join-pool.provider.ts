@@ -29,7 +29,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { captureException } from '@sentry/browser';
 import debounce from 'debounce-promise';
 import {
   computed,
@@ -44,12 +43,12 @@ import {
   watch,
 } from 'vue';
 import { useUserSettings } from '../user-settings.provider';
-import { useQuery } from '@tanstack/vue-query';
+import { UseQueryReturnType, useQuery } from '@tanstack/vue-query';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 import { ApprovalAction } from '@/composables/approvals/types';
-import { isUserError } from '@/composables/useTransactionErrors';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 /**
  * TYPES
@@ -118,7 +117,8 @@ export const joinPoolProvider = (
   const { transactionDeadline } = useApp();
   const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApprovalTx(RelayerType.BATCH);
-  const { getTokenApprovalActions } = useTokenApprovalActions();
+  const { getTokenApprovalActions, updateAllowancesFor } =
+    useTokenApprovalActions();
   const { relayerSignature, relayerApprovalAction } = useRelayerApproval(
     RelayerType.BATCH
   );
@@ -243,13 +243,13 @@ export const joinPoolProvider = (
   }
 
   /**
-   * Adds amountsIn with no value for array of token addresses.
+   * Sets amountsIn with no value for array of token addresses.
    *
    * @param {string[]} tokensIn - Array of token addresses.
    */
-  function addTokensIn(tokensIn: string[]) {
-    tokensIn.forEach(address =>
-      amountsIn.value.push({ address, value: '', valid: true })
+  function setTokensIn(tokensIn: string[]) {
+    setAmountsIn(
+      tokensIn.map(address => ({ address, value: '', valid: true }))
     );
   }
 
@@ -277,11 +277,23 @@ export const joinPoolProvider = (
       amountsToApprove: amountsToApprove.value,
       spender: appNetworkConfig.addresses.vault,
       actionType: ApprovalAction.AddLiquidity,
+      skipAllowanceCheck: true, // Done once beforeMount
     });
 
     approvalActions.value = shouldSignRelayer.value
       ? [relayerApprovalAction.value, ...tokenApprovalActions]
       : tokenApprovalActions;
+  }
+
+  // Checks amountsIn for valid inputs and updates price impact state if
+  // invalid.
+  function validateAmountsIn(): boolean {
+    if (!hasAmountsIn.value) {
+      priceImpact.value = 0;
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -290,16 +302,14 @@ export const joinPoolProvider = (
   async function queryJoin() {
     // If form is empty or inputs are not valid, clear the price impact and
     // return early
-    if (!hasAmountsIn.value) {
-      priceImpact.value = 0;
-      return null;
-    }
+    if (!validateAmountsIn()) return null;
 
     try {
       joinPoolService.setJoinHandler(joinHandlerType.value);
       await setApprovalActions();
 
       console.log('joinHandler:', joinHandlerType.value);
+      if (!validateAmountsIn()) return null;
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
@@ -315,7 +325,7 @@ export const joinPoolProvider = (
 
       return output;
     } catch (error) {
-      logJoinException(error as Error);
+      logJoinException(error as Error, queryJoinQuery);
       throwQueryError('Failed to construct join.', error);
     }
   }
@@ -343,7 +353,6 @@ export const joinPoolProvider = (
 
       return joinRes;
     } catch (error) {
-      console.log(error);
       logJoinException(error as Error);
       txError.value = (error as Error).message;
       throw error;
@@ -375,27 +384,33 @@ export const joinPoolProvider = (
     }
   }
 
-  async function logJoinException(error: Error) {
-    if (isUserError(error)) return;
-
+  async function logJoinException(
+    error: Error,
+    query?: UseQueryReturnType<any, any>
+  ) {
     const sender = await getSigner().getAddress();
-    captureException(error, {
-      level: 'fatal',
-      extra: {
-        joinHandler: joinHandlerType.value,
-        params: JSON.stringify(
-          {
-            amountsIn: amountsInWithValue.value,
-            tokensIn: tokensIn.value,
-            signer: sender,
-            slippageBsp: slippageBsp.value,
-            relayerSignature: relayerSignature.value,
-            approvalActions: approvalActions.value,
-            transactionDeadline: transactionDeadline.value,
-          },
-          null,
-          2
-        ),
+    captureBalancerException({
+      error,
+      action: 'invest',
+      query,
+      context: {
+        level: 'fatal',
+        extra: {
+          joinHandler: joinHandlerType.value,
+          params: JSON.stringify(
+            {
+              amountsIn: amountsInWithValue.value,
+              tokensIn: tokensIn.value,
+              signer: sender,
+              slippageBsp: slippageBsp.value,
+              relayerSignature: relayerSignature.value,
+              approvalActions: approvalActions.value,
+              transactionDeadline: transactionDeadline.value,
+            },
+            null,
+            2
+          ),
+        },
       },
     });
   }
@@ -422,6 +437,9 @@ export const joinPoolProvider = (
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactored probably won't be required.
     injectTokens(poolJoinTokens.value);
+
+    // Make sure allowances on the vault are up to date.
+    updateAllowancesFor(appNetworkConfig.addresses.vault);
   });
 
   onMounted(() => (isMounted.value = true));
@@ -456,7 +474,7 @@ export const joinPoolProvider = (
 
     // Methods
     setAmountsIn,
-    addTokensIn,
+    setTokensIn,
     resetAmounts,
     join,
     resetTxState,

@@ -305,8 +305,22 @@ function iconAddresses(pool: Pool) {
     >
       <template #iconColumnHeader>
         <div class="flex items-center">
-          <img v-if="darkMode" :src="TokensWhite" alt="token" />
-          <img v-else :src="TokensBlack" alt="token" />
+          <img
+            v-if="darkMode"
+            :src="TokensWhite"
+            alt="token"
+            loading="lazy"
+            width="24"
+            height="15"
+          />
+          <img
+            v-else
+            :src="TokensBlack"
+            alt="token"
+            loading="lazy"
+            width="24"
+            height="15"
+          />
         </div>
       </template>
       <template #iconColumnCell="pool">

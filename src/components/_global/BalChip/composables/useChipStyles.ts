@@ -2,7 +2,7 @@ export function useChipClasses(props) {
   const sizeClasses = () => {
     switch (props.size) {
       case 'sm':
-        return 'p-1 text-xs';
+        return 'px-1 py-1.5 text-xs';
       case 'lg':
         return 'p-2 text-base';
       default:

@@ -41,9 +41,8 @@ import { isMainnet } from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { SwapQuote } from './types';
-import { captureException } from '@sentry/browser';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { isUserError } from '../useTransactionErrors';
+import { captureBalancerException, isUserError } from '@/lib/utils/errors';
 
 type SorState = {
   validationErrors: {
@@ -196,7 +195,7 @@ export default function useSor({
   const poolsLoading = ref(true);
 
   // COMPOSABLES
-  const { getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
+  const { account, getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
@@ -369,8 +368,6 @@ export default function useSor({
       resetInputAmounts(amount);
       return;
     }
-
-    amount = bnum(amount).toString();
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
@@ -592,7 +589,7 @@ export default function useSor({
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value) || '0';
 
     txListener(tx, {
-      onTxConfirmed: () => {
+      onTxConfirmed: async () => {
         trackGoal(Goals.Swapped, bnum(swapUSDValue).times(100).toNumber() || 0);
         swapping.value = false;
         latestTxHash.value = tx.hash;
@@ -635,7 +632,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
       return;
     } else if (wrapType.value == WrapType.Unwrap) {
@@ -655,7 +652,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
       return;
     }
@@ -679,7 +676,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -700,7 +697,7 @@ export default function useSor({
         }
         trackSwapEvent();
       } catch (error) {
-        handleSwapException(error as Error);
+        handleSwapException(error as Error, tokenInAddress, tokenOutAddress);
       }
     }
   }
@@ -797,11 +794,30 @@ export default function useSor({
     return amount;
   }
 
-  function handleSwapException(error: Error) {
+  function handleSwapException(
+    error: Error,
+    tokenIn: string,
+    tokenOut: string
+  ) {
     if (!isUserError(error)) {
       console.trace(error);
       state.submissionError = t('swapException', ['Balancer']);
-      captureException(new Error(state.submissionError, { cause: error }));
+
+      captureBalancerException({
+        error,
+        action: 'swap',
+        msgPrefix: state.submissionError,
+        context: {
+          extra: {
+            sender: account.value,
+            tokenIn,
+            tokenOut,
+          },
+          tags: {
+            swapType: 'balancer',
+          },
+        },
+      });
     }
     swapping.value = false;
     confirming.value = false;

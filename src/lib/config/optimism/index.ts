@@ -8,7 +8,6 @@ const config: Config = {
   key: '10',
   chainId: 10,
   layerZeroChainId: 111,
-  supportsVeBalSync: true,
   chainName: 'Optimism',
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
@@ -39,6 +38,7 @@ const config: Config = {
   bridgeUrl: '',
   supportsEIP1559: false,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   nativeAsset: {
     name: 'Ether',
     address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',

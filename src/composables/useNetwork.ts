@@ -34,13 +34,18 @@ export const networkId = ref<Network>(NETWORK_ID);
 
 export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
+export const isZkevm = computed(() => networkId.value === Network.ZKEVM);
 export const isOptimism = computed(() => networkId.value === Network.OPTIMISM);
 export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
 export const isGnosis = computed(() => networkId.value === Network.GNOSIS);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
-export const hasBridge = computed<boolean>(() => !!networkConfig.bridgeUrl);
-export const isTestnet = computed(() => isGoerli.value);
+export const hasBridge = computed<boolean>(
+  () => !!config[networkId.value].bridgeUrl
+);
+export const isTestnet = computed<boolean>(
+  () => !!config[networkId.value].testNetwork
+);
 
 export const isEIP1559SupportedNetwork = computed(
   () => configService.network.supportsEIP1559

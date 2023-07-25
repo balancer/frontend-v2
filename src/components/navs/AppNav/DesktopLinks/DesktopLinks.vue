@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
 import DesktopLinkItem from './DesktopLinkItem.vue';
-import useNetwork, { isGoerli } from '@/composables/useNetwork';
+import useNetwork, { isTestnet } from '@/composables/useNetwork';
 import { Goals, trackGoal } from '@/composables/useFathom';
 
 /**
@@ -48,7 +48,7 @@ function isActive(page: string): boolean {
       </div>
     </DesktopLinkItem>
     <DesktopLinkItem
-      v-if="isGoerli"
+      v-if="isTestnet"
       :to="{ name: 'faucet', params: { networkSlug } }"
       :active="isActive('faucet')"
     >

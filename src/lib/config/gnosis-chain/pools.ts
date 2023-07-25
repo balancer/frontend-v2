@@ -1,5 +1,5 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools } from '@/types/pools';
+import { Protocol } from '@/composables/useProtocols';
+import { PoolFeature, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {},
@@ -31,6 +31,7 @@ const pools: Pools = {
       '0xa611a551b95b205ccd9490657acf7899daee5db700000000000000000000002e', // EURe / bb-ag-usd
       '0x5c78d05b8ecf97507d1cf70646082c54faa4da95000000000000000000000030', // agEUR / EURe
       '0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034', // WETH / wstETH
+      '0xe15cac1df3621e001f76210ab12a7f1a1691481f000000000000000000000044', // bb-ag-USD
     ],
   },
   Investment: {
@@ -44,6 +45,9 @@ const pools: Pools = {
       '0x388cae2f7d3704c937313d990298ba67d70a3709000200000000000000000026', // 50AGVE-50GNO
       '0x4bcf6b48906fa0f68bea1fc255869a41241d4851000200000000000000000021', // 50WXDAI-50MPS
       '0x5519e2d8a0af0944ea639c6dbad69a174de3ecf800010000000000000000003b', // 25BAL-25GNO-25bb-WETH-wstETH-25wxDAI
+      '0xbc130c4989e10941142b34f054eb38d69fdce9df000200000000000000000049', // 20XOC-80USDC
+      '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046', // agUSD-agWETH-agWBTC
+      '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045', // 50bbagGNO-50bbagUSD
     ],
   },
   Factories: {
@@ -61,6 +65,9 @@ const pools: Pools = {
       '0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034',
       '0x5c78d05b8ecf97507d1cf70646082c54faa4da95000000000000000000000030',
       '0x21d4c792ea7e38e0d0819c2011a2b1cb7252bd9900020000000000000000001e',
+      '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046',
+      '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045',
+      '0xe15cac1df3621e001f76210ab12a7f1a1691481f000000000000000000000044',
     ],
     AllowList: [],
   },
@@ -68,26 +75,38 @@ const pools: Pools = {
     '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010': {
       name: 'Balancer Boosted Agave USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
-    '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011': {
+    '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045': {
       name: 'Balancer Boosted Agave GNO/USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
     '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012': {
       name: 'Balancer Boosted Agave GNO/WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
-    '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013': {
+    '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046': {
       name: 'Balancer Boosted Agave WETH/WBTC/USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
   },
   Deep: [
@@ -95,6 +114,9 @@ const pools: Pools = {
     '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto
     '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011', // agave gno/usdc
     '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012', // agave gno/weth
+    '0xe15cac1df3621e001f76210ab12a7f1a1691481f000000000000000000000044', // bb-ag-USD
+    '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046', // agUSD-agWETH-agWBTC
+    '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045', // 50bbagGNO-50bbagUSD
   ],
   BoostedApr: [],
   DisabledJoins: [],

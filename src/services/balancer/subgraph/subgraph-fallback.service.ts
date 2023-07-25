@@ -1,8 +1,8 @@
-import { captureException } from '@sentry/browser';
 import axios, { AxiosResponse } from 'axios';
 import { computed, ref } from 'vue';
 
 import { configService } from '@/services/config/config.service';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 const DECENTRALIZED_SUBGRAPH_URL = 'https://gateway.thegraph.com';
 
@@ -27,19 +27,19 @@ export class SubgraphFallbackService {
       }
       return response;
     } catch (error) {
-      console.error(error);
       // Capture exception only with decentralized url
       if (this.url.value.startsWith(DECENTRALIZED_SUBGRAPH_URL)) {
-        captureException(
-          `GraphQL request to [${this.url.value}] failed with message: ${
-            (error as Error)?.message
-          }`,
-          {
+        captureBalancerException({
+          error,
+          msgPrefix: `GraphQL request to [${
+            this.url.value
+          }] failed with message: ${(error as Error)?.message}`,
+          context: {
             extra: {
               Payload: `${JSON.stringify(payload)}`,
             },
-          }
-        );
+          },
+        });
       }
 
       if (this.urlIndex.value + 1 === this.urls.length) {

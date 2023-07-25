@@ -52,6 +52,7 @@ export function useDisabledJoinPool(pool: Pool) {
 
   const nonAllowedWeightedPoolAfterTimestamp = computed(() => {
     return (
+      !isTestnet.value &&
       isWeighted(pool.poolType) &&
       createdAfterTimestamp(pool) &&
       !POOLS.Weighted.AllowList.includes(pool.id)

@@ -8,6 +8,7 @@ export default {
     EthereumTxType: 'app.ethereumTxType',
     SupportSignatures: 'app.supportSignatures',
     TermsAccepted: 'app.termsAccepted',
+    PoolSorting: 'app.poolSorting',
   },
   Swap: {
     Gasless: 'swap.gasless',

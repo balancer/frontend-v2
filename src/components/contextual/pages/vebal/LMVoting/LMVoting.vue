@@ -140,7 +140,7 @@ function isExpired(gauge: VotingGaugeWithVotes) {
 }
 
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
-const renderedRowsIdx = ref(0);
+const renderedRowsIdx = ref(40);
 let observer: IntersectionObserver | undefined;
 function addIntersectionObserver(): void {
   if (

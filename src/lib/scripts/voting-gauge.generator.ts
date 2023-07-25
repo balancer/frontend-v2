@@ -44,6 +44,15 @@ type ChildChainGaugeInfo = {
   streamer: string;
 };
 
+const gaugeTypes = {
+  [Network.MAINNET]: 'Ethereum',
+  [Network.POLYGON]: 'Polygon',
+  [Network.ARBITRUM]: 'Arbitrum',
+  [Network.OPTIMISM]: 'Optimism',
+  [Network.GNOSIS]: 'Gnosis',
+  [Network.ZKEVM]: 'PolygonZkEvm',
+};
+
 async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   const rpcUrl = configService.getNetworkRpc(Network.MAINNET);
   if (rpcUrl.includes('INFURA_KEY'))
@@ -405,7 +414,7 @@ async function getRootGaugeInfo(
       rootGauges(
         where: {
           recipient_in: ${JSON.stringify(recipients)}
-          chain: ${config[network].shortName}
+          chain: ${gaugeTypes[network]}
           gauge_not: null
         }
       ) {

@@ -103,7 +103,7 @@ export default function useTokenApproval(
     });
 
     txListener(tx, {
-      onTxConfirmed: () => {
+      onTxConfirmed: async () => {
         approving.value = false;
         approved.value = true;
       },

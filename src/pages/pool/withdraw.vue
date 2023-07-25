@@ -2,7 +2,6 @@
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { oneSecondInMs } from '@/composables/useTime';
 import { useIntervalFn } from '@vueuse/core';
-import { computed } from 'vue';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import WithdrawPage from '@/components/contextual/pages/pool/withdraw/WithdrawPage.vue';
 import { useTokens } from '@/providers/tokens.provider';
