@@ -120,6 +120,8 @@ function getTokenInputLabel(address: string): string | undefined {
  * the native asset instead.
  */
 function tokenOptions(address: string): string[] {
+  if (isSingleAssetJoin.value) return [];
+
   return includesAddress(
     [wrappedNativeAsset.value.address, nativeAsset.address],
     address
