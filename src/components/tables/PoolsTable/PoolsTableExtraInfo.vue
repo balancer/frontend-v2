@@ -2,13 +2,15 @@
 import {
   isLiquidityBootstrapping,
   isBoosted,
+  protocolsFor,
+  isGyro,
 } from '@/composables/usePoolHelpers';
-import { poolMetadata } from '@/lib/config/metadata';
 import { Pool } from '@/services/pool/types';
-import { PoolMetadata } from '@/types/pools';
+import { PoolFeature } from '@/types/pools';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
-import BoostedChip from '@/components/chips/BoostedChip.vue';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
+import PoolFeatureChip from '@/components/chips/PoolFeatureChip.vue';
+import { Protocol } from '@/composables/useProtocols';
 
 type Props = {
   pool: Pool;
@@ -18,11 +20,22 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div>
+  <div class="flex items-center">
     <BalTooltip v-if="isBoosted(pool)" :text="$t('boostedTooltip')" width="56">
       <template #activator>
-        <BoostedChip
-          :metadata="poolMetadata(pool.id) as PoolMetadata"
+        <PoolFeatureChip
+          :feature="PoolFeature.Boosted"
+          :protocols="protocolsFor(pool, PoolFeature.Boosted)"
+          class="ml-1"
+        />
+      </template>
+    </BalTooltip>
+
+    <BalTooltip v-if="isGyro(pool)" :text="$t('clpTooltip')" width="56">
+      <template #activator>
+        <PoolFeatureChip
+          :feature="PoolFeature.CLP"
+          :protocols="[Protocol.Gyro]"
           class="ml-1"
         />
       </template>

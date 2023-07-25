@@ -222,6 +222,10 @@ function isErrorOfType(error: any, messages: RegExp[]): boolean {
     return true;
   }
 
+  if (error.cause?.code && error.cause?.code === 4001) {
+    return true;
+  }
+
   if (error.cause instanceof Error) return isUserRejected(error.cause);
 
   return false;
@@ -232,10 +236,12 @@ function isErrorOfType(error: any, messages: RegExp[]): boolean {
  */
 function isUserRejected(error): boolean {
   const messages = [
+    /rejected/,
     /user rejected transaction/,
     /request rejected/,
     /user rejected methods./,
     /user rejected the transaction/,
+    /user rejected the request/,
     /rejected by user/,
     /user canceled/,
     /cancelled by user/,
@@ -245,16 +251,32 @@ function isUserRejected(error): boolean {
     /user disapproved requested methods/,
     /canceled/,
     /user rejected signing/,
+    /user cancelled/,
   ];
 
   return isErrorOfType(error, messages);
 }
 
 /**
- * Checks if error is caused by user not having enough gas.
+ * Checks if error is caused by user not having enough gas or setting gas too low.
  */
 function isUserNotEnoughGas(error): boolean {
-  const messages = [/insufficient funds for gas/];
+  const messages = [
+    /insufficient funds for gas/,
+    /the signed fee is insufficient/,
+    /EffectivePriorityFeePerGas too low/,
+    /Комиссия за газ обновлена/i,
+    /insufficient eth to pay the network fees/,
+  ];
+
+  return isErrorOfType(error, messages);
+}
+
+/**
+ * Checks if error is caused by user's wallet having bad config / state
+ */
+function isWalletConfigError(error): boolean {
+  const messages = [/invalid rpc url/, /nonce has already been used/];
 
   return isErrorOfType(error, messages);
 }
@@ -283,7 +305,11 @@ function isBotError(error): boolean {
  * Checks if error is caused by the user or the state of their wallet.
  */
 export function isUserError(error): boolean {
-  return isUserRejected(error) || isUserNotEnoughGas(error);
+  return (
+    isUserRejected(error) ||
+    isUserNotEnoughGas(error) ||
+    isWalletConfigError(error)
+  );
 }
 
 /**

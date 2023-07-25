@@ -1,5 +1,5 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools } from '@/types/pools';
+import { Protocol } from '@/composables/useProtocols';
+import { PoolFeature, Pools } from '@/types/pools';
 
 const pools: Pools = {
   IdsMap: {},
@@ -44,6 +44,7 @@ const pools: Pools = {
       '0x388cae2f7d3704c937313d990298ba67d70a3709000200000000000000000026', // 50AGVE-50GNO
       '0x4bcf6b48906fa0f68bea1fc255869a41241d4851000200000000000000000021', // 50WXDAI-50MPS
       '0x5519e2d8a0af0944ea639c6dbad69a174de3ecf800010000000000000000003b', // 25BAL-25GNO-25bb-WETH-wstETH-25wxDAI
+      '0xbc130c4989e10941142b34f054eb38d69fdce9df000200000000000000000049', // 20XOC-80USDC
     ],
   },
   Factories: {
@@ -68,26 +69,38 @@ const pools: Pools = {
     '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010': {
       name: 'Balancer Boosted Agave USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
     '0xb973ca96a3f0d61045f53255e319aedb6ed49240000200000000000000000011': {
       name: 'Balancer Boosted Agave GNO/USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
     '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012': {
       name: 'Balancer Boosted Agave GNO/WETH',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
     '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013': {
       name: 'Balancer Boosted Agave WETH/WBTC/USD',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Agave],
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Agave],
+        },
+      },
     },
   },
   Deep: [
