@@ -75,7 +75,6 @@ const props = withDefaults(defineProps<Props>(), {
   balanceLabel: '',
   hint: '',
   excludedTokens: () => [],
-  subsetTokens: () => [],
   placeholder: '',
   tokenSelectProps: () => ({}),
   slider: false,

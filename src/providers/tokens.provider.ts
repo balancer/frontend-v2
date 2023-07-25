@@ -42,6 +42,7 @@ import {
 import useWeb3 from '@/services/web3/useWeb3';
 import { tokenListService } from '@/services/token-list/token-list.service';
 import { AmountToApprove } from '@/composables/approvals/useTokenApprovalActions';
+import BigNumber from 'bignumber.js';
 
 const { uris: tokenListUris } = tokenListService;
 
@@ -369,11 +370,7 @@ export const tokensProvider = (
     if (!spenderAddress) return false;
     if (isSameAddress(tokenAddress, nativeAsset.address)) return false;
 
-    const allowance = bnum(
-      (allowances.value[getAddress(spenderAddress)] || {})[
-        getAddress(tokenAddress)
-      ]
-    );
+    const allowance = allowanceFor(tokenAddress, spenderAddress);
     return allowance.lt(amount);
   }
 
@@ -393,6 +390,21 @@ export const tokensProvider = (
 
       return approvalRequired(address, amount, spender);
     });
+  }
+
+  /**
+   * Returns the allowance for a token, scaled by token decimals
+   *  (so 1 ETH = 1, 1 GWEI = 0.000000001)
+   */
+  function allowanceFor(
+    tokenAddress: string,
+    spenderAddress: string
+  ): BigNumber {
+    return bnum(
+      (allowances.value[getAddress(spenderAddress)] || {})[
+        getAddress(tokenAddress)
+      ]
+    );
   }
 
   /**
@@ -532,6 +544,7 @@ export const tokensProvider = (
     hasBalance,
     approvalRequired,
     approvalsRequired,
+    allowanceFor,
     priceFor,
     balanceFor,
     getTokens,
