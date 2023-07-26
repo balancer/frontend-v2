@@ -205,8 +205,7 @@ const decimalLimit = computed<number>(() => token.value?.decimals || 18);
  * METHODS
  */
 function handleAmountChange(amount: InputValue) {
-  let safeAmount = overflowProtected(amount, decimalLimit.value);
-  safeAmount = bnum(safeAmount).abs().toString(); // Prevent any negative values
+  const safeAmount = overflowProtected(amount, decimalLimit.value);
 
   emit('update:amount', safeAmount);
 }
