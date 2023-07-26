@@ -14,17 +14,25 @@ const { networkSlug } = useNetwork();
       >
         <div class="z-10 max-w-3xl">
           <h5 class="mb-1 font-bold text-white">
-            Balancer is live on Avalanche with FX pools from Xave
+            Balancer is live on Avalanche, featuring Xave FX pools!
           </h5>
           <p class="md:text-sm leading-6 text-white">
             Avalanche is a network to launch DeFi apps and enterprise blockchain
-            deployments in one interoperable, scalable ecosystem. Be sure to
-            check out the new innovative FX pools powered by Xave.
+            deployments in one interoperable, scalable&nbsp;ecosystem.
           </p>
         </div>
         <div class="z-10 mt-4">
           <div class="promo-btn">
-            <router-link to="/avalanche">Launch Avalanche</router-link>
+            <router-link to="/avalanche">
+              <div class="flex items-center">
+                <img
+                  src="~@/assets/images/icons/networks/avalanche-light.svg"
+                  width="24"
+                  class="mr-1.5"
+                />
+                Launch Avalanche
+              </div></router-link
+            >
           </div>
         </div>
       </div>
@@ -34,8 +42,9 @@ const { networkSlug } = useNetwork();
 
 <style scoped>
 .promo-bg {
-  background: url('/images/backgrounds/avalanche-promo-bg.jpg');
-  @apply transition-all duration-1000 rounded-xl overflow-hidden relative bg-cover h-auto bg-no-repeat;
+  background: url('/images/backgrounds/avalanche-pattern.svg'),
+    linear-gradient(67deg, #302022 0%, #ca241f 100%);
+  @apply transition-all duration-1000 rounded-xl overflow-hidden relative bg-cover h-auto bg-no-repeat w-full bg-center;
 }
 
 .promo-bg::after {
@@ -45,7 +54,7 @@ const { networkSlug } = useNetwork();
 }
 
 .promo-bg:hover::after {
-  @apply scale-125;
+  @apply scale-110;
 }
 
 .promo-btn {
