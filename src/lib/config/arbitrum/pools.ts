@@ -281,11 +281,26 @@ const pools: Pools = {
     '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f', // 50STG-50bbaUSD
   ],
   Deprecated: {
-    // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
-    //   newPool:
-    //     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412 ',
-    //   description: 'deprecatedPool.gaugeKilledReason',
-    // },
+    '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
+      newPool:
+        '0xbe0f30217be1e981add883848d0773a86d2d2cd4000000000000000000000471',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
+      newPool:
+        '0xc6eee8cb7643ec2f05f46d569e9ec8ef8b41b389000000000000000000000475',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
+      newPool:
+        '0x45c4d1376943ab28802b995acffc04903eb5223f000000000000000000000470',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x567ecfcb22205d279bb8eed3e066989902bf03d5000000000000000000000452': {
+      newPool:
+        '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BoostedApr: [],

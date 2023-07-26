@@ -513,7 +513,7 @@
     "tooltip": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
     "hasNewPool": {
       "title": "Move your liquidity for future BAL incentives",
-      "description": "Liquidity mining incentives are being phased out for this pool, since the upgraded pool is now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the"
+      "description": "Liquidity mining incentives are being phased out for this pool, since the upgraded pool is now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the newly incentivized pool."
     },
     "generic": {
       "title": "Move your liquidity for future BAL incentives",
