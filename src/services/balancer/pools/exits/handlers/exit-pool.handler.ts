@@ -1,4 +1,4 @@
-import { Address, BalancerSDK } from '@balancer-labs/sdk';
+import { Address, BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { AmountOut } from '@/providers/local/exit-pool.provider';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -40,6 +40,7 @@ export type QueryOutput = {
 export abstract class ExitPoolHandler {
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk: BalancerSDK
   ) {}
 

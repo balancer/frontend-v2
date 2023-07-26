@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import Page from '@/components/contextual/pages/pool/add-liquidity/Page.vue';
-import { useIntervalFn } from '@vueuse/core';
-import { oneSecondInMs } from '@/composables/useTime';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { usePool } from '@/providers/local/pool.provider';
@@ -45,16 +43,16 @@ const isLoading = computed(
 /**
  * METHODS
  */
-async function refetchOnchainPoolDataSDK() {
-  if (sdkPool.value) {
-    await sdk.data.poolsOnChain.refresh(sdkPool.value);
-    console.log('Refetched onchain pool data');
-  }
-}
+// async function refetchOnchainPoolDataSDK() {
+//   if (sdkPool.value) {
+//     await sdk.data.poolsOnChain.refresh(sdkPool.value);
+//     console.log('Refetched onchain pool data');
+//   }
+// }
 
-// Instead of refetching pool data on every block, we refetch every 20s to prevent
-// overfetching a request on short blocktime networks like Polygon.
-useIntervalFn(refetchOnchainPoolDataSDK, oneSecondInMs * 20);
+// // Instead of refetching pool data on every block, we refetch every 20s to prevent
+// // overfetching a request on short blocktime networks like Polygon.
+// useIntervalFn(refetchOnchainPoolDataSDK, oneSecondInMs * 20);
 
 onBeforeMount(async () => {
   trackLoading(async () => {

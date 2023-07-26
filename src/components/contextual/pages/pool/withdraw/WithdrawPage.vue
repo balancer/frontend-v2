@@ -8,9 +8,11 @@ import useWithdrawPageTabs from '@/composables/pools/useWithdrawPageTabs';
 import WithdrawPageTabs from './WithdrawPageTabs.vue';
 import { provideExitPool } from '@/providers/local/exit-pool.provider';
 import { Pool } from '@/services/pool/types';
+import { PoolWithMethods } from '@balancer-labs/sdk';
 
 type Props = {
   pool: Pool;
+  sdkPool: PoolWithMethods;
 };
 
 /**
@@ -23,7 +25,7 @@ const pool = toRef(props, 'pool');
 /**
  * PROVIDERS
  */
-provideExitPool(pool);
+provideExitPool(pool, props.sdkPool);
 
 /**
  * COMPOSABLES

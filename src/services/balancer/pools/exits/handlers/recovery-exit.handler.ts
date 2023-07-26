@@ -26,6 +26,7 @@ export class RecoveryExitHandler implements ExitPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk: BalancerSDK
   ) {}
 
@@ -50,7 +51,7 @@ export class RecoveryExitHandler implements ExitPoolHandler {
 
     const evmBptIn = parseFixed(bptIn, 18).toString();
 
-    this.lastExitRes = await sdkPool.buildRecoveryExit(
+    this.lastExitRes = await this.sdk.pools.buildRecoveryExit(
       exiter,
       evmBptIn,
       slippage,

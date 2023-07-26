@@ -1,5 +1,9 @@
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
+import {
+  BalancerSDK,
+  PoolWithMethods,
+  SimulationType,
+} from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import {
   ExitParams,
@@ -31,6 +35,7 @@ export class GeneralisedExitHandler implements ExitPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk: BalancerSDK
   ) {}
 

@@ -28,6 +28,7 @@ export class ExactOutExitHandler implements ExitPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk: BalancerSDK
   ) {}
 
@@ -46,8 +47,8 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     const { signer, tokenInfo, slippageBsp, amountsOut } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
+    const sdkPool = await this.sdk.data.poolsOnChain.refresh(this.sdkPool);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     if (!tokenOut)
@@ -76,7 +77,7 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     );
 
     // Add native asset to the list of tokens to exit
-    this.lastExitRes = sdkPool.buildExitExactTokensOut(
+    this.lastExitRes = this.sdk.pools.buildExitExactTokensOut(
       exiter,
       poolTokensList,
       fullAmountsOut,

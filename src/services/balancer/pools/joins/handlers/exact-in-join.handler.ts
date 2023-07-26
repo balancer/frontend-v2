@@ -60,19 +60,21 @@ export class ExactInJoinHandler implements JoinPoolHandler {
       return parseFixed(value || '0', token.decimals).toString();
     });
 
-    const signerAddress = await signer.getAddress();
+    const userAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
     const sdkPool = await this.sdk.data.poolsOnChain.refresh(this.sdkPool);
 
-    if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
+    if (!sdkPool)
+      throw new Error('Failed to refresh onchain data: ' + this.sdkPool.id);
     const _tokensIn = tokensList.map(address => formatAddressForSor(address));
 
-    this.joinRes = await sdkPool.buildJoin(
-      signerAddress,
-      _tokensIn,
-      _amountsIn,
-      slippage
-    );
+    this.joinRes = await this.sdk.pools.buildJoin({
+      pool: sdkPool,
+      userAddress,
+      tokensIn: _tokensIn,
+      amountsIn: _amountsIn,
+      slippage,
+    });
 
     if (!this.joinRes) {
       throw new Error('Failed to fetch expected output.');
@@ -87,11 +89,12 @@ export class ExactInJoinHandler implements JoinPoolHandler {
       this.pool.value.onchain?.decimals || 18
     );
 
-    const evmPriceImpact = await sdkPool.calcPriceImpact(
-      _amountsIn,
-      expectedBPTOut,
-      true
-    );
+    const evmPriceImpact = await this.sdk.pools.calcPriceImpact({
+      pool: sdkPool,
+      tokenAmounts: _amountsIn,
+      bptAmount: expectedBPTOut,
+      isJoin: true,
+    });
 
     const priceImpact = Number(formatFixed(evmPriceImpact, 18));
 

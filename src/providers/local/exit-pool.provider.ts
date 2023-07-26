@@ -45,6 +45,7 @@ import { safeInject } from '../inject';
 import { useApp } from '@/composables/useApp';
 import { POOLS } from '@/constants/pools';
 import { captureBalancerException } from '@/lib/utils/errors';
+import { PoolWithMethods } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -63,6 +64,7 @@ export type AmountOut = {
  */
 export const exitPoolProvider = (
   pool: Ref<Pool>,
+  sdkPool: PoolWithMethods,
   debounceQueryExitMillis = 1000,
   debounceGetSingleAssetMaxMillis = 1000
 ) => {
@@ -89,7 +91,7 @@ export const exitPoolProvider = (
   /**
    * SERVICES
    */
-  const exitPoolService = new ExitPoolService(pool);
+  const exitPoolService = new ExitPoolService(pool, sdkPool);
 
   /**
    * COMPOSABLES
@@ -611,8 +613,8 @@ export type ExitPoolProviderResponse = ReturnType<typeof exitPoolProvider>;
 export const ExitPoolProviderSymbol: InjectionKey<ExitPoolProviderResponse> =
   Symbol(symbolKeys.Providers.ExitPool);
 
-export function provideExitPool(pool: Ref<Pool>) {
-  const exitPoolResponse = exitPoolProvider(pool);
+export function provideExitPool(pool: Ref<Pool>, sdkPool: PoolWithMethods) {
+  const exitPoolResponse = exitPoolProvider(pool, sdkPool);
   provide(ExitPoolProviderSymbol, exitPoolResponse);
   return exitPoolResponse;
 }

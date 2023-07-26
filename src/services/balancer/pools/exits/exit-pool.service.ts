@@ -12,6 +12,7 @@ import {
 import { ExactInExitHandler } from './handlers/exact-in-exit.handler';
 import { ExactOutExitHandler } from './handlers/exact-out-exit.handler';
 import { RecoveryExitHandler } from './handlers/recovery-exit.handler';
+import { PoolWithMethods } from '@balancer-labs/sdk';
 
 export enum ExitHandler {
   Swap = 'Swap',
@@ -39,14 +40,15 @@ export class ExitPoolService {
    */
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk = getBalancerSDK()
   ) {
     this.exitHandlerMap = {
-      [ExitHandler.Swap]: new SwapExitHandler(pool, sdk),
-      [ExitHandler.Generalised]: new GeneralisedExitHandler(pool, sdk),
-      [ExitHandler.ExactIn]: new ExactInExitHandler(pool, sdk),
-      [ExitHandler.ExactOut]: new ExactOutExitHandler(pool, sdk),
-      [ExitHandler.Recovery]: new RecoveryExitHandler(pool, sdk),
+      [ExitHandler.Swap]: new SwapExitHandler(pool, sdkPool, sdk),
+      [ExitHandler.Generalised]: new GeneralisedExitHandler(pool, sdkPool, sdk),
+      [ExitHandler.ExactIn]: new ExactInExitHandler(pool, sdkPool, sdk),
+      [ExitHandler.ExactOut]: new ExactOutExitHandler(pool, sdkPool, sdk),
+      [ExitHandler.Recovery]: new RecoveryExitHandler(pool, sdkPool, sdk),
     };
     this.exitHandler = this.setExitHandler(ExitHandler.Generalised);
   }
