@@ -44,8 +44,7 @@ export type TokenInfoMap = Record<string, TokenInfo>;
 
 export interface TokenListURLMap {
   Balancer: {
-    Default: string;
-    Vetted: string;
+    Allowlisted: string;
   };
   External: string[];
 }

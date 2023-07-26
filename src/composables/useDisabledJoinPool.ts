@@ -35,10 +35,10 @@ function doesRequireAllowListing(pool: Pool, account: string): boolean {
 
 export function useDisabledJoinPool(pool: Pool) {
   const { account } = useWeb3();
-  const { vettedTokenList } = useTokenLists();
+  const { balancerTokenList } = useTokenLists();
 
   const notVettedTokens = computed(() => {
-    const vettedTokenAddresses = vettedTokenList.value.tokens.map(
+    const vettedTokenAddresses = balancerTokenList.value.tokens.map(
       t => t.address
     );
 
@@ -52,6 +52,7 @@ export function useDisabledJoinPool(pool: Pool) {
 
   const nonAllowedWeightedPoolAfterTimestamp = computed(() => {
     return (
+      !isTestnet.value &&
       isWeighted(pool.poolType) &&
       createdAfterTimestamp(pool) &&
       !POOLS.Weighted.AllowList.includes(pool.id)
