@@ -55,6 +55,7 @@ const {
   hasAmountsOut,
   validAmounts,
   hasBpt,
+  shouldUseSwapExit,
 } = useExitPool();
 
 const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
@@ -97,7 +98,7 @@ onBeforeMount(() => {
   if (!hasBpt.value)
     router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
 
-  singleAmountOut.address = isPreMintedBptType(pool.value.poolType)
+  singleAmountOut.address = shouldUseSwapExit.value
     ? wrappedNativeAsset.value.address
     : pool.value.tokensList[0];
 });
