@@ -17,7 +17,7 @@ test('Renders boosted pool button with boosted chip', () => {
   renderInfo(aPool({ id: boostedPoolId }));
 
   expect(screen.getByRole('button', { name: 'Boosted' })).toBeInTheDocument();
-  expect(screen.getByTestId('boosted-chip')).toBeInTheDocument();
+  expect(screen.getByTestId('feature-chip')).toBeInTheDocument();
 });
 
 test('Renders NEW pool chip', () => {

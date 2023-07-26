@@ -4,8 +4,13 @@ import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
 import { safeInject } from '../inject';
+import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import { useI18n } from 'vue-i18n';
 
 export function poolProvider(poolId: string) {
+  const { addAlert, removeAlert } = useAlerts();
+  const { t } = useI18n();
+
   const poolQuery = usePoolQuery(poolId);
 
   const initialPool = computed((): Pool | undefined => {
@@ -23,6 +28,22 @@ export function poolProvider(poolId: string) {
 
   const pool = computed((): Pool | undefined => {
     return decoratedPool.value || initialPool.value;
+  });
+
+  watch(poolQuery.error, () => {
+    if (poolQuery.error.value) {
+      addAlert({
+        id: 'pool-fetch-error',
+        label: t('alerts.pool-fetch-error'),
+        type: AlertType.ERROR,
+        persistent: true,
+        action: poolQuery.refetch,
+        actionLabel: t('alerts.retry-label'),
+        priority: AlertPriority.MEDIUM,
+      });
+    } else {
+      removeAlert('pool-fetch-error');
+    }
   });
 
   return {

@@ -9,12 +9,14 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '137',
   chainId: 137,
+  layerZeroChainId: 109,
   chainName: 'Polygon PoS',
   name: 'Polygon Mainnet',
   shortName: 'Polygon',
   monorepoName: 'polygon',
   slug: 'polygon',
   network: 'polygon',
+  trustWalletNetwork: 'polygon',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
@@ -39,6 +41,7 @@ const config: Config = {
   bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   blockTime: 4,
   nativeAsset: {
     name: 'Matic',

@@ -9,6 +9,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
+import useNetwork from '@/composables/useNetwork';
 
 type Props = {
   pool: Pool;
@@ -25,6 +26,7 @@ const { balanceFor } = useTokens();
 const { totalLockedValue, lock, isLoadingLockInfo, lockPool, lockPoolToken } =
   useLock();
 const { isWalletReady } = useWeb3();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -146,7 +148,17 @@ const fiatTotalExpiredLpTokens = computed(() =>
                 <BalStack horizontal spacing="sm" class="mt-2">
                   <BalLink
                     v-if="Number(bptBalance) > 0"
-                    href="/#/get-vebal?returnRoute=vebal"
+                    tag="router-link"
+                    :to="{
+                      name: 'get-vebal',
+                      query: {
+                        returnRoute: $route.name,
+                        returnParams: JSON.stringify({
+                          id: pool.id,
+                          networkSlug,
+                        }),
+                      },
+                    }"
                   >
                     <BalBtn
                       :disabled="Number(bptBalance) === 0"

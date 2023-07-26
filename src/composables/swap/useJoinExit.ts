@@ -8,7 +8,6 @@ import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import OldBigNumber from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
-import { captureException } from '@sentry/browser';
 import { bnum } from '@/lib/utils';
 
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
@@ -28,8 +27,8 @@ import useEthers from '../useEthers';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
-import useTranasactionErrors from '../useTransactionErrors';
 import { useI18n } from 'vue-i18n';
+import { captureBalancerException, isUserError } from '@/lib/utils/errors';
 
 type JoinExitState = {
   validationErrors: {
@@ -91,7 +90,6 @@ export default function useJoinExit({
   const { addTransaction } = useTransactions();
   const { txListener } = useEthers();
   const { fNum } = useNumbers();
-  const { isUserRejected } = useTranasactionErrors();
   const { t } = useI18n();
 
   const hasValidationError = computed(
@@ -228,7 +226,7 @@ export default function useJoinExit({
       }
 
       await txListener(tx, {
-        onTxConfirmed: () => {
+        onTxConfirmed: async () => {
           confirming.value = false;
           relayerApprovalQuery.refetch();
         },
@@ -237,18 +235,26 @@ export default function useJoinExit({
         },
       });
     } catch (error) {
-      if (!isUserRejected(error)) {
-        console.trace(error);
-        state.submissionError = t('swapException', ['Relayer']);
-        captureException(new Error(state.submissionError, { cause: error }), {
+      const msg = t('swapException', ['Relayer']);
+
+      captureBalancerException({
+        error,
+        action: 'swap',
+        msgPrefix: msg,
+        context: {
           level: 'fatal',
           extra: {
             sender: account.value,
             swapInfo: swapInfo.value,
             tx,
           },
-        });
+        },
+      });
+
+      if (!isUserError(error)) {
+        state.submissionError = t('swapException', ['Relayer']);
       }
+
       swapping.value = false;
       confirming.value = false;
       throw error;

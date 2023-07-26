@@ -111,3 +111,11 @@ export async function waitForQueryData<T>(result: {
   });
   return result.data.value;
 }
+
+export async function waitForQueryLoaded(result: { isLoading: Ref<boolean> }) {
+  expect(result.isLoading.value).toBeTrue();
+  await waitForExpect(() => {
+    expect(result.isLoading.value).toBeFalse();
+  });
+  return result;
+}

@@ -4,6 +4,7 @@ import config, { Network } from '@/lib/config';
 function getNetworkIconName(network: Network) {
   return config[Number(network)].slug;
 }
+
 export function buildNetworkIconURL(network: Network | string): string {
   const networkName =
     typeof network === 'string' ? network : getNetworkIconName(network);

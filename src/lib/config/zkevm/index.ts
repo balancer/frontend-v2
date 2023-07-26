@@ -15,6 +15,7 @@ const config: Config = {
   monorepoName: 'zkevm',
   slug: 'zkevm',
   network: 'polygon-zkevm',
+  trustWalletNetwork: 'polygonzkevm',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
@@ -34,7 +35,8 @@ const config: Config = {
     aave: '',
     gauge:
       'https://api.studio.thegraph.com/query/24660/balancer-gauges-polygon-zk/version/latest',
-    blocks: '',
+    blocks:
+      'https://api.studio.thegraph.com/query/48427/bleu-polygon-zkevm-blocks/version/latest',
   },
   bridgeUrl: 'https://wallet.polygon.technology/zkEVM-Bridge/bridge',
   supportsEIP1559: false,

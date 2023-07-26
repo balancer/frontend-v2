@@ -1,11 +1,10 @@
 import { Goals, trackGoal } from '@/composables/useFathom';
-import { WalletError } from '@/types';
+import { WalletError, WalletErrorMetadata } from '@/types';
 import {
   JsonRpcSigner,
   TransactionResponse,
   TransactionRequest,
 } from '@ethersproject/providers';
-import { captureException } from '@sentry/browser';
 import { ContractInterface } from 'ethers';
 import {
   verifyNetwork,
@@ -55,6 +54,7 @@ export class ContractConcern extends TransactionConcern {
         params,
         options
       );
+
       const txOptions = { ...options, ...gasSettings };
 
       await Promise.all([
@@ -68,16 +68,18 @@ export class ContractConcern extends TransactionConcern {
     } catch (err) {
       const error = err as WalletError;
 
-      if (this.shouldLogFailure(error)) {
-        await this.logFailedTx(
-          error,
+      try {
+        error.metadata = await this.getErrorMetadata(
           contractWithSigner,
           action,
           params,
           block,
           options
         );
+      } catch (metaErr) {
+        console.error('Failed to set error metadata', metaErr);
       }
+
       return Promise.reject(error);
     }
   }
@@ -99,28 +101,32 @@ export class ContractConcern extends TransactionConcern {
     return await contractWithSigner.callStatic[action](...params, options);
   }
 
-  private async logFailedTx(
-    error: WalletError,
+  private async getErrorMetadata(
     contract: EthersContract,
     action: string,
     params: any,
     block: number,
     overrides: any
-  ): Promise<void> {
-    const sender = await this.signer.getAddress();
-    const chainId = await this.signer.getChainId();
-    const calldata = contract.interface.encodeFunctionData(action, params);
-    const msgValue = overrides.value ? overrides.value.toString() : 0;
-    const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?rawFunctionInput=${calldata}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&contractAddress=${contract.address}&network=${chainId}`;
+  ): Promise<WalletErrorMetadata> {
+    let sender, chainId, calldata;
+    try {
+      sender = await this.signer.getAddress();
+      chainId = await this.signer.getChainId();
+      calldata = contract.interface.encodeFunctionData(action, params);
+    } catch (err) {
+      console.error('Threw second error when collecting error metadata: ', err);
+    }
 
-    captureException(error, {
-      level: 'fatal',
-      extra: {
-        action,
-        sender,
-        simulate,
-        originalError: error?.data?.originalError,
-      },
-    });
+    const msgValue = overrides.value ? overrides.value.toString() : 0;
+
+    return {
+      simulation: `https://dashboard.tenderly.co/balancer/v2/simulator/new?rawFunctionInput=${calldata}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&contractAddress=${contract.address}&network=${chainId}`,
+      sender,
+      action,
+      block,
+      chainId,
+      ethValue: msgValue,
+      params: JSON.stringify(params),
+    };
   }
 }

@@ -1,3 +1,32 @@
+import BigNumber from 'bignumber.js';
+
+const txReceiptMock = {
+  to: '0x1234567890abcdef',
+  from: '0xabcdef1234567890',
+  contractAddress: '0xabcdefabcdef1234567890',
+  transactionIndex: 1,
+  root: '0xabcdef1234567890abcdef',
+  gasUsed: new BigNumber('100000'),
+  logsBloom: '0xabcdef1234567890abcdef',
+  blockHash: '0xabcdef1234567890abcdef',
+  transactionHash: '0xabcdef1234567890abcdef',
+  logs: [
+    {
+      // Sample log object
+      address: '0xabcdef1234567890abcdef',
+      data: '0xabcdef1234567890abcdef',
+      topics: ['0xabcdef1234567890abcdef', '0xabcdef1234567890abcdef'],
+    },
+  ],
+  blockNumber: 1000,
+  confirmations: 10,
+  cumulativeGasUsed: new BigNumber('200000'),
+  effectiveGasPrice: new BigNumber('5000000000'),
+  byzantium: true,
+  type: 1,
+  status: 1,
+};
+
 export const txResponseMock = {
   hash: '0xdac16ca21df7e4e2c9e013a7c1b8e1b869bf0bc6e97dde103e280703a60ff00d',
   type: 2,
@@ -35,4 +64,5 @@ export const txResponseMock = {
   v: 1,
   creates: null,
   chainId: 0,
+  wait: () => txReceiptMock,
 };

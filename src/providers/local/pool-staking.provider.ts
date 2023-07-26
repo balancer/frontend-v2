@@ -160,10 +160,11 @@ export const poolStakingProvider = (_poolId?: string) => {
   async function stake(): Promise<TransactionResponse> {
     if (!poolAddress.value) throw new Error('No pool to stake.');
     if (!preferentialGaugeAddress.value) {
-      throw new Error(`No preferential gauge found for this pool.`);
+      throw new Error(
+        `No preferential gauge found for this pool: ${poolId.value}`
+      );
     }
 
-    console.log('poolAddress.value', poolAddress.value);
     const gauge = new LiquidityGauge(preferentialGaugeAddress.value);
     // User's current full BPT balance for this pool.
     const userBptBalance = parseUnits(
@@ -240,6 +241,7 @@ export const poolStakingProvider = (_poolId?: string) => {
     refetchAllPoolStakingData,
     stake,
     unstake,
+    poolGauges,
   };
 };
 

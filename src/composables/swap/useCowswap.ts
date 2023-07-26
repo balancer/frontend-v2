@@ -19,11 +19,10 @@ import useNumbers, { FNumFormats } from '../useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import useTransactions from '../useTransactions';
 import { SwapQuote } from './types';
-import { captureException } from '@sentry/browser';
 import { Goals, trackGoal } from '../useFathom';
-import useTranasactionErrors from '../useTransactionErrors';
 import { useI18n } from 'vue-i18n';
 import { useApp } from '@/composables/useApp';
+import { captureBalancerException, isUserError } from '@/lib/utils/errors';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
@@ -93,7 +92,6 @@ export default function useCowswap({
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
   const { balanceFor } = useTokens();
-  const { isUserRejected } = useTranasactionErrors();
   const { t } = useI18n();
 
   // DATA
@@ -238,17 +236,29 @@ export default function useCowswap({
       confirming.value = false;
       trackGoal(Goals.CowswapSwap);
     } catch (error) {
-      if (!isUserRejected(error)) {
-        console.trace(error);
-        state.submissionError = t('swapException', ['Cowswap']);
-        captureException(new Error(state.submissionError, { cause: error }), {
+      const msg = t('swapException', ['Cowswap']);
+
+      captureBalancerException({
+        error,
+        action: 'swap',
+        msgPrefix: msg,
+        context: {
           level: 'fatal',
           extra: {
             sender: account.value,
+            tokenIn: tokenIn.value,
+            tokenOut: tokenOut.value,
+            tokenInAmount: tokenInAmountInput.value,
+            tokenOutAmount: tokenOutAmountInput.value,
             quote,
           },
-        });
+        },
+      });
+
+      if (!isUserError(error)) {
+        state.submissionError = msg;
       }
+
       confirming.value = false;
       throw error;
     }

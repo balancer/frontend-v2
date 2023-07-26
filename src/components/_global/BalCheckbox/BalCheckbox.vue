@@ -148,7 +148,7 @@ export default defineComponent({
 }
 
 .bal-checkbox-input {
-  @apply text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+  @apply text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 border border-gray-500 dark:border-gray-500
     rounded leading-none;
 
   appearance: none;

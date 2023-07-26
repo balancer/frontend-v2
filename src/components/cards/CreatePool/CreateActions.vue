@@ -142,6 +142,7 @@ function handleSuccess(details: any): void {
   <div>
     <BalActionSteps
       :actions="requiredActions"
+      primaryActionType="createPool"
       :disabled="props.createDisabled"
       :isLoading="createState.isLoadingRestoredTx"
       :loadingLabel="$t('restoring')"

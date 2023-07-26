@@ -10,8 +10,6 @@ import {
   toRef,
   toRefs,
 } from 'vue';
-import { captureException } from '@sentry/browser';
-
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery, {
@@ -44,6 +42,7 @@ import {
 import useWeb3 from '@/services/web3/useWeb3';
 import { tokenListService } from '@/services/token-list/token-list.service';
 import { AmountToApprove } from '@/composables/approvals/useTokenApprovalActions';
+import BigNumber from 'bignumber.js';
 
 const { uris: tokenListUris } = tokenListService;
 
@@ -53,7 +52,7 @@ const { uris: tokenListUris } = tokenListService;
 export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
-  allowanceContracts: string[];
+  spenders: string[];
   injectedPrices: TokenPrices;
 }
 
@@ -79,6 +78,8 @@ export const tokensProvider = (
   /**
    * STATE
    */
+  const queriesEnabled = ref(false);
+
   const nativeAsset: NativeAsset = {
     ...networkConfig.nativeAsset,
     chainId: networkConfig.chainId,
@@ -87,7 +88,7 @@ export const tokensProvider = (
   const state: TokensProviderState = reactive({
     loading: true,
     injectedTokens: {},
-    allowanceContracts: compact([
+    spenders: compact([
       networkConfig.addresses.vault,
       networkConfig.tokens.Addresses.wstETH,
       configService.network.addresses.veBAL,
@@ -164,7 +165,7 @@ export const tokensProvider = (
     isRefetching: balanceQueryRefetching,
     isError: balancesQueryError,
     refetch: refetchBalances,
-  } = useBalancesQuery(tokens);
+  } = useBalancesQuery({ tokens, isEnabled: queriesEnabled });
 
   const {
     data: allowanceData,
@@ -173,7 +174,11 @@ export const tokensProvider = (
     isRefetching: allowanceQueryRefetching,
     isError: allowancesQueryError,
     refetch: refetchAllowances,
-  } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
+  } = useAllowancesQuery({
+    tokens,
+    contractAddresses: toRef(state, 'spenders'),
+    isEnabled: queriesEnabled,
+  });
 
   const prices = computed(
     (): TokenPrices => (priceData.value ? priceData.value : {})
@@ -268,10 +273,25 @@ export const tokensProvider = (
 
     const newTokens = await new TokenService().metadata.get(
       injectable,
-      omit(allTokenLists.value, tokenListUris.Balancer.Default)
+      omit(allTokenLists.value, tokenListUris.Balancer.Allowlisted)
     );
 
     state.injectedTokens = { ...state.injectedTokens, ...newTokens };
+
+    // Wait for balances/allowances to be fetched for newly injected tokens.
+    await nextTick();
+    await forChange(onchainDataLoading, false);
+  }
+
+  /**
+   * Injects contract addresses that could possibly spend the users tokens into
+   * the spenders map. E.g. This is used for injecting gauges into the map as they
+   * must be allowed to spend a users BPT in order to stake the BPT in the gauge.
+   */
+  async function injectSpenders(addresses: string[]): Promise<void> {
+    addresses = addresses.filter(a => a).map(getAddress);
+
+    state.spenders = [...new Set(state.spenders.concat(addresses))];
 
     // Wait for balances/allowances to be fetched for newly injected tokens.
     await nextTick();
@@ -344,15 +364,13 @@ export const tokensProvider = (
   function approvalRequired(
     tokenAddress: string,
     amount: string,
-    contractAddress = networkConfig.addresses.vault
+    spenderAddress = networkConfig.addresses.vault
   ): boolean {
     if (!amount || bnum(amount).eq(0)) return false;
-    if (!contractAddress) return false;
+    if (!spenderAddress) return false;
     if (isSameAddress(tokenAddress, nativeAsset.address)) return false;
 
-    const allowance = bnum(
-      (allowances.value[contractAddress] || {})[getAddress(tokenAddress)]
-    );
+    const allowance = allowanceFor(tokenAddress, spenderAddress);
     return allowance.lt(amount);
   }
 
@@ -375,16 +393,27 @@ export const tokensProvider = (
   }
 
   /**
+   * Returns the allowance for a token, scaled by token decimals
+   *  (so 1 ETH = 1, 1 GWEI = 0.000000001)
+   */
+  function allowanceFor(
+    tokenAddress: string,
+    spenderAddress: string
+  ): BigNumber {
+    return bnum(
+      (allowances.value[getAddress(spenderAddress)] || {})[
+        getAddress(tokenAddress)
+      ]
+    );
+  }
+
+  /**
    * Fetch price for a token
    */
   function priceFor(address: string): number {
     try {
       const price = selectByAddressFast(prices.value, getAddress(address));
       if (!price) {
-        captureException(new Error('Could not find price for token'), {
-          level: 'info',
-          extra: { address },
-        });
         return 0;
       }
       return price;
@@ -452,7 +481,6 @@ export const tokensProvider = (
   ): string {
     let maxAmount;
     const tokenBalance = balanceFor(tokenAddress) || '0';
-    console.log({ tokenBalance });
     const tokenBalanceBN = bnum(tokenBalance);
 
     if (tokenAddress === nativeAsset.address && !disableNativeAssetBuffer) {
@@ -483,6 +511,7 @@ export const tokensProvider = (
     // Inject veBAL because it's not in tokenlists.
     const { veBAL } = configService.network.addresses;
     await injectTokens([veBAL]);
+    queriesEnabled.value = true;
     state.loading = false;
   });
 
@@ -510,10 +539,12 @@ export const tokensProvider = (
     refetchBalances,
     refetchAllowances,
     injectTokens,
+    injectSpenders,
     searchTokens,
     hasBalance,
     approvalRequired,
     approvalsRequired,
+    allowanceFor,
     priceFor,
     balanceFor,
     getTokens,

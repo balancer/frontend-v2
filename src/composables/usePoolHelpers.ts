@@ -13,7 +13,11 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { DeprecatedDetails } from '@/types/pools';
+import {
+  DeprecatedDetails,
+  NewVersionAvailableDetails,
+  PoolFeature,
+} from '@/types/pools';
 
 import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
 import { hasBalEmissions } from './useAPR';
@@ -27,6 +31,7 @@ import {
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { dateToUnixTimestamp } from './useTime';
 import { poolMetadata } from '@/lib/config/metadata';
+import { Protocol } from './useProtocols';
 
 const POOLS = configService.network.pools;
 
@@ -93,11 +98,25 @@ export function isDeep(pool: Pool): boolean {
 }
 
 export function isBoosted(pool: Pool) {
-  return !!poolMetadata(pool.id)?.boosted;
+  return !!Object.keys(poolMetadata(pool.id)?.features || {}).includes(
+    PoolFeature.Boosted
+  );
+}
+
+export function isGyro(pool: Pool) {
+  return [PoolType.Gyro2, PoolType.Gyro3, PoolType.GyroE].includes(
+    pool.poolType
+  );
+}
+
+export function protocolsFor(pool: Pool, feature: PoolFeature): Protocol[] {
+  return poolMetadata(pool.id)?.features?.[feature]?.featureProtocols || [];
 }
 
 export function boostedProtocols(pool: Pool) {
-  return poolMetadata(pool.id)?.boostedProtocols;
+  if (!isBoosted(pool)) return [];
+  return poolMetadata(pool.id)?.features?.[PoolFeature.Boosted]
+    ?.featureProtocols;
 }
 
 /**
@@ -581,6 +600,17 @@ export function deprecatedDetails(id: string): DeprecatedDetails | undefined {
 }
 
 /**
+ * Checks if pool ID is included in the list of pools that have a new version available (but are not deprecated yet)
+ * @param {string} id - The pool ID to check
+ * @returns {boolean} True if included in list
+ */
+export function newVersionDetails(
+  id: string
+): NewVersionAvailableDetails | undefined {
+  return POOLS.NewVersionAvailable?.[id.toLowerCase()];
+}
+
+/**
  * Checks if pool ID is included in the list of deprecated pools
  * @param {string} id - The pool ID to check
  * @returns {boolean} True if included in list
@@ -730,6 +760,10 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     return !!pool.value && !!POOLS.Deprecated?.[pool.value.id];
   });
 
+  const isNewPoolAvailable = computed(() => {
+    return !!pool.value && !!POOLS.NewVersionAvailable?.[pool.value.id];
+  });
+
   return {
     // computed
     isStablePool,
@@ -750,6 +784,7 @@ export function usePoolHelpers(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     hasNonApprovedRateProviders,
     isDeprecatedPool,
+    isNewPoolAvailable,
     poolJoinTokens,
     // methods
     isStable,

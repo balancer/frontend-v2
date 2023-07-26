@@ -9,12 +9,14 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '42161',
   chainId: 42161,
+  layerZeroChainId: 110,
   chainName: 'Arbitrum',
   name: 'Arbitrum',
   shortName: 'Arbitrum',
   monorepoName: 'arbitrum',
   slug: 'arbitrum',
   network: 'arbitrum-one',
+  trustWalletNetwork: 'arbitrum',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
@@ -40,6 +42,7 @@ const config: Config = {
   bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   blockTime: 2,
   nativeAsset: {
     name: 'Ether',

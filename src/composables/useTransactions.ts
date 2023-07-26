@@ -1,4 +1,7 @@
-import { TransactionReceipt } from '@ethersproject/providers';
+import {
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { merge, orderBy } from 'lodash';
 import { computed, ref } from 'vue';
@@ -16,10 +19,12 @@ import { CowswapTransactionDetails } from './swap/useCowswap';
 import { processedTxs } from './useEthers';
 import useNotifications from './useNotifications';
 import useNumbers, { FNumFormats } from './useNumbers';
+import { isPolygon, isZkevm } from './useNetwork';
 
 const WEEK_MS = 86_400_000 * 7;
 // Please update the schema version when making changes to the transaction structure.
 const TRANSACTIONS_SCHEMA_VERSION = '1.1.3';
+const MAX_CACHED_TRANSACTIONS = 10;
 
 export type TransactionStatus =
   | 'pending'
@@ -48,7 +53,9 @@ export type TransactionAction =
   | 'voteForGauge'
   | 'unstake'
   | 'stake'
-  | 'restake';
+  | 'restake'
+  | 'sync'
+  | 'userGaugeCheckpoint';
 
 export type TransactionType = 'order' | 'tx';
 
@@ -251,6 +258,23 @@ function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
   }
 }
 
+/**
+ * postConfirmationDelay
+ *
+ * Delay in N confirmations before a transaction is considered finalized for
+ * specific networks.
+ *
+ * @param {TransactionResponse} tx - The transaction to wait N confirmations for.
+ */
+export async function postConfirmationDelay(
+  tx: TransactionResponse
+): Promise<TransactionReceipt> {
+  if (isPolygon.value) return tx.wait(10);
+  if (isZkevm.value) return tx.wait(10);
+
+  return tx.wait(1);
+}
+
 export default function useTransactions() {
   // COMPOSABLES
   const {
@@ -309,7 +333,14 @@ export default function useTransactions() {
       status: 'pending',
     };
 
-    setTransactions(transactionsMap);
+    const filteredTxs = Object.entries(transactionsMap)
+      .sort(
+        ([, transactionA], [, transactionB]) =>
+          transactionB.addedTime - transactionA.addedTime
+      )
+      .filter((_, index) => index < MAX_CACHED_TRANSACTIONS);
+
+    setTransactions(Object.fromEntries(filteredTxs));
     addNotificationForTransaction(newTransaction.id, newTransaction.type);
   }
 

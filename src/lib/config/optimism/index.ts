@@ -7,12 +7,14 @@ import tokens from './tokens';
 const config: Config = {
   key: '10',
   chainId: 10,
+  layerZeroChainId: 111,
   chainName: 'Optimism',
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
   monorepoName: 'optimism',
   slug: 'optimism',
   network: 'optimism',
+  trustWalletNetwork: 'optimism',
   unknown: false,
   visibleInUI: false,
   testNetwork: false,
@@ -36,6 +38,7 @@ const config: Config = {
   bridgeUrl: '',
   supportsEIP1559: false,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   nativeAsset: {
     name: 'Ether',
     address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',

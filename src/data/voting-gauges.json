@@ -176,6 +176,35 @@
     }
   },
   {
+    "address": "0x730A168cF6F501cf302b803FFc57FF3040f378Bf",
+    "network": 10,
+    "isKilled": false,
+    "addedTimestamp": 1688418508,
+    "relativeWeightCap": "0.10",
+    "pool": {
+      "id": "0x7ca75bdea9dede97f8b13c6641b768650cb837820002000000000000000000d5",
+      "address": "0x7Ca75bdEa9dEde97F8B13C6641B768650CB83782",
+      "poolType": "ComposableStable",
+      "symbol": "ECLP-wstETH-WETH",
+      "tokens": [
+        {
+          "address": "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0x4200000000000000000000000000000000000006",
+          "weight": "null",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x1f32b1c2345538c0c6f582fcb022739c4a194ebb.png",
+      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4200000000000000000000000000000000000006.png"
+    }
+  },
+  {
     "address": "0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac",
     "network": 1,
     "isKilled": true,
@@ -242,7 +271,7 @@
   {
     "address": "0x4ca6AC0509E6381Ca7CD872a6cdC0Fbf00600Fa1",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "null",
     "addedTimestamp": 1648465429,
     "pool": {
@@ -265,35 +294,6 @@
     },
     "tokenLogoURIs": {
       "0x6B175474E89094C44Da98b954EedeAC495271d0F": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
-      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-    }
-  },
-  {
-    "address": "0x5F4d57fd9Ca75625e4B7520c71c02948A48595d0",
-    "network": 1,
-    "isKilled": false,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1648465429,
-    "pool": {
-      "id": "0x186084ff790c65088ba694df11758fae4943ee9e000200000000000000000013",
-      "address": "0x186084fF790C65088BA694Df11758faE4943EE9E",
-      "poolType": "Weighted",
-      "symbol": "B-50WETH-50YFI",
-      "tokens": [
-        {
-          "address": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
-          "weight": "0.5",
-          "symbol": "YFI"
-        },
-        {
-          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-          "weight": "0.5",
-          "symbol": "WETH"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
       "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
@@ -443,44 +443,9 @@
     }
   },
   {
-    "address": "0x68d019f64A7aa97e2D4e7363AEE42251D08124Fb",
-    "network": 1,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1648465429,
-    "pool": {
-      "id": "0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe",
-      "address": "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2",
-      "poolType": "StablePhantom",
-      "symbol": "bb-a-USD",
-      "tokens": [
-        {
-          "address": "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C",
-          "weight": "null",
-          "symbol": "bb-a-USDT"
-        },
-        {
-          "address": "0x804CdB9116a10bB78768D3252355a1b18067bF8f",
-          "weight": "null",
-          "symbol": "bb-a-DAI"
-        },
-        {
-          "address": "0x9210F1204b5a24742Eba12f710636D76240dF3d0",
-          "weight": "null",
-          "symbol": "bb-a-USDC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x2bbf681cc4eb09218bee85ea2a5d3d13fa40fc0c.png",
-      "0x804CdB9116a10bB78768D3252355a1b18067bF8f": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x804cdb9116a10bb78768d3252355a1b18067bf8f.png",
-      "0x9210F1204b5a24742Eba12f710636D76240dF3d0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x9210f1204b5a24742eba12f710636d76240df3d0.png"
-    }
-  },
-  {
     "address": "0x9AB7B0C7b154f626451c9e8a68dC04f58fb6e5Ce",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "null",
     "addedTimestamp": 1648465429,
     "pool": {
@@ -538,7 +503,7 @@
   {
     "address": "0x4E3c048BE671852277Ad6ce29Fd5207aA12fabff",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "null",
     "addedTimestamp": 1648465429,
     "pool": {
@@ -686,35 +651,6 @@
     "isKilled": false,
     "relativeWeightCap": "0.02",
     "addedTimestamp": 1663170555,
-    "pool": {
-      "id": "0x92762b42a06dcdddc5b7362cfb01e631c4d44b40000200000000000000000182",
-      "address": "0x92762B42A06dCDDDc5B7362Cfb01E631c4D44B40",
-      "poolType": "Weighted",
-      "symbol": "50COW-50GNO",
-      "tokens": [
-        {
-          "address": "0x6810e776880C02933D47DB1b9fc05908e5386b96",
-          "weight": "0.5",
-          "symbol": "GNO"
-        },
-        {
-          "address": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
-          "weight": "0.5",
-          "symbol": "COW"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x6810e776880C02933D47DB1b9fc05908e5386b96": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png",
-      "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab.png"
-    }
-  },
-  {
-    "address": "0xA6468eca7633246Dcb24E5599681767D27d1F978",
-    "network": 1,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1650405644,
     "pool": {
       "id": "0x92762b42a06dcdddc5b7362cfb01e631c4d44b40000200000000000000000182",
       "address": "0x92762B42A06dCDDDc5B7362Cfb01E631c4D44B40",
@@ -913,35 +849,6 @@
     }
   },
   {
-    "address": "0x9F65d476DD77E24445A48b4FeCdeA81afAA63480",
-    "network": 1,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1653599177,
-    "pool": {
-      "id": "0x85370d9e3bb111391cc89f6de344e801760461830002000000000000000001ef",
-      "address": "0x85370D9e3bb111391cc89F6DE344E80176046183",
-      "poolType": "Weighted",
-      "symbol": "CREAM_ETH",
-      "tokens": [
-        {
-          "address": "0x2ba592F78dB6436527729929AAf6c908497cB200",
-          "weight": "0.8",
-          "symbol": "CREAM"
-        },
-        {
-          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-          "weight": "0.2",
-          "symbol": "WETH"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x2ba592F78dB6436527729929AAf6c908497cB200": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2ba592F78dB6436527729929AAf6c908497cB200/logo.png",
-      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-    }
-  },
-  {
     "address": "0xe2b680A8d02fbf48C7D9465398C4225d7b7A7f87",
     "network": 1,
     "isKilled": false,
@@ -1089,7 +996,7 @@
   {
     "address": "0xDD4Db3ff8A37FE418dB6FF34fC316655528B6bbC",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "null",
     "addedTimestamp": 1656343230,
     "pool": {
@@ -1215,41 +1122,6 @@
     }
   },
   {
-    "address": "0x5204f813cF58a4722E481b3b1cDfBBa45088fE36",
-    "network": 1,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1657479716,
-    "pool": {
-      "id": "0x8eb6c82c3081bbbd45dcac5afa631aac53478b7c000100000000000000000270",
-      "address": "0x8eB6c82C3081bBBd45DcAC5afA631aaC53478b7C",
-      "poolType": "Weighted",
-      "symbol": "40WBTC-40DIGG-20graviAURA",
-      "tokens": [
-        {
-          "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-          "weight": "0.4",
-          "symbol": "WBTC"
-        },
-        {
-          "address": "0x798D1bE841a82a273720CE31c822C61a67a601C3",
-          "weight": "0.4",
-          "symbol": "DIGG"
-        },
-        {
-          "address": "0xBA485b556399123261a5F9c95d413B4f93107407",
-          "weight": "0.2",
-          "symbol": "graviAURA"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-      "0x798D1bE841a82a273720CE31c822C61a67a601C3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x798D1bE841a82a273720CE31c822C61a67a601C3/logo.png",
-      "0xBA485b556399123261a5F9c95d413B4f93107407": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba485b556399123261a5f9c95d413b4f93107407.png"
-    }
-  },
-  {
     "address": "0xE5f24cD43f77fadF4dB33Dab44EB25774159AC66",
     "network": 1,
     "isKilled": false,
@@ -1372,35 +1244,6 @@
     }
   },
   {
-    "address": "0x6Eb7CdCd15417ABF120FfE404B9b88141Ca952B7",
-    "network": 1,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1663017781,
-    "pool": {
-      "id": "0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367",
-      "address": "0x0fd5663D4893AE0D579D580584806AAdd2dD0B8b",
-      "poolType": "Weighted",
-      "symbol": "50rETH-50RPL",
-      "tokens": [
-        {
-          "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
-          "weight": "0.5",
-          "symbol": "rETH"
-        },
-        {
-          "address": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f",
-          "weight": "0.5",
-          "symbol": "RPL"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xae78736cd615f374d3085123a210448e74fc6393.png",
-      "0xD33526068D116cE69F19A9ee46F0bd304F21A51f": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd33526068d116ce69f19a9ee46f0bd304f21a51f.png"
-    }
-  },
-  {
     "address": "0x46804462f147fF96e9CAFB20cA35A3B2600656DF",
     "network": 1,
     "isKilled": false,
@@ -1427,35 +1270,6 @@
     "tokenLogoURIs": {
       "0x41D5D79431A913C4aE7d69a668ecdfE5fF9DFB68": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68.png",
       "0x865377367054516e17014CcdED1e7d814EDC9ce4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x865377367054516e17014ccded1e7d814edc9ce4.png"
-    }
-  },
-  {
-    "address": "0x91A75880b07d36672f5C8DFE0F2334f086e29D47",
-    "network": 1,
-    "isKilled": false,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1663017781,
-    "pool": {
-      "id": "0xf3aeb3abba741f0eece8a1b1d2f11b85899951cb000200000000000000000351",
-      "address": "0xf3AeB3aBbA741f0EEcE8a1B1D2F11b85899951CB",
-      "poolType": "Stable",
-      "symbol": "MAI-USDC-SP",
-      "tokens": [
-        {
-          "address": "0x8D6CeBD76f18E1558D4DB88138e2DeFB3909fAD6",
-          "weight": "null",
-          "symbol": "MAI"
-        },
-        {
-          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-          "weight": "null",
-          "symbol": "USDC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x8D6CeBD76f18E1558D4DB88138e2DeFB3909fAD6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x8d6cebd76f18e1558d4db88138e2defb3909fad6.png",
-      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
     }
   },
   {
@@ -2059,7 +1873,7 @@
   {
     "address": "0xe9866B9dc2c1213433f614CbB22EdAA0FAFF9a66",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "0.02",
     "addedTimestamp": 1676389091,
     "pool": {
@@ -2382,44 +2196,9 @@
     }
   },
   {
-    "address": "0x29C6361Af40fc1B6585ce0885319511dF4450a8E",
-    "network": 1,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1677002963,
-    "pool": {
-      "id": "0x20b156776114e8a801e9767d90c6ccccc8adf398000000000000000000000499",
-      "address": "0x20b156776114E8a801e9767D90c6ccCCc8Adf398",
-      "poolType": "ComposableStable",
-      "symbol": "bb-yv-USD",
-      "tokens": [
-        {
-          "address": "0x8E6eC57A822c2F527F2Df7C7D7D361dF3E7530a1",
-          "weight": "null",
-          "symbol": "bb-yv-DAI"
-        },
-        {
-          "address": "0x9B1c8407a360443A9E5ECA004713E4088FAB8AC0",
-          "weight": "null",
-          "symbol": "bb-yv-USDC"
-        },
-        {
-          "address": "0xD6E355036f41dC261B3f1ed3Bbc6003E87AAdB4f",
-          "weight": "null",
-          "symbol": "bb-yv-USDT"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x8E6eC57A822c2F527F2Df7C7D7D361dF3E7530a1": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x8e6ec57a822c2f527f2df7c7d7d361df3e7530a1.png",
-      "0x9B1c8407a360443A9E5ECA004713E4088FAB8AC0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x9b1c8407a360443a9e5eca004713e4088fab8ac0.png",
-      "0xD6E355036f41dC261B3f1ed3Bbc6003E87AAdB4f": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd6e355036f41dc261b3f1ed3bbc6003e87aadb4f.png"
-    }
-  },
-  {
     "address": "0x36365dA262dB3965Ba2E1C4411409Bf22508e0A1",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "0.02",
     "addedTimestamp": 1677002963,
     "pool": {
@@ -2570,7 +2349,7 @@
   {
     "address": "0x254f3a52Ba9e0cac4E32B648d129529622D1A46c",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1680086867,
     "pool": {
@@ -2605,7 +2384,7 @@
   {
     "address": "0xFd29298041eA355cF7e15652689F2865443C3144",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1680086867,
     "pool": {
@@ -3087,7 +2866,7 @@
   {
     "address": "0x8a88C1f44854C61a466aB55614F6A7778473418b",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "0.1",
     "addedTimestamp": 1683038387,
     "pool": {
@@ -3169,64 +2948,6 @@
     "tokenLogoURIs": {
       "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
       "0xa2E3356610840701BDf5611a53974510Ae27E2e1": "https://assets.coingecko.com/coins/images/30061/large/wbeth-icon.png?1683001548"
-    }
-  },
-  {
-    "address": "0x21cf9324D5B1AC739B7E6922B69500F1eEDB52e0",
-    "network": 1,
-    "isKilled": false,
-    "relativeWeightCap": "0.02",
-    "addedTimestamp": 1684175447,
-    "pool": {
-      "id": "0xec3626fee40ef95e7c0cbb1d495c8b67b34d398300000000000000000000053d",
-      "address": "0xeC3626fEe40EF95e7C0CBb1D495C8B67B34D3983",
-      "poolType": "ComposableStable",
-      "symbol": "B-S-UZD-BB-A-USD",
-      "tokens": [
-        {
-          "address": "0xb40b6608B2743E691C9B54DdBDEe7bf03cd79f1c",
-          "weight": "null",
-          "symbol": "UZD"
-        },
-        {
-          "address": "0xfeBb0bbf162E64fb9D0dfe186E517d84C395f016",
-          "weight": "null",
-          "symbol": "bb-a-USD"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0xb40b6608B2743E691C9B54DdBDEe7bf03cd79f1c": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb40b6608b2743e691c9b54ddbdee7bf03cd79f1c.png",
-      "0xfeBb0bbf162E64fb9D0dfe186E517d84C395f016": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfebb0bbf162e64fb9d0dfe186e517d84c395f016.png"
-    }
-  },
-  {
-    "address": "0xc43bF12A008d3Cc48AF7da1e8e87622A78dc64da",
-    "network": 1,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1684791827,
-    "pool": {
-      "id": "0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548",
-      "address": "0xEb567DDE03F3DA7FE185BDaCD5AB495AB220769d",
-      "poolType": "ComposableStable",
-      "symbol": "ankrETH-bb-a-WETH-BPT",
-      "tokens": [
-        {
-          "address": "0x60D604890feaa0b5460B28A424407c24fe89374a",
-          "weight": "null",
-          "symbol": "bb-a-WETH"
-        },
-        {
-          "address": "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb",
-          "weight": "null",
-          "symbol": "ankrETH"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x60D604890feaa0b5460B28A424407c24fe89374a": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x60d604890feaa0b5460b28a424407c24fe89374a.png",
-      "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe95a203b1a91a908f9b9ce46459d101078c2c3cb.png"
     }
   },
   {
@@ -3319,7 +3040,7 @@
   {
     "address": "0xFa58735ceEAa83a7c9c13CA771F12378D40D7b05",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1685385851,
     "pool": {
@@ -3433,6 +3154,807 @@
     }
   },
   {
+    "address": "0x9fB7D6dCAC7b6aa20108BaD226c35B85A9e31B63",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x481c5fc05d63a58aa2f0f2aa417c021b5d419cb200000000000000000000056a",
+      "address": "0x481C5fc05D63a58AA2f0F2aA417C021B5d419cB2",
+      "poolType": "ComposableStable",
+      "symbol": "rETH/bbaWETH BPT",
+      "tokens": [
+        {
+          "address": "0x60D604890feaa0b5460B28A424407c24fe89374a",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x60D604890feaa0b5460B28A424407c24fe89374a": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x60d604890feaa0b5460b28a424407c24fe89374a.png",
+      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xae78736cd615f374d3085123a210448e74fc6393.png"
+    }
+  },
+  {
+    "address": "0xD3D5d45f4Edf82ba0dFaf061d230766032a10e07",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x26c2b83fc8535deead276f5cc3ad9c1a2192e02700020000000000000000056b",
+      "address": "0x26c2B83FC8535DeEaD276f5Cc3ad9c1a2192E027",
+      "poolType": "Weighted",
+      "symbol": "OHM/bbaDAI BPT",
+      "tokens": [
+        {
+          "address": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5",
+          "weight": "0.5",
+          "symbol": "OHM"
+        },
+        {
+          "address": "0x6667c6fa9f2b3Fc1Cc8D85320b62703d938E4385",
+          "weight": "0.5",
+          "symbol": "bb-a-DAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5.png",
+      "0x6667c6fa9f2b3Fc1Cc8D85320b62703d938E4385": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x6667c6fa9f2b3fc1cc8d85320b62703d938e4385.png"
+    }
+  },
+  {
+    "address": "0x8eeB783A4A67f626c6E3952AAeD0D6b104AaC85f",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0xc5dc1316ab670a2eed5716d7f19ced321191f38200000000000000000000056e",
+      "address": "0xC5DC1316AB670a2eeD5716d7F19CeD321191F382",
+      "poolType": "ComposableStable",
+      "symbol": "B-wstETH/bb-ma3-weth",
+      "tokens": [
+        {
+          "address": "0x3fCb7085B8F2F473F80bF6D879cAe99eA4DE9344",
+          "weight": "null",
+          "symbol": "bb-ma3-weth"
+        },
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "null",
+          "symbol": "wstETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x3fCb7085B8F2F473F80bF6D879cAe99eA4DE9344": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3fcb7085b8f2f473f80bf6d879cae99ea4de9344.png",
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png"
+    }
+  },
+  {
+    "address": "0x6AF7bCA454f3C8165225Ed46FD4d78cc90E81fAA",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1687806647,
+    "pool": {
+      "id": "0xbfce47224b4a938865e3e2727dc34e0faa5b1d82000000000000000000000527",
+      "address": "0xbFCe47224B4A938865E3e2727DC34E0fAA5b1D82",
+      "poolType": "ComposableStable",
+      "symbol": "uniETH-WETH",
+      "tokens": [
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "null",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
+          "weight": "null",
+          "symbol": "uniETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4.png"
+    }
+  },
+  {
+    "address": "0x1d157Cf1F1339864A3C291D1Bbe786d6Ee682434",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.1",
+    "addedTimestamp": 1687806647,
+    "pool": {
+      "id": "0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570",
+      "address": "0x156C02f3f7fEf64a3A9D80CCF7085f23ccE91D76",
+      "poolType": "ComposableStable",
+      "symbol": "vETH/WETH BPT",
+      "tokens": [
+        {
+          "address": "0x4Bc3263Eb5bb2Ef7Ad9aB6FB68be80E43b43801F",
+          "weight": "null",
+          "symbol": "vETH"
+        },
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "null",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4Bc3263Eb5bb2Ef7Ad9aB6FB68be80E43b43801F": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4bc3263eb5bb2ef7ad9ab6fb68be80e43b43801f.png",
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    }
+  },
+  {
+    "address": "0x39dF6e857bdf7387273C43eBb373b9D74F467d35",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687806647,
+    "pool": {
+      "id": "0x9d7f992c900fbea0ec314bdd71b7cc1becf76a33000200000000000000000573",
+      "address": "0x9d7f992c900FbeA0EC314Bdd71b7cC1becF76A33",
+      "poolType": "Weighted",
+      "symbol": "50OHM/50bbaWETH",
+      "tokens": [
+        {
+          "address": "0x60D604890feaa0b5460B28A424407c24fe89374a",
+          "weight": "0.5",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5",
+          "weight": "0.5",
+          "symbol": "OHM"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x60D604890feaa0b5460B28A424407c24fe89374a": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x60d604890feaa0b5460b28a424407c24fe89374a.png",
+      "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5.png"
+    }
+  },
+  {
+    "address": "0x9e3f4FB69058244066801404e50889592d33cA11",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x4cbde5c4b4b53ebe4af4adb85404725985406163000000000000000000000595",
+      "address": "0x4CbdE5C4B4B53EBE4aF4adB85404725985406163",
+      "poolType": "ComposableStable",
+      "symbol": "B-ETHx/bb-a-WETH ",
+      "tokens": [
+        {
+          "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b",
+          "weight": "null",
+          "symbol": "ETHx"
+        },
+        {
+          "address": "0xbB6881874825E60e1160416D6C426eae65f2459E",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b": "https://assets.coingecko.com/coins/images/30870/large/ETHx-small.png?1688373266",
+      "0xbB6881874825E60e1160416D6C426eae65f2459E": ""
+    }
+  },
+  {
+    "address": "0x882f961Def46deadAcf31798B295834a5b6d0c86",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d",
+      "address": "0xbF2ef8bDC2fC0F3203B3a01778E3ec5009AEEf33",
+      "poolType": "ComposableStable",
+      "symbol": "R-bb-s-DAI-BLP",
+      "tokens": [
+        {
+          "address": "0x183015a9bA6fF60230fdEaDc3F43b3D788b13e21",
+          "weight": "null",
+          "symbol": "R"
+        },
+        {
+          "address": "0x2B218683178d029BAB6c9789b1073aA6c96E5176",
+          "weight": "null",
+          "symbol": "bb-s-DAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x183015a9bA6fF60230fdEaDc3F43b3D788b13e21": "https://assets.coingecko.com/coins/images/29551/large/R_200x200.png?1685954962",
+      "0x2B218683178d029BAB6c9789b1073aA6c96E5176": ""
+    }
+  },
+  {
+    "address": "0x70892E4355d0E04A3d19264E93c64C401520f3A4",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x3fa8c89704e5d07565444009e5d9e624b40be813000000000000000000000599",
+      "address": "0x3FA8C89704e5d07565444009e5d9e624B40Be813",
+      "poolType": "ComposableStable",
+      "symbol": "GHO/LUSD",
+      "tokens": [
+        {
+          "address": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+          "weight": "null",
+          "symbol": "GHO"
+        },
+        {
+          "address": "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0",
+          "weight": "null",
+          "symbol": "LUSD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f/logo.png",
+      "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5f98805a4e8be255a32880fdec7f6728c6568ba0.png"
+    }
+  },
+  {
+    "address": "0x6EE63656BbF5BE3fdF9Be4982BF9466F6a921b83",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x7d98f308db99fdd04bbf4217a4be8809f38faa6400020000000000000000059b",
+      "address": "0x7D98f308Db99FDD04BbF4217a4be8809F38fAa64",
+      "poolType": "Weighted",
+      "symbol": "80wstETH/20GHO",
+      "tokens": [
+        {
+          "address": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+          "weight": "0.2",
+          "symbol": "GHO"
+        },
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "0.8",
+          "symbol": "wstETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f/logo.png",
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png"
+    }
+  },
+  {
+    "address": "0x73f49a29F91e016CC9BdE5cdF6f5DC049280e5A9",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xb2b918f2d628b4c8ff237b0a1c6ac3bea222fedc00020000000000000000059c",
+      "address": "0xB2B918f2d628b4c8ff237b0A1c6aC3Bea222FEDc",
+      "poolType": "Weighted",
+      "symbol": "50GHO/50OHM",
+      "tokens": [
+        {
+          "address": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+          "weight": "0.5",
+          "symbol": "GHO"
+        },
+        {
+          "address": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5",
+          "weight": "0.5",
+          "symbol": "OHM"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f/logo.png",
+      "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5.png"
+    }
+  },
+  {
+    "address": "0x5Db1Fe5A1652f095eBc3f6065E9DB3f3d492bfC2",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598",
+      "address": "0xc2B021133D1b0cF07dba696fd5DD89338428225B",
+      "poolType": "ComposableStable",
+      "symbol": "GHO/bb-a-USD",
+      "tokens": [
+        {
+          "address": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+          "weight": "null",
+          "symbol": "GHO"
+        },
+        {
+          "address": "0xc443C15033FCB6Cf72cC24f1BDA0Db070DdD9786",
+          "weight": "null",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f/logo.png",
+      "0xc443C15033FCB6Cf72cC24f1BDA0Db070DdD9786": ""
+    }
+  },
+  {
+    "address": "0x5c23661E747F84E0c71d782e5f1513126041734B",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x9a172e1cb0e99f7e6dcc4c52e4655e8f337d5c0000000000000000000000059a",
+      "address": "0x9A172e1cb0E99f7E6DCc4c52e4655e8f337d5c00",
+      "poolType": "ComposableStable",
+      "symbol": "GHO/MAI",
+      "tokens": [
+        {
+          "address": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+          "weight": "null",
+          "symbol": "GHO"
+        },
+        {
+          "address": "0x8D6CeBD76f18E1558D4DB88138e2DeFB3909fAD6",
+          "weight": "null",
+          "symbol": "MAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f/logo.png",
+      "0x8D6CeBD76f18E1558D4DB88138e2DeFB3909fAD6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x8d6cebd76f18e1558d4db88138e2defb3909fad6.png"
+    }
+  },
+  {
+    "address": "0x0021e01B9fAb840567a8291b864fF783894EabC6",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b",
+      "address": "0x42ED016F826165C2e5976fe5bC3df540C5aD0Af7",
+      "poolType": "ComposableStable",
+      "symbol": "wstETH-rETH-sfrxETH-BPT",
+      "tokens": [
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xac3E018457B222d93114458476f3E3416Abbe38F",
+          "weight": "null",
+          "symbol": "sfrxETH"
+        },
+        {
+          "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
+      "0xac3E018457B222d93114458476f3E3416Abbe38F": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xac3e018457b222d93114458476f3e3416abbe38f.png",
+      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xae78736cd615f374d3085123a210448e74fc6393.png"
+    }
+  },
+  {
+    "address": "0x21eC388000B5BA5D9e3DF3848EA0c1f58e054Af7",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xc443c15033fcb6cf72cc24f1bda0db070ddd9786000000000000000000000593",
+      "address": "0xc443C15033FCB6Cf72cC24f1BDA0Db070DdD9786",
+      "poolType": "ComposableStable",
+      "symbol": "bb-a-USD",
+      "tokens": [
+        {
+          "address": "0xc50d4347209F285247BDa8A09Fc1C12CE42031c3",
+          "weight": "null",
+          "symbol": "bb-a-USDC"
+        },
+        {
+          "address": "0xcfAE6E251369467F465f13836Ac8135bd42f8A56",
+          "weight": "null",
+          "symbol": "bb-a-USDT"
+        },
+        {
+          "address": "0xfa24A90A3F2bBE5FEEA92B95cD0d14Ce709649f9",
+          "weight": "null",
+          "symbol": "bb-a-DAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xc50d4347209F285247BDa8A09Fc1C12CE42031c3": "",
+      "0xcfAE6E251369467F465f13836Ac8135bd42f8A56": "",
+      "0xfa24A90A3F2bBE5FEEA92B95cD0d14Ce709649f9": ""
+    }
+  },
+  {
+    "address": "0x29488df9253171AcD0a0598FDdA92C5F6E767a38",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594",
+      "address": "0x41503C9D499ddbd1dCdf818a1b05e9774203Bf46",
+      "poolType": "ComposableStable",
+      "symbol": "wstETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xbB6881874825E60e1160416D6C426eae65f2459E",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
+      "0xbB6881874825E60e1160416D6C426eae65f2459E": ""
+    }
+  },
+  {
+    "address": "0x3eFd3E18504dC213188Ed2b694F886A305a6e5ed",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xd7edb56f63b2a0191742aea32df1f98ca81ed9c600000000000000000000058e",
+      "address": "0xd7edb56F63b2a0191742aEa32DF1F98ca81ed9c6",
+      "poolType": "ComposableStable",
+      "symbol": "B-wstETH/bb-ma3-weth",
+      "tokens": [
+        {
+          "address": "0x3fCb7085B8F2F473F80bF6D879cAe99eA4DE9344",
+          "weight": "null",
+          "symbol": "bb-ma3-weth"
+        },
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "null",
+          "symbol": "wstETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x3fCb7085B8F2F473F80bF6D879cAe99eA4DE9344": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3fcb7085b8f2f473f80bf6d879cae99ea4de9344.png",
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png"
+    }
+  },
+  {
+    "address": "0xE35f0152f0d49fE8E386E5c42B656321ffB0d477",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x9b692f571b256140a39a34676bffa30634c586e100000000000000000000059d",
+      "address": "0x9B692f571b256140a39a34676BffA30634c586e1",
+      "poolType": "ComposableStable",
+      "symbol": "bb-i-USD",
+      "tokens": [
+        {
+          "address": "0x2FF1A9Dbdacd55297452cFD8a4d94724Bc22a5F7",
+          "weight": "null",
+          "symbol": "bb-i-USDT"
+        },
+        {
+          "address": "0xbc0F2372008005471874e426e86CCFae7B4De79d",
+          "weight": "null",
+          "symbol": "bb-i-USDC"
+        },
+        {
+          "address": "0xDbA274B4D04097b90A72b62467d828cEFD708037",
+          "weight": "null",
+          "symbol": "bb-i-DAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x2FF1A9Dbdacd55297452cFD8a4d94724Bc22a5F7": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x2ff1a9dbdacd55297452cfd8a4d94724bc22a5f7.png",
+      "0xbc0F2372008005471874e426e86CCFae7B4De79d": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbc0f2372008005471874e426e86ccfae7b4de79d.png",
+      "0xDbA274B4D04097b90A72b62467d828cEFD708037": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xdba274b4d04097b90a72b62467d828cefd708037.png"
+    }
+  },
+  {
+    "address": "0xe77D45b5dE97aC7717E4EdE6bE16E3D805fF02A5",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xdd59f89b5b07b7844d72996fc9d83d81acc8219600000000000000000000059e",
+      "address": "0xdD59f89B5B07B7844d72996fC9d83D81acC82196",
+      "poolType": "ComposableStable",
+      "symbol": "uniETH-WETH",
+      "tokens": [
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "null",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
+          "weight": "null",
+          "symbol": "uniETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4.png"
+    }
+  },
+  {
+    "address": "0x0A4825154bCFD493d15777184d01B93e8115215a",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xb54e6aadbf1ac1a3ef2a56e358706f0f8e320a0300000000000000000000059f",
+      "address": "0xB54E6AADBF1ac1a3EF2A56E358706F0f8E320a03",
+      "poolType": "ComposableStable",
+      "symbol": "vETH/WETH BPT",
+      "tokens": [
+        {
+          "address": "0x4Bc3263Eb5bb2Ef7Ad9aB6FB68be80E43b43801F",
+          "weight": "null",
+          "symbol": "vETH"
+        },
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "null",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4Bc3263Eb5bb2Ef7Ad9aB6FB68be80E43b43801F": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4bc3263eb5bb2ef7ad9ab6fb68be80e43b43801f.png",
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    }
+  },
+  {
+    "address": "0x6d5AF3414a73E498039a3720aFb4A376aE9C5a07",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3",
+      "address": "0x4C81255Cc9eD7062180ea99962fE05aC0D57350B",
+      "poolType": "ComposableStable",
+      "symbol": "cbETH-bb-a-WETH-BPT ",
+      "tokens": [
+        {
+          "address": "0xbB6881874825E60e1160416D6C426eae65f2459E",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704",
+          "weight": "null",
+          "symbol": "cbETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbB6881874825E60e1160416D6C426eae65f2459E": "",
+      "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbe9895146f7af43049ca1c1ae358b0541ea49704.png"
+    }
+  },
+  {
+    "address": "0x06d27c0FE5AbF6020bf56E47c72Ca002dD5d9f54",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x1bd2f176a812e312077bca87e37c08432bb09f3e0000000000000000000005a1",
+      "address": "0x1bd2F176a812e312077BcA87e37c08432Bb09F3e",
+      "poolType": "ComposableStable",
+      "symbol": "qETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0x93ef1Ea305D11A9b2a3EbB9bB4FCc34695292E7d",
+          "weight": "null",
+          "symbol": "qETH"
+        },
+        {
+          "address": "0xbB6881874825E60e1160416D6C426eae65f2459E",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x93ef1Ea305D11A9b2a3EbB9bB4FCc34695292E7d": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x93ef1ea305d11a9b2a3ebb9bb4fcc34695292e7d.png",
+      "0xbB6881874825E60e1160416D6C426eae65f2459E": ""
+    }
+  },
+  {
+    "address": "0x5669736FD1dF3572f9D519FcCf7536A750CFAc62",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0",
+      "address": "0xaE8535c23afeDdA9304B03c68a3563B75fc8f92b",
+      "poolType": "ComposableStable",
+      "symbol": "swETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0xbB6881874825E60e1160416D6C426eae65f2459E",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xf951E335afb289353dc249e82926178EaC7DEd78",
+          "weight": "null",
+          "symbol": "swETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbB6881874825E60e1160416D6C426eae65f2459E": "",
+      "0xf951E335afb289353dc249e82926178EaC7DEd78": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xf951e335afb289353dc249e82926178eac7ded78.png"
+    }
+  },
+  {
+    "address": "0xe9E6E9597123034Fa3fc73D482852e18EdF9c282",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xe8c56405bc405840154d9b572927f4197d110de10000000000000000000005a4",
+      "address": "0xE8C56405Bc405840154d9b572927F4197D110dE1",
+      "poolType": "ComposableStable",
+      "symbol": "rETH/bbaWETH BPT ",
+      "tokens": [
+        {
+          "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+          "weight": "null",
+          "symbol": "rETH"
+        },
+        {
+          "address": "0xbB6881874825E60e1160416D6C426eae65f2459E",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xae78736cd615f374d3085123a210448e74fc6393.png",
+      "0xbB6881874825E60e1160416D6C426eae65f2459E": ""
+    }
+  },
+  {
+    "address": "0x9aaAf6757BE9e115895429EF6B81e05dCB951646",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5",
+      "address": "0x158e0fBC2271E1dCEbadD365a22E2B4dD173C0DB",
+      "poolType": "Weighted",
+      "symbol": "80IDLE-20USDC",
+      "tokens": [
+        {
+          "address": "0x875773784Af8135eA0ef43b5a374AaD105c5D39e",
+          "weight": "0.8",
+          "symbol": "IDLE"
+        },
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "weight": "0.2",
+          "symbol": "USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x875773784Af8135eA0ef43b5a374AaD105c5D39e": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x875773784af8135ea0ef43b5a374aad105c5d39e.png",
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+    }
+  },
+  {
+    "address": "0x639F4583E505e9E0A16C5D90E1AF61b47415A3A9",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7",
+      "address": "0xE2D16b0A39F3FBb4389a0E8F1efCBecFB3d1E6E1",
+      "poolType": "ComposableStable",
+      "symbol": "DUSD/bbaUSD-BPT",
+      "tokens": [
+        {
+          "address": "0xa48F322F8b3edff967629Af79E027628b9Dd1298",
+          "weight": "null",
+          "symbol": "DUSD"
+        },
+        {
+          "address": "0xc443C15033FCB6Cf72cC24f1BDA0Db070DdD9786",
+          "weight": "null",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xa48F322F8b3edff967629Af79E027628b9Dd1298": "",
+      "0xc443C15033FCB6Cf72cC24f1BDA0Db070DdD9786": ""
+    }
+  },
+  {
+    "address": "0x44bc38d3aF025C0EA9a4729E79d6E44244d68Ac6",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x759fabc513accd292ada967c4dd7bb94da39232e0002000000000000000005a8",
+      "address": "0x759FABc513AccD292ADA967C4DD7Bb94Da39232e",
+      "poolType": "Weighted",
+      "symbol": "80RATE/20WETH-BPT",
+      "tokens": [
+        {
+          "address": "0x695BD8b642342d792a34392bEa1461b98895300B",
+          "weight": "0.8",
+          "symbol": "RATE"
+        },
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "0.2",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x695BD8b642342d792a34392bEa1461b98895300B": "",
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    }
+  },
+  {
     "address": "0xf0f572ad66baacDd07d8c7ea3e0E5EFA56a76081",
     "network": 5,
     "isKilled": false,
@@ -3486,37 +4008,165 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x4200000000000000000000000000000000000006/logo.png",
+      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4200000000000000000000000000000000000006.png",
       "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x9Bcef72be871e61ED4fBbc7630889beE758eb81D/logo.png"
     }
   },
   {
-    "address": "0xfb0265841C49A6b19D70055E596b212B0dA3f606",
+    "address": "0x1Ce5bf7e6C16C567DeFd625e0911Bfd0FC7f2d7d",
     "network": 10,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1660580290,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1688412059,
     "pool": {
-      "id": "0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b",
-      "address": "0x4Fd63966879300caFafBB35D157dC5229278Ed23",
-      "poolType": "MetaStable",
-      "symbol": "BPT-rETH-ETH",
+      "id": "0x39965c9dab5448482cf7e002f583c812ceb53046000100000000000000000003",
+      "address": "0x39965c9dAb5448482Cf7e002F583c812Ceb53046",
+      "poolType": "Weighted",
+      "symbol": "BPT-ROAD",
       "tokens": [
         {
           "address": "0x4200000000000000000000000000000000000006",
-          "weight": "null",
+          "weight": "0.4",
           "symbol": "WETH"
         },
         {
-          "address": "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D",
-          "weight": "null",
-          "symbol": "rETH"
+          "address": "0x4200000000000000000000000000000000000042",
+          "weight": "0.4",
+          "symbol": "OP"
+        },
+        {
+          "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+          "weight": "0.2",
+          "symbol": "USDC"
         }
       ]
     },
     "tokenLogoURIs": {
-      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x4200000000000000000000000000000000000006/logo.png",
-      "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x9Bcef72be871e61ED4fBbc7630889beE758eb81D/logo.png"
+      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4200000000000000000000000000000000000006.png",
+      "0x4200000000000000000000000000000000000042": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x4200000000000000000000000000000000000042/logo.png",
+      "0x7F5c764cBc14f9669B88837ca1490cCa17c31607": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x7F5c764cBc14f9669B88837ca1490cCa17c31607/logo.png"
+    }
+  },
+  {
+    "address": "0xd0b6787589d33B4F7aA5a27f36497e091e78a2ad",
+    "network": 10,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1688412059,
+    "pool": {
+      "id": "0x1d95129c18a8c91c464111fdf7d0eb241b37a9850002000000000000000000c1",
+      "address": "0x1D95129c18a8c91C464111FDf7d0Eb241B37a985",
+      "poolType": "Weighted",
+      "symbol": "BPT-RESERVE",
+      "tokens": [
+        {
+          "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+          "weight": "0.5",
+          "symbol": "USDC"
+        },
+        {
+          "address": "0xc5b001DC33727F8F26880B184090D3E252470D45",
+          "weight": "0.5",
+          "symbol": "ERN"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7F5c764cBc14f9669B88837ca1490cCa17c31607": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x7F5c764cBc14f9669B88837ca1490cCa17c31607/logo.png",
+      "0xc5b001DC33727F8F26880B184090D3E252470D45": ""
+    }
+  },
+  {
+    "address": "0x0BFcF593C149Ddbeedb190667d24D30D2E38AF73",
+    "network": 10,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1688412059,
+    "pool": {
+      "id": "0xd20f6f1d8a675cdca155cb07b5dc9042c467153f0002000000000000000000bc",
+      "address": "0xd20f6F1D8a675cDCa155Cb07b5dC9042c467153f",
+      "poolType": "Weighted",
+      "symbol": "BPT-BOATH",
+      "tokens": [
+        {
+          "address": "0x39FdE572a18448F8139b7788099F0a0740f51205",
+          "weight": "0.8",
+          "symbol": "OATH"
+        },
+        {
+          "address": "0x4200000000000000000000000000000000000006",
+          "weight": "0.2",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x39FdE572a18448F8139b7788099F0a0740f51205": "",
+      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4200000000000000000000000000000000000006.png"
+    }
+  },
+  {
+    "address": "0xdc08146530DD9910F8ab4D0aD2C184f87e903540",
+    "network": 10,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1688412059,
+    "pool": {
+      "id": "0x098f32d98d0d64dba199fc1923d3bf4192e787190001000000000000000000d2",
+      "address": "0x098f32D98d0D64Dba199FC1923D3BF4192E78719",
+      "poolType": "Weighted",
+      "symbol": "bb-rf-SOTRI",
+      "tokens": [
+        {
+          "address": "0x6af3737F6d58Ae8Bcb9f2B597125D37244596E59",
+          "weight": "0.25",
+          "symbol": "bb-rf-soWBTC"
+        },
+        {
+          "address": "0x7e9250cC13559eB50536859e8C076Ef53e275Fb3",
+          "weight": "0.5",
+          "symbol": "bb-rf-soWSTETH"
+        },
+        {
+          "address": "0xEdcfaF390906a8f91fb35B7bAC23f3111dBaEe1C",
+          "weight": "0.25",
+          "symbol": "bb-rf-soUSDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6af3737F6d58Ae8Bcb9f2B597125D37244596E59": "",
+      "0x7e9250cC13559eB50536859e8C076Ef53e275Fb3": "",
+      "0xEdcfaF390906a8f91fb35B7bAC23f3111dBaEe1C": ""
+    }
+  },
+  {
+    "address": "0x1b8C2C972c67f4A5B43C2EbE07E64fCB88ACee87",
+    "network": 10,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1688412059,
+    "pool": {
+      "id": "0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb200020000000000000000008b",
+      "address": "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2",
+      "poolType": "MetaStable",
+      "symbol": "BPT-WSTETH-WETH",
+      "tokens": [
+        {
+          "address": "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0x4200000000000000000000000000000000000006",
+          "weight": "null",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x1f32b1c2345538c0c6f582fcb022739c4a194ebb.png",
+      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4200000000000000000000000000000000000006.png"
     }
   },
   {
@@ -3770,128 +4420,110 @@
     }
   },
   {
-    "address": "0xA5A0B6598B90d214eAf4d7a6b72d5a89C3b9A72c",
-    "network": 137,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1650405699,
+    "address": "0x3A7Ed8916Ebb9131966b9b3af3cd8B9adcc53559",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
     "pool": {
-      "id": "0x0297e37f1873d2dab4487aa67cd56b58e2f27875000100000000000000000002",
-      "address": "0x0297e37f1873D2DAb4487Aa67cD56B58E2F27875",
+      "id": "0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046",
+      "address": "0xba1a5B19D09A79DADA039B1f974015c5A989d5FD",
       "poolType": "Weighted",
-      "symbol": "B-POLYBASE",
+      "symbol": "agUSD-agWETH-agWBTC",
       "tokens": [
         {
-          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-          "weight": "0.25",
-          "symbol": "WMATIC"
+          "address": "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-WETH"
         },
         {
-          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-          "weight": "0.25",
-          "symbol": "USDC"
+          "address": "0xd4015683b8153666190e0B2bEC352580EBC4CaCa",
+          "weight": "0.333333334",
+          "symbol": "bb-ag-WBTC"
         },
         {
-          "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
-          "weight": "0.25",
-          "symbol": "WETH"
-        },
-        {
-          "address": "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3",
-          "weight": "0.25",
-          "symbol": "BAL"
+          "address": "0xe15CaC1DF3621e001f76210Ab12A7f1A1691481f",
+          "weight": "0.333333333",
+          "symbol": "bb-ag-USD"
         }
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
-      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3/logo.png"
+      "0xbb9Cd48d33033F5EfFBeDec9Dd700C7D7E1dCF50": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbb9cd48d33033f5effbedec9dd700c7d7e1dcf50.png",
+      "0xd4015683b8153666190e0B2bEC352580EBC4CaCa": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd4015683b8153666190e0b2bec352580ebc4caca.png",
+      "0xe15CaC1DF3621e001f76210Ab12A7f1A1691481f": ""
     }
   },
   {
-    "address": "0xF5C7F74103d4E9D1fF8FBa3420c6319723e3473A",
-    "network": 137,
+    "address": "0x7a4e71a8A33d3b385279079c503ca93905dd553e",
+    "network": 100,
     "isKilled": false,
     "relativeWeightCap": "1",
-    "addedTimestamp": 1683715019,
+    "addedTimestamp": 1690227287,
     "pool": {
-      "id": "0x0297e37f1873d2dab4487aa67cd56b58e2f27875000100000000000000000002",
-      "address": "0x0297e37f1873D2DAb4487Aa67cD56B58E2F27875",
+      "id": "0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045",
+      "address": "0x4De21b365D6543661D0e105E579A34B963862497",
       "poolType": "Weighted",
-      "symbol": "B-POLYBASE",
+      "symbol": "50bbagGNO-50bbagUSD",
       "tokens": [
         {
-          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-          "weight": "0.25",
-          "symbol": "WMATIC"
+          "address": "0xe15CaC1DF3621e001f76210Ab12A7f1A1691481f",
+          "weight": "0.5",
+          "symbol": "bb-ag-USD"
         },
         {
-          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-          "weight": "0.25",
-          "symbol": "USDC"
-        },
-        {
-          "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
-          "weight": "0.25",
-          "symbol": "WETH"
-        },
-        {
-          "address": "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3",
-          "weight": "0.25",
-          "symbol": "BAL"
+          "address": "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0",
+          "weight": "0.5",
+          "symbol": "bb-ag-GNO"
         }
       ]
     },
     "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
-      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3/logo.png"
+      "0xe15CaC1DF3621e001f76210Ab12A7f1A1691481f": "",
+      "0xFFFf76A3280e95dC855696111C2562Da09db2Ac0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xffff76a3280e95dc855696111c2562da09db2ac0.png"
+    }
+  },
+  {
+    "address": "0x774D0F67DcFA5568cA435c70fbA272C64352d859",
+    "network": 100,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xe15cac1df3621e001f76210ab12a7f1a1691481f000000000000000000000044",
+      "address": "0xe15CaC1DF3621e001f76210Ab12A7f1A1691481f",
+      "poolType": "ComposableStable",
+      "symbol": "bb-ag-USD",
+      "tokens": [
+        {
+          "address": "0x41211BBa6d37F5a74b22e667533F080C7C7f3F13",
+          "weight": "null",
+          "symbol": "bb-ag-WXDAI"
+        },
+        {
+          "address": "0xd16f72b02dA5f51231fDe542A8B9E2777a478c88",
+          "weight": "null",
+          "symbol": "bb-ag-USDT"
+        },
+        {
+          "address": "0xE7f88d7d4EF2eb18FCF9Dd7216BA7Da1c46f3dD6",
+          "weight": "null",
+          "symbol": "bb-ag-USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x41211BBa6d37F5a74b22e667533F080C7C7f3F13": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x41211bba6d37f5a74b22e667533f080c7c7f3f13.png",
+      "0xd16f72b02dA5f51231fDe542A8B9E2777a478c88": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd16f72b02da5f51231fde542a8b9e2777a478c88.png",
+      "0xE7f88d7d4EF2eb18FCF9Dd7216BA7Da1c46f3dD6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe7f88d7d4ef2eb18fcf9dd7216ba7da1c46f3dd6.png"
     }
   },
   {
     "address": "0x1604b7E80975555e0aCEaca9C81807FbB4D65Cf1",
     "network": 137,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0x03cd191f589d12b0582a99808cf19851e468e6b500010000000000000000000a",
-      "address": "0x03cD191F589d12b0582a99808cf19851E468E6B5",
-      "poolType": "Weighted",
-      "symbol": "BPTC",
-      "tokens": [
-        {
-          "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
-          "weight": "0.333333333333333333",
-          "symbol": "WBTC"
-        },
-        {
-          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-          "weight": "0.333333333333333333",
-          "symbol": "USDC"
-        },
-        {
-          "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
-          "weight": "0.333333333333333334",
-          "symbol": "WETH"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6": "https://assets.coingecko.com/coins/images/7598/large/wrapped_bitcoin_wbtc.png?1548822744",
-      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png"
-    }
-  },
-  {
-    "address": "0x88D07558470484c03d3bb44c3ECc36CAfCF43253",
-    "network": 137,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1650405699,
     "pool": {
       "id": "0x03cd191f589d12b0582a99808cf19851e468e6b500010000000000000000000a",
       "address": "0x03cD191F589d12b0582a99808cf19851E468E6B5",
@@ -4247,35 +4879,6 @@
     }
   },
   {
-    "address": "0xc534C30749b6C198D35a7836E26076E7745D8936",
-    "network": 137,
-    "isKilled": false,
-    "relativeWeightCap": "0.02",
-    "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0x34a81e8956bf20b7448b31990a2c06f96830a6e4000200000000000000000a14",
-      "address": "0x34A81e8956BF20b7448b31990A2c06F96830a6e4",
-      "poolType": "MetaStable",
-      "symbol": "B-wUSDR-STABLE",
-      "tokens": [
-        {
-          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-          "weight": "null",
-          "symbol": "USDC"
-        },
-        {
-          "address": "0xAF0D9D65fC54de245cdA37af3d18cbEc860A4D4b",
-          "weight": "null",
-          "symbol": "wUSDR"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0xAF0D9D65fC54de245cdA37af3d18cbEc860A4D4b": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xaf0d9d65fc54de245cda37af3d18cbec860a4d4b.png"
-    }
-  },
-  {
     "address": "0x90437a1D2F6C0935Dd6056f07f05C068f2A507F9",
     "network": 137,
     "isKilled": true,
@@ -4514,35 +5117,6 @@
     }
   },
   {
-    "address": "0xBD734b38F2dc864fe00DF51fc4F17d310eD7dA4D",
-    "network": 137,
-    "isKilled": true,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1681342787,
-    "pool": {
-      "id": "0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c",
-      "address": "0x216690738Aac4aa0C4770253CA26a28f0115c595",
-      "poolType": "ComposableStable",
-      "symbol": "stMATIC-bb-a-WMATIC-BPT",
-      "tokens": [
-        {
-          "address": "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4",
-          "weight": "null",
-          "symbol": "stMATIC"
-        },
-        {
-          "address": "0xE4885Ed2818Cc9E840A25f94F9b2A28169D1AEA7",
-          "weight": "null",
-          "symbol": "bb-a-WMATIC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png",
-      "0xE4885Ed2818Cc9E840A25f94F9b2A28169D1AEA7": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe4885ed2818cc9e840a25f94f9b2a28169d1aea7.png"
-    }
-  },
-  {
     "address": "0xDd3b4161D2a4c609884E20Ed71b4e85BE44572E6",
     "network": 137,
     "isKilled": false,
@@ -4598,93 +5172,6 @@
     "tokenLogoURIs": {
       "0xE4885Ed2818Cc9E840A25f94F9b2A28169D1AEA7": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe4885ed2818cc9e840a25f94f9b2a28169d1aea7.png",
       "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
-    }
-  },
-  {
-    "address": "0x21483F79a1aE94536Dc1d5dDfC6f591fB3B430Df",
-    "network": 137,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a",
-      "address": "0x36A0ee903841584f47E3c774B59E0CbFBA46080F",
-      "poolType": "ComposableStable",
-      "symbol": "B-ankrMATIC-MATIC-Stable",
-      "tokens": [
-        {
-          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-          "weight": "null",
-          "symbol": "WMATIC"
-        },
-        {
-          "address": "0x0E9b89007eEE9c958c0EDA24eF70723C2C93dD58",
-          "weight": "null",
-          "symbol": "ankrMATIC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
-      "0x0E9b89007eEE9c958c0EDA24eF70723C2C93dD58": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0e9b89007eee9c958c0eda24ef70723c2c93dd58.png"
-    }
-  },
-  {
-    "address": "0x6a08FD22bd3B10a8EB322938FCaa0A1B025BF3b3",
-    "network": 137,
-    "isKilled": true,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1681342787,
-    "pool": {
-      "id": "0x36a0ee903841584f47e3c774b59e0cbfba46080f000000000000000000000b0a",
-      "address": "0x36A0ee903841584f47E3c774B59E0CbFBA46080F",
-      "poolType": "ComposableStable",
-      "symbol": "B-ankrMATIC-MATIC-Stable",
-      "tokens": [
-        {
-          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-          "weight": "null",
-          "symbol": "WMATIC"
-        },
-        {
-          "address": "0x0E9b89007eEE9c958c0EDA24eF70723C2C93dD58",
-          "weight": "null",
-          "symbol": "ankrMATIC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
-      "0x0E9b89007eEE9c958c0EDA24eF70723C2C93dD58": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0e9b89007eee9c958c0eda24ef70723c2c93dd58.png"
-    }
-  },
-  {
-    "address": "0x2cc5BebcFdAAD20f2a608EC153d1C7BED66EeEC3",
-    "network": 137,
-    "isKilled": false,
-    "relativeWeightCap": "0.02",
-    "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0x9f9f548354b7c66dc9a9f3373077d86aaaccf8f2000200000000000000000a4a",
-      "address": "0x9F9F548354B7C66Dc9a9f3373077D86AAACCF8F2",
-      "poolType": "Weighted",
-      "symbol": "20USDC-80TNGBL",
-      "tokens": [
-        {
-          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-          "weight": "0.2",
-          "symbol": "USDC"
-        },
-        {
-          "address": "0x49e6A20f1BBdfEeC2a8222E052000BbB14EE6007",
-          "weight": "0.8",
-          "symbol": "TNGBL"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0x49e6A20f1BBdfEeC2a8222E052000BbB14EE6007": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x49e6a20f1bbdfeec2a8222e052000bbb14ee6007.png"
     }
   },
   {
@@ -4781,35 +5268,6 @@
     }
   },
   {
-    "address": "0x02DFcC6ca6611cCBDCe51049a332afDB91465584",
-    "network": 137,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1682430623,
-    "pool": {
-      "id": "0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44",
-      "address": "0x7F4f4942F2a14B6AB7B08b10ada1AAcede4EE8D4",
-      "poolType": "Weighted",
-      "symbol": "50stMATIC-BPT-50bbamUSD",
-      "tokens": [
-        {
-          "address": "0x216690738Aac4aa0C4770253CA26a28f0115c595",
-          "weight": "0.5",
-          "symbol": "stMATIC-bb-a-WMATIC-BPT"
-        },
-        {
-          "address": "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76",
-          "weight": "0.5",
-          "symbol": "bb-am-USD"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x216690738Aac4aa0C4770253CA26a28f0115c595": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x216690738aac4aa0c4770253ca26a28f0115c595.png",
-      "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb371aa09f5a110ab69b39a84b5469d29f9b22b76.png"
-    }
-  },
-  {
     "address": "0x416d15C36c6DaAd2b9410B79aE557e6F07DcB642",
     "network": 137,
     "isKilled": false,
@@ -4836,35 +5294,6 @@
     "tokenLogoURIs": {
       "0x43894DE14462B421372bCFe445fA51b1b4A0Ff3D": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x43894de14462b421372bcfe445fa51b1b4a0ff3d.png",
       "0xEe327F889d5947c1dc1934Bb208a1E792F953E96": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xee327f889d5947c1dc1934bb208a1e792f953e96.png"
-    }
-  },
-  {
-    "address": "0xCDb532170f8B524D047287bFEfAcd0cC02441b4A",
-    "network": 137,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1682430623,
-    "pool": {
-      "id": "0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45",
-      "address": "0x8fd39252d683fDB60BDDD4DF4B53C9380B496D59",
-      "poolType": "Weighted",
-      "symbol": "50wstETH-BPT-50bbamUSD",
-      "tokens": [
-        {
-          "address": "0x4a77eF015ddcd972fd9BA2C7D5D658689D090f1A",
-          "weight": "0.5",
-          "symbol": "wstETH-bb-a-WETH-BPT"
-        },
-        {
-          "address": "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76",
-          "weight": "0.5",
-          "symbol": "bb-am-USD"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x4a77eF015ddcd972fd9BA2C7D5D658689D090f1A": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a.png",
-      "0xb371aA09F5a110AB69b39A84B5469d29f9b22B76": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb371aa09f5a110ab69b39a84b5469d29f9b22b76.png"
     }
   },
   {
@@ -4955,73 +5384,392 @@
     }
   },
   {
-    "address": "0x359EA8618c405023Fc4B98dAb1B01F373792a126",
-    "network": 42161,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1650405644,
+    "address": "0x6f06b425e1bc11FC486C308c22e503d188525F06",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
     "pool": {
-      "id": "0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002",
-      "address": "0x64541216bAFFFEec8ea535BB71Fbc927831d0595",
-      "poolType": "Weighted",
-      "symbol": "B-33WETH-33WBTC-33USDC",
+      "id": "0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4",
+      "address": "0xb266aC3b7C98D7Bcb28731Dac0eF42DbA1b276bE",
+      "poolType": "ComposableStable",
+      "symbol": "truMATIC-bb-a-WMATIC-BPT",
       "tokens": [
         {
-          "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-          "weight": "0.333333333333333333",
-          "symbol": "WBTC"
+          "address": "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488",
+          "weight": "null",
+          "symbol": "bb-a-WMATIC"
         },
         {
-          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-          "weight": "0.333333333333333334",
-          "symbol": "WETH"
-        },
-        {
-          "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-          "weight": "0.333333333333333333",
-          "symbol": "USDC"
+          "address": "0xC1381c17d29A22dF5c3015C3D83ebd90AbD0e6b3",
+          "weight": "null",
+          "symbol": "fxTruMATIC"
         }
       ]
     },
     "tokenLogoURIs": {
-      "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-      "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8.png"
+      "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488": "",
+      "0xC1381c17d29A22dF5c3015C3D83ebd90AbD0e6b3": ""
     }
   },
   {
-    "address": "0xf460C9A5D00ef665F12Ee9634983A2b799dA5317",
-    "network": 42161,
+    "address": "0x24E8787B4AC5325Fd082BC30b9fe7eb2F01304c7",
+    "network": 137,
     "isKilled": false,
     "relativeWeightCap": "1",
-    "addedTimestamp": 1683715019,
+    "addedTimestamp": 1689617291,
     "pool": {
-      "id": "0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002",
-      "address": "0x64541216bAFFFEec8ea535BB71Fbc927831d0595",
-      "poolType": "Weighted",
-      "symbol": "B-33WETH-33WBTC-33USDC",
+      "id": "0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2",
+      "address": "0xAC2CaE8D2f78A4a8F92f20dbe74042Cd0a8d5Af3",
+      "poolType": "ComposableStable",
+      "symbol": "stMATIC-bb-a-WMATIC-BPT",
       "tokens": [
         {
-          "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-          "weight": "0.333333333333333333",
-          "symbol": "WBTC"
+          "address": "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4",
+          "weight": "null",
+          "symbol": "stMATIC"
         },
         {
-          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-          "weight": "0.333333333333333334",
-          "symbol": "WETH"
-        },
-        {
-          "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-          "weight": "0.333333333333333333",
-          "symbol": "USDC"
+          "address": "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488",
+          "weight": "null",
+          "symbol": "bb-a-WMATIC"
         }
       ]
     },
     "tokenLogoURIs": {
-      "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-      "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8.png"
+      "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png",
+      "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488": ""
+    }
+  },
+  {
+    "address": "0xb7b9B9D35e7F9E324C762235FB69848175C03A19",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3",
+      "address": "0x402cFDb7781fa85d52F425352661128250B79e12",
+      "poolType": "ComposableStable",
+      "symbol": "MaticX-bb-a-WMATIC-BPT",
+      "tokens": [
+        {
+          "address": "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488",
+          "weight": "null",
+          "symbol": "bb-a-WMATIC"
+        },
+        {
+          "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
+          "weight": "null",
+          "symbol": "MaticX"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xb0C830DCeB4EF55A60192472c20C8bf19dF03488": "",
+      "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
+    }
+  },
+  {
+    "address": "0x735B275a567F6c921c82F83D4515beC1F72038D3",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4",
+      "address": "0x9321e2250767D79bAb5aA06DAa8606A2B3B7B4C5",
+      "poolType": "ComposableStable",
+      "symbol": "bb-t-USD",
+      "tokens": [
+        {
+          "address": "0x7c82A23B4C48D796dee36A9cA215b641C6a8709d",
+          "weight": "null",
+          "symbol": "bb-t-USDT"
+        },
+        {
+          "address": "0xae646817e458C0bE890b81e8d880206710E3c44e",
+          "weight": "null",
+          "symbol": "bb-t-USDC"
+        },
+        {
+          "address": "0xDa1CD1711743e57Dd57102E9e61b75f3587703da",
+          "weight": "null",
+          "symbol": "bb-t-DAI"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7c82A23B4C48D796dee36A9cA215b641C6a8709d": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7c82a23b4c48d796dee36a9ca215b641c6a8709d.png",
+      "0xae646817e458C0bE890b81e8d880206710E3c44e": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xae646817e458c0be890b81e8d880206710e3c44e.png",
+      "0xDa1CD1711743e57Dd57102E9e61b75f3587703da": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xda1cd1711743e57dd57102e9e61b75f3587703da.png"
+    }
+  },
+  {
+    "address": "0x224989bC31286f0E6Dd6F32C0E475BbD4579A976",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5",
+      "address": "0x03090a9811181A2AfE830a3a0B467698CcF3a8b1",
+      "poolType": "ComposableStable",
+      "symbol": "bb-am-usd",
+      "tokens": [
+        {
+          "address": "0x230eCdB2a7CEE56d6889965A023AA0473D6dA507",
+          "weight": "null",
+          "symbol": "bb-a-USDT"
+        },
+        {
+          "address": "0x63cE19cCd39930725b8a3D2733627804718Ab83D",
+          "weight": "null",
+          "symbol": "bb-a-DAI"
+        },
+        {
+          "address": "0x89bb15076C9f2D86aa98ec6cFfC1a71e31c38953",
+          "weight": "null",
+          "symbol": "bb-a-USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x230eCdB2a7CEE56d6889965A023AA0473D6dA507": "",
+      "0x63cE19cCd39930725b8a3D2733627804718Ab83D": "",
+      "0x89bb15076C9f2D86aa98ec6cFfC1a71e31c38953": ""
+    }
+  },
+  {
+    "address": "0xEE3cc827EF3e7a00a728Fd52199cd5A6e336361D",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8",
+      "address": "0xF42ED61450458eE4620F5eF4f29adB25a6Ef0fb6",
+      "poolType": "ComposableStable",
+      "symbol": "frxETH-bb-a-WETH",
+      "tokens": [
+        {
+          "address": "0x25e57F4612912614e6C99616Bd2aBB9b5Ae71E99",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xEe327F889d5947c1dc1934Bb208a1E792F953E96",
+          "weight": "null",
+          "symbol": "frxETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x25e57F4612912614e6C99616Bd2aBB9b5Ae71E99": "",
+      "0xEe327F889d5947c1dc1934Bb208a1E792F953E96": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xee327f889d5947c1dc1934bb208a1e792f953e96.png"
+    }
+  },
+  {
+    "address": "0x1EcB261dc3496675c54514e44deA2a5115aEcb38",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7",
+      "address": "0xD2f3B9E67C69762dd1c88F1D3dADD1649a190761",
+      "poolType": "Weighted",
+      "symbol": "2BRLUSD-boosted",
+      "tokens": [
+        {
+          "address": "0x03090a9811181A2AfE830a3a0B467698CcF3a8b1",
+          "weight": "0.5",
+          "symbol": "bb-am-usd"
+        },
+        {
+          "address": "0x42942cDeC85078Cf0e28e9CB5ACd40CB53997Ed6",
+          "weight": "0.5",
+          "symbol": "2BRL (BRZ)"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x03090a9811181A2AfE830a3a0B467698CcF3a8b1": "",
+      "0x42942cDeC85078Cf0e28e9CB5ACd40CB53997Ed6": ""
+    }
+  },
+  {
+    "address": "0xdb218DC1394BbD787bb059dBd9F7E41063e16374",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6",
+      "address": "0xA8BF1C584519bE0184311C48AdBDc4c15cb2E8C1",
+      "poolType": "ComposableStable",
+      "symbol": "FRAX-bb-am-USD",
+      "tokens": [
+        {
+          "address": "0x03090a9811181A2AfE830a3a0B467698CcF3a8b1",
+          "weight": "null",
+          "symbol": "bb-am-usd"
+        },
+        {
+          "address": "0x45c32fA6DF82ead1e2EF74d17b76547EDdFaFF89",
+          "weight": "null",
+          "symbol": "FRAX"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x03090a9811181A2AfE830a3a0B467698CcF3a8b1": "",
+      "0x45c32fA6DF82ead1e2EF74d17b76547EDdFaFF89": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x45c32fa6df82ead1e2ef74d17b76547eddfaff89.png"
+    }
+  },
+  {
+    "address": "0x95Ee4c90aC8AaFbAe0DfE18F08a290b59eacbc1b",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc",
+      "address": "0xAB269164a10faB22BC87c39946da06C870B172D6",
+      "poolType": "ComposableStable",
+      "symbol": "wstETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0x03b54A6e9a984069379fae1a4fC4dBAE93B3bCCD",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0x25e57F4612912614e6C99616Bd2aBB9b5Ae71E99",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x03b54A6e9a984069379fae1a4fC4dBAE93B3bCCD": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x03b54a6e9a984069379fae1a4fc4dbae93b3bccd.png",
+      "0x25e57F4612912614e6C99616Bd2aBB9b5Ae71E99": ""
+    }
+  },
+  {
+    "address": "0x54f220a891f468629027C3Cc8A58722D4F576402",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x1d0a8a31cdb04efac3153237526fb15cc65a252000000000000000000000000f",
+      "address": "0x1d0A8a31CDb04efAC3153237526Fb15cc65A2520",
+      "poolType": "ComposableStable",
+      "symbol": "B-rETH-STABLE",
+      "tokens": [
+        {
+          "address": "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9",
+          "weight": "null",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9.png",
+      "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb23c20efce6e24acca0cef9b7b7aa196b84ec942.png"
+    }
+  },
+  {
+    "address": "0xce99399fb4De36056A6831b159572E271360ea40",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0xe1f2c039a68a216de6dd427be6c60decf405762a00000000000000000000000e",
+      "address": "0xe1F2c039a68A216dE6DD427Be6c60dEcf405762A",
+      "poolType": "ComposableStable",
+      "symbol": "B-wstETH-STABLE",
+      "tokens": [
+        {
+          "address": "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9",
+          "weight": "null",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9",
+          "weight": "null",
+          "symbol": "wstETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9.png",
+      "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5d8cff95d7a57c0bf50b30b43c7cc0d52825d4a9.png"
+    }
+  },
+  {
+    "address": "0xF7d515DC47d5BD57786494628ed766d6bF31cd39",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0xdf725fde6e89981fb30d9bf999841ac2c160b512000000000000000000000010",
+      "address": "0xDF725FdE6E89981Fb30D9bF999841aC2C160b512",
+      "poolType": "ComposableStable",
+      "symbol": "B-wstETH/rETH-STABLE",
+      "tokens": [
+        {
+          "address": "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5d8cff95d7a57c0bf50b30b43c7cc0d52825d4a9.png",
+      "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb23c20efce6e24acca0cef9b7b7aa196b84ec942.png"
+    }
+  },
+  {
+    "address": "0xc85679E41f1F98E694D9F8983fdD484F98F2eB02",
+    "network": 1101,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013",
+      "address": "0x9e2D87f904862671eb49cB358E74284762cC9F42",
+      "poolType": "Weighted",
+      "symbol": "B-wstETH/bboUSD",
+      "tokens": [
+        {
+          "address": "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9",
+          "weight": "0.5",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xe274c9deb6ed34cfe4130F8D0A8a948deA5bB286",
+          "weight": "0.5",
+          "symbol": "bb-o-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x5D8cfF95D7A57c0BF50B30b43c7CC0D52825D4a9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5d8cff95d7a57c0bf50b30b43c7cc0d52825d4a9.png",
+      "0xe274c9deb6ed34cfe4130F8D0A8a948deA5bB286": ""
     }
   },
   {
@@ -5054,69 +5802,11 @@
     }
   },
   {
-    "address": "0x077794c30AFECcdF5ad2Abc0588E8CEE7197b71a",
-    "network": 42161,
-    "isKilled": true,
-    "relativeWeightCap": "0.02",
-    "addedTimestamp": 1662504532,
-    "pool": {
-      "id": "0xe1b40094f1446722c424c598ac412d590e0b3ffb000200000000000000000076",
-      "address": "0xE1B40094F1446722c424C598aC412D590e0b3ffb",
-      "poolType": "Weighted",
-      "symbol": "20WETH-80CRE8R",
-      "tokens": [
-        {
-          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-          "weight": "0.2",
-          "symbol": "WETH"
-        },
-        {
-          "address": "0xb96B904ba83DdEeCE47CAADa8B40EE6936D92091",
-          "weight": "0.8",
-          "symbol": "CRE8R"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0xb96B904ba83DdEeCE47CAADa8B40EE6936D92091": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb96b904ba83ddeece47caada8b40ee6936d92091.png"
-    }
-  },
-  {
     "address": "0x0EDF6cDd81BC3471C053341B7D8Dfd1Cb367AD93",
     "network": 42161,
     "isKilled": false,
     "relativeWeightCap": "1",
     "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0xb3028ca124b80cfe6e9ca57b70ef2f0ccc41ebd40002000000000000000000ba",
-      "address": "0xb3028Ca124B80CFE6E9CA57B70eF2F0CCC41eBd4",
-      "poolType": "Weighted",
-      "symbol": "50MAGIC-50USDC",
-      "tokens": [
-        {
-          "address": "0x539bdE0d7Dbd336b79148AA742883198BBF60342",
-          "weight": "0.5",
-          "symbol": "MAGIC"
-        },
-        {
-          "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-          "weight": "0.5",
-          "symbol": "USDC"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x539bdE0d7Dbd336b79148AA742883198BBF60342": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x539bde0d7dbd336b79148aa742883198bbf60342.png",
-      "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8.png"
-    }
-  },
-  {
-    "address": "0x68EBB057645258Cc62488fD198A0f0fa3FD6e8fb",
-    "network": 42161,
-    "isKilled": true,
-    "relativeWeightCap": "null",
-    "addedTimestamp": 1657479716,
     "pool": {
       "id": "0xb3028ca124b80cfe6e9ca57b70ef2f0ccc41ebd40002000000000000000000ba",
       "address": "0xb3028Ca124B80CFE6E9CA57B70eF2F0CCC41eBd4",
@@ -5259,7 +5949,7 @@
   {
     "address": "0x09D1036B04ef49BC155D258D7360FA7aE8F5B84d",
     "network": 42161,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1683715019,
     "pool": {
@@ -5289,35 +5979,6 @@
       "0x5BAe72B75CaAb1f260D21BC028c630140607D6e8": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5bae72b75caab1f260d21bc028c630140607d6e8.png",
       "0x894c82800526E0391E709c0983a5AeA3718b7F6D": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x894c82800526e0391e709c0983a5aea3718b7f6d.png",
       "0xe1Fb90D0d3b47E551d494d7eBe8f209753526B01": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe1fb90d0d3b47e551d494d7ebe8f209753526b01.png"
-    }
-  },
-  {
-    "address": "0x260779495dA7Ce3A76b44F5C994cD18EBDa8177f",
-    "network": 42161,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382",
-      "address": "0x519cCe718FCD11AC09194CFf4517F12D263BE067",
-      "poolType": "ComposableStable",
-      "symbol": "BPT-USD+",
-      "tokens": [
-        {
-          "address": "0x117a3d474976274B37B7b94aF5DcAde5c90C6e85",
-          "weight": "null",
-          "symbol": "bb-DAI+"
-        },
-        {
-          "address": "0x284EB68520C8fA83361C1A3a5910aEC7f873C18b",
-          "weight": "null",
-          "symbol": "bb-USD+"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x117a3d474976274B37B7b94aF5DcAde5c90C6e85": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x117a3d474976274b37b7b94af5dcade5c90c6e85.png",
-      "0x284EB68520C8fA83361C1A3a5910aEC7f873C18b": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x284eb68520c8fa83361c1a3a5910aec7f873c18b.png"
     }
   },
   {
@@ -5530,35 +6191,6 @@
     }
   },
   {
-    "address": "0xd40a3C414Bb6f82fC5625e32895F49E53220f73b",
-    "network": 42161,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1682430623,
-    "pool": {
-      "id": "0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412",
-      "address": "0x9fB7D6dCAC7b6aa20108BaD226c35B85A9e31B63",
-      "poolType": "Weighted",
-      "symbol": "50wstETH-BPT-50bbaUSD",
-      "tokens": [
-        {
-          "address": "0x5A7f39435fD9c381e4932fa2047C9a5136A5E3E7",
-          "weight": "0.5",
-          "symbol": "wstETH-bb-a-WETH-BPT"
-        },
-        {
-          "address": "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A",
-          "weight": "0.5",
-          "symbol": "bb-a-USD"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x5A7f39435fD9c381e4932fa2047C9a5136A5E3E7": "",
-      "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xee02583596aee94cccb7e8ccd3921d955f17982a.png"
-    }
-  },
-  {
     "address": "0xc4b6cc9A444337b1Cb8cBbDD9de4d983f609C391",
     "network": 42161,
     "isKilled": false,
@@ -5672,6 +6304,331 @@
     "tokenLogoURIs": {
       "0xa7997F0eC9fa54E89659229fB26537B6A725b798": "",
       "0xf0cb2dc0db5e6c66B9a70Ac27B06b878da017028": "https://assets.coingecko.com/coins/images/14483/large/token_OHM_%281%29.png?1628311611"
+    }
+  },
+  {
+    "address": "0x6ba66967B0723718d616ad5F293c2AE6d7b0FCAE",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0xce2da1d3e5b5e4e1913f9ff65ee029d38682d8b900020000000000000000044e",
+      "address": "0xCE2Da1D3e5b5e4E1913F9fF65eE029d38682d8b9",
+      "poolType": "Weighted",
+      "symbol": "B-50ACID-50WETH",
+      "tokens": [
+        {
+          "address": "0x29C1EA5ED7af53094b1a79eF60d20641987c867e",
+          "weight": "0.5",
+          "symbol": "ACID"
+        },
+        {
+          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          "weight": "0.5",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x29C1EA5ED7af53094b1a79eF60d20641987c867e": "https://assets.coingecko.com/coins/images/29418/large/acid_200_200.png?1678696816",
+      "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png"
+    }
+  },
+  {
+    "address": "0x25869f277f474FA9459F40F5D4cB0D6A8Ab41967",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x8bc65eed474d1a00555825c91feab6a8255c2107000000000000000000000453",
+      "address": "0x8bc65Eed474D1A00555825c91FeAb6A8255C2107",
+      "poolType": "ComposableStable",
+      "symbol": "DOLA/USDC BPT",
+      "tokens": [
+        {
+          "address": "0x6A7661795C374c0bFC635934efAddFf3A7Ee23b6",
+          "weight": "null",
+          "symbol": "DOLA"
+        },
+        {
+          "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          "weight": "null",
+          "symbol": "USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6A7661795C374c0bFC635934efAddFf3A7Ee23b6": "https://assets.coingecko.com/coins/images/14287/large/dola.png?1667738374",
+      "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xaf88d065e77c8cc2239327c5edb3a432268e5831.png"
+    }
+  },
+  {
+    "address": "0xacE0D479040231e3c6b17479cFd4444182d521d4",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1687258571,
+    "pool": {
+      "id": "0x567ecfcb22205d279bb8eed3e066989902bf03d5000000000000000000000452",
+      "address": "0x567ECfCB22205D279BB8Eed3E066989902bF03D5",
+      "poolType": "ComposableStable",
+      "symbol": "DOLA/bbaUSD-BPT",
+      "tokens": [
+        {
+          "address": "0x6A7661795C374c0bFC635934efAddFf3A7Ee23b6",
+          "weight": "null",
+          "symbol": "DOLA"
+        },
+        {
+          "address": "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A",
+          "weight": "null",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6A7661795C374c0bFC635934efAddFf3A7Ee23b6": "https://assets.coingecko.com/coins/images/14287/large/dola.png?1667738374",
+      "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xee02583596aee94cccb7e8ccd3921d955f17982a.png"
+    }
+  },
+  {
+    "address": "0x175407b4710b5A1cB67a37C76859F17fb2ff6672",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1687806647,
+    "pool": {
+      "id": "0xc7fa3a3527435720f0e2a4c1378335324dd4f9b3000200000000000000000459",
+      "address": "0xc7FA3A3527435720f0e2a4c1378335324dd4F9b3",
+      "poolType": "Weighted",
+      "symbol": "55auraBal-45wsteth",
+      "tokens": [
+        {
+          "address": "0x223738a747383d6F9f827d95964e4d8E8AC754cE",
+          "weight": "0.55",
+          "symbol": "auraBAL"
+        },
+        {
+          "address": "0x5979D7b546E38E414F7E9822514be443A4800529",
+          "weight": "0.45",
+          "symbol": "wstETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x223738a747383d6F9f827d95964e4d8E8AC754cE": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x223738a747383d6f9f827d95964e4d8e8ac754ce.png",
+      "0x5979D7b546E38E414F7E9822514be443A4800529": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5979d7b546e38e414f7e9822514be443a4800529.png"
+    }
+  },
+  {
+    "address": "0xD2C2b1C0F8Ad6E653eD7064fa7bAd7a22De8B249",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x26e5c5e2b48815b59640a1a82ac3c2249188daf4000000000000000000000476",
+      "address": "0x26e5C5e2b48815b59640a1a82ac3C2249188Daf4",
+      "poolType": "ComposableStable",
+      "symbol": "alETH/wstETH-BPT",
+      "tokens": [
+        {
+          "address": "0x17573150d67d820542EFb24210371545a4868B03",
+          "weight": "null",
+          "symbol": "alETH"
+        },
+        {
+          "address": "0x5979D7b546E38E414F7E9822514be443A4800529",
+          "weight": "null",
+          "symbol": "wstETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x17573150d67d820542EFb24210371545a4868B03": "",
+      "0x5979D7b546E38E414F7E9822514be443A4800529": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5979d7b546e38e414f7e9822514be443a4800529.png"
+    }
+  },
+  {
+    "address": "0xCe540832f7c790d25345Aa19FB1Db3cfDEA04611",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xfa92d9dd808d0e8d68079bdc7f01e74658e1ef15000000000000000000000477",
+      "address": "0xfA92D9Dd808D0E8D68079BDc7f01E74658E1EF15",
+      "poolType": "ComposableStable",
+      "symbol": "alETH/rETH-BPT",
+      "tokens": [
+        {
+          "address": "0x17573150d67d820542EFb24210371545a4868B03",
+          "weight": "null",
+          "symbol": "alETH"
+        },
+        {
+          "address": "0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x17573150d67d820542EFb24210371545a4868B03": "",
+      "0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xec70dcb4a1efa46b8f2d97c310c9c4790ba5ffa8.png"
+    }
+  },
+  {
+    "address": "0xb12ADA23eE766bd6b596E2bE556ea2046758b87c",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xbe0f30217be1e981add883848d0773a86d2d2cd4000000000000000000000471",
+      "address": "0xBe0f30217BE1e981aDD883848D0773A86d2d2CD4",
+      "poolType": "ComposableStable",
+      "symbol": "rETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0xaD28940024117B442a9EFB6D0f25C8B59e1c950B",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        },
+        {
+          "address": "0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xaD28940024117B442a9EFB6D0f25C8B59e1c950B": "",
+      "0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xec70dcb4a1efa46b8f2d97c310c9c4790ba5ffa8.png"
+    }
+  },
+  {
+    "address": "0x80aed5C5C683FEC86817C98da334DD72424E7297",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0x45c4d1376943ab28802b995acffc04903eb5223f000000000000000000000470",
+      "address": "0x45C4D1376943Ab28802B995aCfFC04903Eb5223f",
+      "poolType": "ComposableStable",
+      "symbol": "wstETH-bb-a-WETH-BPT",
+      "tokens": [
+        {
+          "address": "0x5979D7b546E38E414F7E9822514be443A4800529",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xaD28940024117B442a9EFB6D0f25C8B59e1c950B",
+          "weight": "null",
+          "symbol": "bb-a-WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x5979D7b546E38E414F7E9822514be443A4800529": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5979d7b546e38e414f7e9822514be443a4800529.png",
+      "0xaD28940024117B442a9EFB6D0f25C8B59e1c950B": ""
+    }
+  },
+  {
+    "address": "0x9ab40B6e1330Ce70B9e07cD691f281c1539944E6",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1689617291,
+    "pool": {
+      "id": "0xc6eee8cb7643ec2f05f46d569e9ec8ef8b41b389000000000000000000000475",
+      "address": "0xc6EeE8cb7643eC2F05F46d569e9eC8EF8b41b389",
+      "poolType": "ComposableStable",
+      "symbol": "bb-a-USD",
+      "tokens": [
+        {
+          "address": "0x6CB787a419c3e6Ee2e9FF365856c29CD10659113",
+          "weight": "null",
+          "symbol": "bb-a-DAI"
+        },
+        {
+          "address": "0xbD724Eb087d4cc0f61a5fED1fFFaF937937E14DE",
+          "weight": "null",
+          "symbol": "bb-a-USDC"
+        },
+        {
+          "address": "0xc46be4B8Bb6B5A3d3120660efae9C5416318ED40",
+          "weight": "null",
+          "symbol": "bb-a-USDT"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6CB787a419c3e6Ee2e9FF365856c29CD10659113": "",
+      "0xbD724Eb087d4cc0f61a5fED1fFFaF937937E14DE": "",
+      "0xc46be4B8Bb6B5A3d3120660efae9C5416318ED40": ""
+    }
+  },
+  {
+    "address": "0xCe3a024bAF36C91d315722B093928020a4F56622",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f",
+      "address": "0x00FCD3d55085e998e291a0005cedeCF58aC14c40",
+      "poolType": "Weighted",
+      "symbol": "50STG-50bbaUSD ",
+      "tokens": [
+        {
+          "address": "0x6694340fc020c5E6B96567843da2df01b2CE1eb6",
+          "weight": "0.5",
+          "symbol": "STG"
+        },
+        {
+          "address": "0xc6EeE8cb7643eC2F05F46d569e9eC8EF8b41b389",
+          "weight": "0.5",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6694340fc020c5E6B96567843da2df01b2CE1eb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x6694340fc020c5e6b96567843da2df01b2ce1eb6.png",
+      "0xc6EeE8cb7643eC2F05F46d569e9eC8EF8b41b389": ""
+    }
+  },
+  {
+    "address": "0xBc771929359B1A6386801705e8D185205d8f1CBF",
+    "network": 42161,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690227287,
+    "pool": {
+      "id": "0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e",
+      "address": "0xbBF9d705b75F408CFCaEE91dA32966124d2c6F7D",
+      "poolType": "ComposableStable",
+      "symbol": "DOLA/bbaUSD-BPT ",
+      "tokens": [
+        {
+          "address": "0x6A7661795C374c0bFC635934efAddFf3A7Ee23b6",
+          "weight": "null",
+          "symbol": "DOLA"
+        },
+        {
+          "address": "0xc6EeE8cb7643eC2F05F46d569e9eC8EF8b41b389",
+          "weight": "null",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6A7661795C374c0bFC635934efAddFf3A7Ee23b6": "https://assets.coingecko.com/coins/images/14287/large/dola.png?1667738374",
+      "0xc6EeE8cb7643eC2F05F46d569e9eC8EF8b41b389": ""
     }
   }
 ]

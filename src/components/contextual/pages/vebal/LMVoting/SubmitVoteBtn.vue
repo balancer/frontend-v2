@@ -9,7 +9,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 type Props = {
   disabled: boolean;
   loading: boolean;
-  receipt?: TransactionReceipt;
+  receipt?: TransactionReceipt | null;
 };
 
 /**

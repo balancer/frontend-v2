@@ -44,6 +44,15 @@ type ChildChainGaugeInfo = {
   streamer: string;
 };
 
+const gaugeTypes = {
+  [Network.MAINNET]: 'Ethereum',
+  [Network.POLYGON]: 'Polygon',
+  [Network.ARBITRUM]: 'Arbitrum',
+  [Network.OPTIMISM]: 'Optimism',
+  [Network.GNOSIS]: 'Gnosis',
+  [Network.ZKEVM]: 'PolygonZkEvm',
+};
+
 async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   const rpcUrl = configService.getNetworkRpc(Network.MAINNET);
   if (rpcUrl.includes('INFURA_KEY'))
@@ -153,16 +162,8 @@ function getTrustWalletAssetsURI(
   log(
     `getTrustWalletAssetsURI network: ${network} tokenAddress: ${tokenAddress}`
   );
-  const networksMap = {
-    [Network.MAINNET]: 'ethereum',
-    [Network.ARBITRUM]: 'arbitrum',
-    [Network.POLYGON]: 'polygon',
-    [Network.GOERLI]: 'goerli',
-    [Network.OPTIMISM]: 'optimism',
-    [Network.GNOSIS]: 'xdai',
-  };
 
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
+  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${config[network].trustWalletNetwork}/assets/${tokenAddress}/logo.png`;
 }
 
 async function isValidLogo(uri: string | undefined): Promise<boolean> {
@@ -197,12 +198,7 @@ async function getTokenLogoURI(
   logoUri = await getAssetURIFromTokenlists(tokenAddress, network);
   if (await isValidLogo(logoUri)) return logoUri;
 
-  if (
-    network === Network.ARBITRUM ||
-    network === Network.OPTIMISM ||
-    network === Network.POLYGON ||
-    network === Network.GNOSIS
-  ) {
+  if (network !== Network.MAINNET && config[network].testNetwork === false) {
     const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
     logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
     if (await isValidLogo(logoUri)) return logoUri;
@@ -418,7 +414,7 @@ async function getRootGaugeInfo(
       rootGauges(
         where: {
           recipient_in: ${JSON.stringify(recipients)}
-          chain: ${config[network].shortName}
+          chain: ${gaugeTypes[network]}
           gauge_not: null
         }
       ) {
@@ -489,8 +485,28 @@ async function getGaugeInfo(
   }
 }
 
+function checkNodeJSVersion() {
+  const nodeVersion = process.versions.node;
+  if (Number(nodeVersion.split('.')[0]) > 16) {
+    throw new Error(
+      `This script does not work with NodeJS > 16. You are using ${nodeVersion}. Please downgrade to continue.`
+    );
+  }
+}
+
+function checkRPCIsSet() {
+  if (!import.meta.env[`VITE_RPC_URL_1`]) {
+    throw new Error(
+      'This script requires the env variable VITE_RPC_URL_1 to be set to your RPC URL, as the default Infura RPC will not work with CLI apps.'
+    );
+  }
+}
+
 (async () => {
   console.log('Generating voting-gauges.json...');
+
+  checkNodeJSVersion();
+  checkRPCIsSet();
 
   console.log('Fetching gauges info...');
   console.time('getGaugeInfo');

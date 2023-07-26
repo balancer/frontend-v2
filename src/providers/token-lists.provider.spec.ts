@@ -23,81 +23,27 @@ describe('Token lists provider should', () => {
 
     expect(firstTokenListSymbols(result.activeTokenLists.value)).toEqual([
       'BAL',
+      'bb-a-DAI',
+      'bb-a-USDC',
+      'bb-a-USDT',
+      'bb-a-USD',
       'DAI',
+      'FEI',
+      'GNO',
       'USDT',
       'USDC',
       'WETH',
       'WBTC',
-      'miMATIC',
-      // Explicitly added to test tokens-5.json to simplify testing:
-      'bb-a-USD',
-      'bb-a-USDT',
-      'test-pool-symbol',
-      'bb-a-DAI',
-      'GRO',
-    ]);
-  });
-
-  test('provide approved TokenList', async () => {
-    const { result } = mountComposableWithTokenLists();
-    expect(firstTokenListSymbols(result.approvedTokenLists.value)).toEqual([
-      'BAL',
-      'DAI',
-      'USDT',
-      'USDC',
-      'WETH',
-      'WBTC',
-      'miMATIC',
-      // Explicitly added to test tokens-5.json to simplify testing:
-      'bb-a-USD',
-      'bb-a-USDT',
-      'test-pool-symbol',
-      'bb-a-DAI',
+      'aDAI',
+      'aUSDC',
+      'aUSDT',
       'GRO',
     ]);
   });
 
   test('provide balancer TokenList', async () => {
     const { result } = mountComposableWithTokenLists();
-    expect(firstTokenListSymbols(result.balancerTokenLists.value)).toEqual([
-      'BAL',
-      'DAI',
-      'USDT',
-      'USDC',
-      'WETH',
-      'WBTC',
-      'miMATIC',
-      // Explicitly added to test tokens-5.json to simplify testing:
-      'bb-a-USD',
-      'bb-a-USDT',
-      'test-pool-symbol',
-      'bb-a-DAI',
-      'GRO',
-    ]);
-  });
-
-  test('provide default TokenList', async () => {
-    const { result } = mountComposableWithTokenLists();
-    expect(tokenListSymbols(result.defaultTokenList.value)).toEqual([
-      'BAL',
-      'DAI',
-      'USDT',
-      'USDC',
-      'WETH',
-      'WBTC',
-      'miMATIC',
-      // Explicitly added to test tokens-5.json to simplify testing:
-      'bb-a-USD',
-      'bb-a-USDT',
-      'test-pool-symbol',
-      'bb-a-DAI',
-      'GRO',
-    ]);
-  });
-
-  test('provide vetted TokenList', async () => {
-    const { result } = mountComposableWithTokenLists();
-    expect(tokenListSymbols(result.vettedTokenList.value)).toEqual([
+    expect(tokenListSymbols(result.balancerTokenList.value)).toEqual([
       'BAL',
       'bb-a-DAI',
       'bb-a-USDC',

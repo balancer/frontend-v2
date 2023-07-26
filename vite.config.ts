@@ -14,6 +14,7 @@ import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
+import viteImagemin from 'vite-plugin-imagemin';
 
 export default defineConfig(({ mode }) => {
   const envConfig = loadEnv(mode, process.cwd());
@@ -50,6 +51,7 @@ export default defineConfig(({ mode }) => {
         './src/locales/**'
       ),
     }),
+    viteImagemin({}),
   ];
 
   if (mode === 'production' && envConfig.VITE_SENTRY_AUTH_TOKEN) {
@@ -149,7 +151,6 @@ export default defineConfig(({ mode }) => {
           'node_modules/**',
           'src/components/_global/BalBtn/button-options.js',
         ],
-        transformMixedEsModules: true, // Enable @walletconnect/web3-provider which has some code in CommonJS
       },
     },
     test: {

@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { captureException } from '@sentry/browser';
 
-import { isGoerli } from '@/composables/useNetwork';
+import { isTestnet } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
 
 const ClaimPage = () => import('@/pages/claim/index.vue');
@@ -91,12 +91,13 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id',
     name: 'pool',
     component: PoolPage,
+    meta: { layout: 'PoolLayout' },
   },
   {
     path: '/:networkSlug/pool/:id/add-liquidity',
     name: 'add-liquidity',
     component: PoolAddLiquidityPage,
-    meta: { layout: 'JoinExitLayout' },
+    meta: { layout: 'PoolLayout' },
   },
   {
     path: '/:networkSlug/pool/:id/invest',
@@ -109,7 +110,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/withdraw',
     name: 'withdraw',
     component: PoolWithdrawPage,
-    meta: { layout: 'JoinExitLayout' },
+    meta: { layout: 'PoolLayout' },
   },
   {
     path: '/:networkSlug/vebal',
@@ -152,6 +153,26 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug?',
     name: 'home',
     component: HomePage,
+    beforeEnter: (to, from, next) => {
+      /*
+        - Correct urls:
+        These urls will contain a hash (like app.balancer.fi/# or app.balancer.fi/#/polygon).
+        The hash fragments are not included in window.location.pathname but in window.location.hash
+        so for those cases window.location.pathname === '/'
+
+        - Incorrect urls
+        These urls will not contain the hash (like app.balancer.fi/polygon/).
+        Received when the user does not add the hash symbol when manually typing the url in the browser
+        or when Vercel building a bad redirect without hash after a deployment).
+        In these cases, the window.location.pathname will contain the wrong fragment/s that we won't to discard.
+        Example: app.balancer.fi/polygon/ will have window.location.pathname === '/polygon'
+      */
+      if (window.location.pathname !== '/') {
+        // Remove wrong fragments without hash from pathname
+        window.location.pathname = '';
+      }
+      return next();
+    },
   },
   {
     path: '/:pathMatch(.*)*',
@@ -163,7 +184,7 @@ const routes: RouteRecordRaw[] = [
 /**
  * TESTNET ONLY ROUTES
  */
-if (isGoerli.value) {
+if (isTestnet.value) {
   routes.push({
     path: '/:networkSlug/faucet',
     name: 'faucet',
