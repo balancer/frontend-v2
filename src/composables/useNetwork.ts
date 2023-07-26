@@ -40,8 +40,12 @@ export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
 export const isGnosis = computed(() => networkId.value === Network.GNOSIS);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
-export const hasBridge = computed<boolean>(() => !!networkConfig.bridgeUrl);
-export const isTestnet = computed(() => isGoerli.value);
+export const hasBridge = computed<boolean>(
+  () => !!config[networkId.value].bridgeUrl
+);
+export const isTestnet = computed<boolean>(
+  () => !!config[networkId.value].testNetwork
+);
 
 export const isEIP1559SupportedNetwork = computed(
   () => configService.network.supportsEIP1559
