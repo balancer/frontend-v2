@@ -26,7 +26,8 @@ const config: Config = {
   explorerName: 'BaseScan',
   subgraph:
     'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi:
+    'https://ehtymracbg.execute-api.ap-southeast-2.amazonaws.com/prod/',
   poolsUrlV2: '',
   subgraphs: {
     main: [

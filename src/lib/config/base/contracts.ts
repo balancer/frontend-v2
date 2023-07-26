@@ -5,7 +5,7 @@ const contracts: Contracts = {
   merkleRedeem: '',
   merkleOrchard: '',
   merkleOrchardV2: base.MerkleOrchard,
-  multicall: '',
+  multicall: '0xca11bde05977b3631167028862be2a173976ca11',
   authorizer: '',
   vault: base.Vault,
   weightedPoolFactory: base.WeightedPoolFactory,
