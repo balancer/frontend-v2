@@ -8,9 +8,11 @@ import { provideJoinPool } from '@/providers/local/join-pool.provider';
 import Col2Layout from '@/components/layouts/Col2Layout.vue';
 import useDisabledJoinsGuard from '@/composables/contextual/add-liquidity/useDisabledJoinsGuard';
 import { Pool } from '@/services/pool/types';
+import { PoolWithMethods } from '@balancer-labs/sdk';
 
 type Props = {
   pool: Pool;
+  sdkPool: PoolWithMethods;
 };
 
 /**
@@ -23,7 +25,7 @@ const pool = toRef(props, 'pool');
 /**
  * PROVIDERS
  */
-provideJoinPool(pool);
+provideJoinPool(pool, props.sdkPool);
 
 /**
  * COMPOSABLES

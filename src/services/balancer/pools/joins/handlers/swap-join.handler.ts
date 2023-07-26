@@ -5,7 +5,7 @@ import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
+import { BalancerSDK, SwapInfo, PoolWithMethods } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcSigner } from '@ethersproject/providers';
@@ -22,6 +22,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk: BalancerSDK
   ) {}
 

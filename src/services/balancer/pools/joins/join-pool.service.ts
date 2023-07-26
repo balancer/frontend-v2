@@ -9,8 +9,7 @@ import {
   QueryOutput,
 } from './handlers/join-pool.handler';
 import { GeneralisedJoinHandler } from './handlers/generalised-join.handler';
-
-import { BalancerSDK } from '@balancer-labs/sdk';
+import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { ExactInJoinHandler } from './handlers/exact-in-join.handler';
 
 export enum JoinHandler {
@@ -19,7 +18,7 @@ export enum JoinHandler {
   ExactIn = 'ExactIn',
 }
 
-type HandlerParams = [Ref<Pool>, BalancerSDK];
+type HandlerParams = [Ref<Pool>, PoolWithMethods, BalancerSDK];
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
  * type or other criteria. It wraps calls to the functions defined in the
@@ -37,6 +36,7 @@ export class JoinPoolService {
    */
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk = getBalancerSDK()
   ) {
     this.joinHandler = this.setJoinHandler(JoinHandler.Generalised);
@@ -49,8 +49,8 @@ export class JoinPoolService {
    * @returns {JoinPoolHandler} The JoinPoolHandler class to be used.
    */
   setJoinHandler(type: JoinHandler): JoinPoolHandler {
-    const { pool, sdk } = this;
-    const handlerParams: HandlerParams = [pool, sdk];
+    const { pool, sdkPool, sdk } = this;
+    const handlerParams: HandlerParams = [pool, sdkPool, sdk];
 
     switch (type) {
       case JoinHandler.Swap:

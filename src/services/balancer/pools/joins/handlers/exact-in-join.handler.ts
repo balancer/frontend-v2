@@ -25,6 +25,7 @@ export class ExactInJoinHandler implements JoinPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk: BalancerSDK
   ) {}
 
@@ -61,7 +62,7 @@ export class ExactInJoinHandler implements JoinPoolHandler {
 
     const signerAddress = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await this.sdk.pools.find(this.pool.value.id);
+    const sdkPool = await this.sdk.data.poolsOnChain.refresh(this.sdkPool);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
     const _tokensIn = tokensList.map(address => formatAddressForSor(address));

@@ -49,6 +49,7 @@ import { useApp } from '@/composables/useApp';
 import { throwQueryError } from '@/lib/utils/queries';
 import { ApprovalAction } from '@/composables/approvals/types';
 import { captureBalancerException } from '@/lib/utils/errors';
+import { PoolWithMethods } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -65,6 +66,7 @@ export type AmountIn = {
  */
 export const joinPoolProvider = (
   pool: Ref<Pool>,
+  sdkPool: PoolWithMethods,
   queryJoinDebounceMillis = 1000
 ) => {
   /**
@@ -104,7 +106,7 @@ export const joinPoolProvider = (
   /**
    * SERVICES
    */
-  const joinPoolService = new JoinPoolService(pool);
+  const joinPoolService = new JoinPoolService(pool, sdkPool);
 
   /**
    * COMPOSABLES
@@ -490,8 +492,8 @@ export type JoinPoolProviderResponse = ReturnType<typeof joinPoolProvider>;
 export const JoinPoolProviderSymbol: InjectionKey<JoinPoolProviderResponse> =
   Symbol(symbolKeys.Providers.JoinPool);
 
-export function provideJoinPool(pool: Ref<Pool>) {
-  const joinPoolResponse = joinPoolProvider(pool);
+export function provideJoinPool(pool: Ref<Pool>, sdkPool: PoolWithMethods) {
+  const joinPoolResponse = joinPoolProvider(pool, sdkPool);
   provide(JoinPoolProviderSymbol, joinPoolResponse);
   return joinPoolResponse;
 }

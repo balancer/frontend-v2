@@ -1,5 +1,9 @@
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, SimulationType } from '@balancer-labs/sdk';
+import {
+  BalancerSDK,
+  SimulationType,
+  PoolWithMethods,
+} from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
@@ -21,6 +25,7 @@ export class GeneralisedJoinHandler implements JoinPoolHandler {
 
   constructor(
     public readonly pool: Ref<Pool>,
+    public readonly sdkPool: PoolWithMethods,
     public readonly sdk: BalancerSDK
   ) {}
 

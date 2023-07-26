@@ -9,7 +9,8 @@ import Col2Layout from '@/components/layouts/Col2Layout.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useRoute } from 'vue-router';
 import { getBalancerSDK } from '@/dependencies/balancer-sdk';
-import { Pool } from '@balancer-labs/sdk';
+import { PoolWithMethods } from '@balancer-labs/sdk';
+import { trackLoading } from '@/lib/utils';
 
 const sdk = getBalancerSDK();
 
@@ -18,7 +19,8 @@ const sdk = getBalancerSDK();
  */
 const route = useRoute();
 const poolId = (route.params.id as string).toLowerCase();
-const sdkPool = ref<Pool | undefined>();
+const sdkPool = ref<PoolWithMethods | undefined>();
+const isLoadingSDKPool = ref(true);
 
 /**
  * COMPOSABLES
@@ -36,7 +38,8 @@ const isLoadingSor = computed(
 );
 
 const isLoading = computed(
-  (): boolean => isLoadingPool.value || isLoadingSor.value
+  (): boolean =>
+    isLoadingPool.value || isLoadingSor.value || isLoadingSDKPool.value
 );
 
 /**
@@ -54,13 +57,19 @@ async function refetchOnchainPoolDataSDK() {
 useIntervalFn(refetchOnchainPoolDataSDK, oneSecondInMs * 20);
 
 onBeforeMount(async () => {
-  sdkPool.value = await sdk.pools.find(poolId);
+  trackLoading(async () => {
+    sdkPool.value = await sdk.pools.find(poolId);
+  }, isLoadingSDKPool);
 });
 </script>
 
 <template>
   <div>
-    <Col2Layout v-if="isLoading || !pool" leftSpan="5" rightSpan="7">
+    <Col2Layout
+      v-if="isLoading || !pool || !sdkPool"
+      leftSpan="5"
+      rightSpan="7"
+    >
       <template v-if="!isMobile" #left>
         <BalLoadingBlock class="h-24" />
       </template>
@@ -68,7 +77,7 @@ onBeforeMount(async () => {
         <BalLoadingBlock class="h-96" />
       </template>
     </Col2Layout>
-    <Page v-else :pool="pool" />
+    <Page v-else :pool="pool" :sdkPool="sdkPool" />
   </div>
 </template>
 
