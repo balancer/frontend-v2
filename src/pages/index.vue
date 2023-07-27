@@ -12,6 +12,11 @@ import usePools from '@/composables/pools/usePools';
 import { lsGet, lsSet } from '@/lib/utils';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { useIntersectionObserver } from '@vueuse/core';
+import { boostedPoolIds } from '@/lib/config/metadata';
+import { PoolType } from '@/services/pool/types';
+import PoolFeatureSelect from '@/components/inputs/PoolFeatureSelect.vue';
+import { useTokens } from '@/providers/tokens.provider';
+import { PoolFeatureFilter } from '@/types/pools';
 
 const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
 const isFeaturedProtocolsVisible = ref(false);
@@ -28,22 +33,28 @@ const route = useRoute();
 const urlSortParam = route.query?.sort as string | undefined;
 const initSortCol =
   urlSortParam || lsGet(LS_KEYS.App.PoolSorting) || 'totalLiquidity';
+const sortField = ref('totalLiquidity');
+const poolFeatureFilter = ref<PoolFeatureFilter>();
+const filterPoolIds = ref<string[]>([]);
+const filterPoolTypes = ref<PoolType[]>([]);
 
 /**
  * COMPOSABLES
  */
 const router = useRouter();
+const { getToken } = useTokens();
 const { appNetworkConfig } = useNetwork();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-const poolsSortField = ref('totalLiquidity');
+const { pools, isLoading, isFetchingNextPage, loadMorePools } = usePools({
+  filterTokens: selectedTokens,
+  sortField,
+  poolIds: filterPoolIds,
+  poolTypes: filterPoolTypes,
+});
 
-const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } = usePools(
-  selectedTokens,
-  poolsSortField
-);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
 
@@ -57,9 +68,45 @@ function navigateToCreatePool() {
 }
 
 function onColumnSort(columnId: string) {
-  poolsSortField.value = columnId;
+  sortField.value = columnId;
   lsSet(LS_KEYS.App.PoolSorting, columnId);
 }
+
+function updatePoolFilters(feature: PoolFeatureFilter | undefined) {
+  switch (feature) {
+    case PoolFeatureFilter.Boosted:
+      filterPoolIds.value = boostedPoolIds();
+      break;
+    case PoolFeatureFilter.Weighted:
+      filterPoolIds.value = [];
+      filterPoolTypes.value = [PoolType.Weighted];
+      break;
+    case PoolFeatureFilter.Stable:
+      filterPoolIds.value = [];
+      filterPoolTypes.value = [
+        PoolType.Stable,
+        PoolType.StablePhantom,
+        PoolType.MetaStable,
+        PoolType.ComposableStable,
+      ];
+      break;
+    case PoolFeatureFilter.CLP:
+      filterPoolIds.value = [];
+      filterPoolTypes.value = [PoolType.Gyro2, PoolType.Gyro3, PoolType.GyroE];
+      break;
+    case PoolFeatureFilter.LBP:
+      filterPoolIds.value = [];
+      filterPoolTypes.value = [PoolType.LiquidityBootstrapping];
+      break;
+    default:
+      filterPoolIds.value = [];
+      filterPoolTypes.value = [];
+  }
+}
+
+watch(poolFeatureFilter, newPoolFeatureFilter => {
+  updatePoolFilters(newPoolFeatureFilter);
+});
 </script>
 
 <template>
@@ -88,12 +135,30 @@ function onColumnSort(columnId: string) {
           <div
             class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
           >
-            <TokenSearchInput
-              v-model="selectedTokens"
-              class="w-full md:w-2/3"
-              @add="addSelectedToken"
-              @remove="removeSelectedToken"
-            />
+            <BalVStack spacing="md">
+              <BalHStack spacing="md">
+                <TokenSearchInput
+                  v-model="selectedTokens"
+                  @add="addSelectedToken"
+                  @remove="removeSelectedToken"
+                />
+                <PoolFeatureSelect v-model="poolFeatureFilter" />
+              </BalHStack>
+              <BalHStack v-if="selectedTokens.length" spacing="sm">
+                <BalChip
+                  v-for="token in selectedTokens"
+                  :key="token"
+                  color="white"
+                  iconSize="sm"
+                  :closeable="true"
+                  @closed="removeSelectedToken"
+                >
+                  <BalAsset :address="token" :size="20" class="flex-auto" />
+                  <span class="ml-2">{{ getToken(token)?.symbol }}</span>
+                </BalChip>
+              </BalHStack>
+            </BalVStack>
+
             <BalBtn
               v-if="!upToMediumBreakpoint"
               color="blue"
@@ -115,7 +180,7 @@ function onColumnSort(columnId: string) {
           class="mb-8"
           :sortColumn="initSortCol"
           :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
-          :isLoadingMore="poolsIsFetchingNextPage"
+          :isLoadingMore="isFetchingNextPage"
           :isPaginated="isPaginated"
           skeletonClass="pools-table-loading-height"
           @on-column-sort="onColumnSort"
