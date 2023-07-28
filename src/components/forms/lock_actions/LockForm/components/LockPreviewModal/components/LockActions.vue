@@ -24,6 +24,7 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { ApprovalAction } from '@/composables/approvals/types';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { captureBalancerException } from '@/lib/utils/errors';
+import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 
 /**
  * TYPES
@@ -79,6 +80,7 @@ const { fNum } = useNumbers();
 const { totalVotes, unallocatedVotes } = useVotingGauges();
 const { networkSlug } = useNetwork();
 const { getTokenApprovalActions } = useTokenApprovalActions();
+const { refetch: refetchSyncData } = useCrossChainSync();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
@@ -144,6 +146,8 @@ async function handleTransaction(
 
       const confirmedAt = await getTxConfirmedAt(receipt);
       lockActionStates[actionIndex].confirmedAt = dateTimeLabelFor(confirmedAt);
+
+      refetchSyncData();
     },
     onTxFailed: () => {
       lockActionStates[actionIndex].confirming = false;
