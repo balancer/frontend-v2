@@ -9,6 +9,8 @@ import { Pool } from '@/services/pool/types';
 import { computed, InjectionKey, provide, reactive, ref } from 'vue';
 import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
+import usePoolsGaugesQuery from '@/composables/queries/usePoolsGaugesQuery';
+import { bnum, isSameAddress } from '@/lib/utils';
 
 const provider = () => {
   /**
@@ -27,8 +29,17 @@ const provider = () => {
   // Array of all the pools a user has staked BPT for.
   const stakedPoolIds = computed((): string[] => {
     if (!userGaugeShares.value) return [];
-
+    console.log('userGaugeShares.value', userGaugeShares.value);
     return userGaugeShares.value.map(gaugeShare => gaugeShare.gauge.poolId);
+  });
+
+  // Array of all the pools addresses a user has staked BPT for.
+  const stakedPoolAddresses = computed((): string[] => {
+    if (!userGaugeShares.value) return [];
+
+    return userGaugeShares.value.map(
+      gaugeShare => gaugeShare.gauge.poolAddress
+    );
   });
 
   const isPoolsQueryEnabled = computed(
@@ -45,6 +56,37 @@ const provider = () => {
       pageSize: 999,
     }
   );
+
+  const { data: poolsGauges } = usePoolsGaugesQuery(
+    computed(() => stakedPoolAddresses.value)
+  );
+
+  // Map of user gauge addresses -> balance.
+  const userGaugeSharesMap = computed((): Record<string, string> => {
+    if (!userGaugeShares.value) return {};
+
+    return userGaugeShares.value.reduce((acc, share) => {
+      acc[share.gauge.id] = share.balance;
+      return acc;
+    }, {} as Record<string, string>);
+  });
+
+  const hasNonPrefGaugesPoolsIds = computed(() => {
+    return poolsGauges.value?.pools.reduce((acc: string[], pool) => {
+      const preferentialGaugeAddress = pool.preferentialGauge.id || '';
+      const hasNonPregGauge = pool.gauges.some(
+        gaugeAddress =>
+          !isSameAddress(gaugeAddress.id, preferentialGaugeAddress) &&
+          bnum(userGaugeSharesMap.value[gaugeAddress.id] || '0').gt(0)
+      );
+
+      if (hasNonPregGauge) {
+        acc.push(pool.address);
+      }
+      return acc;
+    }, []);
+  });
+
   const { data: _stakedPools, refetch: refetchStakedPools } = stakedPoolsQuery;
 
   // Pool records for all the pools where a user has staked BPT.
@@ -92,6 +134,8 @@ const provider = () => {
     isLoading,
     refetchStakedPools,
     stakedSharesFor,
+    hasNonPrefGaugesPoolsIds,
+    poolsGauges,
   };
 };
 

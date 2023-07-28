@@ -11,7 +11,7 @@ import { Pool } from '@/services/pool/types';
  */
 type Props = {
   pool: Pool;
-  poolsType?: 'unstaked' | 'staked';
+  poolsType?: 'unstaked' | 'staked' | 'toRestake' | 'toUpdate';
 };
 
 /**
@@ -24,6 +24,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'click:stake', value: Pool): void;
   (e: 'click:unstake', value: Pool): void;
+  (e: 'click:restake', value: Pool): void;
+  (e: 'click:update', value: Pool): void;
   (e: 'click:migrate', value: Pool): void;
 }>();
 /**
@@ -57,6 +59,24 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       @click.prevent.stop="emit('click:stake', pool)"
     >
       {{ $t('stake') }}
+    </BalBtn>
+    <BalBtn
+      v-else-if="poolsType === 'toRestake'"
+      color="gradient"
+      size="sm"
+      :disabled="isMigratablePool(pool)"
+      @click.prevent.stop="emit('click:stake', pool)"
+    >
+      {{ $t('restake') }}
+    </BalBtn>
+    <BalBtn
+      v-else-if="poolsType === 'toUpdate'"
+      color="gradient"
+      size="sm"
+      :disabled="isMigratablePool(pool)"
+      @click.prevent.stop="emit('click:stake', pool)"
+    >
+      {{ $t('Update') }}
     </BalBtn>
     <BalBtn
       v-else-if="poolsType === 'staked'"

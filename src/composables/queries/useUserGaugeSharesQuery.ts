@@ -13,6 +13,7 @@ export type GaugeShare = {
   balance: string;
   gauge: {
     id: string;
+    poolAddress: string;
     poolId: string;
     totalSupply: string;
   };
@@ -76,6 +77,7 @@ export default function useUserGaugeSharesQuery(
       balance: true,
       gauge: {
         id: true,
+        poolAddress: true,
         poolId: true,
         totalSupply: true,
       },

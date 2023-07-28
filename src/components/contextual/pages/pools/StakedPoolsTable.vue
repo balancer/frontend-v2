@@ -18,6 +18,10 @@ import PortfolioSyncTip from '../vebal/cross-chain-boost/PortfolioSyncTip.vue';
  */
 const showUnstakeModal = ref(false);
 const poolToUnstake = ref<Pool | undefined>();
+
+const showRestakeModal = ref(false);
+const poolToRestake = ref<Pool | undefined>();
+
 const showProceedModal = ref(false);
 
 /**
@@ -28,8 +32,13 @@ providePoolStaking();
 /**
  * COMPOSABLES
  */
-const { stakedPools, poolBoostsMap, stakedShares, isLoading } =
-  useUserStaking();
+const {
+  stakedPools,
+  poolBoostsMap,
+  stakedShares,
+  isLoading,
+  hasNonPrefGaugesPoolsIds,
+} = useUserStaking();
 
 const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting } = useWeb3();
@@ -62,9 +71,15 @@ function handleUnstake(pool: Pool) {
   poolToUnstake.value = pool;
 }
 
+function handleRestake(pool: Pool) {
+  showRestakeModal.value = true;
+  poolToRestake.value = pool;
+}
+
 function handleModalClose() {
   refetchAllUserPools();
   showUnstakeModal.value = false;
+  showRestakeModal.value = false;
 }
 
 async function handleUnstakeSuccess() {
@@ -77,6 +92,7 @@ async function handleUnstakeSuccess() {
     <BalStack vertical spacing="sm">
       <h5 class="px-4 xl:px-0">
         {{ $t('staking.stakedPools') }}
+        {{ hasNonPrefGaugesPoolsIds }}
       </h5>
       <PortfolioSyncTip @show-proceed-modal="showProceedModal = true" />
       <PoolsTable
@@ -91,10 +107,14 @@ async function handleUnstakeSuccess() {
         :isLoading="isWalletReady && isLoading"
         showPoolShares
         showActions
+        showStakeActions
         :showBoost="isPoolBoostsEnabled"
         @trigger-unstake="handleUnstake"
+        @trigger-restake="handleRestake"
       />
     </BalStack>
+
+    <!-- Unstake modal -->
     <StakePreviewModal
       v-if="poolToUnstake"
       :pool="poolToUnstake"
@@ -103,6 +123,17 @@ async function handleUnstakeSuccess() {
       @close="handleModalClose"
       @success="handleUnstakeSuccess"
     />
+
+    <!-- Restake modal -->
+    <StakePreviewModal
+      v-if="poolToRestake"
+      :pool="poolToRestake"
+      :isVisible="showRestakeModal"
+      action="restake"
+      @close="handleModalClose"
+      @success="handleUnstakeSuccess"
+    />
+
     <ProceedToSyncModal
       :isVisible="showProceedModal"
       @close="showProceedModal = false"
