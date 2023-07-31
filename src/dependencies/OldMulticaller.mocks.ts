@@ -6,7 +6,6 @@ import { initOldMulticaller } from './OldMulticaller';
 import { VeBalLockInfoResult } from '@/services/balancer/contracts/contracts/veBAL';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { RawVotesData } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { userAddress } from '@/services/web3/__mocks__/web3.service';
 
 export const mockedOnchainTokenName = 'mocked onchain token name';
 

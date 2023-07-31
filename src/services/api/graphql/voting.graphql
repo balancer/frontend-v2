@@ -1,0 +1,21 @@
+query VeBalGetVotingList {
+  veBalGetVotingList {
+    chain
+    id
+    address
+    symbol
+    type
+    gauge {
+      address
+      isKilled
+      relativeWeightCap
+      addedTimestamp
+    }
+    tokens {
+      address
+      logoURI
+      symbol
+      weight
+    }
+  }
+}

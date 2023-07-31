@@ -30,7 +30,7 @@ export type Scalars = {
 
 export type GqlBalancePoolAprItem = {
   __typename?: 'GqlBalancePoolAprItem';
-  apr: Scalars['BigDecimal'];
+  apr: GqlPoolAprValue;
   id: Scalars['ID'];
   subItems?: Maybe<Array<GqlBalancePoolAprSubItem>>;
   title: Scalars['String'];
@@ -38,17 +38,20 @@ export type GqlBalancePoolAprItem = {
 
 export type GqlBalancePoolAprSubItem = {
   __typename?: 'GqlBalancePoolAprSubItem';
-  apr: Scalars['BigDecimal'];
+  apr: GqlPoolAprValue;
   id: Scalars['ID'];
   title: Scalars['String'];
 };
 
 export enum GqlChain {
   Arbitrum = 'ARBITRUM',
+  Avalanche = 'AVALANCHE',
   Fantom = 'FANTOM',
+  Gnosis = 'GNOSIS',
   Mainnet = 'MAINNET',
   Optimism = 'OPTIMISM',
   Polygon = 'POLYGON',
+  Zkevm = 'ZKEVM',
 }
 
 export type GqlContentNewsItem = {
@@ -95,95 +98,28 @@ export type GqlLatestSyncedBlocks = {
   userWalletSyncBlock: Scalars['BigInt'];
 };
 
-export type GqlLge = {
-  __typename?: 'GqlLge';
-  address: Scalars['String'];
-  adminAddress: Scalars['String'];
-  adminIsMultisig: Scalars['Boolean'];
-  bannerImageUrl: Scalars['String'];
-  collateralAmount: Scalars['String'];
-  collateralEndWeight: Scalars['Int'];
-  collateralStartWeight: Scalars['Int'];
-  collateralTokenAddress: Scalars['String'];
-  description: Scalars['String'];
-  discordUrl: Scalars['String'];
-  endDate: Scalars['String'];
-  id: Scalars['ID'];
-  mediumUrl: Scalars['String'];
-  name: Scalars['String'];
-  startDate: Scalars['String'];
-  swapFeePercentage: Scalars['String'];
-  telegramUrl: Scalars['String'];
-  tokenAmount: Scalars['String'];
-  tokenContractAddress: Scalars['String'];
-  tokenEndWeight: Scalars['Int'];
-  tokenIconUrl: Scalars['String'];
-  tokenStartWeight: Scalars['Int'];
-  twitterUrl: Scalars['String'];
-  websiteUrl: Scalars['String'];
-};
-
-export type GqlLgeCreateInput = {
-  address: Scalars['String'];
-  bannerImageUrl: Scalars['String'];
-  collateralAmount: Scalars['String'];
-  collateralEndWeight: Scalars['Int'];
-  collateralStartWeight: Scalars['Int'];
-  collateralTokenAddress: Scalars['String'];
-  description: Scalars['String'];
-  discordUrl: Scalars['String'];
-  endDate: Scalars['String'];
-  id: Scalars['ID'];
-  mediumUrl: Scalars['String'];
-  name: Scalars['String'];
-  startDate: Scalars['String'];
-  swapFeePercentage: Scalars['String'];
-  telegramUrl: Scalars['String'];
-  tokenAmount: Scalars['String'];
-  tokenContractAddress: Scalars['String'];
-  tokenEndWeight: Scalars['Int'];
-  tokenIconUrl: Scalars['String'];
-  tokenStartWeight: Scalars['Int'];
-  twitterUrl: Scalars['String'];
-  websiteUrl: Scalars['String'];
-};
-
-export type GqlLgeUpdateInput = {
-  description: Scalars['String'];
-  discordUrl: Scalars['String'];
-  id: Scalars['ID'];
-  mediumUrl: Scalars['String'];
-  name: Scalars['String'];
-  telegramUrl: Scalars['String'];
-  tokenIconUrl: Scalars['String'];
-  twitterUrl: Scalars['String'];
-  websiteUrl: Scalars['String'];
-};
-
 export type GqlPoolApr = {
   __typename?: 'GqlPoolApr';
+  apr: GqlPoolAprValue;
   hasRewardApr: Scalars['Boolean'];
   items: Array<GqlBalancePoolAprItem>;
-  max?: Maybe<Scalars['BigDecimal']>;
-  min?: Maybe<Scalars['BigDecimal']>;
-  nativeRewardApr: Scalars['BigDecimal'];
+  nativeRewardApr: GqlPoolAprValue;
   swapApr: Scalars['BigDecimal'];
-  thirdPartyApr: Scalars['BigDecimal'];
+  thirdPartyApr: GqlPoolAprValue;
+};
+
+export type GqlPoolAprRange = {
+  __typename?: 'GqlPoolAprRange';
+  max: Scalars['BigDecimal'];
+  min: Scalars['BigDecimal'];
+};
+
+export type GqlPoolAprTotal = {
+  __typename?: 'GqlPoolAprTotal';
   total: Scalars['BigDecimal'];
 };
 
-export type GqlPoolAprItem = {
-  __typename?: 'GqlPoolAprItem';
-  apr: Scalars['BigDecimal'];
-  subItems?: Maybe<Array<GqlBalancePoolAprSubItem>>;
-  title: Scalars['String'];
-};
-
-export type GqlPoolAprSubItem = {
-  __typename?: 'GqlPoolAprSubItem';
-  apr: Scalars['BigDecimal'];
-  title: Scalars['String'];
-};
+export type GqlPoolAprValue = GqlPoolAprRange | GqlPoolAprTotal;
 
 export type GqlPoolBase = {
   address: Scalars['Bytes'];
@@ -198,7 +134,7 @@ export type GqlPoolBase = {
   investConfig: GqlPoolInvestConfig;
   name: Scalars['String'];
   owner?: Maybe<Scalars['Bytes']>;
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   withdrawConfig: GqlPoolWithdrawConfig;
 };
@@ -273,6 +209,8 @@ export type GqlPoolDynamicData = {
   volume24hAtl: Scalars['BigDecimal'];
   volume24hAtlTimestamp: Scalars['Int'];
   volume48h: Scalars['BigDecimal'];
+  yieldCapture24h: Scalars['BigDecimal'];
+  yieldCapture48h: Scalars['BigDecimal'];
 };
 
 export type GqlPoolElement = GqlPoolBase & {
@@ -291,7 +229,7 @@ export type GqlPoolElement = GqlPoolBase & {
   name: Scalars['String'];
   owner: Scalars['Bytes'];
   principalToken: Scalars['Bytes'];
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   tokens: Array<GqlPoolToken>;
   unitSeconds: Scalars['BigInt'];
@@ -338,6 +276,9 @@ export type GqlPoolFilterDefinition = {
 
 export enum GqlPoolFilterType {
   Element = 'ELEMENT',
+  Gyro = 'GYRO',
+  Gyro3 = 'GYRO3',
+  Gyroe = 'GYROE',
   Investment = 'INVESTMENT',
   Linear = 'LINEAR',
   LiquidityBootstrapping = 'LIQUIDITY_BOOTSTRAPPING',
@@ -347,6 +288,30 @@ export enum GqlPoolFilterType {
   Unknown = 'UNKNOWN',
   Weighted = 'WEIGHTED',
 }
+
+export type GqlPoolGyro = GqlPoolBase & {
+  __typename?: 'GqlPoolGyro';
+  address: Scalars['Bytes'];
+  allTokens: Array<GqlPoolTokenExpanded>;
+  alpha: Scalars['String'];
+  beta: Scalars['String'];
+  chain: GqlChain;
+  createTime: Scalars['Int'];
+  decimals: Scalars['Int'];
+  displayTokens: Array<GqlPoolTokenDisplay>;
+  dynamicData: GqlPoolDynamicData;
+  factory?: Maybe<Scalars['Bytes']>;
+  id: Scalars['ID'];
+  investConfig: GqlPoolInvestConfig;
+  name: Scalars['String'];
+  nestingType: GqlPoolNestingType;
+  owner: Scalars['Bytes'];
+  staking?: Maybe<GqlPoolStaking>;
+  symbol: Scalars['String'];
+  tokens: Array<GqlPoolTokenUnion>;
+  type: Scalars['String'];
+  withdrawConfig: GqlPoolWithdrawConfig;
+};
 
 export type GqlPoolInvestConfig = {
   __typename?: 'GqlPoolInvestConfig';
@@ -406,7 +371,7 @@ export type GqlPoolLinear = GqlPoolBase & {
   mainIndex: Scalars['Int'];
   name: Scalars['String'];
   owner: Scalars['Bytes'];
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   tokens: Array<GqlPoolToken>;
   upperTarget: Scalars['BigInt'];
@@ -486,7 +451,7 @@ export type GqlPoolLiquidityBootstrapping = GqlPoolBase & {
   name: Scalars['String'];
   nestingType: GqlPoolNestingType;
   owner: Scalars['Bytes'];
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   tokens: Array<GqlPoolTokenUnion>;
   withdrawConfig: GqlPoolWithdrawConfig;
@@ -507,7 +472,7 @@ export type GqlPoolMetaStable = GqlPoolBase & {
   investConfig: GqlPoolInvestConfig;
   name: Scalars['String'];
   owner: Scalars['Bytes'];
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   tokens: Array<GqlPoolToken>;
   withdrawConfig: GqlPoolWithdrawConfig;
@@ -526,13 +491,17 @@ export type GqlPoolMinimal = {
   id: Scalars['ID'];
   name: Scalars['String'];
   owner?: Maybe<Scalars['Bytes']>;
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   type: GqlPoolMinimalType;
+  version: Scalars['Int'];
 };
 
 export enum GqlPoolMinimalType {
   Element = 'ELEMENT',
+  Gyro = 'GYRO',
+  Gyro3 = 'GYRO3',
+  Gyroe = 'GYROE',
   Investment = 'INVESTMENT',
   Linear = 'LINEAR',
   LiquidityBootstrapping = 'LIQUIDITY_BOOTSTRAPPING',
@@ -583,7 +552,7 @@ export type GqlPoolPhantomStable = GqlPoolBase & {
   name: Scalars['String'];
   nestingType: GqlPoolNestingType;
   owner: Scalars['Bytes'];
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   tokens: Array<GqlPoolTokenUnion>;
   withdrawConfig: GqlPoolWithdrawConfig;
@@ -647,7 +616,7 @@ export type GqlPoolStable = GqlPoolBase & {
   investConfig: GqlPoolInvestConfig;
   name: Scalars['String'];
   owner: Scalars['Bytes'];
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   tokens: Array<GqlPoolToken>;
   withdrawConfig: GqlPoolWithdrawConfig;
@@ -675,8 +644,10 @@ export type GqlPoolStakingGauge = {
   __typename?: 'GqlPoolStakingGauge';
   gaugeAddress: Scalars['String'];
   id: Scalars['ID'];
+  otherGauges?: Maybe<Array<GqlPoolStakingOtherGauge>>;
   rewards: Array<GqlPoolStakingGaugeReward>;
   status: GqlPoolStakingGaugeStatus;
+  version: Scalars['Int'];
 };
 
 export type GqlPoolStakingGaugeReward = {
@@ -691,6 +662,15 @@ export enum GqlPoolStakingGaugeStatus {
   Killed = 'KILLED',
   Preferred = 'PREFERRED',
 }
+
+export type GqlPoolStakingOtherGauge = {
+  __typename?: 'GqlPoolStakingOtherGauge';
+  gaugeAddress: Scalars['String'];
+  id: Scalars['ID'];
+  rewards: Array<GqlPoolStakingGaugeReward>;
+  status: GqlPoolStakingGaugeStatus;
+  version: Scalars['Int'];
+};
 
 export enum GqlPoolStakingType {
   Gauge = 'GAUGE',
@@ -810,6 +790,7 @@ export type GqlPoolTokenUnion =
 
 export type GqlPoolUnion =
   | GqlPoolElement
+  | GqlPoolGyro
   | GqlPoolLinear
   | GqlPoolLiquidityBootstrapping
   | GqlPoolMetaStable
@@ -838,7 +819,7 @@ export type GqlPoolWeighted = GqlPoolBase & {
   name: Scalars['String'];
   nestingType: GqlPoolNestingType;
   owner: Scalars['Bytes'];
-  staking: Array<GqlPoolStaking>;
+  staking?: Maybe<GqlPoolStaking>;
   symbol: Scalars['String'];
   tokens: Array<GqlPoolTokenUnion>;
   withdrawConfig: GqlPoolWithdrawConfig;
@@ -858,14 +839,34 @@ export type GqlPoolWithdrawOption = {
   tokenOptions: Array<GqlPoolToken>;
 };
 
-export type GqlProtocolMetrics = {
-  __typename?: 'GqlProtocolMetrics';
+export type GqlProtocolMetricsAggregated = {
+  __typename?: 'GqlProtocolMetricsAggregated';
+  chains: Array<GqlProtocolMetricsChain>;
+  numLiquidityProviders: Scalars['BigInt'];
   poolCount: Scalars['BigInt'];
+  swapFee7d: Scalars['BigDecimal'];
   swapFee24h: Scalars['BigDecimal'];
+  swapVolume7d: Scalars['BigDecimal'];
   swapVolume24h: Scalars['BigDecimal'];
   totalLiquidity: Scalars['BigDecimal'];
   totalSwapFee: Scalars['BigDecimal'];
   totalSwapVolume: Scalars['BigDecimal'];
+  yieldCapture24h: Scalars['BigDecimal'];
+};
+
+export type GqlProtocolMetricsChain = {
+  __typename?: 'GqlProtocolMetricsChain';
+  chainId: Scalars['String'];
+  numLiquidityProviders: Scalars['BigInt'];
+  poolCount: Scalars['BigInt'];
+  swapFee7d: Scalars['BigDecimal'];
+  swapFee24h: Scalars['BigDecimal'];
+  swapVolume7d: Scalars['BigDecimal'];
+  swapVolume24h: Scalars['BigDecimal'];
+  totalLiquidity: Scalars['BigDecimal'];
+  totalSwapFee: Scalars['BigDecimal'];
+  totalSwapVolume: Scalars['BigDecimal'];
+  yieldCapture24h: Scalars['BigDecimal'];
 };
 
 export type GqlSorGetBatchSwapForTokensInResponse = {
@@ -1041,11 +1042,40 @@ export type GqlUserSwapVolumeFilter = {
   tokenOutIn?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type GqlVotingGauge = {
+  __typename?: 'GqlVotingGauge';
+  addedTimestamp?: Maybe<Scalars['Int']>;
+  address: Scalars['Bytes'];
+  isKilled: Scalars['Boolean'];
+  relativeWeightCap?: Maybe<Scalars['String']>;
+};
+
+export type GqlVotingGaugeToken = {
+  __typename?: 'GqlVotingGaugeToken';
+  address: Scalars['String'];
+  logoURI: Scalars['String'];
+  symbol: Scalars['String'];
+  weight?: Maybe<Scalars['String']>;
+};
+
+export type GqlVotingPool = {
+  __typename?: 'GqlVotingPool';
+  address: Scalars['Bytes'];
+  chain: GqlChain;
+  gauge: GqlVotingGauge;
+  id: Scalars['ID'];
+  symbol: Scalars['String'];
+  tokens: Array<GqlVotingGaugeToken>;
+  type: GqlPoolMinimalType;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   balancerMutationTest: Scalars['String'];
   cacheAverageBlockTime: Scalars['String'];
-  lgeCreate: GqlLge;
+  poolBlackListAddPool: Scalars['String'];
+  poolBlackListRemovePool: Scalars['String'];
+  poolDeletePool: Scalars['String'];
   poolInitializeSnapshotsForPool: Scalars['String'];
   poolLoadOnChainDataForAllPools: Scalars['String'];
   poolLoadOnChainDataForPoolsWithActiveUpdates: Scalars['String'];
@@ -1057,6 +1087,7 @@ export type Mutation = {
   poolReloadPoolTokenIndexes: Scalars['String'];
   poolReloadStakingForAllPools: Scalars['String'];
   poolSetPoolsWithPreferredGaugesAsIncentivized: Scalars['String'];
+  poolSyncAllPoolVersions: Scalars['String'];
   poolSyncAllPoolsFromSubgraph: Array<Scalars['String']>;
   poolSyncLatestSnapshotsForAllPools: Scalars['String'];
   poolSyncNewPoolsFromSubgraph: Array<Scalars['String']>;
@@ -1075,6 +1106,7 @@ export type Mutation = {
   tokenDeletePrice: Scalars['Boolean'];
   tokenDeleteTokenType: Scalars['String'];
   tokenInitChartData: Scalars['String'];
+  tokenReloadAllTokenTypes: Scalars['String'];
   tokenReloadTokenPrices?: Maybe<Scalars['Boolean']>;
   tokenSyncTokenDefinitions: Scalars['String'];
   tokenSyncTokenDynamicData: Scalars['String'];
@@ -1085,11 +1117,20 @@ export type Mutation = {
   userSyncBalanceAllPools: Scalars['String'];
   userSyncChangedStakedBalances: Scalars['String'];
   userSyncChangedWalletBalancesForAllPools: Scalars['String'];
+  veBalSyncAllUserBalances: Scalars['String'];
+  veBalSyncTotalSupply: Scalars['String'];
 };
 
-export type MutationLgeCreateArgs = {
-  lge: GqlLgeCreateInput;
-  signature: Scalars['String'];
+export type MutationPoolBlackListAddPoolArgs = {
+  poolId: Scalars['String'];
+};
+
+export type MutationPoolBlackListRemovePoolArgs = {
+  poolId: Scalars['String'];
+};
+
+export type MutationPoolDeletePoolArgs = {
+  poolId: Scalars['String'];
 };
 
 export type MutationPoolInitializeSnapshotsForPoolArgs = {
@@ -1098,6 +1139,7 @@ export type MutationPoolInitializeSnapshotsForPoolArgs = {
 
 export type MutationPoolLoadSnapshotsForPoolsArgs = {
   poolIds: Array<Scalars['String']>;
+  reload?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type MutationPoolReloadPoolNestedTokensArgs = {
@@ -1155,8 +1197,6 @@ export type Query = {
   blocksGetBlocksPerYear: Scalars['Float'];
   contentGetNewsItems: Array<GqlContentNewsItem>;
   latestSyncedBlocks: GqlLatestSyncedBlocks;
-  lge: GqlLge;
-  lges: Array<GqlLge>;
   poolGetAllPoolsSnapshots: Array<GqlPoolSnapshot>;
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>;
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>;
@@ -1169,7 +1209,8 @@ export type Query = {
   poolGetSnapshots: Array<GqlPoolSnapshot>;
   poolGetSwaps: Array<GqlPoolSwap>;
   poolGetUserSwapVolume: Array<GqlPoolUserSwapVolume>;
-  protocolMetrics: GqlProtocolMetrics;
+  protocolMetricsAggregated: GqlProtocolMetricsAggregated;
+  protocolMetricsChain: GqlProtocolMetricsChain;
   sorGetBatchSwapForTokensIn: GqlSorGetBatchSwapForTokensInResponse;
   sorGetSwaps: GqlSorGetSwapsResponse;
   tokenGetCandlestickChartData: Array<GqlTokenCandlestickChartDataItem>;
@@ -1187,10 +1228,9 @@ export type Query = {
   userGetPoolJoinExits: Array<GqlPoolJoinExit>;
   userGetStaking: Array<GqlPoolStaking>;
   userGetSwaps: Array<GqlPoolSwap>;
-};
-
-export type QueryLgeArgs = {
-  id: Scalars['ID'];
+  veBalGetTotalSupply: Scalars['AmountHumanReadable'];
+  veBalGetUserBalance: Scalars['AmountHumanReadable'];
+  veBalGetVotingList: Array<GqlVotingPool>;
 };
 
 export type QueryPoolGetAllPoolsSnapshotsArgs = {
@@ -1246,6 +1286,10 @@ export type QueryPoolGetUserSwapVolumeArgs = {
   first?: InputMaybe<Scalars['Int']>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<GqlUserSwapVolumeFilter>;
+};
+
+export type QueryProtocolMetricsAggregatedArgs = {
+  chainIds: Array<Scalars['String']>;
 };
 
 export type QuerySorGetBatchSwapForTokensInArgs = {
@@ -1323,11 +1367,62 @@ export type GetCurrentTokenPricesQuery = {
   }>;
 };
 
+export type VeBalGetVotingListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VeBalGetVotingListQuery = {
+  __typename?: 'Query';
+  veBalGetVotingList: Array<{
+    __typename?: 'GqlVotingPool';
+    chain: GqlChain;
+    id: string;
+    address: string;
+    symbol: string;
+    type: GqlPoolMinimalType;
+    gauge: {
+      __typename?: 'GqlVotingGauge';
+      address: string;
+      isKilled: boolean;
+      relativeWeightCap?: string | null;
+      addedTimestamp?: number | null;
+    };
+    tokens: Array<{
+      __typename?: 'GqlVotingGaugeToken';
+      address: string;
+      logoURI: string;
+      symbol: string;
+      weight?: string | null;
+    }>;
+  }>;
+};
+
 export const GetCurrentTokenPricesDocument = gql`
   query GetCurrentTokenPrices {
     prices: tokenGetCurrentPrices {
       price
       address
+    }
+  }
+`;
+export const VeBalGetVotingListDocument = gql`
+  query VeBalGetVotingList {
+    veBalGetVotingList {
+      chain
+      id
+      address
+      symbol
+      type
+      gauge {
+        address
+        isKilled
+        relativeWeightCap
+        addedTimestamp
+      }
+      tokens {
+        address
+        logoURI
+        symbol
+        weight
+      }
     }
   }
 `;
@@ -1361,6 +1456,21 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'GetCurrentTokenPrices',
+        'query'
+      );
+    },
+    VeBalGetVotingList(
+      variables?: VeBalGetVotingListQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<VeBalGetVotingListQuery> {
+      return withWrapper(
+        wrappedRequestHeaders =>
+          client.request<VeBalGetVotingListQuery>(
+            VeBalGetVotingListDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'VeBalGetVotingList',
         'query'
       );
     },
