@@ -250,6 +250,7 @@ function isUserRejected(error): boolean {
     /user denied transaction signature/,
     /user disapproved requested methods/,
     /canceled/,
+    /cancelled/,
     /user rejected signing/,
     /user cancelled/,
   ];
