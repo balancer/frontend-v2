@@ -55,12 +55,12 @@ test('Fakes provided state', async () => {
 
   expect(wrappedNativeAsset.value.address).toBe(wethAddress);
 
-  expect(Object.keys(activeTokenListTokens.value)).toHaveLength(12);
+  expect(Object.keys(activeTokenListTokens.value)).toHaveLength(16);
   expect(Object.keys(activeTokenListTokens.value)).toEqual(
     expect.arrayContaining([])
   );
 
-  expect(Object.keys(balancerTokenListTokens.value)).toHaveLength(21);
+  expect(Object.keys(balancerTokenListTokens.value)).toHaveLength(16);
 
   expect(Object.keys(prices.value)).toHaveLength(2);
   expect(Object.keys(balances.value)).toHaveLength(2);

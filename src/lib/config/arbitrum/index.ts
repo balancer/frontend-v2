@@ -10,7 +10,6 @@ const config: Config = {
   key: '42161',
   chainId: 42161,
   layerZeroChainId: 110,
-  supportsVeBalSync: true,
   chainName: 'Arbitrum',
   name: 'Arbitrum',
   shortName: 'Arbitrum',
@@ -43,6 +42,7 @@ const config: Config = {
   bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   blockTime: 2,
   nativeAsset: {
     name: 'Ether',

@@ -22,6 +22,13 @@ export type VotingGauge = {
   tokenLogoURIs: Record<string, string | undefined>;
 };
 
+export function votingGaugesForNetwork(network: Network) {
+  const filteredGauges: VotingGauge[] = (
+    ALL_VOTING_GAUGES as VotingGauge[]
+  ).filter(gauge => gauge.network === network);
+  return filteredGauges;
+}
+
 export const GOERLI_VOTING_GAUGES: VotingGauge[] = (
   ALL_VOTING_GAUGES as VotingGauge[]
 ).filter(gauge => gauge.network === Network.GOERLI);
