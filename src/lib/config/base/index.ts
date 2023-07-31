@@ -34,7 +34,8 @@ const config: Config = {
       'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
     ],
     aave: '',
-    gauge: '',
+    gauge:
+      'https://api.studio.thegraph.com/query/24660/balancer-gauges-base/version/latest',
     blocks: '',
   },
   bridgeUrl: 'bridge.base.org',
