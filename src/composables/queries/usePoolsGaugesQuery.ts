@@ -18,6 +18,7 @@ export type PoolsGauges = {
       relativeWeightCap: string;
     }[];
     address: string;
+    id: string;
   }[];
 };
 
@@ -59,6 +60,7 @@ export default function usePoolsGaugesQuery(
         relativeWeightCap: true,
       },
       address: true,
+      id: true,
     },
   }));
 

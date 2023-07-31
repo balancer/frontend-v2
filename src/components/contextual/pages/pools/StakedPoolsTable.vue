@@ -12,6 +12,7 @@ import ProceedToSyncModal from '@/components/contextual/pages/vebal/cross-chain-
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 import PortfolioSyncTip from '../vebal/cross-chain-boost/PortfolioSyncTip.vue';
+import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 
 /**
  * STATE
@@ -32,13 +33,9 @@ providePoolStaking();
 /**
  * COMPOSABLES
  */
-const {
-  stakedPools,
-  poolBoostsMap,
-  stakedShares,
-  isLoading,
-  hasNonPrefGaugesPoolsIds,
-} = useUserStaking();
+const { stakedPools, poolBoostsMap, stakedShares, isLoading, poolsGauges } =
+  useUserStaking();
+const { getGaugeWorkingBalance } = useCrossChainSync();
 
 const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting } = useWeb3();
@@ -85,6 +82,24 @@ function handleModalClose() {
 async function handleUnstakeSuccess() {
   await refetchAllUserPools();
 }
+
+// map of pool ids and shoould poke boolean
+const shouldPokeMap = ref<Record<string, boolean>>({});
+watch(
+  () => poolsGauges.value,
+  async val => {
+    if (!val) return;
+    for (const pool of poolsGauges.value.pools) {
+      try {
+        const { id } = pool.preferentialGauge;
+        const balance = await getGaugeWorkingBalance(id);
+        shouldPokeMap.value[id] = balance[1]?.gt(balance[0]);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+);
 </script>
 
 <template>
@@ -92,7 +107,6 @@ async function handleUnstakeSuccess() {
     <BalStack vertical spacing="sm">
       <h5 class="px-4 xl:px-0">
         {{ $t('staking.stakedPools') }}
-        {{ hasNonPrefGaugesPoolsIds }}
       </h5>
       <PortfolioSyncTip @show-proceed-modal="showProceedModal = true" />
       <PoolsTable

@@ -57,9 +57,8 @@ const provider = () => {
     }
   );
 
-  const { data: poolsGauges } = usePoolsGaugesQuery(
-    computed(() => stakedPoolAddresses.value)
-  );
+  const { data: poolsGauges, isLoading: isLoadingPoolsGauges } =
+    usePoolsGaugesQuery(computed(() => stakedPoolAddresses.value));
 
   // Map of user gauge addresses -> balance.
   const userGaugeSharesMap = computed((): Record<string, string> => {
@@ -112,7 +111,8 @@ const provider = () => {
       isQueryLoading(userGaugeSharesQuery) ||
       isQueryLoading(stakedSharesQuery) ||
       isQueryLoading(userBoostsQuery) ||
-      isQueryLoading(stakedPoolsQuery)
+      isQueryLoading(stakedPoolsQuery) ||
+      isLoadingPoolsGauges.value
     );
   });
 
