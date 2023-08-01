@@ -60,7 +60,7 @@ const allPoolsTotalAllocation = computed<number>(() => {
   return votingPools.value.reduce<number>((total, pool) => {
     return !underUtilizedGaugeAddresses.includes(pool.gauge.address)
       ? total + Number(bpsToPct(pool.userVotes))
-      : total + Number(votes.value[pool.address]);
+      : total + Number(votes.value[pool.gauge.address]);
   }, 0);
 });
 
@@ -70,7 +70,7 @@ const hasMoreThan8VotingGauges = computed(
 
 const hiddenVotesTotalAllocation = computed<number>(() => {
   const totalUnscaled = hiddenVotingPools.value.reduce<number>(
-    (total, gauge) => total + Number(gauge.userVotes),
+    (total, pool) => total + Number(pool.userVotes),
     0
   );
   return Number(bpsToPct(totalUnscaled));
