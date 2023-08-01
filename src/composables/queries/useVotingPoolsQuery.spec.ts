@@ -1,6 +1,27 @@
-import { mapApiPoolType } from '@/composables/queries/useVotingPoolsQuery';
-import { GqlPoolMinimalType } from '@/services/api/graphql/generated/api-types';
+import {
+  mapApiChain,
+  mapApiPoolType,
+} from '@/composables/queries/useVotingPoolsQuery';
+import { Network } from '@/lib/config';
+import {
+  GqlChain,
+  GqlPoolMinimalType,
+} from '@/services/api/graphql/generated/api-types';
 import { PoolType } from '@/services/pool/types';
+
+test('Maps API Chains', async () => {
+  expect(mapApiChain(GqlChain.Arbitrum)).toBe(Network.ARBITRUM);
+  expect(mapApiChain(GqlChain.Avalanche)).toBe(Network.AVALANCHE);
+  expect(mapApiChain(GqlChain.Fantom)).toBe(Network.FANTOM);
+  expect(mapApiChain(GqlChain.Gnosis)).toBe(Network.GNOSIS);
+  expect(mapApiChain(GqlChain.Mainnet)).toBe(Network.MAINNET);
+  expect(mapApiChain(GqlChain.Optimism)).toBe(Network.OPTIMISM);
+  expect(mapApiChain(GqlChain.Polygon)).toBe(Network.POLYGON);
+  expect(mapApiChain(GqlChain.Zkevm)).toBe(Network.ZKEVM);
+
+  expect(mapApiChain('GOERLI')).toBe(Network.GOERLI);
+  expect(mapApiChain('SEPOLIA')).toBe(Network.SEPOLIA);
+});
 
 test('Maps API pool types', async () => {
   expect(mapApiPoolType(GqlPoolMinimalType.Element)).toBe(PoolType.Element);

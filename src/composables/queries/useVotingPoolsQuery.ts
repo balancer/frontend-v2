@@ -55,7 +55,7 @@ export default function useVotingPoolsQuery(
     try {
       let apiVotingPools: ApiVotingPools;
       if (isTestnet.value) {
-        apiVotingPools = testnetVotingPools;
+        apiVotingPools = testnetVotingPools('GOERLI');
       } else {
         const api = getApi();
         const { veBalGetVotingList } = await api.VeBalGetVotingList();
@@ -95,7 +95,9 @@ export default function useVotingPoolsQuery(
   );
 }
 
-export function mapApiChain(apiChain: GqlChain): Network {
+export function mapApiChain(
+  apiChain: GqlChain | 'SEPOLIA' | 'GOERLI'
+): Network {
   switch (apiChain) {
     case GqlChain.Arbitrum:
       return Network.ARBITRUM;
@@ -113,6 +115,10 @@ export function mapApiChain(apiChain: GqlChain): Network {
       return Network.MAINNET;
     case GqlChain.Zkevm:
       return Network.ZKEVM;
+    case 'SEPOLIA':
+      return Network.SEPOLIA;
+    case 'GOERLI':
+      return Network.GOERLI;
 
     default:
       throw new Error(`Unexpected API chain: ${apiChain}`);
