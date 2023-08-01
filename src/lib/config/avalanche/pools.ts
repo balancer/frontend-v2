@@ -110,7 +110,12 @@ const pools: Pools = {
   DisabledJoins: [],
   Deprecated: {},
   GaugeMigration: {},
-  BrandedRedirect: {},
+  BrandedRedirect: {
+    FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
+  },
   Issues: {},
 };
 
