@@ -44,6 +44,7 @@ export default function useVotingEscrowLocks() {
       veBalLockInfoQuery.data.value?.lockedAmount
     ),
     () => ({
+      __name: 'VeBalVotingEscrowLock',
       votingEscrowLocks: {
         __args: {
           where: {
