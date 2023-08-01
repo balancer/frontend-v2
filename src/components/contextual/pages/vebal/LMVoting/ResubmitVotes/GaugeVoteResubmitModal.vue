@@ -55,7 +55,7 @@ const hiddenVotingPools = computed(() =>
 
 const allPoolsTotalAllocation = computed<number>(() => {
   const underUtilizedGaugeAddresses =
-    poolsUsingUnderUtilizedVotingPower.value.map(gauge => gauge.address);
+    poolsUsingUnderUtilizedVotingPower.value.map(pool => pool.gauge.address);
 
   return votingPools.value.reduce<number>((total, pool) => {
     return !underUtilizedGaugeAddresses.includes(pool.gauge.address)
