@@ -147,7 +147,7 @@ function isActive(network: NetworkOption): boolean {
         </template>
       </BalBtn>
     </template>
-    <div role="menu" class="flex overflow-hidden flex-col w-52 rounded-lg">
+    <div role="menu" class="flex overflow-hidden flex-col w-56 rounded-lg">
       <div
         class="py-2 px-3 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
       >
@@ -168,6 +168,11 @@ function isActive(network: NetworkOption): boolean {
           <span class="ml-1 font-medium">
             {{ network.name }}
           </span>
+          <span
+            v-if="network.name === 'Avalanche'"
+            class="py-0.5 px-1 ml-1.5 text-xs font-medium uppercase bg-yellow-500 rounded"
+            >{{ $t('new') }}</span
+          >
         </div>
         <BalIcon
           v-if="isActive(network)"
