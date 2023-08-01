@@ -113,15 +113,19 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
   }
 
   function getQueryArgs(options: PoolsRepositoryFetchOptions): GraphQLArgs {
+    const { tokens, poolIds, poolTypes, sortField } = filterOptions.value;
+    const hasPoolIdFilters = !!poolIds?.length && poolIds?.length > 0;
+    const hasPoolTypeFilters = !!poolTypes?.length;
+
     const tokensListFilterOperation = filterOptions.value.useExactTokens
       ? 'eq'
       : 'contains';
 
     const tokenListFormatted =
-      filterOptions.value?.tokens?.map(address => address.toLowerCase()) || [];
+      tokens?.map(address => address.toLowerCase()) || [];
 
     const orderBy = isBalancerApiDefined
-      ? filterOptions.value?.sortField || 'totalLiquidity'
+      ? sortField || 'totalLiquidity'
       : 'totalLiquidity';
 
     const queryArgs: GraphQLArgs = {
@@ -136,21 +140,13 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
       },
     };
 
-    if (
-      queryArgs.where &&
-      filterOptions.value?.poolTypes &&
-      filterOptions.value?.poolTypes.length > 0
-    ) {
+    if (queryArgs.where && hasPoolTypeFilters && !!poolTypes?.length) {
       queryArgs.where.poolType = {
-        in: filterOptions.value.poolTypes,
+        in: poolTypes,
       };
     }
 
-    if (
-      queryArgs.where &&
-      filterOptions.value.poolIds &&
-      filterOptions.value.poolIds.length > 0
-    ) {
+    if (queryArgs.where && hasPoolIdFilters) {
       queryArgs.where.id = { in: filterOptions.value.poolIds };
     }
     if (options.first) {
@@ -167,22 +163,18 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
 
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
+    const { tokens, poolIds, poolTypes } = filterOptions.value;
+    const hasTokenFilters = !!tokens?.length;
+    const hasPoolIdFilters = !!poolIds?.length;
+    const hasPoolTypeFilters = !!poolTypes?.length;
 
-    // Don't use a limit if there is a token list because the limit is applied pre-filter
-    if (
-      !filterOptions.value.tokens?.length &&
-      !filterOptions.value.poolIds?.length &&
-      !filterOptions.value.poolTypes?.length
-    ) {
+    // Don't use a limit if there is a token list because the limit is applied
+    // pre-filter
+    if (hasPoolTypeFilters && poolTypes.includes(PoolType.Weighted)) {
+      fetchArgs.first = 100;
+    } else if (!hasTokenFilters && !hasPoolIdFilters && !hasPoolTypeFilters) {
       fetchArgs.first =
         filterOptions.value.pageSize || POOLS.Pagination.PerPage;
-    }
-
-    if (
-      filterOptions.value.poolTypes?.length &&
-      filterOptions.value.poolTypes.includes(PoolType.Weighted)
-    ) {
-      fetchArgs.first = 100;
     }
 
     if (pageParam && pageParam > 0) {
@@ -235,8 +227,6 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
-    const currentPoolCount = poolsStoreService.pools.value?.length || 0;
-    console.log('currentPoolCount', currentPoolCount);
     const fetchOptions = getFetchOptions(pageParam);
     let skip = 0;
     try {
