@@ -789,6 +789,14 @@
   },
   "pool": "Pool",
   "pools": "Pools",
+  "poolActions": {
+    "poke": "Poke to boost APR",
+    "unstake": "Unstake",
+    "add": "Add liquidity",
+    "remove": "Remove liquidity",
+    "vote": "Vote for incentives",
+    "migrateGauge": "Migrate pool gauge"
+  },
   "poolBalance": "Pool balance",
   "poolComposition": {
     "title": "Pool composition",

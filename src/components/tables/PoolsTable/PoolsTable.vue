@@ -29,12 +29,13 @@ import { Pool } from '@/services/pool/types';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { configService } from '@/services/config/config.service';
 
-import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
+// import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
+import PoolsTableActionSelector from './PoolsTableActionSelector.vue';
 
 /**
  * TYPES
@@ -56,6 +57,7 @@ type Props = {
   skeletonClass?: string;
   shares?: Record<string, string>;
   boosts?: Record<string, string>;
+  defaultPoolActions?: string[];
 };
 
 /**
@@ -408,14 +410,15 @@ function iconAddresses(pool: Pool) {
           {{ lockedUntil(pool.lockedEndDate) }}
         </div>
       </template>
-      <template #actionsCell="pool">
-        <PoolsTableActionsCell
+      <template #actionsCell="">
+        <!-- <PoolsTableActionsCell
           :pool="pool"
           :poolsType="poolsType"
           @click:stake="pool => emit('triggerStake', pool)"
           @click:unstake="pool => emit('triggerUnstake', pool)"
           @click:migrate="pool => navigateToPoolMigration(pool)"
-        />
+        /> -->
+        <PoolsTableActionSelector :menuItems="defaultPoolActions" />
       </template>
     </BalTable>
   </BalCard>

@@ -24,6 +24,7 @@ const showRestakeModal = ref(false);
 const poolToRestake = ref<Pool | undefined>();
 
 const showProceedModal = ref(false);
+const defaultPoolActions = ['unstake', 'add', 'remove', 'vote'];
 
 /**
  * PROVIDERS
@@ -123,6 +124,7 @@ watch(
         showActions
         showStakeActions
         :showBoost="isPoolBoostsEnabled"
+        :defaultPoolActions="defaultPoolActions"
         @trigger-unstake="handleUnstake"
         @trigger-restake="handleRestake"
       />
