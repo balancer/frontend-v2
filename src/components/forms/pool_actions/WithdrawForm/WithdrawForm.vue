@@ -56,7 +56,7 @@ const {
   hasAmountsOut,
   validAmounts,
   hasBpt,
-  shouldUseSwapExit,
+  shouldUseRecoveryExit,
 } = useExitPool();
 
 const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
@@ -76,7 +76,7 @@ const tokensList = computed(() => tokensListExclBpt(pool.value));
 
 // Limit token select modal to a subset.
 const subsetTokens = computed((): string[] => {
-  if (!pool.value.isInRecoveryMode && isPreMintedBptType(pool.value.poolType))
+  if (!shouldUseRecoveryExit.value && isPreMintedBptType(pool.value.poolType))
     return [];
 
   if (isWrappedNativeAssetPool.value)
@@ -101,9 +101,10 @@ onBeforeMount(() => {
   if (!hasBpt.value)
     router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
 
-  singleAmountOut.address = shouldUseSwapExit.value
-    ? wrappedNativeAsset.value.address
-    : tokensList.value[0];
+  singleAmountOut.address =
+    subsetTokens.value.length === 0
+      ? wrappedNativeAsset.value.address
+      : tokensList.value[0];
 });
 </script>
 
