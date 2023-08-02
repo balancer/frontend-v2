@@ -2,6 +2,7 @@ import config, { Network } from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 import { RouteParamsRaw } from 'vue-router';
 import { Config } from '@/lib/config/types';
+import { ref, computed } from 'vue';
 
 /**
  * STATE
