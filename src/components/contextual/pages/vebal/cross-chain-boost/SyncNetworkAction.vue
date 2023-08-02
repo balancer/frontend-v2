@@ -7,6 +7,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -36,6 +37,7 @@ const {
   tempSyncingNetworks,
   setSyncTxHashes,
 } = useCrossChainSync();
+const { isMismatchedNetwork } = useWeb3();
 
 /**
  * STATE
@@ -171,6 +173,7 @@ const networkSyncSteps = computed(() => {
       :actions="networkSyncSteps"
       primaryActionType="sync"
       :spacerWidth="10"
+      :disabled="isMismatchedNetwork"
       @success="handleSuccess"
       @set-current-action-index="currentActionIndex = $event"
     />
