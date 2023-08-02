@@ -601,6 +601,7 @@ export const exitPoolProvider = (
     relayerSignature,
     relayerApprovalTx,
     shouldUseSwapExit,
+    shouldUseRecoveryExit,
 
     // methods
     setIsSingleAssetExit,
