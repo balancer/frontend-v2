@@ -24,7 +24,9 @@ const pools: Pools = {
     'ComposableStable',
   ],
   Stable: {
-    AllowList: [],
+    AllowList: [
+      '0x6fbfcf88db1aada31f34215b2a1df7fafb4883e900000000000000000000000c', // stabal3
+    ],
   },
   Investment: {
     AllowList: [],
@@ -35,6 +37,7 @@ const pools: Pools = {
     AllowList: [
       '0xcde67b70e8144d7d2772de59845b3a67266c2ca7000200000000000000000009', // BAL/DAI
       '0x868f0efc81a6c1df16298dcc82f7926b9099946b00020000000000000000000b', // Bald/weth
+      '0x2db50a0e0310723ef0c2a165cb9a9f80d772ba2f00020000000000000000000d', // Weth/stabal3
     ],
   },
   Factories: {
