@@ -2,6 +2,7 @@ import config, { Network } from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 import { RouteParamsRaw } from 'vue-router';
 import { Config } from '@/lib/config/types';
+// Required vue imports so that claim.worker doesnt fail with undefined errors.
 import { ref, computed } from 'vue';
 
 /**
