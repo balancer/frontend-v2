@@ -24,11 +24,11 @@ const config: Config = {
   explorer: 'https://optimistic.etherscan.io/',
   explorerName: 'The Optimism Explorer',
   subgraph:
-    'https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-v2-optimism',
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-v2-optimism',
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
     ],
     aave: '',
     gauge:
