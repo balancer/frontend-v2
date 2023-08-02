@@ -48,8 +48,19 @@ const pools: Pools = {
     VotingGaugePools: [],
     AllowList: [],
   },
-  Metadata: {},
-  Deep: [],
+  Metadata: {
+    '0x6fbfcf88db1aada31f34215b2a1df7fafb4883e900000000000000000000000c': {
+      name: 'Balancer Stable USD',
+      hasIcon: false,
+    },
+    '0x2db50a0e0310723ef0c2a165cb9a9f80d772ba2f00020000000000000000000d': {
+      name: 'WETH/Balancer Stable USD',
+      hasIcon: false,
+    },
+  },
+  Deep: [
+    '0x2db50a0e0310723ef0c2a165cb9a9f80d772ba2f00020000000000000000000d', // Weth/stabal
+  ],
   Deprecated: {},
   GaugeMigration: {},
   BoostedApr: [],
