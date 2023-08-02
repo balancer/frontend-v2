@@ -188,6 +188,7 @@ const pools: Pools = {
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
     '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
+    '0x412a5b2e7a678471985542757a6855847d4931d5': 'gyroE',
   },
   Stakable: {
     VotingGaugePools: [
@@ -742,6 +743,9 @@ const pools: Pools = {
   GaugeMigration: {},
   BrandedRedirect: {
     FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
   },
   ExitViaInternalBalance: [
     '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC
