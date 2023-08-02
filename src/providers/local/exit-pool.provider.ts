@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -369,6 +370,7 @@ export const exitPoolProvider = (
 
     console.log('exitHandler:', exitHandlerType.value);
     try {
+      await nextTick();
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
@@ -419,6 +421,7 @@ export const exitPoolProvider = (
 
     console.log('exitHandler:', exitHandlerType.value);
     try {
+      await nextTick();
       const output = await exitPoolService.queryExit({
         exitType: ExitType.GivenIn,
         bptIn: bptBalance.value,
