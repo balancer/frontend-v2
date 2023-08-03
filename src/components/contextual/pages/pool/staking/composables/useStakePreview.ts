@@ -42,6 +42,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   const { addTransaction } = useTransactions();
   const { getTokenApprovalActions } = useTokenApprovalActions();
   const {
+    isLoading: isPoolStakingLoading,
     stake,
     unstake,
     stakedShares,
@@ -97,6 +98,10 @@ export function useStakePreview(props: StakePreviewProps, emit) {
       amount: currentShares,
     },
   ]);
+
+  const isLoading = computed(
+    () => isLoadingApprovalsForGauge.value || isPoolStakingLoading.value
+  );
 
   /**
    * METHODS
@@ -190,7 +195,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
     //state
     isActionConfirmed,
     confirmationReceipt,
-    isLoadingApprovalsForGauge,
+    isLoading,
     currentShares,
     stakeActions,
     totalUserPoolSharePct,
