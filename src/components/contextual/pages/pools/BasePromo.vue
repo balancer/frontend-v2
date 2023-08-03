@@ -40,16 +40,6 @@ const { networkSlug } = useNetwork();
 </template>
 
 <style scoped>
-/* .promo-bg::afte {
-  content: '';
-  left: 0;
-  top: 0;
-  width: 500px;
-  height: 500px;
-  position: absolute;
-  background: rgb(169 169 210);
-} */
-
 .promo-bg {
   border-radius: 500px;
   background: rgb(78 78 250);
@@ -68,7 +58,7 @@ const { networkSlug } = useNetwork();
   margin: 0;
   top: 100%;
   transform: translateY(-50%);
-  @apply absolute bg-cover origin-center transition-all duration-500 ease-out;
+  @apply absolute bg-cover origin-center transition-all duration-500 ease-out -left-80 md:-left-5;
 }
 
 .promo-bg::after {
@@ -82,11 +72,11 @@ const { networkSlug } = useNetwork();
   position: absolute;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
-  @apply absolute bg-cover origin-center transition-all duration-300 ease-out;
+  @apply absolute bg-cover origin-center transition-all duration-500 ease-out opacity-0 lg:opacity-100;
 }
 
 .promo-bg:hover::after {
-  transform: translateY(-50%) rotate(0deg);
+  transform: translateY(-50%) rotate(90deg);
 }
 
 .promo-btn {
