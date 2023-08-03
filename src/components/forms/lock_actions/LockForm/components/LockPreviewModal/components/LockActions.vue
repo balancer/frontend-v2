@@ -73,7 +73,7 @@ const lockActionStates = reactive<LockActionState[]>(
  */
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getProvider, explorerLinks } = useWeb3();
+const { getProvider, explorerLinks, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { fNum } = useNumbers();
@@ -228,6 +228,7 @@ onBeforeMount(async () => {
       v-if="!lockActionStatesConfirmed"
       :actions="actions"
       :isLoading="isLoadingApprovals"
+      :disabled="isMismatchedNetwork"
       primaryActionType="extendLock"
     />
     <template v-else>
