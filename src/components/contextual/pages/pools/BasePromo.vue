@@ -6,7 +6,7 @@ const { networkSlug } = useNetwork();
 <template>
   <section
     v-if="networkSlug != 'base'"
-    class="box-border overflow-hidden relative px-4 xl:px-0 mr-6 mb-4 w-full rounded-xl promo"
+    class="box-border overflow-hidden relative px-4 xl:px-0 mr-6 mb-5 w-full rounded-xl promo"
   >
     <div class="promo-bg">
       <div
