@@ -1,19 +1,53 @@
 <script setup lang="ts">
+import { Pool } from '@/services/pool/types';
+
 type Props = {
-  menuItems?: string[];
+  pool: Pool;
+  defaultPoolActions: string[];
+  showPokeAction?: boolean;
+  showMigrateGaugeAction?: boolean;
 };
 
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showPokeAction: false,
+  showMigrateGaugeAction: false,
+});
 defineEmits<{
   (e: 'choose-action', value: string): void;
 }>();
 const isSelectorOpened = ref(false);
+
+function handleClickOutside() {
+  isSelectorOpened.value = false;
+  console.log('clicked');
+}
+function getActionIcon(action: string) {
+  return new URL(
+    `/src/assets/images/icons/pool-actions/${action}.svg`,
+    import.meta.url
+  ).href;
+}
+
+const menuItems = computed(() => {
+  const items = [...props.defaultPoolActions];
+  if (props.showMigrateGaugeAction) {
+    items.unshift('migrateGauge');
+  } else if (props.showPokeAction) {
+    items.unshift('poke');
+  }
+
+  return items;
+});
 </script>
 
 <template>
-  <div v-if="menuItems" class="flex relative justify-center py-4 px-2">
+  <div
+    v-if="menuItems"
+    v-click-outside="handleClickOutside"
+    class="flex relative justify-center py-4 px-2"
+  >
     <div
-      class="flex justify-center items-center w-7 h-7 text-blue-600 hover:bg-blue-50 rounded-md border border-blue-600 transition-all duration-200 text-[8px]"
+      class="flex justify-center items-center w-7 h-7 text-blue-600 hover:bg-blue-50 rounded-lg border border-blue-600 transition-all duration-200 text-[8px]"
       @click.stop="isSelectorOpened = !isSelectorOpened"
     >
       &bull;&bull;&bull;
@@ -22,15 +56,24 @@ const isSelectorOpened = ref(false);
       v-if="isSelectorOpened"
       class="absolute z-10 bg-white rounded border border-gray-200 shadow right-[60px] top-[50px] radius-md"
     >
-      <!-- Add your menu items here -->
       <li
-        v-for="item in menuItems"
-        :key="item"
-        class="py-3 text-left whitespace-pre hover:bg-gray-100 cursor-pointer"
-        @click.stop.prevent="$emit('choose-action', item)"
+        v-for="action in menuItems"
+        :key="action"
+        class="flex items-center py-3 pr-10 pl-3 font-medium text-left whitespace-pre hover:bg-gray-100 cursor-pointer"
+        :class="{
+          'bg-red-50 border-b border-gray-200':
+            action === 'poke' || action === 'migrateGauge',
+        }"
+        @click.stop="$emit('choose-action', action)"
       >
-        <div class="pr-5 pl-2">{{ $t(`poolActions.${item}`) }}</div>
+        <img
+          :src="getActionIcon(action)"
+          alt=""
+          class="p-0.5 rounded-full w-[20px]"
+        />
+        <div class="pr-5 pl-2">{{ $t(`poolActions.${action}`) }}</div>
       </li>
     </ul>
   </div>
 </template>
+

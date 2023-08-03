@@ -7,22 +7,21 @@ import { configService } from '@/services/config/config.service';
 /**
  * TYPES
  */
+
+type PoolsGaugesQueryResponse = Record<'pools', PoolsGauges[]>;
 export type PoolsGauges = {
-  __name: 'PoolGauges';
-  pools: {
-    preferentialGauge: {
-      id: string | null;
-    };
-    gauges: {
-      id: string;
-      relativeWeightCap: string;
-    }[];
-    address: string;
+  preferentialGauge: {
+    id: string | null;
+  };
+  gauges: {
     id: string;
+    relativeWeightCap: string;
   }[];
+  address: string;
+  id: string;
 };
 
-type QueryOptions = UseQueryOptions<PoolsGauges>;
+type QueryOptions = UseQueryOptions<PoolsGaugesQueryResponse>;
 
 /**
  * Fetches all gauges for a given pool and specifies which gauge is the
@@ -30,7 +29,7 @@ type QueryOptions = UseQueryOptions<PoolsGauges>;
  */
 export default function usePoolsGaugesQuery(
   poolAddresses: Ref<string[] | undefined>,
-  options: UseQueryOptions<PoolsGauges> = {}
+  options: QueryOptions = {}
 ) {
   /**
    * QUERY KEY
@@ -69,7 +68,7 @@ export default function usePoolsGaugesQuery(
    */
   const queryFn = async () => {
     try {
-      return await subgraphRequest<PoolsGauges[]>({
+      return await subgraphRequest<PoolsGaugesQueryResponse>({
         url: configService.network.subgraphs.gauge,
         query: subgraphQuery.value,
       });
@@ -93,5 +92,9 @@ export default function usePoolsGaugesQuery(
     ...options,
   });
 
-  return useQuery<PoolsGauges>(queryKey, queryFn, queryOptions as QueryOptions);
+  return useQuery<PoolsGaugesQueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions as QueryOptions
+  );
 }

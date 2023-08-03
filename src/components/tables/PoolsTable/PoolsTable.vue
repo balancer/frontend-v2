@@ -58,6 +58,8 @@ type Props = {
   shares?: Record<string, string>;
   boosts?: Record<string, string>;
   defaultPoolActions?: string[];
+  shouldPokePoolsArr?: string[];
+  hasNonPrefGaugesPoolsIds?: string[];
 };
 
 /**
@@ -410,15 +412,24 @@ function iconAddresses(pool: Pool) {
           {{ lockedUntil(pool.lockedEndDate) }}
         </div>
       </template>
-      <template #actionsCell="">
-        <!-- <PoolsTableActionsCell
+      <template #actionsCell="pool">
+        <PoolsTableActionSelector
+          v-if="defaultPoolActions"
+          :defaultPoolActions="defaultPoolActions"
+          :pool="pool"
+          :showPokeAction="shouldPokePoolsArr?.includes(pool.address) || false"
+          :showMigrateGaugeAction="
+            hasNonPrefGaugesPoolsIds?.includes(pool.address) || false
+          "
+        />
+        <PoolsTableActionsCell
+          v-else
           :pool="pool"
           :poolsType="poolsType"
           @click:stake="pool => emit('triggerStake', pool)"
           @click:unstake="pool => emit('triggerUnstake', pool)"
           @click:migrate="pool => navigateToPoolMigration(pool)"
-        /> -->
-        <PoolsTableActionSelector :menuItems="defaultPoolActions" />
+        />
       </template>
     </BalTable>
   </BalCard>

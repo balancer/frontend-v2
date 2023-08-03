@@ -34,8 +34,14 @@ providePoolStaking();
 /**
  * COMPOSABLES
  */
-const { stakedPools, poolBoostsMap, stakedShares, isLoading, poolsGauges } =
-  useUserStaking();
+const {
+  stakedPools,
+  poolBoostsMap,
+  stakedShares,
+  isLoading,
+  poolsGauges,
+  hasNonPrefGaugesPoolsIds,
+} = useUserStaking();
 const { getGaugeWorkingBalance } = useCrossChainSync();
 
 const { refetchAllUserPools } = useUserPools();
@@ -84,17 +90,19 @@ async function handleUnstakeSuccess() {
   await refetchAllUserPools();
 }
 
-// map of pool ids and shoould poke boolean
-const shouldPokeMap = ref<Record<string, boolean>>({});
+// arr of pool ids that should be poked
+const shouldPokePoolsArr = ref<string[]>([]);
 watch(
   () => poolsGauges.value,
   async val => {
     if (!val) return;
-    for (const pool of poolsGauges.value.pools) {
+    for (const pool of val.pools) {
       try {
         const { id } = pool.preferentialGauge;
         const balance = await getGaugeWorkingBalance(id);
-        shouldPokeMap.value[id] = balance[1]?.gt(balance[0]);
+        if (balance[1]?.gt(balance[0])) {
+          shouldPokePoolsArr.value.push(id);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -109,7 +117,11 @@ watch(
       <h5 class="px-4 xl:px-0">
         {{ $t('staking.stakedPools') }}
       </h5>
-      <PortfolioSyncTip @show-proceed-modal="showProceedModal = true" />
+      {{ hasNonPrefGaugesPoolsIds }}
+      <PortfolioSyncTip
+        :shouldPokePoolsArr="shouldPokePoolsArr"
+        @show-proceed-modal="showProceedModal = true"
+      />
       <PoolsTable
         :key="poolsToRenderKey"
         :data="stakedPools"
@@ -125,6 +137,8 @@ watch(
         showStakeActions
         :showBoost="isPoolBoostsEnabled"
         :defaultPoolActions="defaultPoolActions"
+        :shouldPokePoolsArr="shouldPokePoolsArr"
+        :hasNonPrefGaugesPoolsIds="hasNonPrefGaugesPoolsIds"
         @trigger-unstake="handleUnstake"
         @trigger-restake="handleRestake"
       />

@@ -6,6 +6,12 @@ import {
 } from '@/providers/cross-chain-sync.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
+type Props = {
+  shouldPokePoolsArr: string[];
+};
+
+defineProps<Props>();
+
 defineEmits(['showProceedModal']);
 
 const {
@@ -14,6 +20,7 @@ const {
   l2VeBalBalances,
   isLoading: isLoadingSyncState,
 } = useCrossChainSync();
+
 const { networkId } = useNetwork();
 const { account } = useWeb3();
 

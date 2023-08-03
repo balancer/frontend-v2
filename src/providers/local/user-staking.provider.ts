@@ -11,6 +11,9 @@ import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 import usePoolsGaugesQuery from '@/composables/queries/usePoolsGaugesQuery';
 import { bnum, isSameAddress } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
+import useWeb3 from '@/services/web3/useWeb3';
+import { GaugeCheckpointer } from '@/services/balancer/contracts/contracts/gauge-checkpointer';
 
 const provider = () => {
   /**
@@ -18,7 +21,7 @@ const provider = () => {
    */
   const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
     useUserData();
-
+  const { getSigner } = useWeb3();
   /**
    * COMPUTED
    */
@@ -72,7 +75,7 @@ const provider = () => {
 
   const hasNonPrefGaugesPoolsIds = computed(() => {
     return poolsGauges.value?.pools.reduce((acc: string[], pool) => {
-      const preferentialGaugeAddress = pool.preferentialGauge.id || '';
+      const preferentialGaugeAddress = pool.preferentialGauge?.id || '';
       const hasNonPregGauge = pool.gauges.some(
         gaugeAddress =>
           !isSameAddress(gaugeAddress.id, preferentialGaugeAddress) &&
@@ -126,6 +129,17 @@ const provider = () => {
     return stakedShares?.value?.[poolId] || '0';
   }
 
+  async function checkpointAllGauges(poolIds: string[]) {
+    const contractAddress = configService.network.addresses.gaugeCheckpointer;
+    if (!contractAddress) throw new Error('No contract address found');
+    const signer = getSigner();
+    const gaugeCheckpointerContract = new GaugeCheckpointer(contractAddress);
+
+    const tx = await gaugeCheckpointerContract.checkpoint({ poolIds, signer });
+
+    return tx;
+  }
+
   return {
     stakedPools,
     stakedShares,
@@ -136,6 +150,7 @@ const provider = () => {
     stakedSharesFor,
     hasNonPrefGaugesPoolsIds,
     poolsGauges,
+    checkpointAllGauges,
   };
 };
 
