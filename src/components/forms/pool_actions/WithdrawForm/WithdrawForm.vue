@@ -10,6 +10,7 @@ import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPrev
 import { useTokens } from '@/providers/tokens.provider';
 import {
   isPreMintedBptType,
+  tokensListExclBpt,
   usePoolHelpers,
 } from '@/composables/usePoolHelpers';
 import { useI18n } from 'vue-i18n';
@@ -55,6 +56,7 @@ const {
   hasAmountsOut,
   validAmounts,
   hasBpt,
+  shouldUseRecoveryExit,
 } = useExitPool();
 
 const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
@@ -70,15 +72,17 @@ const hasValidInputs = computed(
   (): boolean => validAmounts.value && hasAcceptedHighPriceImpact.value
 );
 
+const tokensList = computed(() => tokensListExclBpt(pool.value));
+
 // Limit token select modal to a subset.
 const subsetTokens = computed((): string[] => {
-  if (!pool.value.isInRecoveryMode && isPreMintedBptType(pool.value.poolType))
+  if (!shouldUseRecoveryExit.value && isPreMintedBptType(pool.value.poolType))
     return [];
 
   if (isWrappedNativeAssetPool.value)
-    return [nativeAsset.address, ...pool.value.tokensList];
+    return [nativeAsset.address, ...tokensList.value];
 
-  return pool.value.tokensList;
+  return tokensList.value;
 });
 
 const excludedTokens = computed((): string[] => {
@@ -97,9 +101,10 @@ onBeforeMount(() => {
   if (!hasBpt.value)
     router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
 
-  singleAmountOut.address = isPreMintedBptType(pool.value.poolType)
-    ? wrappedNativeAsset.value.address
-    : pool.value.tokensList[0];
+  singleAmountOut.address =
+    subsetTokens.value.length === 0
+      ? wrappedNativeAsset.value.address
+      : tokensList.value[0];
 });
 </script>
 

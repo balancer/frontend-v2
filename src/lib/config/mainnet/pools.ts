@@ -166,7 +166,8 @@ const pools: Pools = {
       '0xb2b918f2d628b4c8ff237b0a1c6ac3bea222fedc00020000000000000000059c', // gho/ohm
       '0x7d98f308db99fdd04bbf4217a4be8809f38faa6400020000000000000000059b', // wstETH/ohm
       '0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5', // idle/usdc
-      '0x064bcc35bfe023fe717a87574fae9333f98aae4d0002000000000000000005a6', // 80RATE/20WETH
+      '0x26cc136e9b8fd65466f193a8e5710661ed9a98270002000000000000000005ad', // 80RATE/20WETH
+      '0xc88c76dd8b92408fe9bea1a54922a31e232d873c0002000000000000000005b2', // 80ASX-20WETH
     ],
   },
   Factories: {
@@ -188,6 +189,7 @@ const pools: Pools = {
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
     '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
+    '0x412a5b2e7a678471985542757a6855847d4931d5': 'gyroE',
   },
   Stakable: {
     VotingGaugePools: [
@@ -355,6 +357,7 @@ const pools: Pools = {
       '0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5',
       '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7',
       '0x759fabc513accd292ada967c4dd7bb94da39232e0002000000000000000005a8',
+      '0x616d4d131f1147ac3b3c3cc752bab8613395b2bb000200000000000000000584',
     ],
     AllowList: [],
   },
@@ -741,6 +744,9 @@ const pools: Pools = {
   GaugeMigration: {},
   BrandedRedirect: {
     FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
   },
   ExitViaInternalBalance: [
     '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC

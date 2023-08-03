@@ -2,6 +2,7 @@
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
+import useWeb3 from '@/services/web3/useWeb3';
 
 interface Props {
   isVisible?: boolean;
@@ -16,6 +17,7 @@ const emit = defineEmits(['close', 'success']);
 const { poolGauges } = usePoolStaking();
 const { triggerGaugeUpdate } = useCrossChainSync();
 const { addTransaction } = useTransactions();
+const { isMismatchedNetwork } = useWeb3();
 
 const showCloseBtn = ref(false);
 
@@ -59,6 +61,7 @@ const actions = [
 <template>
   <BalModal
     :show="isVisible"
+    :disabled="isMismatchedNetwork"
     title="Trigger pool gauge veBAL update"
     @close="emit('close')"
   >

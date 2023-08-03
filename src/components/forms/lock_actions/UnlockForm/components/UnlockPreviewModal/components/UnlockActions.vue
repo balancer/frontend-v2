@@ -57,7 +57,7 @@ const unlockActionState = reactive<UnlockActionState>({
  */
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getProvider, explorerLinks } = useWeb3();
+const { getProvider, explorerLinks, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 
@@ -131,6 +131,7 @@ async function submit() {
     <BalActionSteps
       v-if="!unlockActionState.confirmed"
       :actions="actions"
+      :disabled="isMismatchedNetwork"
       primaryActionType="unlock"
     />
     <template v-else>
