@@ -46,6 +46,7 @@ export type GqlBalancePoolAprSubItem = {
 export enum GqlChain {
   Arbitrum = 'ARBITRUM',
   Avalanche = 'AVALANCHE',
+  Base = 'BASE',
   Fantom = 'FANTOM',
   Gnosis = 'GNOSIS',
   Mainnet = 'MAINNET',

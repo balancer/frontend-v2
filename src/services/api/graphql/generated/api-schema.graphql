@@ -26,6 +26,7 @@ scalar GqlBigNumber
 enum GqlChain {
   ARBITRUM
   AVALANCHE
+  BASE
   FANTOM
   GNOSIS
   MAINNET
