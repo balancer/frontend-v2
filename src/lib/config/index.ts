@@ -2,6 +2,7 @@ import { Config } from './types';
 
 import arbitrum from './arbitrum';
 import avalanche from './avalanche';
+import base from './base';
 import goerli from './goerli';
 import gnosisChain from './gnosis-chain';
 import mainnet from './mainnet';
@@ -20,6 +21,7 @@ export enum Network {
   POLYGON = 137,
   FANTOM = 250,
   ZKEVM = 1101,
+  BASE = 8453,
   ARBITRUM = 42161,
   AVALANCHE = 43114,
   SEPOLIA = 11155111,
@@ -35,6 +37,7 @@ const config: Record<Network | number, Config> = {
   [Network.ZKEVM]: zkevm,
   [Network.AVALANCHE]: avalanche,
   [Network.SEPOLIA]: sepolia,
+  [Network.BASE]: base,
 };
 
 export default config;
