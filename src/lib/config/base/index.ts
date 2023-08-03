@@ -26,8 +26,7 @@ const config: Config = {
   explorerName: 'BaseScan',
   subgraph:
     'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
-  balancerApi:
-    'https://ehtymracbg.execute-api.ap-southeast-2.amazonaws.com/prod/',
+  balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
@@ -36,7 +35,8 @@ const config: Config = {
     aave: '',
     gauge:
       'https://api.studio.thegraph.com/query/24660/balancer-gauges-base/version/latest',
-    blocks: '',
+    blocks:
+      'https://api.studio.thegraph.com/query/48427/bleu-base-blocks/version/latest',
   },
   bridgeUrl: 'bridge.base.org',
   supportsEIP1559: false,
