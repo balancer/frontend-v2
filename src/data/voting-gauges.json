@@ -1902,7 +1902,7 @@
   {
     "address": "0xA2a9Ebd6f4dEA4802083F2C8D08066A4e695e64B",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1676389091,
     "pool": {
@@ -2454,7 +2454,7 @@
   {
     "address": "0x0052688295413b32626D226a205b95cDB337DE86",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1681342871,
     "pool": {
@@ -2489,7 +2489,7 @@
   {
     "address": "0x5f838591A5A8048F0E4C4c7fCca8fD9A25BF0590",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1681342871,
     "pool": {
@@ -3185,7 +3185,7 @@
   {
     "address": "0x8eeB783A4A67f626c6E3952AAeD0D6b104AaC85f",
     "network": 1,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1687258571,
     "pool": {
@@ -4170,6 +4170,76 @@
     }
   },
   {
+    "address": "0xE9816654a37aaBAEC2A742f1a1cE4c99D42c08D2",
+    "network": 10,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690830527,
+    "pool": {
+      "id": "0xcd7b2232b7435595bbc7fd7962f1f352fc2cc61a0000000000000000000000f0",
+      "address": "0xCd7B2232B7435595bBc7FD7962f1f352fc2cC61a",
+      "poolType": "ComposableStable",
+      "symbol": "bb-rf-usd",
+      "tokens": [
+        {
+          "address": "0x20715545C15C76461861Cb0D6ba96929766D05A5",
+          "weight": "null",
+          "symbol": "bb-rfUSDT"
+        },
+        {
+          "address": "0xA5D4802B4ce6b745B0C9e1b4a79c093D197869c8",
+          "weight": "null",
+          "symbol": "bb-rfDAI"
+        },
+        {
+          "address": "0xF970659221BB9d01B615321b63a26E857ffC030B",
+          "weight": "null",
+          "symbol": "bb-rfUSDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x20715545C15C76461861Cb0D6ba96929766D05A5": "",
+      "0xA5D4802B4ce6b745B0C9e1b4a79c093D197869c8": "",
+      "0xF970659221BB9d01B615321b63a26E857ffC030B": ""
+    }
+  },
+  {
+    "address": "0xAb6b60F389218AFf06DE279BF8c69A246568b5a6",
+    "network": 10,
+    "isKilled": false,
+    "relativeWeightCap": "1",
+    "addedTimestamp": 1690830527,
+    "pool": {
+      "id": "0x8a2872fd28f42bd9f6559907235e83fbf4167f480001000000000000000000f2",
+      "address": "0x8a2872fd28F42BD9F6559907235E83FbF4167f48",
+      "poolType": "Weighted",
+      "symbol": "bb-rf-triple",
+      "tokens": [
+        {
+          "address": "0x48aCE81C09382bfC08eD102e7eadd37e3B049752",
+          "weight": "0.5",
+          "symbol": "bb-rfWSTETH"
+        },
+        {
+          "address": "0x8025586aC5fB265A23B9492E7414BecCc2059ec3",
+          "weight": "0.25",
+          "symbol": "bb-rfWBTC"
+        },
+        {
+          "address": "0xF970659221BB9d01B615321b63a26E857ffC030B",
+          "weight": "0.25",
+          "symbol": "bb-rfUSDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x48aCE81C09382bfC08eD102e7eadd37e3B049752": "",
+      "0x8025586aC5fB265A23B9492E7414BecCc2059ec3": "",
+      "0xF970659221BB9d01B615321b63a26E857ffC030B": ""
+    }
+  },
+  {
     "address": "0x21b2Ef3DC22B7bd4634205081c667e39742075E2",
     "network": 100,
     "isKilled": false,
@@ -5026,7 +5096,7 @@
   {
     "address": "0xDd3b4161D2a4c609884E20Ed71b4e85BE44572E6",
     "network": 137,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1683715019,
     "pool": {
@@ -5050,35 +5120,6 @@
     "tokenLogoURIs": {
       "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4.png",
       "0xE4885Ed2818Cc9E840A25f94F9b2A28169D1AEA7": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe4885ed2818cc9e840a25f94f9b2a28169d1aea7.png"
-    }
-  },
-  {
-    "address": "0x082AACfaf4db8AC0642CBED50df732D3C309E679",
-    "network": 137,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b",
-      "address": "0xE78b25c06dB117fdF8F98583CDaaa6c92B79E917",
-      "poolType": "ComposableStable",
-      "symbol": "MaticX-bb-a-WMATIC-BPT",
-      "tokens": [
-        {
-          "address": "0xE4885Ed2818Cc9E840A25f94F9b2A28169D1AEA7",
-          "weight": "null",
-          "symbol": "bb-a-WMATIC"
-        },
-        {
-          "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
-          "weight": "null",
-          "symbol": "MaticX"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0xE4885Ed2818Cc9E840A25f94F9b2A28169D1AEA7": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe4885ed2818cc9e840a25f94f9b2a28169d1aea7.png",
-      "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
     }
   },
   {
@@ -5949,7 +5990,7 @@
   {
     "address": "0x4944b07977A42C15c6a06CF4e204e24c60564104",
     "network": 42161,
-    "isKilled": false,
+    "isKilled": true,
     "relativeWeightCap": "1",
     "addedTimestamp": 1683715019,
     "pool": {
@@ -6002,70 +6043,6 @@
     "tokenLogoURIs": {
       "0xDa1CD1711743e57Dd57102E9e61b75f3587703da": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xda1cd1711743e57dd57102e9e61b75f3587703da.png",
       "0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xec70dcb4a1efa46b8f2d97c310c9c4790ba5ffa8.png"
-    }
-  },
-  {
-    "address": "0x54BeFB03BB58687cDE09cd082Bd78410e309D8C7",
-    "network": 42161,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a",
-      "address": "0xEE02583596AEE94ccCB7e8ccd3921d955f17982A",
-      "poolType": "ComposableStable",
-      "symbol": "bb-a-USD",
-      "tokens": [
-        {
-          "address": "0x4739E50B59B552D490d3FDc60D200977A38510c0",
-          "weight": "null",
-          "symbol": "bb-a-USDT"
-        },
-        {
-          "address": "0x7c82A23B4C48D796dee36A9cA215b641C6a8709d",
-          "weight": "null",
-          "symbol": "bb-a-USDC"
-        },
-        {
-          "address": "0x9E34631547aDcF2F8cefa0f5f223955C7B137571",
-          "weight": "null",
-          "symbol": "bb-a-DAI"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x4739E50B59B552D490d3FDc60D200977A38510c0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4739e50b59b552d490d3fdc60d200977a38510c0.png",
-      "0x7c82A23B4C48D796dee36A9cA215b641C6a8709d": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7c82a23b4c48d796dee36a9ca215b641c6a8709d.png",
-      "0x9E34631547aDcF2F8cefa0f5f223955C7B137571": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x9e34631547adcf2f8cefa0f5f223955c7b137571.png"
-    }
-  },
-  {
-    "address": "0xB5044FD339A7b858095324cC3F239C212956C179",
-    "network": 42161,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1683715019,
-    "pool": {
-      "id": "0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400",
-      "address": "0x5A7f39435fD9c381e4932fa2047C9a5136A5E3E7",
-      "poolType": "ComposableStable",
-      "symbol": "wstETH-bb-a-WETH-BPT",
-      "tokens": [
-        {
-          "address": "0x5979D7b546E38E414F7E9822514be443A4800529",
-          "weight": "null",
-          "symbol": "wstETH"
-        },
-        {
-          "address": "0xDa1CD1711743e57Dd57102E9e61b75f3587703da",
-          "weight": "null",
-          "symbol": "bb-a-WETH"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x5979D7b546E38E414F7E9822514be443A4800529": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5979d7b546e38e414f7e9822514be443a4800529.png",
-      "0xDa1CD1711743e57Dd57102E9e61b75f3587703da": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xda1cd1711743e57dd57102e9e61b75f3587703da.png"
     }
   },
   {
