@@ -18,7 +18,7 @@ const contracts: Contracts = {
   gaugeController: '',
   tokenAdmin: '',
   veBAL: '',
-  veDelegationProxy: '',
+  veDelegationProxy: base.VotingEscrowDelegationProxy,
   veBALHelpers: '',
   feeDistributor: '',
   feeDistributorDeprecated: '',
