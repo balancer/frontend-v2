@@ -375,6 +375,15 @@ const pools: Pools = {
         },
       },
     },
+    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
+      name: 'Boosted Tetu USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Tetu],
+        },
+      },
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
