@@ -613,6 +613,10 @@ const pools: Pools = {
         },
       },
     },
+    '0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d': {
+      name: 'R/Boosted Savings DAI',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
