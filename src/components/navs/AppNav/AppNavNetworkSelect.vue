@@ -170,7 +170,12 @@ function isActive(network: NetworkOption): boolean {
           </span>
           <span
             v-if="network.name === 'Avalanche'"
-            class="py-0.5 px-1 ml-1.5 text-xs font-medium uppercase bg-yellow-500 rounded"
+            class="py-0.5 px-1 ml-1.5 text-xs font-medium dark:text-black uppercase bg-yellow-500 rounded"
+            >{{ $t('new') }}</span
+          >
+          <span
+            v-if="network.name === 'Base'"
+            class="py-0.5 px-1 ml-1.5 text-xs font-medium dark:text-black uppercase bg-yellow-500 rounded"
             >{{ $t('new') }}</span
           >
         </div>

@@ -17,7 +17,7 @@ const config: Config = {
   network: 'base',
   trustWalletNetwork: 'base',
   unknown: false,
-  visibleInUI: false,
+  visibleInUI: true,
   testNetwork: false,
   rpc: `https://developer-access-mainnet.base.org`,
   ws: ``,
