@@ -19,7 +19,7 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://developer-access-mainnet.base.org`,
+  rpc: `https://base.gateway.tenderly.co/2rkO7cFmpz3ZLkhKmtrzpb`,
   ws: ``,
   publicRpc: 'https://developer-access-mainnet.base.org',
   explorer: 'https://basescan.org/',
