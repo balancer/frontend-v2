@@ -13,6 +13,7 @@ import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 import PortfolioSyncTip from '../vebal/cross-chain-boost/PortfolioSyncTip.vue';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
+import PokeAllGaugesModal from '@/components/modals/PokeAllGaugesModal.vue';
 
 /**
  * STATE
@@ -26,6 +27,7 @@ const poolToRestake = ref<Pool | undefined>();
 const showProceedModal = ref(false);
 const defaultPoolActions = ['unstake', 'add', 'remove', 'vote'];
 
+const showPokeAllGaugesModal = ref(false);
 /**
  * PROVIDERS
  */
@@ -98,7 +100,12 @@ watch(
     if (!val) return;
     for (const pool of val.pools) {
       try {
-        const { id } = pool.preferentialGauge;
+        const id = pool.preferentialGauge?.id;
+
+        if (!id) {
+          return;
+        }
+
         const balance = await getGaugeWorkingBalance(id);
         if (balance[1]?.gt(balance[0])) {
           shouldPokePoolsArr.value.push(id);
@@ -121,6 +128,7 @@ watch(
       <PortfolioSyncTip
         :shouldPokePoolsArr="shouldPokePoolsArr"
         @show-proceed-modal="showProceedModal = true"
+        @show-poke-all-gauge-modal="showPokeAllGaugesModal = true"
       />
       <PoolsTable
         :key="poolsToRenderKey"
@@ -167,6 +175,12 @@ watch(
     <ProceedToSyncModal
       :isVisible="showProceedModal"
       @close="showProceedModal = false"
+    />
+
+    <PokeAllGaugesModal
+      :shouldPokePoolsArr="shouldPokePoolsArr"
+      :isVisible="showPokeAllGaugesModal"
+      @close="showPokeAllGaugesModal = false"
     />
   </div>
 </template>

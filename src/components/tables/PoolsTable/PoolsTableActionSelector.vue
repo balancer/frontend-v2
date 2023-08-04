@@ -13,7 +13,12 @@ const props = withDefaults(defineProps<Props>(), {
   showMigrateGaugeAction: false,
 });
 defineEmits<{
-  (e: 'choose-action', value: string): void;
+  (e: 'click:add', value: Pool): void;
+  (e: 'click:remove', value: Pool): void;
+  (e: 'click:unstake', value: Pool): void;
+  (e: 'click:vote', value: Pool): void;
+  (e: 'click:poke', value: Pool): void;
+  (e: 'click:migrateGauge', value: Pool): void;
 }>();
 const isSelectorOpened = ref(false);
 
@@ -64,7 +69,7 @@ const menuItems = computed(() => {
           'bg-red-50 border-b border-gray-200':
             action === 'poke' || action === 'migrateGauge',
         }"
-        @click.stop="$emit('choose-action', action)"
+        @click.stop="$emit(`click:${action}`, pool)"
       >
         <img
           :src="getActionIcon(action)"

@@ -10,9 +10,9 @@ type Props = {
   shouldPokePoolsArr: string[];
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
-defineEmits(['showProceedModal']);
+defineEmits(['showProceedModal', 'showPokeAllGaugeModal']);
 
 const {
   networksSyncState,
@@ -47,6 +47,15 @@ const veBalSyncTip = computed(() => {
     };
   }
 
+  if (props.shouldPokePoolsArr.length > 0) {
+    return {
+      title: 'Poke to refresh gauges for boosted APRs',
+      text: 'After your veBAL is synced to an L2, the pool gauge remains unaware of your new balance until it is interacted with. ‘Poke all’ to gas-efficiently update all gauges. Otherwise, interact with each gauge individzually (e.g. by Claiming BAL).',
+      showPokeAllBtn: true,
+      hideBtn: true,
+    };
+  }
+
   const isSynced = state === NetworkSyncState.Synced;
 
   if (isSynced) {
@@ -68,7 +77,12 @@ const veBalSyncTip = computed(() => {
   >
     <div class="flex items-center">
       <div class="flex-[2]">{{ veBalSyncTip.text }}</div>
-      <div v-if="!veBalSyncTip.hideBtn" class="flex flex-1 justify-end">
+      <div v-if="veBalSyncTip.showPokeAllBtn" class="flex flex-1 justify-end">
+        <BalBtn color="gradient" @click="$emit('showPokeAllGaugeModal')">
+          Poke all gauges
+        </BalBtn>
+      </div>
+      <div v-else-if="!veBalSyncTip.hideBtn" class="flex flex-1 justify-end">
         <BalBtn color="gradient" @click="$emit('showProceedModal')">
           Sync veBAL
         </BalBtn>

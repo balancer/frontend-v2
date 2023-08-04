@@ -29,7 +29,7 @@ import { Pool } from '@/services/pool/types';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { configService } from '@/services/config/config.service';
 
-// import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
+import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
@@ -279,6 +279,24 @@ function iconAddresses(pool: Pool) {
     ? [pool.address]
     : orderedTokenAddresses(pool);
 }
+function addLiquidity(id: string) {
+  router.push({
+    name: 'add-liquidity',
+    params: {
+      id,
+      networkSlug,
+    },
+  });
+}
+function removeLiquidity(id: string) {
+  router.push({
+    name: 'withdraw',
+    params: {
+      id,
+      networkSlug,
+    },
+  });
+}
 </script>
 
 <template>
@@ -421,6 +439,9 @@ function iconAddresses(pool: Pool) {
           :showMigrateGaugeAction="
             hasNonPrefGaugesPoolsIds?.includes(pool.address) || false
           "
+          @click:add="addLiquidity(pool.id)"
+          @click:remove="removeLiquidity(pool.id)"
+          @click:unstake="pool => emit('triggerUnstake', pool)"
         />
         <PoolsTableActionsCell
           v-else
