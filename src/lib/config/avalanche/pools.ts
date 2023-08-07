@@ -64,6 +64,7 @@ const pools: Pools = {
       '0x670734d704eb7ef424d75321670f921fbf42e9cf000000000000000000000016',
       '0x3bde1563903ebb564ca37d5736afbb850929cfd7000200000000000000000017',
       '0x55bec22f8f6c69137ceaf284d9b441db1b9bfedc000200000000000000000011', // USDC/EUROC
+      '0x3f1a2c4a3a751f6626bd90ef16e104f0772d4d6b00020000000000000000001b', // 50BTC.b-50bb-a-USD
     ],
   },
   Metadata: {
@@ -96,6 +97,15 @@ const pools: Pools = {
     },
     '0x054e7b0c73e1ee5aed6864fa511658fc2b54bcaa000000000000000000000015': {
       name: 'ggAVAX/Boosted Aave v3 WAVAX',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0x3f1a2c4a3a751f6626bd90ef16e104f0772d4d6b00020000000000000000001b': {
+      name: 'BTC.b/Boosted Aave V3 USD',
       hasIcon: false,
       features: {
         [PoolFeature.Boosted]: {
