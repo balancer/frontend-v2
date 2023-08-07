@@ -8,10 +8,15 @@ on:
         description: Network
         required: true
         options:
+          - avalanche
+          - arbitrum
+          - base
+          - gnosis-chain
+          - goerli
           - mainnet
           - polygon
-          - arbitrum
-          - gnosis-chain
+          - optimism
+          - zkevm
       poolType:
         type: choice
         description: Pool Type

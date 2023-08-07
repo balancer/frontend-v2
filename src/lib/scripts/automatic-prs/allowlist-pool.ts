@@ -53,12 +53,15 @@ function validateInput({
     throw Error(`Invalid pool type: ${poolType}`);
 
   const networkNames = [
+    'avalanche',
     'arbitrum',
+    'base',
     'gnosis-chain',
     'goerli',
     'mainnet',
     'polygon',
     'optimism',
+    'zkevm',
   ];
   if (!networkNames.includes(network))
     throw Error(`Invalid network name: ${network}`);
