@@ -438,6 +438,10 @@ const pools: Pools = {
         '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43',
       description: 'deprecatedPool.gaugeKilledReason',
     },
+    '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
+      newPool:
+        '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {
