@@ -26,6 +26,7 @@ const pools: Pools = {
   Stable: {
     AllowList: [
       '0x6fbfcf88db1aada31f34215b2a1df7fafb4883e900000000000000000000000c', // stabal3
+      '0xe58ca65f418d4121d6c70d4c133e60cf6fda363c000000000000000000000013', // usdc/axlusd
     ],
   },
   Investment: {

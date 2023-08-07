@@ -106,6 +106,7 @@ const pools: Pools = {
       '0x42942cdec85078cf0e28e9cb5acd40cb53997ed6000000000000000000000bea', // BRX-jBRL
       '0x70ff0078d55ce9c1a0e668f35eb4400a4300122d000000000000000000000beb', // jCHF-vCHF
       '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11', // DUSD/bbaUSD
+      '0x7af62c1ebf97034b7542ccec13a2e79bbcf34380000000000000000000000c13', // tetubal/aurabal
     ],
   },
   Investment: {
