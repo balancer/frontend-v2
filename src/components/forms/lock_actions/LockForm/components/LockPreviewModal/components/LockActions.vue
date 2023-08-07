@@ -216,6 +216,8 @@ onBeforeMount(async () => {
     amountsToApprove: amountsToApprove.value,
     spender: networkConfig.addresses.veBAL,
     actionType: ApprovalAction.Locking,
+    // veBAL approval should always only suggest the approval of the exact amount.
+    forceMax: false,
   });
   actions.value.unshift(...approvalActions);
   isLoadingApprovals.value = false;
