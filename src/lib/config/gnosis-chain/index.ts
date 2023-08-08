@@ -49,7 +49,7 @@ const config: Config = {
     decimals: 18,
     deeplinkId: 'xdai',
     logoURI: 'tokens/xdai.png',
-    minTransactionBuffer: '0.05',
+    minTransactionBuffer: '0.005',
   },
   thirdParty: {
     coingecko: {
