@@ -277,6 +277,15 @@ const pools: Pools = {
         },
       },
     },
+    '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f': {
+      name: 'DUSD/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
