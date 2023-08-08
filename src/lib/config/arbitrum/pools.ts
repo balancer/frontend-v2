@@ -270,6 +270,22 @@ const pools: Pools = {
         },
       },
     },
+    '0x9cebf13bb702f253abf1579294694a1edad00eaa000000000000000000000486': {
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f': {
+      name: 'DUSD/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -289,6 +305,7 @@ const pools: Pools = {
     '0x9cebf13bb702f253abf1579294694a1edad00eaa000000000000000000000486', // bb-a-usdc/bb-a-usdc.e
     '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e', // DOLA/bbaUSD
     '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f', // 50STG-50bbaUSD
+    '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f', // DUSD/bbausd
   ],
   Deprecated: {
     '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
