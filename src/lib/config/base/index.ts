@@ -50,7 +50,7 @@ const config: Config = {
     decimals: 18,
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
-    minTransactionBuffer: '0.05',
+    minTransactionBuffer: '0.005',
   },
   thirdParty: {
     coingecko: {
