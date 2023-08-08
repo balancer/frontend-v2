@@ -379,6 +379,15 @@ const pools: Pools = {
         },
       },
     },
+    '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11': {
+      name: 'DUSD/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
