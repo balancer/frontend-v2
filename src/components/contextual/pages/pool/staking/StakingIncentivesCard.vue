@@ -181,6 +181,7 @@ function handlePreviewClose() {
                 </BalStack>
                 <StakingCardSyncAlert
                   v-if="networkId !== Network.MAINNET"
+                  :poolId="poolId"
                   :fiatValueOfStakedShares="fiatValueOfStakedShares"
                   :fiatValueOfUnstakedShares="fiatValueOfUnstakedShares"
                   @should-staking-card-be-opened="isOpenedByDefault = true"

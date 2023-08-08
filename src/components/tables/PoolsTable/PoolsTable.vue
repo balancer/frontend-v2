@@ -58,7 +58,7 @@ type Props = {
   shares?: Record<string, string>;
   boosts?: Record<string, string>;
   defaultPoolActions?: string[];
-  shouldPokePoolsArr?: string[];
+  shouldPokePoolsMap?: Record<string, string>;
   hasNonPrefGaugesPoolsIds?: string[];
 };
 
@@ -84,8 +84,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'loadMore'): void;
+  (e: 'triggerVote'): void;
   (e: 'triggerStake', value: Pool): void;
   (e: 'triggerUnstake', value: Pool): void;
+  (e: 'triggerCheckpoint', value: Pool): void;
   (e: 'onColumnSort', value: string): void;
 }>();
 /**
@@ -297,11 +299,21 @@ function removeLiquidity(id: string) {
     },
   });
 }
+function goToPoolPage(id: string) {
+  router.push({
+    name: 'pool',
+    params: {
+      id,
+      networkSlug,
+    },
+  });
+}
 </script>
 
 <template>
   <BalCard
     shadow="lg"
+    exposeOverflow
     :square="upToLargeBreakpoint"
     :noBorder="upToLargeBreakpoint"
     noPad
@@ -435,13 +447,16 @@ function removeLiquidity(id: string) {
           v-if="defaultPoolActions"
           :defaultPoolActions="defaultPoolActions"
           :pool="pool"
-          :showPokeAction="shouldPokePoolsArr?.includes(pool.address) || false"
+          :showPokeAction="Boolean(shouldPokePoolsMap?.[pool.address]) || false"
           :showMigrateGaugeAction="
             hasNonPrefGaugesPoolsIds?.includes(pool.address) || false
           "
           @click:add="addLiquidity(pool.id)"
           @click:remove="removeLiquidity(pool.id)"
           @click:unstake="pool => emit('triggerUnstake', pool)"
+          @click:vote="emit('triggerVote')"
+          @click:migrate-gauge="goToPoolPage(pool.id)"
+          @click:poke="pool => emit('triggerCheckpoint', pool)"
         />
         <PoolsTableActionsCell
           v-else

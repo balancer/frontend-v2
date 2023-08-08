@@ -12,6 +12,7 @@ import config from '@/lib/config';
 type Props = {
   fiatValueOfStakedShares: string;
   fiatValueOfUnstakedShares: string;
+  poolId: string;
 };
 
 defineProps<Props>();
@@ -81,7 +82,7 @@ async function setWarningAlertState() {
     const balance = await getGaugeWorkingBalance(id);
 
     // if the second number it returns is greater than the first, then show the message
-    if (balance[1]?.gt(balance[0])) {
+    if (balance && balance[1]?.gt(balance[0])) {
       shouldShowWarningAlert.value = true;
     }
   } catch (error) {
@@ -126,6 +127,7 @@ onMounted(() => {
     </BalAlert>
 
     <CheckpointGaugeModal
+      :poolId="poolId"
       :isVisible="showCheckpointModal"
       @close="showCheckpointModal = false"
       @success="shouldShowWarningAlert = false"

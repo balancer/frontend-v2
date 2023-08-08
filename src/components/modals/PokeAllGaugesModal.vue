@@ -5,7 +5,7 @@ import { useUserStaking } from '@/providers/local/user-staking.provider';
 
 interface Props {
   isVisible?: boolean;
-  shouldPokePoolsArr?: string[];
+  shouldPokePoolsMap?: Record<string, string>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,11 +22,13 @@ const showCloseBtn = ref(false);
 
 async function pokeAllGauges() {
   try {
-    if (!props.shouldPokePoolsArr) {
+    if (!props.shouldPokePoolsMap) {
       throw new Error('No gauges ids to poke');
     }
 
-    const tx = await checkpointAllGauges(props.shouldPokePoolsArr);
+    const tx = await checkpointAllGauges(
+      Object.values(props.shouldPokePoolsMap)
+    );
 
     addTransaction({
       id: tx.hash,

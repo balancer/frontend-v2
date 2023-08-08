@@ -7,7 +7,7 @@ import {
 import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
-  shouldPokePoolsArr: string[];
+  shouldPokePoolsMap?: Record<string, string>;
 };
 
 const props = defineProps<Props>();
@@ -47,7 +47,7 @@ const veBalSyncTip = computed(() => {
     };
   }
 
-  if (props.shouldPokePoolsArr.length > 0) {
+  if (Object.keys(props.shouldPokePoolsMap || {}).length > 0) {
     return {
       title: 'Poke to refresh gauges for boosted APRs',
       text: 'After your veBAL is synced to an L2, the pool gauge remains unaware of your new balance until it is interacted with. ‘Poke all’ to gas-efficiently update all gauges. Otherwise, interact with each gauge individzually (e.g. by Claiming BAL).',

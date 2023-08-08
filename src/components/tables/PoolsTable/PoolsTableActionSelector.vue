@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
+import { onClickOutside } from '@vueuse/core';
 
 type Props = {
   pool: Pool;
@@ -24,7 +25,6 @@ const isSelectorOpened = ref(false);
 
 function handleClickOutside() {
   isSelectorOpened.value = false;
-  console.log('clicked');
 }
 function getActionIcon(action: string) {
   return new URL(
@@ -43,30 +43,44 @@ const menuItems = computed(() => {
 
   return items;
 });
+
+const showActionCall = computed(() => {
+  return menuItems.value.some(
+    action => action === 'migrateGauge' || action === 'poke'
+  );
+});
+
+const clickOutsideTarget = ref(null);
+
+onClickOutside(clickOutsideTarget, handleClickOutside);
 </script>
 
 <template>
   <div
     v-if="menuItems"
-    v-click-outside="handleClickOutside"
+    ref="clickOutsideTarget"
     class="flex relative justify-center py-4 px-2"
   >
     <div
-      class="flex justify-center items-center w-7 h-7 text-blue-600 hover:bg-blue-50 rounded-lg border border-blue-600 transition-all duration-200 text-[8px]"
+      class="flex relative justify-center items-center w-7 h-7 text-blue-600 hover:bg-blue-50 rounded-md border-2 border-blue-600 transition-all duration-200 text-[8px]"
       @click.stop="isSelectorOpened = !isSelectorOpened"
     >
+      <div
+        v-if="showActionCall"
+        class="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white right-[-4px] top-[-4px]"
+      />
       &bull;&bull;&bull;
     </div>
     <ul
       v-if="isSelectorOpened"
-      class="absolute z-10 bg-white rounded border border-gray-200 shadow right-[60px] top-[50px] radius-md"
+      class="absolute z-10 bg-white dark:bg-gray-700 rounded border border-gray-200 shadow right-[60px] top-[50px] radius-md"
     >
       <li
         v-for="action in menuItems"
         :key="action"
-        class="flex items-center py-3 pr-10 pl-3 font-medium text-left whitespace-pre hover:bg-gray-100 cursor-pointer"
+        class="flex items-center py-3 pr-10 pl-3 font-medium text-left dark:hover:text-gray-200 whitespace-pre hover:bg-gray-100 cursor-pointer"
         :class="{
-          'bg-red-50 border-b border-gray-200':
+          'bg-red-50 hover:bg-red-100 dark:bg-red-300 border-b border-gray-200':
             action === 'poke' || action === 'migrateGauge',
         }"
         @click.stop="$emit(`click:${action}`, pool)"

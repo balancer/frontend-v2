@@ -14,6 +14,7 @@ import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { GaugeCheckpointer } from '@/services/balancer/contracts/contracts/gauge-checkpointer';
+import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 
 const provider = () => {
   /**
@@ -21,7 +22,7 @@ const provider = () => {
    */
   const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
     useUserData();
-  const { getSigner } = useWeb3();
+  const { getSigner, account } = useWeb3();
   /**
    * COMPUTED
    */
@@ -129,13 +130,28 @@ const provider = () => {
     return stakedShares?.value?.[poolId] || '0';
   }
 
-  async function checkpointAllGauges(poolIds: string[]) {
+  async function checkpointGauge(gaugeAddress: string) {
+    const gaugeContract = new LiquidityGauge(gaugeAddress);
+
+    const signer = getSigner();
+
+    return gaugeContract.checkpointUser({
+      signer,
+      userAddress: account.value,
+    });
+  }
+
+  async function checkpointAllGauges(gauges: string[]) {
     const contractAddress = configService.network.addresses.gaugeCheckpointer;
     if (!contractAddress) throw new Error('No contract address found');
     const signer = getSigner();
     const gaugeCheckpointerContract = new GaugeCheckpointer(contractAddress);
 
-    const tx = await gaugeCheckpointerContract.checkpoint({ poolIds, signer });
+    const tx = await gaugeCheckpointerContract.checkpoint({
+      gauges,
+      signer,
+      userAddress: account.value,
+    });
 
     return tx;
   }
@@ -150,6 +166,7 @@ const provider = () => {
     stakedSharesFor,
     hasNonPrefGaugesPoolsIds,
     poolsGauges,
+    checkpointGauge,
     checkpointAllGauges,
   };
 };

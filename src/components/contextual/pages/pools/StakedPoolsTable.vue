@@ -14,6 +14,7 @@ import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 import PortfolioSyncTip from '../vebal/cross-chain-boost/PortfolioSyncTip.vue';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import PokeAllGaugesModal from '@/components/modals/PokeAllGaugesModal.vue';
+import CheckpointGaugeModal from '../vebal/cross-chain-boost/CheckpointGaugeModal.vue';
 
 /**
  * STATE
@@ -25,9 +26,12 @@ const showRestakeModal = ref(false);
 const poolToRestake = ref<Pool | undefined>();
 
 const showProceedModal = ref(false);
-const defaultPoolActions = ['unstake', 'add', 'remove', 'vote'];
+const defaultPoolActions = ['unstake', 'add', 'vote'];
 
 const showPokeAllGaugesModal = ref(false);
+
+const poolToCheckpoint = ref<Pool | undefined>();
+const showCheckpointModal = ref(false);
 /**
  * PROVIDERS
  */
@@ -88,12 +92,18 @@ function handleModalClose() {
   showRestakeModal.value = false;
 }
 
+function handleCheckpoint(pool: Pool) {
+  showCheckpointModal.value = true;
+  poolToCheckpoint.value = pool;
+}
+
 async function handleUnstakeSuccess() {
   await refetchAllUserPools();
 }
 
-// arr of pool ids that should be poked
-const shouldPokePoolsArr = ref<string[]>([]);
+// map of pool ids and pref gauges that should be poked
+const shouldPokePoolsMap = ref<Record<string, string>>({});
+
 watch(
   () => poolsGauges.value,
   async val => {
@@ -107,9 +117,9 @@ watch(
         }
 
         const balance = await getGaugeWorkingBalance(id);
-        if (balance[1]?.gt(balance[0])) {
-          shouldPokePoolsArr.value.push(id);
-        }
+        // if (balance && balance[1]?.gt(balance[0])) {
+        shouldPokePoolsMap.value[pool.address] = id;
+        // }
       } catch (e) {
         console.log(e);
       }
@@ -126,7 +136,7 @@ watch(
       </h5>
       {{ hasNonPrefGaugesPoolsIds }}
       <PortfolioSyncTip
-        :shouldPokePoolsArr="shouldPokePoolsArr"
+        :shouldPokePoolsMap="shouldPokePoolsMap"
         @show-proceed-modal="showProceedModal = true"
         @show-poke-all-gauge-modal="showPokeAllGaugesModal = true"
       />
@@ -145,10 +155,12 @@ watch(
         showStakeActions
         :showBoost="isPoolBoostsEnabled"
         :defaultPoolActions="defaultPoolActions"
-        :shouldPokePoolsArr="shouldPokePoolsArr"
+        :shouldPokePoolsMap="shouldPokePoolsMap"
         :hasNonPrefGaugesPoolsIds="hasNonPrefGaugesPoolsIds"
         @trigger-unstake="handleUnstake"
         @trigger-restake="handleRestake"
+        @trigger-vote="showProceedModal = true"
+        @trigger-checkpoint="handleCheckpoint"
       />
     </BalStack>
 
@@ -178,9 +190,16 @@ watch(
     />
 
     <PokeAllGaugesModal
-      :shouldPokePoolsArr="shouldPokePoolsArr"
+      :shouldPokePoolsMap="shouldPokePoolsMap"
       :isVisible="showPokeAllGaugesModal"
       @close="showPokeAllGaugesModal = false"
+    />
+
+    <CheckpointGaugeModal
+      :poolId="poolToCheckpoint?.id"
+      :isVisible="showCheckpointModal"
+      @close="showCheckpointModal = false"
+      @success="showCheckpointModal = false"
     />
   </div>
 </template>

@@ -12,7 +12,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
 import configs from '@/lib/config';
 import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { useI18n } from 'vue-i18n';
 import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client';
 
@@ -324,18 +323,6 @@ export const crossChainSyncProvider = () => {
     });
   }
 
-  // checkpoint
-  async function triggerGaugeUpdate(gaugeAddress: string) {
-    const gaugeContract = new LiquidityGauge(gaugeAddress);
-
-    const signer = getSigner();
-
-    return gaugeContract.checkpointUser({
-      signer,
-      userAddress: account.value,
-    });
-  }
-
   async function getLayerZeroTxLink(txHash: string) {
     const { messages } = await getMessagesBySrcTxHash(101, txHash);
     const message = messages[0];
@@ -423,7 +410,6 @@ export const crossChainSyncProvider = () => {
     warningMessage,
     infoMessage,
     getGaugeWorkingBalance,
-    triggerGaugeUpdate,
     getLayerZeroTxLink,
     syncTxHashes,
     setSyncTxHashes,
