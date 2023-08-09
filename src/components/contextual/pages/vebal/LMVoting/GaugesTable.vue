@@ -218,7 +218,7 @@ function getPickedTokens(tokens: PoolToken[]) {
       }"
       :pin="{
         pinOn: 'address',
-        pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b'],
+        pinnedData: [],
       }"
       :renderedRowsIdx="renderedRowsIdx"
     >
