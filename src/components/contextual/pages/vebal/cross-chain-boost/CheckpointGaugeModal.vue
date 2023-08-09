@@ -2,10 +2,11 @@
 import useTransactions from '@/composables/useTransactions';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useUserStaking } from '@/providers/local/user-staking.provider';
+import useEthers from '@/composables/useEthers';
 
 interface Props {
   isVisible?: boolean;
-  poolId?: string;
+  poolAddress?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -17,13 +18,14 @@ const emit = defineEmits(['close', 'success']);
 const { checkpointGauge, poolsGauges } = useUserStaking();
 const { addTransaction } = useTransactions();
 const { isMismatchedNetwork } = useWeb3();
+const { txListener } = useEthers();
 
 const showCloseBtn = ref(false);
 
 async function triggerUpdate() {
   try {
     const gauge = poolsGauges.value?.pools.find(
-      pool => pool.id === props.poolId
+      pool => pool.address === props.poolAddress
     );
     const id = gauge?.preferentialGauge.id;
     if (!id) {
@@ -38,7 +40,15 @@ async function triggerUpdate() {
       action: 'userGaugeCheckpoint',
       summary: '',
     });
-    emit('success');
+
+    await txListener(tx, {
+      onTxConfirmed: async () => {
+        emit('success', props.poolAddress);
+      },
+      onTxFailed: () => {
+        console.error('Tx failed');
+      },
+    });
 
     return tx;
   } catch (e) {

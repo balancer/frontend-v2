@@ -12,7 +12,7 @@ import config from '@/lib/config';
 type Props = {
   fiatValueOfStakedShares: string;
   fiatValueOfUnstakedShares: string;
-  poolId: string;
+  poolAddress: string;
 };
 
 defineProps<Props>();
@@ -127,7 +127,7 @@ onMounted(() => {
     </BalAlert>
 
     <CheckpointGaugeModal
-      :poolId="poolId"
+      :poolId="poolAddress"
       :isVisible="showCheckpointModal"
       @close="showCheckpointModal = false"
       @success="shouldShowWarningAlert = false"

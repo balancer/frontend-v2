@@ -104,6 +104,16 @@ async function handleUnstakeSuccess() {
 // map of pool ids and pref gauges that should be poked
 const shouldPokePoolsMap = ref<Record<string, string>>({});
 
+function removePoolFromPokeMap(poolAddress: string) {
+  Reflect.deleteProperty(shouldPokePoolsMap.value, poolAddress);
+}
+
+function onSuccessCheckpoint(poolAddress: string) {
+  showCheckpointModal.value = false;
+  poolToCheckpoint.value = undefined;
+  removePoolFromPokeMap(poolAddress);
+}
+
 watch(
   () => poolsGauges.value,
   async val => {
@@ -117,9 +127,9 @@ watch(
         }
 
         const balance = await getGaugeWorkingBalance(id);
-        // if (balance && balance[1]?.gt(balance[0])) {
-        shouldPokePoolsMap.value[pool.address] = id;
-        // }
+        if (balance && balance[1]?.gt(balance[0])) {
+          shouldPokePoolsMap.value[pool.address] = id;
+        }
       } catch (e) {
         console.log(e);
       }
@@ -196,10 +206,10 @@ watch(
     />
 
     <CheckpointGaugeModal
-      :poolId="poolToCheckpoint?.id"
+      :poolAddress="poolToCheckpoint?.address"
       :isVisible="showCheckpointModal"
       @close="showCheckpointModal = false"
-      @success="showCheckpointModal = false"
+      @success="onSuccessCheckpoint"
     />
   </div>
 </template>
