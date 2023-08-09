@@ -6810,34 +6810,5 @@
       "0x8EC1877698ACF262Fe8Ad8a295ad94D6ea258988": "https://assets.coingecko.com/coins/images/28775/large/dusd_logo_200x200.png?1685432656",
       "0xc6EeE8cb7643eC2F05F46d569e9eC8EF8b41b389": ""
     }
-  },
-  {
-    "address": "0x671eD21480acf63b0AB7297b901505F5BccAfa9b",
-    "network": 42161,
-    "isKilled": false,
-    "relativeWeightCap": "1",
-    "addedTimestamp": 1691605463,
-    "pool": {
-      "id": "0x3fd4954a851ead144c2ff72b1f5a38ea5976bd54000000000000000000000480",
-      "address": "0x3FD4954a851eaD144c2FF72B1f5a38Ea5976Bd54",
-      "poolType": "ComposableStable",
-      "symbol": "ankrETH/wstETH-BPT",
-      "tokens": [
-        {
-          "address": "0x5979D7b546E38E414F7E9822514be443A4800529",
-          "weight": "null",
-          "symbol": "wstETH"
-        },
-        {
-          "address": "0xe05A08226c49b636ACf99c40Da8DC6aF83CE5bB3",
-          "weight": "null",
-          "symbol": "ankrETH"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x5979D7b546E38E414F7E9822514be443A4800529": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x5979d7b546e38e414f7e9822514be443a4800529.png",
-      "0xe05A08226c49b636ACf99c40Da8DC6aF83CE5bB3": "https://assets.coingecko.com/coins/images/13403/large/aETHc.png?1625756490"
-    }
   }
 ]
