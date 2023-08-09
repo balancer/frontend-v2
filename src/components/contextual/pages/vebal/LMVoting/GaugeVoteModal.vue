@@ -92,7 +92,8 @@ const hasVotes = computed((): boolean => bnum(currentWeight.value).gt(0));
 const votesNextPeriodOverCap = computed((): boolean => {
   const gaugeVoteWeightNormalized = scale(props.pool.votesNextPeriod, -18);
   if (isVeBalGauge.value) {
-    return gaugeVoteWeightNormalized.gte(bnum('0.1'));
+    const veBalMaxVotingWeight = '0.1';
+    return gaugeVoteWeightNormalized.gte(bnum(veBalMaxVotingWeight));
   }
   if (!props.pool.gauge.relativeWeightCap) return false;
 
