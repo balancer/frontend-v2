@@ -1,12 +1,9 @@
-import {
-  mapApiChain,
-  mapApiPoolType,
-} from '@/composables/queries/useVotingPoolsQuery';
 import { Network } from '@/lib/config';
 import {
   GqlChain,
   GqlPoolMinimalType,
 } from '@/services/api/graphql/generated/api-types';
+import { mapApiChain, mapApiPoolType } from '@/services/api/graphql/mappers';
 import { PoolType } from '@/services/pool/types';
 
 test('Maps API Chains', async () => {

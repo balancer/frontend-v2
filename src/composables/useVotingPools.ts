@@ -28,7 +28,7 @@ export default function useVotingPools() {
   // Fetch onchain votes data for given votingGauges
   const votingPoolsQuery = useVotingPoolsQuery();
 
-  const isLoading = isQueryLoading(votingPoolsQuery);
+  const isLoading = computed(() => isQueryLoading(votingPoolsQuery));
 
   const votingPools = computed(() => votingPoolsQuery.data.value || []);
 
