@@ -14,6 +14,7 @@ export enum Protocol {
   Granary = 'granary',
   Zerovix = '0vix',
   Gyro = 'gyro',
+  Overnight = 'overnight',
 }
 
 export const protocolIconPaths: Record<Protocol, string> = {
@@ -71,6 +72,10 @@ export const protocolIconPaths: Record<Protocol, string> = {
   ).href,
   [Protocol.Zerovix]: new URL(
     '@/assets/images/icons/protocols/0vix.svg',
+    import.meta.url
+  ).href,
+  [Protocol.Overnight]: new URL(
+    '@/assets/images/icons/protocols/overnight.svg',
     import.meta.url
   ).href,
   [Protocol.Gyro]: new URL(

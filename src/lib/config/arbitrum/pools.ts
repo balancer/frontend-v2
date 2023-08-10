@@ -287,6 +287,15 @@ const pools: Pools = {
         },
       },
     },
+    '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b': {
+      name: 'Balancer Boosted Overnight USD',
+      hasIcon: true,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Overnight],
+        },
+      },
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
