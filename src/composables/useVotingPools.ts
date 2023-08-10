@@ -6,6 +6,7 @@ import { PoolToken } from '@/services/pool/types';
 import useVotingPoolsQuery, {
   VotingPool,
 } from '@/composables/queries/useVotingPoolsQuery';
+import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 
 export function orderedGaugeTokens(votingPool: VotingPool): PoolToken[] {
   return orderByWeight(votingPool.tokens as unknown as PoolToken[]);
@@ -27,10 +28,7 @@ export default function useVotingPools() {
   // Fetch onchain votes data for given votingGauges
   const votingPoolsQuery = useVotingPoolsQuery();
 
-  const isLoading = computed(
-    (): boolean =>
-      votingPoolsQuery.isLoading.value || !!votingPoolsQuery.error.value
-  );
+  const isLoading = isQueryLoading(votingPoolsQuery);
 
   const votingPools = computed(() => votingPoolsQuery.data.value || []);
 
