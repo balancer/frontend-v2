@@ -11,9 +11,9 @@ on:
           - avalanche
           - arbitrum
           - base
+          - ethereum
           - gnosis-chain
           - goerli
-          - mainnet
           - polygon
           - optimism
           - zkevm
