@@ -35,7 +35,7 @@ function detectDuplicatesInVotingList(
     );
 }
 
-test('Detect duplicated pool addresses in allowlists', async () => {
+test('Detect duplicated pool addresses in Staking.VotingGaugePools addresses', async () => {
   Object.values(config).forEach(networkConfig => {
     detectDuplicates(
       networkConfig.network,
