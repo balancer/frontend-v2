@@ -149,6 +149,7 @@ const pools: Pools = {
       '0x0e6d6ec825c9db806384da12eba4fb67a85769fd000200000000000000000c14', // 50ankrMATIC-50stMATIC
       '0xa88e4fae334a2237e300592ae7d52705cade95a0000200000000000000000c17', // 50WBTC-50MaticX
       '0xf7fd196c4606fb78178a85d1059f8224ddbccd2d000200000000000000000c18', // 50DAI-50miMATIC
+      '0xacb0bd6f7206174c64cef5e05c4d7871ea888d33000100000000000000000c19', // 33WBTC-33WETH-33NEX
     ],
   },
   Factories: {
@@ -239,6 +240,8 @@ const pools: Pools = {
       '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7',
       '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6',
       '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc',
+      '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11',
+      '0x42942cdec85078cf0e28e9cb5acd40cb53997ed6000000000000000000000bea',
     ],
     AllowList: [],
   },
@@ -378,6 +381,15 @@ const pools: Pools = {
         },
       },
     },
+    '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11': {
+      name: 'DUSD/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
@@ -404,6 +416,7 @@ const pools: Pools = {
     '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8', // frxETH-bb-a-WETH
     '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6', // FRAX-bb-am-USD
     '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7', // 2BRL-bbamUSD
+    '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11', // DUSD/bbaUSD
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
