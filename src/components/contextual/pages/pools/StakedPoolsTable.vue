@@ -13,8 +13,9 @@ import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 import PortfolioSyncTip from '../vebal/cross-chain-boost/PortfolioSyncTip.vue';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
-import PokeAllGaugesModal from '@/components/modals/PokeAllGaugesModal.vue';
+
 import CheckpointGaugeModal from '../vebal/cross-chain-boost/CheckpointGaugeModal.vue';
+import CheckpointAllGaugesModal from '../vebal/cross-chain-boost/CheckpointAllGaugesModal.vue';
 
 /**
  * STATE
@@ -108,6 +109,10 @@ function removePoolFromPokeMap(poolAddress: string) {
   Reflect.deleteProperty(shouldPokePoolsMap.value, poolAddress);
 }
 
+function resetShouldPokePoolsMap() {
+  shouldPokePoolsMap.value = {};
+}
+
 function onSuccessCheckpoint(poolAddress: string) {
   showCheckpointModal.value = false;
   poolToCheckpoint.value = undefined;
@@ -134,7 +139,8 @@ watch(
         console.log(e);
       }
     }
-  }
+  },
+  { immediate: true, deep: true }
 );
 </script>
 
@@ -144,7 +150,6 @@ watch(
       <h5 class="px-4 xl:px-0">
         {{ $t('staking.stakedPools') }}
       </h5>
-      {{ hasNonPrefGaugesPoolsIds }}
       <PortfolioSyncTip
         :shouldPokePoolsMap="shouldPokePoolsMap"
         @show-proceed-modal="showProceedModal = true"
@@ -199,10 +204,11 @@ watch(
       @close="showProceedModal = false"
     />
 
-    <PokeAllGaugesModal
+    <CheckpointAllGaugesModal
       :shouldPokePoolsMap="shouldPokePoolsMap"
       :isVisible="showPokeAllGaugesModal"
       @close="showPokeAllGaugesModal = false"
+      @success="resetShouldPokePoolsMap"
     />
 
     <CheckpointGaugeModal

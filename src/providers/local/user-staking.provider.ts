@@ -33,7 +33,6 @@ const provider = () => {
   // Array of all the pools a user has staked BPT for.
   const stakedPoolIds = computed((): string[] => {
     if (!userGaugeShares.value) return [];
-    console.log('userGaugeShares.value', userGaugeShares.value);
     return userGaugeShares.value.map(gaugeShare => gaugeShare.gauge.poolId);
   });
 

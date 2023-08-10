@@ -42,6 +42,7 @@ export const defaultGaugeShares: GaugeShare[] = [
       id: 'gauge id',
       poolId: defaultPoolId,
       totalSupply: defaultTotalSupply,
+      poolAddress: '0x0297e37f1873d2dab4487aa67cd56b58e2f27875',
     },
   },
 ];

@@ -14,6 +14,7 @@ import configs from '@/lib/config';
 import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
 import { useI18n } from 'vue-i18n';
 import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client';
+import { isPoolBoostsEnabled } from '@/composables/useNetwork';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -307,6 +308,8 @@ export const crossChainSyncProvider = () => {
   }
 
   async function getGaugeWorkingBalance(gaugeAddress: string) {
+    if (!isPoolBoostsEnabled.value) return;
+
     const contractAddress =
       configService.network.addresses.gaugeWorkingBalanceHelper;
     if (!contractAddress) throw new Error('No contract address found');

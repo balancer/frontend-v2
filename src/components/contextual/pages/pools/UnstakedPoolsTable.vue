@@ -32,6 +32,7 @@ const {
   refetchAllUserPools,
   isLoading: isLoadingPools,
 } = useUserPools();
+const defaultPoolActions = ['stake', 'add', 'remove'];
 
 /**
  * COMPUTED
@@ -80,6 +81,7 @@ onMounted(() => {
         :noPoolsLabel="noPoolsLabel"
         sortColumn="myBalance"
         :hiddenColumns="hiddenColumns"
+        :defaultPoolActions="defaultPoolActions"
         showPoolShares
         showActions
         @trigger-stake="handleStake"

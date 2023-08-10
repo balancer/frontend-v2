@@ -19,7 +19,12 @@ test('Does not calculate boosts when user does not have gauge shares', async () 
 test('Does not calculate boosts when user does not have gauge shares', async () => {
   const gaugeShare: GaugeShare = {
     balance: '100',
-    gauge: { id: 'gauge Id', poolId: 'test pool id', totalSupply: '1000' },
+    gauge: {
+      id: 'gauge Id',
+      poolId: 'test pool id',
+      totalSupply: '1000',
+      poolAddress: '0x0297e37f1873d2dab4487aa67cd56b58e2f27875',
+    },
   };
   const userGaugeShares = ref([gaugeShare]);
   const { result } = mountComposable(() => useUserBoostsQuery(userGaugeShares));

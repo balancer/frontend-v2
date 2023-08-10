@@ -791,6 +791,7 @@
   "pools": "Pools",
   "poolActions": {
     "poke": "Poke to boost APR",
+    "stake": "Stake for incentives",
     "unstake": "Unstake",
     "add": "Add liquidity",
     "remove": "Remove liquidity",

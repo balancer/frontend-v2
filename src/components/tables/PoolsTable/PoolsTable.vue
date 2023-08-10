@@ -454,6 +454,7 @@ function goToPoolPage(id: string) {
           @click:add="addLiquidity(pool.id)"
           @click:remove="removeLiquidity(pool.id)"
           @click:unstake="pool => emit('triggerUnstake', pool)"
+          @click:stake="pool => emit('triggerStake', pool)"
           @click:vote="emit('triggerVote')"
           @click:migrate-gauge="goToPoolPage(pool.id)"
           @click:poke="pool => emit('triggerCheckpoint', pool)"

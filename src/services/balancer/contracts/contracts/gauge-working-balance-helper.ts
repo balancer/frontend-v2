@@ -36,11 +36,11 @@ export class GaugeWorkingBalanceHelper {
       });
     } catch (e: any) {
       const reason = e.reason;
-      console.log(Object.entries(e));
+
       const revertedReasonMsg =
         /missing revert data in call exception; Transaction reverted without a reason string/;
 
-      if (revertedReasonMsg.test(reason)) {
+      if (!reason || revertedReasonMsg.test(reason)) {
         // ignore here as most likely this is the old gauge error
         return;
       }
