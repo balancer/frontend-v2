@@ -222,7 +222,7 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
       }"
       :pin="{
         pinOn: 'address',
-        pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b'],
+        pinnedData: [],
       }"
       :renderedRowsIdx="renderedRowsIdx"
     >

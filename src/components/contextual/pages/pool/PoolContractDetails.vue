@@ -79,9 +79,10 @@ const data = computed(() => {
       : null,
     {
       title: t('swapFees'),
-      value: `${fNum(swapFee, { style: 'percent' })} (${formSwapFeesHint(
-        owner || ''
-      )})`,
+      value: `${fNum(swapFee, {
+        style: 'percent',
+        maximumFractionDigits: 4,
+      })} (${formSwapFeesHint(owner || '')})`,
     },
     {
       title: t('poolManager'),

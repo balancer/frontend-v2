@@ -169,6 +169,12 @@ const pools: Pools = {
       '0x7d98f308db99fdd04bbf4217a4be8809f38faa6400020000000000000000059b', // wstETH/ohm
       '0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5', // idle/usdc
       '0x26cc136e9b8fd65466f193a8e5710661ed9a98270002000000000000000005ad', // 80RATE/20WETH
+      '0xc88c76dd8b92408fe9bea1a54922a31e232d873c0002000000000000000005b2', // 80ASX-20WETH
+      '0x6e5ba97e42e4bd036a9b785db964dc8aad1c699d0002000000000000000005b5', // 50USDC-50USDT
+      '0x95f1a3ca4af4d08b9c42d65ef07b66e8222ed85a0002000000000000000005b6', // 50somm-50WETH
+      '0xb841b062ea8ccf5c4cb78032e91de4ae875560420002000000000000000005b7', // 50bb-s-DAI-50bb-a-USD
+      '0x2e52c64fd319e380cdbcfc4577ea1fda558a32e40002000000000000000005ba', // 50bb-a-WETH-50YieldETH
+      '0xcebb73246fd3f0ba3e42a4ba6ff6b40d0cd02fb30001000000000000000005b8', // 20wstETH-50ETHx-20sfrxETH-10rETH
     ],
   },
   Factories: {
@@ -190,6 +196,7 @@ const pools: Pools = {
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
     '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
+    '0x412a5b2e7a678471985542757a6855847d4931d5': 'gyroE',
   },
   Stakable: {
     VotingGaugePools: [
@@ -357,6 +364,8 @@ const pools: Pools = {
       '0x158e0fbc2271e1dcebadd365a22e2b4dd173c0db0002000000000000000005a5',
       '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7',
       '0x759fabc513accd292ada967c4dd7bb94da39232e0002000000000000000005a8',
+      '0x616d4d131f1147ac3b3c3cc752bab8613395b2bb000200000000000000000584',
+      '0x26cc136e9b8fd65466f193a8e5710661ed9a98270002000000000000000005ad',
     ],
     AllowList: [],
   },
@@ -612,6 +621,10 @@ const pools: Pools = {
         },
       },
     },
+    '0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d': {
+      name: 'R/Boosted Savings DAI',
+      hasIcon: false,
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
@@ -743,6 +756,9 @@ const pools: Pools = {
   GaugeMigration: {},
   BrandedRedirect: {
     FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
   },
   ExitViaInternalBalance: [
     '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a', // bb-e-USDC

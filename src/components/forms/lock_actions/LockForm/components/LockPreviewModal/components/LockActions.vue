@@ -73,7 +73,7 @@ const lockActionStates = reactive<LockActionState[]>(
  */
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getProvider, explorerLinks } = useWeb3();
+const { getProvider, explorerLinks, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { fNum } = useNumbers();
@@ -216,6 +216,8 @@ onBeforeMount(async () => {
     amountsToApprove: amountsToApprove.value,
     spender: networkConfig.addresses.veBAL,
     actionType: ApprovalAction.Locking,
+    // veBAL approval should always only suggest the approval of the exact amount.
+    forceMax: false,
   });
   actions.value.unshift(...approvalActions);
   isLoadingApprovals.value = false;
@@ -228,6 +230,7 @@ onBeforeMount(async () => {
       v-if="!lockActionStatesConfirmed"
       :actions="actions"
       :isLoading="isLoadingApprovals"
+      :disabled="isMismatchedNetwork"
       primaryActionType="extendLock"
     />
     <template v-else>
