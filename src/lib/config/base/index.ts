@@ -38,7 +38,7 @@ const config: Config = {
     blocks:
       'https://api.studio.thegraph.com/query/48427/bleu-base-blocks/version/latest',
   },
-  bridgeUrl: 'bridge.base.org',
+  bridgeUrl: 'https://bridge.base.org/',
   supportsEIP1559: false,
   supportsElementPools: false,
   supportsVeBalSync: false,
