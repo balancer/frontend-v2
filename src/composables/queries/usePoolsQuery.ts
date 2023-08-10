@@ -22,7 +22,6 @@ import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
 import { bnum } from '@/lib/utils';
 import { PoolFilterOptions } from '@/types/pools';
-import { PoolType } from '@/services/pool/types';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -156,26 +155,27 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
       queryArgs.skip = options.skip;
     }
 
-    console.log('queryArgs', queryArgs);
+    // console.log('queryArgs', queryArgs);
 
     return queryArgs;
   }
 
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
-    const { tokens, poolIds, poolTypes } = filterOptions.value;
-    const hasTokenFilters = !!tokens?.length;
-    const hasPoolIdFilters = !!poolIds?.length;
-    const hasPoolTypeFilters = !!poolTypes?.length;
+    // const { tokens, poolIds, poolTypes } = filterOptions.value;
+    // const hasTokenFilters = !!tokens?.length;
+    // const hasPoolIdFilters = !!poolIds?.length;
+    // const hasPoolTypeFilters = !!poolTypes?.length;
 
+    fetchArgs.first = filterOptions.value.pageSize || POOLS.Pagination.PerPage;
     // Don't use a limit if there is a token list because the limit is applied
     // pre-filter
-    if (hasPoolTypeFilters && poolTypes.includes(PoolType.Weighted)) {
-      fetchArgs.first = 100;
-    } else if (!hasTokenFilters && !hasPoolIdFilters && !hasPoolTypeFilters) {
-      fetchArgs.first =
-        filterOptions.value.pageSize || POOLS.Pagination.PerPage;
-    }
+    // if (hasPoolTypeFilters && poolTypes.includes(PoolType.Weighted)) {
+    //   fetchArgs.first = 100;
+    // } else if (!hasTokenFilters && !hasPoolIdFilters && !hasPoolTypeFilters) {
+    //   fetchArgs.first =
+    //     filterOptions.value.pageSize || POOLS.Pagination.PerPage;
+    // }
 
     if (pageParam && pageParam > 0) {
       fetchArgs.skip = pageParam;
@@ -230,6 +230,7 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
     const fetchOptions = getFetchOptions(pageParam);
     let skip = 0;
     try {
+      console.log({ fetchOptions });
       let pools: Pool[] = await poolsRepository.fetch(fetchOptions);
       if (!isBalancerApiDefined) pools = customSort(pools);
 
@@ -238,8 +239,6 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
       skip = poolsRepository.currentProvider?.skip
         ? poolsRepository.currentProvider.skip
         : poolsStoreService.pools.value?.length || 0;
-
-      console.log('skip', skip);
 
       return {
         pools,
