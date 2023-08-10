@@ -454,6 +454,10 @@ const pools: Pools = {
       newPool:
         '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2',
     },
+    '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
+      newPool:
+        '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {

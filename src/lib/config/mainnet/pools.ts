@@ -750,6 +750,10 @@ const pools: Pools = {
         '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e',
       description: 'deprecatedPool.gaugeKilledReason',
     },
+    '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a': {
+      newPool:
+        '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {
