@@ -9,6 +9,7 @@ import { PoolType } from '@/services/pool/types';
 test('Maps API Chains', async () => {
   expect(mapApiChain(GqlChain.Arbitrum)).toBe(Network.ARBITRUM);
   expect(mapApiChain(GqlChain.Avalanche)).toBe(Network.AVALANCHE);
+  expect(mapApiChain(GqlChain.Base)).toBe(Network.BASE);
   expect(mapApiChain(GqlChain.Fantom)).toBe(Network.FANTOM);
   expect(mapApiChain(GqlChain.Gnosis)).toBe(Network.GNOSIS);
   expect(mapApiChain(GqlChain.Mainnet)).toBe(Network.MAINNET);

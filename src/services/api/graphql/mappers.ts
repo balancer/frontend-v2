@@ -10,8 +10,8 @@ export function mapApiChain(
       return Network.ARBITRUM;
     case GqlChain.Avalanche:
       return Network.AVALANCHE;
-    // case GqlChain.Base:
-    //   return Network.BASE;
+    case GqlChain.Base:
+      return Network.BASE;
     case GqlChain.Gnosis:
       return Network.GNOSIS;
     case GqlChain.Fantom:
