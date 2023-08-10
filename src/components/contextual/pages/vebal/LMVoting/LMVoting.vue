@@ -132,8 +132,8 @@ function handleVoteSuccess() {
   refetchVotingGauges();
 }
 
-function isExpired(gauge: VotingPool) {
-  return isGaugeExpired(expiredGauges.value, gauge.address);
+function isExpired(pool: VotingPool) {
+  return isGaugeExpired(expiredGauges.value, pool.gauge.address);
 }
 
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
