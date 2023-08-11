@@ -186,12 +186,15 @@ export const exitPoolProvider = (
     shouldSignRelayer.value ? [relayerApprovalAction.value] : []
   );
 
+  const canSwapExit = computed(
+    (): boolean => isDeep(pool.value) && isPreMintedBptType(pool.value.poolType)
+  );
+
   const shouldUseSwapExit = computed(
     (): boolean =>
       isSingleAssetExit.value &&
-      isDeep(pool.value) &&
-      isPreMintedBptType(pool.value.poolType) &&
-      !includesAddress(pool.value.tokensList, singleAmountOut.address)
+      !includesAddress(pool.value.tokensList, singleAmountOut.address) &&
+      canSwapExit.value
   );
 
   const shouldUseGeneralisedExit = computed(
@@ -604,6 +607,7 @@ export const exitPoolProvider = (
     relayerSignature,
     relayerApprovalTx,
     shouldUseSwapExit,
+    canSwapExit,
     shouldUseRecoveryExit,
 
     // methods
