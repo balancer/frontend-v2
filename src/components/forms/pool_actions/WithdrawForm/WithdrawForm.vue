@@ -9,7 +9,6 @@ import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import {
-  isPreMintedBptType,
   tokensListExclBpt,
   usePoolHelpers,
 } from '@/composables/usePoolHelpers';
@@ -57,6 +56,7 @@ const {
   validAmounts,
   hasBpt,
   shouldUseRecoveryExit,
+  canSwapExit,
 } = useExitPool();
 
 const { isWrappedNativeAssetPool } = usePoolHelpers(pool);
@@ -76,8 +76,8 @@ const tokensList = computed(() => tokensListExclBpt(pool.value));
 
 // Limit token select modal to a subset.
 const subsetTokens = computed((): string[] => {
-  if (!shouldUseRecoveryExit.value && isPreMintedBptType(pool.value.poolType))
-    return [];
+  // Returning an empty array means all tokens are presented in the modal.
+  if (!shouldUseRecoveryExit.value && canSwapExit.value) return [];
 
   if (isWrappedNativeAssetPool.value)
     return [nativeAsset.address, ...tokensList.value];
