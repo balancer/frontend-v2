@@ -76,6 +76,7 @@ const tokensList = computed(() => tokensListExclBpt(pool.value));
 
 // Limit token select modal to a subset.
 const subsetTokens = computed((): string[] => {
+  // Returning an empty array means all tokens are presented in the modal.
   if (!shouldUseRecoveryExit.value && canSwapExit.value) return [];
 
   if (isWrappedNativeAssetPool.value)
