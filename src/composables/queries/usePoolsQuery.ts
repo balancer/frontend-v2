@@ -219,15 +219,13 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
    */
   const queryFn = async ({ pageParam = 0 }) => {
     const fetchOptions = getFetchOptions(pageParam);
-    let skip = 0;
+    const skip = (fetchOptions.first || 0) + (fetchOptions.skip || 0);
     try {
       console.log({ fetchOptions });
       let pools: Pool[] = await poolsRepository.fetch(fetchOptions);
       if (!isBalancerApiDefined) pools = customSort(pools);
 
       poolsStoreService.addPools(pools);
-
-      skip = poolsStoreService.pools.value?.length || 0;
 
       return {
         pools,
