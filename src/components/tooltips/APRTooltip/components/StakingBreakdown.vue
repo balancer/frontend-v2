@@ -6,7 +6,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useTokens } from '@/providers/tokens.provider';
-import { hasBalEmissions } from '@/composables/useAPR';
+import { hasBalEmissions, hasStakingRewards } from '@/composables/useAPR';
 
 /**
  * TYPES
@@ -84,13 +84,15 @@ const breakdownItems = computed((): Array<any> => {
   }
 
   if (hasRewardTokens.value) {
-    if (isMinMaxSame.value) {
+    if (isMinMaxSame.value && minBalAPR.value > 0) {
       items.push(['BAL', minBalAPR.value]);
     }
 
     const rewardAprTokens = apr.value?.rewardAprs.breakdown;
     if (rewardAprTokens) {
       Object.keys(rewardAprTokens).forEach(address => {
+        if (rewardAprTokens[address] === 0) return;
+
         items.push([
           getToken(address)?.symbol || 'Rewards',
           rewardAprTokens[address],
@@ -116,7 +118,10 @@ const breakdownItems = computed((): Array<any> => {
       </div>
     </div>
     <template v-else>
-      <BalBreakdown v-if="hasBalEmissions(apr)" :items="breakdownItems">
+      <BalBreakdown
+        v-if="hasBalEmissions(apr) || hasStakingRewards(apr)"
+        :items="breakdownItems"
+      >
         <div class="flex items-center">
           {{ unboostedTotalAPR }}
           <span class="ml-1 text-xs text-secondary">
@@ -134,12 +139,6 @@ const breakdownItems = computed((): Array<any> => {
           </span>
         </template>
       </BalBreakdown>
-      <div v-else-if="hasRewardTokens" class="flex items-center">
-        {{ fNum(rewardTokensAPR, FNumFormats.bp) }}
-        <span class="ml-1 text-xs text-secondary">
-          {{ $t('staking.stakingApr') }}
-        </span>
-      </div>
     </template>
   </div>
 </template>

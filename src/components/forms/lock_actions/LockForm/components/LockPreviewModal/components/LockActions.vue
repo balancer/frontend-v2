@@ -24,6 +24,7 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { ApprovalAction } from '@/composables/approvals/types';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { captureBalancerException } from '@/lib/utils/errors';
+import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 
 /**
  * TYPES
@@ -57,6 +58,7 @@ const emit = defineEmits<{
 /**
  * STATE
  */
+const isLoadingApprovals = ref(true);
 const lockActionStates = reactive<LockActionState[]>(
   props.lockType.map(() => ({
     init: false,
@@ -71,13 +73,14 @@ const lockActionStates = reactive<LockActionState[]>(
  */
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getProvider, explorerLinks } = useWeb3();
+const { getProvider, explorerLinks, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { fNum } = useNumbers();
 const { totalVotes, unallocatedVotes } = useVotingGauges();
 const { networkSlug } = useNetwork();
 const { getTokenApprovalActions } = useTokenApprovalActions();
+const { refetch: refetchSyncData } = useCrossChainSync();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
@@ -143,6 +146,8 @@ async function handleTransaction(
 
       const confirmedAt = await getTxConfirmedAt(receipt);
       lockActionStates[actionIndex].confirmedAt = dateTimeLabelFor(confirmedAt);
+
+      refetchSyncData();
     },
     onTxFailed: () => {
       lockActionStates[actionIndex].confirming = false;
@@ -211,8 +216,11 @@ onBeforeMount(async () => {
     amountsToApprove: amountsToApprove.value,
     spender: networkConfig.addresses.veBAL,
     actionType: ApprovalAction.Locking,
+    // veBAL approval should always only suggest the approval of the exact amount.
+    forceMax: false,
   });
   actions.value.unshift(...approvalActions);
+  isLoadingApprovals.value = false;
 });
 </script>
 
@@ -221,6 +229,8 @@ onBeforeMount(async () => {
     <BalActionSteps
       v-if="!lockActionStatesConfirmed"
       :actions="actions"
+      :isLoading="isLoadingApprovals"
+      :disabled="isMismatchedNetwork"
       primaryActionType="extendLock"
     />
     <template v-else>

@@ -55,6 +55,7 @@ const pools: Pools = {
       '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b', // dai+/usd+
       '0xd6d20527c7b0669989ee082b9d3a1c63af742290000000000000000000000483', // dola/usd+
       '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e', // DOLA/bbaUSD
+      '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f', // DUSD/bbaUSD
     ],
   },
   Investment: {
@@ -87,6 +88,10 @@ const pools: Pools = {
       '0x0e1cdc10a131d07636fb4cf322f79b8df551dd9e00020000000000000000046a', // 50BAL-50WETH
       '0xfcc9a8d58e41cbf582cff798148750637eadb1ff00020000000000000000046c', // 50RDNT-50USDC.e
       '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f', // 50STG-50bbaUSD
+      '0x76b9cbd55fd6776c2de18738a04b0f9da56ce6ca00020000000000000000048d', // 80BETS/20wstETH
+      '0xa35cb2539e6885df99afc123c98f6b492c8675a8000200000000000000000490', // 50wstETH-50ARB
+      '0x3d87b6a7d3d4411a69949671e0c4806d671b34a6000200000000000000000491', // 50wstETH-50ankrETH
+      '0x1f181696e86882c317f5a6cf433666476a75ae65000200000000000000000492', // 50RDNT-50USDT
     ],
   },
   Factories: {
@@ -157,6 +162,12 @@ const pools: Pools = {
       '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f',
       '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e',
       '0x3fd4954a851ead144c2ff72b1f5a38ea5976bd54000000000000000000000480',
+      '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b',
+      '0xd6d20527c7b0669989ee082b9d3a1c63af742290000000000000000000000483',
+      '0x4a2f6ae7f3e5d715689530873ec35593dc28951b000000000000000000000481',
+      '0x9cebf13bb702f253abf1579294694a1edad00eaa000000000000000000000486',
+      '0x84a1038d55e887c2abb8cb02ccf4c9d3871c859a000000000000000000000489',
+      '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f',
     ],
     AllowList: [],
   },
@@ -260,6 +271,22 @@ const pools: Pools = {
         },
       },
     },
+    '0x9cebf13bb702f253abf1579294694a1edad00eaa000000000000000000000486': {
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f': {
+      name: 'DUSD/Boosted Aave v3 USD',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -279,13 +306,29 @@ const pools: Pools = {
     '0x9cebf13bb702f253abf1579294694a1edad00eaa000000000000000000000486', // bb-a-usdc/bb-a-usdc.e
     '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e', // DOLA/bbaUSD
     '0x00fcd3d55085e998e291a0005cedecf58ac14c4000020000000000000000047f', // 50STG-50bbaUSD
+    '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f', // DUSD/bbausd
   ],
   Deprecated: {
-    // '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158': {
-    //   newPool:
-    //     '0x9fb7d6dcac7b6aa20108bad226c35b85a9e31b63000200000000000000000412 ',
-    //   description: 'deprecatedPool.gaugeKilledReason',
-    // },
+    '0xcba9ff45cfb9ce238afde32b0148eb82cbe635620000000000000000000003fd': {
+      newPool:
+        '0xbe0f30217be1e981add883848d0773a86d2d2cd4000000000000000000000471',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xee02583596aee94cccb7e8ccd3921d955f17982a00000000000000000000040a': {
+      newPool:
+        '0xc6eee8cb7643ec2f05f46d569e9ec8ef8b41b389000000000000000000000475',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x5a7f39435fd9c381e4932fa2047c9a5136a5e3e7000000000000000000000400': {
+      newPool:
+        '0x45c4d1376943ab28802b995acffc04903eb5223f000000000000000000000470',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x567ecfcb22205d279bb8eed3e066989902bf03d5000000000000000000000452': {
+      newPool:
+        '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BoostedApr: [],

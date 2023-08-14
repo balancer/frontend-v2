@@ -17,6 +17,8 @@ import { PoolType } from '@/services/pool/types';
 import PoolFeatureSelect from '@/components/inputs/PoolFeatureSelect.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { PoolFeatureFilter } from '@/types/pools';
+import BasePromo from '@/components/contextual/pages/pools/BasePromo.vue';
+import AvalanchePromo from '@/components/contextual/pages/pools/AvalanchePromo.vue';
 
 const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
 const isFeaturedProtocolsVisible = ref(false);
@@ -107,12 +109,17 @@ function updatePoolFilters(feature: PoolFeatureFilter | undefined) {
 watch(poolFeatureFilter, newPoolFeatureFilter => {
   updatePoolFilters(newPoolFeatureFilter);
 });
+function showBasePromo(): boolean {
+  return Math.random() < 0.5;
+}
 </script>
 
 <template>
   <div>
     <HomePageHero />
     <div class="xl:container xl:px-4 pt-10 md:pt-8 xl:mx-auto">
+      <BasePromo v-if="showBasePromo()" />
+      <AvalanchePromo v-else />
       <BalStack vertical>
         <div class="px-4 xl:px-0">
           <div class="flex justify-between items-end mb-2">

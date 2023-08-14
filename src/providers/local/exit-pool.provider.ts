@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -185,12 +186,15 @@ export const exitPoolProvider = (
     shouldSignRelayer.value ? [relayerApprovalAction.value] : []
   );
 
+  const canSwapExit = computed(
+    (): boolean => isDeep(pool.value) && isPreMintedBptType(pool.value.poolType)
+  );
+
   const shouldUseSwapExit = computed(
     (): boolean =>
       isSingleAssetExit.value &&
-      isDeep(pool.value) &&
-      isPreMintedBptType(pool.value.poolType) &&
-      !includesAddress(pool.value.tokensList, singleAmountOut.address)
+      !includesAddress(pool.value.tokensList, singleAmountOut.address) &&
+      canSwapExit.value
   );
 
   const shouldUseGeneralisedExit = computed(
@@ -369,6 +373,7 @@ export const exitPoolProvider = (
 
     console.log('exitHandler:', exitHandlerType.value);
     try {
+      await nextTick();
       const output = await exitPoolService.queryExit({
         exitType: exitType.value,
         bptIn: _bptIn.value,
@@ -419,6 +424,7 @@ export const exitPoolProvider = (
 
     console.log('exitHandler:', exitHandlerType.value);
     try {
+      await nextTick();
       const output = await exitPoolService.queryExit({
         exitType: ExitType.GivenIn,
         bptIn: bptBalance.value,
@@ -600,6 +606,9 @@ export const exitPoolProvider = (
     isTxPayloadReady,
     relayerSignature,
     relayerApprovalTx,
+    shouldUseSwapExit,
+    canSwapExit,
+    shouldUseRecoveryExit,
 
     // methods
     setIsSingleAssetExit,

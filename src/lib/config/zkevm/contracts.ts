@@ -14,7 +14,7 @@ const contracts: Contracts = {
   balancerHelpers: zkevm.BalancerHelpers,
   batchRelayer: zkevm.BalancerRelayer,
   gaugeFactory: '',
-  balancerMinter: '',
+  balancerMinter: zkevm.L2BalancerPseudoMinter,
   gaugeController: '',
   tokenAdmin: '',
   veBAL: '',

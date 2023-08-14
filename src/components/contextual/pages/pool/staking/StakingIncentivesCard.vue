@@ -45,6 +45,7 @@ const {
   isRefetchingStakedShares,
   stakedShares,
   hasNonPrefGaugeBalance,
+  preferentialGaugeAddress,
 } = usePoolStaking();
 const { isAffected } = usePoolWarning(poolId);
 const { networkId } = useNetwork();
@@ -70,7 +71,8 @@ const isStakeDisabled = computed(() => {
   return (
     !!deprecatedDetails(props.pool.id) ||
     fiatValueOfUnstakedShares.value === '0' ||
-    hasNonPrefGaugeBalance.value
+    hasNonPrefGaugeBalance.value ||
+    !preferentialGaugeAddress.value
   );
 });
 

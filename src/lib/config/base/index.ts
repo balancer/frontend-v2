@@ -7,42 +7,41 @@ import tokens from './tokens';
 import rateProviders from './rateProviders';
 
 const config: Config = {
-  key: '42161',
-  chainId: 42161,
-  layerZeroChainId: 110,
-  chainName: 'Arbitrum',
-  name: 'Arbitrum',
-  shortName: 'Arbitrum',
-  monorepoName: 'arbitrum',
-  slug: 'arbitrum',
-  network: 'arbitrum-one',
-  trustWalletNetwork: 'arbitrum',
+  key: '8453',
+  chainId: 8453,
+  chainName: 'Base',
+  name: 'Base',
+  shortName: 'Base',
+  monorepoName: 'base',
+  slug: 'base',
+  network: 'base',
+  trustWalletNetwork: 'base',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://arbitrum-mainnet.infura.io/v3/${keys.infura}`,
-  ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
-  publicRpc: 'https://arb1.arbitrum.io/rpc',
-  explorer: 'https://arbiscan.io',
-  explorerName: 'Arbiscan',
+  rpc: `https://base.gateway.tenderly.co/2rkO7cFmpz3ZLkhKmtrzpb`,
+  ws: ``,
+  publicRpc: 'https://developer-access-mainnet.base.org',
+  explorer: 'https://basescan.org/',
+  explorerName: 'BaseScan',
   subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
+    'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
+      'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
     ],
     aave: '',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum',
+      'https://api.studio.thegraph.com/query/24660/balancer-gauges-base/version/latest',
     blocks:
-      'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
+      'https://api.studio.thegraph.com/query/48427/bleu-base-blocks/version/latest',
   },
-  bridgeUrl: 'https://bridge.arbitrum.io/',
+  bridgeUrl: 'https://bridge.base.org/',
   supportsEIP1559: false,
   supportsElementPools: false,
-  supportsVeBalSync: true,
+  supportsVeBalSync: false,
   blockTime: 2,
   nativeAsset: {
     name: 'Ether',
@@ -56,10 +55,7 @@ const config: Config = {
   thirdParty: {
     coingecko: {
       nativeAssetId: 'ethereum',
-      platformId: 'arbitrum-one',
-    },
-    apyVision: {
-      networkName: 'arbitrum',
+      platformId: 'base',
     },
   },
   addresses: {
