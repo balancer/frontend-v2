@@ -253,6 +253,7 @@ function isUserRejected(error): boolean {
     /cancelled/,
     /user rejected signing/,
     /user cancelled/,
+    /no matching key/, //Wallet connect v2 random error when disconnecting: https://github.com/WalletConnect/walletconnect-monorepo/issues/2326#issuecomment-1633706820
   ];
 
   return isErrorOfType(error, messages);
@@ -268,6 +269,7 @@ function isUserNotEnoughGas(error): boolean {
     /EffectivePriorityFeePerGas too low/,
     /Комиссия за газ обновлена/i,
     /insufficient eth to pay the network fees/,
+    /insufficient funds for intrinsic transaction cost/,
   ];
 
   return isErrorOfType(error, messages);
