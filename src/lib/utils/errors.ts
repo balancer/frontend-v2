@@ -320,13 +320,13 @@ export function isUserError(error): boolean {
 }
 
 /**
- * Checks if query has already failed, if more than once, we will ignore the error.
+ * Checks if failing query was already retried 3 times, if not, we will ignore the error.
  */
 export function shouldCaptureQueryError(
   query: UseQueryReturnType<any, any> | undefined
 ): boolean {
   if (!query) return true;
-  return query.failureCount.value <= 1;
+  return query.failureCount.value === 3;
 }
 
 /**
