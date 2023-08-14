@@ -7,11 +7,7 @@ import { Pool } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
-import {
-  GraphQLArgs,
-  PoolsRepositoryFetchOptions,
-  PoolRepository as SDKPoolRepository,
-} from '@balancer-labs/sdk';
+import { GraphQLArgs, PoolsRepositoryFetchOptions } from '@balancer-labs/sdk';
 import { getPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
@@ -64,9 +60,6 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
 
         return pools;
       },
-      get skip(): number {
-        return balancerAPIService.pools.skip;
-      },
     };
   }
 
@@ -93,14 +86,11 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
 
         return decoratedPools;
       },
-      get skip(): undefined {
-        return undefined;
-      },
     };
   }
 
   function buildRepositories() {
-    const repositories: SDKPoolRepository[] = [];
+    const repositories: any[] = [];
     if (isBalancerApiDefined) {
       const balancerApiRepository = initializeDecoratedAPIRepository();
       repositories.push(balancerApiRepository);
@@ -214,6 +204,7 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
     filterOptions,
     () => {
       poolsRepository = initializePoolsRepository();
+      poolsStoreService.setPools([]);
     },
     { deep: true }
   );
@@ -236,9 +227,7 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
 
       poolsStoreService.addPools(pools);
 
-      skip = poolsRepository.currentProvider?.skip
-        ? poolsRepository.currentProvider.skip
-        : poolsStoreService.pools.value?.length || 0;
+      skip = poolsStoreService.pools.value?.length || 0;
 
       return {
         pools,
