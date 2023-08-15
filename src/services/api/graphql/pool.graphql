@@ -1,5 +1,9 @@
-query GetPools {
-  pools: poolGetPools {
+query GetPools(
+  $first: Int
+  $orderBy: GqlPoolOrderBy
+  $orderDirection: GqlPoolOrderDirection
+) {
+  pools: poolGetPools (first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
     id
     chain
     address

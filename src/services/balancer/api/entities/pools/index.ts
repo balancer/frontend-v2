@@ -1,13 +1,21 @@
+import { configService } from '@/services/config/config.service';
 import { getApi } from '@/dependencies/balancer-api';
 import { Pool } from '@/services/pool/types';
-import { GetPoolsQuery } from '@/services/api/graphql/generated/api-types';
+import {
+  GetPoolsQuery,
+  GqlPoolOrderBy,
+  GqlPoolOrderDirection,
+} from '@/services/api/graphql/generated/api-types';
 import { PoolsQueryBuilder } from '@/types/subgraph';
 import {
+  AprBreakdown,
+  GraphQLArgs,
   GraphQLQuery,
   PoolToken,
   PoolType,
   PoolsBalancerAPIRepository,
 } from '@balancer-labs/sdk';
+import { Network } from '@/lib/config/types';
 
 import Service from '../../balancer-api.service';
 import queryBuilder from './query';
@@ -30,14 +38,29 @@ export default class Pools {
     this.queryBuilder = _queryBuilder;
   }
 
-  public async get(): Promise<Pool[]> {
+  public async get(args: GraphQLArgs = {}): Promise<Pool[]> {
     const api = getApi();
-    const response = await api.GetPools();
+    console.log('Getting pools from API');
+    const response = await api.GetPools({
+      first: args.first || 10,
+      orderBy: GqlPoolOrderBy.TotalLiquidity,
+      orderDirection: GqlPoolOrderDirection.Desc,
+    });
     const pools: ApiPools = response.pools;
+    console.log('Got pools from API', pools);
 
-    const convertedPools: Pool[] = pools.map((pool: ApiPool) => {
+    // Temp until I get pools by network ID from the beets API
+    const filteredPools: ApiPools = pools.filter((pool: ApiPool) => {
+      const poolChain: Network = mapApiChain(pool.chain);
+      return poolChain === configService.network.chainId;
+    });
+
+    console.log('Converting pools');
+    const convertedPools: Pool[] = filteredPools.map((pool: ApiPool) => {
+      console.log('Converting pool ', pool.id);
       return this.mapPool(pool);
     });
+    console.log('Done converting, pools is: ', convertedPools);
 
     return convertedPools;
 
@@ -78,7 +101,14 @@ export default class Pools {
 
   // Converts a pool from the API subgraph to frontend pool type
   private mapPool(apiPool: ApiPool): Pool {
-    return {
+    console.log('Mapping pool: ', apiPool.id);
+    if (
+      apiPool.id ===
+      '0xcde67b70e8144d7d2772de59845b3a67266c2ca7000200000000000000000009'
+    ) {
+      console.log('Full pool: ', apiPool);
+    }
+    const converted: Pool = {
       id: apiPool.id,
       name: apiPool.name || '',
       address: apiPool.address,
@@ -100,6 +130,7 @@ export default class Pools {
       totalShares: apiPool.dynamicData.totalShares,
       totalSwapFee: apiPool.dynamicData.lifetimeSwapFees,
       totalSwapVolume: apiPool.dynamicData.lifetimeVolume,
+      apr: this.mapApr(apiPool.dynamicData.apr),
       // priceRateProviders: apiPool.priceRateProviders ?? undefined,
       // onchain: subgraphPool.onchain,
       createTime: apiPool.createTime,
@@ -109,8 +140,8 @@ export default class Pools {
       // wrappedTokens: subgraphPool.wrappedTokens,
       // unwrappedTokens: subgraphPool.unwrappedTokens,
       // isNew: subgraphPool.isNew,
-      // volumeSnapshot: subgraphPool.volumeSnapshot,
-      // feesSnapshot: subgraphPool.???, // Approximated last 24h fees
+      volumeSnapshot: apiPool.dynamicData.volume24h,
+      feesSnapshot: apiPool.dynamicData.fees24h,
       // boost: subgraphPool.boost,
       totalWeight: '1',
       lowerTarget: '0',
@@ -118,12 +149,36 @@ export default class Pools {
       // isInRecoveryMode: apiPool.isInRecoveryMode ?? false,
       // isPaused: apiPool.isPaused ?? false,
     };
+    console.log('Done on pool conversion');
+    return converted;
   }
 
   private mapToken(apiToken: ApiPool['allTokens'][number]): PoolToken {
     return {
       address: apiToken.address,
       balance: '0',
+    };
+  }
+
+  private mapApr(apiApr: ApiPool['dynamicData']['apr']): AprBreakdown {
+    console.log('Converting apr: ', apiApr);
+    return {
+      swapFees: Number(apiApr.swapApr) * 100,
+      tokenAprs: {
+        total: 0,
+        breakdown: {},
+      },
+      stakingApr: {
+        min: 0,
+        max: 0,
+      },
+      rewardAprs: {
+        total: 0,
+        breakdown: {},
+      },
+      protocolApr: 0,
+      min: Number(apiApr.apr) * 100,
+      max: Number(apiApr.apr) * 100,
     };
   }
 

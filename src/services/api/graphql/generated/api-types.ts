@@ -1356,7 +1356,11 @@ export type QueryUserGetSwapsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type GetPoolsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetPoolsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<GqlPoolOrderBy>;
+  orderDirection?: InputMaybe<GqlPoolOrderDirection>;
+}>;
 
 export type GetPoolsQuery = {
   __typename?: 'Query';
@@ -1489,8 +1493,16 @@ export type VeBalGetVotingListQuery = {
 };
 
 export const GetPoolsDocument = gql`
-  query GetPools {
-    pools: poolGetPools {
+  query GetPools(
+    $first: Int
+    $orderBy: GqlPoolOrderBy
+    $orderDirection: GqlPoolOrderDirection
+  ) {
+    pools: poolGetPools(
+      first: $first
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
       id
       chain
       address
