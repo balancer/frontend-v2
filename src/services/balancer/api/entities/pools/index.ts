@@ -3,13 +3,13 @@ import { getApi } from '@/dependencies/balancer-api';
 import { Pool } from '@/services/pool/types';
 import {
   GetPoolsQuery,
+  GqlPoolFilter,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/services/api/graphql/generated/api-types';
 import { PoolsQueryBuilder } from '@/types/subgraph';
 import {
   AprBreakdown,
-  GraphQLArgs,
   GraphQLQuery,
   PoolToken,
   PoolType,
@@ -23,6 +23,14 @@ import { mapApiChain, mapApiPoolType } from '@/lib/utils/api';
 
 export type ApiPools = GetPoolsQuery['pools'];
 export type ApiPool = ApiPools[number];
+
+export interface ApiArgs {
+  first?: number;
+  skip?: number;
+  orderBy?: GqlPoolOrderBy;
+  orderDirection?: GqlPoolOrderDirection;
+  where?: GqlPoolFilter;
+}
 
 export default class Pools {
   service: Service;
@@ -38,13 +46,15 @@ export default class Pools {
     this.queryBuilder = _queryBuilder;
   }
 
-  public async get(args: GraphQLArgs = {}): Promise<Pool[]> {
+  public async get(args: ApiArgs = {}): Promise<Pool[]> {
     const api = getApi();
     console.log('Getting pools from API');
     const response = await api.GetPools({
       first: args.first || 10,
-      orderBy: GqlPoolOrderBy.TotalLiquidity,
-      orderDirection: GqlPoolOrderDirection.Desc,
+      skip: args.skip || 0,
+      orderBy: args.orderBy || GqlPoolOrderBy.TotalLiquidity,
+      orderDirection: args.orderDirection || GqlPoolOrderDirection.Desc,
+      where: args.where,
     });
     const pools: ApiPools = response.pools;
     console.log('Got pools from API', pools);
@@ -123,9 +133,15 @@ export default class Pools {
       owner: apiPool.owner ?? undefined,
       factory: apiPool.factory ?? undefined,
       symbol: apiPool.symbol ?? undefined,
-      tokens: (apiPool.allTokens || []).map(this.mapToken),
-      tokensList: (apiPool.allTokens || []).map(t => t.address),
-      tokenAddresses: (apiPool.allTokens || []).map(t => t.address),
+      tokens: (apiPool.allTokens || [])
+        .map(this.mapToken)
+        .filter(token => token.address !== apiPool.address),
+      tokensList: (apiPool.allTokens || [])
+        .map(t => t.address)
+        .filter(address => address !== apiPool.address),
+      tokenAddresses: (apiPool.allTokens || [])
+        .map(t => t.address)
+        .filter(address => address !== apiPool.address),
       totalLiquidity: apiPool.dynamicData.totalLiquidity,
       totalShares: apiPool.dynamicData.totalShares,
       totalSwapFee: apiPool.dynamicData.lifetimeSwapFees,

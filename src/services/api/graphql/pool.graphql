@@ -1,9 +1,11 @@
 query GetPools(
   $first: Int
+  $skip: Int
   $orderBy: GqlPoolOrderBy
   $orderDirection: GqlPoolOrderDirection
+  $where: GqlPoolFilter
 ) {
-  pools: poolGetPools (first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
+  pools: poolGetPools (first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection, where: $where) {
     id
     chain
     address

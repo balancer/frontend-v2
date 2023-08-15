@@ -1358,8 +1358,10 @@ export type QueryUserGetSwapsArgs = {
 
 export type GetPoolsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<GqlPoolOrderBy>;
   orderDirection?: InputMaybe<GqlPoolOrderDirection>;
+  where?: InputMaybe<GqlPoolFilter>;
 }>;
 
 export type GetPoolsQuery = {
@@ -1495,13 +1497,17 @@ export type VeBalGetVotingListQuery = {
 export const GetPoolsDocument = gql`
   query GetPools(
     $first: Int
+    $skip: Int
     $orderBy: GqlPoolOrderBy
     $orderDirection: GqlPoolOrderDirection
+    $where: GqlPoolFilter
   ) {
     pools: poolGetPools(
       first: $first
+      skip: $skip
       orderBy: $orderBy
       orderDirection: $orderDirection
+      where: $where
     ) {
       id
       chain

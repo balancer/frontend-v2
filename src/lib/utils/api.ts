@@ -1,5 +1,6 @@
 import {
   GqlChain,
+  GqlPoolFilterType,
   GqlPoolMinimalType,
 } from '@/services/api/graphql/generated/api-types';
 import { Network } from '@/lib/config';
@@ -37,6 +38,32 @@ export function mapApiChain(
   }
 }
 
+export function mapNetworkToApiChain(network: Network): GqlChain {
+  switch (network) {
+    case Network.ARBITRUM:
+      return GqlChain.Arbitrum;
+    case Network.AVALANCHE:
+      return GqlChain.Avalanche;
+    case Network.BASE:
+      return GqlChain.Base;
+    case Network.GNOSIS:
+      return GqlChain.Gnosis;
+    case Network.FANTOM:
+      return GqlChain.Fantom;
+    case Network.OPTIMISM:
+      return GqlChain.Optimism;
+    case Network.POLYGON:
+      return GqlChain.Polygon;
+    case Network.MAINNET:
+      return GqlChain.Mainnet;
+    case Network.ZKEVM:
+      return GqlChain.Zkevm;
+
+    default:
+      throw new Error(`Unexpected Network: ${network}`);
+  }
+}
+
 export function mapApiPoolType(
   apiPoolType: GqlPoolMinimalType
 ): PoolType | null {
@@ -63,5 +90,42 @@ export function mapApiPoolType(
       return PoolType.Weighted;
     default:
       return null;
+  }
+}
+
+export function mapPoolTypeToApiType(
+  poolType: PoolType | string
+): GqlPoolFilterType {
+  switch (poolType) {
+    case PoolType.Element:
+      return GqlPoolFilterType.Element;
+    case PoolType.Gyro2:
+      return GqlPoolFilterType.Gyro3;
+    case PoolType.Gyro3:
+      return GqlPoolFilterType.Gyro3;
+    case PoolType.GyroE:
+      return GqlPoolFilterType.Gyroe;
+    case PoolType.Investment:
+      return GqlPoolFilterType.Investment;
+    case PoolType.EulerLinear:
+      return GqlPoolFilterType.Linear;
+    case PoolType.Linear:
+      return GqlPoolFilterType.Linear;
+    case PoolType.LiquidityBootstrapping:
+      return GqlPoolFilterType.LiquidityBootstrapping;
+    case PoolType.MetaStable:
+      return GqlPoolFilterType.MetaStable;
+    case PoolType.StablePhantom:
+      return GqlPoolFilterType.PhantomStable;
+    case PoolType.Stable:
+      return GqlPoolFilterType.Stable;
+    case PoolType.ComposableStable:
+      return GqlPoolFilterType.Stable;
+    case PoolType.FX:
+      return GqlPoolFilterType.Stable;
+    case PoolType.Weighted:
+      return GqlPoolFilterType.Weighted;
+    default:
+      throw new Error(`Unexpected Pool Type ${poolType}`);
   }
 }
