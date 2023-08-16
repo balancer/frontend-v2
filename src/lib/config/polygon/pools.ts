@@ -258,7 +258,7 @@ const pools: Pools = {
         },
       },
     },
-    '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4': {
+    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
       name: 'Balancer Boosted Tetu USD',
       hasIcon: true,
       features: {
