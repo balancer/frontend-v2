@@ -174,15 +174,32 @@ export default function useJoinExit({
         return;
       }
 
-      const relayerCallData = buildRelayerCalls(
-        swapInfo.value,
-        pools.value,
-        account.value,
-        balancer.contracts.relayer?.address ?? '',
-        balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
-        String(slippageBufferRate.value * 1e4),
-        relayerSignature.value || undefined
-      );
+      let relayerCallData: ReturnType<typeof buildRelayerCalls>;
+
+      try {
+        relayerCallData = buildRelayerCalls(
+          swapInfo.value,
+          pools.value,
+          account.value,
+          balancer.contracts.relayer?.address ?? '',
+          balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
+          String(slippageBufferRate.value * 1e4),
+          relayerSignature.value || undefined
+        );
+      } catch (error) {
+        captureBalancerException({
+          error,
+          action: 'swap',
+          msgPrefix: 'Error building relayer calls',
+          context: {
+            tags: {
+              dependency: 'Balancer SDK',
+            },
+          },
+        });
+
+        throw error;
+      }
 
       const txBuilder = new TransactionBuilder(getSigner());
       tx = await txBuilder.contract.sendTransaction({

@@ -15,6 +15,7 @@ import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
 import { tokensListExclBpt } from '@/composables/usePoolHelpers';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 export type ExitExactOutResponse = ReturnType<
   PoolWithMethods['buildExitExactTokensOut']
@@ -46,10 +47,11 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     const { signer, tokenInfo, slippageBsp, amountsOut } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
-    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
+    const sdkPool = await this.getSdkPool();
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
+
+    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
     if (!tokenOut)
       throw new Error(
         'Could not find exit token in pool tokens list: ' +
@@ -76,21 +78,22 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     );
 
     // Add native asset to the list of tokens to exit
-    this.lastExitRes = sdkPool.buildExitExactTokensOut(
+    this.setLastExitRes(sdkPool, {
       exiter,
       poolTokensList,
       fullAmountsOut,
-      slippage
-    );
+      slippage,
+    });
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');
 
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
-    const evmPriceImpact = await sdkPool.calcPriceImpact(
-      fullAmountsOut,
-      this.lastExitRes.expectedBPTIn,
-      false
-    );
+    const evmPriceImpact = await this.getEvmPriceImpact(sdkPool, {
+      expectedAmountsOut: fullAmountsOut,
+      evmBptIn: this.lastExitRes.expectedBPTIn,
+    });
+
+    if (!evmPriceImpact) throw new Error('Failed to calculate price impact.');
 
     const priceImpact = Number(formatFixed(evmPriceImpact, 18));
 
@@ -120,5 +123,89 @@ export class ExactOutExitHandler implements ExitPoolHandler {
     // Set the exit token amount to tokenOutAmount
     allPoolTokensAmounts[tokenOutIndex] = tokenOutAmount || '0';
     return allPoolTokensAmounts;
+  }
+
+  private async getSdkPool(): Promise<PoolWithMethods | undefined> {
+    let sdkPool: PoolWithMethods | undefined;
+
+    try {
+      sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
+    } catch (error) {
+      captureBalancerException({
+        error,
+        context: {
+          tags: {
+            dependency: 'Balancer SDK',
+          },
+        },
+      });
+    }
+
+    return sdkPool;
+  }
+
+  private setLastExitRes(
+    sdkPool: PoolWithMethods,
+    {
+      exiter,
+      slippage,
+      poolTokensList,
+      fullAmountsOut,
+    }: {
+      exiter: string;
+      slippage: string;
+      poolTokensList: string[];
+      fullAmountsOut: string[];
+    }
+  ) {
+    try {
+      this.lastExitRes = sdkPool.buildExitExactTokensOut(
+        exiter,
+        poolTokensList,
+        fullAmountsOut,
+        slippage
+      );
+    } catch (error) {
+      captureBalancerException({
+        error,
+        context: {
+          tags: {
+            dependency: 'Balancer SDK',
+          },
+        },
+      });
+    }
+  }
+
+  private async getEvmPriceImpact(
+    sdkPool: PoolWithMethods,
+    {
+      expectedAmountsOut,
+      evmBptIn,
+    }: {
+      expectedAmountsOut: string[];
+      evmBptIn: string;
+    }
+  ): Promise<string | undefined> {
+    let evmPriceImpact: string | undefined;
+
+    try {
+      evmPriceImpact = await sdkPool.calcPriceImpact(
+        expectedAmountsOut,
+        evmBptIn,
+        false
+      );
+    } catch (error) {
+      captureBalancerException({
+        error,
+        context: {
+          tags: {
+            dependency: 'Balancer SDK',
+          },
+        },
+      });
+    }
+
+    return evmPriceImpact;
   }
 }

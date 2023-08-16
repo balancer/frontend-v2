@@ -22,6 +22,7 @@ import { TokenInfo } from '@/types/TokenList';
 import { flatTokenTree } from '@/composables/usePoolHelpers';
 import { getAddress } from '@ethersproject/address';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { captureBalancerException } from '@/lib/utils/errors';
 
 export type ExitExactInResponse = ReturnType<
   PoolWithMethods['buildExitExactBPTIn']
@@ -54,10 +55,12 @@ export class ExactInExitHandler implements ExitPoolHandler {
     const { signer, tokenInfo, bptIn, slippageBsp, amountsOut } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
-    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
+    const sdkPool = await this.getSdkPool();
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
+
+    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
+
     if (!tokenOut)
       throw new Error(
         'Could not find exit token in pool tokens list: ' +
@@ -77,14 +80,13 @@ export class ExactInExitHandler implements ExitPoolHandler {
       NATIVE_ASSET_ADDRESS
     );
 
-    this.lastExitRes = await sdkPool.buildExitExactBPTIn(
-      exiter,
+    this.setLastExitRes(sdkPool, {
       evmBptIn,
+      exiter,
       slippage,
       shouldUnwrapNativeAsset,
-      // TODO: singleTokenMaxOutAddress address format. SDK fix?
-      singleTokenMaxOutAddress?.toLowerCase()
-    );
+      singleTokenMaxOutAddress,
+    });
 
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');
 
@@ -93,13 +95,16 @@ export class ExactInExitHandler implements ExitPoolHandler {
       this.lastExitRes.attributes.exitPoolRequest.assets
     );
     const expectedAmountsOut = this.lastExitRes.expectedAmountsOut;
+
     // Because this is an exit we need to pass amountsOut as the amountsIn and
     // bptIn as the minBptOut to this calcPriceImpact function.
-    const evmPriceImpact = await sdkPool.calcPriceImpact(
+    const evmPriceImpact = await this.getEvmPriceImpact(sdkPool, {
       expectedAmountsOut,
       evmBptIn,
-      false
-    );
+    });
+
+    if (!evmPriceImpact) throw new Error('Failed to calculate price impact.');
+
     const priceImpact = Number(formatFixed(evmPriceImpact, 18));
 
     if (isSingleTokenExit) {
@@ -166,5 +171,93 @@ export class ExactInExitHandler implements ExitPoolHandler {
     });
 
     return amountsOut;
+  }
+
+  private async getSdkPool(): Promise<PoolWithMethods | undefined> {
+    let sdkPool: PoolWithMethods | undefined;
+
+    try {
+      sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
+    } catch (error) {
+      captureBalancerException({
+        error,
+        context: {
+          tags: {
+            dependency: 'Balancer SDK',
+          },
+        },
+      });
+    }
+
+    return sdkPool;
+  }
+
+  private setLastExitRes(
+    sdkPool: PoolWithMethods,
+    {
+      evmBptIn,
+      exiter,
+      slippage,
+      shouldUnwrapNativeAsset,
+      singleTokenMaxOutAddress,
+    }: {
+      evmBptIn: string;
+      exiter: string;
+      slippage: string;
+      shouldUnwrapNativeAsset: boolean;
+      singleTokenMaxOutAddress?: string;
+    }
+  ) {
+    try {
+      this.lastExitRes = sdkPool.buildExitExactBPTIn(
+        exiter,
+        evmBptIn,
+        slippage,
+        shouldUnwrapNativeAsset,
+        // TODO: singleTokenMaxOutAddress address format. SDK fix?
+        singleTokenMaxOutAddress?.toLowerCase()
+      );
+    } catch (error) {
+      captureBalancerException({
+        error,
+        context: {
+          tags: {
+            dependency: 'Balancer SDK',
+          },
+        },
+      });
+    }
+  }
+
+  private async getEvmPriceImpact(
+    sdkPool: PoolWithMethods,
+    {
+      expectedAmountsOut,
+      evmBptIn,
+    }: {
+      expectedAmountsOut: string[];
+      evmBptIn: string;
+    }
+  ): Promise<string | undefined> {
+    let evmPriceImpact: string | undefined;
+
+    try {
+      evmPriceImpact = await sdkPool.calcPriceImpact(
+        expectedAmountsOut,
+        evmBptIn,
+        false
+      );
+    } catch (error) {
+      captureBalancerException({
+        error,
+        context: {
+          tags: {
+            dependency: 'Balancer SDK',
+          },
+        },
+      });
+    }
+
+    return evmPriceImpact;
   }
 }

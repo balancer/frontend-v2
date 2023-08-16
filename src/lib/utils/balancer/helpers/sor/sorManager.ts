@@ -106,6 +106,9 @@ export class SorManager {
           error: new Error('SOR Fetch pools failed'),
           context: {
             level: 'fatal',
+            tags: {
+              dependency: 'Balancer SDK',
+            },
           },
         });
       }
@@ -119,7 +122,12 @@ export class SorManager {
       captureBalancerException({
         error: err,
         msgPrefix: 'SORFetchPools',
-        context: { level: 'fatal' },
+        context: {
+          level: 'fatal',
+          tags: {
+            dependency: 'Balancer SDK',
+          },
+        },
       });
     }
     console.log(
