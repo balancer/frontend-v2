@@ -108,6 +108,8 @@ const pools: Pools = {
       '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11', // DUSD/bbaUSD
       '0x7af62c1ebf97034b7542ccec13a2e79bbcf34380000000000000000000000c13', // tetubal/aurabal
       '0xdc31233e09f3bf5bfe5c10da2014677c23b6894c000000000000000000000c23', // wstETH-WETH-BPT
+      '0xc474b8512664edc9e746ee5e786478aea15887d2000000000000000000000c25', // frxETH-WETH-BPT
+      '0x8c89fb53d4d83173dd65b7a94569558ce393460f000000000000000000000c26', // FRAX-USDC-BPT
     ],
   },
   Investment: {
@@ -154,6 +156,7 @@ const pools: Pools = {
       '0x93a97f352c8be88d1468b8f7e0c24ce535be9eae000100000000000000000c1a', // farmDE
       '0x5250525a8fd922ec87b42c42b0ea71fd46565cb0000200000000000000000c1e', // xWARU
       '0x1cca7b11a3b36082c13e022d441b2da3a4d7206f000100000000000000000c1d', // 33rETH-33WETH-33NEX
+      '0x513f69b2e2a6fa0347529e6178002213cf60ce3d000200000000000000000c24', // 50WETH-50AAVE
     ],
   },
   Factories: {
@@ -259,7 +262,7 @@ const pools: Pools = {
         },
       },
     },
-    '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4': {
+    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
       name: 'Balancer Boosted Tetu USD',
       hasIcon: true,
       features: {
