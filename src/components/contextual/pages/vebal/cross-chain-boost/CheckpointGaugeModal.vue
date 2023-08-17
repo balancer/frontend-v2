@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['close', 'success']);
 
-const { checkpointGauge, poolsGauges } = useUserStaking();
+const { checkpointGauge, userGaugeShares } = useUserStaking();
 const { addTransaction } = useTransactions();
 const { isMismatchedNetwork } = useWeb3();
 const { txListener } = useEthers();
@@ -24,12 +24,13 @@ const showCloseBtn = ref(false);
 
 async function triggerUpdate() {
   try {
-    const gauge = poolsGauges.value?.pools.find(
-      pool => pool.address === props.poolAddress
+    const gauge = userGaugeShares.value?.find(
+      gauge => gauge.gauge.poolAddress === props.poolAddress
     );
-    const id = gauge?.preferentialGauge.id;
+    const id = gauge?.gauge.id;
+
     if (!id) {
-      throw new Error('No preferential gauge id');
+      throw new Error('No gauge id');
     }
 
     const tx = await checkpointGauge(id);

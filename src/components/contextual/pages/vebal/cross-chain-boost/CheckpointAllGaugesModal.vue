@@ -54,8 +54,8 @@ async function pokeAllGauges() {
 const actions = [
   {
     label: 'Poke all gauges',
-    loadingLabel: 'Confirming poke of all gauges',
-    confirmingLabel: 'Confirming poke of all gauges',
+    loadingLabel: 'Confirm poke in wallet',
+    confirmingLabel: 'Confirming poke',
     action: async () => {
       return pokeAllGauges();
     },

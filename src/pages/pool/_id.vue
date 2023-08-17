@@ -34,11 +34,6 @@ import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationC
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import PoolRisks from '@/components/contextual/pages/pool/risks/PoolRisks.vue';
 import { usePool } from '@/providers/local/pool.provider';
-import { provideUserStaking } from '@/providers/local/user-staking.provider';
-import { providerUserPools } from '@/providers/local/user-pools.provider';
-
-const userStaking = provideUserStaking();
-providerUserPools(userStaking);
 
 /**
  * STATE

@@ -59,7 +59,7 @@ type Props = {
   boosts?: Record<string, string>;
   defaultPoolActions?: string[];
   shouldPokePoolsMap?: Record<string, string>;
-  hasNonPrefGaugesPoolsIds?: string[];
+  hasNonPrefGaugesPoolsAddresses?: string[];
 };
 
 /**
@@ -449,7 +449,7 @@ function goToPoolPage(id: string) {
           :pool="pool"
           :showPokeAction="Boolean(shouldPokePoolsMap?.[pool.address]) || false"
           :showMigrateGaugeAction="
-            hasNonPrefGaugesPoolsIds?.includes(pool.address) || false
+            hasNonPrefGaugesPoolsAddresses?.includes(pool.address) || false
           "
           @click:add="addLiquidity(pool.id)"
           @click:remove="removeLiquidity(pool.id)"

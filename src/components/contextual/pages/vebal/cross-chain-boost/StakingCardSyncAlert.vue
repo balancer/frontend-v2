@@ -20,7 +20,7 @@ const emit = defineEmits(['shouldStakingCardBeOpened']);
 const shouldShowWarningAlert = ref(false);
 const showCheckpointModal = ref(false);
 
-const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
+const { networksSyncState, shouldPokeGauge } = useCrossChainSync();
 const { hasNonPrefGaugeBalance, poolGauges, stakedShares } = usePoolStaking();
 const { networkId } = useNetwork();
 const { isMismatchedNetwork } = useWeb3();
@@ -79,10 +79,9 @@ async function setWarningAlertState() {
   try {
     emit('shouldStakingCardBeOpened');
 
-    const balance = await getGaugeWorkingBalance(id);
+    const shouldPoke = await shouldPokeGauge(id);
 
-    // if the second number it returns is greater than the first, then show the message
-    if (balance && balance[1]?.gt(balance[0])) {
+    if (shouldPoke) {
       shouldShowWarningAlert.value = true;
     }
   } catch (error) {

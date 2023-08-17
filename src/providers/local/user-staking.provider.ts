@@ -9,8 +9,6 @@ import { Pool } from '@/services/pool/types';
 import { computed, InjectionKey, provide, reactive, ref } from 'vue';
 import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
-import usePoolsGaugesQuery from '@/composables/queries/usePoolsGaugesQuery';
-import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { GaugeCheckpointer } from '@/services/balancer/contracts/contracts/gauge-checkpointer';
@@ -36,15 +34,6 @@ const provider = () => {
     return userGaugeShares.value.map(gaugeShare => gaugeShare.gauge.poolId);
   });
 
-  // Array of all the pools addresses a user has staked BPT for.
-  const stakedPoolAddresses = computed((): string[] => {
-    if (!userGaugeShares.value) return [];
-
-    return userGaugeShares.value.map(
-      gaugeShare => gaugeShare.gauge.poolAddress
-    );
-  });
-
   const isPoolsQueryEnabled = computed(
     (): boolean => stakedPoolIds.value.length > 0
   );
@@ -60,33 +49,15 @@ const provider = () => {
     }
   );
 
-  const { data: poolsGauges, isLoading: isLoadingPoolsGauges } =
-    usePoolsGaugesQuery(computed(() => stakedPoolAddresses.value));
-
-  // Map of user gauge addresses -> balance.
-  const userGaugeSharesMap = computed((): Record<string, string> => {
-    if (!userGaugeShares.value) return {};
-
-    return userGaugeShares.value.reduce((acc, share) => {
-      acc[share.gauge.id] = share.balance;
-      return acc;
-    }, {} as Record<string, string>);
-  });
-
-  const hasNonPrefGaugesPoolsIds = computed(() => {
-    return poolsGauges.value?.pools.reduce((acc: string[], pool) => {
-      const preferentialGaugeAddress = pool.preferentialGauge?.id || '';
-      const hasNonPregGauge = pool.gauges.some(
-        gaugeAddress =>
-          !isSameAddress(gaugeAddress.id, preferentialGaugeAddress) &&
-          bnum(userGaugeSharesMap.value[gaugeAddress.id] || '0').gt(0)
-      );
-
-      if (hasNonPregGauge) {
-        acc.push(pool.address);
+  const hasNonPrefGaugesPoolsAddresses = computed(() => {
+    const arr = userGaugeShares.value?.reduce((acc: string[], gauge) => {
+      if (!gauge.gauge.isPreferentialGauge) {
+        acc.push(gauge.gauge.poolAddress);
       }
       return acc;
     }, []);
+
+    return arr;
   });
 
   const { data: _stakedPools, refetch: refetchStakedPools } = stakedPoolsQuery;
@@ -114,8 +85,7 @@ const provider = () => {
       isQueryLoading(userGaugeSharesQuery) ||
       isQueryLoading(stakedSharesQuery) ||
       isQueryLoading(userBoostsQuery) ||
-      isQueryLoading(stakedPoolsQuery) ||
-      isLoadingPoolsGauges.value
+      isQueryLoading(stakedPoolsQuery)
     );
   });
 
@@ -156,6 +126,7 @@ const provider = () => {
   }
 
   return {
+    userGaugeShares,
     stakedPools,
     stakedShares,
     poolBoostsMap,
@@ -163,8 +134,7 @@ const provider = () => {
     isLoading,
     refetchStakedPools,
     stakedSharesFor,
-    hasNonPrefGaugesPoolsIds,
-    poolsGauges,
+    hasNonPrefGaugesPoolsAddresses,
     checkpointGauge,
     checkpointAllGauges,
   };

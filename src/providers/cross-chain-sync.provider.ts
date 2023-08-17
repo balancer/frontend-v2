@@ -326,6 +326,18 @@ export const crossChainSyncProvider = () => {
     });
   }
 
+  async function shouldPokeGauge(gaugeAddress: string) {
+    const balance = await getGaugeWorkingBalance(gaugeAddress);
+
+    /*
+     *  balance[0] is ratio of the current `working_balance` of the user to the current `working_supply` of the gauge
+     *  balance[1] is ratio of the projected `working_balance` of the user (after `user_checkpoint`), to the projected `working_supply` of the gauge
+     *
+     *  so if balance[1] > balance[0] then the user should poke the gauge
+     */
+    return balance && balance[1]?.gt(balance[0]);
+  }
+
   async function getLayerZeroTxLink(txHash: string) {
     const { messages } = await getMessagesBySrcTxHash(101, txHash);
     const message = messages[0];
@@ -417,6 +429,7 @@ export const crossChainSyncProvider = () => {
     syncTxHashes,
     setSyncTxHashes,
     syncLayerZeroTxLinks,
+    shouldPokeGauge,
   };
 };
 

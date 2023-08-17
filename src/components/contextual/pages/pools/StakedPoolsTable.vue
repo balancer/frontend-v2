@@ -46,10 +46,10 @@ const {
   poolBoostsMap,
   stakedShares,
   isLoading,
-  poolsGauges,
-  hasNonPrefGaugesPoolsIds,
+  hasNonPrefGaugesPoolsAddresses,
+  userGaugeShares,
 } = useUserStaking();
-const { getGaugeWorkingBalance } = useCrossChainSync();
+const { shouldPokeGauge } = useCrossChainSync();
 
 const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting } = useWeb3();
@@ -120,20 +120,20 @@ function onSuccessCheckpoint(poolAddress: string) {
 }
 
 watch(
-  () => poolsGauges.value,
+  () => userGaugeShares.value,
   async val => {
     if (!val) return;
-    for (const pool of val.pools) {
+    for (const gauge of val) {
       try {
-        const id = pool.preferentialGauge?.id;
+        const id = gauge?.gauge.id;
 
         if (!id) {
-          return;
+          throw new Error('No gauge id');
         }
 
-        const balance = await getGaugeWorkingBalance(id);
-        if (balance && balance[1]?.gt(balance[0])) {
-          shouldPokePoolsMap.value[pool.address] = id;
+        const shouldPoke = await shouldPokeGauge(id);
+        if (shouldPoke) {
+          shouldPokePoolsMap.value[gauge.gauge.poolAddress] = id;
         }
       } catch (e) {
         console.log(e);
@@ -171,7 +171,7 @@ watch(
         :showBoost="isPoolBoostsEnabled"
         :defaultPoolActions="defaultPoolActions"
         :shouldPokePoolsMap="shouldPokePoolsMap"
-        :hasNonPrefGaugesPoolsIds="hasNonPrefGaugesPoolsIds"
+        :hasNonPrefGaugesPoolsAddresses="hasNonPrefGaugesPoolsAddresses"
         @trigger-unstake="handleUnstake"
         @trigger-restake="handleRestake"
         @trigger-vote="showProceedModal = true"
