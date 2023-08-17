@@ -268,6 +268,7 @@ function isUserNotEnoughGas(error): boolean {
     /EffectivePriorityFeePerGas too low/,
     /Комиссия за газ обновлена/i,
     /insufficient eth to pay the network fees/,
+    /insufficient funds for intrinsic transaction cost/,
   ];
 
   return isErrorOfType(error, messages);
@@ -277,7 +278,12 @@ function isUserNotEnoughGas(error): boolean {
  * Checks if error is caused by user's wallet having bad config / state
  */
 function isWalletConfigError(error): boolean {
-  const messages = [/invalid rpc url/, /nonce has already been used/];
+  const messages = [
+    /invalid rpc url/,
+    /nonce has already been used/,
+    /no matching key/, //Wallet connect v2 random error when disconnecting: https://github.com/WalletConnect/walletconnect-monorepo/issues/2326#issuecomment-1633706820
+    /unknown account #0/,
+  ];
 
   return isErrorOfType(error, messages);
 }
@@ -314,13 +320,13 @@ export function isUserError(error): boolean {
 }
 
 /**
- * Checks if query has already failed, if more than once, we will ignore the error.
+ * Checks if failing query was already retried 3 times, if not, we will ignore the error.
  */
 export function shouldCaptureQueryError(
   query: UseQueryReturnType<any, any> | undefined
 ): boolean {
   if (!query) return true;
-  return query.failureCount.value <= 1;
+  return query.failureCount.value === 3;
 }
 
 /**
@@ -360,6 +366,11 @@ export function useErrorMsg() {
     description: t('transactionErrors.slippage.description'),
   };
 
+  const unknownAccountError: TransactionError = {
+    title: 'Possible wallet connection error',
+    description: t('Please review your setup and try again.'),
+  };
+
   function defaultError(message = ''): TransactionError {
     return {
       title: t('transactionErrors.default.title'),
@@ -368,6 +379,8 @@ export function useErrorMsg() {
   }
 
   function formatErrorMsg(error): TransactionError | null {
+    if (isErrorOfType(error, [/unknown account #0/]))
+      return unknownAccountError;
     if (isUserError(error)) return null;
     if (isErrorOfType(error, [/UNPREDICTABLE_GAS_LIMIT/]))
       return cannotEstimateGasError;

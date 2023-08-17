@@ -5,7 +5,7 @@
  * 4. Writes new file content back to file.
  *
  * Example usage:
- * npx vite-node ./src/lib/scripts/automatic-prs/allowlist-pool.ts --network mainnet --poolType=stable --poolId=\"0x...\" --poolDescription=foo/bar/baz
+ * npx vite-node ./src/lib/scripts/automatic-prs/allowlist-pool.ts --network ethereum --poolType=stable --poolId=\"0x...\" --poolDescription=foo/bar/baz
  */
 
 import { cac } from 'cac';
@@ -25,6 +25,8 @@ const poolId = options.poolId.replace(/[^0-9a-fA-Fx]+/g, '') as string;
 const poolType = capitalize(options.poolType);
 let network = options.network as string;
 network = network.toLowerCase();
+// Allow ethereum alias to correctly generate pool link from allowlist-manual.yml
+if (network === 'ethereum') network = 'mainnet';
 const { poolDescription } = options;
 
 validateInput({ poolType, network, poolId });
