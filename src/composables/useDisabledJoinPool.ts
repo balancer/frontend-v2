@@ -47,7 +47,11 @@ export function useDisabledJoinPool(pool: Pool) {
   });
 
   const nonVettedTokensAfterTimestamp = computed(() => {
-    return createdAfterTimestamp(pool) && notVettedTokens.value.length > 0;
+    return (
+      !isTestnet.value &&
+      createdAfterTimestamp(pool) &&
+      notVettedTokens.value.length > 0
+    );
   });
 
   const nonAllowedWeightedPoolAfterTimestamp = computed(() => {

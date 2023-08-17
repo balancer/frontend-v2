@@ -1,6 +1,6 @@
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { Pool, PoolType } from '@/services/pool/types';
-import { BoostedPoolMock } from '@/__mocks__/boosted-pool';
+import { aBoostedPool } from '@/__mocks__/boosted-pool';
 import { aPoolToken } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
 import {
@@ -21,7 +21,7 @@ async function mountVettedTokensInPool(pool: Pool) {
 }
 
 it('disables joins for pools with no initial liquidity', async () => {
-  const pool = BoostedPoolMock;
+  const pool = aBoostedPool();
   pool.totalShares = '0';
   const { disableJoinsReason, shouldDisableJoins } =
     await mountVettedTokensInPool(pool);
@@ -31,7 +31,10 @@ it('disables joins for pools with no initial liquidity', async () => {
 });
 
 it('disables joins for pools created after timestamp (2023-03-29) with non vetted tokens', async () => {
-  const pool = BoostedPoolMock;
+  const { networkId } = useNetwork();
+  networkId.value = 1;
+
+  const pool = aBoostedPool();
   pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
   const { disableJoinsReason, shouldDisableJoins, nonAllowedSymbols } =
     await mountVettedTokensInPool(pool);
@@ -45,11 +48,26 @@ it('disables joins for pools created after timestamp (2023-03-29) with non vette
   );
 });
 
+it('allows joins for pools on test networks with non vetted tokens', async () => {
+  const { networkId } = useNetwork();
+  networkId.value = 5;
+
+  const pool = aBoostedPool();
+  pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
+  const { disableJoinsReason, shouldDisableJoins } =
+    await mountVettedTokensInPool(pool);
+
+  pool.tokens[0].address = randomAddress();
+
+  console.log('Reason: ', disableJoinsReason.value);
+  expect(shouldDisableJoins.value).toBeFalse();
+});
+
 it('disables joins for weighted pools created after timestamp (2023-03-29) that are not in the weighted allow list', async () => {
   const { networkId } = useNetwork();
   networkId.value = 1;
 
-  const pool = BoostedPoolMock;
+  const pool = aBoostedPool();
   pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
   pool.poolType = PoolType.Weighted;
   const { disableJoinsReason, shouldDisableJoins } =
@@ -67,7 +85,7 @@ it('allows joins for weighted pools on test networks created after timestamp (20
   const { networkId } = useNetwork();
   networkId.value = 5;
 
-  const pool = BoostedPoolMock;
+  const pool = aBoostedPool();
   pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
   pool.poolType = PoolType.Weighted;
   const { disableJoinsReason } = await mountVettedTokensInPool(pool);
@@ -80,7 +98,7 @@ it('allows joins for weighted pools on test networks created after timestamp (20
 });
 
 it('does not disables joins for pools created before 29 march', async () => {
-  const pool = BoostedPoolMock;
+  const pool = aBoostedPool();
   pool.createTime = dateToUnixTimestamp('2023-03-28'); //Created before 29 March
   pool.totalShares = '100';
   const { shouldDisableJoins, disableJoinsReason } =
