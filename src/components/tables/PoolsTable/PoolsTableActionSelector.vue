@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Pool } from '@/services/pool/types';
 import { onClickOutside } from '@vueuse/core';
+import { PoolAction } from '@/components/contextual/pages/pools/types';
 
 type Props = {
   pool: Pool;
@@ -81,7 +82,7 @@ onClickOutside(clickOutsideTarget, handleClickOutside);
         class="flex items-center py-3 pr-10 pl-3 font-medium text-left dark:hover:text-gray-200 whitespace-pre hover:bg-gray-100 cursor-pointer"
         :class="{
           'bg-red-50 hover:bg-red-100 dark:bg-red-300 border-b border-gray-200':
-            action === 'poke' || action === 'migrateGauge',
+            action === PoolAction.Poke || action === PoolAction.MigrateGauge,
         }"
         @click.stop="$emit(`click:${action}`, pool)"
       >

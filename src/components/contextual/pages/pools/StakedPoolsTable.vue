@@ -16,7 +16,7 @@ import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 
 import CheckpointGaugeModal from '../vebal/cross-chain-boost/CheckpointGaugeModal.vue';
 import CheckpointAllGaugesModal from '../vebal/cross-chain-boost/CheckpointAllGaugesModal.vue';
-
+import { PoolAction } from './types';
 /**
  * STATE
  */
@@ -27,7 +27,11 @@ const showRestakeModal = ref(false);
 const poolToRestake = ref<Pool | undefined>();
 
 const showProceedModal = ref(false);
-const defaultPoolActions = ['unstake', 'add', 'vote'];
+const defaultPoolActions = [
+  PoolAction.Unstake,
+  PoolAction.Add,
+  PoolAction.Vote,
+];
 
 const showPokeAllGaugesModal = ref(false);
 

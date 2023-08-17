@@ -7,6 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { useUserPools } from '@/providers/local/user-pools.provider';
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+import { PoolAction } from './types';
 
 /**
  * STATE
@@ -32,7 +33,11 @@ const {
   refetchAllUserPools,
   isLoading: isLoadingPools,
 } = useUserPools();
-const defaultPoolActions = ['stake', 'add', 'remove'];
+const defaultPoolActions = [
+  PoolAction.Stake,
+  PoolAction.Add,
+  PoolAction.Remove,
+];
 
 /**
  * COMPUTED
