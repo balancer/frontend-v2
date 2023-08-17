@@ -22,7 +22,7 @@ const config: Config = {
   rpc: `https://base.gateway.tenderly.co/2rkO7cFmpz3ZLkhKmtrzpb`,
   ws: ``,
   publicRpc: 'https://developer-access-mainnet.base.org',
-  explorer: 'https://basescan.org/',
+  explorer: 'https://basescan.org',
   explorerName: 'BaseScan',
   subgraph:
     'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
