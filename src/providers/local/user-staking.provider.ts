@@ -116,13 +116,11 @@ const provider = () => {
     const signer = getSigner();
     const gaugeCheckpointerContract = new GaugeCheckpointer(contractAddress);
 
-    const tx = await gaugeCheckpointerContract.checkpoint({
+    return gaugeCheckpointerContract.checkpoint({
       gauges,
       signer,
       userAddress: account.value,
     });
-
-    return tx;
   }
 
   return {

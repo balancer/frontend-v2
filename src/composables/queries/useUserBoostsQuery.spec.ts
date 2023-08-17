@@ -24,6 +24,7 @@ test('Does not calculate boosts when user does not have gauge shares', async () 
       poolId: 'test pool id',
       totalSupply: '1000',
       poolAddress: '0x0297e37f1873d2dab4487aa67cd56b58e2f27875',
+      isPreferentialGauge: false,
     },
   };
   const userGaugeShares = ref([gaugeShare]);
