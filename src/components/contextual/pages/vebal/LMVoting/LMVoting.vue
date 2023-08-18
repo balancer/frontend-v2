@@ -5,14 +5,13 @@ import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useDebouncedRef from '@/composables/useDebouncedRed';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { poolURLFor } from '@/composables/usePoolHelpers';
-import useVotingGauges from '@/composables/useVotingGauges';
+import useVotingPools, { orderedTokenURIs } from '@/composables/useVotingPools';
 import { bnum, scale } from '@/lib/utils';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 
 import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
-import { orderedTokenURIs } from '@/composables/useVotingGauges';
 import configs, { Network } from '@/lib/config';
 import GaugesFilters from './GaugesFilters.vue';
 import { isGaugeExpired } from './voting-utils';
@@ -23,7 +22,7 @@ import { isGaugeExpired } from './voting-utils';
 const tokenFilter = useDebouncedRef<string>('', 500);
 const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
 const activeNetworkFilters = useDebouncedRef<Network[]>([], 500);
-const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
+const activeVotingPool = ref<VotingPool | null>(null);
 
 const networkFilters: Network[] = Object.entries(configs)
   .filter(details => {
@@ -39,20 +38,18 @@ const networkFilters: Network[] = Object.entries(configs)
  */
 const {
   isLoading,
-  votingGauges,
+  votingPools,
+  votingGaugeAddresses,
   unallocatedVotes,
   votingPeriodEnd,
   votingPeriodLastHour,
   refetch: refetchVotingGauges,
-} = useVotingGauges();
+} = useVotingPools();
 const { fNum } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 const { shouldResubmitVotes } = useVotingEscrowLocks();
 
-const votingGaugeAddresses = computed<string[]>(
-  () => votingGauges.value?.map(gauge => gauge.address) || []
-);
 const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
 
 /**
@@ -64,9 +61,9 @@ const unallocatedVotesFormatted = computed<string>(() =>
 
 const unallocatedVoteWeight = computed(() => {
   const totalVotes = 1e4;
-  if (isLoading.value || !votingGauges.value) return totalVotes;
+  if (isLoading.value || !votingPools.value) return totalVotes;
 
-  const votesRemaining = votingGauges.value.reduce((remainingVotes, gauge) => {
+  const votesRemaining = votingPools.value.reduce((remainingVotes, gauge) => {
     return remainingVotes - parseFloat(gauge.userVotes);
   }, totalVotes);
   return votesRemaining;
@@ -84,33 +81,33 @@ const hasExpiredLock = computed(
     veBalLockInfoQuery.data.value?.isExpired
 );
 
-const gaugesFilteredByExpiring = computed(() => {
+const poolsFilteredByExpiring = computed(() => {
   if (showExpiredGauges.value) {
-    return votingGauges.value;
+    return votingPools.value;
   }
 
-  return votingGauges.value.filter(gauge => {
-    if (Number(gauge.userVotes) > 0) {
+  return votingPools.value.filter(pool => {
+    if (Number(pool.userVotes) > 0) {
       return true;
     }
-    return !isGaugeExpired(expiredGauges.value, gauge.address);
+    return !isGaugeExpired(expiredGauges.value, pool.gauge.address);
   });
 });
 
-const filteredVotingGauges = computed(() => {
+const filteredVotingPools = computed(() => {
   // put filter by expiring in separate computed to maintain readability
-  return gaugesFilteredByExpiring.value.filter(gauge => {
+  return poolsFilteredByExpiring.value.filter(pool => {
     let showByNetwork = true;
     if (
       activeNetworkFilters.value.length > 0 &&
-      !activeNetworkFilters.value.includes(gauge.network)
+      !activeNetworkFilters.value.includes(pool.network)
     ) {
       showByNetwork = false;
     }
 
     return (
       showByNetwork &&
-      gauge.pool.tokens.some(token => {
+      pool.tokens.some(token => {
         return token.symbol
           ?.toLowerCase()
           .includes(tokenFilter.value.toLowerCase());
@@ -122,12 +119,12 @@ const filteredVotingGauges = computed(() => {
 /**
  * METHODS
  */
-function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
-  activeVotingGauge.value = votingGauge;
+function setActiveVotingPool(votingPool: VotingPool) {
+  activeVotingPool.value = votingPool;
 }
 
 function handleModalClose() {
-  activeVotingGauge.value = null;
+  activeVotingPool.value = null;
   refetchVotingGauges();
 }
 
@@ -135,8 +132,8 @@ function handleVoteSuccess() {
   refetchVotingGauges();
 }
 
-function isExpired(gauge: VotingGaugeWithVotes) {
-  return isGaugeExpired(expiredGauges.value, gauge.address);
+function isExpired(pool: VotingPool) {
+  return isGaugeExpired(expiredGauges.value, pool.gauge.address);
 }
 
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
@@ -148,7 +145,7 @@ function addIntersectionObserver(): void {
     !('IntersectionObserverEntry' in window) ||
     !intersectionSentinel.value
   ) {
-    renderedRowsIdx.value = votingGauges.value.length;
+    renderedRowsIdx.value = votingPools.value.length;
     return;
   }
   const options = {
@@ -173,7 +170,7 @@ onBeforeUnmount(() => {
 watch(
   () => [showExpiredGauges.value, activeNetworkFilters.value],
   () => {
-    renderedRowsIdx.value = votingGauges.value.length;
+    renderedRowsIdx.value = votingPools.value.length;
   },
   { deep: true }
 );
@@ -296,22 +293,22 @@ watch(
       :renderedRowsIdx="renderedRowsIdx"
       :expiredGauges="expiredGauges"
       :isLoading="isLoading"
-      :data="filteredVotingGauges"
+      :data="filteredVotingPools"
       :noPoolsLabel="$t('noInvestments')"
       :filterText="tokenFilter"
       showPoolShares
       class="mb-8"
-      @clicked-vote="setActiveGaugeVote"
+      @clicked-vote="setActiveVotingPool"
     />
     <div ref="intersectionSentinel" />
   </div>
   <teleport to="#modal">
     <GaugeVoteModal
-      v-if="!!activeVotingGauge"
-      :gauge="activeVotingGauge"
-      :isGaugeExpired="isExpired(activeVotingGauge)"
-      :logoURIs="orderedTokenURIs(activeVotingGauge)"
-      :poolURL="poolURLFor(activeVotingGauge.pool, activeVotingGauge.network)"
+      v-if="!!activeVotingPool"
+      :pool="activeVotingPool"
+      :isGaugeExpired="isExpired(activeVotingPool)"
+      :logoURIs="orderedTokenURIs(activeVotingPool)"
+      :poolURL="poolURLFor(activeVotingPool, activeVotingPool.network)"
       :unallocatedVoteWeight="unallocatedVoteWeight"
       :veBalLockInfo="veBalLockInfoQuery.data.value"
       @success="handleVoteSuccess"

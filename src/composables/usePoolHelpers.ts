@@ -244,6 +244,12 @@ export function orderedPoolTokens(
     return tokens.filter(token => !isSameAddress(token.address, pool.address));
   } else if (isStableLike(pool.poolType)) return tokens;
 
+  return orderByWeight(tokens);
+}
+
+export function orderByWeight<T extends { weight?: string | null }>(
+  tokens: T[]
+): T[] {
   return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0'));

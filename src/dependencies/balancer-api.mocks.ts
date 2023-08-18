@@ -1,7 +1,7 @@
 import { api } from '@/services/api/api.client';
+import { configService } from '@/services/config/config.service';
 import { mockDeep } from 'vitest-mock-extended';
 import { initApi } from './balancer-api';
-import { configService } from '@/services/config/config.service';
 
 export const defaultTokenPrice = 1;
 
@@ -18,10 +18,18 @@ export const defaultPrices = {
   ],
 };
 
+export const defaultVeBalVotingList = {
+  veBalGetVotingList: [],
+};
+
 export function generateBalancerApiMock() {
   const apiMock = mockDeep<typeof api>();
 
   apiMock.GetCurrentTokenPrices.mockResolvedValue(defaultPrices);
+
+  apiMock.VeBalGetVotingList.calledWith().mockResolvedValue(
+    defaultVeBalVotingList
+  );
 
   return apiMock;
 }
