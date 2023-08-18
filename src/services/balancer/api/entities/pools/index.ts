@@ -3,9 +3,11 @@ import { getApi } from '@/dependencies/balancer-api';
 import { Pool } from '@/services/pool/types';
 import {
   GetPoolsQuery,
+  GqlPoolApr,
   GqlPoolFilter,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
+  GqlPoolTokenExpanded,
 } from '@/services/api/graphql/generated/api-types';
 import { PoolsQueryBuilder } from '@/types/subgraph';
 import {
@@ -73,40 +75,6 @@ export default class Pools {
     console.log('Done converting, pools is: ', convertedPools);
 
     return convertedPools;
-
-    // const query = this.queryBuilder(args, attrs);
-    // const skip = query.args.skip;
-    // const first = query.args.first;
-    // delete query.args.skip; // not allowed for Balancer API
-    // delete query.args.first;
-
-    // /* Some temporary hacks to make the API work with an empty in array (it should return no data)
-    //  *   and if not_in is also set then delete it (because it's set by default) */
-    // if (query.args.where?.id?.in) {
-    //   if (query.args.where?.id?.in.length === 0) {
-    //     return [];
-    //   }
-    //   if (query.args.where?.id?.not_in) {
-    //     delete query.args.where?.id.not_in;
-    //   }
-    // }
-
-    // if (!this.repository || !_.isEqual(query, this.lastQuery)) {
-    //   this.lastQuery = _.cloneDeep(query);
-    //   const graphQLUrl = `${configService.network.balancerApi}/graphql`;
-    //   this.repository = new PoolsBalancerAPIRepository({
-    //     url: graphQLUrl,
-    //     apiKey: configService.network.keys.balancerApi || '',
-    //     query: query,
-    //   });
-    // }
-
-    // const pools = await this.repository.fetch({
-    //   first,
-    //   skip,
-    // });
-
-    // return pools as Pool[];
   }
 
   // Converts a pool from the API subgraph to frontend pool type
@@ -169,14 +137,14 @@ export default class Pools {
     return converted;
   }
 
-  private mapToken(apiToken: ApiPool['allTokens'][number]): PoolToken {
+  private mapToken(apiToken: GqlPoolTokenExpanded): PoolToken {
     return {
       address: apiToken.address,
       balance: '0',
     };
   }
 
-  private mapApr(apiApr: ApiPool['dynamicData']['apr']): AprBreakdown {
+  private mapApr(apiApr: GqlPoolApr): AprBreakdown {
     console.log('Converting apr: ', apiApr);
     return {
       swapFees: Number(apiApr.swapApr) * 100,
