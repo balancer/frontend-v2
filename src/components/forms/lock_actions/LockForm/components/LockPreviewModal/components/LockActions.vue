@@ -19,7 +19,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
-import useVotingGauges from '@/composables/useVotingGauges';
+import useVotingPools from '@/composables/useVotingPools';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { ApprovalAction } from '@/composables/approvals/types';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
@@ -77,7 +77,7 @@ const { getProvider, explorerLinks, isMismatchedNetwork } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { fNum } = useNumbers();
-const { totalVotes, unallocatedVotes } = useVotingGauges();
+const { totalVotes, unallocatedVotes } = useVotingPools();
 const { networkSlug } = useNetwork();
 const { getTokenApprovalActions } = useTokenApprovalActions();
 const { refetch: refetchSyncData } = useCrossChainSync();
