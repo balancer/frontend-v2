@@ -212,8 +212,14 @@ watch(
 </script>
 
 <template>
-  <div :class="['max-w-full whitespace-nowrap', { 'rounded-lg': !square }]">
-    <div ref="headerRef">
+  <div
+    :class="[
+      'max-w-full whitespace-nowrap',
+      'max-lg:overflow-hidden',
+      { 'rounded-lg': !square },
+    ]"
+  >
+    <div ref="headerRef" class="max-lg:overflow-hidden">
       <table class="w-full whitespace-normal table-fixed">
         <!-- header width handled by colgroup  -->
         <colgroup>
@@ -281,7 +287,7 @@ watch(
         </thead>
       </table>
     </div>
-    <div ref="bodyRef">
+    <div ref="bodyRef" class="max-lg:overflow-auto">
       <BalLoadingBlock
         v-if="isLoading"
         :class="[skeletonClass, 'min-w-full']"
