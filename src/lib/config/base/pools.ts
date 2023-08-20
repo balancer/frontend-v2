@@ -75,7 +75,6 @@ const pools: Pools = {
       '0xfb4c2e6e6e27b5b4a07a36360c89ede29bb3c9b6000000000000000000000026', // cbeth/weth
       '0xc771c1a5905420daec317b154eb13e4198ba97d0000000000000000000000023', // reth/weth
       '0xa30ad556d10c829a67f41f60d41afdd4efa9286c000100000000000000000029', // base friend pool
-
     ],
   },
   Metadata: {
