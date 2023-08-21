@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 import coin1 from '@/assets/images/coins/coins-1.png';
 import coin2 from '@/assets/images/coins/coins-2.png';
 import coin3 from '@/assets/images/coins/coins-3.png';
+import MyVebalInfo from './MyVebalInfo.vue';
 
 /**
  * COMPOSABLES
@@ -38,109 +39,116 @@ function navigateToGetVeBAL() {
 <template>
   <div class="hero-container">
     <div class="hero-content">
-      <div
-        class="py-8 lg:py-4 px-4 lg:px-8 2xl:px-0 xl:pt-0 max-w-md hero-text"
-      >
-        <p class="font-medium eyebrow">veBAL</p>
-        <h1 class="mb-5 text-white title">
-          {{ $t('veBAL.hero.title') }}
-        </h1>
-        <ul>
-          <li
-            v-for="(benefit, i) in benefits"
-            :key="i"
-            class="flex items-center mb-2 text-white"
-          >
-            – {{ benefit }}
-          </li>
-        </ul>
-        <div class="flex mt-6">
-          <BalBtn class="mr-3 hero-btn btn-gold" @click="navigateToGetVeBAL">
-            {{ $t('veBAL.hero.buttons.getVeBAL') }}
-          </BalBtn>
-          <BalBtn
-            tag="a"
-            href="https://docs.balancer.fi/concepts/governance/veBAL/"
-            target="_blank"
-            rel="noreferrer"
-            color="white"
-            class="hero-btn"
-            outline
-          >
-            {{ $t('veBAL.hero.buttons.learnMore') }}
-            <BalIcon
-              name="arrow-up-right"
-              size="sm"
-              class="ml-px group-hover:text-pink-500 transition-colors"
-            />
-          </BalBtn>
-        </div>
-      </div>
-      <div class="coins">
-        <div class="group coin">
-          <div class="w-full coin-wrapper">
-            <BalImage
-              class="graphic"
-              width="330"
-              height="377"
-              :src="coin1"
-              alt="BAL and WETH tokens"
-            />
-          </div>
-          <div class="font-semibold caption">
-            <p
-              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
+      <MyVebalInfo v-if="true" />
+      <template v-else>
+        <div
+          class="py-8 lg:py-4 px-4 lg:px-8 2xl:px-0 xl:pt-0 max-w-md hero-text"
+        >
+          <p class="font-medium eyebrow">veBAL</p>
+          <h1 class="mb-5 text-white title">
+            {{ $t('veBAL.hero.title') }}
+          </h1>
+          <ul>
+            <li
+              v-for="(benefit, i) in benefits"
+              :key="i"
+              class="flex items-center mb-2 text-white"
             >
-              {{ $t('veBAL.hero.tokens.balWETH') }}
-            </p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1 font-medium">
-              {{ $t('veBAL.hero.tokenInfo.balWETH') }}
-            </BalTooltip>
-          </div>
-        </div>
-        <div class="group coin">
-          <div class="coin-wrapper">
-            <BalImage
-              class="graphic"
-              width="330"
-              height="377"
-              :src="coin2"
-              alt="B-80BAL-20WETH LP token"
-            />
-          </div>
-          <div class="font-semibold caption">
-            <p
-              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
+              – {{ benefit }}
+            </li>
+          </ul>
+          <div class="flex mt-6">
+            <BalBtn class="mr-3 hero-btn btn-gold" @click="navigateToGetVeBAL">
+              {{ $t('veBAL.hero.buttons.getVeBAL') }}
+            </BalBtn>
+            <BalBtn
+              tag="a"
+              href="https://docs.balancer.fi/concepts/governance/veBAL/"
+              target="_blank"
+              rel="noreferrer"
+              color="white"
+              class="hero-btn"
+              outline
             >
-              {{ $t('veBAL.hero.tokens.lpToken') }}
-            </p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-              {{ $t('veBAL.hero.tokenInfo.lpToken') }}
-            </BalTooltip>
+              {{ $t('veBAL.hero.buttons.learnMore') }}
+              <BalIcon
+                name="arrow-up-right"
+                size="sm"
+                class="ml-px group-hover:text-pink-500 transition-colors"
+              />
+            </BalBtn>
           </div>
         </div>
-        <div class="group coin">
-          <div class="coin-wrapper">
-            <BalImage
-              class="graphic"
-              width="330"
-              height="377"
-              :src="coin3"
-              alt="veBAL token"
-            />
+        <div class="coins">
+          <div class="group coin">
+            <div class="w-full coin-wrapper">
+              <BalImage
+                class="graphic"
+                width="330"
+                height="377"
+                :src="coin1"
+                alt="BAL and WETH tokens"
+              />
+            </div>
+            <div class="font-semibold caption">
+              <p
+                class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
+              >
+                {{ $t('veBAL.hero.tokens.balWETH') }}
+              </p>
+              <BalTooltip
+                iconSize="xs"
+                textAlign="left"
+                class="mt-1 font-medium"
+              >
+                {{ $t('veBAL.hero.tokenInfo.balWETH') }}
+              </BalTooltip>
+            </div>
           </div>
-          <div class="font-semibold caption">
-            <p
-              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
-            >
-              {{ $t('veBAL.hero.tokens.veBAL') }}
-            </p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-              {{ $t('veBAL.hero.tokenInfo.veBAL') }}
-            </BalTooltip>
+          <div class="group coin">
+            <div class="coin-wrapper">
+              <BalImage
+                class="graphic"
+                width="330"
+                height="377"
+                :src="coin2"
+                alt="B-80BAL-20WETH LP token"
+              />
+            </div>
+            <div class="font-semibold caption">
+              <p
+                class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
+              >
+                {{ $t('veBAL.hero.tokens.lpToken') }}
+              </p>
+              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+                {{ $t('veBAL.hero.tokenInfo.lpToken') }}
+              </BalTooltip>
+            </div>
+          </div>
+          <div class="group coin">
+            <div class="coin-wrapper">
+              <BalImage
+                class="graphic"
+                width="330"
+                height="377"
+                :src="coin3"
+                alt="veBAL token"
+              />
+            </div>
+            <div class="font-semibold caption">
+              <p
+                class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
+              >
+                {{ $t('veBAL.hero.tokens.veBAL') }}
+              </p>
+              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+                {{ $t('veBAL.hero.tokenInfo.veBAL') }}
+              </BalTooltip>
+            </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
