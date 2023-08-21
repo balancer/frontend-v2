@@ -5,6 +5,7 @@ import anime from 'animejs';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { TokenInfo } from '@/types/TokenList';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -59,6 +60,7 @@ const isLocked = ref(false);
  * COMPOSABLEs
  */
 const { getToken } = useTokens();
+const { t } = useI18n();
 
 /**
  * COMPUTED
@@ -69,6 +71,14 @@ const token = computed((): TokenInfo | undefined => {
   if (!hasToken.value) return undefined;
   return getToken(_address.value);
 });
+
+const noTokenFoundContent = computed(
+  (): string => `${t(
+    'errorNoTokens'
+  )}<div class='text-sm text-gray-500 mt-4'> For help to create a pool with tokens not supported in the
+        Balancer UI please <a href='https://k0gwxqsj545.typeform.com/to/FGbUIJdi' class='underline'
+        target='_blank' rel='noopener noreferrer'>complete this form</a>.<div>`
+);
 
 /**
  * METHODS
@@ -155,6 +165,7 @@ watchEffect(() => {
           :fixed="fixedToken"
           class="mr-2"
           :excludedTokens="excludedTokens"
+          :notFoundContent="noTokenFoundContent"
           @update:model-value="emit('update:address', $event)"
         />
         <BalIcon

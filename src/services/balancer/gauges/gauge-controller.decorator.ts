@@ -6,7 +6,6 @@ import {
   oneWeekInSecs,
   toUnixTimestamp,
 } from '@/composables/useTime';
-import { VotingGauge } from '@/constants/voting-gauges';
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
@@ -15,6 +14,10 @@ import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { networkId, isTestnet } from '@/composables/useNetwork';
 import { Network } from '@/lib/config';
+import {
+  ApiVotingPools,
+  ApiVotingGauge,
+} from '@/composables/queries/useVotingPoolsQuery';
 
 const FIRST_WEEK_TIMESTAMP = 1648684800;
 
@@ -47,7 +50,8 @@ export interface RawVotesDataMap {
   gauges: Record<string, RawVotesData>;
 }
 
-export type VotingGaugeWithVotes = VotingGauge & VotesData;
+export type ApiVotingPool = ApiVotingPools[number];
+export type VotingPoolWithVotes = ApiVotingPool & VotesData;
 
 export class GaugeControllerDecorator {
   multicaller: Multicaller;
@@ -64,12 +68,13 @@ export class GaugeControllerDecorator {
   }
 
   /**
-   * @summary Decorate subgraph gauge schema with onchain data using multicalls.
+   * @summary Decorate subgraph voting pool schema with onchain data using multicalls.
    */
   async decorateWithVotes(
-    votingGauges: VotingGauge[],
+    votingPools: ApiVotingPools,
     userAddress: string
-  ): Promise<VotingGaugeWithVotes[]> {
+  ): Promise<VotingPoolWithVotes[]> {
+    const votingGauges = votingPools.map(pool => pool.gauge);
     this.multicaller = this.resetMulticaller();
     this.callGaugeWeightThisPeriod(votingGauges);
     this.callGaugeWeightNextPeriod(votingGauges);
@@ -80,14 +85,13 @@ export class GaugeControllerDecorator {
 
     const votesDataMap = await this.multicaller.execute<RawVotesDataMap>();
 
-    const decoratedGauges = votingGauges.map(gauge => {
+    const decoratedVotingPools = votingPools.map(pool => {
       return {
-        id: gauge.address,
-        ...gauge,
-        ...this.formatVotes(votesDataMap.gauges[gauge.address]),
+        ...pool,
+        ...this.formatVotes(votesDataMap.gauges[pool.gauge.address]),
       };
     });
-    return decoratedGauges;
+    return decoratedVotingPools;
   }
 
   private formatVotes(votesData: RawVotesData): VotesData {
@@ -105,7 +109,7 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch total points allocated towards each gauge for this period
    */
-  private callGaugeWeightThisPeriod(votingGauges: VotingGauge[]) {
+  private callGaugeWeightThisPeriod(votingGauges: ApiVotingGauge[]) {
     let thisWeekTimestamp = toUnixTimestamp(
       Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs
     );
@@ -128,7 +132,7 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch total points allocated towards each gauge for next period (+1 week)
    */
-  private callGaugeWeightNextPeriod(votingGauges: VotingGauge[]) {
+  private callGaugeWeightNextPeriod(votingGauges: ApiVotingGauge[]) {
     const nextWeekTimestamp = toUnixTimestamp(
       Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
     );
@@ -145,7 +149,10 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch user's vote weight for each gauge
    */
-  private callUserGaugeVotes(votingGauges: VotingGauge[], userAddress: string) {
+  private callUserGaugeVotes(
+    votingGauges: ApiVotingGauge[],
+    userAddress: string
+  ) {
     votingGauges.forEach(gauge => {
       this.multicaller.call(
         `gauges.${gauge.address}.userVotes`,
@@ -157,10 +164,10 @@ export class GaugeControllerDecorator {
   }
 
   /**
-   * @summary Fetch user's vote weight for each gauge
+   * @summary Fetch user's vote time for each gauge
    */
   private callUserGaugeVoteTime(
-    votingGauges: VotingGauge[],
+    votingGauges: ApiVotingGauge[],
     userAddress: string
   ) {
     votingGauges.forEach(gauge => {
@@ -191,5 +198,3 @@ export class GaugeControllerDecorator {
     return new Multicaller(this.network.toString(), this.provider, this.abi);
   }
 }
-
-export const gaugeControllerDecorator = new GaugeControllerDecorator();
