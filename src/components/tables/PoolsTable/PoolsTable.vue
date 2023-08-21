@@ -313,7 +313,6 @@ function goToPoolPage(id: string) {
 <template>
   <BalCard
     shadow="lg"
-    exposeOverflow
     :square="upToLargeBreakpoint"
     :noBorder="upToLargeBreakpoint"
     noPad

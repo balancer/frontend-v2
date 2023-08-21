@@ -37,6 +37,7 @@ const showPokeAllGaugesModal = ref(false);
 
 const poolToCheckpoint = ref<Pool | undefined>();
 const showCheckpointModal = ref(false);
+
 /**
  * PROVIDERS
  */

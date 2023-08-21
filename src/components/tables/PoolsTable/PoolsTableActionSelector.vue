@@ -79,7 +79,7 @@ onClickOutside(clickOutsideTarget, handleClickOutside);
       <li
         v-for="action in menuItems"
         :key="action"
-        class="flex items-center py-3 pr-10 pl-3 font-medium text-left dark:hover:text-gray-200 whitespace-pre hover:bg-gray-100 cursor-pointer"
+        class="flex items-center py-3 pr-10 pl-3 font-medium text-left dark:hover:text-gray-200 whitespace-pre hover:bg-gray-100 first:rounded-t cursor-pointer radius-md"
         :class="{
           'bg-red-50 hover:bg-red-100 dark:bg-red-300 border-b border-gray-200':
             action === PoolAction.Poke || action === PoolAction.MigrateGauge,
