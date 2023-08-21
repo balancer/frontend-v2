@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
-import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -11,7 +10,7 @@ import { bnum, scale } from '@/lib/utils';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { Address, WalletError } from '@/types';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
-import useVotingGauges from '@/composables/useVotingGauges';
+import useVotingPools from '@/composables/useVotingPools';
 import VoteInput from './VoteInput.vue';
 import SubmitVoteBtn from '../SubmitVoteBtn.vue';
 import { POOLS } from '@/constants/pools';
@@ -27,8 +26,8 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
-const { votingGauges, refetch: refetchVotingGauges } = useVotingGauges();
+const { poolsUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
+const { votingPools, refetch: refetchVotingPools } = useVotingPools();
 const voteState = useActionState();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
@@ -44,42 +43,41 @@ const votes = ref<Record<Address, string>>({});
  * COMPUTED
  */
 
-//  Can vote max 8 gauges in one time
-const visibleVotingGauges = computed(() =>
-  gaugesUsingUnderUtilizedVotingPower.value.slice(0, 8)
+//  Can vote max 8 pools in one time
+const visibleVotingPools = computed(() =>
+  poolsUsingUnderUtilizedVotingPower.value.slice(0, 8)
 );
 
-// All other gauges using under-utilized voting power are grouped separately
-const hiddenVotingGauges = computed(() =>
-  gaugesUsingUnderUtilizedVotingPower.value.slice(7)
+// All other pools using under-utilized voting power are grouped separately
+const hiddenVotingPools = computed(() =>
+  poolsUsingUnderUtilizedVotingPower.value.slice(7)
 );
 
-const allGaugesTotalAllocation = computed<number>(() => {
-  const underUtilizedAddresses = gaugesUsingUnderUtilizedVotingPower.value.map(
-    gauge => gauge.address
-  );
+const allPoolsTotalAllocation = computed<number>(() => {
+  const underUtilizedGaugeAddresses =
+    poolsUsingUnderUtilizedVotingPower.value.map(pool => pool.gauge.address);
 
-  return votingGauges.value.reduce<number>((total, gauge) => {
-    return !underUtilizedAddresses.includes(gauge.address)
-      ? total + Number(bpsToPct(gauge.userVotes))
-      : total + Number(votes.value[gauge.address]);
+  return votingPools.value.reduce<number>((total, pool) => {
+    return !underUtilizedGaugeAddresses.includes(pool.gauge.address)
+      ? total + Number(bpsToPct(pool.userVotes))
+      : total + Number(votes.value[pool.gauge.address]);
   }, 0);
 });
 
 const hasMoreThan8VotingGauges = computed(
-  () => gaugesUsingUnderUtilizedVotingPower.value.length > 8
+  () => poolsUsingUnderUtilizedVotingPower.value.length > 8
 );
 
 const hiddenVotesTotalAllocation = computed<number>(() => {
-  const totalUnscaled = hiddenVotingGauges.value.reduce<number>(
-    (total, gauge) => total + Number(gauge.userVotes),
+  const totalUnscaled = hiddenVotingPools.value.reduce<number>(
+    (total, pool) => total + Number(pool.userVotes),
     0
   );
   return Number(bpsToPct(totalUnscaled));
 });
 
 const voteButtonDisabled = computed<boolean>(
-  () => allGaugesTotalAllocation.value > 100
+  () => allPoolsTotalAllocation.value > 100
 );
 const transactionInProgress = computed(
   (): boolean =>
@@ -138,15 +136,15 @@ async function submitVote() {
 }
 
 function getTransactionSummaryMsg(): string {
-  const gauges = visibleVotingGauges.value;
-  const message = gauges.reduce<string>((acc, gauge, i) => {
+  const pools = visibleVotingPools.value;
+  const message = pools.reduce<string>((acc, pool, i) => {
     return (
       acc +
       t('veBAL.liquidityMining.popover.voteForGauge', [
-        fNum(bpsToPct(votes.value[gauge.address]), FNumFormats.percent),
-        gauge.pool.symbol,
+        fNum(bpsToPct(votes.value[pool.gauge.address]), FNumFormats.percent),
+        pool.symbol,
       ]) +
-      (i < gauges.length - 1 ? ', ' : '')
+      (i < pools.length - 1 ? ', ' : '')
     );
   }, '');
   return message;
@@ -165,7 +163,7 @@ async function handleTransaction(tx) {
       const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
 
       voteState.setSuccess({ receipt, confirmedAt });
-      refetchVotingGauges();
+      refetchVotingPools();
     },
     onTxFailed: () => {
       console.error('Vote failed');
@@ -178,9 +176,9 @@ async function handleTransaction(tx) {
 }
 
 watchEffect(() => {
-  visibleVotingGauges.value.forEach(gauge => {
-    votes.value[gauge.address] = gauge.userVotes
-      ? bpsToPct(gauge.userVotes)
+  visibleVotingPools.value.forEach(pool => {
+    votes.value[pool.gauge.address] = pool.userVotes
+      ? bpsToPct(pool.userVotes)
       : '0';
   });
 });
@@ -215,10 +213,10 @@ watchEffect(() => {
         class="mt-2 mb-4"
       />
       <VoteInput
-        v-for="gauge in visibleVotingGauges"
-        :key="gauge.address"
-        v-model="votes[gauge.address]"
-        :gauge="gauge"
+        v-for="pool in visibleVotingPools"
+        :key="pool.gauge.address"
+        v-model="votes[pool.gauge.address]"
+        :pool="pool"
         :disabled="transactionInProgress"
       ></VoteInput>
 
@@ -230,7 +228,7 @@ watchEffect(() => {
           {{
             t(
               'veBAL.liquidityMining.resubmit.modal.otherPools',
-              hiddenVotingGauges.length
+              hiddenVotingPools.length
             )
           }}
         </div>
@@ -242,7 +240,7 @@ watchEffect(() => {
           {{ t('veBAL.liquidityMining.resubmit.modal.total') }}
         </div>
         <div class="p-4 border-l border-gray-200 dark:border-gray-900">
-          {{ allGaugesTotalAllocation }}%
+          {{ allPoolsTotalAllocation }}%
         </div>
       </div>
 
