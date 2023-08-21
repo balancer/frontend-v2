@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { differenceInDays, format } from 'date-fns';
+import { format } from 'date-fns';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import lock from '@/assets/images/icons/lock.svg';
@@ -152,10 +152,10 @@ const cards = computed(() => {
           color="blue"
           outline
           class="mr-3"
-          @on-click="
+          @click="
             $router.push({
               name: 'add-liquidity',
-              params: { id: lockablePoolId.value, networkSlug },
+              params: { id: lockablePoolId, networkSlug },
               query: { returnRoute: 'vebal' },
             })
           "
@@ -166,7 +166,7 @@ const cards = computed(() => {
           color="blue"
           outline
           :disabled="Number(bptBalance) === 0"
-          @on-click="
+          @click="
             $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
           "
         >
@@ -179,7 +179,7 @@ const cards = computed(() => {
         :disabled="!isWalletReady"
         color="blue"
         outline
-        @on-click="
+        @click="
           $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
         "
       >
