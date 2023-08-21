@@ -339,7 +339,9 @@ const pools: Pools = {
   },
   GaugeMigration: {},
   BoostedApr: [],
-  DisabledJoins: [],
+  DisabledJoins: [
+    '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b',
+  ],
   Issues: {
     [PoolWarning.PoolOwnerVulnWarningGovernance]: [
       '0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f',
