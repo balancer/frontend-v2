@@ -222,7 +222,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     name: t('actions'),
     Cell: 'actionsCell',
     accessor: 'actions',
-    align: 'center',
+    align: 'right',
     id: 'actions',
     hidden: !props.showActions,
     width: 150,

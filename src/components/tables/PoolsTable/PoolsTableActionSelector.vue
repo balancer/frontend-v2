@@ -60,7 +60,7 @@ onClickOutside(clickOutsideTarget, handleClickOutside);
   <div
     v-if="menuItems"
     ref="clickOutsideTarget"
-    class="flex relative justify-end py-4 pr-12"
+    class="flex relative justify-end py-4 pr-8"
   >
     <div
       class="flex relative justify-center items-center w-7 h-7 text-blue-600 hover:bg-blue-50 rounded-md border-2 border-blue-600 transition-all duration-200 text-[8px]"
