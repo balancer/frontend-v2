@@ -54,6 +54,11 @@ const withdrawalEvents = ref(0);
           The general aim when using this tool is to keep unstaking, withdrawing
           and unwrapping until you have nothing left in any of the tables below.
         </p>
+        <BalAlert type="warning" title="Check all networks" block
+          >If you're invested in pools across several networks, select the
+          appropriate network from the selector in the top right of the
+          screen.</BalAlert
+        >
       </div>
     </div>
     <UnstakeTable @unstaked="unstakeEvents++" />
