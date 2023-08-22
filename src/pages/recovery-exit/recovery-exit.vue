@@ -19,6 +19,7 @@ const withdrawalEvents = ref(0);
             href="https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102/1"
             target="_blank"
             rel="noopener noreferrer"
+            class="text-blue-500 underline"
             >here</a
           >. Many of these pools have been disabled to mitigate risk to user
           funds, so they will only support a basic type of exit. You may need to
