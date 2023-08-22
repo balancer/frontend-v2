@@ -10,7 +10,7 @@ const withdrawalEvents = ref(0);
 <template>
   <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
     <div class="pb-4 content-container">
-      <h2>Recovery exit</h2>
+      <h2>Proportional exit</h2>
       <div class="text-primary text-md">
         <div>
           This tool was created to facilitate user exits from pools at risk to
