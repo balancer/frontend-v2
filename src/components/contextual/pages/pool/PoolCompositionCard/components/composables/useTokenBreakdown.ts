@@ -51,9 +51,9 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
     const hasNestedTokens = token?.token?.pool?.tokens;
     const isParentTokenInDeepPool = hasNestedTokens && isDeepPool.value;
 
+    const balanceValue = calculateBalanceValue();
     const fiatValue = calculateFiatValue();
     if (isNumber(fiatValue)) totalFiat += Number(fiatValue);
-    const balanceValue = calculateBalanceValue();
 
     const userFiat = applyUserPoolPercentageTo(fiatValue);
     const userFiatLabel = fiatValue === '' ? '' : formatFiatValue(userFiat);
@@ -99,14 +99,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
 
     function calculateBalanceValue() {
       if (isParentTokenInDeepPool) return '';
-      if (token.priceRate && isDeepPool) {
-        const equivMainTokenBalance = bnum(balance)
-          .times(token.priceRate)
-          .toString();
-
-        return equivMainTokenBalance;
-      }
-      return token.balance;
+      return balance;
     }
 
     function formatBalanceValue(value: string | number) {
