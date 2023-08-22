@@ -34,6 +34,7 @@ const pools: Pools = {
       '0xece571847897fd61e764d455dc15cf1cd9de8d6f000000000000000000000014', // yyAVAX/Boosted Aave v3 WAVAX
       '0x054e7b0c73e1ee5aed6864fa511658fc2b54bcaa000000000000000000000015', // ggAVAX/Boosted Aave v3 WAVAX
       '0x670734d704eb7ef424d75321670f921fbf42e9cf000000000000000000000016', // sAVAX-ankrAVAX
+      '0xb26f0e66317846bd5fe0cbaa1d269f0efeb05c9600000000000000000000001e', // usdc/usdt
     ],
   },
   Investment: {
