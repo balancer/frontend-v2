@@ -132,6 +132,7 @@ const pools: Pools = {
     '0xece571847897fd61e764d455dc15cf1cd9de8d6f000000000000000000000014', // yyAVAX/Boosted Aave v3 WAVAX
     '0x054e7b0c73e1ee5aed6864fa511658fc2b54bcaa000000000000000000000015', // ggAVAX/Boosted Aave v3 WAVAX
     '0x3f1a2c4a3a751f6626bd90ef16e104f0772d4d6b00020000000000000000001b', // btc/bbausd
+    '0x96518f83d66bdc6a5812f01c54f8e022f6796399000200000000000000000020', // btc.b/usd
   ],
   BoostedApr: [],
   DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.AVALANCHE]],
