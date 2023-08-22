@@ -21,6 +21,7 @@ type Props = {
   confirmingLabel: string;
   onConfirmFn?: () => unknown;
   disabled?: boolean;
+  disableNotification?: boolean;
 };
 
 /**
@@ -83,12 +84,13 @@ async function initTx() {
     btnState.value = BtnStates.Confirming;
     emit('confirming', tx);
 
-    addTransaction({
-      id: tx.hash,
-      type: 'tx',
-      action: props.action,
-      summary: props.summary,
-    });
+    if (!props.disableNotification)
+      addTransaction({
+        id: tx.hash,
+        type: 'tx',
+        action: props.action,
+        summary: props.summary,
+      });
 
     await txListener(tx, {
       onTxConfirmed: async (receipt: TransactionReceipt) => {

@@ -33,6 +33,7 @@ type FilterOptions = {
   isExactTokensList?: boolean;
   pageSize?: number;
   first?: number;
+  poolTypes?: string[];
 };
 
 export default function usePoolsQuery(
@@ -142,7 +143,7 @@ export default function usePoolsQuery(
       orderDirection: 'desc',
       where: {
         tokensList: { [tokensListFilterOperation]: tokenListFormatted },
-        poolType: { in: POOLS.IncludedPoolTypes },
+        poolType: { in: filterOptions?.poolTypes || POOLS.IncludedPoolTypes },
         totalShares: { gt: 0.00001 },
         id: { not_in: POOLS.BlockList },
       },

@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {
@@ -636,6 +638,56 @@ const pools: Pools = {
     '0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d': {
       name: 'R/Boosted Savings DAI',
       hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
     },
   },
   Deep: [
@@ -705,6 +757,7 @@ const pools: Pools = {
     '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // Euler Boosted USD/TEMPLE
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // Euler Boosted USD/wstETH
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // Euler Boosted USD/dola
+    ...CSP_ISSUE_POOL_IDS[Network.MAINNET],
   ],
   NewVersionAvailable: {
     '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
@@ -768,6 +821,41 @@ const pools: Pools = {
       newPool:
         '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3',
     },
+    '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594': {
+      newPool:
+        '0x93d199263632a4ef4bb438f1feb99e57b4b5f0bd0000000000000000000005c2',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0': {
+      newPool:
+        '0xe7e2c68d3b13d905bbb636709cf4dfd21076b9d20000000000000000000005ca',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598': {
+      newPool:
+        '0xbe19d87ea6cd5b05bbc34b564291c371dae967470000000000000000000005c4',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505': {
+      newPool:
+        '0xdb02f620a59f1b16146edd0e8dbeb27d94e9c25c0002000000000000000005c5',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x4cbde5c4b4b53ebe4af4adb85404725985406163000000000000000000000595': {
+      newPool:
+        '0x37b18b10ce5635a84834b26095a0ae5639dcb7520000000000000000000005cb',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3': {
+      newPool:
+        '0xd6abbfd427398ea463b4f15f405624bab520db030000000000000000000005c6',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7': {
+      newPool:
+        '0xd5d99b7e9697ba8bb1da48f07ba81900c7572cea0000000000000000000005cc',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {
@@ -814,6 +902,7 @@ const pools: Pools = {
       '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475',
       '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
     ],
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.MAINNET],
   },
 };
 

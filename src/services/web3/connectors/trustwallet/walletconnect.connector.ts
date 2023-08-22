@@ -3,7 +3,7 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { configService } from '@/services/config/config.service';
 import { WalletError } from '@/types';
 import { Connector, ConnectorId } from '../connector';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import useDarkMode from '@/composables/useDarkMode';
 
 const { MAINNET, POLYGON, ARBITRUM, GNOSIS, ZKEVM } = Network;

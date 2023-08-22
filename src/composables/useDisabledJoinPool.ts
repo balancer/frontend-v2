@@ -2,6 +2,7 @@ import {
   createdAfterTimestamp,
   filterTokensInList,
   isFx,
+  isJoinsDisabled,
   isManaged,
   isStableLike,
   isWeighted,
@@ -81,6 +82,7 @@ export function useDisabledJoinPool(pool: Pool) {
     nonVettedTokensAfterTimestamp: nonVettedTokensAfterTimestamp.value,
     nonAllowedWeightedPoolAfterTimestamp:
       nonAllowedWeightedPoolAfterTimestamp.value,
+    hardcoded: isJoinsDisabled(pool.id),
   }));
 
   const shouldDisableJoins = computed(() => {
