@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {},
@@ -294,6 +296,24 @@ const pools: Pools = {
         },
       },
     },
+    '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -340,6 +360,7 @@ const pools: Pools = {
   GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [
+    ...CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
     '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b',
   ],
   Issues: {
@@ -349,6 +370,7 @@ const pools: Pools = {
     [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
     ],
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
   },
 };
 

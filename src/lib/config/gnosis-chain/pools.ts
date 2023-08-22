@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
-import { PoolFeature, Pools } from '@/types/pools';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {},
@@ -121,7 +123,10 @@ const pools: Pools = {
     '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045', // 50bbagGNO-50bbagUSD
   ],
   BoostedApr: [],
-  DisabledJoins: [],
+  DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.GNOSIS]],
+  Issues: {
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.GNOSIS],
+  },
 };
 
 export default pools;

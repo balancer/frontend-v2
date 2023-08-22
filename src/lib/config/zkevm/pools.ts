@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
-import { PoolFeature, Pools, RiskKey } from '@/types/pools';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { PoolFeature, PoolWarning, Pools, RiskKey } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {},
@@ -117,7 +119,7 @@ const pools: Pools = {
   Deprecated: {},
   GaugeMigration: {},
   BoostedApr: [],
-  DisabledJoins: [],
+  DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.ZKEVM]],
   Risks: {
     '0x1d0a8a31cdb04efac3153237526fb15cc65a252000000000000000000000000f': [
       RiskKey.RateProviderBridge,
@@ -134,6 +136,9 @@ const pools: Pools = {
     '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011': [
       RiskKey.RateProviderBridge,
     ],
+  },
+  Issues: {
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ZKEVM],
   },
 };
 

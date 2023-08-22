@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 
 type Props = {

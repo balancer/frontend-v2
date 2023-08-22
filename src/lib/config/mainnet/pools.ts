@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {
@@ -636,6 +638,56 @@ const pools: Pools = {
     '0xbf2ef8bdc2fc0f3203b3a01778e3ec5009aeef3300000000000000000000058d': {
       name: 'R/Boosted Savings DAI',
       hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x9001cbbd96f54a658ff4e6e65ab564ded76a543100000000000000000000050a': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0x02d928e68d8f10c0358566152677db51e1e2dc8c00000000000000000000051e': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x60683b05e9a39e3509d8fdb9c959f23170f8a0fa000000000000000000000489': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x04248aabca09e9a1a3d5129a7ba05b7f17de768400000000000000000000050e': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0xeb567dde03f3da7fe185bdacd5ab495ab220769d000000000000000000000548': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
     },
   },
   Deep: [
@@ -705,6 +757,7 @@ const pools: Pools = {
     '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475', // Euler Boosted USD/TEMPLE
     '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473', // Euler Boosted USD/wstETH
     '0x133d241f225750d2c92948e464a5a80111920331000000000000000000000476', // Euler Boosted USD/dola
+    ...CSP_ISSUE_POOL_IDS[Network.MAINNET],
   ],
   NewVersionAvailable: {
     '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080': {
@@ -814,6 +867,7 @@ const pools: Pools = {
       '0xa718042e5622099e5f0ace4e7122058ab39e1bbe000200000000000000000475',
       '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
     ],
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.MAINNET],
   },
 };
 

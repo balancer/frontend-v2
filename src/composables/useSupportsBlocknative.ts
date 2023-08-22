@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { computed } from 'vue';
 
 import useWeb3 from '@/services/web3/useWeb3';
