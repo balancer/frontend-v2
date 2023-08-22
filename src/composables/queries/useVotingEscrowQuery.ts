@@ -1,7 +1,8 @@
 import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery from './useGraphQuery';
 import useWeb3 from '@/services/web3/useWeb3';
-import config, { Network } from '@/lib/config';
+import config from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 export interface VotingEscrowLock {
   id: string;

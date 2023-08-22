@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
 import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 
 const pools: Pools = {
   IdsMap: {
@@ -402,6 +404,47 @@ const pools: Pools = {
         },
       },
     },
+    '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38': {
+      name: 'Balancer Boosted WETH',
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
+      name: 'frxETH/Boosted Aave WETH',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37': {
+      name: 'Balancer Boosted USD',
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave],
+        },
+      },
+    },
+    '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f': {
+      name: 'Balancer Boosted USD',
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x10b040038f87219d9b42e025e3bd9b8095c87dd9000000000000000000000b11': {
+      name: 'Balancer Boosted Tetu MATIC',
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Tetu],
+        },
+      },
+    },
   },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
@@ -437,6 +480,7 @@ const pools: Pools = {
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
+    ...CSP_ISSUE_POOL_IDS[Network.POLYGON],
   ],
   Deprecated: {
     '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4': {},
@@ -470,6 +514,36 @@ const pools: Pools = {
       newPool:
         '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3',
     },
+    '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2': {
+      newPool:
+        '0x89b753153678bc434c610b7e9182297cada8ff29000000000000000000000c21',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3': {
+      newPool:
+        '0xcd78a20c597e367a4e478a2411ceb790604d7c8f000000000000000000000c22',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc': {
+      newPool:
+        '0xdc31233e09f3bf5bfe5c10da2014677c23b6894c000000000000000000000c23',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8': {
+      newPool:
+        '0xc474b8512664edc9e746ee5e786478aea15887d2000000000000000000000c25',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6': {
+      newPool:
+        '0x8c89fb53d4d83173dd65b7a94569558ce393460f000000000000000000000c26',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11': {
+      newPool:
+        '0x6da7f1c193ab6c4bd16eb14a6305bba8d25737ff000000000000000000000c29 ',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {
@@ -501,6 +575,7 @@ const pools: Pools = {
     [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
       '0xb4670d1389c758e4380c4211bcbc85342688b9c50002000000000000000003d8',
     ],
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.POLYGON],
   },
 };
 

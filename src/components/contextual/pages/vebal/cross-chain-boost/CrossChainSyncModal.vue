@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import SyncSelectNetwork from '@/components/contextual/pages/vebal/cross-chain-boost/SyncSelectNetwork.vue';
 import SyncNetworkAction from '@/components/contextual/pages/vebal/cross-chain-boost/SyncNetworkAction.vue';
 import SyncFinalState from '@/components/contextual/pages/vebal/cross-chain-boost/SyncFinalState.vue';

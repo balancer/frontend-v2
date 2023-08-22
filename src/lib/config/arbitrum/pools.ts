@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {},
@@ -294,6 +296,24 @@ const pools: Pools = {
         },
       },
     },
+    '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
+    '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382': {
+      name: 'Boosted Pool',
+      hasIcon: false,
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [],
+        },
+      },
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
@@ -336,10 +356,31 @@ const pools: Pools = {
         '0xbbf9d705b75f408cfcaee91da32966124d2c6f7d00000000000000000000047e',
       description: 'deprecatedPool.hasNewPool.description',
     },
+    '0xc6eee8cb7643ec2f05f46d569e9ec8ef8b41b389000000000000000000000475': {
+      newPool:
+        '0x423a1323c871abc9d89eb06855bf5347048fc4a5000000000000000000000496',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xbe0f30217be1e981add883848d0773a86d2d2cd4000000000000000000000471': {
+      newPool:
+        '0xade4a71bb62bec25154cfc7e6ff49a513b491e81000000000000000000000497',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x45c4d1376943ab28802b995acffc04903eb5223f000000000000000000000470': {
+      newPool:
+        '0x9791d590788598535278552eecd4b211bfc790cb000000000000000000000498',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xa1ea76c42b2938cfa9abea12357881006c52851300000000000000000000048f': {
+      newPool:
+        '0x3cdf30e36154a66a4478e15ed41659b5bb0738f100000000000000000000049b',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [
+    ...CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
     '0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b',
   ],
   Issues: {
@@ -349,6 +390,7 @@ const pools: Pools = {
     [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
     ],
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
   },
 };
 

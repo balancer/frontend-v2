@@ -4,7 +4,7 @@
  * To run, ensure you have your own .env.development file with the following:
  * VITE_RPC_URL_1=YOUR_MAINNET_RPC_URL
  */
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { getAddress } from '@ethersproject/address';
 import debug from 'debug';
 import fs from 'fs';

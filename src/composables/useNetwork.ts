@@ -1,4 +1,5 @@
-import config, { Network } from '@/lib/config';
+import config from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { configService } from '@/services/config/config.service';
 import { RouteParamsRaw } from 'vue-router';
 import { Config } from '@/lib/config/types';

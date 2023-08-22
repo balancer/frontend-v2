@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { PoolType } from '@/services/pool/types';
 import { GqlChain, GqlPoolMinimalType } from './generated/api-types';
 

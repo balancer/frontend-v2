@@ -11,7 +11,8 @@ import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
 import { useUserPools } from '@/providers/local/user-pools.provider';
 import { isVeBalSupported } from '@/composables/useVeBAL';
 import ProceedToSyncModal from '../contextual/pages/vebal/cross-chain-boost/ProceedToSyncModal.vue';
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import {
   useCrossChainSync,
   veBalSyncSupportedNetworks,
