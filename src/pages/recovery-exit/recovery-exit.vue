@@ -14,10 +14,16 @@ const withdrawalEvents = ref(0);
       <div class="text-primary text-md">
         <div>
           This tool was created to facilitate user exits from pools at risk to
-          the vulnerability described [here]. Many of these pools have been
-          disabled to mitigate risk to user funds, so they will only support a
-          basic type of exit. You may need to withdraw several times if you are
-          a liquidity provider in a pool with nested pool tokens.
+          the vulnerability described
+          <a
+            href="https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102/1"
+            target="_blank"
+            rel="noopener noreferrer"
+            >here</a
+          >. Many of these pools have been disabled to mitigate risk to user
+          funds, so they will only support a basic type of exit. You may need to
+          withdraw several times if you are a liquidity provider in a pool with
+          nested pool tokens.
         </div>
         <ol class="pt-4 steps">
           <li>
