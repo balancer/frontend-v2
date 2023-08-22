@@ -821,6 +821,41 @@ const pools: Pools = {
       newPool:
         '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3',
     },
+    '0x41503c9d499ddbd1dcdf818a1b05e9774203bf46000000000000000000000594': {
+      newPool:
+        '0x93d199263632a4ef4bb438f1feb99e57b4b5f0bd0000000000000000000005c2',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0': {
+      newPool:
+        '0xe7e2c68d3b13d905bbb636709cf4dfd21076b9d20000000000000000000005ca',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xc2b021133d1b0cf07dba696fd5dd89338428225b000000000000000000000598': {
+      newPool:
+        '0xbe19d87ea6cd5b05bbc34b564291c371dae967470000000000000000000005c4',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x639883476960a23b38579acfd7d71561a0f408cf000200000000000000000505': {
+      newPool:
+        '0xdb02f620a59f1b16146edd0e8dbeb27d94e9c25c0002000000000000000005c5',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x4cbde5c4b4b53ebe4af4adb85404725985406163000000000000000000000595': {
+      newPool:
+        '0x37b18b10ce5635a84834b26095a0ae5639dcb7520000000000000000000005cb',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x4c81255cc9ed7062180ea99962fe05ac0d57350b0000000000000000000005a3': {
+      newPool:
+        '0xd6abbfd427398ea463b4f15f405624bab520db030000000000000000000005c6',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xe2d16b0a39f3fbb4389a0e8f1efcbecfb3d1e6e10000000000000000000005a7': {
+      newPool:
+        '0xd5d99b7e9697ba8bb1da48f07ba81900c7572cea0000000000000000000005cc',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {

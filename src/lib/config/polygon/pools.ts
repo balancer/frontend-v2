@@ -514,6 +514,36 @@ const pools: Pools = {
       newPool:
         '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3',
     },
+    '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2': {
+      newPool:
+        '0x89b753153678bc434c610b7e9182297cada8ff29000000000000000000000c21',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3': {
+      newPool:
+        '0xcd78a20c597e367a4e478a2411ceb790604d7c8f000000000000000000000c22',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc': {
+      newPool:
+        '0xdc31233e09f3bf5bfe5c10da2014677c23b6894c000000000000000000000c23',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8': {
+      newPool:
+        '0xc474b8512664edc9e746ee5e786478aea15887d2000000000000000000000c25',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6': {
+      newPool:
+        '0x8c89fb53d4d83173dd65b7a94569558ce393460f000000000000000000000c26',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11': {
+      newPool:
+        '0x6da7f1c193ab6c4bd16eb14a6305bba8d25737ff000000000000000000000c29 ',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {

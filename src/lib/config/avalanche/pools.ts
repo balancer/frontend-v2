@@ -130,7 +130,33 @@ const pools: Pools = {
   ],
   BoostedApr: [],
   DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.AVALANCHE]],
-  Deprecated: {},
+  Deprecated: {
+    '0xa154009870e9b6431305f19b09f9cfd7284d4e7a000000000000000000000013': {
+      newPool:
+        '0xfd2620c9cfcec7d152467633b3b0ca338d3d78cc00000000000000000000001c',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x054e7b0c73e1ee5aed6864fa511658fc2b54bcaa000000000000000000000015': {
+      newPool:
+        '0xc13546b97b9b1b15372368dc06529d7191081f5b00000000000000000000001d',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xa1d14d922a575232066520eda11e27760946c991000000000000000000000012': {
+      newPool:
+        '0xb26f0e66317846bd5fe0cbaa1d269f0efeb05c9600000000000000000000001e',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xece571847897fd61e764d455dc15cf1cd9de8d6f000000000000000000000014': {
+      newPool:
+        '0x9fa6ab3d78984a69e712730a2227f20bcc8b5ad900000000000000000000001f',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x3f1a2c4a3a751f6626bd90ef16e104f0772d4d6b00020000000000000000001b': {
+      newPool:
+        '0x96518f83d66bdc6a5812f01c54f8e022f6796399000200000000000000000020',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+  },
   GaugeMigration: {},
   BrandedRedirect: {
     FX: 'xave',
