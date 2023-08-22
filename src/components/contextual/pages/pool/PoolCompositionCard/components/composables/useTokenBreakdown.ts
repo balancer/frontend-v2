@@ -51,7 +51,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
     const hasNestedTokens = token?.token?.pool?.tokens;
     const isParentTokenInDeepPool = hasNestedTokens && isDeepPool.value;
 
-    const virtualBalance = calculateBalanceValue();
+    const balanceValue = calculateBalanceValue();
     const fiatValue = calculateFiatValue();
     if (isNumber(fiatValue)) totalFiat += Number(fiatValue);
 
@@ -59,9 +59,9 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
     const userFiatLabel = fiatValue === '' ? '' : formatFiatValue(userFiat);
 
     const userBalanceLabel =
-      virtualBalance === ''
+      balanceValue === ''
         ? ''
-        : formatBalanceValue(applyUserPoolPercentageTo(virtualBalance));
+        : formatBalanceValue(applyUserPoolPercentageTo(balanceValue));
 
     const tokenWeightLabel = !token?.weight
       ? ''
@@ -99,14 +99,7 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
 
     function calculateBalanceValue() {
       if (isParentTokenInDeepPool) return '';
-      if (token.priceRate && isDeepPool) {
-        const equivMainTokenBalance = bnum(balance)
-          .times(token.priceRate)
-          .toString();
-
-        return equivMainTokenBalance;
-      }
-      return token.balance;
+      return balance;
     }
 
     function formatBalanceValue(value: string | number) {
@@ -117,13 +110,11 @@ export function useTokenBreakdown(rootPool: Ref<Pool>) {
     function calculateFiatValue() {
       if (isParentTokenInDeepPool) return '';
 
-      let value = toFiat(virtualBalance, token.address);
+      let value = toFiat(balance, token.address);
 
       if (value === '0' && token.token?.latestUSDPrice) {
         // Attempt to use latest USD price from subgraph.
-        value = bnum(virtualBalance)
-          .times(token.token.latestUSDPrice)
-          .toString();
+        value = bnum(balance).times(token.token.latestUSDPrice).toString();
       }
       return value;
     }
