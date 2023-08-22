@@ -19,6 +19,7 @@ interface Props {
   disableInjection?: boolean;
   hideTokenLists?: boolean;
   ignoreBalances?: boolean;
+  notFoundContent?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -305,7 +306,7 @@ watchEffect(() => {
         <div
           v-else
           class="p-12 h-96 text-center text-secondary"
-          v-text="$t('errorNoTokens')"
+          v-html="notFoundContent ? notFoundContent : $t('errorNoTokens')"
         />
       </div>
     </template>

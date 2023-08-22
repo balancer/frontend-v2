@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { orderedTokenURIs } from '@/composables/useVotingGauges';
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
+import { orderedTokenURIs } from '@/composables/useVotingPools';
 
 /**
  * TYPES
  */
 type Props = {
-  gauge: VotingGaugeWithVotes;
+  pool: VotingPool;
   modelValue?: string;
 };
 /**
@@ -37,7 +37,7 @@ const emit = defineEmits<{
       <template #prepend>
         <div class="flex gap-3">
           <BalAssetSet
-            :logoURIs="orderedTokenURIs(gauge)"
+            :logoURIs="orderedTokenURIs(pool)"
             class="flex-shrink-0"
             :width="100"
             :size="32"
@@ -45,7 +45,7 @@ const emit = defineEmits<{
           <div class="flex flex-col">
             <div class="flex flex-row flex-wrap">
               <span
-                v-for="(token, i) in gauge.pool.tokens"
+                v-for="(token, i) in pool.tokens"
                 :key="token.address"
                 class="flex-shrink-0"
               >
@@ -55,13 +55,13 @@ const emit = defineEmits<{
                     : '100%'
                 }}
                 {{ token.symbol
-                }}<template v-if="i !== gauge.pool.tokens.length - 1"
+                }}<template v-if="i !== pool.tokens.length - 1"
                   >,&nbsp;</template
                 >
               </span>
             </div>
             <div class="text-sm">
-              {{ gauge.pool.symbol }}
+              {{ pool.symbol }}
             </div>
           </div>
         </div>

@@ -25,12 +25,14 @@ import { useTokens } from '@/providers/tokens.provider';
 import { lsGet, selectByAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { StepState } from '@/types';
+import IntroModal from '@/components/contextual/pages/pool/create/IntroModal.vue';
 
 /**
  * STATE
  */
 const isUnknownTokenModalVisible = ref(false);
 const isLoading = ref(true);
+const showIntroModal = ref(true);
 
 /**
  * COMPOSABLES
@@ -80,6 +82,7 @@ onBeforeMount(async () => {
     if (previouslySavedState.createPoolTxHash) {
       await retrievePoolAddress(previouslySavedState.createPoolTxHash);
     }
+    showIntroModal.value = false;
   } else if (previouslySavedState === null) {
     resetPoolCreationState();
   }
@@ -285,6 +288,10 @@ watch(
       :isVisible="isUnknownTokenModalVisible"
       :unknownTokens="unknownTokens"
       @close="handleUnknownModalClose"
+    />
+    <IntroModal
+      v-if="showIntroModal && !hasRestoredFromSavedState"
+      @close="showIntroModal = false"
     />
   </div>
 </template>

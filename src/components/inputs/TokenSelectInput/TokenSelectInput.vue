@@ -17,6 +17,7 @@ export type TokenSelectProps = {
   options?: string[];
   subsetTokens?: string[];
   ignoreBalances?: boolean;
+  notFoundContent?: string;
 };
 
 /**
@@ -166,6 +167,7 @@ function toggleModal(): void {
         :disableInjection="disableInjection"
         :hideTokenLists="hideTokenLists"
         :ignoreBalances="ignoreBalances"
+        :notFoundContent="notFoundContent"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
       />

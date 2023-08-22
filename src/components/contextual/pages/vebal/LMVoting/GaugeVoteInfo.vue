@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
 import useNumbers from '@/composables/useNumbers';
 import { bnum, scale } from '@/lib/utils';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 
 /**
  * TYPES
  */
 type Props = {
-  gauge: VotingGaugeWithVotes;
+  pool: VotingPool;
 };
 
 /**
@@ -27,15 +25,15 @@ const { fNum } = useNumbers();
  */
 
 const votesThisPeriod = computed<string>(() =>
-  formatVotesAsPercent(props.gauge.votes)
+  formatVotesAsPercent(props.pool.votes)
 );
 
 const votesNextPeriod = computed<string>(() =>
-  formatVotesAsPercent(props.gauge.votesNextPeriod)
+  formatVotesAsPercent(props.pool.votesNextPeriod)
 );
 
 const voteDifference = computed<number>(() => {
-  return Number(props.gauge.votesNextPeriod) - Number(props.gauge.votes);
+  return Number(props.pool.votesNextPeriod) - Number(props.pool.votes);
 });
 
 const voteDifferenceText = computed<string>(() => {
