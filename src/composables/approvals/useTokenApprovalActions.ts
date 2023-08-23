@@ -66,6 +66,8 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.approveForSwapping', [symbol]);
       case ApprovalAction.Unapprove:
         return t('transactionSummary.unapprove', [symbol]);
+      case ApprovalAction.Unwrapping:
+        return t('transactionSummary.approveForUnwrapping', [symbol]);
       default:
         return t('transactionSummary.approveForInvesting', [symbol]);
     }
@@ -81,6 +83,8 @@ export default function useTokenApprovalActions() {
         return t('transactionSummary.tooltips.approveForSwapping', [symbol]);
       case ApprovalAction.Unapprove:
         return t('transactionSummary.tooltips.unapprove', [symbol]);
+      case ApprovalAction.Unwrapping:
+        return t('transactionSummary.tooltips.approveForUnwrapping', [symbol]);
       default:
         return t('transactionSummary.tooltips.approveForInvesting', [symbol]);
     }

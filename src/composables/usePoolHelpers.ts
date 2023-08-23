@@ -2,7 +2,7 @@ import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
 import { APR_THRESHOLD } from '@/constants/pools';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 import {
   bnum,
@@ -17,9 +17,16 @@ import {
   DeprecatedDetails,
   NewVersionAvailableDetails,
   PoolFeature,
+  PoolWarning,
 } from '@/types/pools';
 
-import { AnyPool, Pool, PoolToken, SubPool } from '@/services/pool/types';
+import {
+  AnyPool,
+  Pool,
+  PoolToken,
+  SubPool,
+  allLinearTypes,
+} from '@/services/pool/types';
 import { hasBalEmissions } from './useAPR';
 import { cloneDeep, uniq, uniqWith } from 'lodash';
 import {
@@ -32,6 +39,7 @@ import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { dateToUnixTimestamp } from './useTime';
 import { poolMetadata } from '@/lib/config/metadata';
 import { Protocol } from './useProtocols';
+import { usePoolWarning } from './usePoolWarning';
 
 const POOLS = configService.network.pools;
 
@@ -47,11 +55,7 @@ export function hasIcon(poolId: string): boolean {
 }
 
 export function isLinear(poolType: PoolType): boolean {
-  return (
-    poolType === PoolType.AaveLinear ||
-    poolType === PoolType.ERC4626Linear ||
-    poolType === PoolType.EulerLinear
-  );
+  return allLinearTypes.includes(poolType);
 }
 
 export function isStable(poolType: PoolType): boolean {
@@ -240,7 +244,7 @@ export function orderedPoolTokens(
     const leafs = tokenTreeLeafs(tokens);
     const flatTokens = flatTokenTree(pool);
     return flatTokens.filter(token => includesAddress(leafs, token.address));
-  } else if (isComposableStable(pool.poolType)) {
+  } else if (isComposableStable(pool.poolType) || isLinear(pool.poolType)) {
     return tokens.filter(token => !isSameAddress(token.address, pool.address));
   } else if (isStableLike(pool.poolType)) return tokens;
 
@@ -588,6 +592,32 @@ export function fiatValueOf(pool: Pool, shares: string): string {
  */
 export function isJoinsDisabled(id: string): boolean {
   return POOLS.DisabledJoins.includes(id.toLowerCase());
+}
+
+/**
+ * Should recovery exits be the only option for this pool?
+ *
+ * @param {Pool} pool - The pool to check
+ */
+export function isRecoveryExitsOnly(pool: Pool): boolean {
+  return (
+    (!!pool.isInRecoveryMode && !!pool.isPaused) ||
+    (usePoolWarning(toRef(pool, 'id')).isAffectedBy(
+      PoolWarning.CspPoolVulnWarning
+    ) &&
+      !!pool.isInRecoveryMode)
+  );
+}
+
+/**
+ * Should hide the display of APRs for this pool.
+ */
+export function shouldHideAprs(poolId: string): boolean {
+  if (!poolId) return false;
+
+  return usePoolWarning(ref(poolId)).isAffectedBy(
+    PoolWarning.CspPoolVulnWarning
+  );
 }
 
 /**

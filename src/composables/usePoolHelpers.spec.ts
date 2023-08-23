@@ -3,7 +3,7 @@ import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { Pool, PoolToken, PoolType, SubPool } from '@/services/pool/types';
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { mountComposableWithDefaultTokensProvider as mountComposable } from '@tests/mount-helpers';
 
 import {

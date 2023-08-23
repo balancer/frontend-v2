@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { PoolToken, PoolType } from '@/services/pool/types';
 
 // voting-gauges.json is inside src

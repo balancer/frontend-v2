@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import BlocknativeSdk from 'bnc-sdk';
 import { computed, inject } from 'vue';
 
