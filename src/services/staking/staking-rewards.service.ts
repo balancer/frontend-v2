@@ -10,7 +10,7 @@ import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
 import { UserBoosts } from '@/composables/queries/useUserBoostsQuery';
 import { networkId } from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 export class StakingRewardsService {
   async getWorkingSupplyForGauges(gaugeAddresses: string[]) {

@@ -10,7 +10,7 @@ import { getConnectorLogo } from '@/services/web3/wallet-logos';
 import { getConnectorName } from '@/services/web3/wallet-names';
 import { useUserSettings } from '@/providers/user-settings.provider';
 import { isEIP1559SupportedNetwork } from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 // COMPOSABLES
 const { darkMode, setDarkMode } = useDarkMode();

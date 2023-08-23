@@ -4,7 +4,11 @@ import { useI18n } from 'vue-i18n';
 
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isLBP, totalAprLabel } from '@/composables/usePoolHelpers';
+import {
+  isLBP,
+  shouldHideAprs,
+  totalAprLabel,
+} from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
@@ -94,7 +98,8 @@ const stats = computed(() => {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.poolApr?.swapFees || '0') > APR_THRESHOLD
+        Number(props.poolApr?.swapFees || '0') > APR_THRESHOLD ||
+        shouldHideAprs(props.pool?.id || '')
           ? '-'
           : aprLabel.value,
       loading: props.loadingApr,
@@ -111,7 +116,9 @@ const stats = computed(() => {
       <BalCard v-else>
         <div class="flex mb-2 text-sm font-medium text-secondary">
           <span>{{ stat.label }}</span>
-          <template v-if="stat.id === 'apr' && poolApr">
+          <template
+            v-if="stat.id === 'apr' && poolApr && !shouldHideAprs(pool.id)"
+          >
             <BalTooltip
               v-if="isLBP(pool.poolType)"
               width="36"

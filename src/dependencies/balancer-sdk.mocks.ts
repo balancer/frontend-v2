@@ -219,6 +219,8 @@ export function generateBalancerSdkMock() {
     })
   );
 
+  balancerMock.pools.buildRecoveryExit.mockResolvedValue(defaultRecoveryExit);
+
   balancerMock.swaps.findRouteGivenIn.mockResolvedValue(defaultSwapInfo);
   balancerMock.swaps.buildSwap.mockImplementation(({ deadline }) => {
     defaultSwapAttributes.attributes.deadline = deadline;

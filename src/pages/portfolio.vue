@@ -6,6 +6,7 @@ import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import { useLock } from '@/composables/useLock';
 import { providerUserPools } from '@/providers/local/user-pools.provider';
 import { provideUserStaking } from '@/providers/local/user-staking.provider';
+import UserInvestedInAffectedPoolAlert from '@/pages/recovery-exit/UserInvestedInAffectedPoolAlert.vue';
 
 /**
  * PROVIDERS
@@ -24,6 +25,7 @@ const { lockPool, lock } = useLock();
     <PortfolioPageHero />
     <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
       <BalStack vertical>
+        <UserInvestedInAffectedPoolAlert />
         <div class="px-4 xl:px-0">
           <BalStack horizontal justify="between" align="center">
             <h3>{{ $t('myLiquidityInBalancerPools') }}</h3>
