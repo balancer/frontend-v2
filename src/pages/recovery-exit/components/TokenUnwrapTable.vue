@@ -32,6 +32,10 @@ import useRelayerApproval, {
 
 const tokenService = new TokenService();
 
+const TOKENS_TO_EXCLUDE = [
+  '0xa0d3707c569ff8c87fa923d3823ec5d81c98be78', // iETHv2 (Speak to Rab for context)
+];
+
 /**
  * TYPES
  */
@@ -131,7 +135,9 @@ const tokensQuery = useQuery(
   ],
   async () =>
     tokenService.metadata.get(
-      allWrappedTokensWithType.value.map(item => item.wrapped),
+      allWrappedTokensWithType.value
+        .map(item => item.wrapped)
+        .filter(address => !TOKENS_TO_EXCLUDE.includes(address.toLowerCase())),
       balancerTokenLists.value
     ),
   { enabled: enableTokenQuery }
