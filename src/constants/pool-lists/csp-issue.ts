@@ -13,6 +13,8 @@ export const NO_RECOVERY_EXIT_POOL_IDS: Record<Network, string[]> = {
     '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b',
     '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a',
     '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c',
+    // Weighted 80 XAV / 20 bb-a-USD v1 pool doesn't support recovery exits.
+    '0x8a6b25e33b12d1bb6929a8793961076bd1f9d3eb0002000000000000000003e8',
   ],
   [Network.POLYGON]: [],
   [Network.ARBITRUM]: [],
