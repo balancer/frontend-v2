@@ -8,6 +8,7 @@ import useWithdrawPageTabs from '@/composables/pools/useWithdrawPageTabs';
 import WithdrawPageTabs from './WithdrawPageTabs.vue';
 import { provideExitPool } from '@/providers/local/exit-pool.provider';
 import { Pool } from '@/services/pool/types';
+import { isRecoveryExitsOnly } from '@/composables/usePoolHelpers';
 
 type Props = {
   pool: Pool;
@@ -45,7 +46,7 @@ onMounted(() => resetTabs());
           <h4>{{ $t('withdrawFromPool') }}</h4>
           <SwapSettingsPopover :context="SwapSettingsContext.invest" />
         </div>
-        <WithdrawPageTabs v-if="!(pool.isInRecoveryMode && pool.isPaused)" />
+        <WithdrawPageTabs v-if="!isRecoveryExitsOnly(pool)" />
       </div>
     </template>
     <WithdrawForm :pool="pool" />

@@ -4,19 +4,17 @@ import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 
 import GaugesTable from './GaugesTable.vue';
 import { renderComponent } from '@tests/renderComponent';
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
+import {
+  GqlChain,
+  GqlPoolMinimalType,
+} from '@/services/api/graphql/generated/api-types';
+import { Network } from '@/lib/config/types';
+import { PoolType } from '@/services/pool/types';
+
 GaugesTable.components = {
   BalAssetSet,
 };
-
-vi.mock('@/composables/queries/useExpiredGaugesQuery', () => {
-  return {
-    default: () => ({
-      data: {
-        value: [],
-      },
-    }),
-  };
-});
 
 vi.mock('@/composables/queries/useGraphQuery', () => {
   return {
@@ -54,7 +52,7 @@ vi.mock('@/composables/queries/useVeBalLockInfoQuery', () => {
   };
 });
 
-vi.mock('@/composables/queries/useGaugeVotesQuery');
+vi.mock('@/composables/queries/useVotingPoolsQuery');
 // Global settings for component render.
 const global = {
   stubs: {
@@ -67,34 +65,33 @@ vi.mock('@/providers/tokens.provider');
 
 const gaugeId = '0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac';
 
-const gauge = {
-  address: gaugeId,
-  network: 1,
-  pool: {
-    id: '0x1542b8783e5e884b6fe7422dd2f71a42c5edb86d0000000000000000000002f3',
-    address: '0x06Df3b2bbB68adc8B0e302443692037ED9f91b42',
-    poolType: 'Stable',
-    symbol: 'staBAL2',
-    tokens: [
-      {
-        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        weight: 'null',
-        symbol: 'USDC',
-        token: { pool: null },
-      },
-      {
-        address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-        weight: 'null',
-        symbol: 'USDT',
-        token: { pool: null },
-      },
-    ],
-  },
-  tokenLogoURIs: {
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48':
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7':
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
+const pool: VotingPool = {
+  chain: GqlChain.Mainnet,
+  network: Network.MAINNET,
+  id: '0x1542b8783e5e884b6fe7422dd2f71a42c5edb86d0000000000000000000002f3',
+  address: '0x06Df3b2bbB68adc8B0e302443692037ED9f91b42',
+  type: GqlPoolMinimalType.Stable,
+  poolType: PoolType.Stable,
+  symbol: 'staBAL2',
+  tokens: [
+    {
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      weight: 'null',
+      symbol: 'USDC',
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+    },
+    {
+      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      weight: 'null',
+      symbol: 'USDT',
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
+    },
+  ],
+  gauge: {
+    address: gaugeId,
+    isKilled: false,
   },
   votes: '8212341531532800',
   votesNextPeriod: '6934407282299320',
@@ -103,7 +100,7 @@ const gauge = {
 };
 
 const expiredGauges = [gaugeId];
-const gauges = [gauge];
+const votingPools: VotingPool[] = [pool];
 
 const queryExpiredLabel = () => screen.queryByText(/Expired/i);
 const queryVoteBtn = () => screen.queryByRole('button', { name: /Vote/i });
@@ -115,7 +112,7 @@ describe('GaugesTable', () => {
     renderComponent(GaugesTable, {
       global,
       props: {
-        data: gauges,
+        data: votingPools,
         renderedRowsIdx: 0,
       },
     });
@@ -137,7 +134,7 @@ describe('GaugesTable', () => {
       global,
       props: {
         expiredGauges,
-        data: gauges,
+        data: votingPools,
         renderedRowsIdx: 0,
       },
     });
@@ -156,7 +153,7 @@ describe('GaugesTable', () => {
       global,
       props: {
         expiredGauges,
-        data: [{ ...gauge, userVotes: '1' }],
+        data: [{ ...pool, userVotes: '1' }],
         renderedRowsIdx: 0,
       },
     });

@@ -2,6 +2,7 @@ import {
   createdAfterTimestamp,
   filterTokensInList,
   isFx,
+  isJoinsDisabled,
   isManaged,
   isStableLike,
   isWeighted,
@@ -47,7 +48,11 @@ export function useDisabledJoinPool(pool: Pool) {
   });
 
   const nonVettedTokensAfterTimestamp = computed(() => {
-    return createdAfterTimestamp(pool) && notVettedTokens.value.length > 0;
+    return (
+      !isTestnet.value &&
+      createdAfterTimestamp(pool) &&
+      notVettedTokens.value.length > 0
+    );
   });
 
   const nonAllowedWeightedPoolAfterTimestamp = computed(() => {
@@ -77,6 +82,7 @@ export function useDisabledJoinPool(pool: Pool) {
     nonVettedTokensAfterTimestamp: nonVettedTokensAfterTimestamp.value,
     nonAllowedWeightedPoolAfterTimestamp:
       nonAllowedWeightedPoolAfterTimestamp.value,
+    hardcoded: isJoinsDisabled(pool.id),
   }));
 
   const shouldDisableJoins = computed(() => {

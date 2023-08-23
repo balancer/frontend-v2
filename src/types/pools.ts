@@ -98,6 +98,8 @@ export type NamedPools = {
     maiBbaUsd: string;
   };
   veBAL: string;
+  veLIT: string;
+  veUSH: string;
 };
 
 export type DeprecatedDetails = {
@@ -180,4 +182,5 @@ export enum PoolWarning {
   RenBTCWarning = 'renBTCWarning',
   EulerBoostedWarning = 'eulerBoostedWarning',
   EulerRecoveryModeWarning = 'eulerRecoveryModeWarning',
+  CspPoolVulnWarning = 'cspPoolVulnWarning',
 }

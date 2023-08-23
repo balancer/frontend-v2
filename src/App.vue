@@ -25,6 +25,8 @@ import useAlerts, {
   AlertPriority,
   AlertType,
 } from './composables/useAlerts';
+import { useI18n } from 'vue-i18n';
+import useNetwork from './composables/useNetwork';
 
 // Dynamic import of layout components:
 // it prevents the initial bundle from including all the layouts (and their unique dependencies)
@@ -75,15 +77,21 @@ const { sidebarOpen } = useSidebar();
 const { addAlert } = useAlerts();
 const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
   useThirdPartyServices();
+const { t } = useI18n();
+const router = useRouter();
+const { networkSlug } = useNetwork();
 
 // OPTIONAL FEATURE ALERTS are enabled by featureAlertEnabled toggle
 const featureAlert: Alert = {
-  id: 'feature-alert',
-  priority: AlertPriority.LOW,
-  label: '', // Add the new feature alert text here and set featureAlertEnabled to true to activate it
-  type: AlertType.FEATURE,
+  id: 'csp-alert',
+  priority: AlertPriority.HIGH,
+  label: t('poolWarnings.cspPoolVulnWarning.generalTitle'), // Add the new feature alert text here and set featureAlertEnabled to true to activate it
+  type: AlertType.ERROR,
   rememberClose: false,
-  actionOnClick: false,
+  actionLabel: 'Recovery exit',
+  action: () => {
+    router.push({ name: 'recovery-exit', params: { networkSlug } });
+  },
 };
 const featureAlertEnabled = false;
 if (featureAlertEnabled) addAlert(featureAlert);

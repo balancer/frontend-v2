@@ -3,7 +3,7 @@ import {
   sendTransactionMock,
 } from '@/dependencies/contract.concern.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { aVotingEscrowLock } from '@/services/balancer/gauges/__mocks__/gauge-builders';
 import {
   defaultMainnetVotingEscrowLock,
