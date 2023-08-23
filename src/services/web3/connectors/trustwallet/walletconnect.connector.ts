@@ -13,15 +13,8 @@ export class WalletConnectConnector extends Connector {
   async connect() {
     const provider = await EthereumProvider.init({
       projectId: 'ee9c0c7e1b8b86ebdfb8fd93bb116ca8',
-      optionalChains: [
-        MAINNET,
-        AVALANCHE,
-        ARBITRUM,
-        BASE,
-        GNOSIS,
-        POLYGON,
-        ZKEVM,
-      ],
+      chains: [MAINNET],
+      optionalChains: [AVALANCHE, ARBITRUM, BASE, GNOSIS, POLYGON, ZKEVM],
       rpcMap: {
         [MAINNET]: configService.getNetworkRpc(MAINNET),
         [ARBITRUM]: configService.getNetworkRpc(ARBITRUM),
