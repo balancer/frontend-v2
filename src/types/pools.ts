@@ -161,4 +161,5 @@ export enum PoolWarning {
   RenBTCWarning = 'renBTCWarning',
   EulerBoostedWarning = 'eulerBoostedWarning',
   EulerRecoveryModeWarning = 'eulerRecoveryModeWarning',
+  CspPoolVulnWarning = 'cspPoolVulnWarning',
 }

@@ -13,7 +13,7 @@ import { walletService as walletServiceInstance } from '@/services/web3/wallet.s
 import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 import veBalProxyABIL2 from '@/lib/abi/veDelegationProxyL2.json';
 import { networkId } from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 export class VeBALProxy {
   instance: EthersContract;

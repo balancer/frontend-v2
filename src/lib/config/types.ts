@@ -1,4 +1,3 @@
-import { Network } from '@/lib/config';
 import { Pools } from '@/types/pools';
 import { TokenListURLMap } from '@/types/TokenList';
 
@@ -67,6 +66,22 @@ export interface Keys {
   alchemy?: string;
   graph?: string;
   balancerApi?: string;
+}
+
+// We don't import Network from sdk to avoid extra bundle size when loading app (while the SDK is not tree-shakable)
+export enum Network {
+  MAINNET = 1,
+  GOERLI = 5,
+  GÖRLI = 5,
+  OPTIMISM = 10,
+  GNOSIS = 100,
+  POLYGON = 137,
+  FANTOM = 250,
+  ZKEVM = 1101,
+  BASE = 8453,
+  ARBITRUM = 42161,
+  AVALANCHE = 43114,
+  SEPOLIA = 11155111,
 }
 
 export interface Config {

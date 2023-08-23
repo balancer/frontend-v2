@@ -7,6 +7,7 @@ import { TransactionAction } from '@/composables/useTransactions';
 import { UseQueryReturnType } from '@tanstack/vue-query';
 import { WalletError, WalletErrorMetadata } from '@/types';
 import { configService } from '@/services/config/config.service';
+import { getNetworkSlug, networkId } from '@/composables/useNetwork';
 
 interface Params {
   error: Error | unknown;
@@ -115,12 +116,10 @@ function getTags(
     action,
   };
 
+  tags.appNetwork = getNetworkSlug(networkId.value);
+
   if (balError) {
     tags.balError = balError;
-  }
-
-  if (metadata?.chainId) {
-    tags.chainId = `${metadata.chainId}`;
   }
 
   if (metadata.action) {
