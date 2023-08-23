@@ -79,6 +79,8 @@ export type NamedPools = {
     maiBbaUsd: string;
   };
   veBAL: string;
+  veLIT: string;
+  veUSH: string;
 };
 
 export type DeprecatedDetails = {
