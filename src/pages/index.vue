@@ -12,11 +12,10 @@ import usePools from '@/composables/pools/usePools';
 import { lsGet, lsSet } from '@/lib/utils';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { useIntersectionObserver } from '@vueuse/core';
-import { boostedPoolIds } from '@/lib/config/metadata';
 import { PoolType } from '@/services/pool/types';
 import PoolFeatureSelect from '@/components/inputs/PoolFeatureSelect.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import { PoolFeatureFilter } from '@/types/pools';
+import { PoolAttributeFilter, PoolFeatureFilter } from '@/types/pools';
 import UserInvestedInAffectedPoolAlert from '@/pages/recovery-exit/UserInvestedInAffectedPoolAlert.vue';
 
 const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
@@ -38,6 +37,7 @@ const sortField = ref('totalLiquidity');
 const poolFeatureFilter = ref<PoolFeatureFilter>();
 const filterPoolIds = ref<string[]>([]);
 const filterPoolTypes = ref<PoolType[]>([]);
+const filterPoolAttributes = ref<PoolAttributeFilter[]>([]);
 
 /**
  * COMPOSABLES
@@ -54,6 +54,7 @@ const { pools, isLoading, isFetchingNextPage, loadMorePools } = usePools({
   sortField,
   poolIds: filterPoolIds,
   poolTypes: filterPoolTypes,
+  poolAttributes: filterPoolAttributes,
 });
 
 const { upToMediumBreakpoint } = useBreakpoints();
@@ -75,9 +76,6 @@ function onColumnSort(columnId: string) {
 
 function updatePoolFilters(feature: PoolFeatureFilter | undefined) {
   switch (feature) {
-    case PoolFeatureFilter.Boosted:
-      filterPoolIds.value = boostedPoolIds();
-      break;
     case PoolFeatureFilter.Weighted:
       filterPoolIds.value = [];
       filterPoolTypes.value = [PoolType.Weighted];
@@ -108,6 +106,8 @@ function updatePoolFilters(feature: PoolFeatureFilter | undefined) {
 watch(poolFeatureFilter, newPoolFeatureFilter => {
   updatePoolFilters(newPoolFeatureFilter);
 });
+
+watch(filterPoolAttributes, newVal => console.log(newVal));
 </script>
 
 <template>
@@ -144,7 +144,10 @@ watch(poolFeatureFilter, newPoolFeatureFilter => {
                   @add="addSelectedToken"
                   @remove="removeSelectedToken"
                 />
-                <PoolFeatureSelect v-model="poolFeatureFilter" />
+                <PoolFeatureSelect
+                  v-model:selectedPoolType="poolFeatureFilter"
+                  v-model:selectedAttributes="filterPoolAttributes"
+                />
               </BalHStack>
               <BalHStack v-if="selectedTokens.length" spacing="sm">
                 <BalChip

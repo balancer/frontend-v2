@@ -6,13 +6,14 @@ import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { useTokens } from '@/providers/tokens.provider';
 import { Pool, PoolType } from '@/services/pool/types';
 import { tokenTreeLeafs } from '../usePoolHelpers';
-import { PoolFilterOptions } from '@/types/pools';
+import { PoolAttributeFilter, PoolFilterOptions } from '@/types/pools';
 
 type Props = {
   filterTokens?: Ref<string[]>;
   sortField?: Ref<string>;
   poolIds?: Ref<string[]>;
   poolTypes?: Ref<PoolType[]>;
+  poolAttributes?: Ref<PoolAttributeFilter[]>;
 };
 
 export default function usePools({
@@ -20,12 +21,14 @@ export default function usePools({
   sortField = ref('totalLiquidity'),
   poolIds = ref([]),
   poolTypes = ref([]),
+  poolAttributes = ref([]),
 }: Props) {
   const filterOptions: PoolFilterOptions = computed(() => ({
     tokens: filterTokens.value,
     sortField: sortField.value,
     poolIds: poolIds.value,
     poolTypes: poolTypes.value,
+    poolAttributes: poolAttributes.value,
   }));
 
   /**

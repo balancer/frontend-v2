@@ -7,7 +7,11 @@ import { Pool } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
-import { GraphQLArgs, PoolsRepositoryFetchOptions } from '@balancer-labs/sdk';
+import {
+  GraphQLArgs,
+  PoolsRepositoryFetchOptions,
+  PoolType,
+} from '@balancer-labs/sdk';
 import { getPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
@@ -17,7 +21,8 @@ import { balancerAPIService } from '@/services/balancer/api/balancer-api.service
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
 import { bnum } from '@/lib/utils';
-import { PoolFilterOptions } from '@/types/pools';
+import { PoolAttributeFilter, PoolFilterOptions } from '@/types/pools';
+import { weeksAgoInSecs } from '../useTime';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -102,9 +107,11 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
   }
 
   function getQueryArgs(options: PoolsRepositoryFetchOptions): GraphQLArgs {
-    const { tokens, poolIds, poolTypes, sortField } = filterOptions.value;
+    const { tokens, poolIds, poolTypes, sortField, poolAttributes } =
+      filterOptions.value;
     const hasPoolIdFilters = !!poolIds?.length && poolIds?.length > 0;
     const hasPoolTypeFilters = !!poolTypes?.length;
+    const hasPoolAttributeFilters = !!poolAttributes?.length;
 
     const tokensListFilterOperation = filterOptions.value.useExactTokens
       ? 'eq'
@@ -145,19 +152,37 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
       queryArgs.skip = options.skip;
     }
 
-    // console.log('queryArgs', queryArgs);
+    if (
+      queryArgs.where &&
+      hasPoolAttributeFilters &&
+      poolAttributes.includes(PoolAttributeFilter.New)
+    ) {
+      queryArgs.where.createTime = { gt: weeksAgoInSecs(2) };
+    }
+
+    console.log('queryArgs', queryArgs);
 
     return queryArgs;
   }
 
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
-    // const { tokens, poolIds, poolTypes } = filterOptions.value;
-    // const hasTokenFilters = !!tokens?.length;
-    // const hasPoolIdFilters = !!poolIds?.length;
-    // const hasPoolTypeFilters = !!poolTypes?.length;
+    const { tokens, poolIds, poolTypes } = filterOptions.value;
+    const hasTokenFilters = !!tokens?.length;
+    const hasPoolIdFilters = !!poolIds?.length;
+    const hasPoolTypeFilters = !!poolTypes?.length;
 
     fetchArgs.first = filterOptions.value.pageSize || POOLS.Pagination.PerPage;
+
+    if (hasTokenFilters || hasPoolIdFilters) {
+      fetchArgs.first = 1000;
+    } else if (
+      hasPoolTypeFilters &&
+      !poolTypes.includes(PoolType.Weighted) &&
+      !poolTypes.includes(PoolType.Stable)
+    ) {
+      fetchArgs.first = 1000;
+    }
     // Don't use a limit if there is a token list because the limit is applied
     // pre-filter
     // if (hasPoolTypeFilters && poolTypes.includes(PoolType.Weighted)) {
@@ -221,7 +246,6 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
     const fetchOptions = getFetchOptions(pageParam);
     const skip = (fetchOptions.first || 0) + (fetchOptions.skip || 0);
     try {
-      console.log({ fetchOptions });
       let pools: Pool[] = await poolsRepository.fetch(fetchOptions);
       if (!isBalancerApiDefined) pools = customSort(pools);
 

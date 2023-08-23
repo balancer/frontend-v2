@@ -2,17 +2,21 @@ import { Protocol } from '@/composables/useProtocols';
 import { PoolType } from '@/services/pool/types';
 
 export enum PoolFeatureFilter {
-  Boosted = 'Boosted',
   Weighted = 'Weighted',
   Stable = 'Stable',
   CLP = 'CLP',
   LBP = 'LBP',
 }
 
+export enum PoolAttributeFilter {
+  New = 'New',
+}
+
 export type PoolFilterOptions = Ref<{
   poolIds?: string[];
   tokens?: string[];
   poolTypes?: PoolType[];
+  poolAttributes?: PoolAttributeFilter[];
   useExactTokens?: boolean;
   pageSize?: number;
   first?: number;

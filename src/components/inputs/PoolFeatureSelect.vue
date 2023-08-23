@@ -1,62 +1,101 @@
 
 <script setup lang="ts">
-import { PoolFeatureFilter } from '@/types/pools';
+import { PoolFeatureFilter, PoolAttributeFilter } from '@/types/pools';
 
 export type Props = {
-  modelValue: string;
+  selectedPoolType: PoolFeatureFilter;
+  selectedAttributes: PoolAttributeFilter[];
 };
 
-withDefaults(defineProps<Props>(), {
-  modelValue: 'Filter by feature',
-});
-
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | undefined): void;
+  (e: 'update:selectedPoolType', value: PoolFeatureFilter | undefined): void;
+  (e: 'update:selectedAttributes', value: PoolAttributeFilter[]): void;
 }>();
 
 const options = [
-  PoolFeatureFilter.Boosted,
   PoolFeatureFilter.Weighted,
   PoolFeatureFilter.Stable,
   PoolFeatureFilter.CLP,
   PoolFeatureFilter.LBP,
 ];
 
-const selectedOption = ref<PoolFeatureFilter>();
+const attributeOptions = [PoolAttributeFilter.New];
 
-watch(selectedOption, newVal => {
-  emit('update:modelValue', newVal);
+const _selectedPoolType = ref<PoolFeatureFilter>();
+const _selectedAttributes = reactive<PoolAttributeFilter[]>([]);
+const activeFiltersNum = computed((): number => {
+  return _selectedAttributes.length + (_selectedPoolType.value ? 1 : 0);
 });
+
+watch(_selectedPoolType, newVal => {
+  emit('update:selectedPoolType', newVal);
+});
+
+watch(_selectedAttributes, newVal => {
+  emit('update:selectedAttributes', newVal);
+});
+
+function handleAttributeCheck(event, option) {
+  if (event.target.checked) {
+    _selectedAttributes.push(option);
+  } else {
+    const index = _selectedAttributes.indexOf(option);
+    _selectedAttributes.splice(index, 1);
+  }
+}
 </script>
 
 <template>
-  <BalPopover
-    :options="options"
-    minWidth="40"
-    align="left"
-    @selected="emit('update:modelValue', $event)"
-  >
+  <BalPopover minWidth="40" align="left">
     <template #activator>
       <BalBtn color="white" size="sm">
-        <BalIcon name="filter" size="lg" />
+        <BalIcon name="filter" size="sm" class="mr-2" />
+        More filters
+        <div v-if="activeFiltersNum > 0" class="px-2">
+          <div
+            class="flex justify-center items-center p-2 w-5 h-5 text-xs text-center text-white bg-blue-600 rounded-full"
+          >
+            {{ activeFiltersNum }}
+          </div>
+        </div>
       </BalBtn>
     </template>
-    <BalVStack spacing="sm" width="40">
-      <BalText size="lg" weight="bold">Pool feature</BalText>
-      <div
-        v-for="option in options"
-        :key="option"
-        class="text-base text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
-      >
-        <BalCheckbox
-          :modelValue="selectedOption === option"
-          name="featureFilter"
-          :label="option"
-          noMargin
-          alignCheckbox="items-center"
-          @input="selectedOption = option"
-        />
-      </div>
+    <BalVStack spacing="md" width="40">
+      <BalVStack spacing="sm">
+        <BalText size="lg" weight="bold">Pool type</BalText>
+        <div
+          v-for="option in options"
+          :key="option"
+          class="text-base text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
+        >
+          <BalCheckbox
+            :modelValue="_selectedPoolType === option"
+            :name="option"
+            :label="option"
+            noMargin
+            alignCheckbox="items-center"
+            @input="_selectedPoolType = option"
+          />
+        </div>
+      </BalVStack>
+
+      <BalVStack spacing="sm">
+        <BalText size="lg" weight="bold" margin>Pool attributes</BalText>
+        <div
+          v-for="option in attributeOptions"
+          :key="option"
+          class="text-base text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
+        >
+          <BalCheckbox
+            :modelValue="_selectedAttributes.includes(option)"
+            :name="option"
+            :label="option"
+            noMargin
+            alignCheckbox="items-center"
+            @input="event => handleAttributeCheck(event, option)"
+          />
+        </div>
+      </BalVStack>
     </BalVStack>
   </BalPopover>
 </template>
