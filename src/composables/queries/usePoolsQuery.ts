@@ -167,10 +167,11 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
 
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
-    const { tokens, poolIds, poolTypes } = filterOptions.value;
+    const { tokens, poolIds, poolTypes, poolAttributes } = filterOptions.value;
     const hasTokenFilters = !!tokens?.length;
     const hasPoolIdFilters = !!poolIds?.length;
     const hasPoolTypeFilters = !!poolTypes?.length;
+    const hasPoolAttributeFilters = !!poolAttributes?.length;
 
     fetchArgs.first = filterOptions.value.pageSize || POOLS.Pagination.PerPage;
 
@@ -182,15 +183,12 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
       !poolTypes.includes(PoolType.Stable)
     ) {
       fetchArgs.first = 1000;
+    } else if (
+      hasPoolAttributeFilters &&
+      poolAttributes.includes(PoolAttributeFilter.New)
+    ) {
+      fetchArgs.first = 1000;
     }
-    // Don't use a limit if there is a token list because the limit is applied
-    // pre-filter
-    // if (hasPoolTypeFilters && poolTypes.includes(PoolType.Weighted)) {
-    //   fetchArgs.first = 100;
-    // } else if (!hasTokenFilters && !hasPoolIdFilters && !hasPoolTypeFilters) {
-    //   fetchArgs.first =
-    //     filterOptions.value.pageSize || POOLS.Pagination.PerPage;
-    // }
 
     if (pageParam && pageParam > 0) {
       fetchArgs.skip = pageParam;
