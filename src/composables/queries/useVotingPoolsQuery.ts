@@ -12,7 +12,7 @@ import { VeBalGetVotingListQuery } from '@/services/api/graphql/generated/api-ty
 import { Network } from '@/lib/config/types';
 import { PoolType } from '@/services/pool/types';
 import { testnetVotingPools } from '@/components/contextual/pages/vebal/LMVoting/testnet-voting-pools';
-import { mapApiChain, mapApiPoolType } from '@/services/api/graphql/mappers';
+import { mapApiChain, mapApiPoolType } from '@/lib/utils/api';
 
 /**
  * TYPES

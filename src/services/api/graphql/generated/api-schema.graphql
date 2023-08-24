@@ -980,6 +980,7 @@ type Mutation {
   poolBlackListAddPool(poolId: String!): String!
   poolBlackListRemovePool(poolId: String!): String!
   poolDeletePool(poolId: String!): String!
+  poolInitOnChainDataForAllPools: String!
   poolInitializeSnapshotsForPool(poolId: String!): String!
   poolLoadOnChainDataForAllPools: String!
   poolLoadOnChainDataForPoolsWithActiveUpdates: String!

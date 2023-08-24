@@ -1077,6 +1077,7 @@ export type Mutation = {
   poolBlackListAddPool: Scalars['String'];
   poolBlackListRemovePool: Scalars['String'];
   poolDeletePool: Scalars['String'];
+  poolInitOnChainDataForAllPools: Scalars['String'];
   poolInitializeSnapshotsForPool: Scalars['String'];
   poolLoadOnChainDataForAllPools: Scalars['String'];
   poolLoadOnChainDataForPoolsWithActiveUpdates: Scalars['String'];
@@ -1355,6 +1356,97 @@ export type QueryUserGetSwapsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type GetPoolsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetPoolsQuery = {
+  __typename?: 'Query';
+  pools: Array<{
+    __typename?: 'GqlPoolMinimal';
+    id: string;
+    chain: GqlChain;
+    address: string;
+    name: string;
+    symbol: string;
+    type: GqlPoolMinimalType;
+    version: number;
+    owner?: string | null;
+    factory?: string | null;
+    createTime: number;
+    dynamicData: {
+      __typename?: 'GqlPoolDynamicData';
+      totalLiquidity: string;
+      totalShares: string;
+      fees24h: string;
+      swapFee: string;
+      lifetimeSwapFees: string;
+      swapEnabled: boolean;
+      volume24h: string;
+      lifetimeVolume: string;
+      apr: {
+        __typename?: 'GqlPoolApr';
+        hasRewardApr: boolean;
+        swapApr: string;
+        thirdPartyApr:
+          | { __typename?: 'GqlPoolAprRange'; min: string; max: string }
+          | { __typename?: 'GqlPoolAprTotal'; total: string };
+        nativeRewardApr:
+          | { __typename?: 'GqlPoolAprRange'; min: string; max: string }
+          | { __typename?: 'GqlPoolAprTotal'; total: string };
+        apr:
+          | { __typename?: 'GqlPoolAprRange'; min: string; max: string }
+          | { __typename?: 'GqlPoolAprTotal'; total: string };
+        items: Array<{
+          __typename?: 'GqlBalancePoolAprItem';
+          id: string;
+          title: string;
+          apr:
+            | { __typename?: 'GqlPoolAprRange'; min: string; max: string }
+            | { __typename?: 'GqlPoolAprTotal'; total: string };
+          subItems?: Array<{
+            __typename?: 'GqlBalancePoolAprSubItem';
+            id: string;
+            title: string;
+            apr:
+              | { __typename?: 'GqlPoolAprRange'; min: string; max: string }
+              | { __typename?: 'GqlPoolAprTotal'; total: string };
+          }> | null;
+        }>;
+      };
+    };
+    allTokens: Array<{
+      __typename?: 'GqlPoolTokenExpanded';
+      id: string;
+      address: string;
+      isNested: boolean;
+      isPhantomBpt: boolean;
+      weight?: string | null;
+      symbol: string;
+    }>;
+    displayTokens: Array<{
+      __typename?: 'GqlPoolTokenDisplay';
+      id: string;
+      address: string;
+      name: string;
+      weight?: string | null;
+      symbol: string;
+      nestedTokens?: Array<{
+        __typename?: 'GqlPoolTokenDisplay';
+        id: string;
+        address: string;
+        name: string;
+        weight?: string | null;
+        symbol: string;
+      }> | null;
+    }>;
+    staking?: {
+      __typename?: 'GqlPoolStaking';
+      id: string;
+      type: GqlPoolStakingType;
+      address: string;
+    } | null;
+  }>;
+};
+
 export type GetCurrentTokenPricesQueryVariables = Exact<{
   [key: string]: never;
 }>;
@@ -1396,6 +1488,117 @@ export type VeBalGetVotingListQuery = {
   }>;
 };
 
+export const GetPoolsDocument = gql`
+  query GetPools {
+    pools: poolGetPools {
+      id
+      chain
+      address
+      name
+      symbol
+      type
+      version
+      owner
+      factory
+      symbol
+      createTime
+      dynamicData {
+        totalLiquidity
+        totalShares
+        fees24h
+        swapFee
+        lifetimeSwapFees
+        swapEnabled
+        volume24h
+        lifetimeVolume
+        apr {
+          hasRewardApr
+          thirdPartyApr {
+            ... on GqlPoolAprTotal {
+              total
+            }
+            ... on GqlPoolAprRange {
+              min
+              max
+            }
+          }
+          nativeRewardApr {
+            ... on GqlPoolAprTotal {
+              total
+            }
+            ... on GqlPoolAprRange {
+              min
+              max
+            }
+          }
+          swapApr
+          apr {
+            ... on GqlPoolAprTotal {
+              total
+            }
+            ... on GqlPoolAprRange {
+              min
+              max
+            }
+          }
+          items {
+            id
+            title
+            apr {
+              ... on GqlPoolAprTotal {
+                total
+              }
+              ... on GqlPoolAprRange {
+                min
+                max
+              }
+            }
+            subItems {
+              id
+              title
+              apr {
+                ... on GqlPoolAprTotal {
+                  total
+                }
+                ... on GqlPoolAprRange {
+                  min
+                  max
+                }
+              }
+            }
+          }
+        }
+      }
+      allTokens {
+        id
+        address
+        isNested
+        isPhantomBpt
+        weight
+        symbol
+      }
+      displayTokens {
+        id
+        address
+        name
+        weight
+        symbol
+        nestedTokens {
+          id
+          address
+          name
+          weight
+          symbol
+        }
+      }
+      staking {
+        id
+        type
+        address
+      }
+    }
+  }
+`;
 export const GetCurrentTokenPricesDocument = gql`
   query GetCurrentTokenPrices {
     prices: tokenGetCurrentPrices {
@@ -1445,6 +1648,20 @@ export function getSdk(
   withWrapper: SdkFunctionWrapper = defaultWrapper
 ) {
   return {
+    GetPools(
+      variables?: GetPoolsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<GetPoolsQuery> {
+      return withWrapper(
+        wrappedRequestHeaders =>
+          client.request<GetPoolsQuery>(GetPoolsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'GetPools',
+        'query'
+      );
+    },
     GetCurrentTokenPrices(
       variables?: GetCurrentTokenPricesQueryVariables,
       requestHeaders?: Dom.RequestInit['headers']
