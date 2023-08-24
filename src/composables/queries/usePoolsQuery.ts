@@ -7,11 +7,7 @@ import { Pool } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
-import {
-  GraphQLArgs,
-  PoolsRepositoryFetchOptions,
-  PoolType,
-} from '@balancer-labs/sdk';
+import { GraphQLArgs, PoolsRepositoryFetchOptions } from '@balancer-labs/sdk';
 import { getPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
@@ -167,28 +163,8 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
 
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
-    const { tokens, poolIds, poolTypes, poolAttributes } = filterOptions.value;
-    const hasTokenFilters = !!tokens?.length;
-    const hasPoolIdFilters = !!poolIds?.length;
-    const hasPoolTypeFilters = !!poolTypes?.length;
-    const hasPoolAttributeFilters = !!poolAttributes?.length;
 
     fetchArgs.first = filterOptions.value.pageSize || POOLS.Pagination.PerPage;
-
-    if (hasTokenFilters || hasPoolIdFilters) {
-      fetchArgs.first = 1000;
-    } else if (
-      hasPoolTypeFilters &&
-      !poolTypes.includes(PoolType.Weighted) &&
-      !poolTypes.includes(PoolType.Stable)
-    ) {
-      fetchArgs.first = 1000;
-    } else if (
-      hasPoolAttributeFilters &&
-      poolAttributes.includes(PoolAttributeFilter.New)
-    ) {
-      fetchArgs.first = 1000;
-    }
 
     if (pageParam && pageParam > 0) {
       fetchArgs.skip = pageParam;
