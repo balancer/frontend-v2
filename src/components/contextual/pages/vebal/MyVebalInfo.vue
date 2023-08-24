@@ -15,11 +15,13 @@ import useTailwind from '@/composables/useTailwind';
 import * as echarts from 'echarts/core';
 import useVeBal from '@/composables/useVeBAL';
 import { useI18n } from 'vue-i18n';
+import { useHistoricalLocksQuery } from '@/composables/queries/useHistoricalLocksQuery';
+import { useLockLeaderQuery } from '@/composables/queries/useLockLeaderQuery';
 
 /**
  * COMPOSABLES
  */
-const { isWalletReady } = useWeb3();
+const { isWalletReady, account } = useWeb3();
 
 const {
   isLoadingLockPool,
@@ -35,7 +37,9 @@ const router = useRouter();
 const tailwind = useTailwind();
 const { veBalBalance, lockablePoolId } = useVeBal();
 const { t } = useI18n();
-
+const { isLoading, data } = useHistoricalLocksQuery(account);
+const { isLoading: isLoadingLockBoard, data: lockBoardData } =
+  useLockLeaderQuery();
 /**
  * COMPUTED
  */
@@ -61,12 +65,46 @@ const lockedUntil = computed(() => {
   return '—';
 });
 
+const chartValues = computed(() => {
+  if (!data.value) return [];
+  console.log(data.value);
+  return data.value.lockSnapshots.map(snapshot => {
+    // veBAL_balance = bias - slope * (now() - timestamp)
+    const bias = bnum(snapshot.bias);
+    const slope = bnum(snapshot.slope);
+    const now = bnum(Date.now());
+    // console.log({
+    //   bias,
+    //   slope,
+    //   now: now.toNumber(),
+    //   timestamp: snapshot.timestamp,
+    // });
+    const timestamp = snapshot.timestamp * 1000;
+    // console.log({
+    //   bias,
+    //   slope,
+    //   now: now.toNumber(),
+    //   timestamp,
+    // });
+    const veBalBalance = bias.minus(slope.times(now.minus(timestamp)));
+    // console.log(veBalBalance.toNumber());
+    return Object.freeze<[string, number]>([
+      format(snapshot.timestamp * 1000, 'yyyy/MM/dd'),
+      veBalBalance.abs().toNumber(),
+    ]);
+  });
+});
+
+const userRank = computed(() => {
+  if (!lockBoardData.value) return '';
+  const rank = lockBoardData.value.votingEscrowLocks.findIndex(
+    item => item.user.id.toLowerCase() === account.value?.toLowerCase()
+  );
+  return rank === -1 ? '' : rank + 1;
+});
+
 const vebalInfo = computed(() => {
-  return [
-    {
-      icon: rank,
-      value: `Rank ${123}?`,
-    },
+  const arr = [
     {
       icon: share,
       value: t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
@@ -89,11 +127,20 @@ const vebalInfo = computed(() => {
       )} days)`,
     },
   ];
+
+  if (userRank.value) {
+    arr.unshift({
+      icon: rank,
+      value: `Rank ${userRank.value}`,
+    });
+  }
+  return arr;
 });
 
 const chartData = computed(() => {
+  console.log('chartValues', chartValues.value);
   return {
-    color: '#BCA25D',
+    color: ['#BCA25D'],
     hoverBorderColor: tailwind.theme.colors.pink['500'],
     hoverColor: tailwind.theme.colors.white,
     areaStyle: {
@@ -112,12 +159,7 @@ const chartData = computed(() => {
     data: [
       {
         name: 'TVL',
-        values: [
-          Object.freeze(['2023/05/28', 141154.38839960098]),
-          Object.freeze(['2023/05/27', 77625.25688958168]),
-          Object.freeze(['2023/05/26', 52115.876940488815]),
-          Object.freeze(['2023/05/25', 647439.7320814133]),
-        ],
+        values: chartValues.value,
       },
     ],
   };
@@ -138,7 +180,11 @@ function navigateToGetVeBAL() {
 
 <template>
   <div class="flex flex-grow justify-between items-center px-10 text-white">
-    <div class="flex flex-col mr-10">
+    <BalLoadingBlock
+      v-if="isLoadingLockInfo || isLoadingLockPool"
+      class="height[30.9rem]"
+    />
+    <div v-else class="flex flex-col flex-1 mr-10">
       <div class="mb-2 text-xl font-bold">My veBAL</div>
       <div class="mb-10 text-5xl font-black">
         {{ fNum(bptBalance, FNumFormats.token) }}
@@ -166,10 +212,10 @@ function navigateToGetVeBAL() {
       </div>
     </div>
     <BalLoadingBlock
-      v-if="isLoadingLockInfo || isLoadingLockPool"
-      class="height[30.9rem]"
+      v-if="isLoadingLockInfo || isLoadingLockPool || isLoading"
+      class="height-[30.9rem]"
     />
-    <div v-else class="w-full flex-[2]">
+    <div v-else class="p-5 w-full rounded-2xl flex-[2] chart-wrapper">
       <BalChart
         :isLoading="isLoadingLockInfo || isLoadingLockPool"
         height="96"
@@ -190,6 +236,8 @@ function navigateToGetVeBAL() {
         :showLegend="false"
         :chartType="chartData.chartType"
         :showTooltipLayer="false"
+        showTooltip
+        hideYAxis
       />
     </div>
   </div>
@@ -208,5 +256,10 @@ function navigateToGetVeBAL() {
 .btn-extend {
   color: rgba(188, 162, 93, 1);
   border: 1px solid rgba(188, 162, 93, 1);
+}
+
+.chart-wrapper {
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: drop-shadow(40px 40px 80px rgba(0, 0, 0, 0.5));
 }
 </style>

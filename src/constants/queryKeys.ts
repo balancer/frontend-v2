@@ -270,6 +270,16 @@ const QUERY_KEYS = {
       { receipt },
     ],
   },
+  Locks: {
+    Historical: (networkId: Ref<Network>, account: Ref<string>) => [
+      'historical-locks',
+      { networkId, account },
+    ],
+    LeaderBoard: (networkId: Ref<Network>) => [
+      'locking-leaderboard',
+      [networkId],
+    ],
+  },
 };
 
 export default QUERY_KEYS;

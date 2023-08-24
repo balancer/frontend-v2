@@ -7,12 +7,14 @@ import coin1 from '@/assets/images/coins/coins-1.png';
 import coin2 from '@/assets/images/coins/coins-2.png';
 import coin3 from '@/assets/images/coins/coins-3.png';
 import MyVebalInfo from './MyVebalInfo.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
 const router = useRouter();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -39,7 +41,7 @@ function navigateToGetVeBAL() {
 <template>
   <div class="hero-container">
     <div class="hero-content">
-      <MyVebalInfo v-if="true" />
+      <MyVebalInfo v-if="isWalletReady" />
       <template v-else>
         <div
           class="py-8 lg:py-4 px-4 lg:px-8 2xl:px-0 xl:pt-0 max-w-md hero-text"

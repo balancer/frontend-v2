@@ -72,14 +72,14 @@ function onCloseModal() {
 
 <template>
   <div class="py-5 px-4">
-    <h4 class="mb-3">
+    <h3 class="mb-3 font-extrabold text-center">
       {{ $t('crossChainBoost.title') }}
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
           <BalIcon name="info" size="sm" class="text-gray-400" />
         </template>
       </BalTooltip>
-    </h4>
+    </h3>
 
     <BalAlert v-if="hasError" title="Error" type="error" class="mb-4">
       <div>

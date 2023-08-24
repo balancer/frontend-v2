@@ -36,7 +36,7 @@ const isLoading = computed(() =>
   </h3>
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
     <template v-if="isLoading">
-      <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
+      <BalLoadingBlock v-for="n in 2" :key="n" class="h-24" />
     </template>
     <MyVeBalCards
       v-else-if="lockPool && lockPoolToken"
