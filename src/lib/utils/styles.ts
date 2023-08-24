@@ -38,6 +38,7 @@ export const xSpacingVariants = {
 
 export const paddingVariants = {
   none: 'p-0',
+  xs: 'p-1',
   sm: 'p-2',
   md: 'p-4',
   lg: 'p-8',
@@ -141,6 +142,7 @@ export const textColorVariants = {
   default: 'text-black',
   primary: 'text-blue-500',
   secondary: 'text-purple-500',
+  blue: 'text-blue-500',
 };
 
 export const textDecorationVariants = {
@@ -161,4 +163,26 @@ export const wordBreakVariants = {
   words: 'break-words',
   all: 'break-all',
   keep: 'break-keep',
+};
+
+export const borderRadiusVariants = {
+  none: 'rounded-none',
+  sm: 'rounded-sm',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  xl: 'rounded-xl',
+  '2xl': 'rounded-2xl',
+  '3xl': 'rounded-3xl',
+  full: 'rounded-full',
+};
+
+export const shadowVariants = {
+  sm: 'shadow-sm',
+  md: 'shadow-md',
+  lg: 'shadow-lg',
+  xl: 'shadow-xl',
+  '2xl': 'shadow-2xl',
+  inner: 'shadow-inner',
+  outline: 'shadow-outline',
+  none: 'shadow-none',
 };

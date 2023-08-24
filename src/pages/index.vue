@@ -137,44 +137,44 @@ watch(filterPoolAttributes, newVal => console.log(newVal));
           <div
             class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
           >
-            <BalVStack spacing="md">
-              <BalHStack spacing="md">
-                <TokenSearchInput
-                  v-model="selectedTokens"
-                  @add="addSelectedToken"
-                  @remove="removeSelectedToken"
-                />
-                <PoolFeatureSelect
-                  v-model:selectedPoolType="poolFeatureFilter"
-                  v-model:selectedAttributes="filterPoolAttributes"
-                />
+            <BalVStack spacing="md" width="full">
+              <BalHStack spacing="md" justify="between" width="full">
+                <BalHStack spacing="md">
+                  <TokenSearchInput
+                    v-model="selectedTokens"
+                    @add="addSelectedToken"
+                    @remove="removeSelectedToken"
+                  />
+                  <PoolFeatureSelect
+                    v-model:selectedPoolType="poolFeatureFilter"
+                    v-model:selectedAttributes="filterPoolAttributes"
+                  />
+                </BalHStack>
+
+                <BalBtn
+                  v-if="!upToMediumBreakpoint"
+                  color="blue"
+                  size="sm"
+                  outline
+                  :class="{ 'mt-4': upToMediumBreakpoint }"
+                  :block="upToMediumBreakpoint"
+                  @click="navigateToCreatePool"
+                >
+                  {{ $t('createAPool.title') }}
+                </BalBtn>
               </BalHStack>
               <BalHStack v-if="selectedTokens.length" spacing="sm">
-                <BalChip
+                <BalTag
                   v-for="token in selectedTokens"
                   :key="token"
-                  color="white"
-                  iconSize="sm"
                   :closeable="true"
                   @closed="removeSelectedToken"
                 >
                   <BalAsset :address="token" :size="20" class="flex-auto" />
                   <span class="ml-2">{{ getToken(token)?.symbol }}</span>
-                </BalChip>
+                </BalTag>
               </BalHStack>
             </BalVStack>
-
-            <BalBtn
-              v-if="!upToMediumBreakpoint"
-              color="blue"
-              size="sm"
-              outline
-              :class="{ 'mt-4': upToMediumBreakpoint }"
-              :block="upToMediumBreakpoint"
-              @click="navigateToCreatePool"
-            >
-              {{ $t('createAPool.title') }}
-            </BalBtn>
           </div>
         </div>
         <PoolsTable
