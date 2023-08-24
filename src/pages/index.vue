@@ -57,7 +57,7 @@ const { pools, isLoading, isFetchingNextPage, loadMorePools } = usePools({
   poolAttributes: filterPoolAttributes,
 });
 
-const { upToMediumBreakpoint } = useBreakpoints();
+const { upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
 
 const isPaginated = computed(() => pools.value.length >= 10);
@@ -126,11 +126,11 @@ watch(poolTypeFilter, newPoolTypeFilter => {
               <span class="lowercase">{{ $t('pools') }}</span>
             </h3>
             <BalBtn
-              v-if="upToMediumBreakpoint"
+              v-if="upToSmallBreakpoint"
               color="blue"
               size="sm"
               outline
-              :class="{ 'mt-4': upToMediumBreakpoint }"
+              :class="{ 'mt-4': upToSmallBreakpoint }"
               @click="navigateToCreatePool"
             >
               {{ $t('createAPool.title') }}
@@ -141,7 +141,7 @@ watch(poolTypeFilter, newPoolTypeFilter => {
             class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
           >
             <BalVStack spacing="md" width="full">
-              <BalHStack spacing="md" justify="between" width="full">
+              <BalHStack justify="between" width="full">
                 <BalHStack spacing="md">
                   <TokenSearchInput
                     v-model="selectedTokens"
@@ -155,12 +155,12 @@ watch(poolTypeFilter, newPoolTypeFilter => {
                 </BalHStack>
 
                 <BalBtn
-                  v-if="!upToMediumBreakpoint"
+                  v-if="!upToSmallBreakpoint"
                   color="blue"
                   size="sm"
                   outline
-                  :class="{ 'mt-4': upToMediumBreakpoint }"
-                  :block="upToMediumBreakpoint"
+                  :class="{ 'mt-4': upToSmallBreakpoint }"
+                  :block="upToSmallBreakpoint"
                   @click="navigateToCreatePool"
                 >
                   {{ $t('createAPool.title') }}
