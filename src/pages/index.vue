@@ -140,7 +140,7 @@ watch(poolTypeFilter, newPoolTypeFilter => {
           <div
             class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
           >
-            <BalVStack spacing="md" width="full">
+            <BalVStack width="full">
               <BalHStack justify="between" width="full">
                 <BalHStack spacing="md">
                   <TokenSearchInput
@@ -172,6 +172,7 @@ watch(poolTypeFilter, newPoolTypeFilter => {
                     v-for="token in selectedTokens"
                     :key="token"
                     :closeable="true"
+                    class="mt-4"
                     @closed="removeSelectedToken"
                   >
                     <BalAsset :address="token" :size="20" class="flex-auto" />
@@ -183,7 +184,7 @@ watch(poolTypeFilter, newPoolTypeFilter => {
                   <BalTag
                     v-if="poolTypeFilter"
                     :closeable="true"
-                    class="filter-tag"
+                    class="mt-4"
                     @closed="poolTypeFilter = undefined"
                   >
                     <span>{{ poolTypeFilter }}</span>
@@ -195,6 +196,7 @@ watch(poolTypeFilter, newPoolTypeFilter => {
                     v-for="attribute in filterPoolAttributes"
                     :key="attribute"
                     :closeable="true"
+                    class="mt-4"
                     @closed="removeAttributeFilter(attribute)"
                   >
                     <span>{{ attribute }}</span>
