@@ -159,8 +159,6 @@ export default function usePoolsQuery(
       queryArgs.where.createTime = { gt: weeksAgoInSecs(2) };
     }
 
-    console.log('queryArgs', queryArgs);
-
     return queryArgs;
   }
 
