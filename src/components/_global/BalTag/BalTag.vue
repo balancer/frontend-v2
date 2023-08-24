@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils/styles';
 const variants = cva('flex flex-row items-center font-medium rounded-full', {
   variants: {
     color: {
-      blue: 'bg-blue-50 border border-blue-200 text-blue-500',
+      blue: 'bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-600 text-blue-500 dark:text-blue-300',
     },
     size: {
       md: 'shadow-sm text-sm py-1 px-2 space-x-1',
