@@ -25,7 +25,10 @@ type PoolsQueryResponse = {
   skip?: number;
 };
 
-export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
+export default function usePoolsQuery(
+  filterOptions: PoolFilterOptions,
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
+) {
   /**
    * COMPOSABLES
    */
@@ -238,9 +241,8 @@ export default function usePoolsQuery(filterOptions: PoolFilterOptions) {
     }
   };
 
-  const options: UseInfiniteQueryOptions<PoolsQueryResponse> = {
-    getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip || 0,
-  };
+  options.getNextPageParam = (lastPage: PoolsQueryResponse) =>
+    lastPage.skip || 0;
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, options);
 }
