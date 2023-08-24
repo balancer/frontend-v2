@@ -6,7 +6,7 @@ import { Connector, ConnectorId } from '../connector';
 import { Network } from '@/lib/config/types';
 import useDarkMode from '@/composables/useDarkMode';
 
-const { MAINNET, POLYGON, ARBITRUM, GNOSIS, ZKEVM } = Network;
+const { MAINNET, ARBITRUM, AVALANCHE, BASE, GNOSIS, POLYGON, ZKEVM } = Network;
 
 export class WalletConnectConnector extends Connector {
   id = ConnectorId.WalletConnect;
@@ -14,12 +14,14 @@ export class WalletConnectConnector extends Connector {
     const provider = await EthereumProvider.init({
       projectId: 'ee9c0c7e1b8b86ebdfb8fd93bb116ca8',
       chains: [MAINNET],
-      optionalChains: [POLYGON, ARBITRUM, GNOSIS],
+      optionalChains: [AVALANCHE, ARBITRUM, BASE, GNOSIS, POLYGON, ZKEVM],
       rpcMap: {
         [MAINNET]: configService.getNetworkRpc(MAINNET),
-        [POLYGON]: configService.getNetworkRpc(POLYGON),
         [ARBITRUM]: configService.getNetworkRpc(ARBITRUM),
+        [AVALANCHE]: configService.getNetworkRpc(AVALANCHE),
+        [BASE]: configService.getNetworkRpc(BASE),
         [GNOSIS]: configService.getNetworkRpc(GNOSIS),
+        [POLYGON]: configService.getNetworkRpc(POLYGON),
         [ZKEVM]: configService.getNetworkRpc(ZKEVM),
       },
       showQrModal: true,
