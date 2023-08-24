@@ -44,6 +44,14 @@ watch(_selectedAttributes, newVal => {
   emit('update:selectedAttributes', newVal);
 });
 
+function handlePoolTypeCheck(event, option) {
+  if (event.target.checked) {
+    _selectedPoolType.value = option;
+  } else {
+    _selectedPoolType.value = undefined;
+  }
+}
+
 function handleAttributeCheck(event, option) {
   if (event.target.checked) {
     _selectedAttributes.push(option);
@@ -83,7 +91,7 @@ function handleAttributeCheck(event, option) {
             :label="option"
             noMargin
             alignCheckbox="items-center"
-            @input="_selectedPoolType = option"
+            @input="event => handlePoolTypeCheck(event, option)"
           />
         </div>
       </BalVStack>

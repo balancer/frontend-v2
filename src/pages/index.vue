@@ -109,12 +109,8 @@ function removeAttributeFilter(attribute: PoolAttributeFilter) {
 }
 
 watch(poolTypeFilter, newPoolTypeFilter => {
-  console.log(newPoolTypeFilter);
-
   updatePoolFilters(newPoolTypeFilter);
 });
-
-watch(filterPoolAttributes, newVal => console.log(newVal));
 </script>
 
 <template>
@@ -171,30 +167,39 @@ watch(filterPoolAttributes, newVal => console.log(newVal));
                 </BalBtn>
               </BalHStack>
               <BalHStack spacing="sm">
-                <BalTag
-                  v-for="token in selectedTokens"
-                  :key="token"
-                  :closeable="true"
-                  @closed="removeSelectedToken"
-                >
-                  <BalAsset :address="token" :size="20" class="flex-auto" />
-                  <span class="ml-2">{{ getToken(token)?.symbol }}</span>
-                </BalTag>
-                <BalTag
-                  v-if="poolTypeFilter"
-                  :closeable="true"
-                  @closed="poolTypeFilter = undefined"
-                >
-                  <span>{{ poolTypeFilter }}</span>
-                </BalTag>
-                <BalTag
-                  v-for="attribute in filterPoolAttributes"
-                  :key="attribute"
-                  :closeable="true"
-                  @closed="removeAttributeFilter(attribute)"
-                >
-                  <span>{{ attribute }}</span>
-                </BalTag>
+                <TransitionGroup name="pop">
+                  <BalTag
+                    v-for="token in selectedTokens"
+                    :key="token"
+                    :closeable="true"
+                    @closed="removeSelectedToken"
+                  >
+                    <BalAsset :address="token" :size="20" class="flex-auto" />
+                    <span class="ml-2">{{ getToken(token)?.symbol }}</span>
+                  </BalTag>
+                </TransitionGroup>
+
+                <Transition name="pop">
+                  <BalTag
+                    v-if="poolTypeFilter"
+                    :closeable="true"
+                    class="filter-tag"
+                    @closed="poolTypeFilter = undefined"
+                  >
+                    <span>{{ poolTypeFilter }}</span>
+                  </BalTag>
+                </Transition>
+
+                <TransitionGroup name="pop">
+                  <BalTag
+                    v-for="attribute in filterPoolAttributes"
+                    :key="attribute"
+                    :closeable="true"
+                    @closed="removeAttributeFilter(attribute)"
+                  >
+                    <span>{{ attribute }}</span>
+                  </BalTag>
+                </TransitionGroup>
               </BalHStack>
             </BalVStack>
           </div>
