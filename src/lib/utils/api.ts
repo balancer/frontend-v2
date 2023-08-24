@@ -3,7 +3,7 @@ import {
   GqlPoolFilterType,
   GqlPoolMinimalType,
 } from '@/services/api/graphql/generated/api-types';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { PoolType } from '@/services/pool/types';
 
 export function mapApiChain(
