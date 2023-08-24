@@ -1,20 +1,15 @@
 import { QueryObserverOptions, useQuery } from '@tanstack/vue-query';
 import { computed, reactive, Ref, ref } from 'vue';
 
-import { GraphQLArgs } from '@balancer-labs/sdk';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 import { useTokens } from '@/providers/tokens.provider';
 
-import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 
 import { tokensListExclBpt, tokenTreeLeafs } from '../usePoolHelpers';
 
-import { POOLS } from '@/constants/pools';
-import { configService } from '@/services/config/config.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import PoolRepository from '@/services/pool/pool.repository';
+import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 
 type QueryOptions = QueryObserverOptions<Pool>;
 
@@ -24,17 +19,9 @@ export default function usePoolQuery(
   options: QueryOptions = {}
 ) {
   /**
-   * If pool is already downloaded, we can use it instantly
-   * it may be if user came to pool page from home page
-   */
-  const poolInfo = poolsStoreService.findPool(id);
-
-  /**
    * COMPOSABLES
    */
   const { injectTokens, tokens } = useTokens();
-
-  const poolRepository = new PoolRepository(tokens);
 
   /**
    * COMPUTED
@@ -42,34 +29,12 @@ export default function usePoolQuery(
   const enabled = computed(() => isEnabled.value);
 
   /**
-   * METHODS
-   */
-
-  function getQueryArgs(): GraphQLArgs {
-    const queryArgs: GraphQLArgs = {
-      chainId: configService.network.chainId,
-      where: {
-        id: { eq: id?.toLowerCase() },
-        totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
-        poolType: { in: POOLS.IncludedPoolTypes },
-      },
-    };
-    return queryArgs;
-  }
-
-  /**
    * QUERY INPUTS
    */
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
   const queryFn = async () => {
-    let pool: Pool;
-    if (poolInfo) {
-      pool = poolInfo;
-    } else {
-      pool = await poolRepository.fetch(getQueryArgs());
-    }
-
+    let pool: Pool = await await balancerAPIService.pool.get({ id });
     if (!pool) throw new Error('Pool does not exist');
 
     // If the pool is cached from homepage it may not have onchain set, so update it

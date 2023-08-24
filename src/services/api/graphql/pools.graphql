@@ -1,0 +1,116 @@
+
+query GetPools(
+  $first: Int
+  $skip: Int
+  $orderBy: GqlPoolOrderBy
+  $orderDirection: GqlPoolOrderDirection
+  $where: GqlPoolFilter
+) {
+  pools: poolGetPools (first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection, where: $where) {
+    id
+    chain
+    address
+    name
+    symbol
+    type
+    version
+    owner
+    factory
+    symbol
+    createTime
+    dynamicData {
+      totalLiquidity
+      totalShares
+      fees24h
+      swapFee
+      lifetimeSwapFees
+      swapEnabled
+      volume24h
+      lifetimeVolume
+      apr {
+        hasRewardApr
+        thirdPartyApr {
+          ... on GqlPoolAprTotal {
+            total
+          }
+          ... on GqlPoolAprRange {
+            min
+            max
+          }
+        }
+        nativeRewardApr {
+          ... on GqlPoolAprTotal {
+            total
+          }
+          ... on GqlPoolAprRange {
+            min
+            max
+          }
+        }
+        swapApr
+        apr {
+          ... on GqlPoolAprTotal {
+            total
+          }
+          ... on GqlPoolAprRange {
+            min
+            max
+          }
+        }
+        items {
+          id
+          title
+          apr {
+            ... on GqlPoolAprTotal {
+              total
+            }
+            ... on GqlPoolAprRange {
+              min
+              max
+            }
+          }
+          subItems {
+            id
+            title
+            apr {
+              ... on GqlPoolAprTotal {
+                total
+              }
+              ... on GqlPoolAprRange {
+                min
+                max
+              }
+            }
+          }
+        }
+      }
+    }
+    allTokens {
+      id
+      address
+      isNested
+      isPhantomBpt
+      weight
+      symbol
+    }
+    displayTokens {
+      id
+      address
+      name
+      weight
+      symbol
+      nestedTokens {
+        id
+        address
+        name
+        weight
+        symbol
+      }
+    }
+    staking {
+      id
+      type
+      address
+    }
+  }
+}

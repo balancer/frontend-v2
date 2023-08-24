@@ -948,6 +948,7 @@ input GqlUserSwapVolumeFilter {
 type GqlVotingGauge {
   addedTimestamp: Int
   address: Bytes!
+  childGaugeAddress: Bytes
   isKilled: Boolean!
   relativeWeightCap: String
 }

@@ -9,7 +9,6 @@ import {
   GqlPoolOrderDirection,
   GqlPoolTokenExpanded,
 } from '@/services/api/graphql/generated/api-types';
-import { PoolsQueryBuilder } from '@/types/subgraph';
 import {
   AprBreakdown,
   GraphQLQuery,
@@ -20,7 +19,6 @@ import {
 import { Network } from '@/lib/config/types';
 
 import Service from '../../balancer-api.service';
-import queryBuilder from './query';
 import { mapApiChain, mapApiPoolType } from '@/lib/utils/api';
 
 export type ApiPools = GetPoolsQuery['pools'];
@@ -36,16 +34,11 @@ export interface ApiArgs {
 
 export default class Pools {
   service: Service;
-  queryBuilder: PoolsQueryBuilder;
   lastQuery?: GraphQLQuery;
   repository?: PoolsBalancerAPIRepository;
 
-  constructor(
-    service: Service,
-    _queryBuilder: PoolsQueryBuilder = queryBuilder
-  ) {
+  constructor(service: Service) {
     this.service = service;
-    this.queryBuilder = _queryBuilder;
   }
 
   public async get(args: ApiArgs = {}): Promise<Pool[]> {
