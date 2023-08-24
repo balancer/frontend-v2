@@ -15,7 +15,7 @@ import { useIntersectionObserver } from '@vueuse/core';
 import { PoolType } from '@/services/pool/types';
 import PoolFeatureSelect from '@/components/inputs/PoolFeatureSelect.vue';
 import { useTokens } from '@/providers/tokens.provider';
-import { PoolAttributeFilter, PoolFeatureFilter } from '@/types/pools';
+import { PoolAttributeFilter, PoolTypeFilter } from '@/types/pools';
 import UserInvestedInAffectedPoolAlert from '@/pages/recovery-exit/UserInvestedInAffectedPoolAlert.vue';
 
 const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
@@ -34,7 +34,7 @@ const urlSortParam = route.query?.sort as string | undefined;
 const initSortCol =
   urlSortParam || lsGet(LS_KEYS.App.PoolSorting) || 'totalLiquidity';
 const sortField = ref('totalLiquidity');
-const poolFeatureFilter = ref<PoolFeatureFilter>();
+const poolTypeFilter = ref<PoolTypeFilter>();
 const filterPoolIds = ref<string[]>([]);
 const filterPoolTypes = ref<PoolType[]>([]);
 const filterPoolAttributes = ref<PoolAttributeFilter[]>([]);
@@ -74,13 +74,13 @@ function onColumnSort(columnId: string) {
   lsSet(LS_KEYS.App.PoolSorting, columnId);
 }
 
-function updatePoolFilters(feature: PoolFeatureFilter | undefined) {
+function updatePoolFilters(feature: PoolTypeFilter | undefined) {
   switch (feature) {
-    case PoolFeatureFilter.Weighted:
+    case PoolTypeFilter.Weighted:
       filterPoolIds.value = [];
       filterPoolTypes.value = [PoolType.Weighted];
       break;
-    case PoolFeatureFilter.Stable:
+    case PoolTypeFilter.Stable:
       filterPoolIds.value = [];
       filterPoolTypes.value = [
         PoolType.Stable,
@@ -89,11 +89,11 @@ function updatePoolFilters(feature: PoolFeatureFilter | undefined) {
         PoolType.ComposableStable,
       ];
       break;
-    case PoolFeatureFilter.CLP:
+    case PoolTypeFilter.CLP:
       filterPoolIds.value = [];
       filterPoolTypes.value = [PoolType.Gyro2, PoolType.Gyro3, PoolType.GyroE];
       break;
-    case PoolFeatureFilter.LBP:
+    case PoolTypeFilter.LBP:
       filterPoolIds.value = [];
       filterPoolTypes.value = [PoolType.LiquidityBootstrapping];
       break;
@@ -103,8 +103,15 @@ function updatePoolFilters(feature: PoolFeatureFilter | undefined) {
   }
 }
 
-watch(poolFeatureFilter, newPoolFeatureFilter => {
-  updatePoolFilters(newPoolFeatureFilter);
+function removeAttributeFilter(attribute: PoolAttributeFilter) {
+  const index = filterPoolAttributes.value.indexOf(attribute);
+  filterPoolAttributes.value.splice(index, 1);
+}
+
+watch(poolTypeFilter, newPoolTypeFilter => {
+  console.log(newPoolTypeFilter);
+
+  updatePoolFilters(newPoolTypeFilter);
 });
 
 watch(filterPoolAttributes, newVal => console.log(newVal));
@@ -146,7 +153,7 @@ watch(filterPoolAttributes, newVal => console.log(newVal));
                     @remove="removeSelectedToken"
                   />
                   <PoolFeatureSelect
-                    v-model:selectedPoolType="poolFeatureFilter"
+                    v-model:selectedPoolType="poolTypeFilter"
                     v-model:selectedAttributes="filterPoolAttributes"
                   />
                 </BalHStack>
@@ -163,7 +170,7 @@ watch(filterPoolAttributes, newVal => console.log(newVal));
                   {{ $t('createAPool.title') }}
                 </BalBtn>
               </BalHStack>
-              <BalHStack v-if="selectedTokens.length" spacing="sm">
+              <BalHStack spacing="sm">
                 <BalTag
                   v-for="token in selectedTokens"
                   :key="token"
@@ -172,6 +179,21 @@ watch(filterPoolAttributes, newVal => console.log(newVal));
                 >
                   <BalAsset :address="token" :size="20" class="flex-auto" />
                   <span class="ml-2">{{ getToken(token)?.symbol }}</span>
+                </BalTag>
+                <BalTag
+                  v-if="poolTypeFilter"
+                  :closeable="true"
+                  @closed="poolTypeFilter = undefined"
+                >
+                  <span>{{ poolTypeFilter }}</span>
+                </BalTag>
+                <BalTag
+                  v-for="attribute in filterPoolAttributes"
+                  :key="attribute"
+                  :closeable="true"
+                  @closed="removeAttributeFilter(attribute)"
+                >
+                  <span>{{ attribute }}</span>
                 </BalTag>
               </BalHStack>
             </BalVStack>

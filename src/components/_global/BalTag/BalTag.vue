@@ -1,43 +1,19 @@
 <script lang="ts" setup>
 import { VariantProps, cva } from 'class-variance-authority';
-import {
-  alignItemVariants,
-  borderRadiusVariants,
-  cn,
-  justifyVariants,
-  paddingVariants,
-  textSizeVariants,
-  xSpacingVariants,
-  shadowVariants,
-  fontyWeightVariants,
-} from '@/lib/utils/styles';
-import { textColorVariants } from '@/lib/utils/styles';
+import { cn } from '@/lib/utils/styles';
 
-const variants = cva('flex flex-row', {
+const variants = cva('flex flex-row items-center font-medium rounded-full', {
   variants: {
     color: {
-      blue: 'bg-blue-50 border border-blue-200',
+      blue: 'bg-blue-50 border border-blue-200 text-blue-500',
     },
-    justify: justifyVariants,
-    align: alignItemVariants,
-    spacing: xSpacingVariants,
-    padd: paddingVariants,
-    textSize: textSizeVariants,
-    radius: borderRadiusVariants,
-    textColor: textColorVariants,
-    shadow: shadowVariants,
-    fontWeight: fontyWeightVariants,
+    size: {
+      md: 'shadow-sm text-sm py-1 px-2 space-x-1',
+    },
   },
   defaultVariants: {
     color: 'blue',
-    spacing: 'sm',
-    padd: 'xs',
-    align: 'center',
-    textSize: 'sm',
-    radius: 'full',
-    textColor: 'blue',
-    shadow: 'sm',
-    fontWeight: 'medium',
+    size: 'md',
   },
 });
 
@@ -45,16 +21,8 @@ type TagVariantProps = VariantProps<typeof variants>;
 
 withDefaults(
   defineProps<{
-    justify?: TagVariantProps['justify'];
-    align?: TagVariantProps['align'];
-    spacing?: TagVariantProps['spacing'];
-    padd?: TagVariantProps['padd'];
-    textSize?: TagVariantProps['textSize'];
     color?: TagVariantProps['color'];
-    textColor?: TagVariantProps['textColor'];
-    radius?: TagVariantProps['radius'];
-    shadow?: TagVariantProps['shadow'];
-    fontWeight?: TagVariantProps['fontWeight'];
+    size?: TagVariantProps['size'];
     closeable?: boolean;
     iconSize?: 'xs' | 'sm' | 'md' | 'lg';
   }>(),
@@ -67,24 +35,7 @@ const emit = defineEmits(['closed']);
 </script>
 
 <template>
-  <BalHStack
-    :class="
-      cn(
-        variants({
-          justify,
-          align,
-          spacing,
-          padd,
-          textSize,
-          color,
-          textColor,
-          shadow,
-          radius,
-          fontWeight,
-        })
-      )
-    "
-  >
+  <BalHStack :class="cn(variants({ color, size }))">
     <slot />
     <BalIcon
       v-if="closeable"

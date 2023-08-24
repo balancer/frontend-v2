@@ -1,7 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
 import { PoolType } from '@/services/pool/types';
 
-export enum PoolFeatureFilter {
+export enum PoolTypeFilter {
   Weighted = 'Weighted',
   Stable = 'Stable',
   CLP = 'CLP',

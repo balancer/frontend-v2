@@ -1,31 +1,40 @@
 
 <script setup lang="ts">
-import { PoolFeatureFilter, PoolAttributeFilter } from '@/types/pools';
+import { PoolTypeFilter, PoolAttributeFilter } from '@/types/pools';
 
-export type Props = {
-  selectedPoolType: PoolFeatureFilter;
+type Props = {
+  selectedPoolType: PoolTypeFilter | undefined;
   selectedAttributes: PoolAttributeFilter[];
 };
 
+const props = defineProps<Props>();
+
 const emit = defineEmits<{
-  (e: 'update:selectedPoolType', value: PoolFeatureFilter | undefined): void;
+  (e: 'update:selectedPoolType', value: PoolTypeFilter | undefined): void;
   (e: 'update:selectedAttributes', value: PoolAttributeFilter[]): void;
 }>();
 
 const options = [
-  PoolFeatureFilter.Weighted,
-  PoolFeatureFilter.Stable,
-  PoolFeatureFilter.CLP,
-  PoolFeatureFilter.LBP,
+  PoolTypeFilter.Weighted,
+  PoolTypeFilter.Stable,
+  PoolTypeFilter.CLP,
+  PoolTypeFilter.LBP,
 ];
 
 const attributeOptions = [PoolAttributeFilter.New];
 
-const _selectedPoolType = ref<PoolFeatureFilter>();
+const _selectedPoolType = ref<PoolTypeFilter>();
 const _selectedAttributes = reactive<PoolAttributeFilter[]>([]);
 const activeFiltersNum = computed((): number => {
   return _selectedAttributes.length + (_selectedPoolType.value ? 1 : 0);
 });
+
+watch(
+  () => props.selectedPoolType,
+  newSelectedPoolType => {
+    _selectedPoolType.value = newSelectedPoolType;
+  }
+);
 
 watch(_selectedPoolType, newVal => {
   emit('update:selectedPoolType', newVal);
