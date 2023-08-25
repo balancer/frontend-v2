@@ -23,6 +23,7 @@ import {
   orderedTokenAddresses,
   totalAprLabel,
   isLBP,
+  shouldHideAprs,
 } from '@/composables/usePoolHelpers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -378,6 +379,7 @@ function iconAddresses(pool: Pool) {
           ]"
         >
           <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
+          <span v-else-if="shouldHideAprs(pool.id)">-</span>
           <template v-else>
             {{ aprLabelFor(pool) }}
             <BalTooltip

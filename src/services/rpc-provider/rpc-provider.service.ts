@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { JsonRpcProvider } from '@ethersproject/providers';
 
 import { configService } from '@/services/config/config.service';

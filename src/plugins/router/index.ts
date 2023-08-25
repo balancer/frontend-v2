@@ -28,6 +28,8 @@ const FaucetPage = () => import('@/pages/faucet.vue');
 const BalancesPage = () => import('@/pages/balances.vue');
 
 const PortfolioPage = () => import('@/pages/portfolio.vue');
+const RecoveryExitPage = () =>
+  import('@/pages/recovery-exit/recovery-exit.vue');
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -68,6 +70,11 @@ const routes: RouteRecordRaw[] = [
     name: 'risks',
     component: RisksPage,
     meta: { layout: 'ContentLayout' },
+  },
+  {
+    path: '/:networkSlug/recovery-exit',
+    name: 'recovery-exit',
+    component: RecoveryExitPage,
   },
   {
     path: '/:networkSlug/swap/:assetIn?/:assetOut?',

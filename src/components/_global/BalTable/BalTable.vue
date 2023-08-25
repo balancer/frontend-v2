@@ -199,16 +199,13 @@ const shouldRenderTotals = computed(() =>
   props.columns.some(column => column.totalsCell !== undefined)
 );
 
-watch(
-  () => props.data,
-  newData => {
-    if (currentSortColumn.value && currentSortDirection.value !== null) {
-      handleSort(currentSortColumn.value, false);
-      return;
-    }
-    tableData.value = newData;
+watch([() => props.data, () => props.isLoading], ([newData]) => {
+  if (currentSortColumn.value && currentSortDirection.value !== null) {
+    handleSort(currentSortColumn.value, false);
+    return;
   }
-);
+  tableData.value = newData;
+});
 </script>
 
 <template>

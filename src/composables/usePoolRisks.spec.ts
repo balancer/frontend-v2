@@ -8,7 +8,7 @@ import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { aPool } from '@tests/unit/builders/pool.builders';
 import { PoolType } from '@balancer-labs/sdk';
 import { networkId } from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { POOLS } from '@/constants/pools';
 import {
   idleBoostedPoolId,

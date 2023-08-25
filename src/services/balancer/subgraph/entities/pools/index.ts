@@ -1,6 +1,6 @@
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { PoolsQueryBuilder } from '@/types/subgraph';
 import {
   GraphQLArgs,

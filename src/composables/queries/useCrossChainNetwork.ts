@@ -1,4 +1,5 @@
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { allEqual } from '@/lib/utils/array';
 import { NetworkSyncState } from '@/providers/cross-chain-sync.provider';
 import { OmniEscrowLock } from './useOmniEscrowLocksQuery';

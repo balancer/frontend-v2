@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { Address } from '@/types';
-import { Pool as SDKPool, PoolToken } from '@balancer-labs/sdk';
+import { Pool as SDKPool, PoolToken, PoolType } from '@balancer-labs/sdk';
 
 export type { SubPool, PoolToken } from '@balancer-labs/sdk';
 export { PoolType } from '@balancer-labs/sdk';
@@ -162,3 +162,17 @@ export type BalDetailsTableData = {
   link?: string;
   tooltip?: string;
 };
+
+export const allLinearTypes = [
+  PoolType.AaveLinear,
+  PoolType.Linear,
+  PoolType.EulerLinear,
+  PoolType.ERC4626Linear,
+  PoolType.BeefyLinear,
+  PoolType.GearboxLinear,
+  PoolType.MidasLinear,
+  PoolType.ReaperLinear,
+  PoolType.SiloLinear,
+  PoolType.TetuLinear,
+  PoolType.YearnLinear,
+];
