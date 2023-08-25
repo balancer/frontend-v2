@@ -218,6 +218,15 @@ export default function usePoolsQuery(
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
+    if (
+      !options.enabled ||
+      (isRef(options.enabled) && !options.enabled.value)
+    ) {
+      return {
+        pools: [],
+        skip: 0,
+      };
+    }
     const fetchOptions = getFetchOptions(pageParam);
     const skip = (fetchOptions.first || 0) + (fetchOptions.skip || 0);
     try {
