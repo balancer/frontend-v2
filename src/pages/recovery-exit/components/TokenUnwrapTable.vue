@@ -221,6 +221,7 @@ async function approve(token: TokenInfo) {
     normalizedAmount: balancerFor(token.address),
     spender: configService.network.addresses.vault,
     actionType: ApprovalAction.Unwrapping,
+    forceMax: false,
   });
 }
 
