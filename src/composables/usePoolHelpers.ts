@@ -40,6 +40,7 @@ import { dateToUnixTimestamp } from './useTime';
 import { poolMetadata } from '@/lib/config/metadata';
 import { Protocol } from './useProtocols';
 import { usePoolWarning } from './usePoolWarning';
+import { VotingPool } from './queries/useVotingPoolsQuery';
 
 const POOLS = configService.network.pools;
 
@@ -107,7 +108,7 @@ export function isBoosted(pool: Pool) {
   );
 }
 
-export function isGyro(pool: Pool) {
+export function isGyro(pool: Pool | VotingPool) {
   return [PoolType.Gyro2, PoolType.Gyro3, PoolType.GyroE].includes(
     pool.poolType
   );
