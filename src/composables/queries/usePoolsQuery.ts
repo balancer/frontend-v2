@@ -156,7 +156,7 @@ export default function usePoolsQuery(
       hasPoolAttributeFilters &&
       poolAttributes.includes(PoolAttributeFilter.New)
     ) {
-      queryArgs.where.createTime = { gt: weeksAgoInSecs(2) };
+      queryArgs.where.createTime = { gt: weeksAgoInSecs(1) };
     }
 
     return queryArgs;

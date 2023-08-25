@@ -188,10 +188,8 @@ const displayClasses = computed(() => {
 });
 
 const contentClasses = computed(() => {
-  if (props.justifyContent === 'start') return 'justify-start';
-  if (props.justifyContent === 'end') return 'justify-end';
-  if (props.justifyContent === 'between') return 'justify-between';
-  return 'justify-center';
+  if (!props.justifyContent) return 'justify-center';
+  return `justify-${props.justifyContent}`;
 });
 
 const shapeClasses = computed(() => {
