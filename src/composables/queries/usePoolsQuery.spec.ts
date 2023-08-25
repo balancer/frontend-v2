@@ -17,7 +17,9 @@ initMulticallWithDefaultMocks();
 
 async function mountPoolsQuery(poolsSortField = '') {
   const filterOptions = computed(() => ({ sortField: poolsSortField }));
-  const { result } = await mountComposable(() => usePoolsQuery(filterOptions));
+  const { result } = await mountComposable(() =>
+    usePoolsQuery(filterOptions, { enabled: true })
+  );
   const data = await waitForQueryData(result);
 
   expect(data?.pages).toHaveLength(1);
