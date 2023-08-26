@@ -27,7 +27,7 @@ type PoolsQueryResponse = {
 
 export default function usePoolsQuery(
   filterOptions: PoolFilterOptions,
-  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = { enabled: true }
 ) {
   /**
    * COMPOSABLES
