@@ -18,6 +18,12 @@ export const timeNowInMs = Math.floor(Date.now() / oneSecondInMs);
 export const oneYearInSecs = twentyFourHoursInSecs * 365;
 export const oneWeekInSecs = twentyFourHoursInSecs * 7;
 
+export const oneWeekAgoInSecs = () =>
+  toUnixTimestamp(new Date().getTime() - oneWeekInMs);
+
+export const weeksAgoInSecs = (weeks = 1) =>
+  toUnixTimestamp(new Date().getTime() - oneWeekInMs * weeks);
+
 export function dateTimeLabelFor(date: Date): string {
   return date.toLocaleString(undefined, {
     weekday: 'short',

@@ -16,10 +16,9 @@ initPoolsFallbackRepositoryWithDefaultMocks();
 initMulticallWithDefaultMocks();
 
 async function mountPoolsQuery(poolsSortField = '') {
-  const filterTokens = ref([]);
-  const options = {};
+  const filterOptions = computed(() => ({ sortField: poolsSortField }));
   const { result } = await mountComposable(() =>
-    usePoolsQuery(filterTokens, { enabled: true }, options, ref(poolsSortField))
+    usePoolsQuery(filterOptions, { enabled: true })
   );
   const data = await waitForQueryData(result);
 

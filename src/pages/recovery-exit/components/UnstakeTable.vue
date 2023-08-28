@@ -262,12 +262,12 @@ function refetchBalances() {
 
 function poolIdFor(token: TokenInfo): string {
   const liquidityGauge = allLiquidityGauges.value.find(
-    gauge => gauge.id === token.address
+    gauge => gauge.id.toLowerCase() === token.address.toLowerCase()
   );
   if (liquidityGauge) return liquidityGauge.poolId;
 
   const auraGauge = allAuraGauges.value.find(
-    gauge => gauge.address === token.address
+    gauge => gauge.address.toLowerCase() === token.address.toLowerCase()
   );
   if (auraGauge) return auraGauge.poolId;
 

@@ -6,7 +6,7 @@ import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { fiatValueOf } from '@/composables/usePoolHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
-import { computed, InjectionKey, provide, reactive, ref } from 'vue';
+import { computed, InjectionKey, provide } from 'vue';
 import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 
@@ -35,16 +35,14 @@ const provider = () => {
     (): boolean => stakedPoolIds.value.length > 0
   );
 
-  const stakedPoolsQuery = usePoolsQuery(
-    ref([]),
-    reactive({
-      enabled: isPoolsQueryEnabled,
-    }),
-    {
-      poolIds: stakedPoolIds,
-      pageSize: 999,
-    }
-  );
+  const filterOptions = computed(() => ({
+    poolIds: stakedPoolIds.value,
+    pageSize: 999,
+  }));
+
+  const stakedPoolsQuery = usePoolsQuery(filterOptions, {
+    enabled: isPoolsQueryEnabled,
+  });
   const { data: _stakedPools, refetch: refetchStakedPools } = stakedPoolsQuery;
 
   // Pool records for all the pools where a user has staked BPT.
