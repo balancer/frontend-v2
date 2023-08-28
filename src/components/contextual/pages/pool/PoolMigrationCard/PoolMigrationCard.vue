@@ -49,14 +49,10 @@ const suggestPoolsQueryEnabled = computed(() => {
   return !!migrationInfo.value?.suggestedPools?.length;
 });
 
-const suggestedPoolsQuery = usePoolsQuery(
-  ref([]),
-  { enabled: suggestPoolsQueryEnabled },
-  {
-    poolIds: ref(migrationInfo.value?.suggestedPools as string[]),
-    first: 1000,
-  }
-);
+const filterOptions = computed(() => ({
+  poolIds: migrationInfo.value?.suggestedPools as string[],
+}));
+const suggestedPoolsQuery = usePoolsQuery(filterOptions);
 
 /**
  * COMPUTED

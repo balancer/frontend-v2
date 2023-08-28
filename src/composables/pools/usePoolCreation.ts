@@ -263,8 +263,12 @@ export default function usePoolCreation() {
   /**
    * FUNCTIONS
    */
+  const filterOptions = computed(() => ({
+    tokens: tokensList.value,
+    useExactTokens: true,
+  }));
   const { data: similarPoolsResponse, isLoading: isLoadingSimilarPools } =
-    usePoolsQuery(tokensList, {}, { isExactTokensList: true });
+    usePoolsQuery(filterOptions);
 
   function resetPoolCreationState() {
     for (const key of Object.keys(poolCreationState)) {
