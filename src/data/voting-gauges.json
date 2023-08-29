@@ -4083,6 +4083,70 @@
     }
   },
   {
+    "address": "0x276Df166BC23bC6A84Aac1EA48E1acC32264b652",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1693250831,
+    "pool": {
+      "id": "0x6ae5a7857aad26722cb02cc168e38c52e0e4e45d0000000000000000000005dd",
+      "address": "0x6Ae5a7857aAd26722cB02CC168e38c52E0e4e45d",
+      "poolType": "ComposableStable",
+      "symbol": "TBY-feb1924-USDC-BPT",
+      "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "weight": "null",
+          "symbol": "USDC"
+        },
+        {
+          "address": "0xC4cafEFBc3dfeA629c589728d648CB6111DB3136",
+          "weight": "null",
+          "symbol": "TBY-feb1924"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+      "0xC4cafEFBc3dfeA629c589728d648CB6111DB3136": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc4cafefbc3dfea629c589728d648cb6111db3136.png"
+    }
+  },
+  {
+    "address": "0x02ea1C2702eCD478082D4b3AE902B6d10d26b920",
+    "network": 1,
+    "isKilled": false,
+    "relativeWeightCap": "0.1",
+    "addedTimestamp": 1693250831,
+    "pool": {
+      "id": "0x6f0ed6f346007563d3266de350d174a831bde0ca0001000000000000000005db",
+      "address": "0x6f0ed6f346007563D3266DE350d174a831bDE0ca",
+      "poolType": "Weighted",
+      "symbol": "50KNC-25WETH-25USDC-BPT",
+      "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "weight": "0.25",
+          "symbol": "USDC"
+        },
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "0.25",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202",
+          "weight": "0.5",
+          "symbol": "KNC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202/logo.png"
+    }
+  },
+  {
     "address": "0xf0f572ad66baacDd07d8c7ea3e0E5EFA56a76081",
     "network": 5,
     "isKilled": false,
@@ -5479,6 +5543,35 @@
     "tokenLogoURIs": {
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
       "0xEC38621e72D86775a89C7422746de1f52bbA5320": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xec38621e72d86775a89c7422746de1f52bba5320.png"
+    }
+  },
+  {
+    "address": "0x852580e3E1C0Fd35DE426C5481670c1772525265",
+    "network": 137,
+    "isKilled": false,
+    "relativeWeightCap": "0.02",
+    "addedTimestamp": 1692049415,
+    "pool": {
+      "id": "0x70ff0078d55ce9c1a0e668f35eb4400a4300122d000000000000000000000beb",
+      "address": "0x70fF0078d55cE9C1A0E668f35eb4400a4300122D",
+      "poolType": "ComposableStable",
+      "symbol": "2CHF (VCHF)",
+      "tokens": [
+        {
+          "address": "0xbD1463F02f61676d53fd183C2B19282BFF93D099",
+          "weight": "null",
+          "symbol": "jCHF"
+        },
+        {
+          "address": "0xCdB3867935247049e87c38eA270edD305D84c9AE",
+          "weight": "null",
+          "symbol": "VCHF"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xbD1463F02f61676d53fd183C2B19282BFF93D099": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbd1463f02f61676d53fd183c2b19282bff93d099.png",
+      "0xCdB3867935247049e87c38eA270edD305D84c9AE": "https://assets.coingecko.com/coins/images/29547/large/VNXCHF_%282%29.png?1679561328"
     }
   },
   {
