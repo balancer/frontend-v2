@@ -30,6 +30,8 @@ const emit = defineEmits<{
 type Props = {
   columns: ColumnDefinition[];
   data: DataProp[];
+  // Sometimes we want to explicitly specify a function to calculate the unique row key (for example, voting pool rows can have repeated ids)
+  rowKey?: (dataItem: DataProp) => string;
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
@@ -150,6 +152,11 @@ function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
     default:
       return 'justify-start';
   }
+}
+
+function getRowKey(dataItem: DataProp, index: number) {
+  if (props.rowKey) return `tableRow-${props.rowKey(dataItem)}`;
+  return `tableRow-${dataItem.id ?? index}`;
 }
 
 onMounted(() => {
@@ -323,7 +330,7 @@ watch([() => props.data, () => props.isLoading], ([newData]) => {
         <PinHeader v-if="pinnedData.length" />
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
-          :key="`tableRow-${dataItem.id ?? index}`"
+          :key="getRowKey(dataItem, index)"
           :class="getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
@@ -343,7 +350,7 @@ watch([() => props.data, () => props.isLoading], ([newData]) => {
         <!-- begin data rows -->
         <template
           v-for="(dataItem, index) in unpinnedData"
-          :key="`tableRow-${dataItem.id ?? index}`"
+          :key="getRowKey(dataItem, index)"
         >
           <BalTableRow
             v-if="!renderedRowsIdx || index <= renderedRowsIdx"
