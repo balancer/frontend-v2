@@ -6,6 +6,7 @@ import {
   GetPoolQuery,
   GqlPoolApr,
   GqlPoolTokenUnion,
+  GqlPoolUnion,
 } from '@/services/api/graphql/generated/api-types';
 import { mapApiChain } from '@/lib/utils/api';
 import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
@@ -29,7 +30,7 @@ export default class SinglePool {
 
     console.log('Getting pool from API');
     const response = await api.GetPool({ id });
-    const pool: ApiPool = response.pool;
+    const pool: GqlPoolUnion = response.pool as GqlPoolUnion;
     console.log('Got pool from API: ', pool);
 
     const convertedPool: Pool = this.mapPool(pool);
@@ -37,7 +38,7 @@ export default class SinglePool {
     return convertedPool;
   }
 
-  mapPool(apiPool: ApiPool): Pool {
+  mapPool(apiPool: GqlPoolUnion): Pool {
     const converted: Pool = {
       id: apiPool.id,
       name: apiPool.name || '',
@@ -53,7 +54,7 @@ export default class SinglePool {
       owner: apiPool.owner ?? undefined,
       factory: apiPool.factory ?? undefined,
       symbol: apiPool.symbol ?? undefined,
-      tokens: ((apiPool.tokens as GqlPoolTokenUnion[]) || [])
+      tokens: (apiPool.tokens || [])
         .map(this.mapToken)
         .filter(token => token.address !== apiPool.address),
       tokensList: (apiPool.allTokens || [])

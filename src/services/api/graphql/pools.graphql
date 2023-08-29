@@ -88,10 +88,13 @@ query GetPools(
     allTokens {
       id
       address
+      name
       isNested
       isPhantomBpt
       weight
       symbol
+      decimals
+      isMainToken
     }
     displayTokens {
       id

@@ -3560,10 +3560,13 @@ export type GetPoolsQuery = {
       __typename?: 'GqlPoolTokenExpanded';
       id: string;
       address: string;
+      name: string;
       isNested: boolean;
       isPhantomBpt: boolean;
       weight?: string | null;
       symbol: string;
+      decimals: number;
+      isMainToken: boolean;
     }>;
     displayTokens: Array<{
       __typename?: 'GqlPoolTokenDisplay';
@@ -4094,10 +4097,13 @@ export const GetPoolsDocument = gql`
       allTokens {
         id
         address
+        name
         isNested
         isPhantomBpt
         weight
         symbol
+        decimals
+        isMainToken
       }
       displayTokens {
         id
