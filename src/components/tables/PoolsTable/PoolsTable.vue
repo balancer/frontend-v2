@@ -317,6 +317,7 @@ function goToPoolPage(id: string) {
     :square="upToLargeBreakpoint"
     :noBorder="upToLargeBreakpoint"
     noPad
+    exposeOverflow
   >
     <BalTable
       :columns="visibleColumns"
