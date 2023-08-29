@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { BigNumber } from '@ethersproject/bignumber';
 import {
   GPv2Settlement,

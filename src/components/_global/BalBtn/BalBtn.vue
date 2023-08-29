@@ -51,6 +51,7 @@ type Props = {
   loading?: boolean;
   loadingLabel?: string;
   disabled?: boolean;
+  justifyContent?: 'start' | 'center' | 'end' | 'between';
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -66,6 +67,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   loadingLabel: 'loading...',
   disabled: false,
+  justifyContent: 'center',
 });
 
 const sizeClasses = computed(() => {
@@ -185,6 +187,11 @@ const displayClasses = computed(() => {
   return 'inline-block';
 });
 
+const contentClasses = computed(() => {
+  if (!props.justifyContent) return 'justify-center';
+  return `justify-${props.justifyContent}`;
+});
+
 const shapeClasses = computed(() => {
   if (props.circle || props.rounded) return 'rounded-full';
   return 'rounded-lg';
@@ -234,7 +241,7 @@ const iconColor = computed(() => {
         {{ loadingLabel }}
       </span>
     </div>
-    <div v-else class="content">
+    <div v-else :class="['content', contentClasses]">
       <span v-if="label">
         {{ label }}
       </span>
@@ -260,6 +267,6 @@ const iconColor = computed(() => {
 }
 
 .content {
-  @apply flex justify-center items-center w-full h-full;
+  @apply flex items-center w-full h-full;
 }
 </style>

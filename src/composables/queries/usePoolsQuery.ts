@@ -7,11 +7,7 @@ import { Pool } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 import { useTokens } from '@/providers/tokens.provider';
 import { configService } from '@/services/config/config.service';
-import {
-  GraphQLArgs,
-  PoolsRepositoryFetchOptions,
-  PoolRepository as SDKPoolRepository,
-} from '@balancer-labs/sdk';
+import { GraphQLArgs, PoolsRepositoryFetchOptions } from '@balancer-labs/sdk';
 import { getPoolsFallbackRepository } from '@/dependencies/PoolsFallbackRepository';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
@@ -21,25 +17,17 @@ import { balancerAPIService } from '@/services/balancer/api/balancer-api.service
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { isBalancerApiDefined } from '@/lib/utils/balancer/api';
 import { bnum } from '@/lib/utils';
+import { PoolAttributeFilter, PoolFilterOptions } from '@/types/pools';
+import { weeksAgoInSecs } from '../useTime';
 
 type PoolsQueryResponse = {
   pools: Pool[];
   skip?: number;
 };
 
-type FilterOptions = {
-  poolIds?: Ref<string[]>;
-  poolAddresses?: Ref<string[]>;
-  isExactTokensList?: boolean;
-  pageSize?: number;
-  first?: number;
-};
-
 export default function usePoolsQuery(
-  filterTokens: Ref<string[]> = ref([]),
-  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
-  filterOptions?: FilterOptions,
-  poolsSortField?: Ref<string>
+  filterOptions: PoolFilterOptions,
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = { enabled: true }
 ) {
   /**
    * COMPOSABLES
@@ -76,9 +64,6 @@ export default function usePoolsQuery(
 
         return pools;
       },
-      get skip(): number {
-        return balancerAPIService.pools.skip;
-      },
     };
   }
 
@@ -105,14 +90,11 @@ export default function usePoolsQuery(
 
         return decoratedPools;
       },
-      get skip(): undefined {
-        return undefined;
-      },
     };
   }
 
   function buildRepositories() {
-    const repositories: SDKPoolRepository[] = [];
+    const repositories: any[] = [];
     if (isBalancerApiDefined) {
       const balancerApiRepository = initializeDecoratedAPIRepository();
       repositories.push(balancerApiRepository);
@@ -124,16 +106,21 @@ export default function usePoolsQuery(
   }
 
   function getQueryArgs(options: PoolsRepositoryFetchOptions): GraphQLArgs {
-    const tokensListFilterOperation = filterOptions?.isExactTokensList
+    const { tokens, poolIds, poolTypes, sortField, poolAttributes } =
+      filterOptions.value;
+    const hasPoolIdFilters = !!poolIds?.length && poolIds?.length > 0;
+    const hasPoolTypeFilters = !!poolTypes?.length;
+    const hasPoolAttributeFilters = !!poolAttributes?.length;
+
+    const tokensListFilterOperation = filterOptions.value.useExactTokens
       ? 'eq'
       : 'contains';
 
-    const tokenListFormatted = filterTokens.value.map(address =>
-      address.toLowerCase()
-    );
+    const tokenListFormatted =
+      tokens?.map(address => address.toLowerCase()) || [];
 
     const orderBy = isBalancerApiDefined
-      ? poolsSortField?.value
+      ? sortField || 'totalLiquidity'
       : 'totalLiquidity';
 
     const queryArgs: GraphQLArgs = {
@@ -147,28 +134,38 @@ export default function usePoolsQuery(
         id: { not_in: POOLS.BlockList },
       },
     };
-    if (queryArgs.where && filterOptions?.poolIds?.value) {
-      queryArgs.where.id = { in: filterOptions.poolIds.value };
+
+    if (queryArgs.where && hasPoolTypeFilters && !!poolTypes?.length) {
+      queryArgs.where.poolType = {
+        in: poolTypes,
+      };
     }
-    if (queryArgs.where && filterOptions?.poolAddresses?.value) {
-      queryArgs.where.address = { in: filterOptions.poolAddresses.value };
+
+    if (queryArgs.where && hasPoolIdFilters) {
+      queryArgs.where.id = { in: filterOptions.value.poolIds };
     }
     if (options.first) {
-      queryArgs.first = filterOptions?.first || options.first;
+      queryArgs.first = filterOptions.value.first || options.first;
     }
     if (options.skip) {
       queryArgs.skip = options.skip;
     }
+
+    if (
+      queryArgs.where &&
+      hasPoolAttributeFilters &&
+      poolAttributes.includes(PoolAttributeFilter.New)
+    ) {
+      queryArgs.where.createTime = { gt: weeksAgoInSecs(1) };
+    }
+
     return queryArgs;
   }
 
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
 
-    // Don't use a limit if there is a token list because the limit is applied pre-filter
-    if (!filterTokens.value.length) {
-      fetchArgs.first = filterOptions?.pageSize || POOLS.Pagination.PerPage;
-    }
+    fetchArgs.first = filterOptions.value.pageSize || POOLS.Pagination.PerPage;
 
     if (pageParam && pageParam > 0) {
       fetchArgs.skip = pageParam;
@@ -178,15 +175,17 @@ export default function usePoolsQuery(
   }
 
   function customSort(pools: Pool[]): Pool[] {
-    if (poolsSortField?.value === 'totalLiquidity') return pools;
+    const poolsSortField = filterOptions.value.sortField || 'totalLiquidity';
 
-    if (poolsSortField?.value === 'apr') {
+    if (poolsSortField === 'totalLiquidity') return pools;
+
+    if (poolsSortField === 'apr') {
       return pools.sort((a, b) => {
         const aprA = a?.apr?.max ?? 0;
         const aprB = b?.apr?.max ?? 0;
         return aprB - aprA;
       });
-    } else if (poolsSortField?.value === 'volume') {
+    } else if (poolsSortField === 'volume') {
       return pools.sort((a, b) => {
         const volumeA = bnum(a?.totalSwapVolume ?? 0);
         const volumeB = bnum(b?.totalSwapVolume ?? 0);
@@ -202,9 +201,10 @@ export default function usePoolsQuery(
    *  need to change to filter for those tokens
    */
   watch(
-    () => [filterTokens, poolsSortField],
+    filterOptions,
     () => {
       poolsRepository = initializePoolsRepository();
+      poolsStoreService.setPools([]);
     },
     { deep: true }
   );
@@ -212,29 +212,28 @@ export default function usePoolsQuery(
   /**
    * QUERY KEY
    */
-  const queryKey = QUERY_KEYS.Pools.All(
-    networkId,
-    filterTokens,
-    poolsSortField,
-    filterOptions?.poolIds,
-    filterOptions?.poolAddresses
-  );
+  const queryKey = QUERY_KEYS.Pools.All(networkId, filterOptions);
 
   /**
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
+    if (
+      !options.enabled ||
+      (isRef(options.enabled) && !options.enabled.value)
+    ) {
+      return {
+        pools: [],
+        skip: 0,
+      };
+    }
     const fetchOptions = getFetchOptions(pageParam);
-    let skip = 0;
+    const skip = (fetchOptions.first || 0) + (fetchOptions.skip || 0);
     try {
       let pools: Pool[] = await poolsRepository.fetch(fetchOptions);
       if (!isBalancerApiDefined) pools = customSort(pools);
 
       poolsStoreService.addPools(pools);
-
-      skip = poolsRepository.currentProvider?.skip
-        ? poolsRepository.currentProvider.skip
-        : poolsStoreService.pools.value?.length || 0;
 
       return {
         pools,

@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
 

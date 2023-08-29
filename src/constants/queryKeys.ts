@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 
@@ -7,6 +7,7 @@ import { NativeAsset, TokenInfo } from '@/types/TokenList';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
 import { TokenPrices } from '@/composables/queries/useTokenPricesQuery';
 import { MerkleOrchardVersion } from '@/services/claim/claim.service';
+import { PoolFilterOptions } from '@/types/pools';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -15,21 +16,12 @@ export const QUERY_JOIN_ROOT_KEY = [POOLS_ROOT_KEY, 'query', 'join'];
 
 const QUERY_KEYS = {
   Pools: {
-    All: (
-      networkId: Ref<Network>,
-      tokens: Ref<string[]>,
-      poolsSortField: Ref<string> | undefined,
-      poolIds: Ref<string[]> | undefined,
-      poolAddresses: Ref<string[]> | undefined
-    ) => [
+    All: (networkId: Ref<Network>, filterOptions: PoolFilterOptions) => [
       POOLS_ROOT_KEY,
       'all',
       {
         networkId,
-        tokens,
-        poolsSortField,
-        poolIds,
-        poolAddresses,
+        filterOptions,
       },
     ],
     User: (

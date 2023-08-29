@@ -9,7 +9,7 @@ import {
 import useWeb3 from '@/services/web3/useWeb3';
 import { isTestnet } from '@/composables/useNetwork';
 import { VeBalGetVotingListQuery } from '@/services/api/graphql/generated/api-types';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { PoolType } from '@/services/pool/types';
 import { testnetVotingPools } from '@/components/contextual/pages/vebal/LMVoting/testnet-voting-pools';
 import { mapApiChain, mapApiPoolType } from '@/services/api/graphql/mappers';

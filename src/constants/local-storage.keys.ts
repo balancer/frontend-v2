@@ -20,4 +20,7 @@ export default {
     Toggled: 'tokenLists.toggled',
   },
   Transactions: 'transactions',
+  Alerts: {
+    RecoveryExitDismissed: 'alerts.recoveryExitDismissed',
+  },
 };

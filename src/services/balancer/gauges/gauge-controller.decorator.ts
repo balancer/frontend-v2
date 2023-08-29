@@ -13,7 +13,7 @@ import { getOldMulticaller } from '@/dependencies/OldMulticaller';
 // eslint-disable-next-line no-restricted-imports
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { networkId, isTestnet } from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import {
   ApiVotingPools,
   ApiVotingGauge,

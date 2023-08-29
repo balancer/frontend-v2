@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bal-alert', classes]">
+  <div :class="['bal-alert relative', classes]">
     <div :class="['bal-alert-container', containerClasses]">
       <div>
         <div :class="['bal-alert-icon', iconClasses]">
@@ -9,12 +9,12 @@
       </div>
       <div :class="['bal-alert-content', contentClasses]">
         <div>
-          <h5 :class="['bal-alert-title mb-1', titleClasses, textSizeClass]">
+          <h5 :class="['bal-alert-title', titleClasses, textSizeClass]">
             <slot name="title">
               {{ title }}
             </slot>
           </h5>
-          <p
+          <div
             v-if="$slots.default || description"
             :class="[
               'bal-alert-description font-normal',
@@ -25,7 +25,7 @@
             <slot>
               {{ description }}
             </slot>
-          </p>
+          </div>
         </div>
         <div v-if="actionLabel" :class="[actionClasses]">
           <BalBtn :color="btnColor" size="xs" @click="$emit('action-click')">
@@ -33,6 +33,15 @@
           </BalBtn>
         </div>
       </div>
+    </div>
+
+    <div v-if="dismissable" class="absolute top-1 right-1">
+      <BalIcon
+        name="x"
+        size="sm"
+        class="cursor-pointer"
+        @click.stop="$emit('close')"
+      />
     </div>
   </div>
 </template>
@@ -68,9 +77,10 @@ export default defineComponent({
     contentClass: { type: String, default: '' },
     square: { type: Boolean, default: false },
     noBorder: { type: Boolean, default: false },
+    dismissable: { type: Boolean, default: false },
   },
 
-  emits: ['action-click'],
+  emits: ['action-click', 'close'],
 
   setup(props, { slots }) {
     const bgColorClass = computed(() => {

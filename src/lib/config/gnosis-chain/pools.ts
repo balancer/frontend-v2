@@ -1,5 +1,7 @@
 import { Protocol } from '@/composables/useProtocols';
-import { PoolFeature, Pools } from '@/types/pools';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {},
@@ -50,6 +52,13 @@ const pools: Pools = {
       '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046', // agUSD-agWETH-agWBTC
       '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045', // 50bbagGNO-50bbagUSD
       '0x0c1b9ce6bf6c01f587c2ee98b0ef4b20c6648753000000000000000000000050',
+      '0x00df7f58e1cf932ebe5f54de5970fb2bdf0ef06d00010000000000000000005b', // B-50wstETH-25BAL-25AURA
+      '0x4cdabe9e07ca393943acfb9286bbbd0d0a310ff600020000000000000000005c', // B-50wstETH-50COW
+      '0xeb30c85cc528537f5350cf5684ce6a4538e13394000200000000000000000059', // B-50USD-50wstETH
+      '0x4683e340a8049261057d5ab1b29c8d840e75695e00020000000000000000005a', // B-50wstETH-50GNO
+      '0xb8bb1ce9c6e5401d66fe2126db6e7387e1e24ffe00020000000000000000003d', // WETH/GNO
+      '0x274dedb9356c3e1e24bfe2bf3d4349fbdbfa0d14000200000000000000000054', // staBAL/GNO
+      '0x66888e4f35063ad8bb11506a6fde5024fb4f1db0000100000000000000000053', // WETH/staBAL/WBTC
     ],
   },
   Factories: {
@@ -70,6 +79,10 @@ const pools: Pools = {
       '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046',
       '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045',
       '0xe15cac1df3621e001f76210ab12a7f1a1691481f000000000000000000000044',
+      '0xb8bb1ce9c6e5401d66fe2126db6e7387e1e24ffe00020000000000000000003d',
+      '0x66888e4f35063ad8bb11506a6fde5024fb4f1db0000100000000000000000053',
+      '0x2086f52651837600180de173b09470f54ef7491000000000000000000000004f',
+      '0x274dedb9356c3e1e24bfe2bf3d4349fbdbfa0d14000200000000000000000054',
     ],
     AllowList: [],
   },
@@ -120,8 +133,33 @@ const pools: Pools = {
     '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046', // agUSD-agWETH-agWBTC
     '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045', // 50bbagGNO-50bbagUSD
   ],
+  Deprecated: {
+    '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012': {
+      newPool:
+        '0xb8bb1ce9c6e5401d66fe2126db6e7387e1e24ffe00020000000000000000003d',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046': {
+      newPool:
+        '0x66888e4f35063ad8bb11506a6fde5024fb4f1db0000100000000000000000053',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xe15cac1df3621e001f76210ab12a7f1a1691481f000000000000000000000044': {
+      newPool:
+        '0x2086f52651837600180de173b09470f54ef7491000000000000000000000004f',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045': {
+      newPool:
+        '0x274dedb9356c3e1e24bfe2bf3d4349fbdbfa0d14000200000000000000000054',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+  },
   BoostedApr: [],
-  DisabledJoins: [],
+  DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.GNOSIS]],
+  Issues: {
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.GNOSIS],
+  },
 };
 
 export default pools;

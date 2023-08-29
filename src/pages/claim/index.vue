@@ -24,7 +24,7 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { poolMetadata } from '@/lib/config/metadata';
 
 /**

@@ -6,6 +6,7 @@ import {
   isComposableStableV1,
   isDeep,
   isPreMintedBptType,
+  isRecoveryExitsOnly,
   tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePoolHelpers';
@@ -216,7 +217,7 @@ export const exitPoolProvider = (
   // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
   const shouldUseRecoveryExit = computed(
     (): boolean =>
-      (pool.value.isInRecoveryMode && pool.value.isPaused) ||
+      isRecoveryExitsOnly(pool.value) ||
       (!isDeepPool.value && isComposableStableV1(pool.value))
   );
 

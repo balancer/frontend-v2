@@ -4,22 +4,37 @@ import { computed, Ref, ref, watch } from 'vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { useTokens } from '@/providers/tokens.provider';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolType } from '@/services/pool/types';
 import { tokenTreeLeafs } from '../usePoolHelpers';
+import { PoolAttributeFilter, PoolFilterOptions } from '@/types/pools';
 
-export default function usePools(
-  filterTokens: Ref<string[]> = ref([]),
-  poolsSortField: Ref<string>
-) {
+type Props = {
+  filterTokens?: Ref<string[]>;
+  sortField?: Ref<string>;
+  poolIds?: Ref<string[]>;
+  poolTypes?: Ref<PoolType[]>;
+  poolAttributes?: Ref<PoolAttributeFilter[]>;
+};
+
+export default function usePools({
+  filterTokens = ref([]),
+  sortField = ref('totalLiquidity'),
+  poolIds = ref([]),
+  poolTypes = ref([]),
+  poolAttributes = ref([]),
+}: Props) {
+  const filterOptions: PoolFilterOptions = computed(() => ({
+    tokens: filterTokens.value,
+    sortField: sortField.value,
+    poolIds: poolIds.value,
+    poolTypes: poolTypes.value,
+    poolAttributes: poolAttributes.value,
+  }));
+
   /**
    * COMPOSABLES
    */
-  const poolsQuery = usePoolsQuery(
-    filterTokens,
-    undefined,
-    undefined,
-    poolsSortField
-  );
+  const poolsQuery = usePoolsQuery(filterOptions);
 
   const { injectTokens } = useTokens();
 
@@ -36,8 +51,8 @@ export default function usePools(
 
   const isLoading = computed(() => isQueryLoading(poolsQuery));
 
-  const poolsHasNextPage = computed(() => poolsQuery.hasNextPage?.value);
-  const poolsIsFetchingNextPage = computed(
+  const hasNextPage = computed(() => poolsQuery.hasNextPage?.value);
+  const isFetchingNextPage = computed(
     () => poolsQuery.isFetchingNextPage?.value
   );
 
@@ -65,8 +80,8 @@ export default function usePools(
   return {
     pools,
     isLoading,
-    poolsHasNextPage,
-    poolsIsFetchingNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     // methods
     loadMorePools,
   };

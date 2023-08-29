@@ -13,6 +13,8 @@ import { Goals, trackGoal } from '@/composables/useFathom';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
+import { usePoolWarning } from '@/composables/usePoolWarning';
+import { PoolWarning } from '@/types/pools';
 
 /**
  * TYPES
@@ -40,6 +42,7 @@ const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { networkSlug } = useNetwork();
 const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
 const { balanceFor } = useTokens();
+const { isAffectedBy } = usePoolWarning(computed(() => props.pool.id));
 
 /**
  * COMPUTED
@@ -81,6 +84,17 @@ const joinDisabled = computed(
         />
 
         <BalBtn
+          v-if="isAffectedBy(PoolWarning.CspPoolVulnWarning)"
+          tag="router-link"
+          :to="{ name: 'recovery-exit', params: { networkSlug } }"
+          :label="$t('withdraw.label')"
+          :disabled="!hasBpt"
+          color="blue"
+          outline
+          block
+        />
+        <BalBtn
+          v-else
           :tag="hasBpt ? 'router-link' : 'div'"
           :to="{ name: 'withdraw', params: { networkSlug } }"
           :label="$t('withdraw.label')"

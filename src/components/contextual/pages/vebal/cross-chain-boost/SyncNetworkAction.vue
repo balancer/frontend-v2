@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { TransactionActionInfo } from '@/types/transactions';
 import { useI18n } from 'vue-i18n';

@@ -5,7 +5,7 @@ import {
 import { safeInject } from '@/providers/inject';
 
 import symbolKeys from '@/constants/symbol.keys';
-import { getAddress } from '@ethersproject/address';
+// import { getAddress } from '@ethersproject/address';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { setTag } from '@sentry/browser';
 import axios from 'axios';
@@ -203,7 +203,7 @@ export const wallets = () => {
 
       setTag('wallet', wallet);
       if (connector?.chainId.value) {
-        setTag('network', config[connector.chainId.value].network);
+        setTag('walletNetwork', config[connector.chainId.value].network);
       }
 
       // listens to wallet/chain changed and disconnect events
