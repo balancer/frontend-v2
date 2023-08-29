@@ -1,7 +1,8 @@
 import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery from './useGraphQuery';
 import useNetwork from '../useNetwork';
-import config, { Network } from '@/lib/config';
+import config from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 const attrs = {
   id: true,

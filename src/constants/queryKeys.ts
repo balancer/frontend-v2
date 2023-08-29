@@ -267,9 +267,9 @@ const QUERY_KEYS = {
       'historical-locks',
       { networkId, account },
     ],
-    LeaderBoard: (networkId: Ref<Network>) => [
-      'locking-leaderboard',
-      [networkId],
+    UserRank: (networkId: Ref<Network>, account: Ref<string>) => [
+      'user-rank',
+      [networkId, account],
     ],
   },
 };

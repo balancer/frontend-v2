@@ -16,7 +16,7 @@ import * as echarts from 'echarts/core';
 import useVeBal from '@/composables/useVeBAL';
 import { useI18n } from 'vue-i18n';
 import { useHistoricalLocksQuery } from '@/composables/queries/useHistoricalLocksQuery';
-import { useLockLeaderQuery } from '@/composables/queries/useLockLeaderQuery';
+import { useLockRankQuery } from '@/composables/queries/useLockRankQuery';
 
 /**
  * COMPOSABLES
@@ -38,8 +38,8 @@ const tailwind = useTailwind();
 const { veBalBalance, lockablePoolId } = useVeBal();
 const { t } = useI18n();
 const { isLoading, data } = useHistoricalLocksQuery(account);
-const { isLoading: isLoadingLockBoard, data: lockBoardData } =
-  useLockLeaderQuery();
+const { isLoading: isLoadingLockBoard, data: userRankData } =
+  useLockRankQuery(account);
 /**
  * COMPUTED
  */
@@ -96,11 +96,8 @@ const chartValues = computed(() => {
 });
 
 const userRank = computed(() => {
-  if (!lockBoardData.value) return '';
-  const rank = lockBoardData.value.votingEscrowLocks.findIndex(
-    item => item.user.id.toLowerCase() === account.value?.toLowerCase()
-  );
-  return rank === -1 ? '' : rank + 1;
+  if (!userRankData.value) return '';
+  return userRankData.value.veBalGetUser.rank;
 });
 
 const vebalInfo = computed(() => {
