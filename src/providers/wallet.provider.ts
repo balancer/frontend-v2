@@ -252,6 +252,10 @@ export const wallets = () => {
     connectWallet(alreadyConnectedProvider.value);
   }
 
+  watch(chainId, () => {
+    setTag('walletNetwork', config[chainId.value].network);
+  });
+
   return {
     connectWallet,
     disconnectWallet,
