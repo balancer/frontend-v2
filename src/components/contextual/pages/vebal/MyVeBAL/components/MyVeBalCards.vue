@@ -44,8 +44,7 @@ const showUnlockPreviewModal = ref(false);
  */
 const { balanceFor } = useTokens();
 const { fNum } = useNumbers();
-const { veBalBalance, lockablePoolId } = useVeBal();
-const { t } = useI18n();
+const { lockablePoolId } = useVeBal();
 const { isWalletReady } = useWeb3();
 const { networkSlug } = useNetwork();
 
@@ -83,7 +82,6 @@ const fiatTotalExpiredLpTokens = computed(() =>
 
 const cards = computed(() => {
   const hasExistingLock = props.veBalLockInfo?.hasExistingLock;
-  const isExpired = props.veBalLockInfo?.isExpired;
 
   return [
     {
@@ -107,7 +105,7 @@ const cards = computed(() => {
 </script>
 
 <template>
-  <BalCard v-for="card in cards" :key="card.id" class="max-w-[320px]">
+  <BalCard v-for="card in cards" :key="card.id">
     <div class="flex justify-between items-center">
       <div class="font-bold label">
         {{ card.label }}

@@ -21,21 +21,14 @@ import { useLockRankQuery } from '@/composables/queries/useLockRankQuery';
 /**
  * COMPOSABLES
  */
-const { isWalletReady, account } = useWeb3();
+const { account } = useWeb3();
 
-const {
-  isLoadingLockPool,
-  isLoadingLockInfo,
-  lockPool,
-  lockPoolToken,
-  lock,
-  totalLockedValue,
-} = useLock();
+const { isLoadingLockPool, isLoadingLockInfo, lockPool, lock } = useLock();
 const { balanceFor } = useTokens();
 const { fNum } = useNumbers();
 const router = useRouter();
 const tailwind = useTailwind();
-const { veBalBalance, lockablePoolId } = useVeBal();
+const { veBalBalance } = useVeBal();
 const { t } = useI18n();
 const { isLoading, data } = useHistoricalLocksQuery(account);
 const { isLoading: isLoadingLockBoard, data: userRankData } =
@@ -43,6 +36,14 @@ const { isLoading: isLoadingLockBoard, data: userRankData } =
 /**
  * COMPUTED
  */
+const isLoadingData = computed(
+  () =>
+    isLoadingLockBoard.value ||
+    isLoading.value ||
+    isLoadingLockInfo.value ||
+    isLoadingLockPool.value
+);
+
 const poolShares = computed(() => {
   if (!lockPool.value) return bnum(0);
   return bnum(lockPool.value.totalLiquidity).div(lockPool.value.totalShares);
@@ -68,31 +69,40 @@ const lockedUntil = computed(() => {
 const chartValues = computed(() => {
   if (!data.value) return [];
   console.log(data.value);
-  return data.value.lockSnapshots.map(snapshot => {
-    // veBAL_balance = bias - slope * (now() - timestamp)
+  const { lockSnapshots } = data.value;
+
+  const currentDate = (Date.now() / 1000).toFixed(0);
+
+  const chartV = lockSnapshots.reduce((acc: any, snapshot, i) => {
     const bias = bnum(snapshot.bias);
     const slope = bnum(snapshot.slope);
-    const now = bnum(Date.now());
-    // console.log({
-    //   bias,
-    //   slope,
-    //   now: now.toNumber(),
-    //   timestamp: snapshot.timestamp,
-    // });
-    const timestamp = snapshot.timestamp * 1000;
-    // console.log({
-    //   bias,
-    //   slope,
-    //   now: now.toNumber(),
-    //   timestamp,
-    // });
-    const veBalBalance = bias.minus(slope.times(timestamp));
-    // console.log(veBalBalance.toNumber());
-    return Object.freeze<[string, number]>([
-      format(snapshot.timestamp * 1000, 'yyyy/MM/dd'),
-      veBalBalance.toNumber(),
-    ]);
-  });
+    const now = lockSnapshots[i + 1]
+      ? bnum(lockSnapshots[i + 1].timestamp)
+      : bnum(currentDate);
+
+    const timestamp = snapshot.timestamp;
+
+    const point1Balance = bias;
+
+    const point2V = bias.minus(slope.times(now.minus(timestamp)));
+    const point2Balance = point2V.isLessThan(0) ? bnum(0) : point2V;
+
+    acc.push(
+      Object.freeze<[string, number]>([
+        format(snapshot.timestamp * 1000, 'yyyy/MM/dd'),
+        point1Balance.toNumber(),
+      ])
+    );
+    acc.push(
+      Object.freeze<[string, number]>([
+        format(now.toNumber() * 1000, 'yyyy/MM/dd'),
+        point2Balance.toNumber(),
+      ])
+    );
+    return acc;
+  }, []);
+  console.log({ chartV });
+  return chartV;
 });
 
 const userRank = computed(() => {
@@ -134,10 +144,22 @@ const vebalInfo = computed(() => {
   return arr;
 });
 
-const chartData = computed(() => {
-  console.log('chartValues', chartValues.value);
+const futureLockChartData = computed(() => {
   return {
-    color: ['#BCA25D'],
+    name: 'Future Lock',
+    values: [
+      chartValues.value[chartValues.value.length - 1],
+      Object.freeze<[string, number]>([
+        format(new Date(lockedUntil.value).getTime(), 'yyyy/MM/dd'),
+        0,
+      ]),
+    ],
+  };
+});
+
+const chartData = computed(() => {
+  return {
+    color: ['#BCA25D', '#BCA25D'],
     hoverBorderColor: tailwind.theme.colors.pink['500'],
     hoverColor: tailwind.theme.colors.white,
     areaStyle: {
@@ -158,7 +180,9 @@ const chartData = computed(() => {
         name: 'Historical Lock',
         values: chartValues.value,
       },
+      futureLockChartData.value,
     ],
+    lineStyles: [{}, { type: 'dashed' }],
   };
 });
 
@@ -177,12 +201,9 @@ function navigateToGetVeBAL() {
 
 <template>
   <div
-    class="flex flex-col md:flex-row flex-grow gap-6 justify-between items-center px-10 text-white"
+    class="flex flex-col md:flex-row flex-grow gap-6 justify-between items-center px-10 h-full text-white"
   >
-    <BalLoadingBlock
-      v-if="isLoadingLockInfo || isLoadingLockPool"
-      class="height[30.9rem]"
-    />
+    <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
     <div v-else class="flex flex-col flex-1">
       <div class="mb-2 text-xl font-bold">My veBAL</div>
       <div class="mb-10 text-5xl font-black">
@@ -210,13 +231,11 @@ function navigateToGetVeBAL() {
         </BalBtn>
       </div>
     </div>
-    <BalLoadingBlock
-      v-if="isLoadingLockInfo || isLoadingLockPool || isLoading"
-      class="height-[30.9rem]"
-    />
+    <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
+
     <div v-else class="p-5 w-full rounded-2xl flex-[1.5] chart-wrapper">
       <BalChart
-        :isLoading="isLoadingLockInfo || isLoadingLockPool"
+        :isLoading="isLoadingData"
         height="96"
         :data="chartData.data"
         :axisLabelFormatter="{
@@ -235,6 +254,7 @@ function navigateToGetVeBAL() {
         :showLegend="false"
         :chartType="chartData.chartType"
         :showTooltipLayer="false"
+        :lineStyles="chartData.lineStyles"
         showTooltip
         hideYAxis
       />

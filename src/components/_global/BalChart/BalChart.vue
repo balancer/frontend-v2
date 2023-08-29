@@ -36,6 +36,7 @@ type AreaStyle = {
 type Props = {
   data: ChartData[];
   chartType: string;
+  lineStyles?: any[];
   onAxisMoved?: undefined | ((value: readonly [string, number]) => void);
   isLoading?: boolean;
   hideYAxis?: boolean;
@@ -222,6 +223,7 @@ const chartConfig = computed(() => ({
     },
     lineStyle: {
       width: 2,
+      ...props.lineStyles?.[i],
     },
     areaStyle: props.areaStyle,
     itemStyle: {
