@@ -2,6 +2,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery from './useGraphQuery';
 import useNetwork from '../useNetwork';
 import config, { Network } from '@/lib/config';
+import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
 
 const attrs = {
   id: true,
@@ -47,8 +48,6 @@ export function useLockLeaderQuery() {
         ...attrs,
       },
     }),
-    reactive({
-      refetchOnWindowFocus: false,
-    })
+    FETCH_ONCE_OPTIONS
   );
 }

@@ -107,8 +107,8 @@ const cards = computed(() => {
 </script>
 
 <template>
-  <BalCard v-for="card in cards" :key="card.id">
-    <div class="flex justify-between items-center max-w-[320px]">
+  <BalCard v-for="card in cards" :key="card.id" class="max-w-[320px]">
+    <div class="flex justify-between items-center">
       <div class="font-bold label">
         {{ card.label }}
       </div>

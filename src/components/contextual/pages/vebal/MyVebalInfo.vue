@@ -86,11 +86,11 @@ const chartValues = computed(() => {
     //   now: now.toNumber(),
     //   timestamp,
     // });
-    const veBalBalance = bias.minus(slope.times(now.minus(timestamp)));
+    const veBalBalance = bias.minus(slope.times(timestamp));
     // console.log(veBalBalance.toNumber());
     return Object.freeze<[string, number]>([
       format(snapshot.timestamp * 1000, 'yyyy/MM/dd'),
-      veBalBalance.abs().toNumber(),
+      veBalBalance.toNumber(),
     ]);
   });
 });
@@ -158,7 +158,7 @@ const chartData = computed(() => {
     chartType: 'line',
     data: [
       {
-        name: 'TVL',
+        name: 'Historical Lock',
         values: chartValues.value,
       },
     ],
@@ -179,12 +179,14 @@ function navigateToGetVeBAL() {
 </script>
 
 <template>
-  <div class="flex flex-grow justify-between items-center px-10 text-white">
+  <div
+    class="flex flex-col md:flex-row flex-grow gap-6 justify-between items-center px-10 text-white"
+  >
     <BalLoadingBlock
       v-if="isLoadingLockInfo || isLoadingLockPool"
       class="height[30.9rem]"
     />
-    <div v-else class="flex flex-col flex-1 mr-10">
+    <div v-else class="flex flex-col flex-1">
       <div class="mb-2 text-xl font-bold">My veBAL</div>
       <div class="mb-10 text-5xl font-black">
         {{ fNum(bptBalance, FNumFormats.token) }}
@@ -215,7 +217,7 @@ function navigateToGetVeBAL() {
       v-if="isLoadingLockInfo || isLoadingLockPool || isLoading"
       class="height-[30.9rem]"
     />
-    <div v-else class="p-5 w-full rounded-2xl flex-[2] chart-wrapper">
+    <div v-else class="p-5 w-full rounded-2xl flex-[1.5] chart-wrapper">
       <BalChart
         :isLoading="isLoadingLockInfo || isLoadingLockPool"
         height="96"
