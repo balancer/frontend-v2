@@ -4,14 +4,13 @@
  * To run, ensure you have your own .env.development file with the following:
  * VITE_RPC_URL_1=YOUR_MAINNET_RPC_URL
  */
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { getAddress } from '@ethersproject/address';
 import debug from 'debug';
 import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
-import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
 import vebalGauge from '../../../public/data/vebal-gauge.json';
@@ -23,12 +22,29 @@ import { flatten, mapValues } from 'lodash';
 import { configService } from '@/services/config/config.service';
 import { Multicaller } from '@/services/multicalls/multicaller';
 import { StaticJsonRpcBatchProvider } from '@/services/rpc-provider/static-json-rpc-batch-provider';
+import { PoolToken, PoolType } from '@/services/pool/types';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
 });
 
 const log = debug('balancer:voting-gauge-generator');
+
+type VotingGauge = {
+  address: string;
+  network: Network;
+  isKilled: boolean;
+  addedTimestamp: number;
+  relativeWeightCap: string;
+  pool: {
+    id: string;
+    address: string;
+    poolType: PoolType;
+    symbol: string | undefined;
+    tokens: Pick<PoolToken, 'address' | 'weight' | 'symbol'>[];
+  };
+  tokenLogoURIs: Record<string, string | undefined>;
+};
 
 type GaugeInfo = {
   address: string;

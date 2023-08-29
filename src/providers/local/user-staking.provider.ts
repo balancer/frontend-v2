@@ -6,7 +6,7 @@ import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { fiatValueOf } from '@/composables/usePoolHelpers';
 import symbolKeys from '@/constants/symbol.keys';
 import { Pool } from '@/services/pool/types';
-import { computed, InjectionKey, provide, reactive, ref } from 'vue';
+import { computed, InjectionKey, provide } from 'vue';
 import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
 import { configService } from '@/services/config/config.service';
@@ -38,17 +38,6 @@ const provider = () => {
     (): boolean => stakedPoolIds.value.length > 0
   );
 
-  const stakedPoolsQuery = usePoolsQuery(
-    ref([]),
-    reactive({
-      enabled: isPoolsQueryEnabled,
-    }),
-    {
-      poolIds: stakedPoolIds,
-      pageSize: 999,
-    }
-  );
-
   const hasNonPrefGaugesPoolsAddresses = computed(() => {
     const arr = userGaugeShares.value?.reduce((acc: string[], gauge) => {
       if (!gauge.gauge.isPreferentialGauge) {
@@ -58,6 +47,15 @@ const provider = () => {
     }, []);
 
     return arr;
+  });
+
+  const filterOptions = computed(() => ({
+    poolIds: stakedPoolIds.value,
+    pageSize: 999,
+  }));
+
+  const stakedPoolsQuery = usePoolsQuery(filterOptions, {
+    enabled: isPoolsQueryEnabled,
   });
 
   const { data: _stakedPools, refetch: refetchStakedPools } = stakedPoolsQuery;

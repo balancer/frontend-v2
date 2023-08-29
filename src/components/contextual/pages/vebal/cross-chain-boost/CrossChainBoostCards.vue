@@ -12,7 +12,8 @@ import {
   useCrossChainSync,
   NetworkSyncState,
 } from '@/providers/cross-chain-sync.provider';
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 /**
  * COMPOSABLES

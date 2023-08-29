@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 import { MetamaskConnectorMock } from '@/dependencies/wallets/wallet-connector-mocks';
 import { JsonRpcSigner, TransactionResponse } from '@ethersproject/providers';

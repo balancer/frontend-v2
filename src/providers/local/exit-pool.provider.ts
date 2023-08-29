@@ -6,6 +6,7 @@ import {
   isComposableStableV1,
   isDeep,
   isPreMintedBptType,
+  isRecoveryExitsOnly,
   tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePoolHelpers';
@@ -186,12 +187,15 @@ export const exitPoolProvider = (
     shouldSignRelayer.value ? [relayerApprovalAction.value] : []
   );
 
+  const canSwapExit = computed(
+    (): boolean => isDeep(pool.value) && isPreMintedBptType(pool.value.poolType)
+  );
+
   const shouldUseSwapExit = computed(
     (): boolean =>
       isSingleAssetExit.value &&
-      isDeep(pool.value) &&
-      isPreMintedBptType(pool.value.poolType) &&
-      !includesAddress(pool.value.tokensList, singleAmountOut.address)
+      !includesAddress(pool.value.tokensList, singleAmountOut.address) &&
+      canSwapExit.value
   );
 
   const shouldUseGeneralisedExit = computed(
@@ -213,7 +217,7 @@ export const exitPoolProvider = (
   // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
   const shouldUseRecoveryExit = computed(
     (): boolean =>
-      (pool.value.isInRecoveryMode && pool.value.isPaused) ||
+      isRecoveryExitsOnly(pool.value) ||
       (!isDeepPool.value && isComposableStableV1(pool.value))
   );
 
@@ -604,6 +608,7 @@ export const exitPoolProvider = (
     relayerSignature,
     relayerApprovalTx,
     shouldUseSwapExit,
+    canSwapExit,
     shouldUseRecoveryExit,
 
     // methods

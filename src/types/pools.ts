@@ -1,4 +1,27 @@
 import { Protocol } from '@/composables/useProtocols';
+import { PoolType } from '@/services/pool/types';
+
+export enum PoolTypeFilter {
+  Weighted = 'Weighted',
+  Stable = 'Stable',
+  CLP = 'CLP',
+  LBP = 'LBP',
+}
+
+export enum PoolAttributeFilter {
+  New = 'New',
+}
+
+export type PoolFilterOptions = Ref<{
+  poolIds?: string[];
+  tokens?: string[];
+  poolTypes?: PoolType[];
+  poolAttributes?: PoolAttributeFilter[];
+  useExactTokens?: boolean;
+  pageSize?: number;
+  first?: number;
+  sortField?: string;
+}>;
 
 export type FactoryType =
   | 'oracleWeightedPool'
@@ -79,6 +102,8 @@ export type NamedPools = {
     maiBbaUsd: string;
   };
   veBAL: string;
+  veLIT: string;
+  veUSH: string;
 };
 
 export type DeprecatedDetails = {
@@ -161,4 +186,5 @@ export enum PoolWarning {
   RenBTCWarning = 'renBTCWarning',
   EulerBoostedWarning = 'eulerBoostedWarning',
   EulerRecoveryModeWarning = 'eulerRecoveryModeWarning',
+  CspPoolVulnWarning = 'cspPoolVulnWarning',
 }

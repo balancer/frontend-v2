@@ -1,5 +1,6 @@
 import { Wallet } from '@/providers/wallet.provider';
-import config, { Network } from '@/lib/config';
+import config from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 function getNetworkIconName(network: Network) {
   return config[Number(network)].slug;

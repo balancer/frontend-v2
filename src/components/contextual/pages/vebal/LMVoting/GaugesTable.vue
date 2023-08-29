@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { PoolToken } from '@balancer-labs/sdk';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -11,11 +10,13 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 import useBreakpoints from '@/composables/useBreakpoints';
 import { getNetworkSlug } from '@/composables/useNetwork';
 import {
+  isGyro,
   isStableLike,
   isUnknownType,
+  isVeBalPool,
   poolURLFor,
 } from '@/composables/usePoolHelpers';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
@@ -25,20 +26,25 @@ import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 import {
   orderedTokenURIs,
   orderedGaugeTokens,
-} from '@/composables/useVotingGauges';
+  isVe8020Pool,
+} from '@/composables/useVotingPools';
 import IconLimit from '@/components/icons/IconLimit.vue';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { poolMetadata } from '@/lib/config/metadata';
 import { isGaugeExpired } from './voting-utils';
+import Ve8020Chip from './Ve8020Chip.vue';
+import PoolFeatureChip from '@/components/chips/PoolFeatureChip.vue';
+import { PoolFeature } from '@/types/pools';
+import { Protocol } from '@/composables/useProtocols';
 
 /**
  * TYPES
  */
 type Props = {
   expiredGauges?: Readonly<string[]>;
-  data?: VotingGaugeWithVotes[];
+  data?: VotingPool[];
   isLoading?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
@@ -59,7 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'clickedVote', value: VotingGaugeWithVotes): void;
+  (e: 'clickedVote', value: VotingPool): void;
 }>();
 
 /**
@@ -73,7 +79,7 @@ const { isWalletReady } = useWeb3();
 /**
  * DATA
  */
-const columns = computed((): ColumnDefinition<VotingGaugeWithVotes>[] => [
+const columns = computed((): ColumnDefinition<VotingPool>[] => [
   {
     name: t('veBAL.liquidityMining.table.chain'),
     id: 'chain',
@@ -138,25 +144,26 @@ function isInternalUrl(url: string): boolean {
   return url.includes('balancer.fi') || url.includes('localhost');
 }
 
-function redirectToPool(gauge: VotingGaugeWithVotes, inNewTab) {
-  const redirectUrl = poolURLFor(gauge.pool, gauge.network);
+function redirectToPool(pool: VotingPool, inNewTab) {
+  const redirectUrl = poolURLFor(pool, pool.network);
   if (!isInternalUrl(redirectUrl)) {
     window.location.href = redirectUrl;
   } else {
     const route = router.resolve({
       name: 'pool',
-      params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
+      params: { id: pool.id, networkSlug: getNetworkSlug(pool.network) },
     });
     inNewTab ? window.open(route.href) : router.push(route);
   }
 }
 
-function getPoolExternalUrl(gauge: VotingGaugeWithVotes) {
-  const poolUrl = poolURLFor(gauge.pool, gauge.network);
+function getPoolExternalUrl(pool: VotingPool) {
+  const poolUrl = poolURLFor(pool, pool.network);
   return isInternalUrl(poolUrl) ? null : poolUrl;
 }
 
-function getIsGaugeNew(addedTimestamp: number): boolean {
+function getIsGaugeNew(addedTimestamp?: number | null): boolean {
+  if (!addedTimestamp) return false;
   return differenceInWeeks(Date.now(), addedTimestamp * oneSecondInMs) < 2;
 }
 
@@ -168,13 +175,14 @@ function getHasUserVotes(userVotes: string): boolean {
   return !!Number(userVotes);
 }
 
-function getTableRowClass(gauge: VotingGaugeWithVotes): string {
-  return getHasUserVotes(gauge.userVotes) && getIsGaugeExpired(gauge.address)
+function getTableRowClass(pool: VotingPool): string {
+  return getHasUserVotes(pool.userVotes) &&
+    getIsGaugeExpired(pool.gauge.address)
     ? 'expired-gauge-row'
     : '';
 }
 
-function getSelectedTokens(tokens: PoolToken[]) {
+function getSelectedTokens(tokens: VotingPool['tokens']) {
   return tokens
     .filter(
       token => token.symbol?.toLowerCase() === props.filterText?.toLowerCase()
@@ -182,7 +190,7 @@ function getSelectedTokens(tokens: PoolToken[]) {
     .map(item => item.address);
 }
 
-function getPickedTokens(tokens: PoolToken[]) {
+function getPickedTokens(tokens: VotingPool['tokens']) {
   return tokens
     .filter(
       token =>
@@ -245,12 +253,12 @@ function getPickedTokens(tokens: PoolToken[]) {
           <CompositionIcon />
         </div>
       </template>
-      <template #iconColumnCell="gauge">
+      <template #iconColumnCell="pool: VotingPool">
         <div v-if="!isLoading" class="py-4 px-6">
-          <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
+          <BalAssetSet :logoURIs="orderedTokenURIs(pool)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="{ pool, address, addedTimestamp }">
+      <template #poolCompositionCell="pool: VotingPool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <div v-if="poolMetadata(pool.id)" class="text-left">
             {{ poolMetadata(pool.id)?.name }}
@@ -264,18 +272,34 @@ function getPickedTokens(tokens: PoolToken[]) {
             :selectedTokens="getSelectedTokens(pool.tokens)"
             :pickedTokens="getPickedTokens(pool.tokens)"
           />
-          <BalChipNew v-if="getIsGaugeNew(addedTimestamp)" class="ml-2" />
-          <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
+          <Ve8020Chip v-if="isVe8020Pool(pool)" />
+          <BalTooltip v-if="isGyro(pool)" :text="$t('clpTooltip')" width="56">
+            <template #activator>
+              <PoolFeatureChip
+                :feature="PoolFeature.CLP"
+                :protocols="[Protocol.Gyro]"
+                class="ml-1"
+              />
+            </template>
+          </BalTooltip>
+          <BalChipNew
+            v-if="getIsGaugeNew(pool.gauge.addedTimestamp)"
+            class="ml-2"
+          />
+          <BalChipExpired
+            v-if="getIsGaugeExpired(pool.gauge.address)"
+            class="ml-2"
+          />
         </div>
       </template>
-      <template #nextPeriodVotesCell="gauge">
+      <template #nextPeriodVotesCell="pool: VotingPool">
         <!-- Put to BalLazy the most expensive to render component -->
         <BalLazy>
           <div v-if="!isLoading" class="flex justify-end py-4 px-6">
-            <GaugeVoteInfo :gauge="gauge" />
+            <GaugeVoteInfo :pool="pool" />
             <div class="flex justify-end w-6">
               <IconLimit
-                v-if="gauge.pool.symbol === 'veBAL'"
+                v-if="isVeBalPool(pool.id)"
                 size="sm"
                 amount="10"
                 :tooltip="
@@ -286,15 +310,15 @@ function getPickedTokens(tokens: PoolToken[]) {
               />
               <IconLimit
                 v-else-if="
-                  gauge.relativeWeightCap !== 'null' &&
-                  gauge.relativeWeightCap !== '1'
+                  pool.gauge?.relativeWeightCap &&
+                  pool.gauge.relativeWeightCap !== '1.0'
                 "
                 size="sm"
-                :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
+                :amount="(Number(pool.gauge.relativeWeightCap) * 100).toFixed()"
                 :tooltip="
                   $t(
                     'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt',
-                    [(Number(gauge.relativeWeightCap) * 100).toFixed()]
+                    [(Number(pool.gauge.relativeWeightCap) * 100).toFixed()]
                   )
                 "
               />
@@ -302,17 +326,17 @@ function getPickedTokens(tokens: PoolToken[]) {
           </div>
         </BalLazy>
       </template>
-      <template #myVotesCell="gauge">
+      <template #myVotesCell="pool: VotingPool">
         <div v-if="!isLoading" class="py-4 px-6 text-right">
-          <GaugesTableMyVotes :gauge="gauge"></GaugesTableMyVotes>
+          <GaugesTableMyVotes :pool="pool"></GaugesTableMyVotes>
         </div>
       </template>
-      <template #voteColumnCell="gauge">
+      <template #voteColumnCell="pool: VotingPool">
         <div v-if="isWalletReady" class="px-4">
           <GaugesTableVoteBtn
-            :hasUserVotes="getHasUserVotes(gauge.userVotes)"
-            :isGaugeExpired="getIsGaugeExpired(gauge.address)"
-            @click.stop.prevent="emit('clickedVote', gauge)"
+            :hasUserVotes="getHasUserVotes(pool.userVotes)"
+            :isGaugeExpired="getIsGaugeExpired(pool.gauge.address)"
+            @click.stop.prevent="emit('clickedVote', pool)"
           />
         </div>
       </template>

@@ -16,7 +16,7 @@ import { usePoolWarning } from '@/composables/usePoolWarning';
 import { StakeAction } from './composables/useStakePreview';
 import StakingCardSyncAlert from '../../vebal/cross-chain-boost/StakingCardSyncAlert.vue';
 import useNetwork from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 type Props = {
   pool: Pool;

@@ -1,4 +1,4 @@
-export default function useGaugeVotesQuery() {
+export default function useVotingPoolsQuery() {
   return {
     data: [],
     isLoading: false,

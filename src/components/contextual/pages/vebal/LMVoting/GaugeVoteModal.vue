@@ -15,11 +15,11 @@ import useVeBal, {
   remainingVoteLockTime,
 } from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
-import { VEBAL_VOTING_GAUGE } from '@/constants/voting-gauges';
-import { bnum, isSameAddress, scale } from '@/lib/utils';
+import { bnum, scale } from '@/lib/utils';
+import { isVeBalPool } from '@/composables/usePoolHelpers';
 import { isPositive } from '@/lib/utils/validations';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
 import SubmitVoteBtn from './SubmitVoteBtn.vue';
@@ -29,7 +29,7 @@ import useActionState, { State } from '@/composables/useActionState';
  * TYPES
  */
 type Props = {
-  gauge: VotingGaugeWithVotes;
+  pool: VotingPool;
   unallocatedVoteWeight: number;
   logoURIs: string[];
   poolURL: string;
@@ -69,6 +69,7 @@ const voteWeight = ref<string>('');
 /**
  * COMPUTED
  */
+const isVeBalGauge = computed((): boolean => isVeBalPool(props.pool.id));
 const voteButtonDisabled = computed((): boolean => {
   if (isVeBalGauge.value) {
     return !!voteError.value || !hasEnoughVotes.value;
@@ -81,23 +82,23 @@ const voteInputDisabled = computed((): boolean => {
   return !!voteError.value;
 });
 
-const currentWeight = computed(() => props.gauge.userVotes);
+const currentWeight = computed(() => props.pool.userVotes);
 const currentWeightNormalized = computed(() =>
   scale(bnum(currentWeight.value), -2).toString()
 );
 const hasVotes = computed((): boolean => bnum(currentWeight.value).gt(0));
 
-const isVeBalGauge = computed((): boolean =>
-  isSameAddress(props.gauge.address, VEBAL_VOTING_GAUGE?.address || '')
-);
-
 // Is votes next period value above voting cap?
 const votesNextPeriodOverCap = computed((): boolean => {
-  if (!isVeBalGauge.value && props.gauge.relativeWeightCap === 'null')
-    return false;
-  const gaugeVoteWeightNormalized = scale(props.gauge.votesNextPeriod, -18);
+  const gaugeVoteWeightNormalized = scale(props.pool.votesNextPeriod, -18);
+  if (isVeBalGauge.value) {
+    const veBalMaxVotingWeight = '0.1';
+    return gaugeVoteWeightNormalized.gte(bnum(veBalMaxVotingWeight));
+  }
+  if (!props.pool.gauge.relativeWeightCap) return false;
+
   return gaugeVoteWeightNormalized.gte(
-    bnum(isVeBalGauge.value ? '0.1' : props.gauge.relativeWeightCap)
+    bnum(props.pool.gauge.relativeWeightCap)
   );
 });
 
@@ -118,8 +119,8 @@ const voteButtonText = computed(() => {
 });
 
 const votedToRecentlyWarning = computed(() => {
-  if (isVotingTimeLocked(props.gauge.lastUserVoteTime)) {
-    const remainingTime = remainingVoteLockTime(props.gauge.lastUserVoteTime);
+  if (isVotingTimeLocked(props.pool.lastUserVoteTime)) {
+    const remainingTime = remainingVoteLockTime(props.pool.lastUserVoteTime);
     return {
       title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),
       description: t(
@@ -184,7 +185,7 @@ const lpVoteOverLimitWarning = computed(() => {
         ),
         description: t(
           'veBAL.liquidityMining.popover.warnings.lpVoteOverLimitWarning.description',
-          [(Number(props.gauge.relativeWeightCap) * 100).toFixed()]
+          [(Number(props.pool.gauge.relativeWeightCap) * 100).toFixed()]
         ),
       };
     }
@@ -299,7 +300,7 @@ async function submitVote() {
   try {
     voteState.setInit();
     const tx = await gaugeControllerService.voteForGaugeWeights(
-      props.gauge.address,
+      props.pool.gauge.address,
       BigNumber.from(totalVoteShares)
     );
     voteState.setConfirming();
@@ -322,7 +323,7 @@ async function handleTransaction(tx) {
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
       fNum(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
-      props.gauge.pool.symbol,
+      props.pool.symbol,
     ]),
     details: {
       voteWeight: voteWeight.value,
@@ -402,7 +403,7 @@ onMounted(() => {
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
           <div>
             <p class="font-medium text-black dark:text-white">
-              {{ gauge.pool.symbol }}
+              {{ pool.symbol }}
             </p>
           </div>
         </div>

@@ -52,14 +52,14 @@ const activeTokenLists = computed(
 /**
  * All allowlisted tokens from tokenlists repo
  */
-const balancerTokenList = computed(
+export const balancerTokenList = computed(
   (): TokenList => allTokenLists.value[uris.Balancer.Allowlisted]
 );
 
 /**
  * All Balancer token lists mapped by URI.
  */
-const balancerTokenLists = computed(
+export const balancerTokenLists = computed(
   (): TokenListMap => pick(allTokenLists.value, uris.Balancer.All)
 );
 

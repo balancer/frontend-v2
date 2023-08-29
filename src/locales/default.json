@@ -906,6 +906,11 @@
     "poolProtocolFeeVulnWarning": {
       "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://twitter.com/Balancer/status/1611363559685898247\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
       "tooltip": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately."
+    },
+    "cspPoolVulnWarning": {
+      "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102/1\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
+      "tooltip": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately.",
+      "generalTitle": "A vulnerability has been discovered that affects a number of pools. Existing liquidity providers should remove liquidity immediately."
     }
   },
   "popularBases": "Popular",
@@ -1543,6 +1548,7 @@
     "approveForLocking": "Approve {0} for locking",
     "approveForStaking": "Approve {0} for staking",
     "approveForSwapping": "Approve {0} for swapping",
+    "approveForUnwrapping": "Approve {0} for unwrapping",
     "unapprove": "Unapprove {0}",
     "extendLock": "Lock until {0}",
     "unlock": "Unlock {0}",
@@ -1561,6 +1567,7 @@
       "approveForLocking": "You must approve {0} to lock this token. Approvals are required once per token, per wallet.",
       "approveForStaking": "You must approve {0} to stake this token on Balancer. Approvals are required once per token, per wallet.",
       "approveForSwapping": "You must approve {0} to swap this token on Balancer. Approvals are required once per token, per wallet.",
+      "approveForUnwrapping": "You must approve {0} to unwrap this token. Approvals are required once per token, per wallet.",
       "unapprove": "You must unapprove {0} before a new approval value can be set"
     }
   },
