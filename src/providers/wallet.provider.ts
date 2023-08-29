@@ -202,7 +202,10 @@ export const wallets = () => {
 
       setTag('wallet', wallet);
       if (connector?.chainId.value) {
-        setTag('walletNetwork', config[connector.chainId.value].network);
+        const network = config[connector.chainId.value]
+          ? config[connector.chainId.value].slug
+          : connector.chainId.value;
+        setTag('walletNetwork', network);
       }
 
       // listens to wallet/chain changed and disconnect events
@@ -253,7 +256,10 @@ export const wallets = () => {
   }
 
   watch(chainId, () => {
-    setTag('walletNetwork', config[chainId.value].network);
+    const network = config[chainId.value]
+      ? config[chainId.value].slug
+      : chainId.value;
+    setTag('walletNetwork', network);
   });
 
   return {
