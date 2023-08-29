@@ -15,7 +15,7 @@
           v-bind="$attrs"
           @change="onChange"
         >
-          <option v-if="defaultText" value="" hidden>
+          <option v-if="defaultText" value selected>
             {{ defaultText }}
           </option>
           <option
