@@ -284,8 +284,8 @@ export function poolURLFor(
  */
 export function absMaxApr(aprs: GqlPoolApr, boost?: string): string {
   if (boost) {
-    const nonStakingApr = bnum(aprs.swapApr).plus(
-      bnum((aprs.thirdPartyApr as GqlPoolAprRange).max)
+    const nonStakingApr = aprMinOrTotal(aprs.apr).minus(
+      aprMinOrTotal(aprs.nativeRewardApr)
     );
     const stakingApr = bnum((aprs.nativeRewardApr as GqlPoolAprRange).min)
       .times(boost)
