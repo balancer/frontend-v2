@@ -4,12 +4,11 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import Service from '../../balancer-api.service';
 import {
   GetPoolQuery,
-  GqlPoolApr,
   GqlPoolTokenUnion,
   GqlPoolUnion,
 } from '@/services/api/graphql/generated/api-types';
 import { mapApiChain } from '@/lib/utils/api';
-import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@balancer-labs/sdk';
 
 export type ApiPool = GetPoolQuery['pool'];
 
@@ -67,7 +66,7 @@ export default class SinglePool {
       totalShares: apiPool.dynamicData.totalShares,
       totalSwapFee: apiPool.dynamicData.lifetimeSwapFees,
       totalSwapVolume: apiPool.dynamicData.lifetimeVolume,
-      apr: this.mapApr(apiPool.dynamicData.apr),
+      apr: apiPool.dynamicData.apr,
       // priceRateProviders: apiPool.priceRateProviders ?? undefined,
       // onchain: subgraphPool.onchain,
       createTime: apiPool.createTime,
@@ -96,28 +95,6 @@ export default class SinglePool {
       balance: apiToken.balance,
       priceRate: apiToken.priceRate,
       weight: apiToken.weight,
-    };
-  }
-
-  private mapApr(apiApr: GqlPoolApr): AprBreakdown {
-    console.log('Converting apr: ', apiApr);
-    return {
-      swapFees: Number(apiApr.swapApr) * 100,
-      tokenAprs: {
-        total: 0,
-        breakdown: {},
-      },
-      stakingApr: {
-        min: 0,
-        max: 0,
-      },
-      rewardAprs: {
-        total: 0,
-        breakdown: {},
-      },
-      protocolApr: 0,
-      min: Number(apiApr.apr) * 100,
-      max: Number(apiApr.apr) * 100,
     };
   }
 }

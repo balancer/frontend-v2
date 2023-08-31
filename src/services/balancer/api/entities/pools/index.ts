@@ -3,14 +3,12 @@ import { getApi } from '@/dependencies/balancer-api';
 import { Pool } from '@/services/pool/types';
 import {
   GetPoolsQuery,
-  GqlPoolApr,
   GqlPoolFilter,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
   GqlPoolTokenExpanded,
 } from '@/services/api/graphql/generated/api-types';
 import {
-  AprBreakdown,
   GraphQLQuery,
   PoolToken,
   PoolType,
@@ -107,7 +105,7 @@ export default class Pools {
       totalShares: apiPool.dynamicData.totalShares,
       totalSwapFee: apiPool.dynamicData.lifetimeSwapFees,
       totalSwapVolume: apiPool.dynamicData.lifetimeVolume,
-      apr: this.mapApr(apiPool.dynamicData.apr),
+      apr: apiPool.dynamicData.apr,
       // priceRateProviders: apiPool.priceRateProviders ?? undefined,
       // onchain: subgraphPool.onchain,
       createTime: apiPool.createTime,
@@ -134,28 +132,6 @@ export default class Pools {
     return {
       address: apiToken.address,
       balance: '0',
-    };
-  }
-
-  private mapApr(apiApr: GqlPoolApr): AprBreakdown {
-    console.log('Converting apr: ', apiApr);
-    return {
-      swapFees: Number(apiApr.swapApr) * 100,
-      tokenAprs: {
-        total: 0,
-        breakdown: {},
-      },
-      stakingApr: {
-        min: 0,
-        max: 0,
-      },
-      rewardAprs: {
-        total: 0,
-        breakdown: {},
-      },
-      protocolApr: 0,
-      min: Number(apiApr.apr) * 100,
-      max: Number(apiApr.apr) * 100,
     };
   }
 

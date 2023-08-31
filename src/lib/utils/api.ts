@@ -1,10 +1,14 @@
 import {
   GqlChain,
+  GqlPoolAprRange,
+  GqlPoolAprTotal,
   GqlPoolFilterType,
   GqlPoolMinimalType,
 } from '@/services/api/graphql/generated/api-types';
 import { Network } from '@/lib/config/types';
 import { PoolType } from '@/services/pool/types';
+import BigNumber from 'bignumber.js';
+import { bnum } from '.';
 
 export function mapApiChain(
   apiChain: GqlChain | 'SEPOLIA' | 'GOERLI'
@@ -128,4 +132,36 @@ export function mapPoolTypeToApiType(
     default:
       throw new Error(`Unexpected Pool Type ${poolType}`);
   }
+}
+
+function isAprRange(obj: any): obj is GqlPoolAprRange {
+  return obj.min !== undefined;
+}
+
+function isAprTotal(obj: any): obj is GqlPoolAprTotal {
+  return obj.total !== undefined;
+}
+
+export function aprMinOrTotal(
+  apr: GqlPoolAprRange | GqlPoolAprTotal
+): BigNumber {
+  if (isAprRange(apr)) {
+    return bnum(apr.min);
+  }
+  if (isAprTotal(apr)) {
+    return bnum(apr.total);
+  }
+  return bnum(0);
+}
+
+export function aprMaxOrTotal(
+  apr: GqlPoolAprRange | GqlPoolAprTotal
+): BigNumber {
+  if (isAprRange(apr)) {
+    return bnum(apr.max);
+  }
+  if (isAprTotal(apr)) {
+    return bnum(apr.total);
+  }
+  return bnum(0);
 }

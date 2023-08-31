@@ -4,21 +4,23 @@ import { computed } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isVeBalPool, totalAprLabel } from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
-import VeBalBreakdown from './components/VeBalBreakdown.vue';
+// import VeBalBreakdown from './components/VeBalBreakdown.vue';
 import YieldBreakdown from './components/YieldBreakdown.vue';
-import { AprBreakdown } from '@balancer-labs/sdk';
 import { hasStakingRewards } from '@/composables/useAPR';
+import {
+  GqlBalancePoolAprItem,
+  GqlPoolApr,
+} from '@/services/api/graphql/generated/api-types';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  poolApr?: AprBreakdown;
+  poolApr?: GqlPoolApr;
 };
 
 /**
@@ -34,15 +36,31 @@ const { fNum } = useNumbers();
 /**
  * COMPUTED
  */
-const apr = computed<AprBreakdown | undefined>(
+const apr = computed<GqlPoolApr | undefined>(
   () => props.pool?.apr || props.poolApr
 );
 const validAPR = computed(
-  () => Number(apr.value?.swapFees || 0) <= APR_THRESHOLD
+  () => Number(apr.value?.swapApr || 0) <= APR_THRESHOLD
 );
 
+const yieldAprItems = computed<GqlBalancePoolAprItem[]>(() => {
+  if (!apr.value) return [];
+  return apr.value?.items.filter(item => {
+    if (item.title.match(/reward/)) return false;
+    if (item.title.match(/Swap fees/)) return false;
+    return true;
+  });
+});
+
+const rewardAprItems = computed<GqlBalancePoolAprItem[]>(() => {
+  if (!apr.value) return [];
+  return apr.value?.items.filter(item => {
+    if (item.title.match(/reward/)) return true;
+  });
+});
+
 const hasYieldAPR = computed(() => {
-  return bnum(apr.value?.tokenAprs.total || '0').gt(0);
+  return yieldAprItems.value.length > 0;
 });
 
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
@@ -57,7 +75,7 @@ const totalLabel = computed((): string =>
     <template #activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="hasYieldAPR || hasStakingRewards(apr) || hasVebalAPR"
+          v-if="hasStakingRewards(apr) || hasVebalAPR"
           :gradFrom="hasVebalAPR ? 'purple' : 'yellow'"
           class="-mr-1 h-4"
           v-bind="$attrs"
@@ -89,24 +107,25 @@ const totalLabel = computed((): string =>
           class="flex items-center mb-1 whitespace-nowrap"
           data-testid="swap-fee-apr"
         >
-          {{ fNum(apr?.swapFees || '0', FNumFormats.bp) }}
+          {{ fNum(apr?.swapApr || '0', FNumFormats.percent) }}
           <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}
           </span>
         </div>
 
         <!-- VeBal APR -->
-        <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.protocolApr || 0" />
+        <!-- Not implemented yet from API -->
+        <!-- <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.nativeRewardApr || 0" /> -->
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
-          v-if="apr?.tokenAprs && hasYieldAPR"
-          :yieldAPR="apr?.tokenAprs"
+          v-if="apr?.items && hasYieldAPR"
+          :items="yieldAprItems"
           :pool="pool"
         />
 
         <!-- STAKING APR BREAKDOWN -->
-        <StakingBreakdown :pool="pool" :poolApr="apr" />
+        <StakingBreakdown :pool="pool" :items="rewardAprItems" />
       </div>
     </div>
   </BalTooltip>

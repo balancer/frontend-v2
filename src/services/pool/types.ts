@@ -1,11 +1,13 @@
 import { BigNumber } from 'ethers';
 import { Address } from '@/types';
 import { Pool as SDKPool, PoolToken, PoolType } from '@balancer-labs/sdk';
+import { GqlPoolApr } from '../api/graphql/generated/api-types';
 
 export type { SubPool, PoolToken } from '@balancer-labs/sdk';
 export { PoolType } from '@balancer-labs/sdk';
-export interface Pool extends SDKPool {
+export interface Pool extends Omit<SDKPool, 'apr'> {
   tokens: PoolToken[];
+  apr?: GqlPoolApr;
   onchain?: OnchainPoolData;
 }
 

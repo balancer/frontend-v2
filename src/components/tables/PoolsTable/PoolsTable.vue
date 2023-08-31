@@ -36,6 +36,7 @@ import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
+import { aprMinOrTotal } from '@/lib/utils/api';
 
 /**
  * TYPES
@@ -181,7 +182,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.apr?.min.toString() || '0',
+    accessor: pool => (pool.apr ? aprMinOrTotal(pool.apr.apr).toString() : '0'),
     align: 'right',
     id: 'apr',
     sortKey: pool => {
@@ -191,7 +192,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
         apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
-      return isFinite(apr) && (pool.apr?.swapFees || 0) < APR_THRESHOLD
+      return isFinite(apr) && (Number(pool.apr?.swapApr) || 0) < APR_THRESHOLD
         ? apr
         : 0;
     },

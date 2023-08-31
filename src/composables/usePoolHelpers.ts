@@ -1,4 +1,4 @@
-import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
 import { APR_THRESHOLD } from '@/constants/pools';
@@ -41,6 +41,11 @@ import { poolMetadata } from '@/lib/config/metadata';
 import { Protocol } from './useProtocols';
 import { usePoolWarning } from './usePoolWarning';
 import { VotingPool } from './queries/useVotingPoolsQuery';
+import {
+  GqlPoolApr,
+  GqlPoolAprRange,
+} from '@/services/api/graphql/generated/api-types';
+import { aprMaxOrTotal, aprMinOrTotal } from '@/lib/utils/api';
 
 const POOLS = configService.network.pools;
 
@@ -122,15 +127,6 @@ export function boostedProtocols(pool: Pool) {
   if (!isBoosted(pool)) return [];
   return poolMetadata(pool.id)?.features?.[PoolFeature.Boosted]
     ?.featureProtocols;
-}
-
-/**
- * Pool addresses that have underlying tokens that generate boosted yield. Used
- * for APR display only.
- */
-export function hasBoostedAPR(address: string): boolean {
-  const boostedPoolAddresses = configService.network.pools.BoostedApr;
-  return includesAddress(boostedPoolAddresses, address);
 }
 
 export function isShallowComposableStable(pool: Pool): boolean {
@@ -286,38 +282,41 @@ export function poolURLFor(
  * If not given boost returns pool absolute max assuming 2.5x boost.
  * Used primarily for sorting tables by the APR column.
  */
-export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
+export function absMaxApr(aprs: GqlPoolApr, boost?: string): string {
   if (boost) {
-    const nonStakingApr = bnum(aprs.swapFees)
-      .plus(aprs.tokenAprs.total)
-      .plus(aprs.rewardAprs.total);
-    const stakingApr = bnum(aprs.stakingApr.min).times(boost).toString();
+    const nonStakingApr = bnum(aprs.swapApr).plus(
+      bnum((aprs.thirdPartyApr as GqlPoolAprRange).max)
+    );
+    const stakingApr = bnum((aprs.nativeRewardApr as GqlPoolAprRange).min)
+      .times(boost)
+      .toString();
     return nonStakingApr.plus(stakingApr).toString();
   }
 
-  return aprs.max.toString();
+  return aprMaxOrTotal(aprs.apr).toString();
 }
 
 /**
  * @summary Returns total APR label, whether range or single value.
  */
-export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
-  if (aprs.swapFees > APR_THRESHOLD) {
+export function totalAprLabel(aprs: GqlPoolApr, boost?: string): string {
+  if (Number(aprs.swapApr) > APR_THRESHOLD) {
     return '-';
   }
   if (boost) {
-    return numF(absMaxApr(aprs, boost), FNumFormats.bp);
+    return numF(absMaxApr(aprs, boost), FNumFormats.percent);
   }
   if (
-    (hasBalEmissions(aprs) && isPoolBoostsEnabled.value) ||
-    aprs.protocolApr > 0
+    hasBalEmissions(aprs) &&
+    isPoolBoostsEnabled.value &&
+    aprs.apr.__typename === 'GqlPoolAprRange'
   ) {
-    const minAPR = numF(aprs.min, FNumFormats.bp);
-    const maxAPR = numF(aprs.max, FNumFormats.bp);
+    const minAPR = numF(aprs.apr.min, FNumFormats.percent);
+    const maxAPR = numF(aprs.apr.max, FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(aprs.min, FNumFormats.bp);
+  return numF(aprMinOrTotal(aprs.apr).toString(), FNumFormats.percent);
 }
 
 /**

@@ -25,7 +25,7 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const aprLabel = computed((): string => fNum(props.apr, FNumFormats.bp));
+const aprLabel = computed((): string => fNum(props.apr, FNumFormats.percent));
 
 const items = computed((): string[] => [
   t('tooltips.veBalApr.breakdown1'),

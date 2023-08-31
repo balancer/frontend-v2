@@ -4,16 +4,20 @@ import { computed } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { AprBreakdown } from '@balancer-labs/sdk';
-import { useTokens } from '@/providers/tokens.provider';
 import { hasBalEmissions, hasStakingRewards } from '@/composables/useAPR';
+import {
+  GqlBalancePoolAprItem,
+  GqlPoolApr,
+  GqlPoolAprRange,
+} from '@/services/api/graphql/generated/api-types';
+import { aprMaxOrTotal, aprMinOrTotal } from '@/lib/utils/api';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  poolApr?: AprBreakdown;
+  items?: GqlBalancePoolAprItem[];
 };
 
 /**
@@ -25,30 +29,32 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum } = useNumbers();
-const { getToken } = useTokens();
 
 /**
  * COMPUTED
  */
 
-const apr = computed(() => props.pool?.apr || props.poolApr);
-
+const apr = computed((): GqlPoolApr | undefined => props.pool?.apr);
 const boost = computed((): string => props.pool?.boost || '');
 const hasBoost = computed((): boolean => !!boost.value);
-const stakingAPR = computed(
-  (): AprBreakdown['stakingApr'] | undefined => apr.value?.stakingApr
-);
+const stakingAPR = computed((): GqlPoolAprRange | undefined => {
+  let apr = { min: bnum(0), max: bnum(0) };
+  props.items?.forEach(item => {
+    apr.min.plus(aprMinOrTotal(item.apr));
+    apr.min.plus(aprMaxOrTotal(item.apr));
+  });
+  return { min: apr.min.toString(), max: apr.max.toString() };
+});
 const isMinMaxSame = computed(
   (): boolean => stakingAPR.value?.min === stakingAPR.value?.max
 );
-const minBalAPR = computed((): number => stakingAPR.value?.min || 0);
-const maxBalAPR = computed((): number => stakingAPR.value?.max || 0);
-const rewardTokensAPR = computed(
-  (): number => apr.value?.rewardAprs.total || 0
+const minBalAPR = computed(
+  (): number => Number((apr.value?.nativeRewardApr as GqlPoolAprRange).min) || 0
 );
-const hasRewardTokens = computed((): boolean =>
-  bnum(rewardTokensAPR.value).gt(0)
-);
+const rewardTokensAPR = computed((): number => {
+  if (!apr.value) return 0;
+  return aprMinOrTotal(apr.value.thirdPartyApr).toNumber();
+});
 
 /**
  * @summary The total APR if we have the user's boost.
@@ -60,10 +66,10 @@ const boostedTotalAPR = computed((): string => {
       .plus(rewardTokensAPR.value)
       .toString();
 
-    return fNum(boostedStakingAPR, FNumFormats.bp);
+    return fNum(boostedStakingAPR, FNumFormats.percent);
   }
 
-  return fNum(rewardTokensAPR.value, FNumFormats.bp);
+  return fNum(rewardTokensAPR.value, FNumFormats.percent);
 });
 
 /**
@@ -72,36 +78,22 @@ const boostedTotalAPR = computed((): string => {
 const unboostedTotalAPR = computed((): string =>
   fNum(
     bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
-    FNumFormats.bp
+    FNumFormats.percent
   )
 );
 
 const breakdownItems = computed((): Array<any> => {
   const items: Array<any> = [];
 
-  if (!isMinMaxSame.value) {
-    items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
-  }
-
-  if (hasRewardTokens.value) {
-    if (isMinMaxSame.value && minBalAPR.value > 0) {
-      items.push(['BAL', minBalAPR.value]);
+  props.items?.forEach(item => {
+    if (item.apr.__typename === 'GqlPoolAprRange') {
+      items.push('Min ' + item.title, item.apr.min);
+      items.push('Max ' + item.title, item.apr.max);
     }
-
-    const rewardAprTokens = apr.value?.rewardAprs.breakdown;
-    if (rewardAprTokens) {
-      Object.keys(rewardAprTokens).forEach(address => {
-        if (rewardAprTokens[address] === 0) return;
-
-        items.push([
-          getToken(address)?.symbol || 'Rewards',
-          rewardAprTokens[address],
-        ]);
-      });
-    } else {
-      items.push(['Rewards', rewardTokensAPR.value]);
+    if (item.apr.__typename === 'GqlPoolAprTotal') {
+      items.push(item.title, item.apr.total);
     }
-  }
+  });
 
   return items;
 });
@@ -133,7 +125,7 @@ const breakdownItems = computed((): Array<any> => {
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
-          {{ fNum(amount, FNumFormats.bp) }}
+          {{ fNum(amount, FNumFormats.percent) }}
           <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>
