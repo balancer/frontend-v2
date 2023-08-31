@@ -8,6 +8,9 @@ import coin2 from '@/assets/images/coins/coins-2.png';
 import coin3 from '@/assets/images/coins/coins-3.png';
 import MyVebalInfo from './MyVebalInfo.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import useVeBal from '@/composables/useVeBAL';
+import { bnum } from '@/lib/utils';
+import { useLock } from '@/composables/useLock';
 
 /**
  * COMPOSABLES
@@ -15,6 +18,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 const { t } = useI18n();
 const router = useRouter();
 const { isWalletReady } = useWeb3();
+const { veBalBalance } = useVeBal();
+const { lock } = useLock();
 
 /**
  * COMPUTED
@@ -24,6 +29,13 @@ const benefits = computed(() => [
   t('veBAL.hero.benefits.vote'),
   t('veBAL.hero.benefits.earn'),
 ]);
+
+const showVebalInfo = computed(() => {
+  return (
+    isWalletReady.value &&
+    (bnum(veBalBalance.value).gt(0) || lock.value?.hasExistingLock)
+  );
+});
 
 /**
  * METHODS
@@ -41,7 +53,7 @@ function navigateToGetVeBAL() {
 <template>
   <div class="hero-container">
     <div class="hero-content">
-      <MyVebalInfo v-if="isWalletReady" />
+      <MyVebalInfo v-if="showVebalInfo" />
       <template v-else>
         <div
           class="py-8 lg:py-4 px-4 lg:px-8 2xl:px-0 xl:pt-0 max-w-md hero-text"

@@ -269,7 +269,7 @@ const QUERY_KEYS = {
     ],
     UserRank: (networkId: Ref<Network>, account: Ref<string>) => [
       'user-rank',
-      [networkId, account],
+      { networkId, account },
     ],
   },
 };

@@ -37,6 +37,7 @@ import {
   getWalletconnectConnector,
   initWalletconnectConnector,
 } from '@/dependencies/wallets/walletconnect';
+import { getAddress } from '@ethersproject/address';
 
 export type Wallet =
   | 'metamask'

@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { format } from 'date-fns';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import lock from '@/assets/images/icons/lock.svg';
 import unlock from '@/assets/images/icons/unlock.svg';
 
-import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
@@ -61,14 +58,6 @@ const fiatTotal = computed(() =>
   poolShares.value.times(bptBalance.value).toString()
 );
 
-const lockedUntil = computed(() => {
-  if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
-    return format(props.veBalLockInfo.lockedEndDate, PRETTY_DATE_FORMAT);
-  }
-
-  return '—';
-});
-
 const totalExpiredLpTokens = computed(() =>
   props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0'
 );
@@ -99,6 +88,7 @@ const cards = computed(() => {
       iconBgColor: 'bg-green-50',
       value: fNum(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token),
       secondaryText: fNum(props.totalLockedValue, FNumFormats.fiat),
+      showUnlockIcon: Boolean(props.veBalLockInfo?.isExpired),
     },
   ];
 });
@@ -120,7 +110,7 @@ const cards = computed(() => {
       </div>
     </div>
     <div class="value" :class="card.id">
-      <div v-if="card.id === 'myLockedLpToken'">
+      <div v-if="card.id === 'lockedVeBAL'">
         <span
           :class="{ 'text-red-500': bnum(totalExpiredLpTokens).gt(0) }"
           class="mr-1 font-semibold truncate"
@@ -130,7 +120,7 @@ const cards = computed(() => {
           v-if="bnum(totalExpiredLpTokens).gt(0)"
           :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
           iconSize="sm"
-          :iconName="'alert-triangle'"
+          iconName="alert-triangle"
           :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
@@ -172,17 +162,29 @@ const cards = computed(() => {
         </BalBtn>
       </template>
 
-      <BalBtn
-        v-if="card.id === 'lockedVeBAL'"
-        :disabled="!isWalletReady"
-        color="blue"
-        outline
-        @click="
-          $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
-        "
-      >
-        Extend lock
-      </BalBtn>
+      <template v-if="card.id === 'lockedVeBAL'">
+        <BalBtn
+          v-if="bnum(totalExpiredLpTokens).gt(0)"
+          :disabled="!isWalletReady"
+          color="blue"
+          outline
+          @click="showUnlockPreviewModal = true"
+        >
+          Unlock
+        </BalBtn>
+        <BalBtn
+          v-else
+          :disabled="!isWalletReady"
+          color="blue"
+          outline
+          class="mr-3"
+          @click="
+            $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
+          "
+        >
+          Extend lock
+        </BalBtn>
+      </template>
     </div>
   </BalCard>
   <teleport to="#modal">

@@ -7,7 +7,6 @@ import usePoolQuery from './queries/usePoolQuery';
 import { fiatValueOf } from './usePoolHelpers';
 import useVeBal, { isVeBalSupported } from './useVeBAL';
 import { bnum } from '@/lib/utils';
-import useNumbers from './useNumbers';
 
 interface Options {
   enabled?: boolean;
@@ -18,7 +17,6 @@ export function useLock({ enabled = true }: Options = {}) {
    */
   const { lockablePoolId } = useVeBal();
   const { getToken, balanceFor } = useTokens();
-  const { fNum } = useNumbers();
 
   /**
    * QUERIES

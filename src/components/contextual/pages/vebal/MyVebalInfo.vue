@@ -11,7 +11,6 @@ import rank from '@/assets/images/icons/rank.svg';
 import share from '@/assets/images/icons/share.svg';
 import hourglass from '@/assets/images/icons/hourglass.svg';
 import { useRouter } from 'vue-router';
-import useTailwind from '@/composables/useTailwind';
 import * as echarts from 'echarts/core';
 import useVeBal from '@/composables/useVeBAL';
 import { useI18n } from 'vue-i18n';
@@ -27,12 +26,13 @@ const { isLoadingLockPool, isLoadingLockInfo, lockPool, lock } = useLock();
 const { balanceFor } = useTokens();
 const { fNum } = useNumbers();
 const router = useRouter();
-const tailwind = useTailwind();
+
 const { veBalBalance } = useVeBal();
 const { t } = useI18n();
 const { isLoading, data } = useHistoricalLocksQuery(account);
 const { isLoading: isLoadingLockBoard, data: userRankData } =
   useLockRankQuery(account);
+
 /**
  * COMPUTED
  */
@@ -44,19 +44,10 @@ const isLoadingData = computed(
     isLoadingLockPool.value
 );
 
-const poolShares = computed(() => {
-  if (!lockPool.value) return bnum(0);
-  return bnum(lockPool.value.totalLiquidity).div(lockPool.value.totalShares);
-});
-
 const bptBalance = computed(() => {
   if (!lockPool.value) return '';
   return balanceFor(lockPool.value.address);
 });
-
-const fiatTotal = computed(() =>
-  poolShares.value.times(bptBalance.value).toString()
-);
 
 const lockedUntil = computed(() => {
   if (lock.value?.hasExistingLock && !lock.value.isExpired) {
@@ -68,7 +59,7 @@ const lockedUntil = computed(() => {
 
 const chartValues = computed(() => {
   if (!data.value) return [];
-  console.log(data.value);
+
   const { lockSnapshots } = data.value;
 
   const currentDate = (Date.now() / 1000).toFixed(0);
@@ -101,7 +92,7 @@ const chartValues = computed(() => {
     );
     return acc;
   }, []);
-  console.log({ chartV });
+
   return chartV;
 });
 
@@ -111,8 +102,10 @@ const userRank = computed(() => {
 });
 
 const vebalInfo = computed(() => {
-  const arr = [
-    {
+  const arr: { icon: any; value: string }[] = [];
+
+  if (bnum(veBalBalance.value).isGreaterThan(0)) {
+    arr.push({
       icon: share,
       value: t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
         fNum(
@@ -125,15 +118,8 @@ const vebalInfo = computed(() => {
           }
         ),
       ]),
-    },
-    {
-      icon: hourglass,
-      value: `Expires ${lockedUntil.value} (${differenceInDays(
-        new Date(lockedUntil.value),
-        new Date()
-      )} days)`,
-    },
-  ];
+    });
+  }
 
   if (userRank.value) {
     arr.unshift({
@@ -141,27 +127,40 @@ const vebalInfo = computed(() => {
       value: `Rank ${userRank.value}`,
     });
   }
+
+  if (lock.value?.hasExistingLock) {
+    arr.push({
+      icon: hourglass,
+      value: `Expires ${lockedUntil.value} (${differenceInDays(
+        new Date(lockedUntil.value),
+        new Date()
+      )} days)`,
+    });
+  }
   return arr;
 });
 
 const futureLockChartData = computed(() => {
-  return {
-    name: 'Future Lock',
-    values: [
-      chartValues.value[chartValues.value.length - 1],
-      Object.freeze<[string, number]>([
-        format(new Date(lockedUntil.value).getTime(), 'yyyy/MM/dd'),
-        0,
-      ]),
-    ],
-  };
+  if (lock.value?.hasExistingLock) {
+    return {
+      name: 'Future Lock',
+      values: [
+        chartValues.value[chartValues.value.length - 1],
+        Object.freeze<[string, number]>([
+          format(new Date(lockedUntil.value).getTime(), 'yyyy/MM/dd'),
+          0,
+        ]),
+      ],
+    };
+  }
+  return {};
 });
 
 const chartData = computed(() => {
   return {
     color: ['#BCA25D', '#BCA25D'],
-    hoverBorderColor: tailwind.theme.colors.pink['500'],
-    hoverColor: tailwind.theme.colors.white,
+    hoverBorderColor: 'black',
+    hoverColor: '#BCA25D',
     areaStyle: {
       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {
@@ -177,7 +176,7 @@ const chartData = computed(() => {
     chartType: 'line',
     data: [
       {
-        name: 'Historical Lock',
+        name: '',
         values: chartValues.value,
       },
       futureLockChartData.value,
@@ -233,14 +232,16 @@ function navigateToGetVeBAL() {
     </div>
     <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
 
-    <div v-else class="p-5 w-full rounded-2xl flex-[1.5] chart-wrapper">
+    <div
+      v-else-if="lock?.hasExistingLock"
+      class="p-5 w-full rounded-2xl flex-[1.5] chart-wrapper"
+    >
       <BalChart
         :isLoading="isLoadingData"
         height="96"
         :data="chartData.data"
         :axisLabelFormatter="{
           yAxis: {
-            style: 'currency',
             maximumFractionDigits: 0,
             fixedFormat: true,
             abbreviate: true,
@@ -253,10 +254,17 @@ function navigateToGetVeBAL() {
         :xAxisMinInterval="3600 * 1000 * 24 * 30"
         :showLegend="false"
         :chartType="chartData.chartType"
-        :showTooltipLayer="false"
+        showTooltipLayer
         :lineStyles="chartData.lineStyles"
         showTooltip
         hideYAxis
+        :customGrid="{
+          left: '2.5%',
+          right: '0',
+          top: '10%',
+          bottom: '15%',
+          containLabel: false,
+        }"
       />
     </div>
   </div>

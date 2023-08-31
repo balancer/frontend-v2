@@ -36,7 +36,7 @@ providePoolStaking();
       class="xl:container xl:px-4 pt-16 xl:pt-20 xl:mx-auto"
     >
       <div class="xl:px-0 mb-16">
-        <LMVoting />
+        <!-- <LMVoting /> -->
       </div>
     </div>
     <div v-else class="text-center">

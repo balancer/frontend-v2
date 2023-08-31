@@ -107,7 +107,7 @@ function onCloseModal() {
         {{ infoMessage.text }}
       </BalAlert>
     </template>
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
       <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
       </template>
