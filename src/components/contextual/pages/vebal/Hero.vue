@@ -10,7 +10,6 @@ import MyVebalInfo from './MyVebalInfo.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
-import { useLock } from '@/composables/useLock';
 
 /**
  * COMPOSABLES
@@ -19,7 +18,6 @@ const { t } = useI18n();
 const router = useRouter();
 const { isWalletReady } = useWeb3();
 const { veBalBalance } = useVeBal();
-const { lock } = useLock();
 
 /**
  * COMPUTED
@@ -31,10 +29,7 @@ const benefits = computed(() => [
 ]);
 
 const showVebalInfo = computed(() => {
-  return (
-    isWalletReady.value &&
-    (bnum(veBalBalance.value).gt(0) || lock.value?.hasExistingLock)
-  );
+  return isWalletReady.value && bnum(veBalBalance.value).gt(0);
 });
 
 /**

@@ -4,7 +4,7 @@ import { useLock } from '@/composables/useLock';
 import { bnum } from '@/lib/utils';
 import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers from '@/composables/useNumbers';
 import { differenceInDays, format } from 'date-fns';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import rank from '@/assets/images/icons/rank.svg';
@@ -206,7 +206,7 @@ function navigateToGetVeBAL() {
     <div v-else class="flex flex-col flex-1">
       <div class="mb-2 text-xl font-bold">My veBAL</div>
       <div class="mb-10 text-5xl font-black">
-        {{ fNum(bptBalance, FNumFormats.token) }}
+        {{ Number(veBalBalance).toFixed(0) }}
       </div>
 
       <div class="flex flex-col mb-8">
