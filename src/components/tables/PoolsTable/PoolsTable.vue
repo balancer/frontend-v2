@@ -10,7 +10,7 @@ import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import useFathom from '@/composables/useFathom';
 import useNumbers from '@/composables/useNumbers';
 import useNetwork from '@/composables/useNetwork';

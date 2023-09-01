@@ -7,7 +7,7 @@ import numeral from 'numeral';
 import ECharts from 'vue-echarts';
 import { initEcharts } from '@/dependencies/echarts';
 
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { bnum } from '@/lib/utils';

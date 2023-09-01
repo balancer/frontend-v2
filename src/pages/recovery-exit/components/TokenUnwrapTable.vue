@@ -3,7 +3,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import useGraphQuery from '@/composables/queries/useGraphQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import { networkId } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum, isSameAddress } from '@/lib/utils';

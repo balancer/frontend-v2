@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 
 /**
  * TYPES

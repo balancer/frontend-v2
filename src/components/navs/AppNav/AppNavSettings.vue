@@ -5,7 +5,7 @@ import useEthereumTxType from '@/composables/useEthereumTxType';
 import { ethereumTxTypeOptions } from '@/constants/options';
 import useWeb3 from '@/services/web3/useWeb3';
 import { shorten } from '@/lib/utils';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import { getConnectorLogo } from '@/services/web3/wallet-logos';
 import { getConnectorName } from '@/services/web3/wallet-names';
 import { useUserSettings } from '@/providers/user-settings.provider';

@@ -6,7 +6,7 @@ import VueSlider, { DefineComponent as TVueSlider } from 'vue-slider-component';
 // Note that we are explicitly importing from 'tailwind.config.js' which is a vite alias (see vite.config.ts)
 // because we need to use ES modules but tailwind + tailwind intellisense require commonJS import style to work properly.
 import tailwindConfig from 'tailwind.config.js';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 
 export interface BalRangeInputProps extends TVueSlider {
   modelValue: number;

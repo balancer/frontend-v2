@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import PoolChartPeriodSelect from '@/components/pool/PoolChartPeriodSelect.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';

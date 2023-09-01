@@ -1,7 +1,7 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 import { onBeforeMount, ref } from 'vue';
 
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import useNetwork from '@/composables/useNetwork';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import useWeb3 from '@/services/web3/useWeb3';

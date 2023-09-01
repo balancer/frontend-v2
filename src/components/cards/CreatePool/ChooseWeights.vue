@@ -10,7 +10,7 @@ import usePoolCreation, {
   PoolSeedToken,
 } from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';

@@ -25,7 +25,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import { poolMetadata } from '@/lib/config/metadata';
 import {
   fiatValueOf,

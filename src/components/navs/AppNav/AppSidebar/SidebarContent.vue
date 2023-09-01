@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 import AppLogo from '@/components/images/AppLogo.vue';
 import { version } from '@/composables/useApp';
 import useConfig from '@/composables/useConfig';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';

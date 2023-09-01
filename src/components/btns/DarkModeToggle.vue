@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 
 /**
  * COMPOSABLES

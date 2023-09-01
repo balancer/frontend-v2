@@ -14,5 +14,6 @@ export default {
     Pool: 'provider.pool',
     UserTokens: 'provider.userTokens',
     CrossChainSync: 'provider.crossChainSync',
+    DarkMode: 'provider.darkMode',
   },
 };

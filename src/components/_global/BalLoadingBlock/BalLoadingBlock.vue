@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 
 /**
  * TYPES

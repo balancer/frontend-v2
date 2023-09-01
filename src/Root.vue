@@ -11,6 +11,7 @@ import { provideUserData } from '@/providers/user-data.provider';
 import { provideWallets } from './providers/wallet.provider';
 import { createProviderComponent } from './providers/createProviderComponent';
 import { provideCrossChainSync } from './providers/cross-chain-sync.provider';
+import { provideDarkMode } from './providers/dark-mode.provider';
 
 // The other providers call useWallets so we need to provide it in a higher level
 const WalletsProvider = createProviderComponent(() => provideWallets());
@@ -20,6 +21,7 @@ const GlobalProvider = createProviderComponent(() => {
   provideTokens(userSettings, tokenLists);
   provideUserData();
   provideCrossChainSync();
+  provideDarkMode();
 });
 
 /**

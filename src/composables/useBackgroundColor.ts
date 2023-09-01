@@ -11,7 +11,7 @@
 import { ref, watch } from 'vue';
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router';
 
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 
 /**
  * CONSTANTS
@@ -24,46 +24,46 @@ const defaultDarkBgColor = 'bg-gray-900';
  */
 const bgColor = ref(defaultBgColor);
 
-/**
- * COMPOSABLES
- */
-const { darkMode } = useDarkMode();
-
-/**
- * METHODS
- */
-function setBackgroundColor(color: string): void {
-  document.documentElement.classList.remove(bgColor.value);
-  bgColor.value = color;
-  document.documentElement.classList.add(bgColor.value);
-}
-
-function setDefaultBgColor(): void {
-  if (darkMode.value) {
-    setBackgroundColor(defaultDarkBgColor);
-  } else {
-    setBackgroundColor(defaultBgColor);
-  }
-}
-
-export function newRouteHandler(newRoute: RouteLocationNormalizedLoaded): void {
-  if (darkMode.value && newRoute.meta.bgColors?.dark) {
-    setBackgroundColor(newRoute.meta.bgColors.dark);
-  } else if (!darkMode.value && newRoute.meta.bgColors?.light) {
-    setBackgroundColor(newRoute.meta.bgColors.light);
-  } else {
-    setDefaultBgColor();
-  }
-}
-
-/**
- * INIT
- */
-setDefaultBgColor();
-
 export default function useBackgroundColor() {
+  /**
+   * COMPOSABLES
+   */
+  const { darkMode } = useDarkMode();
   const route = useRoute();
+
+  /**
+   * METHODS
+   */
+  function setBackgroundColor(color: string): void {
+    document.documentElement.classList.remove(bgColor.value);
+    bgColor.value = color;
+    document.documentElement.classList.add(bgColor.value);
+  }
+
+  function setDefaultBgColor(): void {
+    if (darkMode.value) {
+      setBackgroundColor(defaultDarkBgColor);
+    } else {
+      setBackgroundColor(defaultBgColor);
+    }
+  }
+
+  function newRouteHandler(newRoute: RouteLocationNormalizedLoaded): void {
+    if (darkMode.value && newRoute.meta.bgColors?.dark) {
+      setBackgroundColor(newRoute.meta.bgColors.dark);
+    } else if (!darkMode.value && newRoute.meta.bgColors?.light) {
+      setBackgroundColor(newRoute.meta.bgColors.light);
+    } else {
+      setDefaultBgColor();
+    }
+  }
+
   watch(darkMode, () => newRouteHandler(route));
+
+  /**
+   * INIT
+   */
+  setDefaultBgColor();
 
   return {
     newRouteHandler,

@@ -5,7 +5,7 @@ import ECharts from 'vue-echarts';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import { useDarkMode } from '@/providers/dark-mode.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { useTokens } from '@/providers/tokens.provider';
