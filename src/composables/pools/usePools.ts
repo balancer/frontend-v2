@@ -34,7 +34,11 @@ export default function usePools({
   /**
    * COMPOSABLES
    */
-  const poolsQuery = usePoolsQuery(filterOptions, { enabled: true }, false);
+  const poolsQuery = usePoolsQuery(
+    filterOptions,
+    { enabled: true, refetchOnWindowFocus: false, keepPreviousData: true },
+    false
+  );
 
   const { injectTokens } = useTokens();
 
