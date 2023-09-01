@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useLock } from '@/composables/useLock';
-
 import { bnum } from '@/lib/utils';
-import { useTokens } from '@/providers/tokens.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';
 import { differenceInDays, format } from 'date-fns';
@@ -22,8 +20,7 @@ import { useLockRankQuery } from '@/composables/queries/useLockRankQuery';
  */
 const { account } = useWeb3();
 
-const { isLoadingLockPool, isLoadingLockInfo, lockPool, lock } = useLock();
-const { balanceFor } = useTokens();
+const { isLoadingLockPool, isLoadingLockInfo, lock } = useLock();
 const { fNum } = useNumbers();
 const router = useRouter();
 
@@ -43,11 +40,6 @@ const isLoadingData = computed(
     isLoadingLockInfo.value ||
     isLoadingLockPool.value
 );
-
-const bptBalance = computed(() => {
-  if (!lockPool.value) return '';
-  return balanceFor(lockPool.value.address);
-});
 
 const lockedUntil = computed(() => {
   if (lock.value?.hasExistingLock && !lock.value.isExpired) {
@@ -281,12 +273,12 @@ function navigateToGetVeBAL() {
 }
 
 .btn-extend {
-  color: rgba(188, 162, 93, 1);
-  border: 1px solid rgba(188, 162, 93, 1);
+  color: rgb(188 162 93 / 100%);
+  border: 1px solid rgb(188 162 93 / 100%);
 }
 
 .chart-wrapper {
-  background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: drop-shadow(40px 40px 80px rgba(0, 0, 0, 0.5));
+  background-color: rgb(0 0 0 / 80%);
+  backdrop-filter: drop-shadow(40px 40px 80px rgb(0 0 0 / 50%));
 }
 </style>
