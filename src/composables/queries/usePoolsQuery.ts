@@ -27,7 +27,8 @@ type PoolsQueryResponse = {
 
 export default function usePoolsQuery(
   filterOptions: PoolFilterOptions,
-  options: UseInfiniteQueryOptions<PoolsQueryResponse> = { enabled: true }
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = { enabled: true },
+  shouldInjectTokens = true
 ) {
   /**
    * COMPOSABLES
@@ -53,14 +54,16 @@ export default function usePoolsQuery(
       fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
         const pools = await balancerAPIService.pools.get(getQueryArgs(options));
 
-        const tokens = flatten(
-          pools.map(pool => [
-            ...pool.tokensList,
-            ...tokenTreeLeafs(pool.tokens),
-            pool.address,
-          ])
-        );
-        injectTokens(tokens);
+        if (shouldInjectTokens) {
+          const tokens = flatten(
+            pools.map(pool => [
+              ...pool.tokensList,
+              ...tokenTreeLeafs(pool.tokens),
+              pool.address,
+            ])
+          );
+          injectTokens(tokens);
+        }
 
         return pools;
       },
@@ -77,14 +80,16 @@ export default function usePoolsQuery(
         const poolDecorator = new PoolDecorator(pools);
         let decoratedPools = await poolDecorator.decorate(tokenMeta.value);
 
-        const tokens = flatten(
-          pools.map(pool => [
-            ...pool.tokensList,
-            ...tokenTreeLeafs(pool.tokens),
-            pool.address,
-          ])
-        );
-        await injectTokens(tokens);
+        if (shouldInjectTokens) {
+          const tokens = flatten(
+            pools.map(pool => [
+              ...pool.tokensList,
+              ...tokenTreeLeafs(pool.tokens),
+              pool.address,
+            ])
+          );
+          await injectTokens(tokens);
+        }
 
         decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
 
