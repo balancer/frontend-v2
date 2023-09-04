@@ -19,7 +19,11 @@ import {
   GqlPoolOrderDirection,
 } from '@/services/api/graphql/generated/api-types';
 import { ApiArgs } from '@/services/balancer/api/entities/pools';
-import { mapNetworkToApiChain, mapPoolTypeToApiType } from '@/lib/utils/api';
+import {
+  aprMaxOrTotal,
+  mapNetworkToApiChain,
+  mapPoolTypeToApiType,
+} from '@/lib/utils/api';
 import { PoolAttributeFilter, PoolFilterOptions } from '@/types/pools';
 // import { weeksAgoInSecs } from '../useTime';
 
@@ -30,7 +34,8 @@ type PoolsQueryResponse = {
 
 export default function usePoolsQuery(
   filterOptions: PoolFilterOptions,
-  options: UseInfiniteQueryOptions<PoolsQueryResponse> = { enabled: true }
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = { enabled: true },
+  shouldInjectTokens = true
 ) {
   /**
    * COMPOSABLES
@@ -48,14 +53,16 @@ export default function usePoolsQuery(
       fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
         const pools = await balancerAPIService.pools.get(getQueryArgs(options));
 
-        const tokens = flatten(
-          pools.map(pool => [
-            ...pool.tokensList,
-            ...tokenTreeLeafs(pool.tokens),
-            pool.address,
-          ])
-        );
-        injectTokens(tokens);
+        if (shouldInjectTokens) {
+          const tokens = flatten(
+            pools.map(pool => [
+              ...pool.tokensList,
+              ...tokenTreeLeafs(pool.tokens),
+              pool.address,
+            ])
+          );
+          injectTokens(tokens);
+        }
 
         return pools;
       },
@@ -144,8 +151,9 @@ export default function usePoolsQuery(
 
     if (poolsSortField === 'apr') {
       return pools.sort((a, b) => {
-        const aprA = a?.apr?.max ?? 0;
-        const aprB = b?.apr?.max ?? 0;
+        if (!a.apr || !b.apr) return 0;
+        const aprA = aprMaxOrTotal(a.apr.apr).toNumber();
+        const aprB = aprMaxOrTotal(b.apr.apr).toNumber();
         return aprB - aprA;
       });
     } else if (poolsSortField === 'volume') {

@@ -17,6 +17,7 @@ export class FeeDistributor {
     '0xA13a9247ea42D743238089903570127DdA72fE44', // bb-a-USD v2
     '0xfeBb0bbf162E64fb9D0dfe186E517d84C395f016', // bb-a-USD v3
     '0xba100000625a3754423978a60c9317c58a424e3D', // BAL
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
   ];
 
   constructor(
