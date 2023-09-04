@@ -10,14 +10,16 @@ import MyVebalInfo from './MyVebalInfo.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
+import { useHistoricalLocksQuery } from '@/composables/queries/useHistoricalLocksQuery';
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
 const router = useRouter();
-const { isWalletReady } = useWeb3();
+const { account, isWalletReady } = useWeb3();
 const { veBalBalance } = useVeBal();
+const { data } = useHistoricalLocksQuery(account);
 
 /**
  * COMPUTED

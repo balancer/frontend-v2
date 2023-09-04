@@ -158,7 +158,7 @@ const cards = computed(() => {
             $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
           "
         >
-          Lock for vebal
+          Lock for veBAL
         </BalBtn>
       </template>
 
