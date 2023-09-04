@@ -31,7 +31,13 @@ export const darkModeProvider = () => {
     setDarkMode(!darkMode.value);
   }
 
-  setDarkMode(darkMode.value);
+  watch(
+    () => darkMode.value,
+    () => {
+      setDarkMode(darkMode.value);
+    },
+    { immediate: true }
+  );
 
   return {
     darkMode,
