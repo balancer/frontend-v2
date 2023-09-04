@@ -146,7 +146,7 @@
   },
   {
     "address": "0x82bcaD0C8F51D88ec339141F0d8953Bc25cc3d8c",
-    "network": 10,
+    "network": 137,
     "isKilled": false,
     "addedTimestamp": 1688418900,
     "relativeWeightCap": "0.10",
