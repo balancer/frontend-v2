@@ -1,6 +1,5 @@
 import { getAddress } from '@ethersproject/address';
 import { Ref, ref } from 'vue';
-import pkg from '@/../package.json';
 
 export type ConnectorPayload = {
   provider: unknown;
@@ -91,5 +90,5 @@ function lsRemove(key: string) {
 }
 
 function lsGetKey(key: string) {
-  return `${pkg.name}.${key}`;
+  return `@balancer/frontend-v2.${key}`;
 }
