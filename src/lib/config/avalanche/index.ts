@@ -44,7 +44,7 @@ const config: Config = {
   blockTime: 2,
   nativeAsset: {
     name: 'AVAX',
-    address: '0x0000000000000000000000000000000000000000',
+    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     symbol: 'AVAX',
     decimals: 18,
     deeplinkId: 'avax',
