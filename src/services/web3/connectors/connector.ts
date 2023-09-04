@@ -1,7 +1,6 @@
 import { getAddress } from '@ethersproject/address';
 import { Ref, ref } from 'vue';
-
-import { lsRemove } from '@/lib/utils/localstorage';
+import pkg from '@/../package.json';
 
 export type ConnectorPayload = {
   provider: unknown;
@@ -84,4 +83,13 @@ export abstract class Connector {
     this.provider.on('accountsChanged', this.handleAccountsChanged);
     this.provider.on('chainChanged', this.handleChainChanged);
   }
+}
+
+//Inline lsRemove to avoid rollup including connectors together with useDakMode in the bundle, affecting initial JS execution time
+function lsRemove(key: string) {
+  return localStorage.removeItem(lsGetKey(key));
+}
+
+function lsGetKey(key: string) {
+  return `${pkg.name}.${key}`;
 }
