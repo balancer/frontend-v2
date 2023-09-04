@@ -6,7 +6,6 @@ import VueSlider, { DefineComponent as TVueSlider } from 'vue-slider-component';
 // Note that we are explicitly importing from 'tailwind.config.js' which is a vite alias (see vite.config.ts)
 // because we need to use ES modules but tailwind + tailwind intellisense require commonJS import style to work properly.
 import tailwindConfig from 'tailwind.config.js';
-import useDarkMode from '@/composables/useDarkMode';
 
 export interface BalRangeInputProps extends TVueSlider {
   modelValue: number;
@@ -19,8 +18,6 @@ const props = withDefaults(defineProps<BalRangeInputProps>(), {
   rightLabel: '',
 });
 const emit = defineEmits(['change', 'update:modelValue', 'dragEnd']);
-
-const { darkMode } = useDarkMode();
 
 const colors = tailwindConfig.theme.extend.colors;
 
@@ -44,7 +41,7 @@ const dotStyle = computed(() => {
 
 const railSyle = computed(() => {
   return {
-    background: darkMode.value ? colors.gray['900'] : colors.gray['100'],
+    background: colors.gray['100'],
   };
 });
 

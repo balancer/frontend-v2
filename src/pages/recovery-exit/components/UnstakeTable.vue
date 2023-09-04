@@ -3,7 +3,6 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import useGraphQuery from '@/composables/queries/useGraphQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
 import { networkId } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
@@ -83,7 +82,6 @@ const emit = defineEmits(['unstaked']);
 const { account, explorerLinks, getSigner } = useWeb3();
 const { fNum } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { darkMode } = useDarkMode();
 
 const poolIds = computed((): string[] => CSP_ISSUE_POOL_IDS[networkId.value]);
 const poolAddresses = computed(() => poolIds.value.map(id => id.slice(0, 42)));
@@ -352,7 +350,7 @@ const columns = ref<ColumnDefinition<TokenInfo>[]>([
         <template #iconColumnHeader>
           <div class="flex items-center">
             <img
-              v-if="darkMode"
+              v-if="false"
               :src="TokensWhite"
               alt="token"
               loading="lazy"

@@ -10,7 +10,6 @@ import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
 import useNumbers from '@/composables/useNumbers';
 import useNetwork from '@/composables/useNetwork';
@@ -92,7 +91,6 @@ const { fNum } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
-const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
 
@@ -307,7 +305,7 @@ function iconAddresses(pool: Pool) {
       <template #iconColumnHeader>
         <div class="flex items-center">
           <img
-            v-if="darkMode"
+            v-if="false"
             :src="TokensWhite"
             alt="token"
             loading="lazy"

@@ -5,7 +5,6 @@ import ECharts from 'vue-echarts';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { useTokens } from '@/providers/tokens.provider';
@@ -40,7 +39,6 @@ const {
   hasRestoredFromSavedState,
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { darkMode } = useDarkMode();
 const { fNum } = useNumbers();
 const tailwind = useTailwind();
 const { resolve } = useUrls();
@@ -68,9 +66,7 @@ const chartConfig = computed(() => {
       selectedMode: false,
       top: 'bottom',
       textStyle: {
-        color: darkMode.value
-          ? tailwind.theme.colors.gray['300']
-          : tailwind.theme.colors.gray['850'],
+        color: tailwind.theme.colors.gray['300'],
       },
     },
     series: [
@@ -81,9 +77,7 @@ const chartConfig = computed(() => {
         stillShowZeroSum: true,
         showEmptyCircle: true,
         itemStyle: {
-          borderColor: darkMode.value
-            ? tailwind.theme.colors.gray['850']
-            : '#fff',
+          borderColor: tailwind.theme.colors.gray['850'],
           borderWidth: 5,
           borderCap: 'butt',
           borderJoin: 'round',

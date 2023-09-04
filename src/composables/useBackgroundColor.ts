@@ -11,8 +11,6 @@
 import { ref, watch } from 'vue';
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router';
 
-import useDarkMode from '@/composables/useDarkMode';
-
 /**
  * CONSTANTS
  */
@@ -27,7 +25,6 @@ const bgColor = ref(defaultBgColor);
 /**
  * COMPOSABLES
  */
-const { darkMode } = useDarkMode();
 
 /**
  * METHODS
@@ -39,17 +36,13 @@ function setBackgroundColor(color: string): void {
 }
 
 function setDefaultBgColor(): void {
-  if (darkMode.value) {
-    setBackgroundColor(defaultDarkBgColor);
-  } else {
-    setBackgroundColor(defaultBgColor);
-  }
+  setBackgroundColor(defaultBgColor);
 }
 
 export function newRouteHandler(newRoute: RouteLocationNormalizedLoaded): void {
-  if (darkMode.value && newRoute.meta.bgColors?.dark) {
+  if (newRoute.meta.bgColors?.dark) {
     setBackgroundColor(newRoute.meta.bgColors.dark);
-  } else if (!darkMode.value && newRoute.meta.bgColors?.light) {
+  } else if (newRoute.meta.bgColors?.light) {
     setBackgroundColor(newRoute.meta.bgColors.light);
   } else {
     setDefaultBgColor();
@@ -63,7 +56,6 @@ setDefaultBgColor();
 
 export default function useBackgroundColor() {
   const route = useRoute();
-  watch(darkMode, () => newRouteHandler(route));
 
   return {
     newRouteHandler,

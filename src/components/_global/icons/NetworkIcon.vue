@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
 
 const { theme } = useTailwind();
-const { darkMode } = useDarkMode();
 
-const color = computed(() =>
-  darkMode.value ? theme.colors.white : theme.colors.black
-);
+const color = computed(() => theme.colors.white);
 </script>
 
 <template>

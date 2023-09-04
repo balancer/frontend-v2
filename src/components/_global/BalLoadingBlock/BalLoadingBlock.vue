@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import useDarkMode from '@/composables/useDarkMode';
-
 /**
  * TYPES
  */
@@ -26,16 +24,11 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { darkMode } = useDarkMode();
-
 /**
  * COMPUTED
  */
 const bgClass = computed(() => {
   if (props.white) return 'shimmer-white';
-  if (darkMode.value) {
-    return props.darker ? 'shimmer-dark-mode-darker' : 'shimmer-dark-mode';
-  }
   return props.darker ? 'shimmer-light-mode-darker' : 'shimmer-light-mode';
 });
 

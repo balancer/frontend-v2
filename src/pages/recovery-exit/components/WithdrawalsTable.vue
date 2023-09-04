@@ -25,7 +25,6 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { balancerAPIService } from '@/services/balancer/api/balancer-api.service';
 import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
-import useDarkMode from '@/composables/useDarkMode';
 import { poolMetadata } from '@/lib/config/metadata';
 import {
   fiatValueOf,
@@ -63,7 +62,6 @@ const { slippageBsp } = useUserSettings();
 const { transactionDeadline } = useApp();
 const { fNum } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { darkMode } = useDarkMode();
 const router = useRouter();
 
 /**
@@ -290,7 +288,7 @@ const columns = ref<ColumnDefinition<Pool>[]>([
         <template #iconColumnHeader>
           <div class="flex items-center">
             <img
-              v-if="darkMode"
+              v-if="false"
               :src="TokensWhite"
               alt="token"
               loading="lazy"

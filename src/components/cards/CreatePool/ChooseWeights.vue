@@ -10,7 +10,6 @@ import usePoolCreation, {
   PoolSeedToken,
 } from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
@@ -45,7 +44,6 @@ const { fNum } = useNumbers();
 const { nativeAsset, getToken } = useTokens();
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { t } = useI18n();
-const { darkMode } = useDarkMode();
 
 /**
  * STATE
@@ -133,7 +131,7 @@ const weightColor = computed(() => {
   if (Number(totalWeight.value) > 100 || Number(totalWeight.value) <= 0) {
     return 'text-red-500';
   }
-  return darkMode.value ? 'text-gray-300' : 'text-gray-800';
+  return 'text-gray-300';
 });
 
 /**

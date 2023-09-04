@@ -7,7 +7,6 @@ import numeral from 'numeral';
 import ECharts from 'vue-echarts';
 import { initEcharts } from '@/dependencies/echarts';
 
-import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { bnum } from '@/lib/utils';
@@ -87,7 +86,6 @@ const currentValue = ref('$0,00');
 const change = ref(0);
 const { fNum } = useNumbers();
 const tailwind = useTailwind();
-const { darkMode } = useDarkMode();
 
 // https://echarts.apache.org/en/option.html
 const chartConfig = computed(() => ({
@@ -110,13 +108,9 @@ const chartConfig = computed(() => ({
     },
     selected: props.legendState || {},
     textStyle: {
-      color: darkMode.value
-        ? tailwind.theme.colors.gray['100']
-        : tailwind.theme.colors.gray['800'],
+      color: tailwind.theme.colors.gray['100'],
     },
-    inactiveColor: darkMode.value
-      ? tailwind.theme.colors.gray['700']
-      : tailwind.theme.colors.gray['300'],
+    inactiveColor: tailwind.theme.colors.gray['700'],
   },
   // controlling the display of the X-Axis
   xAxis: {

@@ -5,7 +5,6 @@ import useEthereumTxType from '@/composables/useEthereumTxType';
 import { ethereumTxTypeOptions } from '@/constants/options';
 import useWeb3 from '@/services/web3/useWeb3';
 import { shorten } from '@/lib/utils';
-import useDarkMode from '@/composables/useDarkMode';
 import { getConnectorLogo } from '@/services/web3/wallet-logos';
 import { getConnectorName } from '@/services/web3/wallet-names';
 import { useUserSettings } from '@/providers/user-settings.provider';
@@ -13,7 +12,6 @@ import { isEIP1559SupportedNetwork } from '@/composables/useNetwork';
 import { Network } from '@/lib/config/types';
 
 // COMPOSABLES
-const { darkMode, setDarkMode } = useDarkMode();
 
 const {
   account,
@@ -162,15 +160,13 @@ function copyAddress() {
       <div class="flex mt-1">
         <div
           class="flex justify-center items-center py-1.5 mr-2 w-16 rounded-xl border cursor-pointer option"
-          :class="{ active: !darkMode }"
-          @click="setDarkMode(false)"
+          :class="{ active: true }"
         >
           <BalIcon name="sun" size="sm" />
         </div>
         <div
           class="flex justify-center items-center py-1.5 mr-2 w-16 rounded-xl border cursor-pointer option"
-          :class="{ active: darkMode }"
-          @click="setDarkMode(true)"
+          :class="{ active: false }"
         >
           <BalIcon name="moon" size="sm" />
         </div>

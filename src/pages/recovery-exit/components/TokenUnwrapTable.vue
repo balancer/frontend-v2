@@ -3,7 +3,6 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import useGraphQuery from '@/composables/queries/useGraphQuery';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
 import { networkId } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum, isSameAddress } from '@/lib/utils';
@@ -67,7 +66,6 @@ const props = defineProps<Props>();
 const { account, explorerLinks, getSigner } = useWeb3();
 const { fNum } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { darkMode } = useDarkMode();
 const { approveToken } = useTokenApprovalActions();
 const { relayerApprovalTx } = useRelayerApproval(RelayerType.BATCH);
 
@@ -324,7 +322,7 @@ const columns = computed((): ColumnDefinition<TokenInfo>[] => [
         <template #iconColumnHeader>
           <div class="flex items-center">
             <img
-              v-if="darkMode"
+              v-if="false"
               :src="TokensWhite"
               alt="token"
               loading="lazy"

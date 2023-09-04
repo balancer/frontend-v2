@@ -7,7 +7,6 @@ import { useI18n } from 'vue-i18n';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import PoolChartPeriodSelect from '@/components/pool/PoolChartPeriodSelect.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
@@ -72,7 +71,6 @@ const { t } = useI18n();
 const tailwind = useTailwind();
 const { fNum } = useNumbers();
 const { isMobile } = useBreakpoints();
-const { darkMode } = useDarkMode();
 
 /**
  * STATE
@@ -207,9 +205,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
   return {
     color: [tailwind.theme.colors.blue['600']],
     hoverBorderColor: tailwind.theme.colors.pink['500'],
-    hoverColor: darkMode.value
-      ? tailwind.theme.colors.gray['900']
-      : tailwind.theme.colors.white,
+    hoverColor: tailwind.theme.colors.gray['900'],
     areaStyle: {
       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {

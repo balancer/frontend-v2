@@ -1,7 +1,6 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 import { onBeforeMount, ref } from 'vue';
 
-import useDarkMode from '@/composables/useDarkMode';
 import useNetwork from '@/composables/useNetwork';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -25,7 +24,6 @@ async function checkIfGnosisSafeApp(): Promise<boolean> {
 
 export default function useGnosisSafeApp() {
   const { connectWallet, chainId } = useWeb3();
-  const { darkMode, toggleDarkMode } = useDarkMode();
   const { networkId, getNetworkSlug } = useNetwork();
 
   onBeforeMount(async () => {
@@ -38,7 +36,6 @@ export default function useGnosisSafeApp() {
         hardRedirectTo(`/#/${getNetworkSlug(chainId.value)}`);
       }
       // Disable darkmode by default
-      if (darkMode) toggleDarkMode();
     }
   });
 

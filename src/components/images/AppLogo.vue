@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
 
 /**
@@ -19,7 +18,6 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { darkMode } = useDarkMode();
 const tailwind = useTailwind();
 
 /**
@@ -28,9 +26,7 @@ const tailwind = useTailwind();
 const fillColor = computed(() => {
   if (props.forceDark) return tailwind.theme.colors.white;
 
-  return darkMode.value
-    ? tailwind.theme.colors.white
-    : tailwind.theme.colors.gray['900'];
+  return tailwind.theme.colors.white;
 });
 </script>
 

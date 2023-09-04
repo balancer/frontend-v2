@@ -6,7 +6,6 @@ import { useRouter } from 'vue-router';
 import AppLogo from '@/components/images/AppLogo.vue';
 import { version } from '@/composables/useApp';
 import useConfig from '@/composables/useConfig';
-import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
@@ -25,7 +24,6 @@ const emit = defineEmits(['close']);
 /**
  * COMPOSABLES
  */
-const { darkMode, toggleDarkMode } = useDarkMode();
 const { blockNumber } = useWeb3();
 const { networkConfig } = useConfig();
 const { networkSlug } = useNetwork();
@@ -149,10 +147,10 @@ watch(blockNumber, async () => {
     </div>
 
     <div class="px-4 mt-6">
-      <div class="mt-2 side-bar-btn" @click="toggleDarkMode">
-        <MoonIcon v-if="!darkMode" class="mr-2" />
+      <div class="mt-2 side-bar-btn">
+        <MoonIcon v-if="!true" class="mr-2" />
         <SunIcon v-else class="mr-2" />
-        <span>{{ darkMode ? 'Light' : 'Dark' }} mode</span>
+        <span>{{ 'Light' }} mode</span>
       </div>
     </div>
 

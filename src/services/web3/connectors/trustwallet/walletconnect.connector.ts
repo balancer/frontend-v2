@@ -4,7 +4,6 @@ import { configService } from '@/services/config/config.service';
 import { WalletError } from '@/types';
 import { Connector, ConnectorId } from '../connector';
 import { Network } from '@/lib/config/types';
-import useDarkMode from '@/composables/useDarkMode';
 
 const { MAINNET, ARBITRUM, AVALANCHE, BASE, GNOSIS, POLYGON, ZKEVM } = Network;
 
@@ -25,7 +24,7 @@ export class WalletConnectConnector extends Connector {
         [ZKEVM]: configService.getNetworkRpc(ZKEVM),
       },
       showQrModal: true,
-      qrModalOptions: { themeMode: useDarkMode().darkMode ? 'dark' : 'light' },
+      qrModalOptions: { themeMode: 'light' },
     });
     this.provider = provider;
 
