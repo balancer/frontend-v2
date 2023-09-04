@@ -5,7 +5,6 @@ import { isTestnet } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
 
 const ClaimPage = () => import('@/pages/claim/index.vue');
-const LegacyClaimPage = () => import('@/pages/claim/legacy.vue');
 const CookiesPolicyPage = () => import('@/pages/cookies-policy.vue');
 const GetVeBalPage = () => import('@/pages/get-vebal.vue');
 const HomePage = () => import('@/pages/index.vue');
@@ -140,11 +139,6 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/claim',
     name: 'claim',
     component: ClaimPage,
-  },
-  {
-    path: '/:networkSlug/claim/legacy',
-    name: 'legacy-claim',
-    component: LegacyClaimPage,
   },
   {
     path: '/:networkSlug/portfolio',
