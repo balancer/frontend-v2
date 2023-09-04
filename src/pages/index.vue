@@ -9,7 +9,7 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import usePools from '@/composables/pools/usePools';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { useIntersectionObserver } from '@vueuse/core';
 import { PoolType } from '@/services/pool/types';

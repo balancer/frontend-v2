@@ -22,7 +22,8 @@ import usePoolCreation, {
 import useAlerts from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useTokens } from '@/providers/tokens.provider';
-import { lsGet, selectByAddress } from '@/lib/utils';
+import { lsGet } from '@/lib/utils/localstorage';
+import { selectByAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { StepState } from '@/types';
 import IntroModal from '@/components/contextual/pages/pool/create/IntroModal.vue';

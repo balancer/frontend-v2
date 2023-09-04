@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash';
 import { computed, ref } from 'vue';
 
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 
 export enum AlertType {
   ERROR = 'error',

@@ -12,7 +12,7 @@ import axios from 'axios';
 
 import useFathom, { Goals, trackGoal } from '@/composables/useFathom';
 import { WALLET_SCREEN_ENDPOINT } from '@/constants/exploits';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 
 import { networkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';

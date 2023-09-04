@@ -7,14 +7,8 @@ import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { POOLS } from '@/constants/pools';
-import {
-  bnum,
-  includesAddress,
-  isSameAddress,
-  lsRemove,
-  lsSet,
-  scale,
-} from '@/lib/utils';
+import { bnum, includesAddress, isSameAddress, scale } from '@/lib/utils';
+import { lsRemove, lsSet } from '@/lib/utils/localstorage';
 import { balancerService } from '@/services/balancer/balancer.service';
 import useWeb3 from '@/services/web3/useWeb3';
 

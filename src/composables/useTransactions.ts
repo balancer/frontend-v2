@@ -8,7 +8,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import LS_KEYS from '@/constants/local-storage.keys';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 import { configService } from '@/services/config/config.service';
 import { cowswapExplorer } from '@/services/cowswap/explorer.service';
 import { cowswapProtocolService } from '@/services/cowswap/cowswapProtocol.service';

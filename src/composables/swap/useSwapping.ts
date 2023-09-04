@@ -3,7 +3,8 @@ import { parseFixed } from '@ethersproject/bignumber';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { bnum, lsGet, lsSet } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { COW_SUPPORTED_NETWORKS } from '@/services/cowswap/constants';
 import {

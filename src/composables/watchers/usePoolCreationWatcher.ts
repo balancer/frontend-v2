@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 import useNetwork from '@/composables/useNetwork';
 
-import { lsGet } from '@/lib/utils';
+import { lsGet } from '@/lib/utils/localstorage';
 
 import {
   POOL_CREATION_STATE_KEY,

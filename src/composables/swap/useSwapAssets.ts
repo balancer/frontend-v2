@@ -1,5 +1,5 @@
 import { networkId } from '@/composables/useNetwork';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 import { configService } from '@/services/config/config.service';
 
 const inputAsset = ref(

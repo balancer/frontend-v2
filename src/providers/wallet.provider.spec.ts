@@ -19,7 +19,7 @@ import { initTallyConnectorForTesting } from '@/dependencies/wallets/tally';
 import { initWalletconnectConnectorForTesting } from '@/dependencies/wallets/walletconnect';
 import { initWalletLinkConnectorForTesting } from '@/dependencies/wallets/walletlink';
 import { initWeb3Provider } from '@/dependencies/wallets/Web3Provider';
-import { lsGet } from '@/lib/utils';
+import { lsGet } from '@/lib/utils/localstorage';
 import { mountComposable } from '@tests/mount-helpers';
 import { SANCTIONED_ADDRESS } from '@tests/msw/rest-handlers';
 import { isBlockedAddress, useWallets } from './wallet.provider';

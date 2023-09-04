@@ -4,7 +4,7 @@ import { computed, inject, InjectionKey, provide, reactive, toRefs } from 'vue';
 import { FiatCurrency } from '@/constants/currency';
 import LS_KEYS from '@/constants/local-storage.keys';
 import symbolKeys from '@/constants/symbol.keys';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 
 /**
  * TYPES

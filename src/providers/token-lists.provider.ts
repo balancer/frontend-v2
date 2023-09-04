@@ -13,7 +13,7 @@ import {
 import useNetwork from '@/composables/useNetwork';
 import localStorageKeys from '@/constants/local-storage.keys';
 import symbolKeys from '@/constants/symbol.keys';
-import { lsSet } from '@/lib/utils';
+import { lsSet } from '@/lib/utils/localstorage';
 import TokenListService, {
   tokenListService,
 } from '@/services/token-list/token-list.service';

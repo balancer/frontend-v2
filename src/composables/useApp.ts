@@ -1,5 +1,5 @@
 import LS_KEYS from '@/constants/local-storage.keys';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils/localstorage';
 import i18n from '@/plugins/i18n';
 export { version } from '../../package.json';
 

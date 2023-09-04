@@ -174,7 +174,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
 import { TOKENS } from '@/constants/tokens';
-import { lsGet } from '@/lib/utils';
+import { lsGet } from '@/lib/utils/localstorage';
 import { WrapType } from '@/lib/utils/balancer/wrapper';
 import { isRequired } from '@/lib/utils/validations';
 import { ApiErrorCodes } from '@/services/cowswap/errors/OperatorError';
