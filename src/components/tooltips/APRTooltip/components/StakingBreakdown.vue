@@ -10,7 +10,12 @@ import {
   GqlPoolApr,
   GqlPoolAprRange,
 } from '@/services/api/graphql/generated/api-types';
-import { aprMaxOrTotal, aprMinOrTotal } from '@/lib/utils/api';
+import {
+  aprMaxOrTotal,
+  aprMinOrTotal,
+  isAprRange,
+  isAprTotal,
+} from '@/lib/utils/api';
 
 /**
  * TYPES
@@ -86,12 +91,12 @@ const breakdownItems = computed((): Array<any> => {
   const items: Array<any> = [];
 
   props.items?.forEach(item => {
-    if (item.apr.__typename === 'GqlPoolAprRange') {
-      items.push('Min ' + item.title, item.apr.min);
-      items.push('Max ' + item.title, item.apr.max);
+    if (isAprRange(item.apr)) {
+      items.push(['Min ' + item.title, item.apr.min]);
+      items.push(['Max ' + item.title, item.apr.max]);
     }
-    if (item.apr.__typename === 'GqlPoolAprTotal') {
-      items.push(item.title, item.apr.total);
+    if (isAprTotal(item.apr)) {
+      items.push([item.title, item.apr.total]);
     }
   });
 
@@ -127,7 +132,7 @@ const breakdownItems = computed((): Array<any> => {
         <template #item="{ item: [label, amount] }">
           {{ fNum(amount, FNumFormats.percent) }}
           <span class="ml-1 text-xs capitalize text-secondary">
-            {{ label }} {{ $t('apr') }}
+            {{ label }}
           </span>
         </template>
       </BalBreakdown>

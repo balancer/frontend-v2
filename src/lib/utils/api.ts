@@ -134,11 +134,11 @@ export function mapPoolTypeToApiType(
   }
 }
 
-function isAprRange(obj: any): obj is GqlPoolAprRange {
+export function isAprRange(obj: any): obj is GqlPoolAprRange {
   return obj.min !== undefined;
 }
 
-function isAprTotal(obj: any): obj is GqlPoolAprTotal {
+export function isAprTotal(obj: any): obj is GqlPoolAprTotal {
   return obj.total !== undefined;
 }
 

@@ -45,7 +45,7 @@ import {
   GqlPoolApr,
   GqlPoolAprRange,
 } from '@/services/api/graphql/generated/api-types';
-import { aprMaxOrTotal, aprMinOrTotal } from '@/lib/utils/api';
+import { aprMaxOrTotal, aprMinOrTotal, isAprRange } from '@/lib/utils/api';
 
 const POOLS = configService.network.pools;
 
@@ -309,7 +309,7 @@ export function totalAprLabel(aprs: GqlPoolApr, boost?: string): string {
   if (
     hasBalEmissions(aprs) &&
     isPoolBoostsEnabled.value &&
-    aprs.apr.__typename === 'GqlPoolAprRange'
+    isAprRange(aprs.apr)
   ) {
     const minAPR = numF(aprs.apr.min, FNumFormats.percent);
     const maxAPR = numF(aprs.apr.max, FNumFormats.percent);
