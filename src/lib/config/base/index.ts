@@ -19,9 +19,9 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://base.gateway.tenderly.co/2rkO7cFmpz3ZLkhKmtrzpb`,
+  rpc: `https://base-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   ws: ``,
-  publicRpc: 'https://developer-access-mainnet.base.org',
+  publicRpc: 'https://mainnet.base.org',
   explorer: 'https://basescan.org',
   explorerName: 'BaseScan',
   subgraph:
