@@ -22,6 +22,8 @@ type AxisMoveEvent = {
 type ChartData = {
   name: string;
   values: (readonly [string, number])[];
+  hoverColor?: string;
+  hoverBorderColor?: string;
 };
 
 type AxisLabelFormat = {
@@ -60,6 +62,7 @@ type Props = {
   showTooltipLayer?: boolean; // hides tooltip floating layer
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
   areaStyle?: AreaStyle;
+  symbolSize?: number;
 };
 
 const emit = defineEmits([
@@ -81,6 +84,7 @@ const props = withDefaults(defineProps<Props>(), {
   showTooltip: true,
   showTooltipLayer: true,
   useMinMax: false,
+  symbolSize: 5,
 });
 
 const chartInstance = ref<echarts.ECharts>();
@@ -231,10 +235,11 @@ const chartConfig = computed(() => ({
     },
     emphasis: {
       itemStyle: {
-        color: props.hoverColor,
-        borderColor: props.hoverBorderColor,
+        color: d.hoverColor || props.hoverColor,
+        borderColor: d.hoverBorderColor || props.hoverBorderColor,
       },
     },
+    symbolSize: props.symbolSize,
     // This is a retrofitted option to show the small pill with the
     // latest value of the series at the end of the line on the RHS
     // the line is hidden, but the label is shown with extra styles

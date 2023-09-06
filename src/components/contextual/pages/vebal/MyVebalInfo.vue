@@ -65,26 +65,49 @@ const chartValues = computed(() => {
 
     const timestamp = snapshot.timestamp;
 
-    const point1Balance = bias;
+    const point1Balance = bias.toNumber();
 
     const point2V = bias.minus(slope.times(now.minus(timestamp)));
-    const point2Balance = point2V.isLessThan(0) ? bnum(0) : point2V;
+    const point2Balance = point2V.isLessThan(0)
+      ? bnum(0).toNumber()
+      : point2V.toNumber();
 
-    acc.push(
-      Object.freeze<[string, number]>([
-        format(snapshot.timestamp * 1000, 'yyyy/MM/dd'),
-        point1Balance.toNumber(),
-      ])
-    );
-    acc.push(
-      Object.freeze<[string, number]>([
-        format(now.toNumber() * 1000, 'yyyy/MM/dd'),
-        point2Balance.toNumber(),
-      ])
-    );
+    const point1Date = format(snapshot.timestamp * 1000, 'yyyy/MM/dd');
+    const point2Date = format(now.toNumber() * 1000, 'yyyy/MM/dd');
+
+    const prevPointDate = acc[acc.length - 1]?.[0];
+    const prevPointBalance = acc[acc.length - 1]?.[1].toFixed(0);
+
+    console.log({
+      point1Date,
+      point2Date,
+      point1Balance,
+      point2Balance,
+      prevPointDate,
+      prevPointBalance,
+    });
+
+    acc.push(Object.freeze<[string, number]>([point1Date, point1Balance]));
+    if (point1Balance.toFixed(0) === point2Balance.toFixed(0)) {
+      return acc;
+    }
+    acc.push(Object.freeze<[string, number]>([point2Date, point2Balance]));
+
     return acc;
   }, []);
+  console.log(chartV);
 
+  const valuesByDates = chartV.reduce((acc: any, item) => {
+    const [date, value] = item;
+    if (acc[date]) {
+      acc[date].push(value);
+    } else {
+      acc[date] = [value];
+    }
+    return acc;
+  }, {});
+
+  console.log(valuesByDates);
   return chartV;
 });
 
@@ -143,6 +166,8 @@ const futureLockChartData = computed(() => {
           0,
         ]),
       ],
+      hoverBorderColor: 'black',
+      hoverColor: 'white',
     };
   }
   return {};
@@ -174,6 +199,7 @@ const chartData = computed(() => {
       futureLockChartData.value,
     ],
     lineStyles: [{}, { type: 'dashed' }],
+    symbolSize: 10,
   };
 });
 
@@ -235,8 +261,8 @@ function navigateToGetVeBAL() {
         :axisLabelFormatter="{
           yAxis: {
             maximumFractionDigits: 0,
-            fixedFormat: true,
-            abbreviate: true,
+            fixedFormat: false,
+            abbreviate: false,
           },
         }"
         :areaStyle="chartData.areaStyle"
@@ -248,15 +274,8 @@ function navigateToGetVeBAL() {
         :chartType="chartData.chartType"
         showTooltipLayer
         :lineStyles="chartData.lineStyles"
+        :symbolSize="chartData.symbolSize"
         showTooltip
-        hideYAxis
-        :customGrid="{
-          left: '2.5%',
-          right: '0',
-          top: '10%',
-          bottom: '15%',
-          containLabel: false,
-        }"
       />
     </div>
   </div>
