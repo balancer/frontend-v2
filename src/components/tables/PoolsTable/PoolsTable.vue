@@ -37,6 +37,7 @@ import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
 import PoolsTableActionSelector from './PoolsTableActionSelector.vue';
+import { PoolAction } from '@/components/contextual/pages/pools/types';
 
 /**
  * TYPES
@@ -58,7 +59,7 @@ type Props = {
   skeletonClass?: string;
   shares?: Record<string, string>;
   boosts?: Record<string, string>;
-  defaultPoolActions?: string[];
+  defaultPoolActions?: PoolAction[];
   shouldPokePoolsMap?: Record<string, string>;
   hasNonPrefGaugesPoolsAddresses?: string[];
 };

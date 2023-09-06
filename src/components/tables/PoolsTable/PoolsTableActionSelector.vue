@@ -2,10 +2,13 @@
 import { Pool } from '@/services/pool/types';
 import { onClickOutside } from '@vueuse/core';
 import { PoolAction } from '@/components/contextual/pages/pools/types';
+import { deprecatedDetails } from '@/composables/usePoolHelpers';
+import { PoolWarning } from '@/types/pools';
+import { usePoolWarning } from '@/composables/usePoolWarning';
 
 type Props = {
   pool: Pool;
-  defaultPoolActions: string[];
+  defaultPoolActions: PoolAction[];
   showPokeAction?: boolean;
   showMigrateGaugeAction?: boolean;
 };
@@ -22,6 +25,9 @@ defineEmits<{
   (e: 'click:poke', value: Pool): void;
   (e: 'click:migrateGauge', value: Pool): void;
 }>();
+
+const { isAffectedBy } = usePoolWarning(computed(() => props.pool.id));
+
 const isSelectorOpened = ref(false);
 
 function handleClickOutside() {
@@ -34,12 +40,21 @@ function getActionIcon(action: string) {
   ).href;
 }
 
+function isActionDisabled(action: PoolAction) {
+  const isDeprecated =
+    Boolean(deprecatedDetails(props.pool.id)) ||
+    isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning);
+
+  const actionsToDisable = [PoolAction.Add, PoolAction.Stake];
+  return isDeprecated && actionsToDisable.includes(action);
+}
+
 const menuItems = computed(() => {
   const items = [...props.defaultPoolActions];
   if (props.showMigrateGaugeAction) {
-    items.unshift('migrateGauge');
+    items.unshift(PoolAction.MigrateGauge);
   } else if (props.showPokeAction) {
-    items.unshift('poke');
+    items.unshift(PoolAction.Poke);
   }
 
   return items;
@@ -76,23 +91,24 @@ onClickOutside(clickOutsideTarget, handleClickOutside);
       v-if="isSelectorOpened"
       class="absolute z-10 bg-white dark:bg-gray-700 rounded border border-gray-200 shadow right-[60px] top-[50px] radius-md"
     >
-      <li
-        v-for="action in menuItems"
-        :key="action"
-        class="flex items-center py-3 pr-10 pl-3 font-medium text-left dark:hover:text-gray-200 whitespace-pre hover:bg-gray-100 first:rounded-t cursor-pointer radius-md"
-        :class="{
-          'bg-red-50 hover:bg-red-100 dark:bg-red-300 border-b border-gray-200':
-            action === PoolAction.Poke || action === PoolAction.MigrateGauge,
-        }"
-        @click.stop="$emit(`click:${action}`, pool)"
-      >
-        <img
-          :src="getActionIcon(action)"
-          alt=""
-          class="p-0.5 rounded-full w-[20px]"
-        />
-        <div class="pr-5 pl-2">{{ $t(`poolActions.${action}`) }}</div>
-      </li>
+      <template v-for="action in menuItems" :key="action">
+        <li
+          v-if="!isActionDisabled(action)"
+          class="flex items-center py-3 pr-10 pl-3 font-medium text-left dark:hover:text-gray-600 whitespace-pre hover:bg-gray-100 first:rounded-t cursor-pointer radius-md"
+          :class="{
+            'bg-red-50 hover:bg-red-100 dark:bg-red-300 border-b border-gray-200':
+              action === PoolAction.Poke || action === PoolAction.MigrateGauge,
+          }"
+          @click.stop="$emit(`click:${action}`, pool)"
+        >
+          <img
+            :src="getActionIcon(action)"
+            alt=""
+            class="p-0.5 rounded-full w-[20px]"
+          />
+          <div class="pr-5 pl-2">{{ $t(`poolActions.${action}`) }}</div>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
