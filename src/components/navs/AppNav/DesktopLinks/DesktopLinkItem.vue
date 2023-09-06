@@ -22,7 +22,7 @@ const classes = computed(() => ({
 <template>
   <router-link v-bind="props" :class="['desktop-link-item', classes]">
     <slot />
-    <PrefetchLinks v-if="prefetch" :to="$attrs.to" />
+    <PrefetchLinks v-if="prefetch" :to="props.to" />
   </router-link>
 </template>
 
