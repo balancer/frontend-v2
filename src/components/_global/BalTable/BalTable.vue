@@ -254,6 +254,7 @@ watch([() => props.data, () => props.isLoading], ([newData]) => {
               currentSortColumn === column.id && currentSortDirection
                 ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
                 : '',
+              !square ? 'rounded-t-lg' : '',
             ]"
             @click="handleSort(column.id)"
           >

@@ -17,6 +17,7 @@ export type GaugeShare = {
     poolId: string;
     totalSupply: string;
     isPreferentialGauge: boolean;
+    isKilled: boolean;
   };
 };
 
@@ -82,6 +83,7 @@ export default function useUserGaugeSharesQuery(
         poolId: true,
         totalSupply: true,
         isPreferentialGauge: true,
+        isKilled: true,
       },
     },
   }));

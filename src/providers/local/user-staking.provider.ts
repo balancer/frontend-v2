@@ -40,7 +40,7 @@ const provider = () => {
 
   const hasNonPrefGaugesPoolsAddresses = computed(() => {
     const arr = userGaugeShares.value?.reduce((acc: string[], gauge) => {
-      if (!gauge.gauge.isPreferentialGauge) {
+      if (!gauge.gauge.isPreferentialGauge && !gauge.gauge.isKilled) {
         acc.push(gauge.gauge.poolAddress);
       }
       return acc;
