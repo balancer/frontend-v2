@@ -8,14 +8,17 @@ import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import CheckpointGaugeModal from './CheckpointGaugeModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import config from '@/lib/config';
+import { PoolWarning } from '@/types/pools';
+import { usePoolWarning } from '@/composables/usePoolWarning';
 
 type Props = {
   fiatValueOfStakedShares: string;
   fiatValueOfUnstakedShares: string;
   poolAddress: string;
+  poolId: string;
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits(['shouldStakingCardBeOpened']);
 const shouldShowWarningAlert = ref(false);
 const showCheckpointModal = ref(false);
@@ -24,6 +27,17 @@ const { networksSyncState, shouldPokeGauge } = useCrossChainSync();
 const { hasNonPrefGaugeBalance, poolGauges, stakedShares } = usePoolStaking();
 const { networkId } = useNetwork();
 const { isMismatchedNetwork } = useWeb3();
+const { isAffectedBy } = usePoolWarning(computed(() => props.poolId));
+
+const canShowSyncAlert = computed(() => {
+  if (
+    isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning) ||
+    isAffectedBy(PoolWarning.CspPoolVulnWarning)
+  ) {
+    return false;
+  }
+  return true;
+});
 
 const tipText = computed(() => {
   if (hasNonPrefGaugeBalance.value) {
@@ -95,7 +109,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex">
+  <div v-if="canShowSyncAlert" class="flex">
     <BalAlert
       v-if="warningAlert"
       class="flex-grow"

@@ -182,6 +182,7 @@ function handlePreviewClose() {
                 <StakingCardSyncAlert
                   v-if="networkId !== Network.MAINNET"
                   :poolAddress="pool.address"
+                  :poolId="pool.id"
                   :fiatValueOfStakedShares="fiatValueOfStakedShares"
                   :fiatValueOfUnstakedShares="fiatValueOfUnstakedShares"
                   @should-staking-card-be-opened="isOpenedByDefault = true"

@@ -2,9 +2,13 @@
 import { Pool } from '@/services/pool/types';
 import { onClickOutside } from '@vueuse/core';
 import { PoolAction } from '@/components/contextual/pages/pools/types';
-import { deprecatedDetails } from '@/composables/usePoolHelpers';
+import {
+  deprecatedDetails,
+  isJoinsDisabled,
+} from '@/composables/usePoolHelpers';
 import { PoolWarning } from '@/types/pools';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 
 type Props = {
   pool: Pool;
@@ -27,6 +31,7 @@ defineEmits<{
 }>();
 
 const { isAffectedBy } = usePoolWarning(computed(() => props.pool.id));
+const { shouldDisableJoins } = useDisabledJoinPool(props.pool);
 
 const isSelectorOpened = ref(false);
 
@@ -43,9 +48,15 @@ function getActionIcon(action: string) {
 function isActionDisabled(action: PoolAction) {
   const isDeprecated =
     Boolean(deprecatedDetails(props.pool.id)) ||
-    isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning);
+    isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning) ||
+    isJoinsDisabled(props.pool.id) ||
+    shouldDisableJoins.value;
 
-  const actionsToDisable = [PoolAction.Add, PoolAction.Stake];
+  const actionsToDisable = [
+    PoolAction.Add,
+    PoolAction.Stake,
+    PoolAction.MigrateGauge,
+  ];
   return isDeprecated && actionsToDisable.includes(action);
 }
 
