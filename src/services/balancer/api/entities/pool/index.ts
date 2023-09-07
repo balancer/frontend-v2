@@ -4,11 +4,12 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import Service from '../../balancer-api.service';
 import {
   GetPoolQuery,
-  GqlPoolTokenUnion,
+  GqlPoolTokenLinear,
   GqlPoolUnion,
 } from '@/services/api/graphql/generated/api-types';
 import { mapApiChain } from '@/lib/utils/api';
 import { PoolType } from '@balancer-labs/sdk';
+import { getPoolTypeFromFactoryAddress } from '@/lib/utils/pool';
 
 export type ApiPool = GetPoolQuery['pool'];
 
@@ -53,13 +54,13 @@ export default class SinglePool {
       owner: apiPool.owner ?? undefined,
       factory: apiPool.factory ?? undefined,
       symbol: apiPool.symbol ?? undefined,
-      tokens: (apiPool.tokens || [])
-        .map(this.mapToken)
+      tokens: ((apiPool.tokens as GqlPoolTokenLinear[]) || [])
+        .map(this.mapToken.bind(this))
         .filter(token => token.address !== apiPool.address),
-      tokensList: (apiPool.allTokens || [])
+      tokensList: (apiPool.displayTokens || [])
         .map(t => t.address)
         .filter(address => address !== apiPool.address),
-      tokenAddresses: (apiPool.allTokens || [])
+      tokenAddresses: (apiPool.displayTokens || [])
         .map(t => t.address)
         .filter(address => address !== apiPool.address),
       totalLiquidity: apiPool.dynamicData.totalLiquidity,
@@ -89,12 +90,25 @@ export default class SinglePool {
     return converted;
   }
 
-  private mapToken(apiToken: GqlPoolTokenUnion): PoolToken {
+  private mapToken(apiToken: GqlPoolTokenLinear): PoolToken {
+    const subTokens: PoolToken['token'] = { pool: null };
+    if (apiToken.pool) {
+      subTokens.pool = {
+        id: apiToken.pool.id,
+        address: apiToken.pool.address,
+        poolType: apiToken.pool.factory
+          ? getPoolTypeFromFactoryAddress(apiToken.pool.factory)
+          : PoolType.Weighted,
+        mainIndex: apiToken.pool.mainIndex,
+        totalShares: apiToken.pool.totalShares,
+        tokens: (apiToken.pool.tokens as any[]).map(this.mapToken.bind(this)),
+      };
+    }
     return {
       address: apiToken.address,
-      balance: apiToken.balance,
-      priceRate: apiToken.priceRate,
       weight: apiToken.weight,
+      balance: '0',
+      token: subTokens,
     };
   }
 }

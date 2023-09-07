@@ -6,7 +6,7 @@ import {
   GqlPoolFilter,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-  GqlPoolTokenExpanded,
+  GqlPoolTokenDisplay,
 } from '@/services/api/graphql/generated/api-types';
 import {
   GraphQLQuery,
@@ -92,13 +92,13 @@ export default class Pools {
       owner: apiPool.owner ?? undefined,
       factory: apiPool.factory ?? undefined,
       symbol: apiPool.symbol ?? undefined,
-      tokens: (apiPool.allTokens || [])
-        .map(this.mapToken)
+      tokens: (apiPool.displayTokens || [])
+        .map(this.mapToken.bind(this))
         .filter(token => token.address !== apiPool.address),
-      tokensList: (apiPool.allTokens || [])
+      tokensList: (apiPool.displayTokens || [])
         .map(t => t.address)
         .filter(address => address !== apiPool.address),
-      tokenAddresses: (apiPool.allTokens || [])
+      tokenAddresses: (apiPool.displayTokens || [])
         .map(t => t.address)
         .filter(address => address !== apiPool.address),
       totalLiquidity: apiPool.dynamicData.totalLiquidity,
@@ -128,10 +128,23 @@ export default class Pools {
     return converted;
   }
 
-  private mapToken(apiToken: GqlPoolTokenExpanded): PoolToken {
+  private mapToken(apiToken: GqlPoolTokenDisplay): PoolToken {
+    const subTokens: PoolToken['token'] = { pool: null };
+    if (apiToken.nestedTokens) {
+      subTokens.pool = {
+        id: apiToken.id,
+        address: apiToken.address,
+        poolType: PoolType.Weighted, // TODO: Add to API
+        mainIndex: 1, // TODO: Add to API
+        totalShares: '1', // TODO: Add to API
+        tokens: apiToken.nestedTokens.map(this.mapToken.bind(this)),
+      };
+    }
     return {
       address: apiToken.address,
+      weight: apiToken.weight,
       balance: '0',
+      token: subTokens,
     };
   }
 
