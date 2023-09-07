@@ -106,8 +106,11 @@ export default class SinglePool {
     }
     return {
       address: apiToken.address,
+      symbol: apiToken.symbol,
       weight: apiToken.weight,
-      balance: '0',
+      balance: apiToken.balance,
+      decimals: apiToken.decimals,
+      priceRate: apiToken.priceRate,
       token: subTokens,
     };
   }
