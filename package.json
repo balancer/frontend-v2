@@ -1,6 +1,6 @@
 {
   "name": "@balancer/frontend-v2",
-  "version": "1.121.12",
+  "version": "1.122.13",
   "engines": {
     "node": "=16",
     "npm": ">=8"
@@ -154,7 +154,7 @@
     "vite-plugin-sentry": "^1.1.6",
     "vitest": "^0.31.4",
     "vitest-mock-extended": "^1.1.0",
-    "vue": "3.2.45",
+    "vue": "^3.3.4",
     "vue-echarts": "^6.0.0",
     "vue-i18n": "^9.2.2",
     "vue-loader": "^17.0.1",

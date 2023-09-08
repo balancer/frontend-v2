@@ -8,7 +8,7 @@ import VueSlider, { DefineComponent as TVueSlider } from 'vue-slider-component';
 import tailwindConfig from 'tailwind.config.js';
 import useDarkMode from '@/composables/useDarkMode';
 
-export interface BalRangeInputProps extends TVueSlider {
+export interface BalRangeInputProps extends /* @vue-ignore */ TVueSlider {
   modelValue: number;
   leftLabel?: string;
   rightLabel?: string;
