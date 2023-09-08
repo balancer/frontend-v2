@@ -3,11 +3,15 @@ import VotingLayout from '@/components/layouts/VotingLayout.vue';
 import VoteInputList from './VoteInputList.vue';
 import VotingSubmission from './VotingSubmission.vue';
 import { voteLockedUntilText } from './voting-utils';
-import { useVoting } from './composables/voting.provider';
 import { useVotingTransactionState } from './composables/useVotingTransactionState';
+import { useVoting } from './providers/voting.provider';
 
 const { isLoading, isSubmissionStep } = useVoting();
 const { txState } = useVotingTransactionState();
+
+const headerLabel = computed(() =>
+  txState.confirmed ? 'Your votes were registered 🎉' : 'Pool gauge voting'
+);
 </script>
 
 <template>
@@ -48,7 +52,7 @@ const { txState } = useVotingTransactionState();
                 >
                   <BalIcon name="check" />
                 </BalCircle>
-                <h4>Pool gauge voting</h4>
+                <h4>{{ headerLabel }}</h4>
               </div>
             </div>
           </template>
