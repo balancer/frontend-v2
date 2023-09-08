@@ -14,11 +14,12 @@ import useVeBal from '@/composables/useVeBAL';
 import { useI18n } from 'vue-i18n';
 import { useHistoricalLocksQuery } from '@/composables/queries/useHistoricalLocksQuery';
 import { useLockRankQuery } from '@/composables/queries/useLockRankQuery';
+import VeBALMarketingHeader from './VeBALMarketingHeader.vue';
 
 /**
  * COMPOSABLES
  */
-const { account } = useWeb3();
+const { account, isWalletReady } = useWeb3();
 
 const { isLoadingLockPool, isLoadingLockInfo, lock } = useLock();
 const { fNum } = useNumbers();
@@ -33,6 +34,10 @@ const { isLoading: isLoadingLockBoard, data: userRankData } =
 /**
  * COMPUTED
  */
+const showVebalInfo = computed(() => {
+  return isWalletReady.value;
+});
+
 const isLoadingData = computed(
   () =>
     isLoadingLockBoard.value ||
@@ -75,17 +80,17 @@ const chartValues = computed(() => {
     const point1Date = format(snapshot.timestamp * 1000, 'yyyy/MM/dd');
     const point2Date = format(now.toNumber() * 1000, 'yyyy/MM/dd');
 
-    const prevPointDate = acc[acc.length - 1]?.[0];
-    const prevPointBalance = acc[acc.length - 1]?.[1].toFixed(0);
+    // const prevPointDate = acc[acc.length - 1]?.[0];
+    // const prevPointBalance = acc[acc.length - 1]?.[1].toFixed(0);
 
-    console.log({
-      point1Date,
-      point2Date,
-      point1Balance,
-      point2Balance,
-      prevPointDate,
-      prevPointBalance,
-    });
+    // console.log({
+    //   point1Date,
+    //   point2Date,
+    //   point1Balance,
+    //   point2Balance,
+    //   prevPointDate,
+    //   prevPointBalance,
+    // });
 
     acc.push(Object.freeze<[string, number]>([point1Date, point1Balance]));
     if (point1Balance.toFixed(0) === point2Balance.toFixed(0)) {
@@ -95,7 +100,7 @@ const chartValues = computed(() => {
 
     return acc;
   }, []);
-  console.log(chartV);
+  // console.log(chartV);
 
   const valuesByDates = chartV.reduce((acc: any, item) => {
     const [date, value] = item;
@@ -107,8 +112,28 @@ const chartValues = computed(() => {
     return acc;
   }, {});
 
-  console.log(valuesByDates);
-  return chartV;
+  const filteredArr = Object.keys(valuesByDates).reduce((acc: any, item) => {
+    const values = valuesByDates[item];
+    console.log(values);
+    let filteredValues: number[] = [];
+    if (values.length > 2) {
+      const max = Math.max(...values);
+      const min = Math.min(...values);
+      filteredValues.push(min);
+      filteredValues.push(max);
+    } else {
+      filteredValues = values;
+    }
+
+    filteredValues.forEach(val => {
+      acc.push([item, val]);
+    });
+
+    return acc;
+  }, []);
+
+  // console.log(filteredArr);
+  return filteredArr;
 });
 
 const userRank = computed(() => {
@@ -158,7 +183,7 @@ const vebalInfo = computed(() => {
 const futureLockChartData = computed(() => {
   if (lock.value?.hasExistingLock) {
     return {
-      name: 'Future Lock',
+      name: '',
       values: [
         chartValues.value[chartValues.value.length - 1],
         Object.freeze<[string, number]>([
@@ -217,66 +242,74 @@ function navigateToGetVeBAL() {
 </script>
 
 <template>
-  <div
-    class="flex flex-col md:flex-row flex-grow gap-6 justify-between items-center px-10 h-full text-white"
-  >
-    <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
-    <div v-else class="flex flex-col flex-1">
-      <div class="mb-2 text-xl font-bold">My veBAL</div>
-      <div class="mb-10 text-5xl font-black">
-        {{ Number(veBalBalance).toFixed(0) }}
-      </div>
+  <div class="hero-container">
+    <div class="hero-content">
+      <div
+        v-if="showVebalInfo"
+        class="flex flex-col md:flex-row flex-grow gap-6 justify-between items-center px-10 h-full text-white"
+      >
+        <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
+        <div v-else class="flex flex-col flex-1">
+          <div class="mb-2 text-xl font-bold">My veBAL</div>
+          <div class="mb-10 text-5xl font-black">
+            {{ Number(veBalBalance).toFixed(0) }}
+          </div>
 
-      <div class="flex flex-col mb-8">
-        <div v-for="item in vebalInfo" :key="item.value" class="flex">
-          <img class="mr-2" :src="item.icon" />
-          <span class="font-semibold">{{ item.value }} </span>
+          <div class="flex flex-col mb-8">
+            <div v-for="item in vebalInfo" :key="item.value" class="flex">
+              <img class="mr-2" :src="item.icon" />
+              <span class="font-semibold">{{ item.value }} </span>
+            </div>
+          </div>
+
+          <div>
+            <BalBtn class="mr-3 btn-gold" @click="navigateToGetVeBAL">
+              {{ $t('veBAL.hero.buttons.getVeBAL') }}
+            </BalBtn>
+
+            <BalBtn
+              color="transparent"
+              class="mr-3 btn-extend"
+              @click="navigateToGetVeBAL"
+            >
+              Extend lock
+            </BalBtn>
+          </div>
+        </div>
+        <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
+
+        <div
+          v-else-if="lock?.hasExistingLock"
+          class="p-5 w-full rounded-2xl flex-[1.5] chart-wrapper"
+        >
+          <BalChart
+            :isLoading="isLoadingData"
+            height="96"
+            :data="chartData.data"
+            :axisLabelFormatter="{
+              yAxis: {
+                maximumFractionDigits: 0,
+                fixedFormat: false,
+                abbreviate: false,
+              },
+            }"
+            :areaStyle="chartData.areaStyle"
+            :color="chartData.color"
+            :hoverColor="chartData.hoverColor"
+            :hoverBorderColor="chartData.hoverBorderColor"
+            :xAxisMinInterval="3600 * 1000 * 24 * 30"
+            :showLegend="false"
+            :chartType="chartData.chartType"
+            showTooltipLayer
+            :lineStyles="chartData.lineStyles"
+            :symbolSize="chartData.symbolSize"
+            isVeBAL
+            showTooltip
+          />
         </div>
       </div>
 
-      <div>
-        <BalBtn class="mr-3 btn-gold" @click="navigateToGetVeBAL">
-          {{ $t('veBAL.hero.buttons.getVeBAL') }}
-        </BalBtn>
-
-        <BalBtn
-          color="transparent"
-          class="mr-3 btn-extend"
-          @click="navigateToGetVeBAL"
-        >
-          Extend lock
-        </BalBtn>
-      </div>
-    </div>
-    <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
-
-    <div
-      v-else-if="lock?.hasExistingLock"
-      class="p-5 w-full rounded-2xl flex-[1.5] chart-wrapper"
-    >
-      <BalChart
-        :isLoading="isLoadingData"
-        height="96"
-        :data="chartData.data"
-        :axisLabelFormatter="{
-          yAxis: {
-            maximumFractionDigits: 0,
-            fixedFormat: false,
-            abbreviate: false,
-          },
-        }"
-        :areaStyle="chartData.areaStyle"
-        :color="chartData.color"
-        :hoverColor="chartData.hoverColor"
-        :hoverBorderColor="chartData.hoverBorderColor"
-        :xAxisMinInterval="3600 * 1000 * 24 * 30"
-        :showLegend="false"
-        :chartType="chartData.chartType"
-        showTooltipLayer
-        :lineStyles="chartData.lineStyles"
-        :symbolSize="chartData.symbolSize"
-        showTooltip
-      />
+      <VeBALMarketingHeader v-else />
     </div>
   </div>
 </template>
@@ -299,5 +332,44 @@ function navigateToGetVeBAL() {
 .chart-wrapper {
   background-color: rgb(0 0 0 / 80%);
   backdrop-filter: drop-shadow(40px 40px 80px rgb(0 0 0 / 50%));
+}
+
+.hero-container {
+  @apply flex content-center relative w-full;
+
+  min-height: 440px;
+  z-index: 0;
+  background-color: #0b0f19;
+}
+
+.dark .hero-container {
+  background-color: #0e1420;
+}
+
+.hero-container::before {
+  content: ' ';
+  background-image: url('/images/patterns/fish-scale.png');
+  background-repeat: repeat;
+
+  @apply block absolute left-0 top-0 w-full h-full opacity-10 z-0;
+}
+
+.dark .hero-container::before {
+  opacity: 0.07;
+}
+
+.hero-container::after {
+  content: ' ';
+  background: linear-gradient(45deg, rgb(0 0 0 / 100%), rgb(0 0 0 / 50%)),
+    url('/images/backgrounds/vebal-hero-noise.svg');
+
+  @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-20 z-0;
+
+  min-height: 440px;
+}
+
+.hero-content {
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8
+    xl:pl-4 w-full z-10;
 }
 </style>

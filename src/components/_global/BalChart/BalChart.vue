@@ -63,6 +63,7 @@ type Props = {
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
   areaStyle?: AreaStyle;
   symbolSize?: number;
+  isVeBAL?: boolean;
 };
 
 const emit = defineEmits([
@@ -205,7 +206,10 @@ const chartConfig = computed(() => ({
                     <span>
                       ${param.marker} ${param.seriesName}
                       <span class='font-semibold'>
-                        ${fNum(param.value[1], props.axisLabelFormatter.yAxis)}
+                        ${fNum(
+                          param.value[1],
+                          props.axisLabelFormatter.yAxis
+                        )} ${props.isVeBAL ? 'veBAL' : ''}
                       </span>
                     </span>
                   `
