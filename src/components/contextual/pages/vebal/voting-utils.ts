@@ -48,6 +48,6 @@ export function voteLockedUntilText() {
   return format(toUtcTime(new Date(unlockTime)), 'd LLLL y');
 }
 
-export function hasVotes(pool: VotingPool): boolean {
+export function hasUserVotes(pool: VotingPool): boolean {
   return Number(pool.userVotes) > 0;
 }

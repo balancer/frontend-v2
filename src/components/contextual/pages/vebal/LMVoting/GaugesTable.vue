@@ -36,7 +36,7 @@ import { PoolFeature } from '@/types/pools';
 import { Protocol } from '@/composables/useProtocols';
 import { isVotingTimeLocked } from '@/composables/useVeBAL';
 import { useVoting } from '@/components/contextual/pages/vebal/providers/voting.provider';
-import { hasVotes } from '@/components/contextual/pages/vebal/voting-utils';
+import { hasUserVotes } from '@/components/contextual/pages/vebal/voting-utils';
 
 /**
  * TYPES
@@ -328,7 +328,7 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
           noMargin
           :modelValue="isSelected(pool)"
           :disabled="
-            hasVotes(pool) ||
+            hasUserVotes(pool) ||
             isVotingTimeLocked(pool.lastUserVoteTime) ||
             selectVotesDisabled
           "

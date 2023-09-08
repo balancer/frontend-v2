@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MultiVoting from '@/components/contextual/pages/vebal/LMVoting/MultiVoting.vue';
-import { provideVoting } from '@/providers/local/voting.provider';
+import { provideVoting } from '@/components/contextual/pages/vebal/providers/voting.provider';
 
 provideVoting();
 </script>

@@ -1,7 +1,7 @@
 export let defaultExpiredGauges = [];
 
-export function mockExpiredGauges(foo) {
-  defaultExpiredGauges = foo;
+export function mockExpiredGauges(expiredGauges) {
+  defaultExpiredGauges = expiredGauges;
 }
 
 export default function useExpiredGaugesQuery() {
