@@ -1,3 +1,4 @@
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import { FNumFormats } from '@/composables/useNumbers';
 import { toUtcTime } from '@/composables/useTime';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
@@ -45,4 +46,8 @@ export function bpsToPercentage(weight: number, fNum): string {
 export function voteLockedUntilText() {
   const unlockTime = Date.now() + WEIGHT_VOTE_DELAY;
   return format(toUtcTime(new Date(unlockTime)), 'd LLLL y');
+}
+
+export function hasVotes(pool: VotingPool): boolean {
+  return Number(pool.userVotes) > 0;
 }
