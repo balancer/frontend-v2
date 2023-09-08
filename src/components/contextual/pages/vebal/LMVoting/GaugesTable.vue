@@ -19,7 +19,6 @@ import {
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
@@ -29,44 +28,39 @@ import {
   isVe8020Pool,
 } from '@/composables/useVotingPools';
 import IconLimit from '@/components/icons/IconLimit.vue';
-import { differenceInWeeks } from 'date-fns';
-import { oneSecondInMs } from '@/composables/useTime';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { poolMetadata } from '@/lib/config/metadata';
-import { isGaugeExpired } from './voting-utils';
 import Ve8020Chip from './Ve8020Chip.vue';
 import PoolFeatureChip from '@/components/chips/PoolFeatureChip.vue';
 import { PoolFeature } from '@/types/pools';
 import { Protocol } from '@/composables/useProtocols';
+import { isVotingTimeLocked } from '@/composables/useVeBAL';
+import { useVoting } from '@/components/contextual/pages/vebal/providers/voting.provider';
+import { hasVotes } from '@/components/contextual/pages/vebal/voting-utils';
 
 /**
  * TYPES
  */
 type Props = {
-  expiredGauges?: Readonly<string[]>;
   data?: VotingPool[];
   isLoading?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
   filterText?: string;
   renderedRowsIdx: number;
+  selectVotesDisabled: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  expiredGauges: () => [] as never[],
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   filterText: '',
   isPaginated: false,
   data: () => [],
 });
-
-const emit = defineEmits<{
-  (e: 'clickedVote', value: VotingPool): void;
-}>();
 
 /**
  * COMPOSABLES
@@ -75,6 +69,8 @@ const router = useRouter();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
+const { getIsGaugeExpired, getIsGaugeNew, toggleSelection, isSelected } =
+  useVoting();
 
 /**
  * DATA
@@ -127,13 +123,14 @@ const columns = computed((): ColumnDefinition<VotingPool>[] => [
     hidden: !isWalletReady.value,
   },
   {
-    name: t('veBAL.liquidityMining.table.vote'),
+    name: t('veBAL.liquidityMining.table.voteSelect'),
     id: 'vote',
     accessor: 'id',
     align: 'right',
-    Cell: 'voteColumnCell',
+    Cell: 'voteSelectColumnCell',
     width: 100,
     hidden: !isWalletReady.value,
+    isCheckbox: true,
   },
 ]);
 
@@ -160,15 +157,6 @@ function redirectToPool(pool: VotingPool, inNewTab) {
 function getPoolExternalUrl(pool: VotingPool) {
   const poolUrl = poolURLFor(pool, pool.network);
   return isInternalUrl(poolUrl) ? null : poolUrl;
-}
-
-function getIsGaugeNew(addedTimestamp?: number | null): boolean {
-  if (!addedTimestamp) return false;
-  return differenceInWeeks(Date.now(), addedTimestamp * oneSecondInMs) < 2;
-}
-
-function getIsGaugeExpired(gaugeAddress: string): boolean {
-  return isGaugeExpired(props.expiredGauges, gaugeAddress);
 }
 
 function getHasUserVotes(userVotes: string): boolean {
@@ -332,14 +320,21 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
           <GaugesTableMyVotes :pool="pool"></GaugesTableMyVotes>
         </div>
       </template>
-      <template #voteColumnCell="pool: VotingPool">
-        <div v-if="isWalletReady" class="px-4">
-          <GaugesTableVoteBtn
-            :hasUserVotes="getHasUserVotes(pool.userVotes)"
-            :isGaugeExpired="getIsGaugeExpired(pool.gauge.address)"
-            @click.stop.prevent="emit('clickedVote', pool)"
-          />
-        </div>
+      <template #voteSelectColumnCell="pool: VotingPool">
+        <BalCheckbox
+          v-if="isWalletReady"
+          class="flex -top-2 justify-center ml-8 cursor-pointer"
+          name="expiredGaugesFilter"
+          noMargin
+          :modelValue="isSelected(pool)"
+          :disabled="
+            hasVotes(pool) ||
+            isVotingTimeLocked(pool.lastUserVoteTime) ||
+            selectVotesDisabled
+          "
+          @click.stop
+          @input="toggleSelection(pool)"
+        />
       </template>
     </BalTable>
   </BalCard>
