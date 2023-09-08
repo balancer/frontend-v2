@@ -10,7 +10,7 @@ import config from '@/lib/config';
 import { Network } from '@/lib/config/types';
 import { Router } from 'vue-router';
 import metaService from '@/services/meta/meta.service';
-import { votingRequest } from '@/components/contextual/pages/vebal/MultiVoting/providers/voting.provider';
+import { votingRequest } from '@/components/contextual/pages/vebal/providers/voting.provider';
 
 /**
  * State

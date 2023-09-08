@@ -1,8 +1,5 @@
 import { randomAddress } from '@tests/unit/builders/address';
-import {
-  isGaugeExpired,
-  voteLockedUntilText,
-} from './MultiVoting/voting-utils';
+import { isGaugeExpired, voteLockedUntilText } from './voting-utils';
 
 test('isGaugeExpired', () => {
   const gauge = randomAddress();

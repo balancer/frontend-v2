@@ -1,7 +1,7 @@
 import {
   hasOnlyExpiredPools,
   sharesToBps,
-} from '@/components/contextual/pages/vebal/MultiVoting/voting-utils';
+} from '@/components/contextual/pages/vebal/voting-utils';
 import { POOLS } from '@/constants/pools';
 import GaugeControllerService, {
   gaugeControllerService as gaugeControllerServiceInstance,
@@ -11,8 +11,8 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useVotingTransactionState } from './useVotingTransactionState';
-import { resetVotingRequest } from '@/components/contextual/pages/vebal/MultiVoting/providers/voting.provider';
 import useTransactions from '@/composables/useTransactions';
+import { resetVotingRequest } from '../../providers/voting.provider';
 
 export type ConfirmedVotingRequest = {
   gaugeAddress: string;
