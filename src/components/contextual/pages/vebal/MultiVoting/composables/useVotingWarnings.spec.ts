@@ -1,7 +1,7 @@
 import {
   aVotingPool,
   toOnchainVotesNextPeriod,
-} from '@/components/contextual/pages/vebal/LMVoting/voting-pool.builders';
+} from '@/components/contextual/pages/vebal/MultiVoting/voting-pool.builders';
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import { oneDayInMs, toUnixTimestamp } from '@/composables/useTime';
 import { POOLS } from '@/constants/pools';
