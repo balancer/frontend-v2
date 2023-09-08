@@ -5,7 +5,10 @@ import { initBalancerSDK } from '@/dependencies/balancer-sdk';
 import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
 import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 import { provideTokenLists } from '@/providers/token-lists.provider';
-import { UserSettingsProviderSymbol } from '@/providers/user-settings.provider';
+import {
+  UserSettingsProviderSymbol,
+  UserSettingsResponse,
+} from '@/providers/user-settings.provider';
 import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
@@ -126,7 +129,10 @@ describe('useSwapping', () => {
       );
     const { result } = await mountComposable(callbackUnderTest, {
       extraProvidersCb: () => {
-        provide(UserSettingsProviderSymbol, userSettingsResponse),
+        provide(
+          UserSettingsProviderSymbol,
+          userSettingsResponse as UserSettingsResponse
+        ),
           provideTokenLists();
       },
       tokensProviderOverride,

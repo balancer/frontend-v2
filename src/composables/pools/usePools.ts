@@ -34,7 +34,11 @@ export default function usePools({
   /**
    * COMPOSABLES
    */
-  const poolsQuery = usePoolsQuery(filterOptions);
+  const poolsQuery = usePoolsQuery(
+    filterOptions,
+    { enabled: true, refetchOnWindowFocus: false, keepPreviousData: true },
+    false
+  );
 
   const { injectTokens } = useTokens();
 
@@ -66,7 +70,7 @@ export default function usePools({
   /**
    * WATCHERS
    */
-  watch(pools, async newPools => {
+  watch(pools, newPools => {
     const tokens = flatten(
       newPools.map(pool => [
         ...pool.tokensList,
@@ -74,7 +78,7 @@ export default function usePools({
         pool.address,
       ])
     );
-    await injectTokens(tokens);
+    injectTokens(tokens);
   });
 
   return {

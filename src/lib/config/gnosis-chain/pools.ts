@@ -35,6 +35,7 @@ const pools: Pools = {
       '0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034', // WETH / wstETH
       '0xe15cac1df3621e001f76210ab12a7f1a1691481f000000000000000000000044', // bb-ag-USD
       '0x2086f52651837600180de173b09470f54ef7491000000000000000000000004f', // xdai-usdc-usdt
+      '0x0c1b9ce6bf6c01f587c2ee98b0ef4b20c6648753000000000000000000000050', // eure-stabal3
     ],
   },
   Investment: {
@@ -59,6 +60,10 @@ const pools: Pools = {
       '0xb8bb1ce9c6e5401d66fe2126db6e7387e1e24ffe00020000000000000000003d', // WETH/GNO
       '0x274dedb9356c3e1e24bfe2bf3d4349fbdbfa0d14000200000000000000000054', // staBAL/GNO
       '0x66888e4f35063ad8bb11506a6fde5024fb4f1db0000100000000000000000053', // WETH/staBAL/WBTC
+      '0x7caef9e452ce161dec936ace7eab571d1023b20900020000000000000000005d', // B-50wstETH-50NEXT
+      '0x77e5bf699db38c578b2982c3e262e9c5f1f50fd0000200000000000000000061', // B-50USD-50bIBTA
+      '0xe85eb550e98ee66d19c667de24c5c8e10fee6504000200000000000000000060', // B-50USD-50bCSPX
+      '0xf6bfffb47bc125564cbb6cc0e7633eb7addaefce00020000000000000000005e', // B-50USD-50bIB01
     ],
   },
   Factories: {
@@ -66,6 +71,7 @@ const pools: Pools = {
     '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'weightedPool', // WeightedPool V3
     '0x6cad2ea22bfa7f4c14aae92e47f510cd5c509bc7': 'weightedPool', // weighted pool v4
     '0xd87f44df0159dc78029ab9ca7d7e57e7249f5acd': 'composableStablePool', // ComposableStable V4
+    '0x4bdcc2fb18aeb9e2d281b0278d946445070eada7': 'composableStablePool', // ComposableStable V5
   },
   Stakable: {
     VotingGaugePools: [
@@ -83,6 +89,7 @@ const pools: Pools = {
       '0x66888e4f35063ad8bb11506a6fde5024fb4f1db0000100000000000000000053',
       '0x2086f52651837600180de173b09470f54ef7491000000000000000000000004f',
       '0x274dedb9356c3e1e24bfe2bf3d4349fbdbfa0d14000200000000000000000054',
+      '0x0c1b9ce6bf6c01f587c2ee98b0ef4b20c6648753000000000000000000000050',
     ],
     AllowList: [],
   },

@@ -212,6 +212,7 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
     <BalTable
       :columns="columns"
       :data="data"
+      :rowKey="(dataItem: VotingPool) => dataItem.gauge.address"
       :isLoading="isLoading"
       skeletonClass="h-64"
       sticky="both"
