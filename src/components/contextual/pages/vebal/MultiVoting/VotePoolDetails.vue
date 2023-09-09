@@ -7,14 +7,15 @@ import { getNetworkSlug } from '@/composables/useNetwork';
 import { isStableLike, isUnknownType } from '@/composables/usePoolHelpers';
 import { orderedGaugeTokens } from '@/composables/useVotingPools';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
-import { useVoting } from './composables/voting.provider';
+import { useVoting } from '../providers/voting.provider';
+import { isGaugeNew } from '../voting-utils';
 
 type Props = {
   pool: VotingPool;
 };
 defineProps<Props>();
 
-const { getIsGaugeExpired, getIsGaugeNew } = useVoting();
+const { getIsGaugeExpired } = useVoting();
 </script>
 
 <template>
@@ -36,7 +37,7 @@ const { getIsGaugeExpired, getIsGaugeNew } = useVoting();
         isStableLike(pool.poolType) || isUnknownType(pool.poolType)
       "
     />
-    <BalChipNew v-if="getIsGaugeNew(pool.gauge.addedTimestamp)" class="ml-2" />
+    <BalChipNew v-if="isGaugeNew(pool)" class="ml-2" />
     <BalChipExpired v-if="getIsGaugeExpired(pool.gauge.address)" class="ml-2" />
   </div>
 </template>

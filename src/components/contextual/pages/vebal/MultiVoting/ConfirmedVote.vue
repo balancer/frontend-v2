@@ -2,7 +2,7 @@
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import VotePoolDetails from './VotePoolDetails.vue';
 import VotePoolFooter from './VotePoolFooter.vue';
-import { useVoting } from './composables/voting.provider';
+import { useVoting } from '../providers/voting.provider';
 
 type Props = {
   pool: VotingPool;

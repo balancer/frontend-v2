@@ -22,8 +22,6 @@ const { handleFailed, handleSuccess, txState, votingActions } =
       @failed="handleFailed"
     />
     <div v-else>
-      txState.receipt {{ txState.receipt }}
-
       <ConfirmationIndicator :txReceipt="txState.receipt" />
 
       <BalBtn

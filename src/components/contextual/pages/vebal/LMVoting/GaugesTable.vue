@@ -36,7 +36,10 @@ import { PoolFeature } from '@/types/pools';
 import { Protocol } from '@/composables/useProtocols';
 import { isVotingTimeLocked } from '@/composables/useVeBAL';
 import { useVoting } from '@/components/contextual/pages/vebal/providers/voting.provider';
-import { hasUserVotes } from '@/components/contextual/pages/vebal/voting-utils';
+import {
+  hasUserVotes,
+  isGaugeNew,
+} from '@/components/contextual/pages/vebal/voting-utils';
 
 /**
  * TYPES
@@ -69,8 +72,7 @@ const router = useRouter();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
-const { getIsGaugeExpired, getIsGaugeNew, toggleSelection, isSelected } =
-  useVoting();
+const { getIsGaugeExpired, toggleSelection, isSelected } = useVoting();
 
 /**
  * DATA
@@ -271,10 +273,7 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
               />
             </template>
           </BalTooltip>
-          <BalChipNew
-            v-if="getIsGaugeNew(pool.gauge.addedTimestamp)"
-            class="ml-2"
-          />
+          <BalChipNew v-if="isGaugeNew(pool)" class="ml-2" />
           <BalChipExpired
             v-if="getIsGaugeExpired(pool.gauge.address)"
             class="ml-2"

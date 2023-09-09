@@ -1,14 +1,19 @@
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import { FNumFormats } from '@/composables/useNumbers';
-import { toUtcTime } from '@/composables/useTime';
+import { oneSecondInMs, toUtcTime } from '@/composables/useTime';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 import { bnum, isSameAddress, scale } from '@/lib/utils';
 import { BigNumber } from '@ethersproject/bignumber';
-import { format } from 'date-fns';
+import { differenceInWeeks, format } from 'date-fns';
 
-/**
+/*
  * Common pure functions used by different composables in the veBAL voting feature
  */
+export function isGaugeNew(pool: VotingPool): boolean {
+  const addedTimestamp = pool.gauge.addedTimestamp;
+  if (!addedTimestamp) return false;
+  return differenceInWeeks(Date.now(), addedTimestamp * oneSecondInMs) < 2;
+}
 
 export function isGaugeExpired(
   expiredGauges: readonly string[] | undefined,

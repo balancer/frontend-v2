@@ -2,10 +2,10 @@
 /**
  * Shows a read-only list of votes once the user has clicked "Next" after filling the Vote Inputs
  */
-import VotingActions from '@/components/contextual/pages/vebal/LMVoting/VotingActions.vue';
+import VotingActions from '@/components/contextual/pages/vebal/MultiVoting/VotingActions.vue';
 import VoteAllocation from './VoteAllocation.vue';
 import ConfirmedVote from './ConfirmedVote.vue';
-import { useVoting } from './composables/voting.provider';
+import { useVoting } from '../providers/voting.provider';
 
 const {
   unlockedSelectedPools,

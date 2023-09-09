@@ -2,9 +2,9 @@
 import VotingLayout from '@/components/layouts/VotingLayout.vue';
 import VoteInputList from './VoteInputList.vue';
 import VotingSubmission from './VotingSubmission.vue';
-import { voteLockedUntilText } from './voting-utils';
 import { useVotingTransactionState } from './composables/useVotingTransactionState';
-import { useVoting } from './providers/voting.provider';
+import { voteLockedUntilText } from '../voting-utils';
+import { useVoting } from '../providers/voting.provider';
 
 const { isLoading, isSubmissionStep } = useVoting();
 const { txState } = useVotingTransactionState();

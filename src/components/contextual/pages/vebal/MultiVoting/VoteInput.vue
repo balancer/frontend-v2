@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import TimeLockedVote from '@/components/contextual/pages/vebal/LMVoting/TimeLockedVote.vue';
-import OverLimitVote from '@/components/contextual/pages/vebal/LMVoting/OverLimitVote.vue';
+import TimeLockedVote from '@/components/contextual/pages/vebal/MultiVoting/TimeLockedVote.vue';
+import OverLimitVote from '@/components/contextual/pages/vebal/MultiVoting/OverLimitVote.vue';
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import { isPositive } from '@/lib/utils/validations';
 import VotePoolDetails from './VotePoolDetails.vue';

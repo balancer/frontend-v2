@@ -12,7 +12,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useVotingTransactionState } from './useVotingTransactionState';
 import useTransactions from '@/composables/useTransactions';
-import { resetVotingRequest } from '../../providers/voting.provider';
+import { setVotingCompleted } from '../../providers/voting.provider';
 
 export type ConfirmedVotingRequest = {
   gaugeAddress: string;
@@ -55,8 +55,8 @@ export function useVotingActions({
     const action = () => submitVotes(requestBatch);
     return {
       label: buildConfirmButtonLabel(request, expiredGauges),
-      loadingLabel: 'Voting',
-      confirmingLabel: 'Confirming votes',
+      loadingLabel: 'Confirm voting in wallet',
+      confirmingLabel: 'Voting',
       stepTooltip: buildStepTooltip(batchNumber),
       action,
     };
@@ -96,7 +96,7 @@ export function useVotingActions({
     confirmedAt: string
   ): Promise<void> {
     console.log('Voting receipt', receipt);
-    resetVotingRequest();
+    setVotingCompleted();
     txState.receipt = receipt;
     txState.confirmedAt = confirmedAt;
     txState.confirmed = true;

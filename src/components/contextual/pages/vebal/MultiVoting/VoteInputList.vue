@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useVoting } from '../providers/voting.provider';
 import VoteAllocation from './VoteAllocation.vue';
 import VoteInput from './VoteInput.vue';
-import { useVoting } from './composables/voting.provider';
 
 const {
   selectedPools,

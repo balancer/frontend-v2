@@ -94,12 +94,14 @@ export default function useVotingPools() {
   return {
     totalVotes,
     isLoading,
+    isRefetchingVotingPools: votingPoolsQuery.isRefetching,
     votingPools,
     votingGauges,
     votingGaugeAddresses,
     unallocatedVotes,
     votingPeriodEnd,
     votingPeriodLastHour,
-    refetch: votingPoolsQuery.refetch,
+    votingPoolsQuery,
+    refetchVotingPools: votingPoolsQuery.refetch,
   };
 }
