@@ -14,7 +14,7 @@ import GaugesTable from './GaugesTable.vue';
 import VotingAlert from './VotingAlert.vue';
 import { bpsToPercentage, isGaugeExpired } from '../voting-utils';
 import useNumbers from '@/composables/useNumbers';
-import { useVoting } from '../providers/voting.provider';
+import { isVotingCompleted, useVoting } from '../providers/voting.provider';
 
 /**
  * DATA
@@ -35,8 +35,13 @@ const networkFilters: Network[] = Object.entries(configs)
 /**
  * COMPOSABLES
  */
-const { votingPools, unallocatedVotes, votingPeriodEnd, votingPeriodLastHour } =
-  useVotingPools();
+const {
+  votingPools,
+  unallocatedVotes,
+  votingPeriodEnd,
+  votingPeriodLastHour,
+  isRefetchingVotingPools,
+} = useVotingPools();
 const { veBalLockTooShort, veBalExpired, hasLock, hasExpiredLock } =
   useVeBalLockInfo();
 
@@ -53,7 +58,8 @@ const {
   expiredGauges,
   unlockedSelectedPools,
   hasSubmittedVotes,
-  initRequestWithExistingVotes,
+  hasAllVotingPowerTimeLocked,
+  loadRequestWithExistingVotes,
 } = useVoting();
 
 /**
@@ -98,7 +104,12 @@ const filteredVotingPools = computed(() => {
   });
 });
 
-const selectVotesDisabled = computed(() => isLoading.value || !hasVeBalBalance);
+const selectVotesDisabled = computed(
+  (): boolean =>
+    isLoading.value ||
+    !hasVeBalBalance.value ||
+    hasAllVotingPowerTimeLocked.value
+);
 
 const votingDisabled = computed(
   () => selectVotesDisabled.value || unlockedSelectedPools.value.length === 0
@@ -146,10 +157,15 @@ watch(
   { deep: true }
 );
 
-watch(isLoading, async (newValue, oldValue) => {
-  // Init voting request once the voting list and the expired gauges were loaded
-  if (oldValue === true && newValue === false)
-    initRequestWithExistingVotes(votingPools.value);
+watch(isLoading, async () => {
+  // Load votingRequest once the voting list and the expired gauges were loaded
+  loadRequestWithExistingVotes(votingPools.value);
+});
+watch(isRefetchingVotingPools, async () => {
+  // Reload votingRequest if refetching after coming back from a successful voting
+  if (isVotingCompleted.value) {
+    loadRequestWithExistingVotes(votingPools.value);
+  }
 });
 </script>
 
@@ -186,7 +202,7 @@ watch(isLoading, async (newValue, oldValue) => {
     </VotingAlert>
 
     <VotingAlert
-      v-if="!hasVeBalBalance && !isLoadingVotingPools"
+      v-if="!hasVeBalBalance && !isLoading"
       title="You need some veBAL to vote on gauges"
     >
       Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.
@@ -197,7 +213,14 @@ watch(isLoading, async (newValue, oldValue) => {
       title="You can't vote because your veBAL has expired"
     >
       You need some veBAL to vote on gauges. Unlock and relock your
-      B-80BAL-20-WETH to get some veBAL
+      B-80BAL-20-WETH to get some veBAL.
+    </VotingAlert>
+
+    <VotingAlert
+      v-if="hasAllVotingPowerTimeLocked"
+      title="100% of your votes are locked"
+    >
+      You won't be able to make any edits until some of them are unlocked.
     </VotingAlert>
 
     <div class="flex flex-wrap justify-between items-end px-4 lg:px-0">
