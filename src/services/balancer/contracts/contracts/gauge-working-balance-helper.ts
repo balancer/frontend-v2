@@ -24,14 +24,28 @@ export class GaugeWorkingBalanceHelper {
     userAddress: string;
     signer: JsonRpcSigner;
   }) {
-    const { signer, gauge, userAddress } = payload;
-    const txBuilder = new TransactionBuilder(signer);
+    try {
+      const { signer, gauge, userAddress } = payload;
+      const txBuilder = new TransactionBuilder(signer);
 
-    return await txBuilder.contract.callStatic<[BigNumber, BigNumber]>({
-      contractAddress: this.address,
-      abi: this.abi,
-      action: 'getWorkingBalanceToSupplyRatios',
-      params: [gauge, userAddress],
-    });
+      return await txBuilder.contract.callStatic<[BigNumber, BigNumber]>({
+        contractAddress: this.address,
+        abi: this.abi,
+        action: 'getWorkingBalanceToSupplyRatios',
+        params: [gauge, userAddress],
+      });
+    } catch (e: any) {
+      const reason = e.reason;
+
+      const revertedReasonMsg =
+        /missing revert data in call exception; Transaction reverted without a reason string/;
+
+      if (!reason || revertedReasonMsg.test(reason)) {
+        // ignore here as most likely this is the old gauge error
+        return;
+      }
+
+      throw e;
+    }
   }
 }

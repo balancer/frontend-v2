@@ -42,6 +42,7 @@ export interface Contracts {
   batchRelayer: string;
   veBAL: string;
   gaugeController: string;
+  gaugeCheckpointer?: string;
   gaugeFactory: string;
   gaugeWorkingBalanceHelper?: string;
   balancerMinter: string;

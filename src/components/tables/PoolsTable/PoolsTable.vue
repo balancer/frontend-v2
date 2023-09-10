@@ -36,6 +36,8 @@ import TokensWhite from '@/assets/images/icons/tokens_white.svg';
 import TokensBlack from '@/assets/images/icons/tokens_black.svg';
 import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
+import PoolsTableActionSelector from './PoolsTableActionSelector.vue';
+import { PoolAction } from '@/components/contextual/pages/pools/types';
 
 /**
  * TYPES
@@ -57,6 +59,9 @@ type Props = {
   skeletonClass?: string;
   shares?: Record<string, string>;
   boosts?: Record<string, string>;
+  defaultPoolActions?: PoolAction[];
+  shouldPokePoolsMap?: Record<string, string>;
+  hasNonPrefGaugesPoolsAddresses?: string[];
 };
 
 /**
@@ -81,8 +86,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'loadMore'): void;
+  (e: 'triggerVote'): void;
   (e: 'triggerStake', value: Pool): void;
   (e: 'triggerUnstake', value: Pool): void;
+  (e: 'triggerCheckpoint', value: Pool): void;
   (e: 'onColumnSort', value: string): void;
 }>();
 /**
@@ -217,7 +224,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     name: t('actions'),
     Cell: 'actionsCell',
     accessor: 'actions',
-    align: 'center',
+    align: 'right',
     id: 'actions',
     hidden: !props.showActions,
     width: 150,
@@ -276,6 +283,33 @@ function iconAddresses(pool: Pool) {
     ? [pool.address]
     : orderedTokenAddresses(pool);
 }
+function addLiquidity(id: string) {
+  router.push({
+    name: 'add-liquidity',
+    params: {
+      id,
+      networkSlug,
+    },
+  });
+}
+function removeLiquidity(id: string) {
+  router.push({
+    name: 'withdraw',
+    params: {
+      id,
+      networkSlug,
+    },
+  });
+}
+function goToPoolPage(id: string) {
+  router.push({
+    name: 'pool',
+    params: {
+      id,
+      networkSlug,
+    },
+  });
+}
 </script>
 
 <template>
@@ -284,6 +318,7 @@ function iconAddresses(pool: Pool) {
     :square="upToLargeBreakpoint"
     :noBorder="upToLargeBreakpoint"
     noPad
+    exposeOverflow
   >
     <BalTable
       :columns="visibleColumns"
@@ -411,7 +446,24 @@ function iconAddresses(pool: Pool) {
         </div>
       </template>
       <template #actionsCell="pool">
+        <PoolsTableActionSelector
+          v-if="defaultPoolActions"
+          :defaultPoolActions="defaultPoolActions"
+          :pool="pool"
+          :showPokeAction="Boolean(shouldPokePoolsMap?.[pool.address]) || false"
+          :showMigrateGaugeAction="
+            hasNonPrefGaugesPoolsAddresses?.includes(pool.address) || false
+          "
+          @click:add="addLiquidity(pool.id)"
+          @click:remove="removeLiquidity(pool.id)"
+          @click:unstake="pool => emit('triggerUnstake', pool)"
+          @click:stake="pool => emit('triggerStake', pool)"
+          @click:vote="emit('triggerVote')"
+          @click:migrate-gauge="goToPoolPage(pool.id)"
+          @click:poke="pool => emit('triggerCheckpoint', pool)"
+        />
         <PoolsTableActionsCell
+          v-else
           :pool="pool"
           :poolsType="poolsType"
           @click:stake="pool => emit('triggerStake', pool)"
