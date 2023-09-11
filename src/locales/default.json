@@ -1145,6 +1145,13 @@
         "errors": {
           "notEnoughVotes": "Not enough unallocated votes"
         }
+      },
+      "resubmit": {
+        "hint": {
+          "title": "Resubmit your votes to utilize your full voting power",
+          "description": "Votes on pools are set at the time of your last vote. Since you’ve added new veBAL after your original vote, the additional voting power is not being used."
+        },
+        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes."
       }
     },
     "notSupported": {
