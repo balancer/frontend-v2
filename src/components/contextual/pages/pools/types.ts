@@ -23,3 +23,13 @@ export type UserGaugeSharesResponse = {
 export type PoolStakingDataResponse = {
   liquidityGauge: LiquidityGauge;
 };
+
+export enum PoolAction {
+  Add = 'add',
+  Remove = 'remove',
+  Stake = 'stake',
+  Unstake = 'unstake',
+  Vote = 'vote',
+  MigrateGauge = 'migrateGauge',
+  Poke = 'poke',
+}

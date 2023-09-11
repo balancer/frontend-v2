@@ -9,6 +9,10 @@ import { Pool } from '@/services/pool/types';
 import { computed, InjectionKey, provide } from 'vue';
 import { safeInject } from '../inject';
 import { useUserData } from '../user-data.provider';
+import { configService } from '@/services/config/config.service';
+import useWeb3 from '@/services/web3/useWeb3';
+import { GaugeCheckpointer } from '@/services/balancer/contracts/contracts/gauge-checkpointer';
+import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 
 const provider = () => {
   /**
@@ -16,7 +20,7 @@ const provider = () => {
    */
   const { userGaugeSharesQuery, userBoostsQuery, stakedSharesQuery } =
     useUserData();
-
+  const { getSigner, account } = useWeb3();
   /**
    * COMPUTED
    */
@@ -27,13 +31,23 @@ const provider = () => {
   // Array of all the pools a user has staked BPT for.
   const stakedPoolIds = computed((): string[] => {
     if (!userGaugeShares.value) return [];
-
     return userGaugeShares.value.map(gaugeShare => gaugeShare.gauge.poolId);
   });
 
   const isPoolsQueryEnabled = computed(
     (): boolean => stakedPoolIds.value.length > 0
   );
+
+  const hasNonPrefGaugesPoolsAddresses = computed(() => {
+    const arr = userGaugeShares.value?.reduce((acc: string[], gauge) => {
+      if (!gauge.gauge.isPreferentialGauge && !gauge.gauge.isKilled) {
+        acc.push(gauge.gauge.poolAddress);
+      }
+      return acc;
+    }, []);
+
+    return arr;
+  });
 
   const filterOptions = computed(() => ({
     poolIds: stakedPoolIds.value,
@@ -43,6 +57,7 @@ const provider = () => {
   const stakedPoolsQuery = usePoolsQuery(filterOptions, {
     enabled: isPoolsQueryEnabled,
   });
+
   const { data: _stakedPools, refetch: refetchStakedPools } = stakedPoolsQuery;
 
   // Pool records for all the pools where a user has staked BPT.
@@ -82,7 +97,32 @@ const provider = () => {
     return stakedShares?.value?.[poolId] || '0';
   }
 
+  async function checkpointGauge(gaugeAddress: string) {
+    const gaugeContract = new LiquidityGauge(gaugeAddress);
+
+    const signer = getSigner();
+
+    return gaugeContract.checkpointUser({
+      signer,
+      userAddress: account.value,
+    });
+  }
+
+  async function checkpointAllGauges(gauges: string[]) {
+    const contractAddress = configService.network.addresses.gaugeCheckpointer;
+    if (!contractAddress) throw new Error('No contract address found');
+    const signer = getSigner();
+    const gaugeCheckpointerContract = new GaugeCheckpointer(contractAddress);
+
+    return gaugeCheckpointerContract.checkpoint({
+      gauges,
+      signer,
+      userAddress: account.value,
+    });
+  }
+
   return {
+    userGaugeShares,
     stakedPools,
     stakedShares,
     poolBoostsMap,
@@ -90,6 +130,9 @@ const provider = () => {
     isLoading,
     refetchStakedPools,
     stakedSharesFor,
+    hasNonPrefGaugesPoolsAddresses,
+    checkpointGauge,
+    checkpointAllGauges,
   };
 };
 
