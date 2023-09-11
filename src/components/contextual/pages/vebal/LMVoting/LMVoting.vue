@@ -49,7 +49,7 @@ const { shouldResubmitVotes } = useVotingEscrowLocks();
 const { networkSlug } = useNetwork();
 const { isWalletReady } = useWeb3();
 
-const { hasVeBalBalance } = useVeBal();
+const { hasVeBalBalance, noVeBalBalance } = useVeBal();
 const { fNum } = useNumbers();
 
 const {
@@ -202,7 +202,7 @@ watch(isRefetchingVotingPools, async () => {
     </VotingAlert>
 
     <VotingAlert
-      v-if="!hasVeBalBalance && !isLoading"
+      v-if="noVeBalBalance && !isLoading"
       title="You need some veBAL to vote on gauges"
     >
       Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.

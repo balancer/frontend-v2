@@ -98,6 +98,8 @@ export default function useVeBal() {
 
   const hasVeBalBalance = computed(() => Number(veBalBalance.value) > 0);
 
+  const noVeBalBalance = computed(() => veBalBalance.value === '0.0');
+
   const lockablePoolId = computed(() => POOLS.IdsMap?.veBAL);
 
   return {
@@ -106,6 +108,7 @@ export default function useVeBal() {
     veBalTokenInfo,
     veBalBalance,
     hasVeBalBalance,
+    noVeBalBalance,
     lockablePoolId,
     showRedirectModal,
     // methods
