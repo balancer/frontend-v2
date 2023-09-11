@@ -6,7 +6,7 @@ import useEthers from '@/composables/useEthers';
 
 interface Props {
   isVisible?: boolean;
-  poolAddress?: string;
+  shouldPokePoolsMap: Record<string, string>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,25 +15,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['close', 'success']);
 
-const { checkpointGauge, userGaugeShares } = useUserStaking();
+const { checkpointAllGauges } = useUserStaking();
 const { addTransaction } = useTransactions();
 const { isMismatchedNetwork } = useWeb3();
 const { txListener } = useEthers();
 
 const showCloseBtn = ref(false);
 
-async function triggerUpdate() {
+async function pokeAllGauges() {
   try {
-    const gauge = userGaugeShares.value?.find(
-      gauge => gauge.gauge.poolAddress === props.poolAddress
+    const tx = await checkpointAllGauges(
+      Object.values(props.shouldPokePoolsMap)
     );
-    const id = gauge?.gauge.id;
-
-    if (!id) {
-      throw new Error('No gauge id');
-    }
-
-    const tx = await checkpointGauge(id);
 
     addTransaction({
       id: tx.hash,
@@ -44,7 +37,7 @@ async function triggerUpdate() {
 
     await txListener(tx, {
       onTxConfirmed: async () => {
-        emit('success', props.poolAddress);
+        emit('success');
       },
       onTxFailed: () => {
         console.error('Tx failed');
@@ -60,11 +53,11 @@ async function triggerUpdate() {
 
 const actions = [
   {
-    label: 'Confirm pool gauge update',
-    loadingLabel: 'Confirming pool gauge update',
-    confirmingLabel: 'Confirming pool gauge update',
+    label: 'Poke all gauges',
+    loadingLabel: 'Confirm poke in wallet',
+    confirmingLabel: 'Confirming poke',
     action: async () => {
-      return triggerUpdate();
+      return pokeAllGauges();
     },
     stepTooltip: '',
   },
@@ -75,17 +68,23 @@ const actions = [
   <BalModal
     :show="isVisible"
     :disabled="isMismatchedNetwork"
-    title="Trigger pool gauge veBAL update"
+    title="Poke all gauges to get boosted APRs"
     @close="emit('close')"
   >
     <div class="flex flex-col justify-between">
-      <span class="mb-12">
-        Even though you've synced new veBAL to this Layer 2, it isn’t
-        contributing to your staking boost yet on this pool. This is because,
-        pool gauges don't detect veBAL changes until you interact with them.
-        This transaction is the most gas efficient way to update the gauge but
-        you can also trigger the update by claiming any BAL incentives.
-      </span>
+      <div class="mb-12">
+        <span class="mb-3">
+          Even after syncing veBAL to an L2, pool gauges remains unaware of your
+          new balance until interacted with. This means, you are currently
+          missing out on your maximum possible boost.
+        </span>
+        <span>
+          ‘Poke gauge’ to gas-efficiently update the gauge with your new veBAL
+          balance. Otherwise, interact with a gauge to trigger the update. If
+          you already have accumulated some incentives, ‘Claim BAL’ to get your
+          incentives and trigger the update for future boosts.
+        </span>
+      </div>
 
       <BalActionSteps
         :actions="actions"

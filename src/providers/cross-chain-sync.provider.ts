@@ -12,9 +12,9 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { safeInject } from './inject';
 import configs from '@/lib/config';
 import { GaugeWorkingBalanceHelper } from '@/services/balancer/contracts/contracts/gauge-working-balance-helper';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { useI18n } from 'vue-i18n';
 import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client';
+import { isPoolBoostsEnabled } from '@/composables/useNetwork';
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -308,6 +308,8 @@ export const crossChainSyncProvider = () => {
   }
 
   async function getGaugeWorkingBalance(gaugeAddress: string) {
+    if (!isPoolBoostsEnabled.value) return;
+
     const contractAddress =
       configService.network.addresses.gaugeWorkingBalanceHelper;
     if (!contractAddress) throw new Error('No contract address found');
@@ -324,16 +326,16 @@ export const crossChainSyncProvider = () => {
     });
   }
 
-  // checkpoint
-  async function triggerGaugeUpdate(gaugeAddress: string) {
-    const gaugeContract = new LiquidityGauge(gaugeAddress);
+  async function shouldPokeGauge(gaugeAddress: string) {
+    const balance = await getGaugeWorkingBalance(gaugeAddress);
 
-    const signer = getSigner();
-
-    return gaugeContract.checkpointUser({
-      signer,
-      userAddress: account.value,
-    });
+    /*
+     *  balance[0] is ratio of the current `working_balance` of the user to the current `working_supply` of the gauge
+     *  balance[1] is ratio of the projected `working_balance` of the user (after `user_checkpoint`), to the projected `working_supply` of the gauge
+     *
+     *  so if balance[1] > balance[0] then the user should poke the gauge
+     */
+    return balance && balance[1]?.gt(balance[0]);
   }
 
   async function getLayerZeroTxLink(txHash: string) {
@@ -423,11 +425,11 @@ export const crossChainSyncProvider = () => {
     warningMessage,
     infoMessage,
     getGaugeWorkingBalance,
-    triggerGaugeUpdate,
     getLayerZeroTxLink,
     syncTxHashes,
     setSyncTxHashes,
     syncLayerZeroTxLinks,
+    shouldPokeGauge,
   };
 };
 
