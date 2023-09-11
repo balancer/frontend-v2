@@ -1,4 +1,10 @@
-export const defaultVotingPools = [];
+import { VotingPool } from '../useVotingPoolsQuery';
+
+export let defaultVotingPools: VotingPool[] = [];
+
+export function mockVotingPools(votingPools: VotingPool[]) {
+  defaultVotingPools = votingPools;
+}
 
 export default function useVotingPoolsQuery() {
   return {
