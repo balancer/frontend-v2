@@ -27,7 +27,8 @@ const router = useRouter();
 
 const { veBalBalance } = useVeBal();
 const { t } = useI18n();
-const { isLoading, data } = useHistoricalLocksQuery(account);
+const { isLoading, data: userHistoricalLocks } =
+  useHistoricalLocksQuery(account);
 const { isLoading: isLoadingLockBoard, data: userRankData } =
   useLockRankQuery(account);
 
@@ -35,7 +36,8 @@ const { isLoading: isLoadingLockBoard, data: userRankData } =
  * COMPUTED
  */
 const showVebalInfo = computed(() => {
-  return isWalletReady.value;
+  const snapshots = userHistoricalLocks.value?.lockSnapshots;
+  return isWalletReady.value && snapshots && snapshots.length > 0;
 });
 
 const isLoadingData = computed(
@@ -55,9 +57,9 @@ const lockedUntil = computed(() => {
 });
 
 const chartValues = computed(() => {
-  if (!data.value) return [];
+  if (!userHistoricalLocks.value) return [];
 
-  const { lockSnapshots } = data.value;
+  const { lockSnapshots } = userHistoricalLocks.value;
 
   const currentDate = (Date.now() / 1000).toFixed(0);
 
@@ -240,7 +242,7 @@ function navigateToGetVeBAL() {
     <div class="hero-content">
       <div
         v-if="showVebalInfo"
-        class="flex flex-col md:flex-row flex-grow gap-6 justify-between items-center px-10 h-full text-white"
+        class="flex flex-col lg:flex-row flex-grow gap-6 justify-between lg:items-center px-10 h-full text-white"
       >
         <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
         <div v-else class="flex flex-col flex-1">
