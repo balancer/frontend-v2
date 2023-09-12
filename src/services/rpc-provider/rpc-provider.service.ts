@@ -15,8 +15,7 @@ export default class RpcProviderService {
   ) {}
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
-    const blockProvider = new JsonRpcProvider(this.config.rpc);
-    blockProvider.once('block', newBlockNumber => {
+    this.jsonProvider.once('block', newBlockNumber => {
       let currentBlockNumber = newBlockNumber;
       newBlockHandler(currentBlockNumber);
       setInterval(() => {
