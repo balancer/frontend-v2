@@ -9,6 +9,7 @@ import {
 import { PoolWarning } from '@/types/pools';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
+import { POOLS } from '@/constants/pools';
 
 type Props = {
   pool: Pool;
@@ -50,7 +51,8 @@ function isActionDisabled(action: PoolAction) {
     Boolean(deprecatedDetails(props.pool.id)) ||
     isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning) ||
     isJoinsDisabled(props.pool.id) ||
-    shouldDisableJoins.value;
+    shouldDisableJoins.value ||
+    POOLS.BrandedRedirect?.[props.pool.poolType];
 
   const actionsToDisable = [
     PoolAction.Add,
