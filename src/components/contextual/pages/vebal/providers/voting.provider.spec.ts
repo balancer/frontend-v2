@@ -207,20 +207,35 @@ it('isInputDisabled', async () => {
 });
 
 describe('isVotingRequestValid', () => {
-  it('when it has an expired pool', async () => {
+  it('when it has an expired pool with user votes', async () => {
     const expiredPool = aVotingPool({
+      userVotes: '1000',
       gauge: { address: randomAddress(), isKilled: true },
     });
 
     const votingPools = [expiredPool, aVotingPool()];
     mockVotingPools(votingPools);
 
-    const { hasExpiredPoolsSelected, isVotingRequestValid, toggleSelection } =
-      await mountVoting();
+    const { isVotingRequestValid, toggleSelection } = await mountVoting();
 
     toggleSelection(expiredPool);
 
-    expect(hasExpiredPoolsSelected.value).toBeTrue();
+    expect(isVotingRequestValid.value).toBeTrue();
+  });
+
+  it('when it has an expired pool without user votes', async () => {
+    const expiredPool = aVotingPool({
+      userVotes: '0',
+      gauge: { address: randomAddress(), isKilled: true },
+    });
+
+    const votingPools = [expiredPool, aVotingPool()];
+    mockVotingPools(votingPools);
+
+    const { isVotingRequestValid, toggleSelection } = await mountVoting();
+
+    toggleSelection(expiredPool);
+
     expect(isVotingRequestValid.value).toBeTrue();
   });
 
@@ -236,13 +251,11 @@ describe('isVotingRequestValid', () => {
     const votingPools = [expiredPool, votingPool];
     mockVotingPools(votingPools);
 
-    const { hasExpiredPoolsSelected, isVotingRequestValid, toggleSelection } =
-      await mountVoting();
+    const { isVotingRequestValid, toggleSelection } = await mountVoting();
 
     toggleSelection(expiredPool);
     toggleSelection(votingPool);
 
-    expect(hasExpiredPoolsSelected.value).toBeTrue();
     expect(isVotingRequestValid.value).toBeFalse();
   });
 
@@ -252,12 +265,10 @@ describe('isVotingRequestValid', () => {
     const votingPools = [votingPool];
     mockVotingPools(votingPools);
 
-    const { hasExpiredPoolsSelected, isVotingRequestValid, toggleSelection } =
-      await mountVoting();
+    const { isVotingRequestValid, toggleSelection } = await mountVoting();
 
     toggleSelection(votingPool);
 
-    expect(hasExpiredPoolsSelected.value).toBeFalse();
     expect(isVotingRequestValid.value).toBeFalse();
   });
 });

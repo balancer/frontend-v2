@@ -103,14 +103,17 @@ export function votingProvider() {
 
   const hasUserEnteredVotes = computed(() => {
     return unlockedSelectedPools.value.some(pool => {
-      return votingRequest.value[pool.gauge.address] != '';
+      return (
+        votingRequest.value[pool.gauge.address] != '' &&
+        !getIsGaugeExpired(pool.gauge.address)
+      );
     });
   });
 
   const isVotingRequestValid = computed(
     () =>
       !isRequestingTooMuchWeight.value &&
-      (hasExpiredPoolsSelected.value || hasUserEnteredVotes.value)
+      (hasExpiredPoolsWithUserVotesSelected.value || hasUserEnteredVotes.value)
   );
 
   const hasSubmittedVotes = computed(() =>
@@ -120,6 +123,12 @@ export function votingProvider() {
   const hasExpiredPoolsSelected = computed(() =>
     unlockedSelectedPools.value.some(pool => isPoolExpired(pool))
   );
+
+  const hasExpiredPoolsWithUserVotesSelected = computed(() => {
+    return unlockedSelectedPools.value.some(
+      pool => isPoolExpired(pool) && hasUserVotes(pool)
+    );
+  });
 
   const hasTimeLockedPools = computed(() =>
     selectedPools.value.some(pool => isVotingTimeLocked(pool.lastUserVoteTime))
