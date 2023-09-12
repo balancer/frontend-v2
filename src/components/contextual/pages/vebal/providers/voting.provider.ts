@@ -1,17 +1,14 @@
 import { safeInject } from '@/providers/inject';
 import {
   bpsToShares,
-  hasOnlyExpiredPools,
   hasUserVotes,
   isGaugeExpired,
 } from '@/components/contextual/pages/vebal/voting-utils';
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
-import { oneSecondInMs } from '@/composables/useTime';
 import { isVotingTimeLocked } from '@/composables/useVeBAL';
 import useVotingPools from '@/composables/useVotingPools';
 import symbolKeys from '@/constants/symbol.keys';
-import { differenceInWeeks } from 'date-fns';
 
 import { ConfirmedVotingRequest } from '@/components/contextual/pages/vebal/MultiVoting/composables/useVotingActions';
 
@@ -73,34 +70,12 @@ export function votingProvider() {
       }))
   );
 
-  const unselectedPoolsWithVotes = computed(() =>
-    votingPools.value.filter(
-      pool =>
-        hasUserVotes(pool) &&
-        !selectedGaugeAddresses.value.includes(pool.gauge.address)
-    )
-  );
-
-  const unselectedPoolsVoteWeight = computed(() =>
-    unselectedPoolsWithVotes.value.reduce(
-      (acc, pool) => acc + Number(bpsToShares(pool.userVotes)),
-      0
-    )
-  );
-
   const selectedPoolsVoteWeight = computed((): number =>
     selectedPools.value.reduce(
       (acc, pool) => acc + Number(bpsToShares(pool.userVotes)),
       0
     )
   );
-
-  // const selectedPoolsVoteWeight = computed(() =>
-  //   Object.values(selectedPools.value).reduce(
-  //     (acc, weight) => acc + Number(weight),
-  //     0
-  //   )
-  // );
 
   const selectedGaugeAddresses = computed(() =>
     Object.keys(votingRequest.value)
@@ -114,30 +89,27 @@ export function votingProvider() {
     () => confirmedVotingRequest.value.length > 8
   );
 
-  const currentRequestVoteWeight = computed(() =>
+  const totalAllocatedWeight = computed(() =>
     Object.values(votingRequest.value).reduce(
       (acc, weight) => acc + Number(weight),
       0
     )
   );
 
-  // Adds:
-  // - Vote weight that the user is requesting in the vebal vote page
-  // - User Vote weight of pools that are not included in the current request selection
-  const totalAllocatedWeight = computed(
-    () => currentRequestVoteWeight.value + unselectedPoolsVoteWeight.value
-  );
-
   const isRequestingTooMuchWeight = computed(
     () => totalAllocatedWeight.value > 100
   );
 
-  const isRequestingZeroWeight = computed(
-    () => currentRequestVoteWeight.value == 0
+  const hasUserEnteredVotes = computed(() =>
+    unlockedSelectedPools.value.some(
+      pool => votingRequest[pool.gauge.address] != ''
+    )
   );
 
   const isVotingRequestValid = computed(
-    () => !isRequestingZeroWeight.value && !isRequestingTooMuchWeight.value
+    () =>
+      hasExpiredPoolsSelected.value ||
+      (hasUserEnteredVotes.value && !isRequestingTooMuchWeight.value)
   );
 
   const hasSubmittedVotes = computed(() =>
@@ -160,13 +132,6 @@ export function votingProvider() {
         isVotingTimeLocked(pool.lastUserVoteTime)
       ) && selectedPoolsVoteWeight.value === 100
   );
-
-  // const hasOnlyExpiredPoolsSelected = computed(() =>
-  //   hasOnlyExpiredPools(
-  //     unlockedSelectedPools.value.map(pool => pool.gauge.address),
-  //     votingGaugeAddresses.value
-  //   )
-  // );
 
   /**
    * METHODS
@@ -235,15 +200,11 @@ export function votingProvider() {
     selectedGaugeAddresses,
     selectedPools,
     unlockedSelectedPools,
-    unselectedPoolsWithVotes,
-    unselectedPoolsVoteWeight,
     votingRequest,
     isLoading,
     isLoadingExpiredGauges,
     isLoadingVotingPools,
-    currentRequestVoteWeight,
     totalAllocatedWeight,
-    isRequestingZeroWeight,
     isRequestingTooMuchWeight,
     isVotingRequestValid,
     totalSelectedGauges,
@@ -252,7 +213,6 @@ export function votingProvider() {
     isSubmissionStep,
     hasExpiredPoolsSelected,
     hasAllVotingPowerTimeLocked,
-    // hasOnlyExpiredPoolsSelected,
     hasTimeLockedPools,
     confirmedVotingRequest,
     getIsGaugeExpired,
