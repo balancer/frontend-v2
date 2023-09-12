@@ -6,26 +6,21 @@ import { useVotingTransactionState } from './composables/useVotingTransactionSta
 import { voteLockedUntilText } from '../voting-utils';
 import { useVoting } from '../providers/voting.provider';
 
-const { isLoading, isSubmissionStep } = useVoting();
-const { txState } = useVotingTransactionState();
+const { isSubmissionStep } = useVoting();
+const { txState, resetTxState } = useVotingTransactionState();
 
 const headerLabel = computed(() =>
   txState.confirmed ? 'Your votes were registered 🎉' : 'Pool gauge voting'
 );
+
+onUnmounted(() => resetTxState());
 </script>
 
 <template>
   <div>
-    <VotingLayout v-if="isLoading">
-      <template #left>
-        <BalLoadingBlock class="h-24" />
-      </template>
-      <template #right>
-        <BalLoadingBlock class="h-96" />
-      </template>
-    </VotingLayout>
-    <VotingLayout v-else>
-      <template #left>
+    <VotingLayout :isOneColumn="txState.confirmed">
+      <!-- Left column is hidden after the voting is successful  -->
+      <template v-if="!txState.confirmed" #left>
         <BalCard noPad shadow="none">
           <div class="p-3 w-full">
             <h6>How it works</h6>
