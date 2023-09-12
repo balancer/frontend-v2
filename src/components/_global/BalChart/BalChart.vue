@@ -197,10 +197,22 @@ const chartConfig = computed(() => ({
       ? tailwind.theme.colors.gray['900']
       : tailwind.theme.colors.white,
     formatter: params => {
+      let processedParams = params;
+
+      // if veBAL, reverse the order of the params to meet the design requirements
+      if (props.isVeBAL) {
+        processedParams = [...params.reverse()];
+        // filter equal values in same date
+        processedParams = processedParams.filter((param, index) => {
+          if (index === 0) return true;
+          return param.value[1] !== processedParams[index - 1].value[1];
+        });
+      }
+
       return `
             <div class='flex flex-col font-body bg-white dark:bg-gray-850 dark:text-white'>
               <span>${params[0].value[0]}</span>
-              ${params
+              ${processedParams
                 .map(
                   param => `
                     <span>

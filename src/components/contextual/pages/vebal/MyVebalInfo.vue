@@ -61,47 +61,38 @@ const chartValues = computed(() => {
 
   const currentDate = (Date.now() / 1000).toFixed(0);
 
-  const chartV = lockSnapshots.reduce((acc: any, snapshot, i) => {
-    const bias = bnum(snapshot.bias);
-    const slope = bnum(snapshot.slope);
-    const now = lockSnapshots[i + 1]
-      ? bnum(lockSnapshots[i + 1].timestamp)
-      : bnum(currentDate);
+  const chartV = lockSnapshots.reduce(
+    (acc: (readonly [string, number])[], snapshot, i) => {
+      const bias = bnum(snapshot.bias);
+      const slope = bnum(snapshot.slope);
+      const now = lockSnapshots[i + 1]
+        ? bnum(lockSnapshots[i + 1].timestamp)
+        : bnum(currentDate);
 
-    const timestamp = snapshot.timestamp;
+      const timestamp = snapshot.timestamp;
 
-    const point1Balance = bias.toNumber();
+      const point1Balance = bias.toNumber();
 
-    const point2V = bias.minus(slope.times(now.minus(timestamp)));
-    const point2Balance = point2V.isLessThan(0)
-      ? bnum(0).toNumber()
-      : point2V.toNumber();
+      const point2V = bias.minus(slope.times(now.minus(timestamp)));
+      const point2Balance = point2V.isLessThan(0)
+        ? bnum(0).toNumber()
+        : point2V.toNumber();
 
-    const point1Date = format(snapshot.timestamp * 1000, 'yyyy/MM/dd');
-    const point2Date = format(now.toNumber() * 1000, 'yyyy/MM/dd');
+      const point1Date = format(snapshot.timestamp * 1000, 'yyyy/MM/dd');
+      const point2Date = format(now.toNumber() * 1000, 'yyyy/MM/dd');
 
-    // const prevPointDate = acc[acc.length - 1]?.[0];
-    // const prevPointBalance = acc[acc.length - 1]?.[1].toFixed(0);
+      acc.push(Object.freeze<[string, number]>([point1Date, point1Balance]));
+      if (point1Balance.toFixed(0) === point2Balance.toFixed(0)) {
+        return acc;
+      }
+      acc.push(Object.freeze<[string, number]>([point2Date, point2Balance]));
 
-    // console.log({
-    //   point1Date,
-    //   point2Date,
-    //   point1Balance,
-    //   point2Balance,
-    //   prevPointDate,
-    //   prevPointBalance,
-    // });
-
-    acc.push(Object.freeze<[string, number]>([point1Date, point1Balance]));
-    if (point1Balance.toFixed(0) === point2Balance.toFixed(0)) {
       return acc;
-    }
-    acc.push(Object.freeze<[string, number]>([point2Date, point2Balance]));
+    },
+    []
+  );
 
-    return acc;
-  }, []);
-  // console.log(chartV);
-
+  // group values by dates
   const valuesByDates = chartV.reduce((acc: any, item) => {
     const [date, value] = item;
     if (acc[date]) {
@@ -112,27 +103,30 @@ const chartValues = computed(() => {
     return acc;
   }, {});
 
-  const filteredArr = Object.keys(valuesByDates).reduce((acc: any, item) => {
-    const values = valuesByDates[item];
-    console.log(values);
-    let filteredValues: number[] = [];
-    if (values.length > 2) {
-      const max = Math.max(...values);
-      const min = Math.min(...values);
-      filteredValues.push(min);
-      filteredValues.push(max);
-    } else {
-      filteredValues = values;
-    }
+  // leave only max and min values in one date to show in chart
+  const filteredArr = Object.keys(valuesByDates).reduce(
+    (acc: (readonly [string, number])[], item) => {
+      const values = valuesByDates[item];
 
-    filteredValues.forEach(val => {
-      acc.push([item, val]);
-    });
+      let filteredValues: number[] = [];
+      if (values.length > 2) {
+        const max = Math.max(...values);
+        const min = Math.min(...values);
+        filteredValues.push(min);
+        filteredValues.push(max);
+      } else {
+        filteredValues = values;
+      }
 
-    return acc;
-  }, []);
+      filteredValues.forEach(val => {
+        acc.push(Object.freeze<[string, number]>([item, val]));
+      });
 
-  // console.log(filteredArr);
+      return acc;
+    },
+    []
+  );
+
   return filteredArr;
 });
 
@@ -195,7 +189,7 @@ const futureLockChartData = computed(() => {
       hoverColor: 'white',
     };
   }
-  return {};
+  return { name: '', values: [] };
 });
 
 const chartData = computed(() => {
