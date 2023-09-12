@@ -3,6 +3,7 @@ import {
   bpsToShares,
   hasUserVotes,
   isGaugeExpired,
+  isPoolExpired,
 } from '@/components/contextual/pages/vebal/voting-utils';
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
@@ -100,16 +101,16 @@ export function votingProvider() {
     () => totalAllocatedWeight.value > 100
   );
 
-  const hasUserEnteredVotes = computed(() =>
-    unlockedSelectedPools.value.some(
-      pool => votingRequest[pool.gauge.address] != ''
-    )
-  );
+  const hasUserEnteredVotes = computed(() => {
+    return unlockedSelectedPools.value.some(pool => {
+      return votingRequest.value[pool.gauge.address] != '';
+    });
+  });
 
   const isVotingRequestValid = computed(
     () =>
-      hasExpiredPoolsSelected.value ||
-      (hasUserEnteredVotes.value && !isRequestingTooMuchWeight.value)
+      !isRequestingTooMuchWeight.value &&
+      (hasExpiredPoolsSelected.value || hasUserEnteredVotes.value)
   );
 
   const hasSubmittedVotes = computed(() =>
@@ -117,9 +118,7 @@ export function votingProvider() {
   );
 
   const hasExpiredPoolsSelected = computed(() =>
-    unlockedSelectedPools.value.some(pool =>
-      getIsGaugeExpired(pool.gauge.address)
-    )
+    unlockedSelectedPools.value.some(pool => isPoolExpired(pool))
   );
 
   const hasTimeLockedPools = computed(() =>
@@ -145,9 +144,10 @@ export function votingProvider() {
 
   function selectGauge(pool: VotingPool) {
     const gaugeAddress = pool.gauge.address;
-    const currentNormalizedVotes = getIsGaugeExpired(gaugeAddress)
+    const currentNormalizedVotes = isPoolExpired(pool)
       ? '0'
       : bpsToShares(pool.userVotes);
+
     votingRequest.value[gaugeAddress] = currentNormalizedVotes;
   }
 
@@ -165,10 +165,7 @@ export function votingProvider() {
   }
 
   function isInputDisabled(pool: VotingPool) {
-    return (
-      getIsGaugeExpired(pool.gauge.address) ||
-      isVotingTimeLocked(pool.lastUserVoteTime)
-    );
+    return isPoolExpired(pool) || isVotingTimeLocked(pool.lastUserVoteTime);
   }
 
   /*

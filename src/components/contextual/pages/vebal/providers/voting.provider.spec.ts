@@ -13,6 +13,7 @@ import { aVotingPool } from '../MultiVoting/voting-pool.builders';
 async function mountVoting() {
   // Reset global state before each test
   votingRequest.value = {};
+  setVotingCompleted();
   const { result } = await mountComposable(() => votingProvider());
   return result;
 }
@@ -35,7 +36,7 @@ it('No selected gauge addresses by default', async () => {
   expect(selectedGaugeAddresses.value).toEqual([]);
 });
 
-it('Works when user selects a pool/gauge', async () => {
+it('Works when user selects/unselects a pool/gauge', async () => {
   const votingPool1 = aVotingPool();
   const votingPool2 = aVotingPool();
   mockVotingPools([votingPool1, votingPool2]);
@@ -52,6 +53,12 @@ it('Works when user selects a pool/gauge', async () => {
   expect(selectedGaugeAddresses.value).toEqual([votingPool2.gauge.address]);
   expect(selectedPools.value).toEqual([votingPool2]);
   expect(unlockedSelectedPools.value).toEqual([votingPool2]);
+
+  // Unselects
+  toggleSelection(votingPool2);
+  expect(selectedGaugeAddresses.value).toEqual([]);
+  expect(selectedPools.value).toEqual([]);
+  expect(unlockedSelectedPools.value).toEqual([]);
 });
 
 describe('Returns unlockedSelectedPools', () => {
@@ -130,5 +137,127 @@ describe('Given that the user just completed a voting process', () => {
 
     expect(selectedGaugeAddresses.value).toEqual([]);
     expect(isVotingCompleted.value).toBeFalse();
+  });
+});
+
+describe('hasAllVotingPowerTimeLocked', () => {
+  it('when the user only has timeLocked pools with a total weight of 100%', async () => {
+    const todayTimestamp = Date.now();
+    const timeLockedPool1 = aVotingPool({
+      userVotes: '6000',
+      lastUserVoteTime: todayTimestamp,
+    }); // 6000 bps = 60% votes
+
+    const timeLockedPool2 = aVotingPool({
+      userVotes: '4000',
+      lastUserVoteTime: todayTimestamp,
+    }); // 4000 bps = 40% votes
+
+    const votingPools = [timeLockedPool1, timeLockedPool2];
+    mockVotingPools(votingPools);
+
+    const { hasAllVotingPowerTimeLocked, loadRequestWithExistingVotes } =
+      await mountVoting();
+
+    loadRequestWithExistingVotes(votingPools);
+    expect(hasAllVotingPowerTimeLocked.value).toBeTrue();
+  });
+
+  it('when the user only has timeLocked pools with total weight < 100%', async () => {
+    const todayTimestamp = Date.now();
+    const timeLockedPool1 = aVotingPool({
+      userVotes: '5000',
+      lastUserVoteTime: todayTimestamp,
+    }); // 5000 bps = 50% votes
+
+    const timeLockedPool2 = aVotingPool({
+      userVotes: '4000',
+      lastUserVoteTime: todayTimestamp,
+    }); // 4000 bps = 40% votes
+
+    const votingPools = [timeLockedPool1, timeLockedPool2];
+    mockVotingPools(votingPools);
+
+    const { hasAllVotingPowerTimeLocked, loadRequestWithExistingVotes } =
+      await mountVoting();
+
+    loadRequestWithExistingVotes(votingPools);
+    expect(hasAllVotingPowerTimeLocked.value).toBeFalse();
+  });
+});
+
+it('isInputDisabled', async () => {
+  const unlockedVotingPool = aVotingPool();
+
+  const todayTimestamp = Date.now();
+  const timeLockedPool = aVotingPool({
+    lastUserVoteTime: todayTimestamp,
+  });
+
+  const expiredPool = aVotingPool({ gauge: { isKilled: true } });
+
+  const votingPools = [unlockedVotingPool, timeLockedPool, expiredPool];
+  mockVotingPools(votingPools);
+
+  const { isInputDisabled } = await mountVoting();
+
+  expect(isInputDisabled(unlockedVotingPool)).toBeFalse();
+  expect(isInputDisabled(timeLockedPool)).toBeTrue();
+  expect(isInputDisabled(expiredPool)).toBeTrue();
+});
+
+describe('isVotingRequestValid', () => {
+  it('when it has an expired pool', async () => {
+    const expiredPool = aVotingPool({
+      gauge: { address: randomAddress(), isKilled: true },
+    });
+
+    const votingPools = [expiredPool, aVotingPool()];
+    mockVotingPools(votingPools);
+
+    const { hasExpiredPoolsSelected, isVotingRequestValid, toggleSelection } =
+      await mountVoting();
+
+    toggleSelection(expiredPool);
+
+    expect(hasExpiredPoolsSelected.value).toBeTrue();
+    expect(isVotingRequestValid.value).toBeTrue();
+  });
+
+  it('when the user selected over 100% weight', async () => {
+    const expiredPool = aVotingPool({
+      userVotes: '5000',
+      gauge: { address: randomAddress(), isKilled: true },
+    });
+    const votingPool = aVotingPool({
+      userVotes: '51000',
+    });
+
+    const votingPools = [expiredPool, votingPool];
+    mockVotingPools(votingPools);
+
+    const { hasExpiredPoolsSelected, isVotingRequestValid, toggleSelection } =
+      await mountVoting();
+
+    toggleSelection(expiredPool);
+    toggleSelection(votingPool);
+
+    expect(hasExpiredPoolsSelected.value).toBeTrue();
+    expect(isVotingRequestValid.value).toBeFalse();
+  });
+
+  it('when the user did not enter any weight', async () => {
+    const votingPool = aVotingPool({ userVotes: '0' });
+
+    const votingPools = [votingPool];
+    mockVotingPools(votingPools);
+
+    const { hasExpiredPoolsSelected, isVotingRequestValid, toggleSelection } =
+      await mountVoting();
+
+    toggleSelection(votingPool);
+
+    expect(hasExpiredPoolsSelected.value).toBeFalse();
+    expect(isVotingRequestValid.value).toBeFalse();
   });
 });

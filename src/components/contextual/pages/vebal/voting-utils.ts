@@ -23,6 +23,10 @@ export function isGaugeExpired(
   return !!expiredGauges.some(item => isSameAddress(gaugeAddress, item));
 }
 
+export function isPoolExpired(pool: VotingPool) {
+  return pool.gauge.isKilled;
+}
+
 export function hasOnlyExpiredPools(
   votingGauges: string[],
   expiredGauges?: readonly string[]
