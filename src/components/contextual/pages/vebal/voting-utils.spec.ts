@@ -29,6 +29,6 @@ test('formatVoteSharesWith2Decimals', () => {
   expect(formatVoteSharesWith2Decimals('12.001')).toBe('12.001');
 });
 
-test.only('sharesToBPS', () => {
+test('sharesToBPS', () => {
   expect(sharesToBps('3.1').toNumber()).toBe(310);
 });
