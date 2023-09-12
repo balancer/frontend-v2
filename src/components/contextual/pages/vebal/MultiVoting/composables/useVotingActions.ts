@@ -67,7 +67,6 @@ export function useVotingActions({
   ): Promise<TransactionResponse> {
     txState.init = true;
     try {
-      // const tx = await runMultivoteTransaction();
       const tx = await voteForManyGauges(requestBatch, gaugeControllerService);
 
       txState.confirming = true;
@@ -83,6 +82,7 @@ export function useVotingActions({
       return tx;
     } catch (error) {
       txState.confirming = false;
+      console.log(error);
       throw new Error('Failed to submit votes.', {
         cause: error,
       });
@@ -160,7 +160,10 @@ async function voteForManyGauges(
   );
   console.log('Voting:', {
     addresses: [...gaugeAddresses, ...zeroAddresses],
-    weights: [...weights, ...zeroWeights],
+    weights: [
+      ...weights.map(weight => weight.toNumber()),
+      ...zeroWeights.map(weight => weight.toNumber()),
+    ],
   });
 
   return await gaugeControllerService.voteForManyGaugeWeights(
@@ -192,16 +195,3 @@ export function getTransactionDetails(request: ConfirmedVotingRequest) {
     votes: request.map(item => item.weight),
   };
 }
-
-// TODO: delete when finish debugging
-// async function runMultivoteTransaction(): Promise<TransactionResponse> {
-//   // const tx =
-//   await sleep(3000);
-//   // throw new Error('ERROR IN VOTING TRANSACTION');
-//   const tx = {
-//     wait: () => ({ blockNumber: 12345, hash: '123456' }),
-//     hash: '123456',
-//   };
-
-//   return tx as unknown as TransactionResponse;
-// }

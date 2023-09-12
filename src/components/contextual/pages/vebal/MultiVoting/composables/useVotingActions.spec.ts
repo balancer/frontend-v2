@@ -11,7 +11,6 @@ import {
   ConfirmedVotingRequest,
   UseVotingActionParams,
 } from './useVotingActions';
-import { formatEther } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 silenceConsoleLog(vi, message => message.startsWith('Voting'));
@@ -125,12 +124,12 @@ const formatCallParams = mock => {
 
   return {
     gaugeAddresses: params[0],
-    formattedWeights: params[1].map(weight => formatEther(weight)),
+    formattedWeights: params[1].map(weight => weight.toNumber()),
   };
 };
 
 test('Fills remaining votes with zeros when there is only one vote in the request', async () => {
-  const vote = aVote();
+  const vote = aVote({ weight: '10' });
   const request = [vote];
   const gaugeControllerService = mockGaugeControllerService();
 
@@ -159,16 +158,7 @@ test('Fills remaining votes with zeros when there is only one vote in the reques
   ]);
 
   // Fills 7 weights with zeros
-  expect(params.formattedWeights).toEqual([
-    '0.000000000000001',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
-  ]);
+  expect(params.formattedWeights).toEqual([1000, 0, 0, 0, 0, 0, 0, 0]);
 });
 
 test('submits first batch from 9 votes', async () => {
@@ -191,19 +181,12 @@ test('submits first batch from 9 votes', async () => {
     request.slice(0, 8).map(vote => vote.gaugeAddress)
   );
   expect(params.formattedWeights).toEqual([
-    '0.000000000000001',
-    '0.0000000000000015',
-    '0.000000000000001',
-    '0.000000000000001',
-    '0.000000000000001',
-    '0.000000000000001',
-    '0.000000000000001',
-    '0.000000000000001',
+    1000, 1500, 1000, 1000, 1000, 1000, 1000, 1000,
   ]);
 });
 
 test('submits second batch from 9 votes', async () => {
-  const request = times(9, () => aVote());
+  const request = times(9, () => aVote({ weight: '20' }));
 
   const gaugeControllerService = mockGaugeControllerService();
 
@@ -227,20 +210,20 @@ test('submits second batch from 9 votes', async () => {
     '0x0000000000000000000000000000000000000000',
   ]);
   expect(params.formattedWeights).toEqual([
-    '0.000000000000001',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
-    '0.0',
+    2000, // 20% in bps
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
   ]);
 });
 
 describe('Transaction message and details', () => {
   test('when voting request has 3 pools', () => {
-    const request = times(3, () => aVote());
+    const request = times(3, () => aVote({ weight: '10' }));
 
     expect(getTransactionSummaryMsg(request)).toBe('Voting on 3 pools');
     expect(getTransactionDetails(request)).toEqual({

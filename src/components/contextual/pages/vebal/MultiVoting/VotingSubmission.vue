@@ -34,7 +34,8 @@ const {
 
     <VoteAllocation
       message="Total vote allocation"
-      :percentage="totalAllocatedWeight"
+      :shares="totalAllocatedWeight"
+      withDecimals
     ></VoteAllocation>
 
     <VotingActions

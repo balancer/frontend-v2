@@ -1,5 +1,5 @@
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
-import { FNumFormats } from '@/composables/useNumbers';
+import { FNumFormats, numF } from '@/composables/useNumbers';
 import { oneSecondInMs, toUtcTime } from '@/composables/useTime';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 import { bnum, isSameAddress, scale } from '@/lib/utils';
@@ -46,6 +46,11 @@ export function sharesToBps(weight: string): BigNumber {
 
 export function bpsToPercentage(weight: number, fNum): string {
   return fNum(scale(bnum(weight), -4).toString(), FNumFormats.percent);
+}
+
+export function formatVoteSharesWith2Decimals(weight: string) {
+  if (weight === '') return '0.00';
+  return numF(weight, { minimumFractionDigits: 2 });
 }
 
 export function voteLockedUntilText() {

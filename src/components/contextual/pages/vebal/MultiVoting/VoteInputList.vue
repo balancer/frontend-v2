@@ -45,7 +45,7 @@ const {
 
     <VoteAllocation
       message="Total vote allocation"
-      :percentage="totalAllocatedWeight"
+      :shares="totalAllocatedWeight"
       :error="isRequestingTooMuchWeight"
     ></VoteAllocation>
 

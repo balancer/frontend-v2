@@ -3,6 +3,7 @@ import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import VotePoolDetails from './VotePoolDetails.vue';
 import VotePoolFooter from './VotePoolFooter.vue';
 import { useVoting } from '../providers/voting.provider';
+import { formatVoteSharesWith2Decimals } from '../voting-utils';
 
 type Props = {
   pool: VotingPool;
@@ -21,7 +22,9 @@ const { votingRequest } = useVoting();
       <div class="mt-2">
         <div class="flex items-center pr-4 h-full font-semibold">
           <span class="text-xl text-black dark:text-white">
-            {{ votingRequest[pool.gauge.address] }}
+            {{
+              formatVoteSharesWith2Decimals(votingRequest[pool.gauge.address])
+            }}
             %
           </span>
         </div>

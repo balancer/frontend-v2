@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { formatVoteSharesWith2Decimals } from '../voting-utils';
+
 type Props = {
   message: string;
-  percentage: string | number;
+  shares: string | number;
   error?: boolean;
+  withDecimals?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   error: false,
+  withDecimals: false,
 });
 </script>
 
@@ -23,7 +27,10 @@ const props = withDefaults(defineProps<Props>(), {
       <div>
         {{ props.message }}
       </div>
-      <div>{{ props.percentage }} %</div>
+      <div v-if="withDecimals">
+        {{ formatVoteSharesWith2Decimals(props.shares.toString()) }} %
+      </div>
+      <div v-else>{{ props.shares }} %</div>
     </div>
   </div>
   <div v-if="error" class="mt-3 ml-2 text-sm text-red-500">
