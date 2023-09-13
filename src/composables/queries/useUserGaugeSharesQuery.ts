@@ -13,8 +13,11 @@ export type GaugeShare = {
   balance: string;
   gauge: {
     id: string;
+    poolAddress: string;
     poolId: string;
     totalSupply: string;
+    isPreferentialGauge: boolean;
+    isKilled: boolean;
   };
 };
 
@@ -76,8 +79,11 @@ export default function useUserGaugeSharesQuery(
       balance: true,
       gauge: {
         id: true,
+        poolAddress: true,
         poolId: true,
         totalSupply: true,
+        isPreferentialGauge: true,
+        isKilled: true,
       },
     },
   }));

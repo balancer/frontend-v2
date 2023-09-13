@@ -218,11 +218,12 @@ watch([() => props.data, () => props.isLoading], ([newData]) => {
 <template>
   <div
     :class="[
-      'max-w-full whitespace-nowrap overflow-hidden',
+      'max-w-full whitespace-nowrap',
+      'max-lg:overflow-hidden',
       { 'rounded-lg': !square },
     ]"
   >
-    <div ref="headerRef" class="overflow-hidden">
+    <div ref="headerRef" class="max-lg:overflow-hidden">
       <table class="w-full whitespace-normal table-fixed">
         <!-- header width handled by colgroup  -->
         <colgroup>
@@ -253,6 +254,7 @@ watch([() => props.data, () => props.isLoading], ([newData]) => {
               currentSortColumn === column.id && currentSortDirection
                 ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
                 : '',
+              !square ? 'rounded-t-lg' : '',
             ]"
             @click="handleSort(column.id)"
           >
@@ -290,7 +292,7 @@ watch([() => props.data, () => props.isLoading], ([newData]) => {
         </thead>
       </table>
     </div>
-    <div ref="bodyRef" class="overflow-auto">
+    <div ref="bodyRef" class="max-lg:overflow-auto">
       <BalLoadingBlock
         v-if="isLoading"
         :class="[skeletonClass, 'min-w-full']"
