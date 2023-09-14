@@ -1,6 +1,5 @@
-# Voting file migration
+# ⚠️ voting-gauges.json will be deleted on `November 15, 2023`
 
-[!WARNING]
 `voting-gauges.json` is deprecated and will be deleted on **November 15, 2023**
 
 ## Migration process
