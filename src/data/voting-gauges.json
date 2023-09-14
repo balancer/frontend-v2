@@ -19,7 +19,7 @@
         },
         {
           "address": "0x4200000000000000000000000000000000000006",
-          "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4200000000000000000000000000000000000006.png",
+          "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assetssrc/images/tokens/0x4200000000000000000000000000000000000006.png",
           "symbol": "WETH",
           "weight": null
         }
