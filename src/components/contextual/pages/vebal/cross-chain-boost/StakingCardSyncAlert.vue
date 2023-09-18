@@ -10,6 +10,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import config from '@/lib/config';
 import { PoolWarning } from '@/types/pools';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { useUserStaking } from '@/providers/local/user-staking.provider';
 
 type Props = {
   fiatValueOfStakedShares: string;
@@ -28,11 +29,17 @@ const { hasNonPrefGaugeBalance, poolGauges, stakedShares } = usePoolStaking();
 const { networkId } = useNetwork();
 const { isMismatchedNetwork } = useWeb3();
 const { isAffectedBy } = usePoolWarning(computed(() => props.poolId));
+const { userGaugeShares } = useUserStaking();
 
 const canShowSyncAlert = computed(() => {
+  const gauge = userGaugeShares.value?.find(
+    gauge => gauge.gauge.poolAddress === props.poolAddress
+  );
+
   if (
     isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning) ||
-    isAffectedBy(PoolWarning.CspPoolVulnWarning)
+    isAffectedBy(PoolWarning.CspPoolVulnWarning) ||
+    !gauge
   ) {
     return false;
   }
