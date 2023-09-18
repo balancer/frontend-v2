@@ -63,9 +63,21 @@ export function votingProvider() {
     )
   );
 
+  /***
+   * Order by vote weight (from smallest to largest)
+   * to avoid going above max voting power when multi-voting in the contract
+   */
+  const unlockedSelectedPoolsOrderedByWeight = computed(() =>
+    unlockedSelectedPools.value.sort(
+      (a, b) =>
+        parseFloat(votingRequest.value[a.gauge.address]) -
+        parseFloat(votingRequest.value[b.gauge.address])
+    )
+  );
+
   const confirmedVotingRequest = computed(
     (): ConfirmedVotingRequest =>
-      unlockedSelectedPools.value.map(pool => ({
+      unlockedSelectedPoolsOrderedByWeight.value.map(pool => ({
         gaugeAddress: pool.gauge.address,
         weight: votingRequest.value[pool.gauge.address],
       }))

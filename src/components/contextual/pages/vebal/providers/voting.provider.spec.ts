@@ -111,6 +111,48 @@ describe('Returns confirmedVotingRequest', () => {
       },
     ]);
   });
+
+  it('Ordered by weight', async () => {
+    const gaugeAddress1 = 'foo';
+    const pool1 = aVotingPool({
+      gauge: { address: gaugeAddress1 },
+    });
+
+    const gaugeAddress2 = 'bar';
+    const pool2 = aVotingPool({
+      gauge: { address: gaugeAddress2 },
+    });
+    const gaugeAddress3 = 'baz';
+    const pool3 = aVotingPool({
+      gauge: { address: gaugeAddress3 },
+    });
+    mockVotingPools([pool1, pool2, pool3]);
+
+    const { confirmedVotingRequest, toggleSelection } = await mountVoting();
+
+    toggleSelection(pool1);
+    toggleSelection(pool2);
+    toggleSelection(pool3);
+
+    votingRequest.value[gaugeAddress1] = '20';
+    votingRequest.value[gaugeAddress2] = '0';
+    votingRequest.value[gaugeAddress3] = '15';
+
+    expect(confirmedVotingRequest.value).toMatchInlineSnapshot([
+      {
+        gaugeAddress: gaugeAddress2,
+        weight: '0',
+      },
+      {
+        gaugeAddress: gaugeAddress3,
+        weight: '15',
+      },
+      {
+        gaugeAddress: gaugeAddress1,
+        weight: '20',
+      },
+    ]);
+  });
 });
 
 describe('Given that the user just completed a voting process', () => {
