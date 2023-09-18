@@ -120,8 +120,7 @@ export const wallets = () => {
   const account = computed(() => {
     if (pluginState.connector && pluginState.connector.account) {
       // always want to be using checksum addresses
-      // return getAddress(pluginState.connector.account);
-      return '0x25B70c8050B7e327Ce62CfD80A0C60cCcf057Fa6';
+      return getAddress(pluginState.connector.account);
     }
     return '';
   });

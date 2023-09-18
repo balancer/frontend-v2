@@ -37,7 +37,10 @@ const { isLoading: isLoadingLockBoard, data: userRankData } =
  */
 const showVebalInfo = computed(() => {
   const snapshots = userHistoricalLocks.value?.lockSnapshots;
-  return isWalletReady.value && snapshots && snapshots.length > 0;
+  return (
+    (isWalletReady.value && snapshots && snapshots.length > 0) ||
+    isLoadingData.value
+  );
 });
 
 const isLoadingData = computed(
@@ -60,7 +63,7 @@ const chartValues = computed(() => {
   if (!userHistoricalLocks.value) return [];
 
   const { lockSnapshots } = userHistoricalLocks.value;
-
+  console.log('lockSnapshots', lockSnapshots);
   const currentDate = (Date.now() / 1000).toFixed(0);
 
   const chartV = lockSnapshots.reduce(
@@ -84,7 +87,9 @@ const chartValues = computed(() => {
       const point2Date = format(now.toNumber() * 1000, 'yyyy/MM/dd');
 
       acc.push(Object.freeze<[string, number]>([point1Date, point1Balance]));
-      if (point1Balance.toFixed(0) === point2Balance.toFixed(0)) {
+
+      console.log({ point1Balance, point2Balance });
+      if (point1Balance.toFixed(2) === point2Balance.toFixed(2)) {
         return acc;
       }
       acc.push(Object.freeze<[string, number]>([point2Date, point2Balance]));
@@ -164,7 +169,7 @@ const vebalInfo = computed(() => {
     });
   }
 
-  if (lock.value?.hasExistingLock) {
+  if (lock.value?.hasExistingLock && !lock.value.isExpired) {
     arr.push({
       icon: hourglass,
       value: `Expires ${lockedUntil.value} (${differenceInDays(
@@ -177,7 +182,8 @@ const vebalInfo = computed(() => {
 });
 
 const futureLockChartData = computed(() => {
-  if (lock.value?.hasExistingLock) {
+  console.log('lock.value?.hasExistingLock', lock.value);
+  if (lock.value?.hasExistingLock && !lock.value.isExpired) {
     return {
       name: '',
       values: [
@@ -284,7 +290,7 @@ function navigateToGetVeBAL() {
             :data="chartData.data"
             :axisLabelFormatter="{
               yAxis: {
-                maximumFractionDigits: 0,
+                maximumFractionDigits: 2,
                 fixedFormat: false,
                 abbreviate: false,
               },
@@ -299,6 +305,13 @@ function navigateToGetVeBAL() {
             showTooltipLayer
             :lineStyles="chartData.lineStyles"
             :symbolSize="chartData.symbolSize"
+            :customGrid="{
+              left: '2.5%',
+              right: '2.5%',
+              top: '10%',
+              bottom: '5%',
+              containLabel: true,
+            }"
             isVeBAL
             showTooltip
           />
