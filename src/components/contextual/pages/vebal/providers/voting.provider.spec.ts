@@ -138,7 +138,7 @@ describe('Returns confirmedVotingRequest', () => {
     votingRequest.value[gaugeAddress2] = '0';
     votingRequest.value[gaugeAddress3] = '15';
 
-    expect(confirmedVotingRequest.value).toMatchInlineSnapshot([
+    expect(confirmedVotingRequest.value).toEqual([
       {
         gaugeAddress: gaugeAddress2,
         weight: '0',
