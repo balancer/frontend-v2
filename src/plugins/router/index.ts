@@ -24,6 +24,7 @@ export const SwapPagePrefetchLinks = async () =>
 
 const UnlockVeBalPage = () => import('@/pages/unlock-vebal.vue');
 const VeBalPage = () => import('@/pages/vebal.vue');
+const VeBalVotingPage = () => import('@/pages/vebal-voting.vue');
 const FaucetPage = () => import('@/pages/faucet.vue');
 const BalancesPage = () => import('@/pages/balances.vue');
 
@@ -123,6 +124,12 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/vebal',
     name: 'vebal',
     component: VeBalPage,
+  },
+  {
+    path: '/:networkSlug/vebal-voting',
+    name: 'vebal-voting',
+    component: VeBalVotingPage,
+    meta: { layout: 'FocussedLayout' },
   },
   {
     path: '/:networkSlug/get-vebal',

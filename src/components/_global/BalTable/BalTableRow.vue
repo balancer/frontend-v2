@@ -37,6 +37,14 @@ function getHorizontalStickyClass(index: number) {
   }
   return '';
 }
+
+function handleColumnClick(column: ColumnDefinition, event: Event) {
+  // Disable default onClick when column is a checkbox
+  if (column.isCheckbox && event.target?.['type'] !== 'checkbox') {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}
 </script>
 
 <template>
@@ -54,12 +62,14 @@ function getHorizontalStickyClass(index: number) {
   >
     <td
       v-for="(column, columnIndex) in columns"
-      :key="column.id"
+      :key="column.id + columnIndex"
       :class="[
         column.align === 'right' ? 'text-left' : 'text-right',
         getHorizontalStickyClass(columnIndex),
         isColumnStuck ? 'isSticky' : '',
+        column.isCheckbox ? 'cursor-default' : '',
       ]"
+      @click="handleColumnClick(column, $event)"
     >
       <component
         :is="href?.getHref(data) ? 'a' : link ? 'router-link' : 'div'"

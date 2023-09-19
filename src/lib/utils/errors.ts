@@ -367,7 +367,7 @@ export function useErrorMsg() {
 
   const unknownAccountError: TransactionError = {
     title: 'Possible wallet connection error',
-    description: t('Please review your setup and try again.'),
+    description: 'Please review your setup and try again.',
   };
 
   function defaultError(message = ''): TransactionError {
