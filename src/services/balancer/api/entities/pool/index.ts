@@ -99,7 +99,8 @@ export default class SinglePool {
         poolType: apiToken.pool.factory
           ? getPoolTypeFromFactoryAddress(apiToken.pool.factory)
           : PoolType.Weighted,
-        mainIndex: apiToken.pool.mainIndex,
+        // This is null when undefined (like in a phantom stable sub-pool which doesn't have a mainIndex), but the SDK type won't allow for that
+        mainIndex: apiToken.pool.mainIndex || 0,
         totalShares: apiToken.pool.totalShares,
         tokens: (apiToken.pool.tokens as any[]).map(this.mapToken.bind(this)),
       };
