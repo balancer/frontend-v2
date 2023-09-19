@@ -20,6 +20,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { isEqual } from 'lodash';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
 import { useUserTokens } from '@/providers/local/user-tokens.provider';
+import usePropMaxJoin from '@/composables/pools/usePropMaxJoin';
 
 /**
  * TYPES
@@ -38,6 +39,7 @@ const props = defineProps<Props>();
  */
 const showPreview = ref(false);
 const showStakeModal = ref(false);
+const forceProportional = ref(true);
 
 /**
  * COMPOSABLES
@@ -61,10 +63,24 @@ const {
   hasValidInputs,
   hasAmountsIn,
   queryError,
+  tokensIn,
   setTokensIn,
+  setAmountsIn,
 } = useJoinPool();
 
 const { tokensWithBalance } = useUserTokens();
+
+const usingNativeAsset = computed(() =>
+  amountsIn.value.some(amountIn =>
+    isSameAddress(amountIn.address, nativeAsset.address)
+  )
+);
+
+const { propAmountsGiven } = usePropMaxJoin(
+  props.pool,
+  tokensIn,
+  usingNativeAsset
+);
 
 /**
  * COMPUTED
@@ -99,6 +115,9 @@ const joinTokensWithoutBalance = computed<string[]>(() =>
   )
 );
 
+/**
+ * METHODS
+ */
 async function initializeTokensForm(isSingleAssetJoin: boolean) {
   if (isSingleAssetJoin) {
     // Single asset joins are only relevant for Composable pools where swap
@@ -106,7 +125,7 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
     // asset.
     setTokensIn([wrappedNativeAsset.value.address]);
   } else {
-    setTokensIn(joinTokensWithBalance.value);
+    setTokensIn(poolJoinTokens.value);
   }
 }
 
@@ -136,6 +155,15 @@ function tokenOptions(address: string): string[] {
 function onTokenChange() {
   if (isSingleAssetJoin.value && amountsIn.value.length > 0) {
     amountsIn.value[0].value = '';
+  }
+}
+
+function onAmountChange(amount) {
+  console.log('onAmountChange', amount);
+
+  if (forceProportional.value) {
+    const prop = propAmountsGiven(amount);
+    setAmountsIn(prop);
   }
 }
 
@@ -205,6 +233,8 @@ watch(
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="excludedTokens"
       @update:address="onTokenChange"
+      @update:amount="onAmountChange(amountIn)"
+      @update:is-valid="event => console.log('isValid', event)"
     />
 
     <MissingPoolTokensAlert

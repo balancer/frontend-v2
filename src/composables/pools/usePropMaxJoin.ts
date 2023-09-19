@@ -206,5 +206,5 @@ export default function usePropMaxJoin(
     return maxAmounts;
   }
 
-  return { getPropMax };
+  return { getPropMax, propAmountsGiven };
 }
