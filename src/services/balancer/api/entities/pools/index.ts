@@ -79,15 +79,9 @@ export default class Pools {
       owner: apiPool.owner ?? undefined,
       factory: apiPool.factory ?? undefined,
       symbol: apiPool.symbol ?? undefined,
-      tokens: (apiPool.displayTokens || [])
-        .map(this.mapToken.bind(this))
-        .filter(token => token.address !== apiPool.address),
-      tokensList: (apiPool.displayTokens || [])
-        .map(t => t.address)
-        .filter(address => address !== apiPool.address),
-      tokenAddresses: (apiPool.displayTokens || [])
-        .map(t => t.address)
-        .filter(address => address !== apiPool.address),
+      tokens: (apiPool.displayTokens || []).map(this.mapToken.bind(this)),
+      tokensList: (apiPool.displayTokens || []).map(t => t.address),
+      tokenAddresses: (apiPool.displayTokens || []).map(t => t.address),
       totalLiquidity: apiPool.dynamicData.totalLiquidity,
       totalShares: apiPool.dynamicData.totalShares,
       totalSwapFee: apiPool.dynamicData.lifetimeSwapFees,

@@ -44,7 +44,9 @@ export default class SinglePool {
       name: apiPool.name || '',
       address: apiPool.address,
       chainId: mapApiChain(apiPool.chain),
-      poolType: PoolType.Weighted, // mapApiPoolType(apiPool.type) || PoolType.Weighted,,
+      poolType: apiPool.factory
+        ? getPoolTypeFromFactoryAddress(apiPool.factory)
+        : PoolType.Weighted,
       poolTypeVersion: 1, // apiPool.version || 1,
       swapFee: apiPool.dynamicData.swapFee,
       swapEnabled: apiPool.dynamicData.swapEnabled,
@@ -54,15 +56,11 @@ export default class SinglePool {
       owner: apiPool.owner ?? undefined,
       factory: apiPool.factory ?? undefined,
       symbol: apiPool.symbol ?? undefined,
-      tokens: ((apiPool.tokens as GqlPoolTokenLinear[]) || [])
-        .map(this.mapToken.bind(this))
-        .filter(token => token.address !== apiPool.address),
-      tokensList: (apiPool.displayTokens || [])
-        .map(t => t.address)
-        .filter(address => address !== apiPool.address),
-      tokenAddresses: (apiPool.displayTokens || [])
-        .map(t => t.address)
-        .filter(address => address !== apiPool.address),
+      tokens: ((apiPool.tokens as GqlPoolTokenLinear[]) || []).map(
+        this.mapToken.bind(this)
+      ),
+      tokensList: (apiPool.displayTokens || []).map(t => t.address),
+      tokenAddresses: (apiPool.displayTokens || []).map(t => t.address),
       totalLiquidity: apiPool.dynamicData.totalLiquidity,
       totalShares: apiPool.dynamicData.totalShares,
       totalSwapFee: apiPool.dynamicData.lifetimeSwapFees,

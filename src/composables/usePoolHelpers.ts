@@ -197,10 +197,15 @@ export function noInitLiquidity(pool: AnyPool): boolean {
   //   return true;
   return bnum(pool?.totalShares || '0').eq(0);
 }
+
+// The new API doesn't return the pre-minted BPT in the token list
+// but some data (like pool activities) include values for all tokens
+// So simple heuristic to get the index of the pre-minted BPT index:
+// - if it can have pre-minted BPT, it's always 0
+// - if it can't then it's -1
 export function preMintedBptIndex(pool: Pool): number | void {
-  return pool.tokensList.findIndex(address =>
-    isSameAddress(address, pool.address)
-  );
+  if (isPreMintedBptType(pool.poolType)) return 0;
+  return -1;
 }
 
 export function createdAfterTimestamp(pool: AnyPool): boolean {
