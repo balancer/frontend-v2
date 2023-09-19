@@ -25,7 +25,7 @@ import {
   mapPoolTypeToApiType,
 } from '@/lib/utils/api';
 import { PoolAttributeFilter, PoolFilterOptions } from '@/types/pools';
-// import { weeksAgoInSecs } from '../useTime';
+import { weeksAgoInSecs } from '../useTime';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -126,7 +126,7 @@ export default function usePoolsQuery(
       poolAttributes.includes(PoolAttributeFilter.New)
     ) {
       // TODO: Need to add create time filter to API.
-      // queryArgs.where.createTimeGt = { gt: weeksAgoInSecs(1) };
+      queryArgs.where.createTime = { gt: weeksAgoInSecs(1) };
     }
 
     return queryArgs;

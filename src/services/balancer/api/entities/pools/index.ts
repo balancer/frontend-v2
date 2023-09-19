@@ -41,7 +41,6 @@ export default class Pools {
 
   public async get(args: ApiArgs = {}): Promise<Pool[]> {
     const api = getApi();
-    console.log('Getting pools from API');
     const response = await api.GetPools({
       first: args.first || 10,
       skip: args.skip || 0,
@@ -50,7 +49,6 @@ export default class Pools {
       where: args.where,
     });
     const pools: ApiPools = response.pools;
-    console.log('Got pools from API', pools);
 
     // Temp until I get pools by network ID from the beets API
     const filteredPools: ApiPools = pools.filter((pool: ApiPool) => {
@@ -58,25 +56,14 @@ export default class Pools {
       return poolChain === configService.network.chainId;
     });
 
-    console.log('Converting pools');
     const convertedPools: Pool[] = filteredPools.map((pool: ApiPool) => {
-      console.log('Converting pool ', pool.id);
       return this.mapPool(pool);
     });
-    console.log('Done converting, pools is: ', convertedPools);
-
     return convertedPools;
   }
 
-  // Converts a pool from the API subgraph to frontend pool type
+  // Converts a pool from the API to frontend pool type
   private mapPool(apiPool: ApiPool): Pool {
-    console.log('Mapping pool: ', apiPool.id);
-    if (
-      apiPool.id ===
-      '0xcde67b70e8144d7d2772de59845b3a67266c2ca7000200000000000000000009'
-    ) {
-      console.log('Full pool: ', apiPool);
-    }
     const converted: Pool = {
       id: apiPool.id,
       name: apiPool.name || '',
@@ -106,25 +93,13 @@ export default class Pools {
       totalSwapFee: apiPool.dynamicData.lifetimeSwapFees,
       totalSwapVolume: apiPool.dynamicData.lifetimeVolume,
       apr: apiPool.dynamicData.apr,
-      // priceRateProviders: apiPool.priceRateProviders ?? undefined,
-      // onchain: subgraphPool.onchain,
       createTime: apiPool.createTime,
-      // mainIndex: apiPool.mainIndex ?? undefined,
-      // wrappedIndex: apiPool.wrappedIndex ?? undefined,
-      // mainTokens: subgraphPool.mainTokens,
-      // wrappedTokens: subgraphPool.wrappedTokens,
-      // unwrappedTokens: subgraphPool.unwrappedTokens,
-      // isNew: subgraphPool.isNew,
       volumeSnapshot: apiPool.dynamicData.volume24h,
       feesSnapshot: apiPool.dynamicData.fees24h,
-      // boost: subgraphPool.boost,
       totalWeight: '1',
       lowerTarget: '0',
       upperTarget: '0',
-      // isInRecoveryMode: apiPool.isInRecoveryMode ?? false,
-      // isPaused: apiPool.isPaused ?? false,
     };
-    console.log('Done on pool conversion');
     return converted;
   }
 
@@ -146,9 +121,5 @@ export default class Pools {
       balance: '0',
       token: subTokens,
     };
-  }
-
-  get skip(): number {
-    return this.repository ? this.repository.skip : 0;
   }
 }

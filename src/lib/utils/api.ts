@@ -87,7 +87,7 @@ export function mapApiPoolType(
     case GqlPoolMinimalType.MetaStable:
       return PoolType.MetaStable;
     case GqlPoolMinimalType.PhantomStable:
-      return PoolType.StablePhantom;
+      return PoolType.ComposableStable;
     case GqlPoolMinimalType.Stable:
       return PoolType.Stable;
     case GqlPoolMinimalType.Weighted:
@@ -104,7 +104,7 @@ export function mapPoolTypeToApiType(
     case PoolType.Element:
       return GqlPoolFilterType.Element;
     case PoolType.Gyro2:
-      return GqlPoolFilterType.Gyro3;
+      return GqlPoolFilterType.Gyro;
     case PoolType.Gyro3:
       return GqlPoolFilterType.Gyro3;
     case PoolType.GyroE:
@@ -124,7 +124,7 @@ export function mapPoolTypeToApiType(
     case PoolType.Stable:
       return GqlPoolFilterType.Stable;
     case PoolType.ComposableStable:
-      return GqlPoolFilterType.Stable;
+      return GqlPoolFilterType.PhantomStable;
     case PoolType.FX:
       return GqlPoolFilterType.Stable;
     case PoolType.Weighted:

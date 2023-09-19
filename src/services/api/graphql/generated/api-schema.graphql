@@ -218,6 +218,7 @@ input GqlPoolFilter {
   categoryNotIn: [GqlPoolFilterCategory!]
   chainIn: [GqlChain!]
   chainNotIn: [GqlChain!]
+  createTime: GqlPoolTimePeriod
   filterIn: [String!]
   filterNotIn: [String!]
   idIn: [String!]
@@ -450,6 +451,7 @@ type GqlPoolMinimal {
 
 enum GqlPoolMinimalType {
   ELEMENT
+  FX
   GYRO
   GYRO3
   GYROE
@@ -633,6 +635,11 @@ input GqlPoolSwapFilter {
   poolIdIn: [String!]
   tokenInIn: [String!]
   tokenOutIn: [String!]
+}
+
+input GqlPoolTimePeriod {
+  gt: Int
+  lt: Int
 }
 
 type GqlPoolToken implements GqlPoolTokenBase {
@@ -880,6 +887,7 @@ type GqlTokenCandlestickChartDataItem {
 }
 
 enum GqlTokenChartDataRange {
+  NINETY_DAY
   SEVEN_DAY
   THIRTY_DAY
 }
@@ -943,6 +951,11 @@ input GqlUserSwapVolumeFilter {
   poolIdIn: [String!]
   tokenInIn: [String!]
   tokenOutIn: [String!]
+}
+
+type GqlVeBalUserData {
+  balance: AmountHumanReadable!
+  rank: Int
 }
 
 type GqlVotingGauge {
@@ -1067,6 +1080,7 @@ type Query {
   userGetStaking: [GqlPoolStaking!]!
   userGetSwaps(first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolSwap!]!
   veBalGetTotalSupply: AmountHumanReadable!
+  veBalGetUser: GqlVeBalUserData!
   veBalGetUserBalance: AmountHumanReadable!
   veBalGetVotingList: [GqlVotingPool!]!
 }

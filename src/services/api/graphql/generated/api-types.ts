@@ -254,6 +254,7 @@ export type GqlPoolFilter = {
   categoryNotIn?: InputMaybe<Array<GqlPoolFilterCategory>>;
   chainIn?: InputMaybe<Array<GqlChain>>;
   chainNotIn?: InputMaybe<Array<GqlChain>>;
+  createTime?: InputMaybe<GqlPoolTimePeriod>;
   filterIn?: InputMaybe<Array<Scalars['String']>>;
   filterNotIn?: InputMaybe<Array<Scalars['String']>>;
   idIn?: InputMaybe<Array<Scalars['String']>>;
@@ -500,6 +501,7 @@ export type GqlPoolMinimal = {
 
 export enum GqlPoolMinimalType {
   Element = 'ELEMENT',
+  Fx = 'FX',
   Gyro = 'GYRO',
   Gyro3 = 'GYRO3',
   Gyroe = 'GYROE',
@@ -695,6 +697,11 @@ export type GqlPoolSwapFilter = {
   poolIdIn?: InputMaybe<Array<Scalars['String']>>;
   tokenInIn?: InputMaybe<Array<Scalars['String']>>;
   tokenOutIn?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type GqlPoolTimePeriod = {
+  gt?: InputMaybe<Scalars['Int']>;
+  lt?: InputMaybe<Scalars['Int']>;
 };
 
 export type GqlPoolToken = GqlPoolTokenBase & {
@@ -973,6 +980,7 @@ export type GqlTokenCandlestickChartDataItem = {
 };
 
 export enum GqlTokenChartDataRange {
+  NinetyDay = 'NINETY_DAY',
   SevenDay = 'SEVEN_DAY',
   ThirtyDay = 'THIRTY_DAY',
 }
@@ -1041,6 +1049,12 @@ export type GqlUserSwapVolumeFilter = {
   poolIdIn?: InputMaybe<Array<Scalars['String']>>;
   tokenInIn?: InputMaybe<Array<Scalars['String']>>;
   tokenOutIn?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type GqlVeBalUserData = {
+  __typename?: 'GqlVeBalUserData';
+  balance: Scalars['AmountHumanReadable'];
+  rank?: Maybe<Scalars['Int']>;
 };
 
 export type GqlVotingGauge = {
@@ -1232,6 +1246,7 @@ export type Query = {
   userGetStaking: Array<GqlPoolStaking>;
   userGetSwaps: Array<GqlPoolSwap>;
   veBalGetTotalSupply: Scalars['AmountHumanReadable'];
+  veBalGetUser: GqlVeBalUserData;
   veBalGetUserBalance: Scalars['AmountHumanReadable'];
   veBalGetVotingList: Array<GqlVotingPool>;
 };
