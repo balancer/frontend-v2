@@ -11,10 +11,12 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
 import { provideUserStaking } from '@/providers/local/user-staking.provider';
 import { providerUserPools } from '@/providers/local/user-pools.provider';
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
+import { provideVoting } from '@/components/contextual/pages/vebal/providers/voting.provider';
 
 const userStaking = provideUserStaking();
 providerUserPools(userStaking);
 providePoolStaking();
+provideVoting();
 </script>
 
 <template>

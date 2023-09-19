@@ -11,7 +11,9 @@ export function silenceConsoleLog(
     .mockImplementation((message, optionalParams) => {
       if (isString(message) && silenceRulesCallback(message)) return;
 
-      originalConsoleLog(message, optionalParams);
+      optionalParams
+        ? originalConsoleLog(message, optionalParams)
+        : originalConsoleLog(message);
     });
 }
 

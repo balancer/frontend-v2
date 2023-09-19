@@ -6,12 +6,9 @@ import BigNumber from 'bignumber.js';
 import useNumbers from '@/composables/useNumbers';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import { useI18n } from 'vue-i18n';
-import {
-  isVotingTimeLocked,
-  remainingVoteLockTime,
-} from '@/composables/useVeBAL';
-import TimelockIcon from '@/components/_global/icons/TimelockIcon.vue';
+import { isVotingTimeLocked } from '@/composables/useVeBAL';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
+import TimeLockedVote from '../MultiVoting/TimeLockedVote.vue';
 
 /**
  * TYPES
@@ -56,29 +53,10 @@ const poolHasUnderUtilizedVotingPower = computed<boolean>(
     }"
   >
     {{ myVotes }}
-    <BalTooltip
+    <TimeLockedVote
       v-if="isVotingTimeLocked(pool.lastUserVoteTime)"
-      textAlign="left"
-    >
-      <template #activator>
-        <TimelockIcon />
-      </template>
-      <div>
-        <span class="font-semibold">
-          {{
-            $t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title')
-          }}
-        </span>
-        <p class="text-gray-500">
-          {{
-            $t(
-              'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
-              [remainingVoteLockTime(pool.lastUserVoteTime)]
-            )
-          }}
-        </p>
-      </div>
-    </BalTooltip>
+      :pool="pool"
+    />
     <BalTooltip
       v-else-if="poolHasUnderUtilizedVotingPower"
       template

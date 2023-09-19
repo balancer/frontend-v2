@@ -8,21 +8,43 @@ import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import CheckpointGaugeModal from './CheckpointGaugeModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import config from '@/lib/config';
+import { PoolWarning } from '@/types/pools';
+import { usePoolWarning } from '@/composables/usePoolWarning';
+import { useUserStaking } from '@/providers/local/user-staking.provider';
 
 type Props = {
   fiatValueOfStakedShares: string;
   fiatValueOfUnstakedShares: string;
+  poolAddress: string;
+  poolId: string;
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits(['shouldStakingCardBeOpened']);
 const shouldShowWarningAlert = ref(false);
 const showCheckpointModal = ref(false);
 
-const { networksSyncState, getGaugeWorkingBalance } = useCrossChainSync();
+const { networksSyncState, shouldPokeGauge } = useCrossChainSync();
 const { hasNonPrefGaugeBalance, poolGauges, stakedShares } = usePoolStaking();
 const { networkId } = useNetwork();
 const { isMismatchedNetwork } = useWeb3();
+const { isAffectedBy } = usePoolWarning(computed(() => props.poolId));
+const { userGaugeShares } = useUserStaking();
+
+const canShowSyncAlert = computed(() => {
+  const gauge = userGaugeShares.value?.find(
+    gauge => gauge.gauge.poolAddress === props.poolAddress
+  );
+
+  if (
+    isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning) ||
+    isAffectedBy(PoolWarning.CspPoolVulnWarning) ||
+    !gauge
+  ) {
+    return false;
+  }
+  return true;
+});
 
 const tipText = computed(() => {
   if (hasNonPrefGaugeBalance.value) {
@@ -78,10 +100,9 @@ async function setWarningAlertState() {
   try {
     emit('shouldStakingCardBeOpened');
 
-    const balance = await getGaugeWorkingBalance(id);
+    const shouldPoke = await shouldPokeGauge(id);
 
-    // if the second number it returns is greater than the first, then show the message
-    if (balance[1]?.gt(balance[0])) {
+    if (shouldPoke) {
       shouldShowWarningAlert.value = true;
     }
   } catch (error) {
@@ -95,7 +116,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex">
+  <div v-if="canShowSyncAlert" class="flex">
     <BalAlert
       v-if="warningAlert"
       class="flex-grow"
@@ -126,6 +147,7 @@ onMounted(() => {
     </BalAlert>
 
     <CheckpointGaugeModal
+      :poolId="poolAddress"
       :isVisible="showCheckpointModal"
       @close="showCheckpointModal = false"
       @success="shouldShowWarningAlert = false"

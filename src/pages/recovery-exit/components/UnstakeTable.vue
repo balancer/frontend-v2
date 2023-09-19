@@ -87,6 +87,9 @@ const { darkMode } = useDarkMode();
 
 const poolIds = computed((): string[] => CSP_ISSUE_POOL_IDS[networkId.value]);
 const poolAddresses = computed(() => poolIds.value.map(id => id.slice(0, 42)));
+const addressToPoolIdMap = computed(
+  () => new Map(poolIds.value.map(id => [id.slice(0, 42), id]))
+);
 
 const enableBalanceFetching = computed(() => !!account.value);
 
@@ -269,7 +272,8 @@ function poolIdFor(token: TokenInfo): string {
   const auraGauge = allAuraGauges.value.find(
     gauge => gauge.address.toLowerCase() === token.address.toLowerCase()
   );
-  if (auraGauge) return auraGauge.poolId;
+  if (auraGauge)
+    return addressToPoolIdMap.value.get(auraGauge.lpToken.address) || '';
 
   return '';
 }

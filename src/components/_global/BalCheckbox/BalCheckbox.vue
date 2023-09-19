@@ -7,10 +7,11 @@
           :name="name"
           :checked="modelValue"
           :class="[
-            'bal-checkbox-input hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors',
+            'bal-checkbox-input',
             alignCheckbox === 'items-start' && 'relative top-2',
             inputClasses,
           ]"
+          :disabled="disabled"
           @change="onChange"
         />
       </div>
@@ -60,6 +61,7 @@ export default defineComponent({
       default: 'blue',
       validator: (val: string): boolean => ['blue'].includes(val),
     },
+    disabled: { type: Boolean, default: false },
   },
 
   emits: ['update:modelValue'],
@@ -148,8 +150,7 @@ export default defineComponent({
 }
 
 .bal-checkbox-input {
-  @apply text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 border border-gray-500 dark:border-gray-500
-    rounded leading-none;
+  @apply rounded;
 
   appearance: none;
   -webkit-print-color-adjust: exact;
@@ -159,13 +160,25 @@ export default defineComponent({
   user-select: none;
 }
 
+.bal-checkbox-input:enabled {
+  @apply text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 border
+   border-gray-500 dark:border-gray-500 leading-none hover:border-blue-600 dark:hover:border-blue-400 cursor-pointer transition-colors;
+}
+
 .bal-checkbox-input:checked {
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z'/%3e%3c/svg%3e");
   border-color: transparent;
-  background-color: currentcolor;
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.bal-checkbox-input:disabled {
+  @apply bg-gray-200 dark:bg-gray-800 cursor-not-allowed;
+}
+
+.bal-checkbox-input:enabled:checked {
+  background-color: currentcolor;
 }
 
 .bal-checkbox-error {

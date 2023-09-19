@@ -10,7 +10,7 @@ import { wallets, WalletsProviderSymbol } from '@/providers/wallet.provider';
 import { render, RenderOptions } from '@testing-library/vue';
 import { RouterLinkStub } from '@vue/test-utils';
 import { mergeWith } from 'lodash';
-import { computed } from 'vue';
+import { Plugin, computed } from 'vue';
 import { registerTestPlugins } from './registerTestPlugins';
 
 const DefaultTestPlugins = {
@@ -26,11 +26,14 @@ const DefaultTestPlugins = {
 
 export function renderComponent(
   componentUnderTest,
-  options: RenderOptions = {}
+  options: RenderOptions = {},
+  extraPlugins?: Plugin
 ) {
   const defaultOptions: Partial<RenderOptions> = {
     global: {
-      plugins: [DefaultTestPlugins],
+      plugins: extraPlugins
+        ? [DefaultTestPlugins, extraPlugins]
+        : [DefaultTestPlugins],
       stubs: {
         RouterLink: RouterLinkStub,
         Jazzicon: true,
