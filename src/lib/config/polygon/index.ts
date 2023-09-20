@@ -27,7 +27,7 @@ const config: Config = {
   explorerName: 'Polygonscan',
   subgraph:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-prune-v2',
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://to8cp89xdl.execute-api.eu-west-2.amazonaws.com/prod',
   poolsUrlV2: '',
   subgraphs: {
     main: [

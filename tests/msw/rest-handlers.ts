@@ -71,12 +71,15 @@ export const restHandlers = [
     }
   ),
 
-  rest.get('https://api.balancer.fi/check-wallet', (req, res, ctx) => {
-    const query = req.url.searchParams;
-    const address = query.get('address');
-    if (address === SANCTIONED_ADDRESS)
-      return res(ctx.json({ is_blocked: true }));
-    // NOT SANCTIONED:
-    return res(ctx.json({ is_blocked: false }));
-  }),
+  rest.get(
+    'https://to8cp89xdl.execute-api.eu-west-2.amazonaws.com/prod/check-wallet',
+    (req, res, ctx) => {
+      const query = req.url.searchParams;
+      const address = query.get('address');
+      if (address === SANCTIONED_ADDRESS)
+        return res(ctx.json({ is_blocked: true }));
+      // NOT SANCTIONED:
+      return res(ctx.json({ is_blocked: false }));
+    }
+  ),
 ];
