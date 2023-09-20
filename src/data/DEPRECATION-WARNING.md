@@ -6,7 +6,7 @@
 
 You can find the equivalent list of pools/gauges in the following GraphQL endpoint:
 
-[https://api-v3.balancer.fi/](https://api-v3.balancer.fi/)
+[https://backend-v3.beets-ftm-node.com/](https://backend-v3.beets-ftm-node.com/)
 
 ```graphql
 query VeBalGetVotingList {
