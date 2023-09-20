@@ -20,7 +20,7 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://polygon-mainnet.infura.io/v3/${keys.infura}`,
+  rpc: `https://polygon-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   ws: `wss://polygon-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
   publicRpc: 'https://polygon-rpc.com',
   explorer: 'https://polygonscan.com',
