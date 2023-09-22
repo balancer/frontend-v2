@@ -9,6 +9,7 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '8453',
   chainId: 8453,
+  layerZeroChainId: 184,
   chainName: 'Base',
   name: 'Base',
   shortName: 'Base',
@@ -41,7 +42,7 @@ const config: Config = {
   bridgeUrl: 'https://bridge.base.org/',
   supportsEIP1559: false,
   supportsElementPools: false,
-  supportsVeBalSync: false,
+  supportsVeBalSync: true,
   blockTime: 2,
   nativeAsset: {
     name: 'Ether',

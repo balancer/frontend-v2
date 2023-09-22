@@ -25,6 +25,7 @@ const contracts: Contracts = {
   faucet: '',
   gaugeRewardsHelper: base.ChildChainGaugeRewardHelper,
   gaugeWorkingBalanceHelper: base.ChildChainGaugeWorkingBalanceHelper,
+  gaugeCheckpointer: base.ChildChainGaugeCheckpointer,
 };
 
 export default contracts;
