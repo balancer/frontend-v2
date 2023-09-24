@@ -25,7 +25,7 @@
   "GaugeWorkingBalanceHelper": "0xa7d524046ef89de9F8e4f2d7B029f66cCB738d48",
   "GearboxLinearPoolFactory": "0x9Dd32684176638D977883448A4c914311c07bd62",
   "InvestmentPoolFactory": "",
-  "L2BalancerPseudoMinter": "0xc7E5ED1054A24Ef31D827E6F86caA58B3Bc168d7",
+  "L2BalancerPseudoMinter": "0x0c5538098EBe88175078972F514C9e101D325D4F",
   "L2LayerZeroBridgeForwarder": "0x8eA89804145c007e7D226001A96955ad53836087",
   "LiquidityBootstrappingPoolFactory": "",
   "ManagedPoolAddRemoveTokenLib": "0xb19382073c7A0aDdbb56Ac6AF1808Fa49e377B75",

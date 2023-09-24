@@ -14,5 +14,6 @@ export default {
     Pool: 'provider.pool',
     UserTokens: 'provider.userTokens',
     CrossChainSync: 'provider.crossChainSync',
+    Voting: 'provider.voting',
   },
 };

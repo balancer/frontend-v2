@@ -10,6 +10,7 @@ import config from '@/lib/config';
 import { Network } from '@/lib/config/types';
 import { Router } from 'vue-router';
 import metaService from '@/services/meta/meta.service';
+import { votingRequest } from '@/components/contextual/pages/vebal/providers/voting.provider';
 
 /**
  * State
@@ -24,6 +25,7 @@ export function applyNavGuards(router: Router): Router {
   router = applyNetworkPathRedirects(router);
   router = applyPoolJoinRedirects(router);
   router = applyMetaData(router);
+  router = applyVotingRedirects(router);
 
   return router;
 }
@@ -158,6 +160,24 @@ function applyMetaData(router: Router): Router {
     }
     metaService.setMeta(to);
     next();
+  });
+  return router;
+}
+
+/**
+ * Redirect to the voting list when trying to open voting page without pools selected for voting.
+ */
+function applyVotingRedirects(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    if (
+      to.name === 'vebal-voting' &&
+      Object.keys(votingRequest.value).length === 0
+    ) {
+      next({
+        name: 'vebal',
+        params: { networkSlug: 'ethereum' },
+      });
+    } else next();
   });
   return router;
 }
