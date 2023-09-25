@@ -17,6 +17,7 @@ import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import CheckpointGaugeModal from '../vebal/cross-chain-boost/CheckpointGaugeModal.vue';
 import CheckpointAllGaugesModal from '../vebal/cross-chain-boost/CheckpointAllGaugesModal.vue';
 import { PoolAction } from './types';
+import { isVeBalSupported } from '@/composables/useVeBAL';
 /**
  * STATE
  */
@@ -127,7 +128,7 @@ function onSuccessCheckpoint(poolAddress: string) {
 watch(
   () => userGaugeShares.value,
   async val => {
-    if (!val) return;
+    if (!val || isVeBalSupported.value) return;
     for (const gauge of val) {
       try {
         const id = gauge?.gauge.id;
