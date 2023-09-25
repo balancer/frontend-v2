@@ -12,9 +12,15 @@ import { useRouter } from 'vue-router';
 import * as echarts from 'echarts/core';
 import useVeBal from '@/composables/useVeBAL';
 import { useI18n } from 'vue-i18n';
-import { useHistoricalLocksQuery } from '@/composables/queries/useHistoricalLocksQuery';
+import {
+  LockSnapshot,
+  useHistoricalLocksQuery,
+} from '@/composables/queries/useHistoricalLocksQuery';
 import { useLockRankQuery } from '@/composables/queries/useLockRankQuery';
 import VeBALMarketingHeader from './VeBALMarketingHeader.vue';
+import BigNumber from 'bignumber.js';
+
+type ChartValueAcc = (readonly [string, number])[];
 
 /**
  * COMPOSABLES
@@ -59,48 +65,58 @@ const lockedUntil = computed(() => {
   return '—';
 });
 
-const chartValues = computed(() => {
-  if (!userHistoricalLocks.value) return [];
+// calculate point 2 values
+function calculatePoint2Balance(
+  snapshot: LockSnapshot,
+  slope: BigNumber,
+  now: BigNumber
+) {
+  const point2V = bnum(snapshot.bias).minus(
+    slope.times(now.minus(snapshot.timestamp))
+  );
+  const point2Balance = point2V.isLessThan(0)
+    ? bnum(0).toNumber()
+    : point2V.toNumber();
+  return point2Balance;
+}
 
-  const { lockSnapshots } = userHistoricalLocks.value;
-  console.log('lockSnapshots', lockSnapshots);
+// format dates
+function formatDate(timestamp: number) {
+  return format(timestamp * 1000, 'yyyy/MM/dd');
+}
+
+// process lock snapshots
+function processLockSnapshots(lockSnapshots: LockSnapshot[]) {
   const currentDate = (Date.now() / 1000).toFixed(0);
 
-  const chartV = lockSnapshots.reduce(
-    (acc: (readonly [string, number])[], snapshot, i) => {
-      const bias = bnum(snapshot.bias);
-      const slope = bnum(snapshot.slope);
-      const now = lockSnapshots[i + 1]
-        ? bnum(lockSnapshots[i + 1].timestamp)
-        : bnum(currentDate);
+  return lockSnapshots.reduce((acc: ChartValueAcc, snapshot, i) => {
+    const slope = bnum(snapshot.slope);
+    const now = lockSnapshots[i + 1]
+      ? bnum(lockSnapshots[i + 1].timestamp)
+      : bnum(currentDate);
 
-      const timestamp = snapshot.timestamp;
+    // point 1
+    const point1Balance = bnum(snapshot.bias).toNumber();
+    const point1Date = formatDate(snapshot.timestamp);
 
-      const point1Balance = bias.toNumber();
+    // point 2
+    const point2Balance = calculatePoint2Balance(snapshot, slope, now);
+    const point2Date = formatDate(now.toNumber());
 
-      const point2V = bias.minus(slope.times(now.minus(timestamp)));
-      const point2Balance = point2V.isLessThan(0)
-        ? bnum(0).toNumber()
-        : point2V.toNumber();
+    acc.push(Object.freeze([point1Date, point1Balance]));
 
-      const point1Date = format(snapshot.timestamp * 1000, 'yyyy/MM/dd');
-      const point2Date = format(now.toNumber() * 1000, 'yyyy/MM/dd');
+    // filter out point 2 if it's the same as point 1
+    if (point1Balance.toFixed(2) !== point2Balance.toFixed(2)) {
+      acc.push(Object.freeze([point2Date, point2Balance]));
+    }
 
-      acc.push(Object.freeze<[string, number]>([point1Date, point1Balance]));
+    return acc;
+  }, []);
+}
 
-      console.log({ point1Balance, point2Balance });
-      if (point1Balance.toFixed(2) === point2Balance.toFixed(2)) {
-        return acc;
-      }
-      acc.push(Object.freeze<[string, number]>([point2Date, point2Balance]));
-
-      return acc;
-    },
-    []
-  );
-
-  // group values by dates
-  const valuesByDates = chartV.reduce((acc: any, item) => {
+// group values by dates
+function groupValuesByDates(chartValues: ChartValueAcc) {
+  return chartValues.reduce((acc, item) => {
     const [date, value] = item;
     if (acc[date]) {
       acc[date].push(value);
@@ -109,30 +125,32 @@ const chartValues = computed(() => {
     }
     return acc;
   }, {});
+}
 
-  // leave only max and min values in one date to show in chart
-  const filteredArr = Object.keys(valuesByDates).reduce(
-    (acc: (readonly [string, number])[], item) => {
-      const values = valuesByDates[item];
+// filter and flatten values
+function filterAndFlattenValues(valuesByDates) {
+  return Object.keys(valuesByDates).reduce((acc: ChartValueAcc, item) => {
+    const values = valuesByDates[item];
 
-      let filteredValues: number[] = [];
-      if (values.length > 2) {
-        const max = Math.max(...values);
-        const min = Math.min(...values);
-        filteredValues.push(min);
-        filteredValues.push(max);
-      } else {
-        filteredValues = values;
-      }
+    let filteredValues =
+      values.length > 2 ? [Math.min(...values), Math.max(...values)] : values;
 
-      filteredValues.forEach(val => {
-        acc.push(Object.freeze<[string, number]>([item, val]));
-      });
+    filteredValues.forEach((val: number) => {
+      acc.push(Object.freeze([item, val]));
+    });
+    return acc;
+  }, []);
+}
 
-      return acc;
-    },
-    []
+const chartValues = computed(() => {
+  if (!userHistoricalLocks.value) return [];
+
+  const processedValues = processLockSnapshots(
+    userHistoricalLocks.value.lockSnapshots
   );
+
+  const valuesByDates = groupValuesByDates(processedValues);
+  const filteredArr = filterAndFlattenValues(valuesByDates);
 
   return filteredArr;
 });
@@ -182,7 +200,6 @@ const vebalInfo = computed(() => {
 });
 
 const futureLockChartData = computed(() => {
-  console.log('lock.value?.hasExistingLock', lock.value);
   if (lock.value?.hasExistingLock && !lock.value.isExpired) {
     return {
       name: '',
@@ -312,7 +329,8 @@ function navigateToGetVeBAL() {
               bottom: '5%',
               containLabel: true,
             }"
-            isVeBAL
+            reverseParams
+            paramsLabel="veBAL"
             showTooltip
           />
         </div>

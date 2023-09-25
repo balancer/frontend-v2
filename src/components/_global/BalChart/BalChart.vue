@@ -63,7 +63,8 @@ type Props = {
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
   areaStyle?: AreaStyle;
   symbolSize?: number;
-  isVeBAL?: boolean;
+  reverseParams?: boolean;
+  paramsLabel?: string;
 };
 
 const emit = defineEmits([
@@ -200,7 +201,7 @@ const chartConfig = computed(() => ({
       let processedParams = params;
 
       // if veBAL, reverse the order of the params to meet the design requirements
-      if (props.isVeBAL) {
+      if (props.reverseParams) {
         processedParams = [...params.reverse()];
         // filter equal values in same date
         processedParams = processedParams.filter((param, index) => {
@@ -221,7 +222,7 @@ const chartConfig = computed(() => ({
                         ${fNum(
                           param.value[1],
                           props.axisLabelFormatter.yAxis
-                        )} ${props.isVeBAL ? 'veBAL' : ''}
+                        )} ${props.paramsLabel || ''}
                       </span>
                     </span>
                   `

@@ -28,7 +28,10 @@ export function useLockRankQuery(account: ComputedRef<string>) {
         ...attrs,
       },
     }),
-    reactive({ enabled: !!account.value, ...FETCH_ONCE_OPTIONS }),
+    reactive({
+      enabled: computed(() => !!account.value),
+      ...FETCH_ONCE_OPTIONS,
+    }),
     false,
     { accountAddress: account.value }
   );
