@@ -17,11 +17,20 @@ import useNumbers from '@/composables/useNumbers';
 import { isVotingCompleted, useVoting } from '../providers/voting.provider';
 
 /**
+ * COMPOSABLES
+ */
+const router = useRouter();
+
+/**
  * DATA
  */
+
 const tokenFilter = useDebouncedRef<string>('', 500);
 const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
-const activeNetworkFilters = useDebouncedRef<Network[]>([], 500);
+const activeNetworkFilters = useDebouncedRef<Network[]>(
+  getDefaultActiveNetworkFilter(),
+  500
+);
 
 const networkFilters: Network[] = Object.entries(configs)
   .filter(details => {
@@ -51,7 +60,6 @@ const { isWalletReady } = useWeb3();
 
 const { hasVeBalBalance, noVeBalBalance } = useVeBal();
 const { fNum } = useNumbers();
-
 const {
   isLoading,
   isLoadingVotingPools,
@@ -143,6 +151,21 @@ function addIntersectionObserver(): void {
   observer = new IntersectionObserver(callback, options);
   observer.observe(intersectionSentinel.value);
 }
+
+function getDefaultActiveNetworkFilter() {
+  const param = router.currentRoute.value.query.chain;
+  if (!param || typeof param !== 'string') {
+    return [];
+  }
+
+  const networkToFilter = Network[param.toUpperCase()];
+  if (!networkToFilter) {
+    return [];
+  }
+
+  return [networkToFilter];
+}
+
 onMounted(() => {
   addIntersectionObserver();
 });
