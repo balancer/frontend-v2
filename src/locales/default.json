@@ -1097,6 +1097,7 @@
         "nextPeriodVotes": "Next period votes",
         "myVotes": "My votes",
         "vote": "Vote",
+        "voteSelect": "Vote select",
         "remove": "Remove"
       },
       "votesTooltip": {
@@ -1137,16 +1138,6 @@
             "title": "Votes are locked for 10 days",
             "description": "You won't be able to make any edits to this vote allocation for {0}"
           },
-          "noVeBal": {
-            "title": "You need some veBAL to vote on gauges",
-            "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.",
-            "inputHintText": "You can't vote since you have no veBAL"
-          },
-          "expiredVeBal": {
-            "title": "You can't vote because your veBAL has expired",
-            "description": "You need some veBAL to vote on gauges. Unlock and relock your B-80BAL-20-WETH to get some veBAL.",
-            "inputHintText": "You can't vote because your veBAL has expired"
-          },
           "veBalLockTooShort": {
             "title": "veBAL not locked for 7 days",
             "description": "You must have veBAL locked for more than 7 days to vote on gauges."
@@ -1165,23 +1156,11 @@
         }
       },
       "resubmit": {
-        "modal": {
-          "title": "Preview vote resubmission",
-          "warning": {
-            "title": "You can only resubmit up to 8 votes",
-            "description": "It’s only possible to update 8 pool gauge votes at a time. You’ll need to update your votes for the remaining ones manually."
-          },
-          "otherPools": "0 other pools | 1 other pool | {n} other pools",
-          "total": "Total vote allocation",
-          "exceeding": "Your votes can’t exceed 100%",
-          "confirm": "Confirm votes"
-        },
         "hint": {
           "title": "Resubmit your votes to utilize your full voting power",
           "description": "Votes on pools are set at the time of your last vote. Since you’ve added new veBAL after your original vote, the additional voting power is not being used."
         },
-        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes.",
-        "btn": "Resubmit votes"
+        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes."
       }
     },
     "notSupported": {

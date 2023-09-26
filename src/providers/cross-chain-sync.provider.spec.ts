@@ -43,7 +43,9 @@ describe('Returns correct Sync state by network', () => {
           10,
           100,
           137,
+          8453,
           42161,
+          43114,
         ],
       }
     `);
@@ -64,6 +66,8 @@ describe('Returns correct Sync state by network', () => {
           10,
           100,
           137,
+          8453,
+          43114,
         ],
       }
     `);
@@ -95,6 +99,8 @@ describe('Returns correct Sync state by network', () => {
           10,
           100,
           137,
+          8453,
+          43114,
         ],
       }
     `);
@@ -112,6 +118,8 @@ test('Calculates L2 network balances', async () => {
       "100": "0.0000",
       "137": "0.0000",
       "42161": "0.0904",
+      "43114": "0.0000",
+      "8453": "0.0000",
     }
   `);
 });

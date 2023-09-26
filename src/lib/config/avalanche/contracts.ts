@@ -24,6 +24,8 @@ const contracts: Contracts = {
   feeDistributorDeprecated: '',
   faucet: '',
   gaugeRewardsHelper: avalanche.ChildChainGaugeRewardHelper,
+  gaugeWorkingBalanceHelper: avalanche.ChildChainGaugeWorkingBalanceHelper,
+  gaugeCheckpointer: avalanche.ChildChainGaugeCheckpointer,
 };
 
 export default contracts;

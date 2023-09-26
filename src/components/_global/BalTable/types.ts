@@ -30,4 +30,6 @@ export type ColumnDefinition<T = Data> = {
   totalsCell?: string;
 
   cellClassName?: string;
+  // Disables default row onclick behavior for special columns like checkbox ones
+  isCheckbox?: boolean;
 };

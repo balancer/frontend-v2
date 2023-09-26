@@ -9,6 +9,7 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '43114',
   chainId: 43114,
+  layerZeroChainId: 106,
   chainName: 'Avalanche',
   name: 'Avalanche',
   shortName: 'Avalanche',
@@ -41,6 +42,7 @@ const config: Config = {
   bridgeUrl: 'https://core.app/bridge/',
   supportsEIP1559: false,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   blockTime: 2,
   nativeAsset: {
     name: 'AVAX',

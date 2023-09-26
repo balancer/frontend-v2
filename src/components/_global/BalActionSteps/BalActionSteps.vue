@@ -166,7 +166,7 @@ const spacerWidth = computed((): number => {
 
 const _loadingLabel = computed((): string => {
   if (currentAction.value?.pending) return currentAction.value.loadingLabel;
-  return props.loadingLabel || t('Loading');
+  return props.loadingLabel || t('loading');
 });
 
 /**
