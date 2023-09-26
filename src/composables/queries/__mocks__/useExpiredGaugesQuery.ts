@@ -1,4 +1,8 @@
-export const defaultExpiredGauges = [];
+export let defaultExpiredGauges = [];
+
+export function mockExpiredGauges(expiredGauges) {
+  defaultExpiredGauges = expiredGauges;
+}
 
 export default function useExpiredGaugesQuery() {
   return {
@@ -6,4 +10,8 @@ export default function useExpiredGaugesQuery() {
     isLoading: false,
     error: false,
   };
+}
+
+export function callGaugesIsKilledStatus() {
+  return {};
 }

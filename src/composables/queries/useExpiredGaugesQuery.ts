@@ -78,7 +78,9 @@ export default function useExpiredGaugesQuery(
         }
       }
     }
-    return Object.freeze(expiredGaugeAddresses);
+    return Object.freeze(
+      expiredGaugeAddresses.map(address => address.toLowerCase())
+    );
   }
 
   /**
