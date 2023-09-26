@@ -376,7 +376,6 @@ export function useErrorMsg() {
   }
 
   function formatErrorMsg(error): TransactionError | null {
-    console.log('dds', error);
     if (isErrorOfType(error, [/unknown account #0/]))
       return unknownAccountError;
     if (isUserError(error)) return null;
