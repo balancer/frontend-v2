@@ -221,12 +221,6 @@ function isErrorOfType(error: any, messages: RegExp[]): boolean {
     return true;
   }
 
-  if (error.cause?.code && error.cause?.code === 4001) {
-    return true;
-  }
-
-  if (error.cause instanceof Error) return isUserRejected(error.cause);
-
   return false;
 }
 
@@ -253,6 +247,10 @@ function isUserRejected(error): boolean {
     /user rejected signing/,
     /user cancelled/,
   ];
+
+  if (error.cause?.code && error.cause?.code === 4001) {
+    return true;
+  }
 
   return isErrorOfType(error, messages);
 }
