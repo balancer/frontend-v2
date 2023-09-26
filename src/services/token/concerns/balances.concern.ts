@@ -30,6 +30,8 @@ export default class BalancesConcern {
   }
 
   async get(account: string, tokens: TokenInfoMap): Promise<BalanceMap> {
+    if (!account || Object.keys(tokens).length === 0) return {};
+
     const paginatedAddresses = chunk(Object.keys(tokens), 1000);
     const multicalls: Promise<any>[] = [];
 
