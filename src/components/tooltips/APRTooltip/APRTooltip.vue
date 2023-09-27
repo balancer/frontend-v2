@@ -20,7 +20,6 @@ import {
  */
 type Props = {
   pool: Pool;
-  poolApr?: GqlPoolApr;
 };
 
 /**
@@ -37,7 +36,7 @@ const { fNum } = useNumbers();
  * COMPUTED
  */
 const apr = computed<GqlPoolApr | undefined>(
-  () => props.pool?.apr || props.poolApr
+  () => props.pool?.apr || props.pool.apr
 );
 const validAPR = computed(
   () => Number(apr.value?.swapApr || 0) <= APR_THRESHOLD

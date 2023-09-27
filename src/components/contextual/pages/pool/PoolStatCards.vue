@@ -11,7 +11,6 @@ import {
 } from '@/composables/usePoolHelpers';
 import { APR_THRESHOLD, VOLUME_THRESHOLD } from '@/constants/pools';
 import { Pool } from '@/services/pool/types';
-import { AprBreakdown } from '@balancer-labs/sdk';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useNetwork from '@/composables/useNetwork';
 
@@ -20,9 +19,7 @@ import useNetwork from '@/composables/useNetwork';
  */
 type Props = {
   pool?: Pool | null;
-  poolApr: AprBreakdown | null;
   loading?: boolean;
-  loadingApr?: boolean;
 };
 
 /**
@@ -98,11 +95,10 @@ const stats = computed(() => {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.poolApr?.swapFees || '0') > APR_THRESHOLD ||
+        Number(props.pool?.apr?.swapApr || '0') > APR_THRESHOLD ||
         shouldHideAprs(props.pool?.id || '')
           ? '-'
           : aprLabel.value,
-      loading: props.loadingApr,
       tooltip: syncVeBalTooltip.value,
     },
   ];
@@ -117,7 +113,7 @@ const stats = computed(() => {
         <div class="flex mb-2 text-sm font-medium text-secondary">
           <span>{{ stat.label }}</span>
           <template
-            v-if="stat.id === 'apr' && poolApr && !shouldHideAprs(pool.id)"
+            v-if="stat.id === 'apr' && pool.apr && !shouldHideAprs(pool.id)"
           >
             <BalTooltip
               v-if="isLBP(pool.poolType)"
@@ -126,7 +122,7 @@ const stats = computed(() => {
               iconSize="sm"
               iconClass="ml-1"
             />
-            <APRTooltip v-else :pool="pool" :poolApr="poolApr" />
+            <APRTooltip v-else :pool="pool" />
           </template>
         </div>
         <div

@@ -110,12 +110,9 @@ const poolsQuery = useQuery(
   ['CspExit', 'pools', { networkId, poolsWithBalances }],
   async () => {
     return balancerAPIService.pools.get({
-      chainId: networkId.value,
       first: 1000,
       where: {
-        id: {
-          in: poolsWithBalances.value.map(p => p.id),
-        },
+        idIn: poolsWithBalances.value.map(p => p.id),
       },
     });
   },

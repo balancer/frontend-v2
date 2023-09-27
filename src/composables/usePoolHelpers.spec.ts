@@ -535,16 +535,16 @@ test('detects disabled joins by id', async () => {
 });
 
 test('generates empty APR label when swapFees are bigger than APR_THRESHOLD', async () => {
-  expect(totalAprLabel(anAprBreakdown({ swapFees: APR_THRESHOLD + 1 }))).toBe(
-    '-'
-  );
+  expect(
+    totalAprLabel(anAprBreakdown({ swapApr: (APR_THRESHOLD + 1).toFixed() }))
+  ).toBe('-');
 });
 
 test('generates APR label without BAL emissions', async () => {
   const aprMin = 12;
   const aprBreakdown = anAprBreakdown({
-    swapFees: 10,
-    min: aprMin,
+    swapApr: '10',
+    apr: { total: aprMin.toString() },
   });
 
   expect(totalAprLabel(aprBreakdown)).toBe('0.12%');
@@ -554,10 +554,11 @@ test('generates APR label with protocol APR)', async () => {
   const aprMin = 12;
   const aprMax = 14;
   const aprBreakdown = anAprBreakdown({
-    swapFees: 10,
-    protocolApr: 1,
-    min: aprMin,
-    max: aprMax,
+    swapApr: '10',
+    apr: {
+      min: aprMin.toString(),
+      max: aprMax.toString(),
+    },
   });
 
   expect(totalAprLabel(aprBreakdown)).toBe('0.12% - 0.14%');
@@ -567,13 +568,10 @@ test('generates APR label with BAL emissions (due to protocol APR)', async () =>
   const aprMin = 14;
   const aprMax = 15;
   const aprBreakdown = anAprBreakdown({
-    swapFees: 10,
-    protocolApr: 0,
-    min: aprMin,
-    max: aprMax,
-    stakingApr: {
-      min: 1,
-      max: 2,
+    swapApr: '10',
+    apr: {
+      min: aprMin.toString(),
+      max: aprMax.toString(),
     },
   });
 
@@ -583,21 +581,15 @@ test('generates APR label with BAL emissions (due to protocol APR)', async () =>
 test('generates APR label with boost', async () => {
   const boost = '2.5';
 
-  const swapFees = 10;
+  const swapApr = '10';
   const tokenAprsTotal = 5;
   const rewardAprsTotal = 2;
 
   const aprMin = 1;
   const aprBreakdown = anAprBreakdown({
-    swapFees,
-    min: aprMin,
-    tokenAprs: {
-      total: tokenAprsTotal,
-      breakdown: {},
-    },
-    rewardAprs: {
-      total: rewardAprsTotal,
-      breakdown: {},
+    swapApr,
+    apr: {
+      total: aprMin.toString(),
     },
   });
 
@@ -607,7 +599,7 @@ test('generates APR label with boost', async () => {
 test('generates APR label with boost', async () => {
   const boost = '2.5';
 
-  const swapFees = 10;
+  const swapApr = '10';
   const tokenAprsTotal = 5;
   const rewardAprsTotal = 2;
 
@@ -615,19 +607,9 @@ test('generates APR label with boost', async () => {
 
   const aprMin = 1;
   const aprBreakdown = anAprBreakdown({
-    swapFees,
-    min: aprMin,
-    tokenAprs: {
-      total: tokenAprsTotal,
-      breakdown: {},
-    },
-    rewardAprs: {
-      total: rewardAprsTotal,
-      breakdown: {},
-    },
-    stakingApr: {
-      min: stakingAprMin,
-      max: 2,
+    swapApr,
+    apr: {
+      total: aprMin.toString(),
     },
   });
 
@@ -642,7 +624,9 @@ test('generates absMaxApr when no boost', async () => {
 
   const aprMax = 2;
   const aprBreakdown = anAprBreakdown({
-    max: aprMax,
+    apr: {
+      total: aprMax.toString(),
+    },
   });
 
   expect(absMaxApr(aprBreakdown, boost)).toBe('2');

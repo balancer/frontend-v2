@@ -12,7 +12,6 @@ import StakingIncentivesCard from '@/components/contextual/pages/pool/staking/St
 import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
-import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import {
   isVeBalPool,
@@ -87,13 +86,13 @@ const historicalPricesQuery = useHistoricalPricesQuery(
 const historicalPrices = computed(() => historicalPricesQuery.data.value);
 //#endregion
 
-//#region APR query
-const aprQuery = usePoolAprQuery(poolId);
-const loadingApr = computed(
-  () => aprQuery.isLoading.value || Boolean(aprQuery.error.value)
-);
-const poolApr = computed(() => aprQuery.data.value);
-//#endregion
+// //#region APR query
+// const aprQuery = usePoolAprQuery(poolId);
+// const loadingApr = computed(
+//   () => aprQuery.isLoading.value || Boolean(aprQuery.error.value)
+// );
+// const poolApr = computed(() => aprQuery.data.value);
+// //#endregion
 
 //#region Intersection Observer
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
@@ -201,9 +200,7 @@ watch(
         />
         <PoolPageHeader
           v-else
-          :loadingApr="loadingApr"
           :pool="pool"
-          :poolApr="poolApr"
           :isStableLikePool="isStableLikePool"
           :titleTokens="titleTokens"
           :missingPrices="missingPrices"
@@ -229,9 +226,8 @@ watch(
           <div class="px-4 lg:px-0 mb-4">
             <PoolStatCards
               :pool="pool"
-              :poolApr="poolApr"
+              :poolApr="pool?.apr"
               :loading="loadingPool"
-              :loadingApr="loadingApr"
             />
             <ApyVisionPoolLink
               v-if="!loadingPool && pool"

@@ -14,7 +14,6 @@ import { includesAddress } from '@/lib/utils';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { AprBreakdown } from '@balancer-labs/sdk';
 import { useDisabledJoinPool } from '@/composables/useDisabledJoinPool';
 import { poolMetadata as getPoolMetadata } from '@/lib/config/metadata';
 
@@ -22,10 +21,8 @@ import { poolMetadata as getPoolMetadata } from '@/lib/config/metadata';
  * TYPES
  */
 type Props = {
-  loadingApr: boolean;
   isStableLikePool: boolean;
   pool: Pool;
-  poolApr?: AprBreakdown;
   titleTokens: PoolToken[];
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
@@ -35,10 +32,7 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {
-  loadingApr: true,
-  poolApr: undefined,
-});
+const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: 'setRestakeVisibility', value: boolean): void;
 }>();
@@ -171,12 +165,7 @@ function symbolFor(titleTokenIndex: number): string {
         </span>
       </div>
       <BalChipNew v-if="pool?.isNew" class="mt-2 mr-2" />
-      <APRTooltip
-        v-if="!loadingApr"
-        :pool="pool"
-        :poolApr="poolApr"
-        class="mt-1 -ml-1"
-      />
+      <APRTooltip :pool="pool" class="mt-1 -ml-1" />
       <BalLink
         :href="explorer.addressLink(pool?.address || '')"
         external

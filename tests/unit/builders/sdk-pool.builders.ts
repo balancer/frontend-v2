@@ -1,3 +1,4 @@
+import { GqlPoolApr } from '@/services/api/graphql/generated/api-types';
 import { AprBreakdown, Pool } from '@balancer-labs/sdk';
 
 // BAL 80% WETH 20% is the default pool used in builders
@@ -166,26 +167,53 @@ export const defaultSdkPool = {
   },
 };
 
-export function anAprBreakdown(
-  ...options: Partial<AprBreakdown>[]
-): AprBreakdown {
+export function anAprBreakdown(...options: Partial<GqlPoolApr>[]): GqlPoolApr {
   const defaultApr = {
-    swapFees: 0,
-    tokenAprs: {
-      total: 0,
-      breakdown: {},
+    hasRewardApr: true,
+    thirdPartyApr: {
+      total: '0.08558360249400643',
     },
-    stakingApr: {
-      min: 0,
-      max: 0,
+    nativeRewardApr: {
+      total: '0',
     },
-    rewardAprs: {
-      total: 0,
-      breakdown: {},
+    swapApr: '0.000003952142322349268',
+    apr: {
+      total: '0.09462763297124069',
     },
-    protocolApr: 0,
-    min: 0,
-    max: 0,
+    items: [
+      {
+        id: '0xe1f2c039a68a216de6dd427be6c60decf405762a00000000000000000000000e-MATIC-apr',
+        title: 'MATIC reward APR',
+        apr: {
+          total: '0.02919410998611265',
+        },
+        subItems: [],
+      },
+      {
+        id: '0xe1f2c039a68a216de6dd427be6c60decf405762a00000000000000000000000e-USDC-apr',
+        title: 'USDC reward APR',
+        apr: {
+          total: '0.05638949250789378',
+        },
+        subItems: [],
+      },
+      {
+        id: '0xe1f2c039a68a216de6dd427be6c60decf405762a00000000000000000000000e-swap-apr',
+        title: 'Swap fees APR',
+        apr: {
+          total: '0.000003952142322349268',
+        },
+        subItems: [],
+      },
+      {
+        id: '0xe1f2c039a68a216de6dd427be6c60decf405762a00000000000000000000000e-wstETH-yield-apr',
+        title: 'wstETH APR',
+        apr: {
+          total: '0.009040078334911906',
+        },
+        subItems: [],
+      },
+    ],
   };
   return Object.assign(defaultApr, ...options);
 }
