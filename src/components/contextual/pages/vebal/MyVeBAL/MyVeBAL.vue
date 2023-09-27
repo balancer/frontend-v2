@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 
 import { useLock } from '@/composables/useLock';
-import useWeb3 from '@/services/web3/useWeb3';
 
 import MyVeBalCards from './components/MyVeBalCards.vue';
 
@@ -17,16 +16,13 @@ const {
   lock,
   totalLockedValue,
 } = useLock();
-const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
  */
 
-const isLoading = computed(() =>
-  isWalletReady.value
-    ? isLoadingLockPool.value || isLoadingLockInfo.value
-    : false
+const isLoading = computed(
+  () => isLoadingLockPool.value || isLoadingLockInfo.value
 );
 </script>
 
@@ -35,7 +31,7 @@ const isLoading = computed(() =>
     {{ $t('veBAL.myVeBAL.title') }}
   </h3>
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
-    <template v-if="isLoading">
+    <template v-if="isLoading && !(lockPool && lockPoolToken)">
       <BalLoadingBlock v-for="n in 2" :key="n" class="h-24" />
     </template>
     <MyVeBalCards
