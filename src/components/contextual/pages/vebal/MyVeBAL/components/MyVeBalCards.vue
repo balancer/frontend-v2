@@ -70,15 +70,13 @@ const fiatTotalExpiredLpTokens = computed(() =>
 );
 
 const cards = computed(() => {
-  const hasExistingLock = props.veBalLockInfo?.hasExistingLock;
-
   return [
     {
       id: 'unlockedVeBAL',
       label: 'Unlocked ve8020 BAL/WETH',
       icon: unlock,
       iconBgColor: 'bg-yellow-100',
-      value: hasExistingLock ? fNum(bptBalance.value, FNumFormats.token) : '0',
+      value: fNum(bptBalance.value, FNumFormats.token),
       secondaryText: fNum(fiatTotal.value, FNumFormats.fiat),
     },
     {
