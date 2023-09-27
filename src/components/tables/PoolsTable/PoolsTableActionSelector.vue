@@ -59,7 +59,15 @@ function isActionDisabled(action: PoolAction) {
     PoolAction.Stake,
     PoolAction.MigrateGauge,
   ];
-  return isDeprecated && actionsToDisable.includes(action);
+
+  const isStakablePool =
+    POOLS.Stakable.VotingGaugePools.includes(props.pool.id) ||
+    POOLS.Stakable.AllowList.includes(props.pool.id);
+
+  return (
+    (isDeprecated && actionsToDisable.includes(action)) ||
+    (!isStakablePool && action === PoolAction.Stake)
+  );
 }
 
 const menuItems = computed(() => {

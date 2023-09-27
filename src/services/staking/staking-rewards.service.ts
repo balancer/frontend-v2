@@ -9,8 +9,7 @@ import { LiquidityGauge } from '../balancer/contracts/contracts/liquidity-gauge'
 import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { GaugeShare } from '@/composables/queries/useUserGaugeSharesQuery';
 import { UserBoosts } from '@/composables/queries/useUserBoostsQuery';
-import { networkId } from '@/composables/useNetwork';
-import { Network } from '@/lib/config/types';
+import { isVeBalSupported } from '@/composables/useVeBAL';
 
 export class StakingRewardsService {
   async getWorkingSupplyForGauges(gaugeAddresses: string[]) {
@@ -46,7 +45,7 @@ export class StakingRewardsService {
     );
 
     let veBALTotalSupply = '0';
-    if (networkId.value === Network.MAINNET) {
+    if (isVeBalSupported.value) {
       const lockInfo = await new BalancerContractsService().veBAL.getLockInfo(
         userAddress
       );

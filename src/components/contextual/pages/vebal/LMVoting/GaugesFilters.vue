@@ -32,7 +32,7 @@ const networkFiltersArr = ref([...props.activeNetworkFilters]);
  * otherwise activeFiltersNum would change only after 500ms debounce which lead to poor UX
  */
 const isExpiredFilterActive = ref(false);
-const activeNetworksArr = ref<number[]>([]);
+const activeNetworksArr = ref<number[]>(props.activeNetworkFilters);
 
 /**
  * COMPUTED

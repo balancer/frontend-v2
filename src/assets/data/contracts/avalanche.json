@@ -14,6 +14,8 @@
   "ChildChainGaugeTokenAdder": "0xf302f9F50958c5593770FDf4d4812309fF77414f",
   "ChildChainLiquidityGaugeFactory": "0xb08E16cFc07C684dAA2f93C70323BAdb2A6CBFd2",
   "ChildChainStreamer": "0xD7FAD3bd59D6477cbe1BE7f646F7f1BA25b230f8",
+  "ChildChainGaugeWorkingBalanceHelper": "0x687b8C9b41E01Be8B591725fac5d5f52D0564d79",
+  "ChildChainGaugeCheckpointer": "0x36caC20dd805d128c1a6Dd16eeA845C574b5A17C",
   "CircuitBreakerLib": "0x9129E834e15eA19b6069e8f08a8EcFc13686B8dC",
   "ComposableStablePoolFactory": "0x3B1eb8EB7b43882b385aB30533D9A2BeF9052a98",
   "DistributionScheduler": "0xC128a9954e6c874eA3d62ce62B468bA073093F25",
