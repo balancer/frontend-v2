@@ -265,18 +265,18 @@ function navigateToGetVeBAL() {
     <div class="hero-content">
       <div
         v-if="showVebalInfo"
-        class="flex flex-col lg:flex-row flex-grow gap-6 justify-between lg:items-center px-10 h-full text-white"
+        class="flex flex-col xl:flex-row flex-grow gap-6 justify-between xl:items-center px-10 h-full text-white"
       >
         <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
         <div v-else class="flex flex-col flex-1">
           <div class="mb-2 text-xl font-bold">My veBAL</div>
           <div class="mb-10 text-5xl font-black">
-            {{ Number(veBalBalance).toFixed(0) }}
+            {{ Number(veBalBalance).toFixed(2) }}
           </div>
 
-          <div class="flex flex-col mb-8">
+          <div class="flex flex-col gap-2 mb-8">
             <div v-for="item in vebalInfo" :key="item.value" class="flex">
-              <img class="mr-2" :src="item.icon" />
+              <img class="mr-2 w-6 h-6" :src="item.icon" />
               <span class="font-semibold">{{ item.value }} </span>
             </div>
           </div>
