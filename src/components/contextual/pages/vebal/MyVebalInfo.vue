@@ -25,7 +25,7 @@ type ChartValueAcc = (readonly [string, number])[];
 /**
  * COMPOSABLES
  */
-const { account, isWalletReady } = useWeb3();
+const { account, isWalletReady, isWalletDisconnected } = useWeb3();
 
 const { isLoadingLockPool, isLoadingLockInfo, lock } = useLock();
 const { fNum } = useNumbers();
@@ -43,19 +43,23 @@ const { isLoading: isLoadingLockBoard, data: userRankData } =
  */
 const showVebalInfo = computed(() => {
   const snapshots = userHistoricalLocks.value?.lockSnapshots;
+
+  if (isWalletDisconnected.value) return false;
+
   return (
     (isWalletReady.value && snapshots && snapshots.length > 0) ||
     isLoadingData.value
   );
 });
 
-const isLoadingData = computed(
-  () =>
+const isLoadingData = computed(() => {
+  return (
     isLoadingLockBoard.value ||
     isLoading.value ||
     isLoadingLockInfo.value ||
     isLoadingLockPool.value
-);
+  );
+});
 
 const lockedUntil = computed(() => {
   if (lock.value?.hasExistingLock && !lock.value.isExpired) {

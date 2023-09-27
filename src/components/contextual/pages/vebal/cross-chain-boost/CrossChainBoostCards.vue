@@ -106,18 +106,19 @@ function onCloseModal() {
       >
         {{ infoMessage.text }}
       </BalAlert>
+
+      <div
+        v-if="!isWalletReady || isVebalBalanceZero"
+        class="flex justify-center text-sm text-secondary"
+      >
+        {{ $t('crossChainBoost.emptyState') }}
+      </div>
     </template>
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
       <template v-if="isLoading || dynamicDataLoading">
         <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
       </template>
-      <div
-        v-else-if="!isWalletReady || isVebalBalanceZero"
-        class="text-sm text-secondary"
-      >
-        {{ $t('crossChainBoost.emptyState') }}
-      </div>
-      <template v-else>
+      <template v-else-if="isWalletReady && !isVebalBalanceZero">
         <BalCard>
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}
