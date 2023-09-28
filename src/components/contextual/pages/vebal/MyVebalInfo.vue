@@ -43,7 +43,14 @@ const { isLoading: isLoadingLockBoard, data: userRankData } =
  */
 const showVebalInfo = computed(() => {
   if (isWalletDisconnected.value) return false;
-  return isWalletReady.value || isLoadingData.value;
+
+  const hasVebalBalance = bnum(veBalBalance.value).isGreaterThan(0);
+  const hasHistoricalLocks = userHistoricalLocks.value?.lockSnapshots.length;
+
+  return (
+    (isWalletReady.value && (hasVebalBalance || hasHistoricalLocks)) ||
+    isLoadingData.value
+  );
 });
 
 const isLoadingData = computed(() => {
