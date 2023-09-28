@@ -1,8 +1,7 @@
 import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery from './useGraphQuery';
 import useNetwork from '../useNetwork';
-import config from '@/lib/config';
-import { Network } from '@/lib/config/types';
+import { configService } from '@/services/config/config.service';
 
 const attrs = {
   id: true,
@@ -33,7 +32,7 @@ export function useHistoricalLocksQuery(account: ComputedRef<string>) {
   const queryKey = QUERY_KEYS.Locks.Historical(networkId, account);
 
   return useGraphQuery<HistoricalLocksQueryResponse>(
-    config[Network.MAINNET].subgraphs.gauge,
+    configService.network.subgraphs.gauge,
     queryKey,
     () => ({
       __name: 'HistoricalLocks',

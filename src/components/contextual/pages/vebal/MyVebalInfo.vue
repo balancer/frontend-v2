@@ -42,14 +42,8 @@ const { isLoading: isLoadingLockBoard, data: userRankData } =
  * COMPUTED
  */
 const showVebalInfo = computed(() => {
-  const snapshots = userHistoricalLocks.value?.lockSnapshots;
-
   if (isWalletDisconnected.value) return false;
-
-  return (
-    (isWalletReady.value && snapshots && snapshots.length > 0) ||
-    isLoadingData.value
-  );
+  return isWalletReady.value || isLoadingData.value;
 });
 
 const isLoadingData = computed(() => {
@@ -302,7 +296,7 @@ function navigateToGetVeBAL() {
         <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />
 
         <div
-          v-else-if="lock?.hasExistingLock"
+          v-else-if="chartData.data[0].values.length > 0"
           class="p-5 w-full rounded-2xl flex-[1.5] chart-wrapper"
         >
           <BalChart
@@ -338,6 +332,10 @@ function navigateToGetVeBAL() {
             showTooltip
           />
         </div>
+        <BalBlankSlate v-else class="w-full h-96 flex-[1.5]" align="center">
+          <BalIcon name="bar-chart" />
+          {{ $t('insufficientData') }}
+        </BalBlankSlate>
       </div>
 
       <VeBALMarketingHeader v-else />
