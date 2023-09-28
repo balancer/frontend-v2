@@ -36,7 +36,7 @@ const bgClass = computed(() => {
   if (darkMode.value) {
     return props.darker ? 'shimmer-dark-mode-darker' : 'shimmer-dark-mode';
   }
-  return props.darker ? 'shimmer-light-mode-darker' : 'shimmer-light-mode';
+  return props.darker ? 'shimmer-dark-mode' : 'shimmer-light-mode';
 });
 
 const classes = computed(() => {
