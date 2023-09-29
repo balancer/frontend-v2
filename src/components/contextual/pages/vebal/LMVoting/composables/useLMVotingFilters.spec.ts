@@ -93,7 +93,10 @@ it('filters by token symbol', async () => {
 });
 
 it('calculates networkFilters', async () => {
-  const { networkFilters } = await mountLmVotingFilters([], expiredGauges);
+  const { networkFilters } = await mountLmVotingFilters(
+    computed(() => []),
+    expiredGauges
+  );
 
   expect(networkFilters).toEqual([1, 10, 100, 137, 1101, 8453, 42161, 43114]);
 });
