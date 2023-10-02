@@ -56,7 +56,7 @@ const { veBalLockTooShort, veBalExpired, hasLock, hasExpiredLock } =
 
 const { shouldResubmitVotes } = useVotingEscrowLocks();
 const { networkSlug } = useNetwork();
-const { isWalletReady } = useWeb3();
+const { isWalletReady, isMismatchedNetwork } = useWeb3();
 
 const { hasVeBalBalance, noVeBalBalance } = useVeBal();
 const { fNum } = useNumbers();
@@ -120,7 +120,10 @@ const selectVotesDisabled = computed(
 );
 
 const votingDisabled = computed(
-  () => selectVotesDisabled.value || unlockedSelectedPools.value.length === 0
+  () =>
+    selectVotesDisabled.value ||
+    unlockedSelectedPools.value.length === 0 ||
+    isMismatchedNetwork.value
 );
 
 /**
