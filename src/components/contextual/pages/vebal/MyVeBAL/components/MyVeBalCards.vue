@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { differenceInDays, format } from 'date-fns';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import lock from '@/assets/images/icons/lock.svg';
+import unlock from '@/assets/images/icons/unlock.svg';
 
-import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useTokens } from '@/providers/tokens.provider';
@@ -42,8 +41,7 @@ const showUnlockPreviewModal = ref(false);
  */
 const { balanceFor } = useTokens();
 const { fNum } = useNumbers();
-const { veBalBalance, lockablePoolId } = useVeBal();
-const { t } = useI18n();
+const { lockablePoolId } = useVeBal();
 const { isWalletReady } = useWeb3();
 const { networkSlug } = useNetwork();
 
@@ -60,14 +58,6 @@ const fiatTotal = computed(() =>
   poolShares.value.times(bptBalance.value).toString()
 );
 
-const lockedUntil = computed(() => {
-  if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
-    return format(props.veBalLockInfo.lockedEndDate, PRETTY_DATE_FORMAT);
-  }
-
-  return '—';
-});
-
 const totalExpiredLpTokens = computed(() =>
   props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0'
 );
@@ -80,73 +70,23 @@ const fiatTotalExpiredLpTokens = computed(() =>
 );
 
 const cards = computed(() => {
-  const hasExistingLock = props.veBalLockInfo?.hasExistingLock;
-  const isExpired = props.veBalLockInfo?.isExpired;
-
   return [
     {
-      id: 'myLpToken',
-      label: t('veBAL.myVeBAL.cards.myLpToken.label'),
-      value: isWalletReady.value
-        ? fNum(fiatTotal.value, FNumFormats.fiat)
-        : '—',
-      secondaryText: isWalletReady.value
-        ? fNum(bptBalance.value, FNumFormats.token)
-        : '—',
-      showPlusIcon: isWalletReady.value ? true : false,
-      plusIconTo: {
-        name: 'add-liquidity',
-        params: { id: lockablePoolId.value, networkSlug },
-        query: { returnRoute: 'vebal' },
-      },
+      id: 'unlockedVeBAL',
+      label: 'Unlocked ve8020 BAL/WETH',
+      icon: unlock,
+      iconBgColor: 'bg-yellow-100',
+      value: fNum(bptBalance.value, FNumFormats.token),
+      secondaryText: fNum(fiatTotal.value, FNumFormats.fiat),
     },
     {
-      id: 'myLockedLpToken',
-      label: t('veBAL.myVeBAL.cards.myLockedLpToken.label'),
-      value: isWalletReady.value
-        ? fNum(props.totalLockedValue, FNumFormats.fiat)
-        : '—',
-      secondaryText: isWalletReady.value
-        ? fNum(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token)
-        : '—',
-      showPlusIcon: isWalletReady.value && !isExpired ? true : false,
-      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
-      showUnlockIcon: isExpired ? true : false,
-    },
-    {
-      id: 'lockedEndDate',
-      label: t('veBAL.myVeBAL.cards.lockedEndDate.label'),
-      value: lockedUntil.value,
-      secondaryText:
-        hasExistingLock && !isExpired
-          ? t('veBAL.myVeBAL.cards.lockedEndDate.secondaryText', [
-              differenceInDays(new Date(lockedUntil.value), new Date()),
-            ])
-          : '-',
-      showPlusIcon: hasExistingLock && !isExpired ? true : false,
-      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
-    },
-    {
-      id: 'myVeBAL',
-      label: t('veBAL.myVeBAL.cards.myVeBAL.label'),
-      secondaryText:
-        props.veBalLockInfo && hasExistingLock && !isExpired
-          ? t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
-              fNum(
-                bnum(veBalBalance.value)
-                  .div(props.veBalLockInfo.totalSupply)
-                  .toString(),
-                {
-                  style: 'percent',
-                  maximumFractionDigits: 4,
-                }
-              ),
-            ])
-          : '-',
-      showPlusIcon: false,
-      value: hasExistingLock
-        ? fNum(veBalBalance.value, FNumFormats.token)
-        : '—',
+      id: 'lockedVeBAL',
+      label: 'Locked ve8020 BAL/WETH',
+      icon: lock,
+      iconBgColor: 'bg-green-50',
+      value: fNum(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token),
+      secondaryText: fNum(props.totalLockedValue, FNumFormats.fiat),
+      showUnlockIcon: Boolean(props.veBalLockInfo?.isExpired),
     },
   ];
 });
@@ -154,11 +94,21 @@ const cards = computed(() => {
 
 <template>
   <BalCard v-for="card in cards" :key="card.id">
-    <div class="font-medium label">
-      {{ card.label }}
+    <div class="flex justify-between items-center">
+      <div class="font-bold label">
+        {{ card.label }}
+      </div>
+      <div
+        :class="[
+          card.iconBgColor,
+          'flex items-center p-3 rounded-full justifty center bg-red',
+        ]"
+      >
+        <img :src="card.icon" alt="card.label" />
+      </div>
     </div>
     <div class="value" :class="card.id">
-      <div v-if="card.id === 'myLockedLpToken'">
+      <div v-if="card.id === 'lockedVeBAL'">
         <span
           :class="{ 'text-red-500': bnum(totalExpiredLpTokens).gt(0) }"
           class="mr-1 font-semibold truncate"
@@ -168,38 +118,71 @@ const cards = computed(() => {
           v-if="bnum(totalExpiredLpTokens).gt(0)"
           :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
           iconSize="sm"
-          :iconName="'alert-triangle'"
+          iconName="alert-triangle"
           :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
         />
       </div>
       <div v-else>
-        <span class="font-semibold truncate">{{ card.value }}</span>
-      </div>
-      <div class="flex items-center">
-        <BalIcon
-          v-if="card.showUnlockIcon"
-          name="minus-circle"
-          class="mr-2 transition-all cursor-pointer minus-circle"
-          @click="showUnlockPreviewModal = true"
-        />
-        <div>
-          <router-link
-            v-if="card.showPlusIcon && card.plusIconTo"
-            :to="card.plusIconTo"
-            class="flex items-center text-blue-600 dark:text-blue-400"
-          >
-            <BalIcon
-              name="plus-circle"
-              class="transition-all cursor-pointer plus-circle"
-            />
-          </router-link>
-        </div>
+        <span class="text-xl font-bold truncate">{{ card.value }}</span>
       </div>
     </div>
-    <div class="font-medium secondary-value text-secondary">
+    <div class="mb-3 secondary-value text-secondary">
       {{ card.secondaryText }}
+    </div>
+
+    <div class="flex">
+      <template v-if="card.id === 'unlockedVeBAL'">
+        <BalBtn
+          color="blue"
+          outline
+          class="mr-3"
+          @click="
+            $router.push({
+              name: 'add-liquidity',
+              params: { id: lockablePoolId, networkSlug },
+              query: { returnRoute: 'vebal' },
+            })
+          "
+        >
+          {{ $t('addLiquidity') }}
+        </BalBtn>
+        <BalBtn
+          color="blue"
+          outline
+          :disabled="Number(bptBalance) === 0"
+          @click="
+            $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
+          "
+        >
+          Lock for veBAL
+        </BalBtn>
+      </template>
+
+      <template v-if="card.id === 'lockedVeBAL'">
+        <BalBtn
+          v-if="bnum(totalExpiredLpTokens).gt(0)"
+          :disabled="!isWalletReady"
+          color="blue"
+          outline
+          @click="showUnlockPreviewModal = true"
+        >
+          Unlock
+        </BalBtn>
+        <BalBtn
+          v-else
+          :disabled="!isWalletReady"
+          color="blue"
+          outline
+          class="mr-3"
+          @click="
+            $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
+          "
+        >
+          Extend lock
+        </BalBtn>
+      </template>
     </div>
   </BalCard>
   <teleport to="#modal">

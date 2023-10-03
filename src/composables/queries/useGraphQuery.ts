@@ -16,7 +16,8 @@ export default function useGraphQuery<T>(
   key: QueryKey,
   query: () => Record<any, any>,
   options: UseQueryOptions<T> = {},
-  shouldUseSubgraphFallbackUrl?: boolean
+  shouldUseSubgraphFallbackUrl?: boolean,
+  headers = {}
 ) {
   const queryKey = reactive([
     // for our query key style, initial are the string
@@ -46,9 +47,13 @@ export default function useGraphQuery<T>(
       }
       const {
         data: { data },
-      } = await axios.post(subgraphUrl, {
-        query: jsonToGraphQLQuery({ query: query() }),
-      });
+      } = await axios.post(
+        subgraphUrl,
+        {
+          query: jsonToGraphQLQuery({ query: query() }),
+        },
+        { headers }
+      );
 
       return data;
     } catch (error) {

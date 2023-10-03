@@ -22,6 +22,8 @@ type AxisMoveEvent = {
 type ChartData = {
   name: string;
   values: (readonly [string, number])[];
+  hoverColor?: string;
+  hoverBorderColor?: string;
 };
 
 type AxisLabelFormat = {
@@ -36,6 +38,7 @@ type AreaStyle = {
 type Props = {
   data: ChartData[];
   chartType: string;
+  lineStyles?: any[];
   onAxisMoved?: undefined | ((value: readonly [string, number]) => void);
   isLoading?: boolean;
   hideYAxis?: boolean;
@@ -59,6 +62,9 @@ type Props = {
   showTooltipLayer?: boolean; // hides tooltip floating layer
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
   areaStyle?: AreaStyle;
+  symbolSize?: number;
+  reverseParams?: boolean;
+  paramsLabel?: string;
 };
 
 const emit = defineEmits([
@@ -80,6 +86,7 @@ const props = withDefaults(defineProps<Props>(), {
   showTooltip: true,
   showTooltipLayer: true,
   useMinMax: false,
+  symbolSize: 5,
 });
 
 const chartInstance = ref<echarts.ECharts>();
@@ -191,16 +198,31 @@ const chartConfig = computed(() => ({
       ? tailwind.theme.colors.gray['900']
       : tailwind.theme.colors.white,
     formatter: params => {
+      let processedParams = params;
+
+      // if veBAL, reverse the order of the params to meet the design requirements
+      if (props.reverseParams) {
+        processedParams = [...params.reverse()];
+        // filter equal values in same date
+        processedParams = processedParams.filter((param, index) => {
+          if (index === 0) return true;
+          return param.value[1] !== processedParams[index - 1].value[1];
+        });
+      }
+
       return `
             <div class='flex flex-col font-body bg-white dark:bg-gray-850 dark:text-white'>
               <span>${params[0].value[0]}</span>
-              ${params
+              ${processedParams
                 .map(
                   param => `
                     <span>
                       ${param.marker} ${param.seriesName}
                       <span class='font-semibold'>
-                        ${fNum(param.value[1], props.axisLabelFormatter.yAxis)}
+                        ${fNum(
+                          param.value[1],
+                          props.axisLabelFormatter.yAxis
+                        )} ${props.paramsLabel || ''}
                       </span>
                     </span>
                   `
@@ -222,6 +244,7 @@ const chartConfig = computed(() => ({
     },
     lineStyle: {
       width: 2,
+      ...props.lineStyles?.[i],
     },
     areaStyle: props.areaStyle,
     itemStyle: {
@@ -229,10 +252,11 @@ const chartConfig = computed(() => ({
     },
     emphasis: {
       itemStyle: {
-        color: props.hoverColor,
-        borderColor: props.hoverBorderColor,
+        color: d.hoverColor || props.hoverColor,
+        borderColor: d.hoverBorderColor || props.hoverBorderColor,
       },
     },
+    symbolSize: props.symbolSize,
     // This is a retrofitted option to show the small pill with the
     // latest value of the series at the end of the line on the RHS
     // the line is hidden, but the label is shown with extra styles

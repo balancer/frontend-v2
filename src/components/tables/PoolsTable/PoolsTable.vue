@@ -413,8 +413,7 @@ function goToPoolPage(id: string) {
             },
           ]"
         >
-          <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
-          <span v-else-if="shouldHideAprs(pool.id)">-</span>
+          <span v-if="!pool?.apr || shouldHideAprs(pool.id)">-</span>
           <template v-else>
             {{ aprLabelFor(pool) }}
             <BalTooltip
