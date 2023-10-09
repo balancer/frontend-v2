@@ -115,11 +115,6 @@ const pools: Pools = {
     '0x054e7b0c73e1ee5aed6864fa511658fc2b54bcaa000000000000000000000015': {
       name: 'ggAVAX/Boosted Aave v3 WAVAX',
       hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Aave],
-        },
-      },
     },
     '0x3f1a2c4a3a751f6626bd90ef16e104f0772d4d6b00020000000000000000001b': {
       name: 'BTC.b/Boosted Aave V3 USD',
@@ -177,6 +172,9 @@ const pools: Pools = {
   },
   Issues: {
     [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.AVALANCHE],
+    [PoolWarning.PoolProtocolFeeVulnWarning]: [
+      '0x054e7b0c73e1ee5aed6864fa511658fc2b54bcaa000000000000000000000015',
+    ],
   },
 };
 
