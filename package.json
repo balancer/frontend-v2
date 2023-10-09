@@ -126,7 +126,7 @@
     "nprogress": "^0.2.0",
     "numeral": "^2.0.4",
     "parse-filepath": "1.0.2",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.31",
     "postcss-comment": "^2.0.0",
     "prettier": "^2.7.1",
     "promise-worker": "^2.0.1",
