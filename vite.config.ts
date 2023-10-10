@@ -152,6 +152,19 @@ export default defineConfig(({ mode }) => {
           'src/components/_global/BalBtn/button-options.js',
         ],
       },
+      output: {
+        manualChunks(id) {
+          // Create one different chunk for each node_module
+          if (id.includes('node_modules')) {
+            const chunkId = id
+              .toString()
+              .split('node_modules/')[1]
+              .split('/')[0]
+              .toString();
+            return chunkId;
+          }
+        },
+      },
     },
     test: {
       globals: true,
