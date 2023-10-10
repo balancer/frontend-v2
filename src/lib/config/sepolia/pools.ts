@@ -30,6 +30,7 @@ const pools: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
+    'Managed',
   ],
   Stable: {
     AllowList: [],
