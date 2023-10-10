@@ -140,8 +140,23 @@ export default defineConfig(({ mode }) => {
           // https://stackoverflow.com/a/72440811/10752354
           rollupPolyfillNode(),
         ],
+        output: {
+          manualChunks(id) {
+            // Create one different chunk for each node_module
+            if (id.includes('node_modules')) {
+              const chunkName = id
+                .toString()
+                .split('node_modules/')[1]
+                .split('/')[0]
+                .toString();
+              return chunkName;
+            }
+          },
+          // Merge small chunks to avoid too many tiny chunks
+          experimentalMinChunkSize: 1,
+        },
       },
-      chunkSizeWarningLimit: 900,
+      chunkSizeWarningLimit: 1000,
       commonjsOptions: {
         // Allows to import tailwind.config.js from useTailwind.ts
         // Check: https://github.com/tailwindlabs/tailwindcss.com/issues/765
