@@ -15,6 +15,7 @@ import viteSentry from 'vite-plugin-sentry';
 import analyze from 'rollup-plugin-analyzer';
 import { visualizer } from 'rollup-plugin-visualizer';
 import viteImagemin from 'vite-plugin-imagemin';
+import { splitVendorChunkPlugin } from 'vite';
 
 export default defineConfig(({ mode }) => {
   const envConfig = loadEnv(mode, process.cwd());
@@ -51,6 +52,7 @@ export default defineConfig(({ mode }) => {
         './src/locales/**'
       ),
     }),
+    splitVendorChunkPlugin(),
     viteImagemin({}),
   ];
 
@@ -142,15 +144,7 @@ export default defineConfig(({ mode }) => {
         ],
         output: {
           manualChunks(id) {
-            // Create one different chunk for each node_module
-            if (id.includes('node_modules')) {
-              const chunkName = id
-                .toString()
-                .split('node_modules/')[1]
-                .split('/')[0]
-                .toString();
-              return chunkName;
-            }
+            return splitManualChunks(id);
           },
           // Merge small chunks to avoid too many tiny chunks
           experimentalMinChunkSize: 1,
@@ -183,3 +177,44 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
+
+// By default we use splitVendorChunkPlugin to split the chunks and then we manually improve the chunks with the following code
+function splitManualChunks(id) {
+  // Create individual chunks for big dependencies inside node_modules
+  if (id.includes('node_modules')) {
+    const bigDependencies = [
+      '@balancer-labs',
+      'lodash',
+      '@ethersproject',
+      '@sentry',
+      'bignumber',
+      '@intlify',
+      '@vue',
+      'tr46',
+      'axios',
+      'graphql',
+      'tailwindcss',
+      '@tanstack',
+      'pako/lib',
+      'asn1',
+      'elliptic',
+      'crypto-es',
+      'whatwg-url',
+      'readable-stream',
+    ];
+
+    if (bigDependencies.find(dependency => id.includes(dependency))) {
+      const chunkName = id
+        .toString()
+        .split('node_modules/')[1]
+        .split('/')[0]
+        .toString();
+      return chunkName;
+    }
+  }
+  // Group small dependencies together to avoid too many chunks
+  const groupedChunks = ['BalCircle', 'BalChip'];
+  if (groupedChunks.find(dependency => id.includes(dependency))) {
+    return 'BalCircle&BalChip';
+  }
+}
