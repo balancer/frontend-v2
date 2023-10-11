@@ -30,10 +30,19 @@ function connectWalletHandler() {
   trackGoal(Goals.ClickNavConnectWallet);
   startConnectWithInjectedProvider();
 }
+
+function triggerFeedback() {
+  if (window?.appzi) {
+    window?.appzi.openSurvey('31fe06ac-fd51-41fc-9e0d-8f0af4d4a515');
+  }
+}
 </script>
 
 <template>
-  <div class="grid grid-rows-1 grid-flow-col gap-2">
+  <div class="grid grid-rows-1 grid-flow-col gap-2 items-center">
+    <BalLink v-if="isDesktop" class="mr-2" @click="triggerFeedback"
+      >Share feedback</BalLink
+    >
     <DarkModeToggle v-if="isDesktop" />
     <AppNavActivityBtn v-if="account" />
     <AppNavAccountBtn v-if="account" />
