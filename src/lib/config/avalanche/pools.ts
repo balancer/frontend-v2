@@ -1,6 +1,5 @@
-import { Protocol } from '@/composables/useProtocols';
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
-import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
 
 const pools: Pools = {
@@ -86,53 +85,7 @@ const pools: Pools = {
       '0x670734d704eb7ef424d75321670f921fbf42e9cf000000000000000000000016',
     ],
   },
-  Metadata: {
-    '0xa1d14d922a575232066520eda11e27760946c991000000000000000000000012': {
-      name: 'Balancer Boosted Aave v3 USD',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Aave],
-        },
-      },
-    },
-    '0xa154009870e9b6431305f19b09f9cfd7284d4e7a000000000000000000000013': {
-      name: 'sAVAX/Boosted Aave v3 WAVAX',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Aave],
-        },
-      },
-    },
-    '0xece571847897fd61e764d455dc15cf1cd9de8d6f000000000000000000000014': {
-      name: 'yyAVAX/Boosted Aave v3 WAVAX',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Aave],
-        },
-      },
-    },
-    '0x054e7b0c73e1ee5aed6864fa511658fc2b54bcaa000000000000000000000015': {
-      name: 'ggAVAX/Boosted Aave v3 WAVAX',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Aave],
-        },
-      },
-    },
-    '0x3f1a2c4a3a751f6626bd90ef16e104f0772d4d6b00020000000000000000001b': {
-      name: 'BTC.b/Boosted Aave V3 USD',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Aave],
-        },
-      },
-    },
-  },
+  Metadata: {},
   Deep: [
     '0xa1d14d922a575232066520eda11e27760946c991000000000000000000000012', // Boosted Aave v3 USD
     '0xa154009870e9b6431305f19b09f9cfd7284d4e7a000000000000000000000013', // sAVAX/Boosted Aave v3 WAVAX

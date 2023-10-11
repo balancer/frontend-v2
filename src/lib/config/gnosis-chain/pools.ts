@@ -1,6 +1,5 @@
-import { Protocol } from '@/composables/useProtocols';
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
-import { PoolFeature, PoolWarning, Pools } from '@/types/pools';
+import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
 
 const pools: Pools = {
@@ -102,44 +101,7 @@ const pools: Pools = {
     ],
     AllowList: [],
   },
-  Metadata: {
-    '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010': {
-      name: 'Balancer Boosted Agave USD',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Agave],
-        },
-      },
-    },
-    '0x4de21b365d6543661d0e105e579a34b963862497000200000000000000000045': {
-      name: 'Balancer Boosted Agave GNO/USD',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Agave],
-        },
-      },
-    },
-    '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000200000000000000000012': {
-      name: 'Balancer Boosted Agave GNO/WETH',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Agave],
-        },
-      },
-    },
-    '0xba1a5b19d09a79dada039b1f974015c5a989d5fd000100000000000000000046': {
-      name: 'Balancer Boosted Agave WETH/WBTC/USD',
-      hasIcon: false,
-      features: {
-        [PoolFeature.Boosted]: {
-          featureProtocols: [Protocol.Agave],
-        },
-      },
-    },
-  },
+  Metadata: {},
   Deep: [
     '0xfedb19ec000d38d92af4b21436870f115db22725000000000000000000000010', // agave stable
     '0x66f33ae36dd80327744207a48122f874634b3ada000100000000000000000013', // agave tricrypto
