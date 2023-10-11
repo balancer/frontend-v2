@@ -52,7 +52,7 @@ const yieldBreakdownItems = computed((): [string, number][] =>
         class="text-gray-500"
       >
         <span class="ml-2">
-          {{ yieldAPRTokens[getAddress(address)].symbol }} {{ $t('apr') }}
+          {{ yieldAPRTokens[getAddress(address)]?.symbol }} {{ $t('apr') }}
         </span>
         {{ fNum(amount, FNumFormats.bp) }}
       </BalHStack>
