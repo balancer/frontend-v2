@@ -182,26 +182,7 @@ export default defineConfig(({ mode }) => {
 function splitManualChunks(id) {
   // Create individual chunks for big dependencies inside node_modules
   if (id.includes('node_modules')) {
-    const bigDependencies = [
-      '@balancer-labs',
-      'lodash',
-      '@ethersproject',
-      '@sentry',
-      'bignumber',
-      '@intlify',
-      '@vue',
-      'tr46',
-      'axios',
-      'graphql',
-      'tailwindcss',
-      '@tanstack',
-      'pako/lib',
-      'asn1',
-      'elliptic',
-      'crypto-es',
-      'whatwg-url',
-      'readable-stream',
-    ];
+    const bigDependencies = ['echarts', '@sentry', 'vue-echarts', 'lodash'];
 
     if (bigDependencies.find(dependency => id.includes(dependency))) {
       const chunkName = id
@@ -212,9 +193,9 @@ function splitManualChunks(id) {
       return chunkName;
     }
   }
-  // Group small dependencies together to avoid too many chunks
-  const groupedChunks = ['BalCircle', 'BalChip'];
-  if (groupedChunks.find(dependency => id.includes(dependency))) {
-    return 'BalCircle&BalChip';
-  }
+  // // Group small dependencies together to avoid too many chunks
+  // const groupedChunks = ['BalTable', 'BalChip'];
+  // if (groupedChunks.find(dependency => id.includes(dependency))) {
+  //   return 'BalTable&BalChip';
+  // }
 }
