@@ -6,7 +6,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useTokens } from '@/providers/tokens.provider';
-import { hasBalEmissions, hasStakingRewards } from '@/composables/useAPR';
+import { hasBalEmissions } from '@/composables/useAPR';
 
 /**
  * TYPES
@@ -109,36 +109,36 @@ const breakdownItems = computed((): Array<any> => {
 
 <template>
   <div data-testid="staking-apr">
-    <div v-if="hasBoost">
-      <div class="flex items-center">
-        {{ boostedTotalAPR }}
-        <span class="ml-1 text-secondarytext-xs">
+    <template v-if="hasBoost">
+      <BalHStack justify="between" class="font-bold">
+        <span>
           {{ $t('staking.stakingApr') }}
         </span>
-      </div>
-    </div>
+        {{ boostedTotalAPR }}
+      </BalHStack>
+    </template>
     <template v-else>
-      <BalBreakdown
-        v-if="hasBalEmissions(apr) || hasStakingRewards(apr)"
-        :items="breakdownItems"
-      >
-        <div class="flex items-center">
-          {{ unboostedTotalAPR }}
-          <span class="ml-1 text-xs text-secondary">
-            {{
-              isMinMaxSame
-                ? $t('staking.stakingApr')
-                : $t('staking.minimumStakingApr')
-            }}
-          </span>
-        </div>
-        <template #item="{ item: [label, amount] }">
+      <BalHStack justify="between" class="font-bold">
+        <span>
+          {{
+            isMinMaxSame
+              ? $t('staking.stakingApr')
+              : $t('staking.minimumStakingApr')
+          }}
+        </span>
+        {{ unboostedTotalAPR }}
+      </BalHStack>
+      <BalVStack spacing="xs" class="mt-1">
+        <BalHStack
+          v-for="([label, amount], i) in breakdownItems"
+          :key="i"
+          justify="between"
+          class="text-gray-500"
+        >
+          <span class="ml-2">{{ label }} {{ $t('apr') }} </span>
           {{ fNum(amount, FNumFormats.bp) }}
-          <span class="ml-1 text-xs capitalize text-secondary">
-            {{ label }} {{ $t('apr') }}
-          </span>
-        </template>
-      </BalBreakdown>
+        </BalHStack>
+      </BalVStack>
     </template>
   </div>
 </template>

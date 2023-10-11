@@ -38,6 +38,7 @@ import { poolMetadata } from '@/lib/config/metadata';
 import PoolsTableExtraInfo from './PoolsTableExtraInfo.vue';
 import PoolsTableActionSelector from './PoolsTableActionSelector.vue';
 import { PoolAction } from '@/components/contextual/pages/pools/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -102,6 +103,7 @@ const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug } = useNetwork();
+const { isWalletReady } = useWeb3();
 
 const wideCompositionWidth = computed(() => {
   if (upToSmallBreakpoint.value) return 250;
@@ -271,7 +273,7 @@ function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, boostFor(pool));
+  return totalAprLabel(poolAPRs, boostFor(pool), isWalletReady.value);
 }
 
 function lockedUntil(lockEndDate?: number) {

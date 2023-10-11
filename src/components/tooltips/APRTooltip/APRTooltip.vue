@@ -12,6 +12,7 @@ import VeBalBreakdown from './components/VeBalBreakdown.vue';
 import YieldBreakdown from './components/YieldBreakdown.vue';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { hasStakingRewards } from '@/composables/useAPR';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -30,6 +31,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum } = useNumbers();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -48,12 +50,14 @@ const hasYieldAPR = computed(() => {
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
 
 const totalLabel = computed((): string =>
-  apr.value ? totalAprLabel(apr.value, props.pool.boost) : '0'
+  apr.value
+    ? totalAprLabel(apr.value, props.pool.boost, isWalletReady.value)
+    : '0'
 );
 </script>
 
 <template v-slot:aprCell="pool">
-  <BalTooltip v-if="validAPR" width="auto" noPad>
+  <BalTooltip v-if="validAPR" width="64" noPad>
     <template #activator>
       <div class="ml-1">
         <StarsIcon
@@ -84,29 +88,32 @@ const totalLabel = computed((): string =>
         </div>
       </div>
       <div class="p-3 text-left">
-        <!-- SWAP FEE APR -->
-        <div
-          class="flex items-center mb-1 whitespace-nowrap"
-          data-testid="swap-fee-apr"
-        >
-          {{ fNum(apr?.swapFees || '0', FNumFormats.bp) }}
-          <span class="ml-1 text-xs text-secondary">
-            {{ $t('swapFeeAPR') }}
-          </span>
-        </div>
-
         <!-- VeBal APR -->
-        <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.protocolApr || 0" />
+        <VeBalBreakdown
+          v-if="hasVebalAPR"
+          :apr="apr?.protocolApr || 0"
+          class="mb-3"
+        />
+
+        <!-- STAKING APR BREAKDOWN -->
+        <StakingBreakdown :pool="pool" :poolApr="apr" class="mb-3" />
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
           v-if="apr?.tokenAprs && hasYieldAPR"
           :yieldAPR="apr?.tokenAprs"
           :pool="pool"
+          class="mb-3"
         />
 
-        <!-- STAKING APR BREAKDOWN -->
-        <StakingBreakdown :pool="pool" :poolApr="apr" />
+        <!-- SWAP FEE APR -->
+        <div
+          class="flex justify-between items-center mb-1 text-sm font-bold whitespace-nowrap"
+          data-testid="swap-fee-apr"
+        >
+          <span>{{ $t('swapFeeAPR') }}</span>
+          {{ fNum(apr?.swapFees || '0', FNumFormats.bp) }}
+        </div>
       </div>
     </div>
   </BalTooltip>
