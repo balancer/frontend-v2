@@ -50,6 +50,13 @@ const hasRewardTokens = computed((): boolean =>
   bnum(rewardTokensAPR.value).gt(0)
 );
 
+const realMinAPR = computed((): number =>
+  bnum(minBalAPR.value).plus(rewardTokensAPR.value).toNumber()
+);
+const realMaxAPR = computed((): number =>
+  bnum(maxBalAPR.value).plus(rewardTokensAPR.value).toNumber()
+);
+
 /**
  * @summary The total APR if we have the user's boost.
  */
@@ -66,15 +73,14 @@ const boostedTotalAPR = computed((): string => {
   return fNum(rewardTokensAPR.value, FNumFormats.bp);
 });
 
-/**
- * @summary The total APR if we have don't have the user's boost.
- */
-const unboostedTotalAPR = computed((): string =>
-  fNum(
-    bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
+const stakingAprRange = computed(() => {
+  if (isMinMaxSame.value) return fNum(realMinAPR.value, FNumFormats.bp);
+
+  return `${fNum(realMinAPR.value, FNumFormats.bp)} - ${fNum(
+    realMaxAPR.value,
     FNumFormats.bp
-  )
-);
+  )}`;
+});
 
 const breakdownItems = computed((): Array<any> => {
   const items: Array<any> = [];
@@ -111,22 +117,14 @@ const breakdownItems = computed((): Array<any> => {
   <div data-testid="staking-apr">
     <template v-if="hasBoost">
       <BalHStack justify="between" class="font-bold">
-        <span>
-          {{ $t('staking.stakingApr') }}
-        </span>
+        <span>Staking APR</span>
         {{ boostedTotalAPR }}
       </BalHStack>
     </template>
     <template v-else>
       <BalHStack justify="between" class="font-bold">
-        <span>
-          {{
-            isMinMaxSame
-              ? $t('staking.stakingApr')
-              : $t('staking.minimumStakingApr')
-          }}
-        </span>
-        {{ unboostedTotalAPR }}
+        <span>Staking APR</span>
+        {{ stakingAprRange }}
       </BalHStack>
       <BalVStack spacing="xs" class="mt-1">
         <BalHStack

@@ -104,7 +104,7 @@ describe('APRTooltip', () => {
         'Swap fees APR 0.00%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
-        'Min staking APR 0.44%'
+        'Staking APR 0.44% - 5.67%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
         'Min BAL APR 0.44%'
@@ -138,7 +138,7 @@ describe('APRTooltip', () => {
         'Swap fees APR 2.23%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
-        'Min staking APR 0.48%'
+        'Staking APR 0.48% - 5.55%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
         'Min BAL APR 0.48%'
@@ -272,7 +272,7 @@ describe('APRTooltip', () => {
       expect(yieldAprBreakdown.textContent).toContain('bb-a-USDC APR 0.04%');
       expect(yieldAprBreakdown.textContent).toContain('bb-a-DAI APR 0.12%');
       expect(getByTestId('staking-apr').textContent).toContain(
-        'Min staking APR 0.30%'
+        'Staking APR 0.30% - 0.75%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
         'Min BAL APR 0.30%'
@@ -311,7 +311,7 @@ describe('APRTooltip', () => {
         'Boosted APR 0.28%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
-        'Min staking APR 5.67%'
+        'Staking APR 5.67% - 14.18%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
         'Min BAL APR 5.67%'
@@ -377,7 +377,7 @@ describe('APRTooltip', () => {
         'Swap fees APR 0.00%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
-        'Min staking APR 1.67%'
+        'Staking APR 1.67% - 6.45%'
       );
       expect(getByTestId('staking-apr').textContent).toContain(
         'Min BAL APR 0.44%'

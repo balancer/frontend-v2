@@ -15,7 +15,6 @@ export function initDependenciesWithDefaultMocks() {
   initBalancerApiWithDefaultMocks();
   initBalancerSdkWithDefaultMocks();
   initRpcProviderServiceWithDefaultMocks();
-  //@ts-ignore
   initOldMulticallerWithDefaultMocks();
   initMulticallerWithDefaultMocks();
   initEthersContractWithDefaultMocks();
