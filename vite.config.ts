@@ -142,14 +142,8 @@ export default defineConfig(({ mode }) => {
         ],
         output: {
           manualChunks(id) {
-            // Create one different chunk for each node_module
             if (id.includes('node_modules')) {
-              const chunkName = id
-                .toString()
-                .split('node_modules/')[1]
-                .split('/')[0]
-                .toString();
-              return chunkName;
+              return 'vendor';
             }
           },
           // Merge small chunks to avoid too many tiny chunks
