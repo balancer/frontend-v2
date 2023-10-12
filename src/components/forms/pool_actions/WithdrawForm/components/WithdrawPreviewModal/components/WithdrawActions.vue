@@ -19,6 +19,8 @@ import { TransactionActionInfo } from '@/types/transactions';
 import router from '@/plugins/router';
 import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { useAppzi } from '@/composables/useAppzi';
+import useDarkMode from '@/composables/useDarkMode';
 
 /**
  * TYPES
@@ -46,6 +48,8 @@ const { addTransaction } = useTransactions();
 const { poolWeightsLabel } = usePoolHelpers(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
 const { fNum } = useNumbers();
+const { openNpsModal } = useAppzi();
+const { darkMode } = useDarkMode();
 
 const {
   txState,
@@ -189,6 +193,15 @@ watch(blockNumber, () => {
       <BalBtn color="gray" outline block class="mt-2" @click="redirect">
         {{ redirectLabel }}
       </BalBtn>
+      <BalBtn
+        size="xs"
+        :color="darkMode ? 'white' : 'gray'"
+        block
+        flat
+        class="mt-2"
+        @click="openNpsModal"
+        >{{ $t('howDidWeDo') }}</BalBtn
+      >
     </div>
   </transition>
 </template>

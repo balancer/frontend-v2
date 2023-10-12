@@ -18,6 +18,8 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
+import { useAppzi } from '@/composables/useAppzi';
+import useDarkMode from '@/composables/useDarkMode';
 
 /**
  * TYPES
@@ -55,6 +57,8 @@ const {
   approvalActions: joinPoolApprovalActions,
 } = useJoinPool();
 const { networkSlug } = useNetwork();
+const { openNpsModal } = useAppzi();
+const { darkMode } = useDarkMode();
 
 const approvalActions = ref(joinPoolApprovalActions.value);
 
@@ -183,6 +187,15 @@ onUnmounted(() => {
       >
         {{ $t('returnToPool') }}
       </BalBtn>
+      <BalBtn
+        size="xs"
+        :color="darkMode ? 'white' : 'gray'"
+        block
+        flat
+        class="mt-2"
+        @click="openNpsModal"
+        >{{ $t('howDidWeDo') }}</BalBtn
+      >
     </div>
   </transition>
 </template>

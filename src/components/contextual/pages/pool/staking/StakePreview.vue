@@ -8,6 +8,8 @@ import { AnyPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import StakeSummary from './StakeSummary.vue';
 import { StakeAction, useStakePreview } from './composables/useStakePreview';
+import { useAppzi } from '@/composables/useAppzi';
+import useDarkMode from '@/composables/useDarkMode';
 
 /**
  * TYPES
@@ -36,6 +38,8 @@ const {
   handleClose,
   isStakeAndZero,
 } = useStakePreview(props, emit);
+const { openNpsModal } = useAppzi();
+const { darkMode } = useDarkMode();
 
 /**
  * COMPUTED
@@ -100,9 +104,18 @@ const assetRowWidth = computed(
         >
           {{ $t('viewClaims') }}
         </BalBtn>
-        <BalBtn color="gray" outline block @click="handleClose">
+        <BalBtn v-else color="gray" outline block @click="handleClose">
           {{ $t('close') }}
         </BalBtn>
+        <BalBtn
+          size="xs"
+          :color="darkMode ? 'white' : 'gray'"
+          block
+          flat
+          class="mt-2"
+          @click="openNpsModal"
+          >{{ $t('howDidWeDo') }}</BalBtn
+        >
       </AnimatePresence>
     </BalStack>
   </BalStack>
