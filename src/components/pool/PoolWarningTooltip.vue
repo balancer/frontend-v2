@@ -37,6 +37,10 @@ const warningLabel = computed((): string => {
     return t(`poolWarnings.${PoolWarning.PoolProtocolFeeVulnWarning}.tooltip`);
   }
 
+  if (isAffectedBy(PoolWarning.CspPoolVulnWarning)) {
+    return t(`poolWarnings.${PoolWarning.CspPoolVulnWarning}.tooltip`);
+  }
+
   return '';
 });
 </script>
