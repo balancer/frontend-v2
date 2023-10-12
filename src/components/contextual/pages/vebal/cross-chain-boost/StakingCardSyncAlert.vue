@@ -39,7 +39,7 @@ const canShowSyncAlert = computed(() => {
   if (
     isAffectedBy(PoolWarning.PoolProtocolFeeVulnWarning) ||
     isAffectedBy(PoolWarning.CspPoolVulnWarning) ||
-    !gauge
+    !gauge?.gauge.id
   ) {
     return false;
   }
