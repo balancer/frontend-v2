@@ -53,6 +53,6 @@ input[type='number'] {
 }
 
 /* AppZi styles */
-[id*='bklns'] {
+div[id^='bkln'] {
   background-color: rgb(0 0 0 / 90%) !important;
 }
