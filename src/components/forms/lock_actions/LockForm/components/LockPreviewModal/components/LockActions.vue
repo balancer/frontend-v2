@@ -25,8 +25,7 @@ import { ApprovalAction } from '@/composables/approvals/types';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { captureBalancerException } from '@/lib/utils/errors';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
-import { useAppzi } from '@/composables/useAppzi';
-import useDarkMode from '@/composables/useDarkMode';
+import FeedbackCard from '@/components/cards/FeedbackCard.vue';
 
 /**
  * TYPES
@@ -83,8 +82,6 @@ const { totalVotes, unallocatedVotes } = useVotingPools();
 const { networkSlug } = useNetwork();
 const { getTokenApprovalActions } = useTokenApprovalActions();
 const { refetch: refetchSyncData } = useCrossChainSync();
-const { openNpsModal } = useAppzi();
-const { darkMode } = useDarkMode();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
@@ -290,15 +287,9 @@ onBeforeMount(async () => {
       >
         {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
       </BalBtn>
-      <BalBtn
-        size="xs"
-        :color="darkMode ? 'white' : 'gray'"
-        block
-        flat
-        class="mt-2"
-        @click="openNpsModal"
-        >{{ $t('howDidWeDo') }}</BalBtn
-      >
+      <transition name="pop">
+        <FeedbackCard class="mt-3" />
+      </transition>
     </template>
   </div>
 </template>

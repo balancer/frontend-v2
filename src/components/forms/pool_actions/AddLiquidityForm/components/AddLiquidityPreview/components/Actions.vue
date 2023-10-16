@@ -18,8 +18,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
-import { useAppzi } from '@/composables/useAppzi';
-import useDarkMode from '@/composables/useDarkMode';
+import FeedbackCard from '@/components/cards/FeedbackCard.vue';
 
 /**
  * TYPES
@@ -57,8 +56,6 @@ const {
   approvalActions: joinPoolApprovalActions,
 } = useJoinPool();
 const { networkSlug } = useNetwork();
-const { openNpsModal } = useAppzi();
-const { darkMode } = useDarkMode();
 
 const approvalActions = ref(joinPoolApprovalActions.value);
 
@@ -135,67 +132,69 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <transition>
-    <BalActionSteps
-      v-if="!txState.confirmed || !txState.receipt"
-      :actions="actions"
-      primaryActionType="invest"
-      :disabled="rektPriceImpact || isMismatchedNetwork"
-      @success="handleSuccess"
-      @failed="handleFailed"
-    />
-    <div v-else>
-      <ConfirmationIndicator :txReceipt="txState.receipt" />
-      <BalBtn
-        v-if="lockablePoolId === pool.id"
-        tag="router-link"
-        :to="{
-          name: 'get-vebal',
-          query: {
-            returnRoute: $route.name,
-            returnParams: JSON.stringify({
-              id: pool.id,
-              networkSlug,
-            }),
-          },
-        }"
-        color="gradient"
-        block
-        class="flex mt-2"
-      >
-        <StarsIcon class="mr-2 h-5 text-orange-300" />{{ $t('lockToGetVeBAL') }}
-      </BalBtn>
-      <BalBtn
-        v-else-if="isStakablePool"
-        color="gradient"
-        block
-        class="flex mt-2"
-        @click="emit('showStakeModal')"
-      >
-        <StarsIcon class="mr-2 h-5 text-orange-300" />{{
-          $t('stakeToGetExtra')
-        }}
-      </BalBtn>
+  <div>
+    <transition>
+      <BalActionSteps
+        v-if="!txState.confirmed || !txState.receipt"
+        :actions="actions"
+        primaryActionType="invest"
+        :disabled="rektPriceImpact || isMismatchedNetwork"
+        @success="handleSuccess"
+        @failed="handleFailed"
+      />
+      <div v-else>
+        <ConfirmationIndicator :txReceipt="txState.receipt" />
+        <BalBtn
+          v-if="lockablePoolId === pool.id"
+          tag="router-link"
+          :to="{
+            name: 'get-vebal',
+            query: {
+              returnRoute: $route.name,
+              returnParams: JSON.stringify({
+                id: pool.id,
+                networkSlug,
+              }),
+            },
+          }"
+          color="gradient"
+          block
+          class="flex mt-2"
+        >
+          <StarsIcon class="mr-2 h-5 text-orange-300" />{{
+            $t('lockToGetVeBAL')
+          }}
+        </BalBtn>
+        <BalBtn
+          v-else-if="isStakablePool"
+          color="gradient"
+          block
+          class="flex mt-2"
+          @click="emit('showStakeModal')"
+        >
+          <StarsIcon class="mr-2 h-5 text-orange-300" />{{
+            $t('stakeToGetExtra')
+          }}
+        </BalBtn>
 
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'pool', params: { id: pool.id } }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
-        {{ $t('returnToPool') }}
-      </BalBtn>
-      <BalBtn
-        size="xs"
-        :color="darkMode ? 'white' : 'gray'"
-        block
-        flat
-        class="mt-2"
-        @click="openNpsModal"
-        >{{ $t('howDidWeDo') }}</BalBtn
-      >
-    </div>
-  </transition>
+        <BalBtn
+          tag="router-link"
+          :to="{ name: 'pool', params: { id: pool.id } }"
+          color="gray"
+          outline
+          block
+          size="sm"
+          class="mt-2"
+        >
+          {{ $t('returnToPool') }}
+        </BalBtn>
+      </div>
+    </transition>
+    <transition name="pop">
+      <FeedbackCard
+        v-if="txState.confirming || txState.confirmed"
+        class="mt-3"
+      />
+    </transition>
+  </div>
 </template>

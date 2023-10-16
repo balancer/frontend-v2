@@ -41,7 +41,7 @@ const layoutComponent = computed(() =>
 
 <template>
   <component :is="layoutComponent">
-    <router-view v-slot="{ Component }" :key="$route.path">
+    <router-view v-slot="{ Component }" :key="$route.fullPath">
       <PoolProvider>
         <transition appear name="appear">
           <component :is="Component" />
