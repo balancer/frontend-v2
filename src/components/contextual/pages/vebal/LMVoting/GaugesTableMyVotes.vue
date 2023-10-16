@@ -1,24 +1,20 @@
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { isSameAddress, scale } from '@/lib/utils';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import BigNumber from 'bignumber.js';
 import useNumbers from '@/composables/useNumbers';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import { useI18n } from 'vue-i18n';
-import {
-  isVotingTimeLocked,
-  remainingVoteLockTime,
-} from '@/composables/useVeBAL';
-import TimelockIcon from '@/components/_global/icons/TimelockIcon.vue';
+import { isVotingTimeLocked } from '@/composables/useVeBAL';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
+import TimeLockedVote from '../MultiVoting/TimeLockedVote.vue';
 
 /**
  * TYPES
  */
 type Props = {
-  gauge: VotingGaugeWithVotes;
+  pool: VotingPool;
 };
 
 /**
@@ -31,20 +27,20 @@ const props = defineProps<Props>();
  */
 const { t } = useI18n();
 const { fNum } = useNumbers();
-const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
+const { poolsUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
 
 const myVotes = computed(() => {
-  const normalizedVotes = scale(new BigNumber(props.gauge.userVotes), -4);
+  const normalizedVotes = scale(new BigNumber(props.pool.userVotes), -4);
   return fNum(normalizedVotes.toString(), {
     style: 'percent',
     maximumFractionDigits: 2,
   });
 });
 
-const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
+const poolHasUnderUtilizedVotingPower = computed<boolean>(
   () =>
-    !!gaugesUsingUnderUtilizedVotingPower.value.find(gauge =>
-      isSameAddress(gauge.address, props.gauge.address)
+    !!poolsUsingUnderUtilizedVotingPower.value.find(pool =>
+      isSameAddress(pool.address, props.pool.address)
     )
 );
 </script>
@@ -53,35 +49,16 @@ const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
   <div
     :class="{
       'flex justify-end items-center': true,
-      'text-red-600': poolHasUnderUtilizedVotingPoewer,
+      'text-red-600': poolHasUnderUtilizedVotingPower,
     }"
   >
     {{ myVotes }}
+    <TimeLockedVote
+      v-if="isVotingTimeLocked(pool.lastUserVoteTime)"
+      :pool="pool"
+    />
     <BalTooltip
-      v-if="isVotingTimeLocked(gauge.lastUserVoteTime)"
-      textAlign="left"
-    >
-      <template #activator>
-        <TimelockIcon />
-      </template>
-      <div>
-        <span class="font-semibold">
-          {{
-            $t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title')
-          }}
-        </span>
-        <p class="text-gray-500">
-          {{
-            $t(
-              'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
-              [remainingVoteLockTime(gauge.lastUserVoteTime)]
-            )
-          }}
-        </p>
-      </div>
-    </BalTooltip>
-    <BalTooltip
-      v-else-if="poolHasUnderUtilizedVotingPoewer"
+      v-else-if="poolHasUnderUtilizedVotingPower"
       template
       textAlign="left"
       width="60"

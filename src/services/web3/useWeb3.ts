@@ -141,6 +141,7 @@ export default function useWeb3() {
     blockNumber,
     isWalletConnecting,
     isBlocked,
+    isWalletDisconnected,
 
     // methods
     connectWallet,

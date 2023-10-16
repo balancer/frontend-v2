@@ -1,144 +1,85 @@
 <script lang="ts" setup>
-import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
-import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
-import useDebouncedRef from '@/composables/useDebouncedRed';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { poolURLFor } from '@/composables/usePoolHelpers';
-import useVotingGauges from '@/composables/useVotingGauges';
-import { bnum, scale } from '@/lib/utils';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import useVotingPools from '@/composables/useVotingPools';
 
-import GaugesTable from './GaugesTable.vue';
-import GaugeVoteModal from './GaugeVoteModal.vue';
-import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
-import { orderedTokenURIs } from '@/composables/useVotingGauges';
-import configs, { Network } from '@/lib/config';
+import useNetwork from '@/composables/useNetwork';
+import useNumbers from '@/composables/useNumbers';
+import useVeBal from '@/composables/useVeBAL';
+import { useVeBalLockInfo } from '@/composables/useVeBalLockInfo';
+
+import useWeb3 from '@/services/web3/useWeb3';
+import { isVotingCompleted, useVoting } from '../providers/voting.provider';
+import { bpsToPercentage } from '../voting-utils';
 import GaugesFilters from './GaugesFilters.vue';
-import { isGaugeExpired } from './voting-utils';
+import GaugesTable from './GaugesTable.vue';
+import VotingAlert from './VotingAlert.vue';
+import { useLMVotingFilters } from './composables/useLMVotingFilters';
 
 /**
  * DATA
  */
-const tokenFilter = useDebouncedRef<string>('', 500);
-const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
-const activeNetworkFilters = useDebouncedRef<Network[]>([], 500);
-const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
-
-const networkFilters: Network[] = Object.entries(configs)
-  .filter(details => {
-    const config = details[1];
-    return (
-      !config.testNetwork && config.pools.Stakable.VotingGaugePools.length > 0
-    );
-  })
-  .map(details => Number(details[0]) as Network);
 
 /**
  * COMPOSABLES
  */
 const {
-  isLoading,
-  votingGauges,
+  votingPools,
   unallocatedVotes,
   votingPeriodEnd,
   votingPeriodLastHour,
-  refetch: refetchVotingGauges,
-} = useVotingGauges();
-const { fNum } = useNumbers();
-const veBalLockInfoQuery = useVeBalLockInfoQuery();
+  isRefetchingVotingPools,
+} = useVotingPools();
+const { veBalLockTooShort, veBalExpired, hasLock, hasExpiredLock } =
+  useVeBalLockInfo();
 
 const { shouldResubmitVotes } = useVotingEscrowLocks();
+const { networkSlug } = useNetwork();
+const { isWalletReady, isMismatchedNetwork } = useWeb3();
 
-const votingGaugeAddresses = computed<string[]>(
-  () => votingGauges.value?.map(gauge => gauge.address) || []
-);
-const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
+const { hasVeBalBalance, noVeBalBalance } = useVeBal();
+const { fNum } = useNumbers();
+const {
+  isLoading,
+  isLoadingVotingPools,
+  expiredGauges,
+  unlockedSelectedPools,
+  hasSubmittedVotes,
+  hasAllVotingPowerTimeLocked,
+  loadRequestWithExistingVotes,
+} = useVoting();
+
+const {
+  showExpiredGauges,
+  activeNetworkFilters,
+  filteredVotingPools,
+  tokenFilter,
+  networkFilters,
+} = useLMVotingFilters(votingPools, expiredGauges);
 
 /**
  * COMPUTED
  */
 const unallocatedVotesFormatted = computed<string>(() =>
-  fNum(scale(bnum(unallocatedVotes.value), -4).toString(), FNumFormats.percent)
+  bpsToPercentage(unallocatedVotes.value, fNum)
 );
 
-const unallocatedVoteWeight = computed(() => {
-  const totalVotes = 1e4;
-  if (isLoading.value || !votingGauges.value) return totalVotes;
-
-  const votesRemaining = votingGauges.value.reduce((remainingVotes, gauge) => {
-    return remainingVotes - parseFloat(gauge.userVotes);
-  }, totalVotes);
-  return votesRemaining;
-});
-
-const hasLock = computed(
+const selectVotesDisabled = computed(
   (): boolean =>
-    !!veBalLockInfoQuery.data.value?.hasExistingLock &&
-    !veBalLockInfoQuery.data.value?.isExpired
+    isLoading.value ||
+    !hasVeBalBalance.value ||
+    hasAllVotingPowerTimeLocked.value
 );
 
-const hasExpiredLock = computed(
-  (): boolean =>
-    !!veBalLockInfoQuery.data.value?.hasExistingLock &&
-    veBalLockInfoQuery.data.value?.isExpired
+const votingDisabled = computed(
+  () =>
+    selectVotesDisabled.value ||
+    unlockedSelectedPools.value.length === 0 ||
+    isMismatchedNetwork.value
 );
-
-const gaugesFilteredByExpiring = computed(() => {
-  if (showExpiredGauges.value) {
-    return votingGauges.value;
-  }
-
-  return votingGauges.value.filter(gauge => {
-    if (Number(gauge.userVotes) > 0) {
-      return true;
-    }
-    return !isGaugeExpired(expiredGauges.value, gauge.address);
-  });
-});
-
-const filteredVotingGauges = computed(() => {
-  // put filter by expiring in separate computed to maintain readability
-  return gaugesFilteredByExpiring.value.filter(gauge => {
-    let showByNetwork = true;
-    if (
-      activeNetworkFilters.value.length > 0 &&
-      !activeNetworkFilters.value.includes(gauge.network)
-    ) {
-      showByNetwork = false;
-    }
-
-    return (
-      showByNetwork &&
-      gauge.pool.tokens.some(token => {
-        return token.symbol
-          ?.toLowerCase()
-          .includes(tokenFilter.value.toLowerCase());
-      })
-    );
-  });
-});
 
 /**
  * METHODS
  */
-function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
-  activeVotingGauge.value = votingGauge;
-}
-
-function handleModalClose() {
-  activeVotingGauge.value = null;
-  refetchVotingGauges();
-}
-
-function handleVoteSuccess() {
-  refetchVotingGauges();
-}
-
-function isExpired(gauge: VotingGaugeWithVotes) {
-  return isGaugeExpired(expiredGauges.value, gauge.address);
-}
-
 const intersectionSentinel = ref<HTMLDivElement | null>(null);
 const renderedRowsIdx = ref(40);
 let observer: IntersectionObserver | undefined;
@@ -148,7 +89,7 @@ function addIntersectionObserver(): void {
     !('IntersectionObserverEntry' in window) ||
     !intersectionSentinel.value
   ) {
-    renderedRowsIdx.value = votingGauges.value.length;
+    renderedRowsIdx.value = votingPools.value.length;
     return;
   }
   const options = {
@@ -164,6 +105,7 @@ function addIntersectionObserver(): void {
   observer = new IntersectionObserver(callback, options);
   observer.observe(intersectionSentinel.value);
 }
+
 onMounted(() => {
   addIntersectionObserver();
 });
@@ -173,10 +115,21 @@ onBeforeUnmount(() => {
 watch(
   () => [showExpiredGauges.value, activeNetworkFilters.value],
   () => {
-    renderedRowsIdx.value = votingGauges.value.length;
+    renderedRowsIdx.value = votingPools.value.length;
   },
   { deep: true }
 );
+
+watch(isLoading, async () => {
+  // Load votingRequest once the voting list and the expired gauges were loaded
+  loadRequestWithExistingVotes(votingPools.value);
+});
+watch(isRefetchingVotingPools, async () => {
+  // Reload votingRequest if refetching after coming back from a successful voting
+  if (isVotingCompleted.value) {
+    loadRequestWithExistingVotes(votingPools.value);
+  }
+});
 </script>
 
 <template>
@@ -197,10 +150,42 @@ watch(
         </h3>
       </div>
     </div>
-    <ResubmitVotesAlert
+
+    <VotingAlert v-if="veBalLockTooShort" title="veBAL not locked for 7 days">
+      You must have veBAL locked for more than 7 days to vote on gauges.
+    </VotingAlert>
+
+    <VotingAlert
       v-if="shouldResubmitVotes"
-      class="mx-4 xl:mx-0 mb-7"
-    ></ResubmitVotesAlert>
+      title="Resubmit your votes to utilize your full voting power"
+    >
+      Votes on pools are set at the time of the vote. Since you’ve added new
+      veBAL since your original vote, you have additional voting power which is
+      not being used. Use the 'Edit votes' button to resubmit your votes.
+    </VotingAlert>
+
+    <VotingAlert
+      v-if="noVeBalBalance && !isLoading"
+      title="You need some veBAL to vote on gauges"
+    >
+      Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.
+    </VotingAlert>
+
+    <VotingAlert
+      v-if="veBalExpired"
+      title="You can't vote because your veBAL has expired"
+    >
+      You need some veBAL to vote on gauges. Unlock and relock your
+      B-80BAL-20-WETH to get some veBAL.
+    </VotingAlert>
+
+    <VotingAlert
+      v-if="hasAllVotingPowerTimeLocked"
+      title="100% of your votes are locked"
+    >
+      You won't be able to make any edits until some of them are unlocked.
+    </VotingAlert>
+
     <div class="flex flex-wrap justify-between items-end px-4 lg:px-0">
       <div class="flex gap-2 xs:gap-3 mb-3 lg:mb-0">
         <BalCard shadow="none" class="p-0 md:w-48 min-w-max">
@@ -269,7 +254,7 @@ watch(
       <div class="flex mb-3 lg:mb-0">
         <BalTextInput
           v-model="tokenFilter"
-          class="mr-5"
+          class="mr-5 b-5"
           name="tokenSearch"
           type="text"
           :placeholder="$t('filterByToken')"
@@ -281,7 +266,6 @@ watch(
             </div>
           </template>
         </BalTextInput>
-
         <GaugesFilters
           :networkFilters="networkFilters"
           :showExpiredGauges="showExpiredGauges"
@@ -289,33 +273,27 @@ watch(
           @update:show-expired-gauges="showExpiredGauges = $event"
           @update:active-network-filters="activeNetworkFilters = $event"
         />
+        <div v-if="isWalletReady" class="flex-0 ml-5 w-32 h-8">
+          <BalBtn
+            :tag="votingDisabled ? 'div' : 'router-link'"
+            :to="{ name: 'vebal-voting', params: { networkSlug } }"
+            :label="hasSubmittedVotes ? 'Edit votes' : 'Vote'"
+            color="gradient"
+            :disabled="votingDisabled"
+            block
+          />
+        </div>
       </div>
     </div>
 
     <GaugesTable
       :renderedRowsIdx="renderedRowsIdx"
-      :expiredGauges="expiredGauges"
-      :isLoading="isLoading"
-      :data="filteredVotingGauges"
+      :isLoading="isLoadingVotingPools"
+      :data="filteredVotingPools"
       :noPoolsLabel="$t('noInvestments')"
       :filterText="tokenFilter"
-      showPoolShares
-      class="mb-8"
-      @clicked-vote="setActiveGaugeVote"
+      :selectVotesDisabled="selectVotesDisabled"
     />
     <div ref="intersectionSentinel" />
   </div>
-  <teleport to="#modal">
-    <GaugeVoteModal
-      v-if="!!activeVotingGauge"
-      :gauge="activeVotingGauge"
-      :isGaugeExpired="isExpired(activeVotingGauge)"
-      :logoURIs="orderedTokenURIs(activeVotingGauge)"
-      :poolURL="poolURLFor(activeVotingGauge.pool, activeVotingGauge.network)"
-      :unallocatedVoteWeight="unallocatedVoteWeight"
-      :veBalLockInfo="veBalLockInfoQuery.data.value"
-      @success="handleVoteSuccess"
-      @close="handleModalClose"
-    />
-  </teleport>
 </template>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { captureException } from '@sentry/browser';
 
-import { isGoerli } from '@/composables/useNetwork';
+import { isTestnet } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
 
 const ClaimPage = () => import('@/pages/claim/index.vue');
@@ -24,10 +24,13 @@ export const SwapPagePrefetchLinks = async () =>
 
 const UnlockVeBalPage = () => import('@/pages/unlock-vebal.vue');
 const VeBalPage = () => import('@/pages/vebal.vue');
+const VeBalVotingPage = () => import('@/pages/vebal-voting.vue');
 const FaucetPage = () => import('@/pages/faucet.vue');
 const BalancesPage = () => import('@/pages/balances.vue');
 
 const PortfolioPage = () => import('@/pages/portfolio.vue');
+const RecoveryExitPage = () =>
+  import('@/pages/recovery-exit/recovery-exit.vue');
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -68,6 +71,11 @@ const routes: RouteRecordRaw[] = [
     name: 'risks',
     component: RisksPage,
     meta: { layout: 'ContentLayout' },
+  },
+  {
+    path: '/:networkSlug/recovery-exit',
+    name: 'recovery-exit',
+    component: RecoveryExitPage,
   },
   {
     path: '/:networkSlug/swap/:assetIn?/:assetOut?',
@@ -118,6 +126,12 @@ const routes: RouteRecordRaw[] = [
     component: VeBalPage,
   },
   {
+    path: '/:networkSlug/vebal-voting',
+    name: 'vebal-voting',
+    component: VeBalVotingPage,
+    meta: { layout: 'FocussedLayout' },
+  },
+  {
     path: '/:networkSlug/get-vebal',
     name: 'get-vebal',
     component: GetVeBalPage,
@@ -153,6 +167,26 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug?',
     name: 'home',
     component: HomePage,
+    beforeEnter: (to, from, next) => {
+      /*
+        - Correct urls:
+        These urls will contain a hash (like app.balancer.fi/# or app.balancer.fi/#/polygon).
+        The hash fragments are not included in window.location.pathname but in window.location.hash
+        so for those cases window.location.pathname === '/'
+
+        - Incorrect urls
+        These urls will not contain the hash (like app.balancer.fi/polygon/).
+        Received when the user does not add the hash symbol when manually typing the url in the browser
+        or when Vercel building a bad redirect without hash after a deployment).
+        In these cases, the window.location.pathname will contain the wrong fragment/s that we won't to discard.
+        Example: app.balancer.fi/polygon/ will have window.location.pathname === '/polygon'
+      */
+      if (window.location.pathname !== '/') {
+        // Remove wrong fragments without hash from pathname
+        window.location.pathname = '';
+      }
+      return next();
+    },
   },
   {
     path: '/:pathMatch(.*)*',
@@ -164,7 +198,7 @@ const routes: RouteRecordRaw[] = [
 /**
  * TESTNET ONLY ROUTES
  */
-if (isGoerli.value) {
+if (isTestnet.value) {
   routes.push({
     path: '/:networkSlug/faucet',
     name: 'faucet',

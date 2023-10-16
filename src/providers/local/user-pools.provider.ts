@@ -1,7 +1,7 @@
 import { InjectionKey } from 'vue';
 import { UserStakingResponse } from '@/providers/local/user-staking.provider';
 import { useUserData } from '@/providers/user-data.provider';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolType, allLinearTypes } from '@/services/pool/types';
 import { bnSum } from '@/lib/utils';
 import symbolKeys from '@/constants/symbol.keys';
 import { safeInject } from '../inject';
@@ -11,6 +11,7 @@ import { fiatValueOf } from '@/composables/usePoolHelpers';
 import { isQueryLoading } from '@/composables/queries/useQueryHelpers';
 import { isVeBalSupported } from '@/composables/useVeBAL';
 import { useTokens } from '../tokens.provider';
+import { POOLS } from '@/constants/pools';
 
 /**
  * Provides user pools data. Primarily for the portfolio page.
@@ -42,16 +43,14 @@ export const provider = (userStaking: UserStakingResponse) => {
   );
 
   // Fetch pools that the user hasn't staked.
-  const unstakedPoolsQuery = usePoolsQuery(
-    ref([]),
-    reactive({
-      enabled: isPoolsQueryEnabled,
-    }),
-    {
-      poolIds: unstakedPoolIds,
-      pageSize: 999,
-    }
-  );
+  const filterOptions = computed(() => ({
+    poolIds: unstakedPoolIds.value,
+    pageSize: 999,
+    poolTypes: [...POOLS.IncludedPoolTypes, ...allLinearTypes] as PoolType[],
+  }));
+  const unstakedPoolsQuery = usePoolsQuery(filterOptions, {
+    enabled: isPoolsQueryEnabled,
+  });
   const { data: _unstakedPools } = unstakedPoolsQuery;
 
   // Helper property to drill down to first page of results.

@@ -16,7 +16,7 @@ import { usePoolWarning } from '@/composables/usePoolWarning';
 import { StakeAction } from './composables/useStakePreview';
 import StakingCardSyncAlert from '../../vebal/cross-chain-boost/StakingCardSyncAlert.vue';
 import useNetwork from '@/composables/useNetwork';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 type Props = {
   pool: Pool;
@@ -45,6 +45,7 @@ const {
   isRefetchingStakedShares,
   stakedShares,
   hasNonPrefGaugeBalance,
+  preferentialGaugeAddress,
 } = usePoolStaking();
 const { isAffected } = usePoolWarning(poolId);
 const { networkId } = useNetwork();
@@ -70,7 +71,8 @@ const isStakeDisabled = computed(() => {
   return (
     !!deprecatedDetails(props.pool.id) ||
     fiatValueOfUnstakedShares.value === '0' ||
-    hasNonPrefGaugeBalance.value
+    hasNonPrefGaugeBalance.value ||
+    !preferentialGaugeAddress.value
   );
 });
 
@@ -179,6 +181,8 @@ function handlePreviewClose() {
                 </BalStack>
                 <StakingCardSyncAlert
                   v-if="networkId !== Network.MAINNET"
+                  :poolAddress="pool.address"
+                  :poolId="pool.id"
                   :fiatValueOfStakedShares="fiatValueOfStakedShares"
                   :fiatValueOfUnstakedShares="fiatValueOfUnstakedShares"
                   @should-staking-card-be-opened="isOpenedByDefault = true"

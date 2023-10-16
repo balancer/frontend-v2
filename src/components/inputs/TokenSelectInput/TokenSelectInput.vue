@@ -17,6 +17,7 @@ export type TokenSelectProps = {
   options?: string[];
   subsetTokens?: string[];
   ignoreBalances?: boolean;
+  notFoundContent?: string;
 };
 
 /**
@@ -75,20 +76,20 @@ function toggleModal(): void {
       :class="['token-select-input selected group', { selectable: !fixed }]"
       @click="toggleModal"
     >
-      <div class="w-8">
+      <div class="flex items-center w-8">
         <BalAsset :address="token?.address" class="shadow" />
       </div>
-      <span class="text-base font-medium">
+      <div class="flex items-center -mb-px text-base font-medium leading-none">
         {{ token?.symbol }}
-      </span>
-      <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
+      </div>
+      <div v-if="Number(weight) > 0" class="ml-2 text-secondary">
         {{
           fNum(weight, {
             style: 'percent',
             maximumFractionDigits: 0,
           })
         }}
-      </span>
+      </div>
       <BalIcon
         v-if="!fixed"
         name="chevron-down"
@@ -166,6 +167,7 @@ function toggleModal(): void {
         :disableInjection="disableInjection"
         :hideTokenLists="hideTokenLists"
         :ignoreBalances="ignoreBalances"
+        :notFoundContent="notFoundContent"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
       />

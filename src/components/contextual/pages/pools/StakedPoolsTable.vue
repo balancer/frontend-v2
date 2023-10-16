@@ -12,13 +12,32 @@ import ProceedToSyncModal from '@/components/contextual/pages/vebal/cross-chain-
 import { providePoolStaking } from '@/providers/local/pool-staking.provider';
 
 import PortfolioSyncTip from '../vebal/cross-chain-boost/PortfolioSyncTip.vue';
+import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 
+import CheckpointGaugeModal from '../vebal/cross-chain-boost/CheckpointGaugeModal.vue';
+import CheckpointAllGaugesModal from '../vebal/cross-chain-boost/CheckpointAllGaugesModal.vue';
+import { PoolAction } from './types';
+import { isVeBalSupported } from '@/composables/useVeBAL';
 /**
  * STATE
  */
 const showUnstakeModal = ref(false);
 const poolToUnstake = ref<Pool | undefined>();
+
+const showRestakeModal = ref(false);
+const poolToRestake = ref<Pool | undefined>();
+
 const showProceedModal = ref(false);
+const defaultPoolActions = [
+  PoolAction.Unstake,
+  PoolAction.Add,
+  PoolAction.Vote,
+];
+
+const showPokeAllGaugesModal = ref(false);
+
+const poolToCheckpoint = ref<Pool | undefined>();
+const showCheckpointModal = ref(false);
 
 /**
  * PROVIDERS
@@ -28,8 +47,15 @@ providePoolStaking();
 /**
  * COMPOSABLES
  */
-const { stakedPools, poolBoostsMap, stakedShares, isLoading } =
-  useUserStaking();
+const {
+  stakedPools,
+  poolBoostsMap,
+  stakedShares,
+  isLoading,
+  hasNonPrefGaugesPoolsAddresses,
+  userGaugeShares,
+} = useUserStaking();
+const { shouldPokeGauge } = useCrossChainSync();
 
 const { refetchAllUserPools } = useUserPools();
 const { isWalletReady, isWalletConnecting } = useWeb3();
@@ -62,14 +88,66 @@ function handleUnstake(pool: Pool) {
   poolToUnstake.value = pool;
 }
 
+function handleRestake(pool: Pool) {
+  showRestakeModal.value = true;
+  poolToRestake.value = pool;
+}
+
 function handleModalClose() {
   refetchAllUserPools();
   showUnstakeModal.value = false;
+  showRestakeModal.value = false;
+}
+
+function handleCheckpoint(pool: Pool) {
+  showCheckpointModal.value = true;
+  poolToCheckpoint.value = pool;
 }
 
 async function handleUnstakeSuccess() {
   await refetchAllUserPools();
 }
+
+// map of pool ids and pref gauges that should be poked
+const shouldPokePoolsMap = ref<Record<string, string>>({});
+
+function removePoolFromPokeMap(poolAddress: string) {
+  Reflect.deleteProperty(shouldPokePoolsMap.value, poolAddress);
+}
+
+function resetShouldPokePoolsMap() {
+  shouldPokePoolsMap.value = {};
+}
+
+function onSuccessCheckpoint(poolAddress: string) {
+  showCheckpointModal.value = false;
+  poolToCheckpoint.value = undefined;
+  removePoolFromPokeMap(poolAddress);
+}
+
+watch(
+  () => userGaugeShares.value,
+  async val => {
+    if (!val || isVeBalSupported.value) return;
+    for (const gauge of val) {
+      try {
+        const id = gauge?.gauge.id;
+
+        if (!id) {
+          throw new Error('No gauge id');
+        }
+
+        const shouldPoke = await shouldPokeGauge(id);
+        if (shouldPoke) {
+          shouldPokePoolsMap.value[gauge.gauge.poolAddress] = id;
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  },
+  { immediate: true, deep: true }
+);
 </script>
 
 <template>
@@ -78,7 +156,11 @@ async function handleUnstakeSuccess() {
       <h5 class="px-4 xl:px-0">
         {{ $t('staking.stakedPools') }}
       </h5>
-      <PortfolioSyncTip @show-proceed-modal="showProceedModal = true" />
+      <PortfolioSyncTip
+        :shouldPokePoolsMap="shouldPokePoolsMap"
+        @show-proceed-modal="showProceedModal = true"
+        @show-poke-all-gauge-modal="showPokeAllGaugesModal = true"
+      />
       <PoolsTable
         :key="poolsToRenderKey"
         :data="stakedPools"
@@ -91,10 +173,19 @@ async function handleUnstakeSuccess() {
         :isLoading="isWalletReady && isLoading"
         showPoolShares
         showActions
+        showStakeActions
         :showBoost="isPoolBoostsEnabled"
+        :defaultPoolActions="defaultPoolActions"
+        :shouldPokePoolsMap="shouldPokePoolsMap"
+        :hasNonPrefGaugesPoolsAddresses="hasNonPrefGaugesPoolsAddresses"
         @trigger-unstake="handleUnstake"
+        @trigger-restake="handleRestake"
+        @trigger-vote="showProceedModal = true"
+        @trigger-checkpoint="handleCheckpoint"
       />
     </BalStack>
+
+    <!-- Unstake modal -->
     <StakePreviewModal
       v-if="poolToUnstake"
       :pool="poolToUnstake"
@@ -103,9 +194,34 @@ async function handleUnstakeSuccess() {
       @close="handleModalClose"
       @success="handleUnstakeSuccess"
     />
+
+    <!-- Restake modal -->
+    <StakePreviewModal
+      v-if="poolToRestake"
+      :pool="poolToRestake"
+      :isVisible="showRestakeModal"
+      action="restake"
+      @close="handleModalClose"
+      @success="handleUnstakeSuccess"
+    />
+
     <ProceedToSyncModal
       :isVisible="showProceedModal"
       @close="showProceedModal = false"
+    />
+
+    <CheckpointAllGaugesModal
+      :shouldPokePoolsMap="shouldPokePoolsMap"
+      :isVisible="showPokeAllGaugesModal"
+      @close="showPokeAllGaugesModal = false"
+      @success="resetShouldPokePoolsMap"
+    />
+
+    <CheckpointGaugeModal
+      :poolAddress="poolToCheckpoint?.address"
+      :isVisible="showCheckpointModal"
+      @close="showCheckpointModal = false"
+      @success="onSuccessCheckpoint"
     />
   </div>
 </template>

@@ -1,4 +1,4 @@
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
 
@@ -55,10 +55,18 @@ export default class WalletService {
   }
 
   async getProfile(address: string): Promise<Web3Profile> {
-    return {
-      ens: await this.getEnsName(address),
-      avatar: await this.getEnsAvatar(address),
-    };
+    try {
+      return {
+        ens: await this.getEnsName(address),
+        avatar: await this.getEnsAvatar(address),
+      };
+    } catch (error) {
+      console.error('Failed to fetch ENS data', error);
+      return {
+        ens: null,
+        avatar: null,
+      };
+    }
   }
 
   async getUserAddress(): Promise<string> {

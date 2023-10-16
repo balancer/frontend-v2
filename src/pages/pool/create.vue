@@ -31,6 +31,7 @@ import { StepState } from '@/types';
  */
 const isUnknownTokenModalVisible = ref(false);
 const isLoading = ref(true);
+// const showIntroModal = ref(true);
 
 /**
  * COMPOSABLES
@@ -80,6 +81,7 @@ onBeforeMount(async () => {
     if (previouslySavedState.createPoolTxHash) {
       await retrievePoolAddress(previouslySavedState.createPoolTxHash);
     }
+    // showIntroModal.value = false;
   } else if (previouslySavedState === null) {
     resetPoolCreationState();
   }
@@ -286,6 +288,10 @@ watch(
       :unknownTokens="unknownTokens"
       @close="handleUnknownModalClose"
     />
+    <!-- <IntroModal
+      v-if="showIntroModal && !hasRestoredFromSavedState"
+      @close="showIntroModal = false"
+    /> -->
   </div>
 </template>
 

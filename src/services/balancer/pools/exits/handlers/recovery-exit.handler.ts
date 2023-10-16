@@ -1,4 +1,3 @@
-import { getBalancerSDK } from '@/dependencies/balancer-sdk';
 import { Pool } from '@/services/pool/types';
 import { BalancerSDK, PoolWithMethods } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -44,18 +43,21 @@ export class RecoveryExitHandler implements ExitPoolHandler {
     const { signer, bptIn, slippageBsp, toInternalBalance } = params;
     const exiter = await signer.getAddress();
     const slippage = slippageBsp.toString();
-    const sdkPool = await getBalancerSDK().pools.find(this.pool.value.id);
+    const sdkPool = await this.sdk.pools.find(this.pool.value.id);
 
     if (!sdkPool) throw new Error('Failed to find pool: ' + this.pool.value.id);
 
+    const freshPool = await this.sdk.data.poolsOnChain.refresh(sdkPool);
+
     const evmBptIn = parseFixed(bptIn, 18).toString();
 
-    this.lastExitRes = await sdkPool.buildRecoveryExit(
-      exiter,
-      evmBptIn,
+    this.lastExitRes = await this.sdk.pools.buildRecoveryExit({
+      pool: freshPool,
+      userAddress: exiter,
+      bptAmount: evmBptIn,
       slippage,
-      toInternalBalance
-    );
+      toInternalBalance,
+    });
 
     if (!this.lastExitRes) throw new Error('Failed to construct exit.');
 

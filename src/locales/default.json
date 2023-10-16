@@ -112,6 +112,7 @@
   "builtOnBalancer": "Built on Balancer protocol",
   "boosted": "Boosted",
   "boostedTooltip": "This pool has a Boosted Pool component. In addition to accumulating swap fees, Boosted pools also generate yield for LPs by lending excess liquidity to other yield generating DeFi protocols.",
+  "clpTooltip": "Designed for capital efficiency,  ‘Concentrated Liquidity Pools’ (CLPs) are a class of AMMs that price the exchange of assets within a defined range. As such, any CLP only provides liquidity for trading activity restricted to this specific region.",
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",
@@ -512,7 +513,7 @@
     "tooltip": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
     "hasNewPool": {
       "title": "Move your liquidity for future BAL incentives",
-      "description": "Liquidity mining incentives are being phased out for this pool, since the upgraded pool is now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the"
+      "description": "Liquidity mining incentives are being phased out for this pool, since the upgraded pool is now live. LPs are encouraged to unstake existing positions, withdraw their liquidity and add it to the newly incentivized pool."
     },
     "generic": {
       "title": "Move your liquidity for future BAL incentives",
@@ -521,7 +522,8 @@
     "gaugeKilledReason": "This pool's gauge will soon be killed. A new version of this pool has been created that uses Aave v3."
   },
   "newVersion": {
-    "Aave3": "A new version of this pool has been created that uses Aave v3"
+    "Aave3": "A new version of this pool has been created that uses Aave v3",
+    "BalIncentives": "A new version of this pool has been created. Please migrate to continue earning BAL incentives"
   },
   "highPriceImpact": "High price impact",
   "highPriceImpactDetailed": "This swap is significantly moving the market price.",
@@ -787,6 +789,15 @@
   },
   "pool": "Pool",
   "pools": "Pools",
+  "poolActions": {
+    "poke": "Poke to boost APR",
+    "stake": "Stake for incentives",
+    "unstake": "Unstake",
+    "add": "Add liquidity",
+    "remove": "Remove liquidity",
+    "vote": "Vote for incentives",
+    "migrateGauge": "Migrate pool gauge"
+  },
   "poolBalance": "Pool balance",
   "poolComposition": {
     "title": "Pool composition",
@@ -895,6 +906,11 @@
     "poolProtocolFeeVulnWarning": {
       "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://twitter.com/Balancer/status/1611363559685898247\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
       "tooltip": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately."
+    },
+    "cspPoolVulnWarning": {
+      "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102/1\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
+      "tooltip": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately.",
+      "generalTitle": "A vulnerability has been discovered that affects a number of pools. Existing liquidity providers should remove liquidity immediately."
     }
   },
   "popularBases": "Popular",
@@ -1026,7 +1042,7 @@
       }
     },
     "myVeBAL": {
-      "title": "My veBAL",
+      "title": "Manage your veBAL",
       "cards": {
         "myLpToken": {
           "label": "My B-80BAL-20WETH"
@@ -1081,6 +1097,7 @@
         "nextPeriodVotes": "Next period votes",
         "myVotes": "My votes",
         "vote": "Vote",
+        "voteSelect": "Vote select",
         "remove": "Remove"
       },
       "votesTooltip": {
@@ -1121,16 +1138,6 @@
             "title": "Votes are locked for 10 days",
             "description": "You won't be able to make any edits to this vote allocation for {0}"
           },
-          "noVeBal": {
-            "title": "You need some veBAL to vote on gauges",
-            "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.",
-            "inputHintText": "You can't vote since you have no veBAL"
-          },
-          "expiredVeBal": {
-            "title": "You can't vote because your veBAL has expired",
-            "description": "You need some veBAL to vote on gauges. Unlock and relock your B-80BAL-20-WETH to get some veBAL.",
-            "inputHintText": "You can't vote because your veBAL has expired"
-          },
           "veBalLockTooShort": {
             "title": "veBAL not locked for 7 days",
             "description": "You must have veBAL locked for more than 7 days to vote on gauges."
@@ -1149,23 +1156,11 @@
         }
       },
       "resubmit": {
-        "modal": {
-          "title": "Preview vote resubmission",
-          "warning": {
-            "title": "You can only resubmit up to 8 votes",
-            "description": "It’s only possible to update 8 pool gauge votes at a time. You’ll need to update your votes for the remaining ones manually."
-          },
-          "otherPools": "0 other pools | 1 other pool | {n} other pools",
-          "total": "Total vote allocation",
-          "exceeding": "Your votes can’t exceed 100%",
-          "confirm": "Confirm votes"
-        },
         "hint": {
           "title": "Resubmit your votes to utilize your full voting power",
           "description": "Votes on pools are set at the time of your last vote. Since you’ve added new veBAL after your original vote, the additional voting power is not being used."
         },
-        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes.",
-        "btn": "Resubmit votes"
+        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes."
       }
     },
     "notSupported": {
@@ -1529,9 +1524,11 @@
     "stake": "{amount} in {pool}",
     "unstake": "{amount} from {pool}",
     "approveForInvesting": "Approve {0} for adding liquidity",
-    "approveForSwapping": "Approve {0} for swapping",
     "approveForLocking": "Approve {0} for locking",
     "approveForStaking": "Approve {0} for staking",
+    "approveForSwapping": "Approve {0} for swapping",
+    "approveForUnwrapping": "Approve {0} for unwrapping",
+    "unapprove": "Unapprove {0}",
     "extendLock": "Lock until {0}",
     "unlock": "Unlock {0}",
     "approveRelayer": "Approve {0} relayer",
@@ -1548,7 +1545,9 @@
       "approveForInvesting": "You must approve {0} to add liquidity for this token on Balancer. Approvals are required once per token, per wallet.",
       "approveForLocking": "You must approve {0} to lock this token. Approvals are required once per token, per wallet.",
       "approveForStaking": "You must approve {0} to stake this token on Balancer. Approvals are required once per token, per wallet.",
-      "approveForSwapping": "You must approve {0} to swap this token on Balancer. Approvals are required once per token, per wallet."
+      "approveForSwapping": "You must approve {0} to swap this token on Balancer. Approvals are required once per token, per wallet.",
+      "approveForUnwrapping": "You must approve {0} to unwrap this token. Approvals are required once per token, per wallet.",
+      "unapprove": "You must unapprove {0} before a new approval value can be set"
     }
   },
   "transactionType": "Transaction type",

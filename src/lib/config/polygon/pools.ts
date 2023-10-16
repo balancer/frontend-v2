@@ -1,5 +1,6 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
 import { PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 
 const pools: Pools = {
   IdsMap: {
@@ -98,6 +99,21 @@ const pools: Pools = {
       '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2', // stMATIC-bb-a-WMATIC
       '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3', // MaticX-bb-a-WMATIC
       '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4', // truMATIC/bb-a-WMATIC
+      '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4', // bb-t-USD
+      '0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5', // bb-am-USD
+      '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc', // wstETH-bb-a-WETH-BPT
+      '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8', // frxETH-bb-a-WETH
+      '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6', // FRAX-bb-am-USD
+      '0x42942cdec85078cf0e28e9cb5acd40cb53997ed6000000000000000000000bea', // BRX-jBRL
+      '0x70ff0078d55ce9c1a0e668f35eb4400a4300122d000000000000000000000beb', // jCHF-vCHF
+      '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11', // DUSD/bbaUSD
+      '0x7af62c1ebf97034b7542ccec13a2e79bbcf34380000000000000000000000c13', // tetubal/aurabal
+      '0x89b753153678bc434c610b7e9182297cada8ff29000000000000000000000c21', // stMATIC-WMATIC-BPT
+      '0xcd78a20c597e367a4e478a2411ceb790604d7c8f000000000000000000000c22', // maticX-WMATIC-BPT
+      '0xdc31233e09f3bf5bfe5c10da2014677c23b6894c000000000000000000000c23', // wstETH-WETH-BPT
+      '0xc474b8512664edc9e746ee5e786478aea15887d2000000000000000000000c25', // frxETH-WETH-BPT
+      '0x8c89fb53d4d83173dd65b7a94569558ce393460f000000000000000000000c26', // FRAX-USDC-BPT
+      '0x6da7f1c193ab6c4bd16eb14a6305bba8d25737ff000000000000000000000c29', // DUSD-USDC-BPT
     ],
   },
   Investment: {
@@ -125,11 +141,49 @@ const pools: Pools = {
       '0x2e1fd968a7185f52cfb933e51b5bb7f8f43e6105000100000000000000000bc5', // 10WBTC-10USDC-40WETH-40NEX
       '0x3c2f277eedac899f67116ad598664f0f91bac210000100000000000000000bcd', // 20AGA-20RNDR-20MANA-20DIMO-20AGAr
       '0xe833723690873780b967ad94a1218eb410319411000200000000000000000bc8', // wstETHUSDC
-      '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
       '0x2814a9f16d7b5b5826df47f702f16279ccd799c8000200000000000000000bd1', // 50wMatic-50stMatic
       '0xa874e67a1b203819bce84f161eba4b4eb3f4359b000200000000000000000bcc', // 50USDC-50TRYB
       '0xa5a935833f6a5312715f182733eab088452335d7000100000000000000000bee', // 30WBTC-20stMATIC-bb-a-WMATIC
       '0xaaf737aeb1e5f1dc9429de4a639fe16c42fa1fe3000200000000000000000bf9', // 50fireEP-50FBX
+      '0x6036b4d28685d28cc0891b5f63c3449543cb9821000200000000000000000c07', // 50usdc-50Dai
+      '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7', // 2BRL-bbamUSD
+      '0x788d7f70ce60a4c1a91e5d0a7ee63d636177c52a000200000000000000000c0b', // MATIC-UAHT
+      '0x809c86c9d01ef7e44345a8110474c551359aac44000200000000000000000c0a', // UAHT-USDC
+      '0x8670b3b82ddf5e1137c638969c3f747923268d77000200000000000000000c09', // UAHT-USDT
+      '0x401721a526e82d5c652fac001b691bb053380ff5000200000000000000000c0e', // 80BETS/20stMATIC
+      '0x74c7a222fb745628760b01ca99f51f9473377b95000200000000000000000c08', // 90MASQ-10wstETH
+      '0x84fead5f6fc27ca9ba5b89ddc3d6035dce511013000200000000000000000c12', // 50miMATIC-50USDT
+      '0x0e6d6ec825c9db806384da12eba4fb67a85769fd000200000000000000000c14', // 50ankrMATIC-50stMATIC
+      '0xa88e4fae334a2237e300592ae7d52705cade95a0000200000000000000000c17', // 50WBTC-50MaticX
+      '0xf7fd196c4606fb78178a85d1059f8224ddbccd2d000200000000000000000c18', // 50DAI-50miMATIC
+      '0xacb0bd6f7206174c64cef5e05c4d7871ea888d33000100000000000000000c19', // 33WBTC-33WETH-33NEX
+      '0x93a97f352c8be88d1468b8f7e0c24ce535be9eae000100000000000000000c1a', // farmDE
+      '0x5250525a8fd922ec87b42c42b0ea71fd46565cb0000200000000000000000c1e', // xWARU
+      '0x1cca7b11a3b36082c13e022d441b2da3a4d7206f000100000000000000000c1d', // 33rETH-33WETH-33NEX
+      '0x16b98793f3e6a17d15931a2c9f98fe28d1c845a1000100000000000000000c1f', // 1stMATIC-bb-a-WMATIC-BPT-0QI-50STARD-0fireEP-1bb-am-USD-1vQi-47STARV2
+      '0xc976855d2201298b8b35ad523dfb4cbd67ad6838000200000000000000000c20', // 50WETH-50NEX
+      '0x513f69b2e2a6fa0347529e6178002213cf60ce3d000200000000000000000c24', // 50WETH-50AAVE
+      '0xec7b8286e906fd74f14d0a0bdf0d362e0d1a3f9c000100000000000000000c1c', // 45WETH-45WMATIC-10TSB
+      '0x0dd7398a4366efad04bad15ad0d6f3efd1682cd0000200000000000000000c28', // 50SUSHI-50USDT
+      '0x2fb9cc718d45867688da816c35858a436c1b62e4000200000000000000000c2d', // 50STARD-50STARV2
+      '0x78e0f9e91fe77058d13a7162b72a5d5e5f2bbd23000200000000000000000c2f', // 50STARD-50wUSDR
+      '0x6f662a90bc9c48a2acb0958df49c71f35d7bf248000200000000000000000c30', // 50tetuQi-50STARV2
+      '0xc75daa752fb3f160b4c96364f2ee12e3434df655000200000000000000000c31', // 50wstETH-50bIB01
+      '0xfff3a0c1a7d3d3d4531c2c455954dea79fa94cbf000200000000000000000c38', // 20RBW-80UNIM
+      '0x7702a652b86d851d3582067f1f4aae5ef7854dee000200000000000000000c3f', // 85TQi-15Qi-5%-SDAO
+      '0x1f769840cb572b853ef3b0df1a566d74dbc1b8de000100000000000000000c3e', // 70tetuQi-10QI-20vQi
+      '0x040211b2492d7540ebb6e81ec84b116684fed129000200000000000000000c3d', // 85tetuQi-15QI
+      '0x34299dd7f2971ce9673a6c156b9a5a49844492d0000200000000000000000c40', // 50DE-50DAI
+      '0x4830eac1aaae42d62d1e596237997158e4beea0f000200000000000000000c42', // 50DE-50TBY
+      '0xe93f9dd10b0ba38831cba4d5a9d092e22db130ec000200000000000000000c44', // BPT
+      '0x8a352ffbc8c8bc87d7e33255a34f2cf5543e6416000200000000000000000c46', // 80CNT(NEW)-20WETH
+      '0x3078fcdfe3a34feebcb13bbfc74a02790d0ad1cd000200000000000000000c4d', // WSD
+      '0x80bd7a851d9ca7f2b708aa3d395c64be0bb049b7000200000000000000000c4b', // 1WMATIC-99AVA
+      '0xe4f47361480bc3b37dc2d2842f97dee2da17f31b000200000000000000000c51', // AFSD
+      '0x1d17bfefbf304b04939519b46c4c75fcf4889623000100000000000000000c52', // 15WMATIC-10BAL-15SAND-45GROSH-15TEL
+      '0xafd8a58780f08fdac15c8c36cae7b1d6fa3f7616000100000000000000000c54', // 25WBTC-25SOIL-25WETH-25NEX
+      '0x54c1cd3db3d6eeb1f041d02140b80639068a636c000100000000000000000c55', // 25WMATIC-25WBTC-25WETH-25NEX
+      '0x6e9e1395534cc43b7295ae412e0293b48844dc0e000200000000000000000c56', // 1USDC-99SOL
       '0x6ad06841ce54b8498d7159f50b22ecb05ea46b7c000200000000000000000c59', // 50fireFBX-50fireEP
     ],
   },
@@ -215,101 +269,25 @@ const pools: Pools = {
       '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4',
       '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2',
       '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3',
+      '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4',
+      '0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5',
+      '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8',
+      '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7',
+      '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6',
+      '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc',
+      '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11',
+      '0x42942cdec85078cf0e28e9cb5acd40cb53997ed6000000000000000000000bea',
+      '0x89b753153678bc434c610b7e9182297cada8ff29000000000000000000000c21',
+      '0xcd78a20c597e367a4e478a2411ceb790604d7c8f000000000000000000000c22',
+      '0xdc31233e09f3bf5bfe5c10da2014677c23b6894c000000000000000000000c23',
+      '0xc474b8512664edc9e746ee5e786478aea15887d2000000000000000000000c25',
+      '0x8c89fb53d4d83173dd65b7a94569558ce393460f000000000000000000000c26',
+      '0x6da7f1c193ab6c4bd16eb14a6305bba8d25737ff000000000000000000000c29',
+      '0x70ff0078d55ce9c1a0e668f35eb4400a4300122d000000000000000000000beb',
     ],
     AllowList: [],
   },
-  Metadata: {
-    '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
-      name: 'Balancer Boosted Aave USD',
-      hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0xb3d658d5b95bf04e2932370dd1ff976fe18dd66a000000000000000000000ace': {
-      name: 'Balancer Boosted Tetu USD',
-      hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Tetu],
-    },
-    '0x71bd10c2a590b5858f5576550c163976a48af906000000000000000000000b27': {
-      name: 'Balancer Boosted Tetu MATIC',
-      hasIcon: true,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Tetu],
-    },
-    '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c': {
-      name: 'stMATIC/Boosted Aave v3 WMATIC',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b': {
-      name: 'maticX/Boosted Aave v3 WMATIC',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0x4a77ef015ddcd972fd9ba2c7d5d658689d090f1a000000000000000000000b38': {
-      name: 'wstETH/Boosted Aave v3 WETH',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0xd00f9ca46ce0e4a63067c4657986f0167b0de1e5000000000000000000000b42': {
-      name: 'frxETH/Boosted Aave v3 WETH',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0x8fbd0f8e490735cfc3abf4f29cbddd5c3289b9a7000000000000000000000b5b': {
-      name: 'FRAX/Boosted Aave v3 USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37': {
-      name: 'Balancer Boosted Aave v3 USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0x8fd39252d683fdb60bddd4df4b53c9380b496d59000200000000000000000b45': {
-      name: 'wstETH/Boosted Aave v3 WETH/Boosted Aave v3 USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0x7f4f4942f2a14b6ab7b08b10ada1aacede4ee8d4000200000000000000000b44': {
-      name: 'stMATIC/Boosted Aave v3 wMATIC/Boosted Aave v3 USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43': {
-      name: '2BRL/Boosted Aave v3 USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2': {
-      name: 'stMATIC/Boosted Aave v3 WMATIC',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3': {
-      name: 'maticX/Boosted Aave v3 WMATIC',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-    '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4': {
-      name: 'truMATIC/Boosted Aave v3 WMATIC',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave],
-    },
-  },
+  Metadata: {},
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
@@ -329,6 +307,13 @@ const pools: Pools = {
     '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2', // stMATIC-bb-a-WMATIC
     '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3', // MaticX-bb-a-WMATIC
     '0xb266ac3b7c98d7bcb28731dac0ef42dba1b276be000000000000000000000be4', // truMATIC/bb-a-WMATIC
+    '0x9321e2250767d79bab5aa06daa8606a2b3b7b4c5000000000000000000000bf4', // bb-t-USD
+    '0x03090a9811181a2afe830a3a0b467698ccf3a8b1000000000000000000000bf5', // bb-am-USD
+    '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc', // wstETH-bb-a-WETH-BPT
+    '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8', // frxETH-bb-a-WETH
+    '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6', // FRAX-bb-am-USD
+    '0xd2f3b9e67c69762dd1c88f1d3dadd1649a190761000200000000000000000bf7', // 2BRL-bbamUSD
+    '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11', // DUSD/bbaUSD
   ],
   BoostedApr: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD
@@ -337,30 +322,41 @@ const pools: Pools = {
   DisabledJoins: [
     '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e',
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
+    ...CSP_ISSUE_POOL_IDS[Network.POLYGON],
   ],
   Deprecated: {
     '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4': {},
     '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366': {},
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012': {},
-    '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
+    '0xac2cae8d2f78a4a8f92f20dbe74042cd0a8d5af3000000000000000000000be2': {
       newPool:
-        '0x216690738aac4aa0c4770253ca26a28f0115c595000000000000000000000b2c',
-      description: 'deprecatedPool.gaugeKilledReason',
+        '0x89b753153678bc434c610b7e9182297cada8ff29000000000000000000000c21',
+      description: 'deprecatedPool.hasNewPool.description',
     },
-    '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
+    '0x402cfdb7781fa85d52f425352661128250b79e12000000000000000000000be3': {
       newPool:
-        '0xe78b25c06db117fdf8f98583cdaaa6c92b79e917000000000000000000000b2b',
-      description: 'deprecatedPool.gaugeKilledReason',
+        '0xcd78a20c597e367a4e478a2411ceb790604d7c8f000000000000000000000c22',
+      description: 'deprecatedPool.hasNewPool.description',
     },
-    '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
+    '0xab269164a10fab22bc87c39946da06c870b172d6000000000000000000000bfc': {
       newPool:
-        '0xb371aa09f5a110ab69b39a84b5469d29f9b22b76000000000000000000000b37',
-      description: 'deprecatedPool.gaugeKilledReason',
+        '0xdc31233e09f3bf5bfe5c10da2014677c23b6894c000000000000000000000c23',
+      description: 'deprecatedPool.hasNewPool.description',
     },
-    '0x4a0b73f0d13ff6d43e304a174697e3d5cfd310a400020000000000000000091c': {
+    '0xf42ed61450458ee4620f5ef4f29adb25a6ef0fb6000000000000000000000bf8': {
       newPool:
-        '0x3efb91c4f9b103ee45885695c67794591916f34e000200000000000000000b43',
-      description: 'deprecatedPool.gaugeKilledReason',
+        '0xc474b8512664edc9e746ee5e786478aea15887d2000000000000000000000c25',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xa8bf1c584519be0184311c48adbdc4c15cb2e8c1000000000000000000000bf6': {
+      newPool:
+        '0x8c89fb53d4d83173dd65b7a94569558ce393460f000000000000000000000c26',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0x2645b13fd2c5295296e94a76280b968bdcbbdfed000000000000000000000c11': {
+      newPool:
+        '0x6da7f1c193ab6c4bd16eb14a6305bba8d25737ff000000000000000000000c29 ',
+      description: 'deprecatedPool.hasNewPool.description',
     },
   },
   GaugeMigration: {},
@@ -393,6 +389,7 @@ const pools: Pools = {
     [PoolWarning.PoolOwnerVulnWarningEcosystem]: [
       '0xb4670d1389c758e4380c4211bcbc85342688b9c50002000000000000000003d8',
     ],
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.POLYGON],
   },
 };
 

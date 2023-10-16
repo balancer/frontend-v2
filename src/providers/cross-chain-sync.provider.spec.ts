@@ -3,7 +3,7 @@ import {
   sendTransactionMock,
 } from '@/dependencies/contract.concern.mocks';
 import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { Network } from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { aVotingEscrowLock } from '@/services/balancer/gauges/__mocks__/gauge-builders';
 import {
   defaultMainnetVotingEscrowLock,
@@ -43,7 +43,9 @@ describe('Returns correct Sync state by network', () => {
           10,
           100,
           137,
+          8453,
           42161,
+          43114,
         ],
       }
     `);
@@ -64,6 +66,8 @@ describe('Returns correct Sync state by network', () => {
           10,
           100,
           137,
+          8453,
+          43114,
         ],
       }
     `);
@@ -95,6 +99,8 @@ describe('Returns correct Sync state by network', () => {
           10,
           100,
           137,
+          8453,
+          43114,
         ],
       }
     `);
@@ -112,6 +118,8 @@ test('Calculates L2 network balances', async () => {
       "100": "0.0000",
       "137": "0.0000",
       "42161": "0.0904",
+      "43114": "0.0000",
+      "8453": "0.0000",
     }
   `);
 });

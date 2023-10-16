@@ -17,6 +17,7 @@ import { useJoinPool } from '@/providers/local/join-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -53,6 +54,7 @@ const {
   resetTxState,
   approvalActions: joinPoolApprovalActions,
 } = useJoinPool();
+const { networkSlug } = useNetwork();
 
 const approvalActions = ref(joinPoolApprovalActions.value);
 
@@ -143,7 +145,16 @@ onUnmounted(() => {
       <BalBtn
         v-if="lockablePoolId === pool.id"
         tag="router-link"
-        :to="{ name: 'get-vebal' }"
+        :to="{
+          name: 'get-vebal',
+          query: {
+            returnRoute: $route.name,
+            returnParams: JSON.stringify({
+              id: pool.id,
+              networkSlug,
+            }),
+          },
+        }"
         color="gradient"
         block
         class="flex mt-2"

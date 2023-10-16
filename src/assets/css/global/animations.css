@@ -112,3 +112,25 @@
 .appear-leave-active {
   @apply transition-all duration-200 ease-in;
 }
+
+/* POP */
+.pop-enter-active {
+  animation: pop 0.5s;
+}
+
+.pop-leave-active {
+  animation: pop 0.25s reverse;
+}
+@keyframes pop {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}

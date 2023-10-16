@@ -49,7 +49,7 @@ const config: Config = {
     decimals: 18,
     deeplinkId: 'xdai',
     logoURI: 'tokens/xdai.png',
-    minTransactionBuffer: '0.05',
+    minTransactionBuffer: '0.005',
   },
   thirdParty: {
     coingecko: {
@@ -62,10 +62,7 @@ const config: Config = {
   },
   pools,
   tokens,
-  keys: {
-    infura: 'daaa68ec242643719749dd1caba2fc66',
-    alchemy: 'oGLgncMVHNWltnK0nTfiryxQ6gYemKQO',
-  },
+  keys: {},
   gauges: {
     type: 2,
     weight: 100,

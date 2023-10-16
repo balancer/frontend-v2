@@ -28,7 +28,7 @@ const { isMismatchedNetwork } = useWeb3();
 const {
   isActionConfirmed,
   confirmationReceipt,
-  isLoadingApprovalsForGauge,
+  isLoading,
   currentShares,
   stakeActions,
   totalUserPoolSharePct,
@@ -84,7 +84,7 @@ const assetRowWidth = computed(
       v-if="!isActionConfirmed"
       :actions="stakeActions"
       :primaryActionType="action"
-      :isLoading="isLoadingApprovalsForGauge"
+      :isLoading="isLoading"
       :disabled="isStakeAndZero || isMismatchedNetwork"
       @success="handleSuccess"
     />

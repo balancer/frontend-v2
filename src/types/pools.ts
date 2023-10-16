@@ -1,4 +1,27 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
+import { Protocol } from '@/composables/useProtocols';
+import { PoolType } from '@/services/pool/types';
+
+export enum PoolTypeFilter {
+  Weighted = 'Weighted',
+  Stable = 'Stable',
+  CLP = 'CLP',
+  LBP = 'LBP',
+}
+
+export enum PoolAttributeFilter {
+  New = 'New',
+}
+
+export type PoolFilterOptions = Ref<{
+  poolIds?: string[];
+  tokens?: string[];
+  poolTypes?: PoolType[];
+  poolAttributes?: PoolAttributeFilter[];
+  useExactTokens?: boolean;
+  pageSize?: number;
+  first?: number;
+  sortField?: string;
+}>;
 
 export type FactoryType =
   | 'oracleWeightedPool'
@@ -13,11 +36,21 @@ export type FactoryType =
   | 'gyroE'
   | 'erc4626Linear';
 
+export enum PoolFeature {
+  Boosted = 'boosted',
+  CLP = 'clp',
+}
+
+export type PoolFeatures = {
+  [key in PoolFeature]?: {
+    featureProtocols?: Protocol[];
+  };
+};
+
 export type PoolMetadata = {
   name?: string;
   hasIcon?: boolean;
-  boosted?: boolean;
-  boostedProtocols?: BoostedProtocol[];
+  features?: PoolFeatures;
 };
 
 export enum RiskKey {
@@ -37,7 +70,7 @@ export enum RiskKey {
   Weighted = 'weighted-pools',
   Stable = 'stable-pools',
   ComposableStable = 'composable-pools',
-  MetaStable = 'composable-pools',
+  MetaStable = 'meta-stable-pools',
   Boosted = 'boosted-pools',
   Arbitrum = 'arbitrum',
   Polygon = 'polygon',
@@ -69,6 +102,8 @@ export type NamedPools = {
     maiBbaUsd: string;
   };
   veBAL: string;
+  veLIT: string;
+  veUSH: string;
 };
 
 export type DeprecatedDetails = {
@@ -151,4 +186,5 @@ export enum PoolWarning {
   RenBTCWarning = 'renBTCWarning',
   EulerBoostedWarning = 'eulerBoostedWarning',
   EulerRecoveryModeWarning = 'eulerRecoveryModeWarning',
+  CspPoolVulnWarning = 'cspPoolVulnWarning',
 }

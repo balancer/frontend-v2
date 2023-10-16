@@ -69,12 +69,19 @@ const submissionDisabled = computed(() => {
     return true;
   }
 
+  const lockableAmount = bnum(lockablePoolBptBalance.value || '0');
+  const toLockAmount = bnum(lockAmount.value || '0');
+
+  if (toLockAmount.isGreaterThan(lockableAmount)) {
+    return true;
+  }
+
   if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
     return !isIncreasedLockAmount.value && !isExtendedLockEndDate.value;
   }
 
   return (
-    !bnum(lockablePoolBptBalance.value).gt(0) ||
+    !lockableAmount.gt(0) ||
     !isValidLockAmount.value ||
     !isValidLockEndDate.value
   );

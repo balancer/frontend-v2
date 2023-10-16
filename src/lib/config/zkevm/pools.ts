@@ -1,5 +1,6 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools, RiskKey } from '@/types/pools';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { PoolWarning, Pools, RiskKey } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {},
@@ -47,6 +48,7 @@ const pools: Pools = {
       '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011',
       '0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013',
       '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015',
+      '0xf74d0c533012e372a465712b49a26199a1b0714c000200000000000000000038',
     ],
   },
   Factories: {
@@ -74,31 +76,7 @@ const pools: Pools = {
       '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015',
     ],
   },
-  Metadata: {
-    '0xe274c9deb6ed34cfe4130f8d0a8a948dea5bb28600000000000000000000000d': {
-      name: 'Balancer Boosted 0vix USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Zerovix],
-    },
-    '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011': {
-      name: 'wstETH/weth/Boosted 0vix USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Zerovix],
-    },
-    '0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013': {
-      name: 'wstETH/Boosted 0vix USD',
-      hasIcon: false,
-      boosted: false,
-    },
-    '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015': {
-      name: 'rETH/Boosted 0vix USD',
-      hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Zerovix],
-    },
-  },
+  Metadata: {},
   Deep: [
     '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011',
     '0xe274c9deb6ed34cfe4130f8d0a8a948dea5bb28600000000000000000000000d',
@@ -108,7 +86,7 @@ const pools: Pools = {
   Deprecated: {},
   GaugeMigration: {},
   BoostedApr: [],
-  DisabledJoins: [],
+  DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.ZKEVM]],
   Risks: {
     '0x1d0a8a31cdb04efac3153237526fb15cc65a252000000000000000000000000f': [
       RiskKey.RateProviderBridge,
@@ -125,6 +103,9 @@ const pools: Pools = {
     '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011': [
       RiskKey.RateProviderBridge,
     ],
+  },
+  Issues: {
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ZKEVM],
   },
 };
 

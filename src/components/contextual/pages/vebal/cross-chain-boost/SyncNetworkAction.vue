@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { TransactionActionInfo } from '@/types/transactions';
 import { useI18n } from 'vue-i18n';
@@ -7,6 +8,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -36,6 +38,7 @@ const {
   tempSyncingNetworks,
   setSyncTxHashes,
 } = useCrossChainSync();
+const { isMismatchedNetwork } = useWeb3();
 
 /**
  * STATE
@@ -57,7 +60,7 @@ async function handleTransaction(
   });
 
   txListener(tx, {
-    onTxConfirmed: () => {
+    onTxConfirmed: async () => {
       setSyncTxHashes(network, tx.hash);
     },
     onTxFailed: () => {
@@ -171,6 +174,7 @@ const networkSyncSteps = computed(() => {
       :actions="networkSyncSteps"
       primaryActionType="sync"
       :spacerWidth="10"
+      :disabled="isMismatchedNetwork"
       @success="handleSuccess"
       @set-current-action-index="currentActionIndex = $event"
     />

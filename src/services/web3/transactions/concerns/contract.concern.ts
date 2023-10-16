@@ -68,13 +68,17 @@ export class ContractConcern extends TransactionConcern {
     } catch (err) {
       const error = err as WalletError;
 
-      error.metadata = await this.getErrorMetadata(
-        contractWithSigner,
-        action,
-        params,
-        block,
-        options
-      );
+      try {
+        error.metadata = await this.getErrorMetadata(
+          contractWithSigner,
+          action,
+          params,
+          block,
+          options
+        );
+      } catch (metaErr) {
+        console.error('Failed to set error metadata', metaErr);
+      }
 
       return Promise.reject(error);
     }
@@ -104,9 +108,15 @@ export class ContractConcern extends TransactionConcern {
     block: number,
     overrides: any
   ): Promise<WalletErrorMetadata> {
-    const sender = await this.signer.getAddress();
-    const chainId = await this.signer.getChainId();
-    const calldata = contract.interface.encodeFunctionData(action, params);
+    let sender, chainId, calldata;
+    try {
+      sender = await this.signer.getAddress();
+      chainId = await this.signer.getChainId();
+      calldata = contract.interface.encodeFunctionData(action, params);
+    } catch (err) {
+      console.error('Threw second error when collecting error metadata: ', err);
+    }
+
     const msgValue = overrides.value ? overrides.value.toString() : 0;
 
     return {

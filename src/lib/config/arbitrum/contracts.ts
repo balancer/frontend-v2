@@ -25,6 +25,7 @@ const contracts: Contracts = {
   faucet: '',
   gaugeRewardsHelper: arbitrum.ChildChainGaugeRewardHelper,
   gaugeWorkingBalanceHelper: arbitrum.ChildChainGaugeWorkingBalanceHelper,
+  gaugeCheckpointer: arbitrum.ChildChainGaugeCheckpointer,
 };
 
 export default contracts;

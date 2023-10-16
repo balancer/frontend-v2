@@ -8,7 +8,6 @@ const config: Config = {
   key: '10',
   chainId: 10,
   layerZeroChainId: 111,
-  supportsVeBalSync: true,
   chainName: 'Optimism',
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
@@ -25,11 +24,11 @@ const config: Config = {
   explorer: 'https://optimistic.etherscan.io/',
   explorerName: 'The Optimism Explorer',
   subgraph:
-    'https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-v2-optimism',
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-v2-optimism',
+      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
     ],
     aave: '',
     gauge:
@@ -39,6 +38,7 @@ const config: Config = {
   bridgeUrl: '',
   supportsEIP1559: false,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   nativeAsset: {
     name: 'Ether',
     address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -46,7 +46,7 @@ const config: Config = {
     decimals: 18,
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
-    minTransactionBuffer: '0.05',
+    minTransactionBuffer: '0.005',
   },
   thirdParty: {
     coingecko: {

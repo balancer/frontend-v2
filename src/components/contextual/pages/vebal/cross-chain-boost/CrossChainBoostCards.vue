@@ -12,7 +12,8 @@ import {
   useCrossChainSync,
   NetworkSyncState,
 } from '@/providers/cross-chain-sync.provider';
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 /**
  * COMPOSABLES
@@ -72,7 +73,7 @@ function onCloseModal() {
 
 <template>
   <div class="py-5 px-4">
-    <h4 class="mb-3">
+    <h4 class="mb-4 font-bold text-center">
       {{ $t('crossChainBoost.title') }}
       <BalTooltip :text="$t('crossChainBoost.infoDescription')">
         <template #activator>
@@ -105,18 +106,19 @@ function onCloseModal() {
       >
         {{ infoMessage.text }}
       </BalAlert>
-    </template>
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <template v-if="isLoading || dynamicDataLoading">
-        <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
-      </template>
+
       <div
-        v-else-if="!isWalletReady || isVebalBalanceZero"
-        class="text-sm text-secondary"
+        v-if="!isWalletReady || isVebalBalanceZero"
+        class="flex justify-center text-sm text-secondary"
       >
         {{ $t('crossChainBoost.emptyState') }}
       </div>
-      <template v-else>
+    </template>
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
+      <template v-if="isLoading || dynamicDataLoading">
+        <BalLoadingBlock v-for="n in 2" :key="n" class="h-48" />
+      </template>
+      <template v-else-if="isWalletReady && !isVebalBalanceZero">
         <BalCard>
           <div class="flex justify-between items-center mb-3 font-bold label">
             {{ $t('crossChainBoost.unsyncedNetworks') }}

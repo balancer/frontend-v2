@@ -120,12 +120,23 @@ function getTokenInputLabel(address: string): string | undefined {
  * the native asset instead.
  */
 function tokenOptions(address: string): string[] {
+  if (isSingleAssetJoin.value) return [];
+
   return includesAddress(
     [wrappedNativeAsset.value.address, nativeAsset.address],
     address
   )
     ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
+}
+
+/**
+ * When changing tokens, clear the amount value
+ */
+function onTokenChange() {
+  if (isSingleAssetJoin.value && amountsIn.value.length > 0) {
+    amountsIn.value[0].value = '';
+  }
 }
 
 /**
@@ -193,6 +204,7 @@ watch(
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="excludedTokens"
+      @update:address="onTokenChange"
     />
 
     <MissingPoolTokensAlert

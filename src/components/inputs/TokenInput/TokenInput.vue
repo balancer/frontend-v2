@@ -75,7 +75,6 @@ const props = withDefaults(defineProps<Props>(), {
   balanceLabel: '',
   hint: '',
   excludedTokens: () => [],
-  subsetTokens: () => [],
   placeholder: '',
   tokenSelectProps: () => ({}),
   slider: false,
@@ -207,6 +206,7 @@ const decimalLimit = computed<number>(() => token.value?.decimals || 18);
  */
 function handleAmountChange(amount: InputValue) {
   const safeAmount = overflowProtected(amount, decimalLimit.value);
+
   emit('update:amount', safeAmount);
 }
 

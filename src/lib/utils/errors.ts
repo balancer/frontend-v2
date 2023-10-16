@@ -7,6 +7,7 @@ import { TransactionAction } from '@/composables/useTransactions';
 import { UseQueryReturnType } from '@tanstack/vue-query';
 import { WalletError, WalletErrorMetadata } from '@/types';
 import { configService } from '@/services/config/config.service';
+import { getNetworkSlug, networkId } from '@/composables/useNetwork';
 
 interface Params {
   error: Error | unknown;
@@ -115,12 +116,10 @@ function getTags(
     action,
   };
 
+  tags.appNetwork = getNetworkSlug(networkId.value);
+
   if (balError) {
     tags.balError = balError;
-  }
-
-  if (metadata?.chainId) {
-    tags.chainId = `${metadata.chainId}`;
   }
 
   if (metadata.action) {
@@ -222,12 +221,6 @@ function isErrorOfType(error: any, messages: RegExp[]): boolean {
     return true;
   }
 
-  if (error.cause?.code && error.cause?.code === 4001) {
-    return true;
-  }
-
-  if (error.cause instanceof Error) return isUserRejected(error.cause);
-
   return false;
 }
 
@@ -250,17 +243,44 @@ function isUserRejected(error): boolean {
     /user denied transaction signature/,
     /user disapproved requested methods/,
     /canceled/,
+    /cancelled/,
     /user rejected signing/,
+    /user cancelled/,
+  ];
+
+  if (error.cause?.code && error.cause?.code === 4001) {
+    return true;
+  }
+
+  return isErrorOfType(error, messages);
+}
+
+/**
+ * Checks if error is caused by user not having enough gas or setting gas too low.
+ */
+function isUserNotEnoughGas(error): boolean {
+  const messages = [
+    /insufficient funds for gas/,
+    /the signed fee is insufficient/,
+    /EffectivePriorityFeePerGas too low/,
+    /Комиссия за газ обновлена/i,
+    /insufficient eth to pay the network fees/,
+    /insufficient funds for intrinsic transaction cost/,
   ];
 
   return isErrorOfType(error, messages);
 }
 
 /**
- * Checks if error is caused by user not having enough gas.
+ * Checks if error is caused by user's wallet having bad config / state
  */
-function isUserNotEnoughGas(error): boolean {
-  const messages = [/insufficient funds for gas/];
+function isWalletConfigError(error): boolean {
+  const messages = [
+    /invalid rpc url/,
+    /nonce has already been used/,
+    /no matching key/, //Wallet connect v2 random error when disconnecting: https://github.com/WalletConnect/walletconnect-monorepo/issues/2326#issuecomment-1633706820
+    /unknown account #0/,
+  ];
 
   return isErrorOfType(error, messages);
 }
@@ -289,17 +309,21 @@ function isBotError(error): boolean {
  * Checks if error is caused by the user or the state of their wallet.
  */
 export function isUserError(error): boolean {
-  return isUserRejected(error) || isUserNotEnoughGas(error);
+  return (
+    isUserRejected(error) ||
+    isUserNotEnoughGas(error) ||
+    isWalletConfigError(error)
+  );
 }
 
 /**
- * Checks if query has already failed, if more than once, we will ignore the error.
+ * Checks if failing query was already retried 3 times, if not, we will ignore the error.
  */
 export function shouldCaptureQueryError(
   query: UseQueryReturnType<any, any> | undefined
 ): boolean {
   if (!query) return true;
-  return query.failureCount.value <= 1;
+  return query.failureCount.value === 3;
 }
 
 /**
@@ -339,6 +363,11 @@ export function useErrorMsg() {
     description: t('transactionErrors.slippage.description'),
   };
 
+  const unknownAccountError: TransactionError = {
+    title: 'Possible wallet connection error',
+    description: 'Please review your setup and try again.',
+  };
+
   function defaultError(message = ''): TransactionError {
     return {
       title: t('transactionErrors.default.title'),
@@ -347,6 +376,8 @@ export function useErrorMsg() {
   }
 
   function formatErrorMsg(error): TransactionError | null {
+    if (isErrorOfType(error, [/unknown account #0/]))
+      return unknownAccountError;
     if (isUserError(error)) return null;
     if (isErrorOfType(error, [/UNPREDICTABLE_GAS_LIMIT/]))
       return cannotEstimateGasError;

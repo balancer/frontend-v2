@@ -6,12 +6,15 @@ import { Pool } from '@/services/pool/types';
 import { safeInject } from '../inject';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import { useI18n } from 'vue-i18n';
+import { useUserData } from '../user-data.provider';
 
 export function poolProvider(poolId: string) {
   const { addAlert, removeAlert } = useAlerts();
   const { t } = useI18n();
 
   const poolQuery = usePoolQuery(poolId);
+  const { userBoostsQuery } = useUserData();
+  const { data: poolBoostsMap } = userBoostsQuery;
 
   const initialPool = computed((): Pool | undefined => {
     return poolQuery.data.value;
@@ -26,8 +29,20 @@ export function poolProvider(poolId: string) {
     (): boolean => isQueryLoading(poolQuery) || !initialPool.value
   );
 
+  const userBoost = computed((): string | undefined => {
+    if (!poolBoostsMap.value || !poolId) return '1';
+    const boost = poolBoostsMap.value[poolId];
+    return boost ? boost : '1';
+  });
+
   const pool = computed((): Pool | undefined => {
-    return decoratedPool.value || initialPool.value;
+    const _pool = decoratedPool.value || initialPool.value;
+    if (!_pool) return undefined;
+
+    return {
+      boost: userBoost.value,
+      ..._pool,
+    };
   });
 
   watch(poolQuery.error, () => {

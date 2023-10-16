@@ -30,6 +30,8 @@ const emit = defineEmits<{
 type Props = {
   columns: ColumnDefinition[];
   data: DataProp[];
+  // Sometimes we want to explicitly specify a function to calculate the unique row key (for example, voting pool rows can have repeated ids)
+  rowKey?: (dataItem: DataProp) => string;
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
@@ -152,6 +154,11 @@ function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
   }
 }
 
+function getRowKey(dataItem: DataProp, index: number) {
+  if (props.rowKey) return `tableRow-${props.rowKey(dataItem)}`;
+  return `tableRow-${dataItem.id ?? index}`;
+}
+
 onMounted(() => {
   if (bodyRef.value) {
     bodyRef.value.onscroll = () => {
@@ -199,26 +206,24 @@ const shouldRenderTotals = computed(() =>
   props.columns.some(column => column.totalsCell !== undefined)
 );
 
-watch(
-  () => props.data,
-  newData => {
-    if (currentSortColumn.value && currentSortDirection.value !== null) {
-      handleSort(currentSortColumn.value, false);
-      return;
-    }
-    tableData.value = newData;
+watch([() => props.data, () => props.isLoading], ([newData]) => {
+  if (currentSortColumn.value && currentSortDirection.value !== null) {
+    handleSort(currentSortColumn.value, false);
+    return;
   }
-);
+  tableData.value = newData;
+});
 </script>
 
 <template>
   <div
     :class="[
-      'max-w-full whitespace-nowrap overflow-hidden',
+      'max-w-full whitespace-nowrap',
+      'max-lg:overflow-hidden',
       { 'rounded-lg': !square },
     ]"
   >
-    <div ref="headerRef" class="overflow-hidden">
+    <div ref="headerRef" class="max-lg:overflow-hidden">
       <table class="w-full whitespace-normal table-fixed">
         <!-- header width handled by colgroup  -->
         <colgroup>
@@ -249,6 +254,7 @@ watch(
               currentSortColumn === column.id && currentSortDirection
                 ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
                 : '',
+              !square ? 'rounded-t-lg' : '',
             ]"
             @click="handleSort(column.id)"
           >
@@ -286,7 +292,7 @@ watch(
         </thead>
       </table>
     </div>
-    <div ref="bodyRef" class="overflow-auto">
+    <div ref="bodyRef" class="max-lg:overflow-auto">
       <BalLoadingBlock
         v-if="isLoading"
         :class="[skeletonClass, 'min-w-full']"
@@ -326,7 +332,7 @@ watch(
         <PinHeader v-if="pinnedData.length" />
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
-          :key="`tableRow-${dataItem.id ?? index}`"
+          :key="getRowKey(dataItem, index)"
           :class="getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
@@ -346,7 +352,7 @@ watch(
         <!-- begin data rows -->
         <template
           v-for="(dataItem, index) in unpinnedData"
-          :key="`tableRow-${dataItem.id ?? index}`"
+          :key="getRowKey(dataItem, index)"
         >
           <BalTableRow
             v-if="!renderedRowsIdx || index <= renderedRowsIdx"

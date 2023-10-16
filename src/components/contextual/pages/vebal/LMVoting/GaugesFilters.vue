@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import configs, { Network } from '@/lib/config';
+import configs from '@/lib/config';
+import { Network } from '@/lib/config/types';
 
 /**
  * TYPES
@@ -31,7 +32,7 @@ const networkFiltersArr = ref([...props.activeNetworkFilters]);
  * otherwise activeFiltersNum would change only after 500ms debounce which lead to poor UX
  */
 const isExpiredFilterActive = ref(false);
-const activeNetworksArr = ref<number[]>([]);
+const activeNetworksArr = ref<number[]>(props.activeNetworkFilters);
 
 /**
  * COMPUTED

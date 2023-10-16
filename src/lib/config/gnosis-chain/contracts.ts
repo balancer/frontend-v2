@@ -24,6 +24,7 @@ const contracts: Contracts = {
   faucet: '',
   gaugeRewardsHelper: gnosis.ChildChainGaugeRewardHelper,
   gaugeWorkingBalanceHelper: gnosis.ChildChainGaugeWorkingBalanceHelper,
+  gaugeCheckpointer: gnosis.ChildChainGaugeCheckpointer,
 };
 
 export default contracts;

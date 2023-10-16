@@ -3,4 +3,6 @@ export enum ApprovalAction {
   Locking,
   Staking,
   Swapping,
+  Unapprove,
+  Unwrapping,
 }

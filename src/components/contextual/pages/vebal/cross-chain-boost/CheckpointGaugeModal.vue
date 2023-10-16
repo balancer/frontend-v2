@@ -1,32 +1,39 @@
 <script setup lang="ts">
-import { usePoolStaking } from '@/providers/local/pool-staking.provider';
-import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useTransactions from '@/composables/useTransactions';
+import useWeb3 from '@/services/web3/useWeb3';
+import { useUserStaking } from '@/providers/local/user-staking.provider';
+import useEthers from '@/composables/useEthers';
 
 interface Props {
   isVisible?: boolean;
+  poolAddress?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   isVisible: false,
 });
 
 const emit = defineEmits(['close', 'success']);
 
-const { poolGauges } = usePoolStaking();
-const { triggerGaugeUpdate } = useCrossChainSync();
+const { checkpointGauge, userGaugeShares } = useUserStaking();
 const { addTransaction } = useTransactions();
+const { isMismatchedNetwork } = useWeb3();
+const { txListener } = useEthers();
 
 const showCloseBtn = ref(false);
 
 async function triggerUpdate() {
   try {
-    const id = poolGauges.value?.pool.preferentialGauge.id;
+    const gauge = userGaugeShares.value?.find(
+      gauge => gauge.gauge.poolAddress === props.poolAddress
+    );
+    const id = gauge?.gauge.id;
+
     if (!id) {
-      throw new Error('No preferential gauge id');
+      throw new Error('No gauge id');
     }
 
-    const tx = await triggerGaugeUpdate(id);
+    const tx = await checkpointGauge(id);
 
     addTransaction({
       id: tx.hash,
@@ -34,7 +41,15 @@ async function triggerUpdate() {
       action: 'userGaugeCheckpoint',
       summary: '',
     });
-    emit('success');
+
+    await txListener(tx, {
+      onTxConfirmed: async () => {
+        emit('success', props.poolAddress);
+      },
+      onTxFailed: () => {
+        console.error('Tx failed');
+      },
+    });
 
     return tx;
   } catch (e) {
@@ -59,6 +74,7 @@ const actions = [
 <template>
   <BalModal
     :show="isVisible"
+    :disabled="isMismatchedNetwork"
     title="Trigger pool gauge veBAL update"
     @close="emit('close')"
   >

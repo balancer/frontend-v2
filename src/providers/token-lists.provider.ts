@@ -32,7 +32,7 @@ const { networkId } = useNetwork();
  * STATE
  */
 const state: TokenListsState = reactive({
-  activeListKeys: [uris.Balancer.Default],
+  activeListKeys: [uris.Balancer.Allowlisted],
 });
 
 const allTokenLists = ref({});
@@ -50,23 +50,16 @@ const activeTokenLists = computed(
 );
 
 /**
- * The default Balancer token list.
+ * All allowlisted tokens from tokenlists repo
  */
-const defaultTokenList = computed(
-  (): TokenList => allTokenLists.value[uris.Balancer.Default]
-);
-
-/**
- * The Balancer vetted token list, contains LBP tokens.
- */
-const vettedTokenList = computed(
-  (): TokenList => allTokenLists.value[uris.Balancer.Vetted]
+export const balancerTokenList = computed(
+  (): TokenList => allTokenLists.value[uris.Balancer.Allowlisted]
 );
 
 /**
  * All Balancer token lists mapped by URI.
  */
-const balancerTokenLists = computed(
+export const balancerTokenLists = computed(
   (): TokenListMap => pick(allTokenLists.value, uris.Balancer.All)
 );
 
@@ -128,10 +121,9 @@ export const tokenListsProvider = () => {
     // computed
     allTokenLists,
     activeTokenLists,
-    defaultTokenList,
     balancerTokenLists,
     approvedTokenLists,
-    vettedTokenList,
+    balancerTokenList,
     // methods
     toggleTokenList,
     isActiveList,

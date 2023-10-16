@@ -114,5 +114,121 @@
       "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x1f32b1c2345538c0c6f582fcb022739c4a194ebb.png",
       "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4200000000000000000000000000000000000006.png"
     }
+  },
+  {
+    "address": "0xC4E72abE8A32Fd7D7BA787e1Ec860ecb8C0B333c",
+    "network": 1,
+    "isKilled": false,
+    "addedTimestamp": 1690387253,
+    "relativeWeightCap": "0.02",
+    "pool": {
+      "id": "0x0018c32d85d8aebea2efbe0b0f4a4eb9e4f1c8c900020000000000000000050c",
+      "address": "0x0018C32D85D8AebEA2eFbE0b0F4a4Eb9e4F1C8C9",
+      "poolType": "TWAMM",
+      "symbol": "USDC/WETH/L",
+      "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "weight": "null",
+          "symbol": "USDC"
+        },
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "null",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+      "0xae78736Cd615f374D3085123A210448E74Fc6393": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    }
+  },
+  {
+    "address": "0x82bcaD0C8F51D88ec339141F0d8953Bc25cc3d8c",
+    "network": 137,
+    "isKilled": false,
+    "addedTimestamp": 1688418900,
+    "relativeWeightCap": "0.10",
+    "pool": {
+      "id": "0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7",
+      "address": "0xeE278d943584dd8640eaf4cc6c7a5C80c0073E85",
+      "poolType": "ComposableStable",
+      "symbol": "ECLP-wMATIC-MATICx",
+      "tokens": [
+        {
+          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+          "weight": "null",
+          "symbol": "wMATIC"
+        },
+        {
+          "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
+          "weight": "null",
+          "symbol": "MATICx"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
+      "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
+    }
+  },
+  {
+    "address": "0xdf54d2Dd06F8Be3B0c4FfC157bE54EC9cca91F3C",
+    "network": 1,
+    "isKilled": false,
+    "addedTimestamp": 1694048345,
+    "relativeWeightCap": "0.10",
+    "pool": {
+      "id": "0xf01b0684c98cd7ada480bfdf6e43876422fa1fc10002000000000000000005de",
+      "address": "0xf01b0684C98CD7aDA480BFDF6e43876422fa1Fc1",
+      "poolType": "ComposableStable",
+      "symbol": "ECLP-wstETH-wETH",
+      "tokens": [
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "null",
+          "symbol": "WETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    }
+  },
+  {
+    "address": "0x4D4264aebf65Bb1727bb5438E0b2Aaf86186DA50",
+    "network": 1,
+    "isKilled": false,
+    "addedTimestamp": 1694048345,
+    "relativeWeightCap": "0.10",
+    "pool": {
+      "id": "0xf7a826d47c8e02835d94fb0aa40f0cc9505cb1340002000000000000000005e0",
+      "address": "0xF7A826D47c8E02835D94fb0Aa40F0cC9505cb134",
+      "poolType": "ComposableStable",
+      "symbol": "ECLP-wstETH-cbETH",
+      "tokens": [
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "null",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704",
+          "weight": "null",
+          "symbol": "cbETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
+      "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xbe9895146f7af43049ca1c1ae358b0541ea49704.png"
+    }
   }
 ]

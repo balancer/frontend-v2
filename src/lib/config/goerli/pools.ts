@@ -1,5 +1,5 @@
-import { BoostedProtocol } from '@/composables/useBoostedPool';
-import { Pools, RiskKey } from '@/types/pools';
+import { Protocol } from '@/composables/useProtocols';
+import { PoolFeature, Pools, RiskKey } from '@/types/pools';
 
 export const poolIdThatRequiresInternalBalanceExit =
   '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a';
@@ -77,6 +77,7 @@ const pools: Pools = {
       '0xbb372d299cc1afa14d5b8691ced1486fa0216f74000200000000000000000757', // DVT /WETH
       '0x4dc5ef9b11fd462d78e197f8a98089933174b2c5000200000000000000000836', //tkn1/tkn2
       '0x44c5b44fb1995449bdb1d6127b25652e793df012000200000000000000000859',
+      '0xcd5875624640f9dfc5ca7ae9d41499d65e2dfd090002000000000000000008ce', // 50TOT-50USDC A
     ],
   },
   Factories: {
@@ -105,31 +106,45 @@ const pools: Pools = {
     [boostedPoolId]: {
       name: 'Balancer Boosted Aave USD',
       hasIcon: false,
-      boosted: true,
+      features: {
+        [PoolFeature.Boosted]: {},
+      },
     },
     [poolIdWithTwoBoostedProtocols]: {
       name: 'Boosted Aave and Morpho Test Pool',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Aave, BoostedProtocol.Morpho], // Two boosted protocols for testing purposes
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Aave, Protocol.Morpho],
+        },
+      },
     },
     [reaperBoostedPoolId]: {
       name: 'Reaper Boosted Test Pool',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Reaper], // Explicit Reaper metadata for testing purposes
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Reaper],
+        },
+      },
     },
     [tetuBoostedPoolId]: {
       name: 'Tetu Boosted Test Pool',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Tetu], // Explicit Reaper metadata for testing purposes
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Tetu],
+        },
+      },
     },
     [idleBoostedPoolId]: {
       name: 'Idle Boosted Test Pool',
       hasIcon: false,
-      boosted: true,
-      boostedProtocols: [BoostedProtocol.Idle], // Explicit Reaper metadata for testing purposes
+      features: {
+        [PoolFeature.Boosted]: {
+          featureProtocols: [Protocol.Idle],
+        },
+      },
     },
   },
   Deep: [

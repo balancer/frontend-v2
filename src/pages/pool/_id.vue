@@ -34,6 +34,11 @@ import PoolMigrationCard from '@/components/contextual/pages/pool/PoolMigrationC
 import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakePreviewModal.vue';
 import PoolRisks from '@/components/contextual/pages/pool/risks/PoolRisks.vue';
 import { usePool } from '@/providers/local/pool.provider';
+import { provideUserStaking } from '@/providers/local/user-staking.provider';
+import { providerUserPools } from '@/providers/local/user-pools.provider';
+
+const userStaking = provideUserStaking();
+providerUserPools(userStaking);
 
 /**
  * STATE
@@ -252,28 +257,26 @@ watch(
         </div>
       </div>
 
-      <BrandedRedirectCard
-        v-if="showBrandedRedirectCard && pool"
-        :poolType="pool?.poolType"
-        class="order-1 lg:order-2 px-4 lg:px-0"
-      />
-
-      <div
-        v-else-if="!isLiquidityBootstrappingPool"
-        class="order-1 lg:order-2 px-4 lg:px-0"
-      >
+      <div class="order-1 lg:order-2 px-4 lg:px-0">
         <BalStack vertical>
-          <BalLoadingBlock
-            v-if="loadingPool || !pool"
-            class="mb-4 h-60 pool-actions-card"
+          <BrandedRedirectCard
+            v-if="showBrandedRedirectCard && pool"
+            :poolType="pool?.poolType"
           />
-          <MyPoolBalancesCard
-            v-else
-            :pool="pool"
-            :missingPrices="missingPrices"
-            class="mb-4"
-            @risks-clicked="goToRisksSection()"
-          />
+
+          <div v-else>
+            <BalLoadingBlock
+              v-if="loadingPool || !pool"
+              class="mb-4 h-60 pool-actions-card"
+            />
+            <MyPoolBalancesCard
+              v-else-if="!isLiquidityBootstrappingPool"
+              :pool="pool"
+              :missingPrices="missingPrices"
+              class="mb-4"
+              @risks-clicked="goToRisksSection()"
+            />
+          </div>
 
           <BalLoadingBlock v-if="loadingPool" class="h-40 pool-actions-card" />
           <StakingIncentivesCard

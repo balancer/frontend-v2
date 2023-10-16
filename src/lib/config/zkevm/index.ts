@@ -35,7 +35,8 @@ const config: Config = {
     aave: '',
     gauge:
       'https://api.studio.thegraph.com/query/24660/balancer-gauges-polygon-zk/version/latest',
-    blocks: '',
+    blocks:
+      'https://api.studio.thegraph.com/query/48427/bleu-polygon-zkevm-blocks/version/latest',
   },
   bridgeUrl: 'https://wallet.polygon.technology/zkEVM-Bridge/bridge',
   supportsEIP1559: false,
@@ -48,7 +49,7 @@ const config: Config = {
     decimals: 18,
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
-    minTransactionBuffer: '0.05',
+    minTransactionBuffer: '0.005',
   },
   thirdParty: {
     coingecko: {
