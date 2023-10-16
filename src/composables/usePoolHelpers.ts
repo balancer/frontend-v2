@@ -301,11 +301,16 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
 /**
  * @summary Returns total APR label, whether range or single value.
  */
-export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
+export function totalAprLabel(
+  aprs: AprBreakdown,
+  boost?: string,
+  isConnected?: boolean
+): string {
   if (aprs.swapFees > APR_THRESHOLD) {
     return '-';
   }
-  if (boost) {
+  if (boost && boost !== '1' && isConnected) {
+    console.log('boosted');
     return numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
   if (

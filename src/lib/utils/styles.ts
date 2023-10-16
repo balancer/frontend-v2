@@ -24,6 +24,7 @@ export const alignItemVariants = {
 
 export const ySpacingVariants = {
   none: 'space-y-0',
+  xs: 'space-y-1',
   sm: 'space-y-2',
   md: 'space-y-4',
   lg: 'space-y-8',

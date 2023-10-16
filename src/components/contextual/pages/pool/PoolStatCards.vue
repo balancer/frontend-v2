@@ -14,6 +14,7 @@ import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
 import useNetwork from '@/composables/useNetwork';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -41,6 +42,7 @@ const { fNum } = useNumbers();
 const { t } = useI18n();
 const { l2VeBalBalances } = useCrossChainSync();
 const { networkId } = useNetwork();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -49,7 +51,7 @@ const aprLabel = computed((): string => {
   const poolAPRs = props.poolApr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, props.pool?.boost);
+  return totalAprLabel(poolAPRs, props.pool?.boost, isWalletReady.value);
 });
 
 const syncVeBalTooltip = computed(() => {

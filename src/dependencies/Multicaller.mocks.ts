@@ -46,12 +46,22 @@ export function initMulticallPoolId(id: string) {
   poolId = id;
 }
 
+let lastCall;
+
 export function initMulticallerAsPoolMulticallerMock() {
   // Used for tests which code uses Multicaller from pool.multicaller, that is, to fetch onchain data to decorate a given SDL pool
   // pool.multicaller defines its output type RawOnchainPoolDataMap that we can use in this mock
   // We will replace this mock with MulticallerMock in future PRs
   class MulticallerMock {
     execute() {
+      if (
+        lastCall.address === 'gauge id' &&
+        lastCall.function === 'balanceOf'
+      ) {
+        // Special case when multicaller call is made from useStakedSharesQuery
+        return Promise.resolve([]);
+      }
+
       const result = mockDeep<RawOnchainPoolDataMap>();
       const chainDataMock = mockDeep<RawOnchainPoolData>();
       chainDataMock.amp = {
@@ -70,7 +80,8 @@ export function initMulticallerAsPoolMulticallerMock() {
       result[poolId] = chainDataMock;
       return Promise.resolve(result);
     }
-    call() {
+    call(args) {
+      lastCall = args;
       return this;
     }
   }

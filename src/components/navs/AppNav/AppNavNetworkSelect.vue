@@ -168,16 +168,13 @@ function isActive(network: NetworkOption): boolean {
           <span class="ml-1 font-medium">
             {{ network.name }}
           </span>
+
+          <!-- Save for new networks in future -->
           <span
-            v-if="network.name === 'Avalanche'"
+            v-if="false"
             class="py-0.5 px-1 ml-1.5 text-xs font-medium dark:text-black uppercase bg-yellow-500 rounded"
-            >{{ $t('new') }}</span
-          >
-          <span
-            v-if="network.name === 'Base'"
-            class="py-0.5 px-1 ml-1.5 text-xs font-medium dark:text-black uppercase bg-yellow-500 rounded"
-            >{{ $t('new') }}</span
-          >
+            >{{ $t('new') }}
+          </span>
         </div>
         <BalIcon
           v-if="isActive(network)"

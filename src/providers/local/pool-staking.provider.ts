@@ -92,7 +92,7 @@ export const poolStakingProvider = (_poolId?: string) => {
   const boost = computed((): string => {
     if (!boostsMap.value || !poolId.value) return '1';
 
-    return boostsMap[poolId.value];
+    return boostsMap[poolId.value] || '1';
   });
 
   // Addresses of all pool gauges.
