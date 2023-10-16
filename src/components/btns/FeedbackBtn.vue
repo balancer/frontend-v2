@@ -14,7 +14,7 @@ const { openNpsModal } = useAppzi();
     color="white"
     :size="isMobile ? 'md' : 'sm'"
     :circle="isMobile"
-    class="px-0 w-9"
+    class="w-9 !px-0"
     @click="openNpsModal"
   >
     <ThumbsUpIcon />
