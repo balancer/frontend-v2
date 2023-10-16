@@ -363,7 +363,11 @@ function goToPoolPage(id: string) {
       </template>
       <template #iconColumnCell="pool">
         <div v-if="!isLoading" class="py-4 px-6" :data-testid="pool?.id">
-          <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
+          <BalAssetSet
+            :addresses="iconAddresses(pool)"
+            :width="100"
+            :size="32"
+          />
         </div>
       </template>
       <template #poolNameCell="pool">
