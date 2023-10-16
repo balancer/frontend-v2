@@ -459,6 +459,7 @@
       "linkText": "Gyroscope website"
     }
   },
+  "feedback": "feedback",
   "fees": "fees",
   "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every swap utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
   "feesTime": "Fees ({0})",
@@ -968,7 +969,9 @@
     "the-graph": "Used to fetch blockchain data from The Graph’s hosted service.",
     "fathom-analytics": "Used to understand user behavior on the site and marketing performance.",
     "TRM-labs": "Used to securely collect wallet addresses and shares it with TRM Labs Inc. for risk and compliance reasons.",
-    "sentry": "Used for error tracking and performance monitoring."
+    "sentry": "Used for error tracking and performance monitoring.",
+    "appzi": "Used to capture and store user feedback from optional surveys",
+    "amazon-web-services": "Used for a variety of infrastructure services, but primarily to fetch and cache blockchain data."
   },
   "settings": "Settings",
   "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to swap and provide liquidity here.",

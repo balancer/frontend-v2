@@ -1,23 +1,22 @@
 <script lang="ts" setup>
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import { useAppzi } from '@/composables/useAppzi';
 
 /**
  * COMPOSABLES
  */
 const { isMobile } = useBreakpoints();
-const { darkMode, toggleDarkMode } = useDarkMode();
+const { openNpsModal } = useAppzi();
 </script>
 
 <template>
   <BalBtn
     color="white"
-    class="px-0 w-9"
     :size="isMobile ? 'md' : 'sm'"
     :circle="isMobile"
-    @click="toggleDarkMode"
+    class="px-0 w-9"
+    @click="openNpsModal"
   >
-    <MoonIcon v-if="darkMode" />
-    <SunIcon v-else />
+    <ThumbsUpIcon />
   </BalBtn>
 </template>

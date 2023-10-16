@@ -211,7 +211,7 @@ const { openNpsModal } = useAppzi();
             class="flex flex-wrap md:order-3 gap-x-3 lg:gap-x-4 gap-y-2 md:justify-end"
           >
             <p>
-              <span class="policy" @click="openNpsModal">Feedback</span>
+              <button class="policy" @click="openNpsModal">Feedback</button>
             </p>
             <p>
               <router-link class="policy" :to="{ name: 'terms-of-use' }">
