@@ -173,6 +173,7 @@ function handleClose(): void {
       :pool="pool"
       :fiatTotal="fiatTotalOut"
       :priceImpact="priceImpact"
+      class="mt-4"
     />
 
     <WithdrawActions
