@@ -6,7 +6,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useTokens } from '@/providers/tokens.provider';
-import { hasBalEmissions, hasStakingRewards } from '@/composables/useAPR';
+import { hasBalEmissions } from '@/composables/useAPR';
 
 /**
  * TYPES
@@ -50,6 +50,13 @@ const hasRewardTokens = computed((): boolean =>
   bnum(rewardTokensAPR.value).gt(0)
 );
 
+const realMinAPR = computed((): number =>
+  bnum(minBalAPR.value).plus(rewardTokensAPR.value).toNumber()
+);
+const realMaxAPR = computed((): number =>
+  bnum(maxBalAPR.value).plus(rewardTokensAPR.value).toNumber()
+);
+
 /**
  * @summary The total APR if we have the user's boost.
  */
@@ -66,15 +73,14 @@ const boostedTotalAPR = computed((): string => {
   return fNum(rewardTokensAPR.value, FNumFormats.bp);
 });
 
-/**
- * @summary The total APR if we have don't have the user's boost.
- */
-const unboostedTotalAPR = computed((): string =>
-  fNum(
-    bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
+const stakingAprRange = computed(() => {
+  if (isMinMaxSame.value) return fNum(realMinAPR.value, FNumFormats.bp);
+
+  return `${fNum(realMinAPR.value, FNumFormats.bp)} - ${fNum(
+    realMaxAPR.value,
     FNumFormats.bp
-  )
-);
+  )}`;
+});
 
 const breakdownItems = computed((): Array<any> => {
   const items: Array<any> = [];
@@ -109,36 +115,28 @@ const breakdownItems = computed((): Array<any> => {
 
 <template>
   <div data-testid="staking-apr">
-    <div v-if="hasBoost">
-      <div class="flex items-center">
+    <template v-if="hasBoost">
+      <BalHStack justify="between" class="font-bold">
+        <span>Staking APR</span>
         {{ boostedTotalAPR }}
-        <span class="ml-1 text-secondarytext-xs">
-          {{ $t('staking.stakingApr') }}
-        </span>
-      </div>
-    </div>
+      </BalHStack>
+    </template>
     <template v-else>
-      <BalBreakdown
-        v-if="hasBalEmissions(apr) || hasStakingRewards(apr)"
-        :items="breakdownItems"
-      >
-        <div class="flex items-center">
-          {{ unboostedTotalAPR }}
-          <span class="ml-1 text-xs text-secondary">
-            {{
-              isMinMaxSame
-                ? $t('staking.stakingApr')
-                : $t('staking.minimumStakingApr')
-            }}
-          </span>
-        </div>
-        <template #item="{ item: [label, amount] }">
+      <BalHStack justify="between" class="font-bold">
+        <span>Staking APR</span>
+        {{ stakingAprRange }}
+      </BalHStack>
+      <BalVStack spacing="xs" class="mt-1">
+        <BalHStack
+          v-for="([label, amount], i) in breakdownItems"
+          :key="i"
+          justify="between"
+          class="text-gray-500"
+        >
+          <span class="ml-2">{{ label }} {{ $t('apr') }} </span>
           {{ fNum(amount, FNumFormats.bp) }}
-          <span class="ml-1 text-xs capitalize text-secondary">
-            {{ label }} {{ $t('apr') }}
-          </span>
-        </template>
-      </BalBreakdown>
+        </BalHStack>
+      </BalVStack>
     </template>
   </div>
 </template>

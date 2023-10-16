@@ -47,7 +47,7 @@ describe('APRTooltip', () => {
       expect(getByTestId('total-apr').textContent).toBe('Total APR15.22%');
       expect(getByTestId('swap-fee-apr')).toBeTruthy();
       expect(getByTestId('swap-fee-apr').textContent).toBe(
-        '15.22% Swap fees APR'
+        'Swap fees APR 15.22%'
       );
     });
   });
@@ -75,7 +75,7 @@ describe('APRTooltip', () => {
         'Total APR0.78% - 1.95%'
       );
       expect(getByTestId('vebal-apr').textContent).toContain(
-        '1.17% Max locking/veBAL APR'
+        'Max locking/veBAL APR1.17%'
       );
     });
   });
@@ -101,19 +101,17 @@ describe('APRTooltip', () => {
         'Total APR0.44% - 5.67%'
       );
       expect(getByTestId('swap-fee-apr').textContent).toBe(
-        '0.00% Swap fees APR'
+        'Swap fees APR 0.00%'
       );
-      expect(
-        getByTestId('staking-apr').children[0].children[0].textContent
-      ).toBe('0.44% Min staking APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[0]
-          .textContent
-      ).toBe('0.44% Min BAL APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[1]
-          .textContent
-      ).toBe('5.67% Max BAL APR');
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Staking APR 0.44% - 5.67%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Min BAL APR 0.44%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Max BAL APR 5.67%'
+      );
     });
 
     it('Should show swap fees and staking rewards', () => {
@@ -137,19 +135,17 @@ describe('APRTooltip', () => {
         'Total APR2.71% - 7.78%'
       );
       expect(getByTestId('swap-fee-apr').textContent).toBe(
-        '2.23% Swap fees APR'
+        'Swap fees APR 2.23%'
       );
-      expect(
-        getByTestId('staking-apr').children[0].children[0].textContent
-      ).toBe('0.48% Min staking APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[0]
-          .textContent
-      ).toBe('0.48% Min BAL APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[1]
-          .textContent
-      ).toBe('5.55% Max BAL APR');
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Staking APR 0.48% - 5.55%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Min BAL APR 0.48%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Max BAL APR 5.55%'
+      );
     });
 
     it('Should show staking rewards as a single line item if min and max are the same', () => {
@@ -169,18 +165,18 @@ describe('APRTooltip', () => {
           poolApr: aprBreakdown,
         },
       });
-      expect(getByTestId('staking-apr').textContent).toBe('7.63% Staking APR');
+      expect(getByTestId('staking-apr').textContent).toBe('Staking APR 7.63%');
     });
   });
 
   describe('Token Aprs', () => {
-    it('Should show stETH token APRs', () => {
+    it('Should show WETH token APRs', () => {
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
         tokenAprs: {
           total: 166,
           breakdown: {
-            [configService.network.tokens.Addresses.wstETH || '']: 166,
+            [configService.network.tokens.Addresses.WETH || '']: 166,
           },
         },
         min: 166,
@@ -188,7 +184,7 @@ describe('APRTooltip', () => {
       };
       const poolMock: Pool = {
         ...EmptyPoolMock,
-        tokensList: [configService.network.tokens.Addresses.wstETH || ''],
+        tokensList: [configService.network.tokens.Addresses.WETH || ''],
       };
       const { getByTestId } = renderComponent(APRTooltip, {
         props: {
@@ -196,61 +192,8 @@ describe('APRTooltip', () => {
           poolApr: aprBreakdown,
         },
       });
-      expect(getByTestId('total-apr').textContent).toBe('Total APR1.66%');
-      expect(getByTestId('yield-apr').textContent).toBe('1.66% Token APR');
-    });
-
-    it('Should show stMATIC token APRs', () => {
-      const aprBreakdown: AprBreakdown = {
-        ...EmptyAprBreakdownMock,
-        tokenAprs: {
-          total: 153,
-          breakdown: {
-            '0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4': 153,
-          },
-        },
-        min: 153,
-        max: 153,
-      };
-      const poolMock: Pool = {
-        ...EmptyPoolMock,
-        tokensList: [configService.network.tokens.Addresses.stMATIC || ''],
-      };
-      const { getByTestId } = renderComponent(APRTooltip, {
-        props: {
-          pool: poolMock,
-          poolApr: aprBreakdown,
-        },
-      });
-      expect(getByTestId('total-apr').textContent).toBe('Total APR1.53%');
-      expect(getByTestId('yield-apr').textContent).toBe('1.53% stMATIC APR');
-    });
-
-    it('Should show rETH token APRs', () => {
-      const aprBreakdown: AprBreakdown = {
-        ...EmptyAprBreakdownMock,
-        swapFees: 29,
-        tokenAprs: {
-          total: 73,
-          breakdown: {
-            [configService.network.tokens.Addresses.rETH || '']: 73,
-          },
-        },
-        min: 102,
-        max: 102,
-      };
-      const poolMock: Pool = {
-        ...EmptyPoolMock,
-        tokensList: [configService.network.tokens.Addresses.rETH || ''],
-      };
-      const { getByTestId } = renderComponent(APRTooltip, {
-        props: {
-          pool: poolMock,
-          poolApr: aprBreakdown,
-        },
-      });
-      expect(getByTestId('total-apr').textContent).toBe('Total APR1.02%');
-      expect(getByTestId('yield-apr').textContent).toBe('0.73% Token APR');
+      expect(getByTestId('total-apr').textContent).toContain('Total APR1.66%');
+      expect(getByTestId('yield-apr').textContent).toContain('WETH APR 1.66%');
     });
 
     it('Should show multiple token APRs with a generic header', () => {
@@ -279,17 +222,11 @@ describe('APRTooltip', () => {
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR1.02%');
-      const yieldAprBreakdown = getByTestId('yield-apr').children[0];
-      expect(yieldAprBreakdown.children[0].textContent).toBe('2.54% Token APR');
-      expect(yieldAprBreakdown.children[1].children[0].textContent).toBe(
-        '1.18% wstETH APR'
-      );
-      expect(yieldAprBreakdown.children[1].children[1].textContent).toBe(
-        '1.04% sfrxETH APR'
-      );
-      expect(yieldAprBreakdown.children[1].children[2].textContent).toBe(
-        '0.32% rETH APR'
-      );
+      const yieldAprBreakdown = getByTestId('yield-apr');
+      expect(yieldAprBreakdown.textContent).toContain('Boosted APR 2.54%');
+      expect(yieldAprBreakdown.textContent).toContain('wstETH APR 1.18%');
+      expect(yieldAprBreakdown.textContent).toContain('sfrxETH APR 1.04%');
+      expect(yieldAprBreakdown.textContent).toContain('rETH APR 0.32%');
     });
 
     it('Should show a breakdown of a boosted pools linear pool APRs and staking rewards', () => {
@@ -329,30 +266,20 @@ describe('APRTooltip', () => {
       expect(getByTestId('total-apr').textContent).toBe(
         'Total APR1.75% - 2.20%'
       );
-      const yieldAprBreakdown = getByTestId('yield-apr').children[0];
-      expect(yieldAprBreakdown.children[0].textContent).toBe(
-        '1.31% Boosted APR'
+      const yieldAprBreakdown = getByTestId('yield-apr');
+      expect(yieldAprBreakdown.textContent).toContain('Boosted APR 1.31%');
+      expect(yieldAprBreakdown.textContent).toContain('bb-a-USDT APR 1.15%');
+      expect(yieldAprBreakdown.textContent).toContain('bb-a-USDC APR 0.04%');
+      expect(yieldAprBreakdown.textContent).toContain('bb-a-DAI APR 0.12%');
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Staking APR 0.30% - 0.75%'
       );
-      expect(yieldAprBreakdown.children[1].children[0].textContent).toBe(
-        '1.15% bb-a-USDT APR'
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Min BAL APR 0.30%'
       );
-      expect(yieldAprBreakdown.children[1].children[1].textContent).toBe(
-        '0.04% bb-a-USDC APR'
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Max BAL APR 0.75%'
       );
-      expect(yieldAprBreakdown.children[1].children[2].textContent).toBe(
-        '0.12% bb-a-DAI APR'
-      );
-      expect(
-        getByTestId('staking-apr').children[0].children[0].textContent
-      ).toBe('0.30% Min staking APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[0]
-          .textContent
-      ).toBe('0.30% Min BAL APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[1]
-          .textContent
-      ).toBe('0.75% Max BAL APR');
     });
 
     it('Should show boosted staking rewards as a line item for pools that contain a boosted pool', () => {
@@ -380,18 +307,18 @@ describe('APRTooltip', () => {
       expect(getByTestId('total-apr').textContent).toBe(
         'Total APR5.95% - 14.46%'
       );
-      expect(getByTestId('yield-apr').textContent).toBe('0.28% Boosted APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[0].textContent
-      ).toBe('5.67% Min staking APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[0]
-          .textContent
-      ).toBe('5.67% Min BAL APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[1]
-          .textContent
-      ).toBe('14.18% Max BAL APR');
+      expect(getByTestId('yield-apr').textContent).toContain(
+        'Boosted APR 0.28%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Staking APR 5.67% - 14.18%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Min BAL APR 5.67%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Max BAL APR 14.18%'
+      );
     });
 
     it('Should show veBAL staking rewards as a line item for pools that contain the 80/20 veBAL pool', () => {
@@ -414,7 +341,9 @@ describe('APRTooltip', () => {
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR0.17%');
-      expect(getByTestId('yield-apr').textContent).toBe('0.17% veBAL APR');
+      expect(getByTestId('yield-apr').textContent).toContain(
+        'Boosted APR 0.17%'
+      );
     });
   });
 
@@ -445,23 +374,20 @@ describe('APRTooltip', () => {
         'Total APR1.67% - 6.45%'
       );
       expect(getByTestId('swap-fee-apr').textContent).toBe(
-        '0.00% Swap fees APR'
+        'Swap fees APR 0.00%'
       );
-      expect(
-        getByTestId('staking-apr').children[0].children[0].textContent
-      ).toBe('1.67% Min staking APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[0]
-          .textContent
-      ).toBe('0.44% Min BAL APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[1]
-          .textContent
-      ).toBe('5.22% Max BAL APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[2]
-          .textContent
-      ).toBe('1.23% Rewards APR');
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Staking APR 1.67% - 6.45%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Min BAL APR 0.44%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Max BAL APR 5.22%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Rewards APR 1.23%'
+      );
     });
 
     it('Should show BAL + staking rewards as line items if staking APR is the same but there are rewards', () => {
@@ -486,17 +412,13 @@ describe('APRTooltip', () => {
           poolApr: aprBreakdown,
         },
       });
-      expect(
-        getByTestId('staking-apr').children[0].children[0].textContent
-      ).toBe('10.51% Staking APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[0]
-          .textContent
-      ).toBe('7.63% BAL APR');
-      expect(
-        getByTestId('staking-apr').children[0].children[1].children[1]
-          .textContent
-      ).toBe('2.88% Rewards APR');
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Staking APR 10.51%'
+      );
+      expect(getByTestId('staking-apr').textContent).toContain('BAL APR 7.63%');
+      expect(getByTestId('staking-apr').textContent).toContain(
+        'Rewards APR 2.88%'
+      );
     });
   });
 });

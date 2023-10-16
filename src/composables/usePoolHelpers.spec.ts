@@ -601,7 +601,7 @@ test('generates APR label with boost', async () => {
     },
   });
 
-  expect(totalAprLabel(aprBreakdown, boost)).toBe('0.17%'); // swapFees + tokenAprsTotal + rewardAprsTotal
+  expect(totalAprLabel(aprBreakdown, boost, true)).toBe('0.17%'); // swapFees + tokenAprsTotal + rewardAprsTotal
 });
 
 test('generates APR label with boost', async () => {
@@ -634,7 +634,7 @@ test('generates APR label with boost', async () => {
   // (swapFees + tokenAprsTotal + rewardAprsTotal) = 10 + 5 + 2 = 17
   // (stakingAprMin * boost ) = 1.5 * 2.5 = 3.75
   // total = 17 + 3.75 = 20.75 --> 0.21%
-  expect(totalAprLabel(aprBreakdown, boost)).toBe('0.21%');
+  expect(totalAprLabel(aprBreakdown, boost, true)).toBe('0.21%');
 });
 
 test('generates absMaxApr when no boost', async () => {
