@@ -1,45 +1,23 @@
 <script lang="ts" setup>
-import useDebouncedRef from '@/composables/useDebouncedRed';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useVotingPools from '@/composables/useVotingPools';
 
 import useNetwork from '@/composables/useNetwork';
+import useNumbers from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 import { useVeBalLockInfo } from '@/composables/useVeBalLockInfo';
-import configs from '@/lib/config';
-import { Network } from '@/lib/config/types';
+
 import useWeb3 from '@/services/web3/useWeb3';
+import { isVotingCompleted, useVoting } from '../providers/voting.provider';
+import { bpsToPercentage } from '../voting-utils';
 import GaugesFilters from './GaugesFilters.vue';
 import GaugesTable from './GaugesTable.vue';
 import VotingAlert from './VotingAlert.vue';
-import { bpsToPercentage, isGaugeExpired } from '../voting-utils';
-import useNumbers from '@/composables/useNumbers';
-import { isVotingCompleted, useVoting } from '../providers/voting.provider';
-
-/**
- * COMPOSABLES
- */
-const router = useRouter();
+import { useLMVotingFilters } from './composables/useLMVotingFilters';
 
 /**
  * DATA
  */
-
-const tokenFilter = useDebouncedRef<string>('', 500);
-const showExpiredGauges = useDebouncedRef<boolean>(false, 500);
-const activeNetworkFilters = useDebouncedRef<Network[]>(
-  getDefaultActiveNetworkFilter(),
-  500
-);
-
-const networkFilters: Network[] = Object.entries(configs)
-  .filter(details => {
-    const config = details[1];
-    return (
-      !config.testNetwork && config.pools.Stakable.VotingGaugePools.length > 0
-    );
-  })
-  .map(details => Number(details[0]) as Network);
 
 /**
  * COMPOSABLES
@@ -70,47 +48,20 @@ const {
   loadRequestWithExistingVotes,
 } = useVoting();
 
+const {
+  showExpiredGauges,
+  activeNetworkFilters,
+  filteredVotingPools,
+  tokenFilter,
+  networkFilters,
+} = useLMVotingFilters(votingPools, expiredGauges);
+
 /**
  * COMPUTED
  */
 const unallocatedVotesFormatted = computed<string>(() =>
   bpsToPercentage(unallocatedVotes.value, fNum)
 );
-
-const poolsFilteredByExpiring = computed(() => {
-  if (showExpiredGauges.value) {
-    return votingPools.value;
-  }
-
-  return votingPools.value.filter(pool => {
-    if (Number(pool.userVotes) > 0) {
-      return true;
-    }
-    return !isGaugeExpired(expiredGauges.value, pool.gauge.address);
-  });
-});
-
-const filteredVotingPools = computed(() => {
-  // put filter by expiring in separate computed to maintain readability
-  return poolsFilteredByExpiring.value.filter(pool => {
-    let showByNetwork = true;
-    if (
-      activeNetworkFilters.value.length > 0 &&
-      !activeNetworkFilters.value.includes(pool.network)
-    ) {
-      showByNetwork = false;
-    }
-
-    return (
-      showByNetwork &&
-      pool.tokens.some(token => {
-        return token.symbol
-          ?.toLowerCase()
-          .includes(tokenFilter.value.toLowerCase());
-      })
-    );
-  });
-});
 
 const selectVotesDisabled = computed(
   (): boolean =>
@@ -153,20 +104,6 @@ function addIntersectionObserver(): void {
   };
   observer = new IntersectionObserver(callback, options);
   observer.observe(intersectionSentinel.value);
-}
-
-function getDefaultActiveNetworkFilter() {
-  const param = router.currentRoute.value.query.chain;
-  if (!param || typeof param !== 'string') {
-    return [];
-  }
-
-  const networkToFilter = Network[param.toUpperCase()];
-  if (!networkToFilter) {
-    return [];
-  }
-
-  return [networkToFilter];
 }
 
 onMounted(() => {
