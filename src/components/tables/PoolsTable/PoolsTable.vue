@@ -101,7 +101,7 @@ const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
-const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToSmallBreakpoint, isMobile } = useBreakpoints();
 const { networkSlug } = useNetwork();
 const { isWalletReady } = useWeb3();
 
@@ -366,7 +366,7 @@ function goToPoolPage(id: string) {
           <BalAssetSet
             :addresses="iconAddresses(pool)"
             :width="100"
-            :size="32"
+            :size="isMobile ? 28 : 32"
           />
         </div>
       </template>
