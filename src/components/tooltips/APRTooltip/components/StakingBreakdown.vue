@@ -7,6 +7,7 @@ import { Pool } from '@/services/pool/types';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { useTokens } from '@/providers/tokens.provider';
 import { hasBalEmissions } from '@/composables/useAPR';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -26,6 +27,7 @@ const props = defineProps<Props>();
  */
 const { fNum } = useNumbers();
 const { getToken } = useTokens();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -34,7 +36,9 @@ const { getToken } = useTokens();
 const apr = computed(() => props.pool?.apr || props.poolApr);
 
 const boost = computed((): string => props.pool?.boost || '');
-const hasBoost = computed((): boolean => !!boost.value);
+const hasBoost = computed(
+  (): boolean => !!boost.value && boost.value !== '1' && isWalletReady.value
+);
 const stakingAPR = computed(
   (): AprBreakdown['stakingApr'] | undefined => apr.value?.stakingApr
 );
