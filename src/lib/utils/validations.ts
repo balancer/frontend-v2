@@ -55,3 +55,8 @@ export function isGreaterThan(min: number | string, msg = '') {
     bnum(v).isGreaterThan(min) ||
     (msg ? msg : i18n.global.t('mustBeMoreThan', [min]));
 }
+
+export function isTxHash() {
+  const regex = /^0x([A-Fa-f0-9]{64})$/;
+  return v => !v || regex.test(v) || 'Must be valid transaction hash';
+}

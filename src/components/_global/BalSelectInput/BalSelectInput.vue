@@ -46,7 +46,7 @@ export default defineComponent({
   },
 
   props: {
-    modelValue: { type: String, default: '' },
+    modelValue: { type: [String, Number], default: '' },
     options: { type: Array, required: true },
     name: { type: String, required: true },
     label: { type: String, default: '' },
@@ -163,7 +163,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-select-input {
-  @apply relative w-full rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2
+  @apply relative rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2
     bg-gray-50 dark:bg-gray-800 transition-all;
 }
 

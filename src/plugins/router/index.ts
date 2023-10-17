@@ -27,6 +27,7 @@ const VeBalPage = () => import('@/pages/vebal.vue');
 const VeBalVotingPage = () => import('@/pages/vebal-voting.vue');
 const FaucetPage = () => import('@/pages/faucet.vue');
 const BalancesPage = () => import('@/pages/balances.vue');
+const RestitutionPage = () => import('@/pages/restitution.vue');
 
 const PortfolioPage = () => import('@/pages/portfolio.vue');
 const RecoveryExitPage = () =>
@@ -162,6 +163,11 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/balances',
     name: 'balances',
     component: BalancesPage,
+  },
+  {
+    path: '/restitutions',
+    name: 'restitutions',
+    component: RestitutionPage,
   },
   {
     path: '/:networkSlug?',

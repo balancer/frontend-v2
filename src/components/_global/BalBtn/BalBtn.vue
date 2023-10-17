@@ -52,6 +52,7 @@ type Props = {
   loadingLabel?: string;
   disabled?: boolean;
   justifyContent?: 'start' | 'center' | 'end' | 'between';
+  height?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
