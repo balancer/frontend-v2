@@ -165,7 +165,7 @@ const routes: RouteRecordRaw[] = [
     component: BalancesPage,
   },
   {
-    path: '/restitutions',
+    path: '/:networkSlug/restitutions',
     name: 'restitutions',
     component: RestitutionPage,
   },

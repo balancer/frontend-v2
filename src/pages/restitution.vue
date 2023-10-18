@@ -1,19 +1,21 @@
 <script lang="ts" setup>
-import useDarkMode from '@/composables/useDarkMode';
 import { Config, Network } from '@/lib/config/types';
 import { shorten } from '@/lib/utils';
-import { buildNetworkIconURL } from '@/lib/utils/urls';
 import { isRequired, isTxHash } from '@/lib/utils/validations';
 import config from '@/lib/config';
+import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
+import useWeb3 from '@/services/web3/useWeb3';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { configService } from '@/services/config/config.service';
+import {
+  networkId,
+  getNetworkSlug,
+  getNetworkName,
+} from '@/composables/useNetwork';
 
 /**
  * TYPES
  */
-type Claim = {
-  network: Network;
-  txHash: string;
-};
-
 type Form = {
   network: Network;
   txHash: string;
@@ -28,8 +30,7 @@ type NetworkOption = {
 /**
  * STATE
  */
-const claims = ref<Claim[]>([]);
-
+const claimsNetwork = Network.POLYGON;
 const networkOptions: NetworkOption[] = Object.values(config)
   .filter(config => config.visibleInUI && !config.testNetwork)
   .map(convertConfigToNetworkOption);
@@ -43,7 +44,17 @@ const form = reactive<Form>({
 /**
  * COMPOSABLES
  */
-const { darkMode } = useDarkMode();
+const {
+  account,
+  getSigner,
+  startConnectWithInjectedProvider,
+  isMismatchedNetwork,
+} = useWeb3();
+
+/**
+ * COMPUTED
+ */
+const wrongNetwork = computed(() => networkId.value !== claimsNetwork);
 
 /**
  * METHODS
@@ -61,17 +72,19 @@ function clearForm() {
   form.valid = true;
 }
 
-function addClaim() {
-  claims.value.push({ network: form.network, txHash: form.txHash });
-  clearForm();
-}
+async function submitClaim() {
+  const signer = getSigner();
+  const contractAddress = configService.network.addresses.claimSubmission;
+  if (!contractAddress) throw new Error('No contract address found');
 
-function removeClaim(index: number) {
-  claims.value.splice(index, 1);
-}
+  const txBuilder = new TransactionBuilder(signer);
 
-function submitClaims() {
-  console.log('submit claims', claims.value);
+  return txBuilder.contract.sendTransaction({
+    contractAddress: contractAddress,
+    abi: ['function submitClaim(string memory network, bytes32 txHash) public'],
+    action: 'submitClaim',
+    params: [form.network.toString(), form.txHash],
+  });
 }
 </script>
 
@@ -81,7 +94,24 @@ function submitClaims() {
       <h1>Restitutions</h1>
       <p>Some blurb...</p>
 
-      <BalCard class="mt-8 max-w-lg">
+      <div v-if="wrongNetwork" class="mt-8">
+        <p class="mb-2">
+          Claim submission are only accepted on
+          {{ getNetworkName(Network.POLYGON) }}
+        </p>
+        <BalBtn
+          tag="router-link"
+          :to="{
+            name: 'restitutions',
+            params: { networkSlug: getNetworkSlug(Network.POLYGON) },
+          }"
+          color="gradient"
+          size="sm"
+          >Claim on Polygon</BalBtn
+        >
+      </div>
+
+      <BalCard v-else class="mt-8 max-w-lg">
         <BalVStack>
           <BalHStack spacing="sm">
             <div>
@@ -106,58 +136,34 @@ function submitClaims() {
               />
             </div>
           </BalHStack>
-          <BalBtn
-            size="sm"
-            class="mt-1 h-11"
-            outline
-            color="blue"
-            :disabled="!form.valid || !form.txHash"
-            @click="addClaim"
-          >
-            Add claim
-          </BalBtn>
-        </BalVStack>
-      </BalCard>
-
-      <BalVStack maxWidth="lg" spacing="md" class="mt-8">
-        <BalText as="h3">Claims</BalText>
-        <BalHStack
-          v-for="(claim, i) in claims"
-          :key="i"
-          spacing="md"
-          justify="between"
-          align="center"
-        >
-          <BalHStack spacing="md" align="center">
-            <img
-              :src="buildNetworkIconURL(claim.network as Network)"
-              class="w-5 h-5"
-            />
-            <BalText>{{ shorten(claim.txHash) }}</BalText>
-          </BalHStack>
-          <BalBtn
-            size="xs"
-            outline
-            :color="darkMode ? 'gray' : 'black'"
-            @click="removeClaim(i)"
-            >Remove</BalBtn
-          >
-        </BalHStack>
-        <BalBlankSlate v-if="claims.length === 0" align="center"
-          ><BalText class="text-gray-500" size="sm"
-            >No claims</BalText
-          ></BalBlankSlate
-        >
-        <div>
-          <BalBtn
-            :disabled="claims.length === 0"
+          <BalAlert
+            v-if="isMismatchedNetwork"
+            title="Wrong network"
+            description="Your wallet is connected to the wrong network."
+            type="warning"
+            class="mb-4"
+          />
+          <TxActionBtn
+            v-if="account"
+            label="Submit claim"
             color="gradient"
             size="sm"
-            @click="submitClaims"
-            >Submit claims</BalBtn
+            :actionFn="submitClaim"
+            action="claimSubmission"
+            :summary="`Claim submission: ${shorten(form.txHash)}`"
+            :confirmingLabel="`Submitting...`"
+            :disabled="!form.valid || !form.txHash || isMismatchedNetwork"
+            @confirmed="clearForm()"
+          />
+          <BalBtn
+            v-else
+            color="gradient"
+            size="sm"
+            @click="startConnectWithInjectedProvider"
+            >Connect wallet</BalBtn
           >
-        </div>
-      </BalVStack>
+        </BalVStack>
+      </BalCard>
     </BalVStack>
   </BalContainer>
 </template>

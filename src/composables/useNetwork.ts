@@ -81,6 +81,10 @@ export function getNetworkSlug(network: Network): string {
   return config[network].slug;
 }
 
+export function getNetworkName(network: Network): string {
+  return config[network].name;
+}
+
 export function networkFromSlug(networkSlug: string): Network | null {
   const networkConf = Object.values(config).find((config: Config) => {
     return config.slug === networkSlug;

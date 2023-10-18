@@ -26,6 +26,7 @@ const contracts: Contracts = {
   gaugeRewardsHelper: polygon.ChildChainGaugeRewardHelper,
   gaugeWorkingBalanceHelper: polygon.ChildChainGaugeWorkingBalanceHelper,
   gaugeCheckpointer: polygon.ChildChainGaugeCheckpointer,
+  claimSubmission: '0xAB913E494ebAD85465eF0e1c6c46705d4FeA341E',
 };
 
 export default contracts;
