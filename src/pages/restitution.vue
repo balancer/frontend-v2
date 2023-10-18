@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Config, Network } from '@/lib/config/types';
-import { shorten } from '@/lib/utils';
 import { isRequired, isTxHash } from '@/lib/utils/validations';
 import config from '@/lib/config';
 import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
@@ -18,8 +17,8 @@ import {
  */
 type Form = {
   network: Network;
-  txHash: string;
-  valid: boolean;
+  txHashes: string[];
+  valid: boolean[];
 };
 
 type NetworkOption = {
@@ -37,8 +36,8 @@ const networkOptions: NetworkOption[] = Object.values(config)
 
 const form = reactive<Form>({
   network: networkOptions[0].value,
-  txHash: '',
-  valid: true,
+  txHashes: [''],
+  valid: [true],
 });
 
 /**
@@ -56,6 +55,12 @@ const {
  */
 const wrongNetwork = computed(() => networkId.value !== claimsNetwork);
 
+const formValid = computed(() => {
+  return form.txHashes.every((txHash, index) => {
+    return form.valid[index];
+  });
+});
+
 /**
  * METHODS
  */
@@ -68,8 +73,21 @@ function convertConfigToNetworkOption(config: Config): NetworkOption {
 
 function clearForm() {
   form.network = networkOptions[0].value;
-  form.txHash = '';
-  form.valid = true;
+  form.txHashes = [''];
+  form.valid = [true];
+}
+
+function addHash() {
+  form.txHashes.push('');
+}
+
+function removeHash(index) {
+  form.txHashes.splice(index, 1);
+}
+
+function uniqueTxHash(hashes: string[]) {
+  return v =>
+    !v || hashes.filter(h => h === v).length <= 1 || 'Duplicate transaction';
 }
 
 async function submitClaim() {
@@ -81,9 +99,11 @@ async function submitClaim() {
 
   return txBuilder.contract.sendTransaction({
     contractAddress: contractAddress,
-    abi: ['function submitClaim(string memory network, bytes32 txHash) public'],
+    abi: [
+      'function submitClaim(string memory network, bytes32[] memory txHashes) public',
+    ],
     action: 'submitClaim',
-    params: [form.network.toString(), form.txHash],
+    params: [form.network.toString(), form.txHashes],
   });
 }
 </script>
@@ -111,9 +131,9 @@ async function submitClaim() {
         >
       </div>
 
-      <BalCard v-else class="mt-8 max-w-lg">
-        <BalVStack>
-          <BalHStack spacing="sm">
+      <BalCard v-else class="mt-8 max-w-lg" title="Claim submission form">
+        <BalVStack spacing="md">
+          <BalVStack>
             <div>
               <BalText>Network</BalText>
               <BalSelectInput
@@ -124,18 +144,56 @@ async function submitClaim() {
               />
             </div>
 
-            <div class="w-full">
-              <BalText>Transaction hash</BalText>
-              <BalTextInput
-                v-model="form.txHash"
-                v-model:isValid="form.valid"
-                name="txHash"
-                size="sm"
-                placeholder="0x..."
-                :rules="[isRequired(), isTxHash()]"
-              />
+            <div>
+              <BalText>Transaction hashes</BalText>
+              <BalVStack spacing="sm">
+                <BalHStack
+                  v-for="(_, index) in form.txHashes"
+                  :key="index"
+                  width="full"
+                  spacing="sm"
+                  align="center"
+                >
+                  <BalTextInput
+                    v-model="form.txHashes[index]"
+                    v-model:isValid="form.valid[index]"
+                    name="txHash"
+                    size="sm"
+                    placeholder="0x..."
+                    :rules="[
+                      isRequired(),
+                      isTxHash(),
+                      uniqueTxHash(form.txHashes),
+                    ]"
+                    class="w-full"
+                  />
+                  <BalBtn
+                    v-if="index === form.txHashes.length - 1"
+                    size="sm"
+                    outline
+                    square
+                    color="blue"
+                    :disabled="
+                      !formValid ||
+                      form.txHashes[index] === '' ||
+                      form.txHashes.length >= 10
+                    "
+                    @click="addHash"
+                    ><BalIcon name="plus"
+                  /></BalBtn>
+                  <BalBtn
+                    v-else
+                    size="sm"
+                    outline
+                    square
+                    color="gray"
+                    @click="removeHash(index)"
+                    ><BalIcon name="minus"
+                  /></BalBtn>
+                </BalHStack>
+              </BalVStack>
             </div>
-          </BalHStack>
+          </BalVStack>
           <BalAlert
             v-if="isMismatchedNetwork"
             title="Wrong network"
@@ -150,9 +208,11 @@ async function submitClaim() {
             size="sm"
             :actionFn="submitClaim"
             action="claimSubmission"
-            :summary="`Claim submission: ${shorten(form.txHash)}`"
+            :summary="`Claim submission: ${form.txHashes.length} tx(s)`"
             :confirmingLabel="`Submitting...`"
-            :disabled="!form.valid || !form.txHash || isMismatchedNetwork"
+            :disabled="
+              !formValid || form.txHashes.length === 0 || isMismatchedNetwork
+            "
             @confirmed="clearForm()"
           />
           <BalBtn
