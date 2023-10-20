@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import { captureException } from '@sentry/browser';
 
 import { isTestnet } from '@/composables/useNetwork';
 import { applyNavGuards } from './nav-guards';
@@ -248,14 +247,15 @@ function fromPoolToRisks(from, to) {
   return from.name === 'pool' && to.name === 'risks';
 }
 
+// https://github.com/vitejs/vite/issues/11804#issuecomment-1760951463
+// Hard-reload the page when chunk load errors match the navigation error
 router.onError((error, to) => {
-  if (error.message.includes('Failed to fetch dynamically imported module')) {
-    captureException(
-      'Triggered automatic reload after failed to fetch dynamically imported module. ',
-      {
-        extra: error.message,
-      }
-    );
+  const errors = [
+    'Failed to fetch dynamically imported module',
+    'Unable to preload CSS',
+  ];
+
+  if (errors.some(e => error.message.includes(e))) {
     window.location.href = to.fullPath;
   }
 });
