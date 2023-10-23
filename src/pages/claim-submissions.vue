@@ -111,7 +111,7 @@ async function submitClaim() {
 <template>
   <BalContainer>
     <BalVStack>
-      <h1 class="mb-2">Claim submissions</h1>
+      <h1 class="mb-2">Claim Submission</h1>
       <p class="mb-4 max-w-3xl">
         This tool was created to facilitate user claim submissions resulting
         from the vulnerability described
