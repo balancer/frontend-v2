@@ -5,8 +5,8 @@ import { useUserStaking } from '@/providers/local/user-staking.provider';
 import useEthers from '@/composables/useEthers';
 
 interface Props {
-  isVisible?: boolean;
-  poolAddress?: string;
+  isVisible: boolean;
+  poolAddress: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
