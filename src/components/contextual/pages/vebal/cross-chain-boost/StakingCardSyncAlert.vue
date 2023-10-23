@@ -147,7 +147,7 @@ onMounted(() => {
     </BalAlert>
 
     <CheckpointGaugeModal
-      :poolId="poolAddress"
+      :poolAddress="poolAddress"
       :isVisible="showCheckpointModal"
       @close="showCheckpointModal = false"
       @success="shouldShowWarningAlert = false"

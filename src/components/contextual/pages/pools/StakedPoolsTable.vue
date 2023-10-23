@@ -218,7 +218,8 @@ watch(
     />
 
     <CheckpointGaugeModal
-      :poolAddress="poolToCheckpoint?.address"
+      v-if="poolToCheckpoint"
+      :poolAddress="poolToCheckpoint.address"
       :isVisible="showCheckpointModal"
       @close="showCheckpointModal = false"
       @success="onSuccessCheckpoint"
