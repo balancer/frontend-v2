@@ -111,9 +111,9 @@ async function submitClaim() {
 <template>
   <BalContainer>
     <BalVStack>
-      <h1 class="mb-2">Restitutions</h1>
+      <h1 class="mb-2">Claim submissions</h1>
       <p class="mb-4 max-w-3xl">
-        This tool was created to facilitate user restitution claims resulting
+        This tool was created to facilitate user claim submissions resulting
         from the vulnerability described
         <a
           class="link"
@@ -131,8 +131,8 @@ async function submitClaim() {
           >withdraw from the affected Balancer liquidity pools</a
         >
         and report the withdrawal transaction hash below. The withdrawal needs
-        to take place after the first hack occurred; block 18004633 (ethereum)
-        or block 108777562 (optimism).
+        to take place after the first incident occurred; block 18004633
+        (ethereum) or block 108777562 (optimism).
       </p>
 
       <p class="max-w-3xl">
