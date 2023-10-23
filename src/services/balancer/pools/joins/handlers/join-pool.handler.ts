@@ -4,6 +4,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
 import { JsonRpcSigner } from '@ethersproject/providers';
 
 export type JoinParams = {
@@ -14,11 +15,13 @@ export type JoinParams = {
   relayerSignature?: string;
   approvalActions: TransactionActionInfo[];
   transactionDeadline: number;
+  bptOut?: string;
 };
 
 export type QueryOutput = {
   bptOut: string;
   priceImpact: number;
+  maxAmountsIn?: BigNumber[];
 };
 
 export abstract class JoinPoolHandler {
