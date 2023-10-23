@@ -165,8 +165,8 @@ const routes: RouteRecordRaw[] = [
     component: BalancesPage,
   },
   {
-    path: '/:networkSlug/claim-submissions',
-    name: 'claim-submissions',
+    path: '/:networkSlug/claim-submission',
+    name: 'claim-submission',
     component: ClaimSubmissionsPage,
   },
   {
