@@ -114,10 +114,10 @@ async function submitClaim() {
       <h1 class="mb-2">Claim Submission</h1>
       <p class="mb-4 max-w-3xl">
         This tool was created to facilitate user claim submissions resulting
-        from the vulnerability described
+        from the exploit described
         <a
           class="link"
-          href="https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102"
+          href="https://medium.com/immunefi/balancer-rounding-error-bugfix-review-cbf69482ee3d"
           target="_blank"
           >here</a
         >.
