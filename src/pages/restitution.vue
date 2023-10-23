@@ -113,6 +113,16 @@ async function submitClaim() {
     <BalVStack>
       <h1 class="mb-2">Restitutions</h1>
       <p class="mb-4 max-w-3xl">
+        This tool was created to facilitate user restitution claims resulting
+        from the vulnerability described
+        <a
+          class="link"
+          href="https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102"
+          target="_blank"
+          >here</a
+        >.
+      </p>
+      <p class="mb-4 max-w-3xl">
         In order to calculate the value of your unrecoverable assets, please
         <a
           class="link"
