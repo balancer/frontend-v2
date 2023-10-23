@@ -112,7 +112,23 @@ async function submitClaim() {
   <BalContainer>
     <BalVStack>
       <h1>Restitutions</h1>
-      <p>Some blurb...</p>
+      <p>
+        In order to calculate the value of your unrecoverable assets, please
+        <a
+          href="https://app.balancer.fi/#/ethereum/recovery-exit"
+          target="_blank"
+          >withdraw from the affected Balancer liquidity pools</a
+        >
+        and report the withdrawal transaction hash below. The withdrawal needs
+        to take place after the first hack occurred; block 18004633 (ethereum)
+        or block 108777562 (optimism).
+      </p>
+
+      <p>
+        If you had positions in multiple pools, report multiple withdrawal
+        transaction hashes. If you withdrew partially, report those transactions
+        too. Please file a new report for every chain.
+      </p>
 
       <div v-if="wrongNetwork" class="mt-8">
         <p class="mb-2">
