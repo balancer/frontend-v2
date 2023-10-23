@@ -111,10 +111,11 @@ async function submitClaim() {
 <template>
   <BalContainer>
     <BalVStack>
-      <h1>Restitutions</h1>
-      <p>
+      <h1 class="mb-2">Restitutions</h1>
+      <p class="mb-4 max-w-3xl">
         In order to calculate the value of your unrecoverable assets, please
         <a
+          class="link"
           href="https://app.balancer.fi/#/ethereum/recovery-exit"
           target="_blank"
           >withdraw from the affected Balancer liquidity pools</a
@@ -124,7 +125,7 @@ async function submitClaim() {
         or block 108777562 (optimism).
       </p>
 
-      <p>
+      <p class="max-w-3xl">
         If you had positions in multiple pools, report multiple withdrawal
         transaction hashes. If you withdrew partially, report those transactions
         too. Please file a new report for every chain.
