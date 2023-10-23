@@ -101,7 +101,7 @@ const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
-const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToSmallBreakpoint, isMobile } = useBreakpoints();
 const { networkSlug } = useNetwork();
 const { isWalletReady } = useWeb3();
 
@@ -363,7 +363,11 @@ function goToPoolPage(id: string) {
       </template>
       <template #iconColumnCell="pool">
         <div v-if="!isLoading" class="py-4 px-6" :data-testid="pool?.id">
-          <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
+          <BalAssetSet
+            :addresses="iconAddresses(pool)"
+            :width="100"
+            :size="isMobile ? 28 : 32"
+          />
         </div>
       </template>
       <template #poolNameCell="pool">
