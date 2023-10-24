@@ -128,7 +128,7 @@ async function submitClaim() {
           class="link"
           href="https://app.balancer.fi/#/ethereum/recovery-exit"
           target="_blank"
-          >withdraw from the affected Balancer liquidity pools</a
+          >withdraw from the affected liquidity pools</a
         >
         and report the withdrawal transaction hash below. The withdrawal needs
         to take place after the first incident occurred; block 18004633
