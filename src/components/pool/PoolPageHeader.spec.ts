@@ -41,7 +41,7 @@ describe('PoolPageHeader', () => {
       },
     });
     const weightedPoolProvidersWarning = screen.queryByText(
-      'One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.'
+      'One or more token rate providers associated with tokens in this pool have not been vetted.'
     );
     expect(weightedPoolProvidersWarning).not.toBeTruthy();
   });
@@ -65,7 +65,7 @@ describe('PoolPageHeader', () => {
       },
     });
     const weightedPoolProvidersWarning = await screen.findByText(
-      'One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.'
+      'One or more token rate providers associated with tokens in this pool have not been vetted.'
     );
     expect(weightedPoolProvidersWarning).toBeVisible();
   });
