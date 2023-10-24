@@ -731,7 +731,7 @@
   "noPriceImpact": "Best price",
   "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
   "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
-  "hasNonApprovedRateProviders": "One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.",
+  "hasNonApprovedRateProviders": "One or more token rate providers associated with tokens in this pool have not been vetted.",
   "noRecentActivity": "Your recent activity will appear here…",
   "noResults": "No results",
   "noResultsTable": {
