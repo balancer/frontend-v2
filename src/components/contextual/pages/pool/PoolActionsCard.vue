@@ -53,6 +53,7 @@ const hasBpt = computed((): boolean =>
 
 const _hasNonApprovedRateProviders = computed(() => {
   const nonApprovedRateProviderExceptions = [
+    // wjAURA-WETH - https://github.com/balancer/frontend-v2/issues/4417
     '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512',
   ];
   return (
