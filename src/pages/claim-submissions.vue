@@ -149,7 +149,7 @@ async function submitClaim() {
         <BalBtn
           tag="router-link"
           :to="{
-            name: 'restitutions',
+            name: 'claim-submission',
             params: { networkSlug: getNetworkSlug(Network.MAINNET) },
           }"
           color="gradient"
