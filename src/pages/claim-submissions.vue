@@ -29,7 +29,7 @@ type NetworkOption = {
 /**
  * STATE
  */
-const claimsNetwork = Network.POLYGON;
+const claimsNetwork = Network.MAINNET;
 const networkOptions: NetworkOption[] = Object.values(config)
   .filter(config => config.visibleInUI && !config.testNetwork)
   .map(convertConfigToNetworkOption);

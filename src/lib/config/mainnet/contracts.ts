@@ -24,6 +24,7 @@ const contracts: Contracts = {
   feeDistributorDeprecated: '0x26743984e3357eFC59f2fd6C1aFDC310335a61c9',
   faucet: '',
   omniVotingEscrow: '0x96484f2aBF5e58b15176dbF1A799627B53F13B6d',
+  claimSubmission: '0x70b55Af71B29c5Ca7e67bD1995250364C4bE5554',
 };
 
 export default contracts;
