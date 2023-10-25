@@ -144,17 +144,17 @@ async function submitClaim() {
       <div v-if="wrongNetwork" class="mt-8">
         <p class="mb-2">
           Claim submission are only accepted on
-          {{ getNetworkName(Network.POLYGON) }}
+          {{ getNetworkName(Network.MAINNET) }}
         </p>
         <BalBtn
           tag="router-link"
           :to="{
             name: 'restitutions',
-            params: { networkSlug: getNetworkSlug(Network.POLYGON) },
+            params: { networkSlug: getNetworkSlug(Network.MAINNET) },
           }"
           color="gradient"
           size="sm"
-          >Claim on Polygon</BalBtn
+          >Claim on Ethereum Mainnet</BalBtn
         >
       </div>
 
