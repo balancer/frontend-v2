@@ -8,13 +8,13 @@ const pools: Pools = {
     PerPoolInitial: 5,
   },
   BoostsEnabled: true,
-  DelegateOwner: '',
-  ZeroAddress: '',
+  DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
+  ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
     Gauntlet: [],
   },
   BlockList: [],
-  IncludedPoolTypes: [],
+  IncludedPoolTypes: ['Weighted', 'Stable', 'GyroE'],
   Stable: {
     AllowList: [],
   },
@@ -56,7 +56,11 @@ const pools: Pools = {
   BoostedApr: [],
   Metadata: {},
   DisabledJoins: [],
-  BrandedRedirect: {},
+  BrandedRedirect: {
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
+  },
 };
 
 export default pools;
