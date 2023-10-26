@@ -16,7 +16,7 @@ const config: Config = {
   network: 'optimism',
   trustWalletNetwork: 'optimism',
   unknown: false,
-  visibleInUI: false,
+  visibleInUI: true,
   testNetwork: false,
   rpc: 'https://mainnet.optimism.io',
   ws: 'wss://ws-mainnet.optimism.io',
@@ -25,6 +25,7 @@ const config: Config = {
   explorerName: 'The Optimism Explorer',
   subgraph:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
+  balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
