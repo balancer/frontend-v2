@@ -4,6 +4,7 @@ import {
   alignItemVariants,
   cn,
   justifyVariants,
+  maxWidthVariants,
   paddingVariants,
   widthVariants,
   ySpacingVariants,
@@ -16,6 +17,7 @@ const variants = cva('flex flex-col', {
     spacing: ySpacingVariants,
     padd: paddingVariants,
     width: widthVariants,
+    maxWidth: maxWidthVariants,
   },
 });
 
@@ -27,11 +29,14 @@ defineProps<{
   spacing?: Props['spacing'];
   padd?: Props['padd'];
   width?: Props['width'];
+  maxWidth?: Props['maxWidth'];
 }>();
 </script>
 
 <template>
-  <div :class="cn(variants({ justify, align, spacing, padd, width }))">
+  <div
+    :class="cn(variants({ justify, align, spacing, padd, width, maxWidth }))"
+  >
     <slot />
   </div>
 </template>
