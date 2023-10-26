@@ -52,7 +52,7 @@ const config: Config = {
   thirdParty: {
     coingecko: {
       nativeAssetId: 'ethereum',
-      platformId: 'optimism',
+      platformId: 'optimistic-ethereum',
     },
   },
   addresses: {
