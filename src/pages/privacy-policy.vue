@@ -2,7 +2,7 @@
   <div class="pb-4">
     <div class="subsection">
       <h1>Balancer Privacy&nbsp;Policy</h1>
-      <p><em>Last Updated: August 2022</em></p>
+      <p><em>Last Updated: October 2023</em></p>
       <p>
         <em class="font-medium">
           This Privacy Policy explains how the Balancer Foundation, its
@@ -38,13 +38,13 @@
         <li>
           Balancer does not and has not stored personal information from users
           of the UI. However, Balancer uses third party services including,
-          without limitation, Cloudflare and Fathom Analytics who may collect
-          and store certain user information only for use in the provision of
-          their services.
+          without limitation, Cloudflare, Fathom Analytics, Appzi and others who
+          collect and store certain user information only for use in the
+          provision of their services.
         </li>
         <li>
-          Balancer does not set any cookies. However, it’s possible we may use
-          third party service providers in the future that set cookies.
+          Balancer does not set any cookies. However, we use third party service
+          providers that set cookies.
         </li>
       </ul>
     </div>
@@ -94,14 +94,14 @@
             Technologies:</em
           >
           We do not typically use tracking technologies, such as cookies and web
-          beacons, to collect information about you. Cookies are small data
-          files stored on your hard drive or in device memory that help us
-          improve the UI and your experience, see which areas and features of
-          the UI are popular, and count visits. Web beacons (also known as
-          “pixel tags” or “clear GIFs”) are electronic images that we use on the
-          UI to help deliver cookies, count visits, and understand usage and
-          campaign effectiveness. For more information about cookies and how to
-          disable them, see our
+          beacons, to collect information about you; however, third parties we
+          rely on may do so. Cookies are small data files stored on your hard
+          drive or in device memory that help us improve the UI and your
+          experience, see which areas and features of the UI are popular, and
+          count visits. Web beacons (also known as “pixel tags” or “clear GIFs”)
+          are electronic images that we use on the UI to help deliver cookies,
+          count visits, and understand usage and campaign effectiveness. For
+          more information about cookies and how to disable them, see our
           <router-link :to="{ name: 'cookies-policy' }">
             <span className="link">Cookies Policy</span>
           </router-link>
@@ -272,9 +272,9 @@
       <h2>Your Choices</h2>
       <h3>Cookies</h3>
       <p>
-        Balancer does not typically use any cookies. It reserves the ability to
-        use them to affect the availability and functionality of the UI. For
-        more information about cookies and how to disable them, see our
+        Balancer and its third party vendors may use any cookies to affect the
+        availability and functionality of the UI. For more information about
+        cookies and how to disable them, see our
         <router-link :to="{ name: 'cookies-policy' }">
           <span className="text-blue-500 hover:text-blue-800 transition-colors"
             >Cookies Policy</span

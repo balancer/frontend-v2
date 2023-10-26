@@ -12,9 +12,11 @@ import useNetwork from '@/composables/useNetwork';
 
 import AppLogo from '../images/AppLogo.vue';
 import { useThirdPartyServices } from '@/composables/useThirdPartyServices';
+import { useAppzi } from '@/composables/useAppzi';
 
 const { networkSlug } = useNetwork();
 const { handleThirdPartyModalToggle } = useThirdPartyServices();
+const { openNpsModal } = useAppzi();
 </script>
 
 <template>
@@ -208,6 +210,9 @@ const { handleThirdPartyModalToggle } = useThirdPartyServices();
           <div
             class="flex flex-wrap md:order-3 gap-x-3 lg:gap-x-4 gap-y-2 md:justify-end"
           >
+            <p>
+              <button class="policy" @click="openNpsModal">Feedback</button>
+            </p>
             <p>
               <router-link class="policy" :to="{ name: 'terms-of-use' }">
                 {{ $t('policies.termsOfUse') }}

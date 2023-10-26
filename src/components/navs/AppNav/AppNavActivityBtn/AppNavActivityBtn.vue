@@ -70,7 +70,7 @@ async function cancelOrder(orderId: string) {
       <BalBtn
         color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        class="relative p-1"
+        class="relative py-1 w-9 !px-0"
         :circle="upToLargeBreakpoint"
       >
         <ActivityIcon v-if="pendingTransactions.length === 0" />
