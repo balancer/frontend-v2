@@ -16,9 +16,10 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
-import router from '@/plugins/router';
 import { useExitPool } from '@/providers/local/exit-pool.provider';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+
+import FeedbackCard from '@/components/cards/FeedbackCard.vue';
 
 /**
  * TYPES
@@ -151,13 +152,13 @@ async function submit(): Promise<TransactionResponse> {
   }
 }
 
-function redirect() {
+const returnRoute = computed(() => {
   if (shouldExitViaInternalBalance.value) {
-    router.push({ name: 'balances', params: { networkSlug } });
+    return { name: 'balances', params: { networkSlug } };
   } else {
-    router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
+    return { name: 'pool', params: { networkSlug, id: props.pool.id } };
   }
-}
+});
 
 /**
  * WATCHERS
@@ -171,24 +172,41 @@ watch(blockNumber, () => {
 
 
 <template>
-  <transition>
-    <BalActionSteps
-      v-if="!txState.confirmed || !txState.receipt"
-      :actions="actions"
-      primaryActionType="withdraw"
-      :disabled="isMismatchedNetwork"
-      :isLoading="isBuildingTx"
-      :loadingLabel="
-        isBuildingTx ? $t('withdraw.preview.loadingLabel.building') : undefined
-      "
-      @success="handleSuccess"
-      @failed="handleFailed"
-    />
-    <div v-else>
-      <ConfirmationIndicator :txReceipt="txState.receipt" />
-      <BalBtn color="gray" outline block class="mt-2" @click="redirect">
-        {{ redirectLabel }}
-      </BalBtn>
-    </div>
-  </transition>
+  <div>
+    <transition>
+      <BalActionSteps
+        v-if="!txState.confirmed || !txState.receipt"
+        :actions="actions"
+        primaryActionType="withdraw"
+        :disabled="isMismatchedNetwork"
+        :isLoading="isBuildingTx"
+        :loadingLabel="
+          isBuildingTx
+            ? $t('withdraw.preview.loadingLabel.building')
+            : undefined
+        "
+        @success="handleSuccess"
+        @failed="handleFailed"
+      />
+      <div v-else>
+        <ConfirmationIndicator :txReceipt="txState.receipt" />
+        <BalBtn
+          tag="router-link"
+          :to="returnRoute"
+          color="gray"
+          outline
+          block
+          class="mt-2"
+        >
+          {{ redirectLabel }}
+        </BalBtn>
+      </div>
+    </transition>
+    <transition name="pop">
+      <FeedbackCard
+        v-if="txState.confirming || txState.confirmed"
+        class="mt-3"
+      />
+    </transition>
+  </div>
 </template>

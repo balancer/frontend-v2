@@ -19,7 +19,7 @@ import { CowswapTransactionDetails } from './swap/useCowswap';
 import { processedTxs } from './useEthers';
 import useNotifications from './useNotifications';
 import useNumbers, { FNumFormats } from './useNumbers';
-import { isAvalanche, isBase, isPolygon, isZkevm } from './useNetwork';
+import { isPolygon } from './useNetwork';
 
 const WEEK_MS = 86_400_000 * 7;
 // Please update the schema version when making changes to the transaction structure.
@@ -270,10 +270,7 @@ function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
 export async function postConfirmationDelay(
   tx: TransactionResponse
 ): Promise<TransactionReceipt> {
-  if (isPolygon.value) return tx.wait(10);
-  if (isZkevm.value) return tx.wait(10);
-  if (isAvalanche.value) return tx.wait(10);
-  if (isBase.value) return tx.wait(10);
+  if (isPolygon.value) return tx.wait(7);
 
   return tx.wait(1);
 }

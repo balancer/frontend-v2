@@ -30,6 +30,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
    */
   const isLoadingApprovalsForGauge = ref(false);
   const isActionConfirmed = ref(false);
+  const isActionConfirming = ref(false);
   const confirmationReceipt = ref<TransactionReceipt>();
   const stakeActions = ref<TransactionActionInfo[]>([]);
 
@@ -112,6 +113,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   ) {
     try {
       const tx = await action();
+      isActionConfirming.value = true;
       addTransaction({
         id: tx.hash,
         type: 'tx',
@@ -130,6 +132,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
       });
       return tx;
     } catch (error) {
+      isActionConfirming.value = false;
       throw new Error(`Failed create ${actionType} transaction`, {
         cause: error,
       });
@@ -152,6 +155,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
 
   async function handleSuccess(receipt: TransactionReceipt) {
     isActionConfirmed.value = true;
+    isActionConfirming.value = false;
     confirmationReceipt.value = receipt;
     await Promise.all([refetchBalances(), refetchAllPoolStakingData()]);
     emit('success');
@@ -159,6 +163,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
 
   function handleClose() {
     isActionConfirmed.value = false;
+    isActionConfirming.value = false;
     confirmationReceipt.value = undefined;
     emit('close');
   }
@@ -194,6 +199,7 @@ export function useStakePreview(props: StakePreviewProps, emit) {
   return {
     //state
     isActionConfirmed,
+    isActionConfirming,
     confirmationReceipt,
     isLoading,
     currentShares,

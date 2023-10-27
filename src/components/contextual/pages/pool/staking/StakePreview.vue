@@ -8,6 +8,7 @@ import { AnyPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import StakeSummary from './StakeSummary.vue';
 import { StakeAction, useStakePreview } from './composables/useStakePreview';
+import FeedbackCard from '@/components/cards/FeedbackCard.vue';
 
 /**
  * TYPES
@@ -27,6 +28,7 @@ const { fNum } = useNumbers();
 const { isMismatchedNetwork } = useWeb3();
 const {
   isActionConfirmed,
+  isActionConfirming,
   confirmationReceipt,
   isLoading,
   currentShares,
@@ -46,7 +48,7 @@ const assetRowWidth = computed(
 </script>
 
 <template>
-  <BalStack vertical>
+  <BalVStack spacing="md">
     <BalStack horizontal spacing="sm" align="center">
       <BalCircle
         v-if="isActionConfirmed"
@@ -95,15 +97,17 @@ const assetRowWidth = computed(
           v-if="action === 'stake'"
           color="gradient"
           block
-          class="mb-2"
           @click="$router.push({ name: 'claim' })"
         >
           {{ $t('viewClaims') }}
         </BalBtn>
-        <BalBtn color="gray" outline block @click="handleClose">
+        <BalBtn v-else color="gray" outline block @click="handleClose">
           {{ $t('close') }}
         </BalBtn>
       </AnimatePresence>
     </BalStack>
-  </BalStack>
+    <transition name="pop">
+      <FeedbackCard v-if="isActionConfirming || isActionConfirmed" />
+    </transition>
+  </BalVStack>
 </template>
