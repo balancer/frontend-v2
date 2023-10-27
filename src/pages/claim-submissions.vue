@@ -31,7 +31,11 @@ type NetworkOption = {
  */
 const claimsNetwork = Network.MAINNET;
 const networkOptions: NetworkOption[] = Object.values(config)
-  .filter(config => config.visibleInUI && !config.testNetwork)
+  .filter(
+    config =>
+      (config.visibleInUI || config.chainId === Network.OPTIMISM) &&
+      !config.testNetwork
+  )
   .map(convertConfigToNetworkOption);
 
 const form = reactive<Form>({
