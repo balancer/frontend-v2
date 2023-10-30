@@ -3,6 +3,7 @@ import contracts from './contracts';
 import pools from './pools';
 import tokenlists from './tokenlists';
 import tokens from './tokens';
+import rateProviders from './rateProviders';
 
 const config: Config = {
   key: '10',
@@ -16,7 +17,7 @@ const config: Config = {
   network: 'optimism',
   trustWalletNetwork: 'optimism',
   unknown: false,
-  visibleInUI: false,
+  visibleInUI: true,
   testNetwork: false,
   rpc: 'https://mainnet.optimism.io',
   ws: 'wss://ws-mainnet.optimism.io',
@@ -25,6 +26,7 @@ const config: Config = {
   explorerName: 'The Optimism Explorer',
   subgraph:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
+  balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
@@ -51,7 +53,7 @@ const config: Config = {
   thirdParty: {
     coingecko: {
       nativeAssetId: 'ethereum',
-      platformId: 'optimism',
+      platformId: 'optimistic-ethereum',
     },
   },
   addresses: {
@@ -68,7 +70,7 @@ const config: Config = {
   pools,
   tokenlists,
   tokens,
-  rateProviders: {},
+  rateProviders,
 };
 
 export default config;

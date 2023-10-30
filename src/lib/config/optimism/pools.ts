@@ -8,23 +8,46 @@ const pools: Pools = {
     PerPoolInitial: 5,
   },
   BoostsEnabled: true,
-  DelegateOwner: '',
-  ZeroAddress: '',
+  DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
+  ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
     Gauntlet: [],
   },
   BlockList: [],
-  IncludedPoolTypes: [],
+  IncludedPoolTypes: [
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'GyroE',
+    'ComposableStable',
+  ],
   Stable: {
-    AllowList: [],
+    AllowList: [
+      '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b', // wEth/rEth
+      '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb200020000000000000000008b', // wstETH/wETH
+      '0xacfe9b4782910a853b68abba60f3fd8049ffe6380000000000000000000000ff', // USDC/DOLA
+      '0x004700ba0a4f5f22e1e78a277fca55e36f47e09c000000000000000000000104', // rEth/ankrEth
+      '0x9da11ff60bfc5af527f58fd61679c3ac98d040d9000000000000000000000100', // usdc/usdcE/usdt/dai
+    ],
   },
   Investment: {
     AllowList: [],
   },
   Weighted: {
-    AllowList: [],
+    AllowList: [
+      '0x00b82bc5edea6e5e6c77635e31a1a25aad99f881000200000000000000000105', // OVN/wUSD
+      '0xd6e5824b54f64ce6f1161210bc17eebffc77e031000100000000000000000006', // OP/BEETS/BAL
+      '0x39965c9dab5448482cf7e002f583c812ceb53046000100000000000000000003', // WETH/OP/USDC
+    ],
   },
-  Factories: {},
+  Factories: {
+    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'metaStable',
+    '0x230a59f4d9adc147480f03b0d3fffecd56c3289a': 'weightedPool',
+    '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'weightedPool',
+    '0x0f3e0c4218b7b0108a3643cfe9d3ec0d4f57c54e': 'weightedPool',
+    '0x043a2dad730d585c44fb79d2614f295d2d625412': 'composableStablePool',
+    '0x9b683ca24b0e013512e2566b68704dbe9677413c': 'gyroE',
+  },
   Stakable: {
     VotingGaugePools: [
       '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
@@ -56,7 +79,11 @@ const pools: Pools = {
   BoostedApr: [],
   Metadata: {},
   DisabledJoins: [],
-  BrandedRedirect: {},
+  BrandedRedirect: {
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
+  },
 };
 
 export default pools;
