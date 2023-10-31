@@ -17,7 +17,7 @@ const config: Config = {
   network: 'optimism',
   trustWalletNetwork: 'optimism',
   unknown: false,
-  visibleInUI: true,
+  visibleInUI: false,
   testNetwork: false,
   rpc: 'https://mainnet.optimism.io',
   ws: 'wss://ws-mainnet.optimism.io',
