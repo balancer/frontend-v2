@@ -93,7 +93,7 @@ export default function useVotingPools() {
 
   return {
     totalVotes,
-    isLoading,
+    isLoadingVotingPools: isLoading,
     isRefetchingVotingPools: votingPoolsQuery.isRefetching,
     votingPools,
     votingGauges,
@@ -103,5 +103,6 @@ export default function useVotingPools() {
     votingPeriodLastHour,
     votingPoolsQuery,
     refetchVotingPools: votingPoolsQuery.refetch,
+    resetVotingPools: votingPoolsQuery.remove,
   };
 }
