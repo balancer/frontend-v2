@@ -51,3 +51,8 @@ input[type='number'] {
 *::-webkit-scrollbar-thumb {
   @apply bg-gray-200 dark:bg-gray-700;
 }
+
+/* AppZi styles */
+div[id^='bkln'] {
+  background-color: rgb(0 0 0 / 90%) !important;
+}

@@ -25,6 +25,7 @@ import { ApprovalAction } from '@/composables/approvals/types';
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
 import { captureBalancerException } from '@/lib/utils/errors';
 import { useCrossChainSync } from '@/providers/cross-chain-sync.provider';
+import FeedbackCard from '@/components/cards/FeedbackCard.vue';
 
 /**
  * TYPES
@@ -286,6 +287,9 @@ onBeforeMount(async () => {
       >
         {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
       </BalBtn>
+      <transition name="pop">
+        <FeedbackCard class="mt-3" />
+      </transition>
     </template>
   </div>
 </template>

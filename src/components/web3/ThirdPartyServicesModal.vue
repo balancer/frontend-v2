@@ -56,8 +56,10 @@ const services = [
   'alchemy',
   'the-graph',
   'fathom-analytics',
+  'appzi',
   'TRM-labs',
   'sentry',
+  'amazon-web-services',
 ];
 </script>
 

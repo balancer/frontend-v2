@@ -212,6 +212,7 @@ useIntervalFn(() => {
       :fiatTotal="missingPricesIn ? '-' : fiatValueIn"
       :priceImpact="priceImpact"
       :highPriceImpact="highPriceImpact"
+      class="mt-4"
     />
 
     <BalAlert

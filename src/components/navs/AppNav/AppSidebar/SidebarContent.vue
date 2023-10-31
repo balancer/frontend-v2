@@ -16,6 +16,7 @@ import DiscordIcon from '@/components/_global/icons/brands/DiscordIcon.vue';
 import MediumIcon from '@/components/_global/icons/brands/MediumIcon.vue';
 import YoutubeIcon from '@/components/_global/icons/brands/YoutubeIcon.vue';
 import GithubIcon from '@/components/_global/icons/brands/GithubIcon.vue';
+import { useAppzi } from '@/composables/useAppzi';
 
 /**
  * PROPS & EMITS
@@ -31,6 +32,7 @@ const { networkConfig } = useConfig();
 const { networkSlug } = useNetwork();
 const { t } = useI18n();
 const router = useRouter();
+const { openNpsModal } = useAppzi();
 
 /**
  * STATE
@@ -146,6 +148,9 @@ watch(blockNumber, async () => {
         {{ link.label }}
         <BalIcon name="arrow-up-right" size="sm" class="ml-1 text-secondary" />
       </BalLink>
+      <span class="px-4 pt-1 capitalize" @click="openNpsModal">{{
+        t('feedback')
+      }}</span>
     </div>
 
     <div class="px-4 mt-6">

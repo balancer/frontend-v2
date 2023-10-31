@@ -34,7 +34,8 @@ export type FactoryType =
   | 'fx'
   | 'eulerLinear'
   | 'gyroE'
-  | 'erc4626Linear';
+  | 'erc4626Linear'
+  | 'metaStable';
 
 export enum PoolFeature {
   Boosted = 'boosted',

@@ -459,6 +459,7 @@
       "linkText": "Gyroscope website"
     }
   },
+  "feedback": "feedback",
   "fees": "fees",
   "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every swap utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
   "feesTime": "Fees ({0})",
@@ -530,6 +531,7 @@
   "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Foundation is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
   "home": "Home",
   "hourAbbrev": "h",
+  "howDidWeDo": "How did we do?",
   "incentives": "incentives",
   "incentiveToken": "Incentive token",
   "incentivizedPool": "incentivized pool",
@@ -967,7 +969,9 @@
     "the-graph": "Used to fetch blockchain data from The Graph’s hosted service.",
     "fathom-analytics": "Used to understand user behavior on the site and marketing performance.",
     "TRM-labs": "Used to securely collect wallet addresses and shares it with TRM Labs Inc. for risk and compliance reasons.",
-    "sentry": "Used for error tracking and performance monitoring."
+    "sentry": "Used for error tracking and performance monitoring.",
+    "appzi": "Used to capture and store user feedback from optional surveys",
+    "amazon-web-services": "Used for a variety of infrastructure services, but primarily to fetch and cache blockchain data."
   },
   "settings": "Settings",
   "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to swap and provide liquidity here.",

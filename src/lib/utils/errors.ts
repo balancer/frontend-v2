@@ -383,6 +383,7 @@ export function useErrorMsg() {
       return cannotEstimateGasError;
     if (isErrorOfType(error, [/-32010/])) return gasTooLowError;
     if (isErrorOfType(error, [/BAL#507/])) return slippageError;
+    if (isErrorOfType(error, [/BAL#505/])) return slippageError;
 
     return defaultError();
   }

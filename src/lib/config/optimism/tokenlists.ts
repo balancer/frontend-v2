@@ -2,7 +2,8 @@ import { TokenListURLMap } from '@/types/TokenList';
 
 const tokenlists: TokenListURLMap = {
   Balancer: {
-    Allowlisted: '',
+    Allowlisted:
+      'https://raw.githubusercontent.com/balancer/tokenlists/main/generated/balancer.tokenlist.json',
   },
   External: [],
 };

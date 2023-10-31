@@ -2,7 +2,7 @@
   <div class="pb-4">
     <div class="subsection">
       <h1>Balancer Terms of Use</h1>
-      <p><em>Last updated: November 2022</em></p>
+      <p><em>Last updated: October 2023</em></p>
       <p>
         <em class="font-semibold">
           Do not access this site where such access is prohibited by applicable
@@ -94,15 +94,32 @@
         would be appropriate.
       </p>
       <p>
-        You acknowledge and agree that Balancer has no control over any
-        transactions conducted through the Balancer Protocol, the method of
-        payment of any transactions or any actual payments of transactions
-        including use of any third-party services such as Metamask, or other
-        wallet services. Likewise, you must ensure that you have a sufficient
-        balance of the applicable cryptocurrency tokens stored at your Balancer
+        <span class="italic font-semibold"
+          >You acknowledge and agree that Balancer has no control over any
+          transactions conducted through the Balancer Protocol, the method of
+          payment of any transactions or any actual payments of transactions
+          including use of any third-party services such as Metamask, or other
+          wallet services.
+        </span>
+        Likewise, you must ensure that you have a sufficient balance of the
+        applicable cryptocurrency tokens stored at your Balancer
         Protocol-compatible wallet address (“Cryptocurrency Wallet”) to complete
         any transaction on the Balancer Protocol or the Ethereum network before
         initiating such transaction.
+      </p>
+      <p>
+        You acknowledge and accept the material potential risks associated with
+        using the smart contracts that can be accessed via the Balancer user
+        interface including, without limitation, the smart contracts for
+        Balancer Pools. Before using these features or Pools, please confirm you
+        understand the functionality and risks. For more information about the
+        risks, please carefully read
+
+        <router-link :to="{ name: 'risks' }">
+          <span className="link"
+            >https://app.balancer.fi/#/risks</span
+          > </router-link
+        >.
       </p>
     </div>
     <div class="subsection">
@@ -280,22 +297,24 @@
           value or you being unable to complete a Smart Contract.
         </li>
         <li>
-          You are reminded of the inherent risks with digital assets and
-          decentralized finance including the fact that tokens are not legal
-          tender and are not backed by any government. Unlike fiat currencies,
-          which are regulated and backed by local governments and central banks,
-          tokens are based only on technology and user consensus, which means
-          that in cases of manipulations or market panic, central governments
-          will not take any corrective actions or measures to achieve stability,
-          maintain liquidity or protect their value. There is a possibility that
-          certain transactions cannot be settled or may be difficult to settle,
-          or can be completed only at significantly adverse prices depending on
-          the market situation and/or market volume. Transactions may be
-          irreversible, and, accordingly, potential losses due to fraudulent or
-          accidental transactions are not recoverable. Some blockchain
-          transactions are deemed to be completed when recorded on a public
-          ledger, which is not necessarily the date or time when you or another
-          party initiated the transaction.
+          <span class="italic font-semibold">
+            You are reminded of the inherent risks with digital assets and
+            decentralized finance including the fact that tokens are not legal
+            tender and are not backed by any government.</span
+          >
+          Unlike fiat currencies, which are regulated and backed by local
+          governments and central banks, tokens are based only on technology and
+          user consensus, which means that in cases of manipulations or market
+          panic, central governments will not take any corrective actions or
+          measures to achieve stability, maintain liquidity or protect their
+          value. There is a possibility that certain transactions cannot be
+          settled or may be difficult to settle, or can be completed only at
+          significantly adverse prices depending on the market situation and/or
+          market volume. Transactions may be irreversible, and, accordingly,
+          potential losses due to fraudulent or accidental transactions are not
+          recoverable. Some blockchain transactions are deemed to be completed
+          when recorded on a public ledger, which is not necessarily the date or
+          time when you or another party initiated the transaction.
         </li>
         <li>
           The regulatory frameworks applicable to blockchain transactions in
@@ -485,7 +504,7 @@
         invitation or recommendation to buy or sell tokens or any other
         financial services and is not intended to be relied upon by you in
         making any specific decision to buy or sell a token.
-        <em class="font-semibold"
+        <em class="italic font-semibold"
           >We recommend that you seek independent advice from financial, legal
           and tax advisors before making any such decision particularly in light
           of the risks associated with digital assets.</em
