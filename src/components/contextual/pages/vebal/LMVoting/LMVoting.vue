@@ -22,12 +22,14 @@ import { useLMVotingFilters } from './composables/useLMVotingFilters';
 /**
  * COMPOSABLES
  */
+const { account } = useWeb3();
 const {
   votingPools,
   unallocatedVotes,
   votingPeriodEnd,
   votingPeriodLastHour,
   isRefetchingVotingPools,
+  resetVotingPools,
 } = useVotingPools();
 const { veBalLockTooShort, veBalExpired, hasLock, hasExpiredLock } =
   useVeBalLockInfo();
@@ -46,6 +48,7 @@ const {
   hasSubmittedVotes,
   hasAllVotingPowerTimeLocked,
   loadRequestWithExistingVotes,
+  isVotingRequestLoaded,
 } = useVoting();
 
 const {
@@ -120,14 +123,24 @@ watch(
   { deep: true }
 );
 
-watch(isLoading, async () => {
+watch(isLoading, async newValue => {
   // Load votingRequest once the voting list and the expired gauges were loaded
-  loadRequestWithExistingVotes(votingPools.value);
+  if (!newValue) {
+    loadRequestWithExistingVotes(votingPools.value);
+  }
 });
+
 watch(isRefetchingVotingPools, async () => {
   // Reload votingRequest if refetching after coming back from a successful voting
-  if (isVotingCompleted.value) {
+  if (isVotingCompleted.value || !isVotingRequestLoaded) {
     loadRequestWithExistingVotes(votingPools.value);
+  }
+});
+watch(account, (_, prevAccount) => {
+  if (prevAccount) {
+    // Clear voting request on account change
+    isVotingRequestLoaded.value = false;
+    resetVotingPools();
   }
 });
 </script>

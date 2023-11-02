@@ -39,7 +39,8 @@ export function votingProvider() {
   const {
     votingPools,
     votingGaugeAddresses,
-    isLoading: isLoadingVotingPools,
+    isLoadingVotingPools,
+    isRefetchingVotingPools,
   } = useVotingPools();
   const { data: expiredGauges, isLoading: isLoadingExpiredGauges } =
     useExpiredGaugesQuery(votingGaugeAddresses);
@@ -222,6 +223,7 @@ export function votingProvider() {
     isLoading,
     isLoadingExpiredGauges,
     isLoadingVotingPools,
+    isRefetchingVotingPools,
     totalAllocatedWeight,
     isRequestingTooMuchWeight,
     isVotingRequestValid,
@@ -233,6 +235,7 @@ export function votingProvider() {
     hasAllVotingPowerTimeLocked,
     hasTimeLockedPools,
     confirmedVotingRequest,
+    isVotingRequestLoaded,
     getIsGaugeExpired,
     toggleSelection,
     isSelected,
