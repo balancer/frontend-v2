@@ -1,4 +1,6 @@
-import { Pools } from '@/types/pools';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
   IdsMap: {},
@@ -83,6 +85,9 @@ const pools: Pools = {
     Gyro2: 'gyro',
     Gyro3: 'gyro',
     GyroE: 'gyro',
+  },
+  Issues: {
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.OPTIMISM],
   },
 };
 
