@@ -48,7 +48,6 @@ export type Wallet =
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
-  'tally',
   'safe',
   'walletlink',
 ] as Wallet[];
