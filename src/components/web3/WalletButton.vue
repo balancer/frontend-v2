@@ -15,7 +15,7 @@ function handleClick() {
 <template>
   <button class="wallet-connect-btn" @click="handleClick">
     <div class="flex items-center" style="width: 70%">
-      <img :src="buildConnectorIconURL(wallet)" class="mr-4 w-10 h-10" />
+      <img :src="buildConnectorIconURL(wallet)" class="mr-4 w-10 h-auto" />
       <h5 class="text-base text-gray-700 dark:text-white">
         <span class="capitalize">{{ WalletNameMap[wallet] }}</span>
       </h5>
