@@ -212,13 +212,8 @@ export const exitPoolProvider = (
       POOLS.ExitViaInternalBalance.includes(pool.value.id)
   );
 
-  // Should use recovery exits if:
-  // 1. The pool is paused AND in recovery mode, OR
-  // 2. The pool is a ComposableStableV1 pool and is not being treated as deep.
-  const shouldUseRecoveryExit = computed(
-    (): boolean =>
-      isRecoveryExitsOnly(pool.value) ||
-      (!isDeepPool.value && isComposableStableV1(pool.value))
+  const shouldUseRecoveryExit = computed((): boolean =>
+    isRecoveryExitsOnly(pool.value)
   );
 
   const exitHandlerType = computed((): ExitHandler => {
