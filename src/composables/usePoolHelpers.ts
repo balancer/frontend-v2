@@ -612,12 +612,17 @@ export function isJoinsDisabled(id: string): boolean {
  * @param {Pool} pool - The pool to check
  */
 export function isRecoveryExitsOnly(pool: Pool): boolean {
-  return (
-    (!!pool.isInRecoveryMode && !!pool.isPaused) ||
-    (usePoolWarning(toRef(pool, 'id')).isAffectedBy(
+  const isInRecoveryAndPausedMode = !!pool.isInRecoveryMode && !!pool.isPaused;
+  const isVulnCsPoolAndInRecoveryMode =
+    usePoolWarning(toRef(pool, 'id')).isAffectedBy(
       PoolWarning.CspPoolVulnWarning
-    ) &&
-      !!pool.isInRecoveryMode)
+    ) && !!pool.isInRecoveryMode;
+  const isNotDeepAndCsV1 = !isDeep(pool) && isComposableStableV1(pool);
+
+  return (
+    isInRecoveryAndPausedMode ||
+    isVulnCsPoolAndInRecoveryMode ||
+    isNotDeepAndCsV1
   );
 }
 
