@@ -440,6 +440,7 @@ const pools: Pools = {
     ],
     AllowList: [
       '0x02ca8086498552c071451724d3a34caa3922b65a000200000000000000000613', //80ROOT-20WETH
+      '0x54ca50ee86616379420cc56718e12566aa75abbe000200000000000000000610', //wusdm/wsteth
     ],
   },
   Metadata: {},
