@@ -1040,6 +1040,37 @@
     "address": "0xc4b6cc9a444337b1cb8cbbdd9de4d983f609c391",
     "network": 42161,
     "isKilled": false,
+    "addedTimestamp": 1683715019,
+    "relativeWeightCap": "0.02",
+    "pool": {
+      "id": "0x513cdee00251f39de280d9e5f771a6eafebcc88e000000000000000000000a6b",
+      "address": "0x513cdee00251f39de280d9e5f771a6eafebcc88e",
+      "poolType": "StablePhantom",
+      "symbol": "2eur (PAR)",
+      "tokens": [
+        {
+          "address": "0x4e3decbb3645551b8a19f0ea1678079fcb33fb4c",
+          "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4e3decbb3645551b8a19f0ea1678079fcb33fb4c.png",
+          "symbol": "jEUR",
+          "weight": null
+        },
+        {
+          "address": "0xe2aa7db6da1dae97c5f5c6914d285fbfcc32a128",
+          "logoURI": "https://assets.coingecko.com/coins/images/14153/large/par_round_200.png?1614670422",
+          "symbol": "PAR",
+          "weight": null
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4e3decbb3645551b8a19f0ea1678079fcb33fb4c": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4e3decbb3645551b8a19f0ea1678079fcb33fb4c.png",
+      "0xe2aa7db6da1dae97c5f5c6914d285fbfcc32a128": "https://assets.coingecko.com/coins/images/14153/large/par_round_200.png?1614670422"
+    }
+  },
+  {
+    "address": "0xc4b6cc9a444337b1cb8cbbdd9de4d983f609c391",
+    "network": 42161,
+    "isKilled": false,
     "addedTimestamp": 1696338335,
     "relativeWeightCap": "1.0",
     "pool": {
@@ -1096,6 +1127,106 @@
     "tokenLogoURIs": {
       "0x6c76971f98945ae98dd7d4dfca8711ebea946ea6": "https://assets.coingecko.com/coins/images/18834/large/wstETH.png?1633565443",
       "0xaf204776c7245bf4147c2612bf6e5972ee483701": "https://assets.coingecko.com/coins/images/32066/large/sDAI_Logo_%281%29.png?1696292026"
+    }
+  },
+  {
+    "address": "0x8e486dbacb74c00dd31e489da93d99bbebe36cd5",
+    "network": 10,
+    "isKilled": false,
+    "addedTimestamp": 1696338335,
+    "relativeWeightCap": "1.0",
+    "pool": {
+      "id": "0x004700ba0a4f5f22e1e78a277fca55e36f47e09c000000000000000000000104",
+      "address": "0x004700ba0a4f5f22e1e78a277fca55e36f47e09c",
+      "poolType": "StablePhantom",
+      "symbol": "bpt-ankrgalaharm",
+      "tokens": [
+        {
+          "address": "0x9bcef72be871e61ed4fbbc7630889bee758eb81d",
+          "logoURI": "https://assets.coingecko.com/coins/images/20764/large/reth.png?1637652366",
+          "symbol": "rETH",
+          "weight": null
+        },
+        {
+          "address": "0xe05a08226c49b636acf99c40da8dc6af83ce5bb3",
+          "logoURI": "https://www.ankr.com/_next/static/images/ethereum-ankreth-logo-794cb04ee270a7cb5c8559924aa5211d.png",
+          "symbol": "ankrETH",
+          "weight": null
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x9bcef72be871e61ed4fbbc7630889bee758eb81d": "https://assets.coingecko.com/coins/images/20764/large/reth.png?1637652366",
+      "0xe05a08226c49b636acf99c40da8dc6af83ce5bb3": "https://www.ankr.com/_next/static/images/ethereum-ankreth-logo-794cb04ee270a7cb5c8559924aa5211d.png"
+    }
+  },
+  {
+    "address": "0x42a3290a65ca16adaf161c6ffafdbe0913a169f4",
+    "network": 1101,
+    "isKilled": false,
+    "addedTimestamp": 1698753767,
+    "relativeWeightCap": "1.0",
+    "pool": {
+      "id": "0xb1557cfea06de5a1601a7f0ccf3b515ef431a50d000200000000000000000059",
+      "address": "0xb1557cfea06de5a1601a7f0ccf3b515ef431a50d",
+      "poolType": "GyroE",
+      "symbol": "ECLP-wETH-rETH",
+      "tokens": [
+        {
+          "address": "0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9",
+          "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9.png",
+          "symbol": "WETH",
+          "weight": null
+        },
+        {
+          "address": "0xb23c20efce6e24acca0cef9b7b7aa196b84ec942",
+          "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb23c20efce6e24acca0cef9b7b7aa196b84ec942.png",
+          "symbol": "rETH",
+          "weight": null
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9.png",
+      "0xb23c20efce6e24acca0cef9b7b7aa196b84ec942": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xb23c20efce6e24acca0cef9b7b7aa196b84ec942.png"
+    }
+  },
+  {
+    "address": "0xa9659365461380e8a6b30a50d421c1f5fcd8a8bc",
+    "network": 100,
+    "isKilled": false,
+    "addedTimestamp": 1697486339,
+    "relativeWeightCap": "1.0",
+    "pool": {
+      "id": "0x7644fa5d0ea14fcf3e813fdf93ca9544f8567655000000000000000000000066",
+      "address": "0x7644fa5d0ea14fcf3e813fdf93ca9544f8567655",
+      "poolType": "StablePhantom",
+      "symbol": "sBAL3",
+      "tokens": [
+        {
+          "address": "0x4ecaba5870353805a9f068101a40e0f32ed605c6",
+          "logoURI": "https://assets.coingecko.com/coins/images/325/large/Tether.png?1668148663",
+          "symbol": "USDT",
+          "weight": null
+        },
+        {
+          "address": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+          "logoURI": "https://assets.coingecko.com/coins/images/32066/large/sDAI_Logo_%281%29.png?1696292026",
+          "symbol": "sDAI",
+          "weight": null
+        },
+        {
+          "address": "0xddafbb505ad214d7b80b1f830fccc89b60fb7a83",
+          "logoURI": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389",
+          "symbol": "USDC",
+          "weight": null
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4ecaba5870353805a9f068101a40e0f32ed605c6": "https://assets.coingecko.com/coins/images/325/large/Tether.png?1668148663",
+      "0xaf204776c7245bf4147c2612bf6e5972ee483701": "https://assets.coingecko.com/coins/images/32066/large/sDAI_Logo_%281%29.png?1696292026",
+      "0xddafbb505ad214d7b80b1f830fccc89b60fb7a83": "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389"
     }
   },
   {
@@ -1887,6 +2018,99 @@
   {
     "address": "0x346f1d4f98f055bb0791465923e27a10f1082912",
     "network": 100,
+    "isKilled": false,
+    "addedTimestamp": 1697486339,
+    "relativeWeightCap": "1.0",
+    "pool": {
+      "id": "0xdd439304a77f54b1f7854751ac1169b279591ef7000000000000000000000064",
+      "address": "0xdd439304a77f54b1f7854751ac1169b279591ef7",
+      "poolType": "StablePhantom",
+      "symbol": "EURe/sDAI",
+      "tokens": [
+        {
+          "address": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+          "logoURI": "https://assets.coingecko.com/coins/images/32066/large/sDAI_Logo_%281%29.png?1696292026",
+          "symbol": "sDAI",
+          "weight": null
+        },
+        {
+          "address": "0xcb444e90d8198415266c6a2724b7900fb12fc56e",
+          "logoURI": "https://assets.coingecko.com/coins/images/23354/large/eur.png?1643926562",
+          "symbol": "EURe",
+          "weight": null
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xaf204776c7245bf4147c2612bf6e5972ee483701": "https://assets.coingecko.com/coins/images/32066/large/sDAI_Logo_%281%29.png?1696292026",
+      "0xcb444e90d8198415266c6a2724b7900fb12fc56e": "https://assets.coingecko.com/coins/images/23354/large/eur.png?1643926562"
+    }
+  },
+  {
+    "address": "0x2617724db92a8dbd4eba7e24615ba369133ff684",
+    "network": 100,
+    "isKilled": false,
+    "addedTimestamp": 1697486339,
+    "relativeWeightCap": "1.0",
+    "pool": {
+      "id": "0x06135a9ae830476d3a941bae9010b63732a055f4000000000000000000000065",
+      "address": "0x06135a9ae830476d3a941bae9010b63732a055f4",
+      "poolType": "StablePhantom",
+      "symbol": "stEUR/EURe",
+      "tokens": [
+        {
+          "address": "0x004626a008b1acdc4c74ab51644093b155e59a23",
+          "logoURI": "",
+          "symbol": "stEUR",
+          "weight": null
+        },
+        {
+          "address": "0xcb444e90d8198415266c6a2724b7900fb12fc56e",
+          "logoURI": "https://assets.coingecko.com/coins/images/23354/large/eur.png?1643926562",
+          "symbol": "EURe",
+          "weight": null
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x004626a008b1acdc4c74ab51644093b155e59a23": "",
+      "0xcb444e90d8198415266c6a2724b7900fb12fc56e": "https://assets.coingecko.com/coins/images/23354/large/eur.png?1643926562"
+    }
+  },
+  {
+    "address": "0xaf3c3dab54ca15068d09c67d128344916e177ca9",
+    "network": 1,
+    "isKilled": false,
+    "addedTimestamp": 1660580290,
+    "relativeWeightCap": "null",
+    "pool": {
+      "id": "0x99a14324cfd525a34bbc93ac7e348929909d57fd00020000000000000000030e",
+      "address": "0x99a14324cfd525a34bbc93ac7e348929909d57fd",
+      "poolType": "Weighted",
+      "symbol": "50WETH-50FOLD",
+      "tokens": [
+        {
+          "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "symbol": "WETH",
+          "weight": "0.5"
+        },
+        {
+          "address": "0xd084944d3c05cd115c09d072b9f44ba3e0e45921",
+          "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd084944d3c05cd115c09d072b9f44ba3e0e45921.png",
+          "symbol": "FOLD",
+          "weight": "0.5"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      "0xd084944d3c05cd115c09d072b9f44ba3e0e45921": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd084944d3c05cd115c09d072b9f44ba3e0e45921.png"
+    }
+  },
+  {
+    "address": "0x777c45bd0a2af1da5fe4a532ad6b207d3ced8b2d",
+    "network": 1,
     "isKilled": false,
     "addedTimestamp": 1697486339,
     "relativeWeightCap": "1.0",
