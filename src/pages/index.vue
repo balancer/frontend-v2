@@ -173,7 +173,7 @@ watch(poolTypeFilter, newPoolTypeFilter => {
                     :key="token"
                     :closeable="true"
                     class="mt-4"
-                    @closed="removeSelectedToken"
+                    @closed="removeSelectedToken(token)"
                   >
                     <BalAsset :address="token" :size="20" class="flex-auto" />
                     <span class="ml-2">{{ getToken(token)?.symbol }}</span>
