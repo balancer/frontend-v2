@@ -5,7 +5,7 @@ import {
   usePoolHelpers,
   deprecatedDetails,
 } from '@/composables/usePoolHelpers';
-import useNetwork from '@/composables/useNetwork';
+import useNetwork, { isGoerli } from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -62,14 +62,17 @@ const _hasNonApprovedRateProviders = computed(() => {
   );
 });
 
-const joinDisabled = computed(
-  (): boolean =>
+const joinDisabled = computed((): boolean => {
+  if (isGoerli.value) return false;
+
+  return (
     !!deprecatedDetails(props.pool.id) ||
     isJoinsDisabled(props.pool.id) ||
     _hasNonApprovedRateProviders.value ||
     isMigratablePool(props.pool) ||
     shouldDisableJoins.value
-);
+  );
+});
 </script>
 
 <template>
