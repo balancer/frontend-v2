@@ -16,6 +16,7 @@ import { useTokens } from '@/providers/tokens.provider';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { isGoerli } from '@/composables/useNetwork';
 
 const emit = defineEmits(['update:height', 'trigger:alert']);
 
@@ -102,7 +103,7 @@ const isProceedDisabled = computed(() => {
   if (Number(totalAllocatedWeight.value) !== 100) return true;
   if (seedTokens.value.length < 2) return true;
   if (zeroWeightToken.value) return true;
-  if (hasUnlistedToken.value) return true;
+  if (hasUnlistedToken.value && !isGoerli.value) return true;
   return false;
 });
 
