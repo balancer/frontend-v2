@@ -1,3 +1,4 @@
+import { convertKeysToLowerCase } from '@/lib/utils/objects';
 import { RateProviders } from '../types';
 
 const rateProviders: RateProviders = {
@@ -13,9 +14,9 @@ const rateProviders: RateProviders = {
   '0xa13a9247ea42d743238089903570127dda72fe44': {
     '0xa13a9247ea42d743238089903570127dda72fe44': true,
   },
-  '0x24Ae2dA0f361AA4BE46b48EB19C91e02c5e4f27E': {
-    '0xf518f2EbeA5df8Ca2B5E9C7996a2A25e8010014b': true,
+  '0x24ae2da0f361aa4be46b48eb19c91e02c5e4f27e': {
+    '0xf518f2ebea5df8ca2b5e9c7996a2a25e8010014b': true,
   },
 };
 
-export default rateProviders;
+export default convertKeysToLowerCase(rateProviders);
