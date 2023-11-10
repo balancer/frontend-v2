@@ -60,7 +60,7 @@ const ecosystemLinks = [
   { label: t('blog'), url: 'https://medium.com/balancer-protocol' },
   { label: t('docs'), url: 'https://docs.balancer.fi/' },
   { label: t('governance'), url: 'https://vote.balancer.fi/#/' },
-  { label: t('analytics'), url: 'https://dune.xyz/balancerlabs' },
+  { label: t('analytics'), url: 'https://dune.com/balancer' },
   { label: t('forum'), url: 'https://forum.balancer.fi/' },
   {
     label: t('grants'),
