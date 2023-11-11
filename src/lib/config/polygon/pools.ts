@@ -198,6 +198,7 @@ const pools: Pools = {
       '0x9105c470449921fb7061efceb318e30662d14621000100000000000000000c6c', // MATIC-ETH-BTC-MAI/StarSeeds-Protocol
       '0x559abdfcde5d1970dc1c98992742e0beb7441c00000100000000000000000c6b', // TetuQI-VQi-Matic/StarSeeds-Protocol
       '0xe603104baf3743ce615cce88f08f229f9620c924000200000000000000000c6d', // STARV2-StarSeeds-Protocol
+      '0xafb5d11629f3fe66ff2d2595180c1ed83a5e7b55000100000000000000000c6f', // money-machine-v1-starseeds-protocol
     ],
   },
   Factories: {
