@@ -200,6 +200,7 @@ const pools: Pools = {
       '0xe603104baf3743ce615cce88f08f229f9620c924000200000000000000000c6d', // STARV2-StarSeeds-Protocol
       '0xafb5d11629f3fe66ff2d2595180c1ed83a5e7b55000100000000000000000c6f', // money-machine-v1-starseeds-protocol
       '0x1bc9a8f8855ca78896eee5d1d573fb5cbca2ce75000100000000000000000c6e', // LP-Test-StarSeeds-Protocol
+      '0x11ff73fa7ffa63d3de1d2e1afb77894274259d88000200000000000000000c75', // STARV2-Link/ArbitrageLP/StarSeedsProtocol
     ],
   },
   Factories: {
