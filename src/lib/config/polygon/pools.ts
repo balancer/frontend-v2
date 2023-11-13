@@ -201,6 +201,10 @@ const pools: Pools = {
       '0xafb5d11629f3fe66ff2d2595180c1ed83a5e7b55000100000000000000000c6f', // money-machine-v1-starseeds-protocol
       '0x1bc9a8f8855ca78896eee5d1d573fb5cbca2ce75000100000000000000000c6e', // LP-Test-StarSeeds-Protocol
       '0x11ff73fa7ffa63d3de1d2e1afb77894274259d88000200000000000000000c75', // STARV2-Link/ArbitrageLP/StarSeedsProtocol
+      '0x17abb6ffe47e4ab120aa57de5e1c7fc6fe307633000200000000000000000c74', // STARV2-wstETH/ArbitrageLP/StarSeeds_Protocol
+      '0xb56ff8104cf3e42065b1613b4549aab12fa91646000200000000000000000c73', // STARV2-WBTC-arbitrage/StarSeeds-Protocol
+      '0x2e7f4db55bf11e0d8c25b0007728dfb2d138f904000100000000000000000c72', // STARV2-APR-FARM-V1-StarSeeds_Protocol
+      '0xd6e5704d4b43d79f1ea597a9c36105baf2dea993000100000000000000000c70', // Big-Three-V2-StarSeeds-Protocol
     ],
   },
   Factories: {
