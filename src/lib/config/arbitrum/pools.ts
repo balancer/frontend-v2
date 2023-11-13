@@ -24,6 +24,7 @@ const pools: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
+    'GyroE',
   ],
   Stable: {
     AllowList: [
@@ -68,6 +69,8 @@ const pools: Pools = {
       '0x6b9f3f6b9054a45702d3f2c6e3d32a60204934cb0000000000000000000004a7', // USDF/USDC
       '0xead7e0163e3b33bf0065c9325fc8fb9b18cc82130000000000000000000004a9', // STAR/USDC-BPT
       '0x3f09c77b19ad8bb527355ec32d5ce98421fec2e30000000000000000000004b2', // axlBAL/BAL
+      '0xe6d48f62a7d87e6bd13c283ca55068f0a73e6a5f0000000000000000000004cc', // USDV/FRAX
+      '0xe6fcb0ac7e05196b0870ae2aeb80dc9079ee1a250000000000000000000004cb', // USDV/USDC
     ],
   },
   Investment: {
@@ -127,6 +130,10 @@ const pools: Pools = {
       '0x051ddfbd30bea7326646bd027a8a7ac0c3626f3c0002000000000000000004c4', // 50wstETH-50WETH
       '0x7435e7250238e65d8ccb1b6398f402f7cb550d480002000000000000000004c7', // 80WBTC-20USDC
       '0x8f97c6ddf16f75eefca0faf44864fc1f8fc9a1310002000000000000000004c8', // 50WBTC-50LINK
+      '0xd1882ca6a22f3df54cd675b300b815864de67b200001000000000000000004c9', // Savvy TriCrypto Pool
+      '0x32b1d14c6c31dff0407058586a01614da686dfcc0001000000000000000004ce', // 10BAL-20CRV-20SUSHI-25UNI-25GMX
+      '0xb52bd7459cb4754ec30e5b0691574159fb0812170002000000000000000004cd', // 50USDC-50USDT
+      '0x965353ce4d898e5367d0cdfefb5df1f0dca726690001000000000000000004ca', // 67BAL-29WBTC-4wstETH
     ],
   },
   Factories: {
@@ -146,6 +153,7 @@ const pools: Pools = {
     '0xc7e5ed1054a24ef31d827e6f86caa58b3bc168d7': 'weightedPool', // weighted pool v4
     '0x2498a2b0d6462d2260eac50ae1c3e03f4829ba95': 'composableStablePool', // ComposableStable V4
     '0xa8920455934da4d853faac1f94fe7bef72943ef1': 'composableStablePool', // ComposableStable V5
+    '0xdca5f1f0d7994a32bc511e7dba0259946653eaf6': 'gyroE',
   },
   Stakable: {
     VotingGaugePools: [

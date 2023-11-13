@@ -1,3 +1,4 @@
+import { convertKeysToLowerCase } from '@/lib/utils/objects';
 import { RateProviders } from '../types';
 
 const rateProviders: RateProviders = {
@@ -12,4 +13,4 @@ const rateProviders: RateProviders = {
   },
 };
 
-export default rateProviders;
+export default convertKeysToLowerCase(rateProviders);
