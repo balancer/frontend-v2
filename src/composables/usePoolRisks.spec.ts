@@ -16,6 +16,9 @@ import {
   reaperBoostedPoolId,
   tetuBoostedPoolId,
 } from '@/lib/config/goerli/pools';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+
+initDependenciesWithDefaultMocks();
 
 function withGoerli() {
   networkId.value = Network.GOERLI;

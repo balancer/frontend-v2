@@ -5,6 +5,9 @@ import {
   mountComposableWithDefaultTokensProvider as mountComposable,
   waitForQueryData,
 } from '@tests/mount-helpers';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+
+initDependenciesWithDefaultMocks();
 
 test('Returns pool gauges', async () => {
   const pool = aWeightedPool();
