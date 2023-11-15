@@ -2,6 +2,9 @@ import { mountComposableWithDefaultTokensProvider as mountComposable } from '@te
 import useVeBal from './useVeBAL';
 import { networkId } from './useNetwork';
 import { Network } from '@/lib/config/types';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+
+initDependenciesWithDefaultMocks();
 
 function mountUseVeBAL() {
   const { result } = mountComposable(() => useVeBal());

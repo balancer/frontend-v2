@@ -1,3 +1,4 @@
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { initMulticall } from '@/dependencies/multicall';
 import { generateMulticallMock } from '@/dependencies/multicall.mocks';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -10,6 +11,8 @@ import {
 } from '@tests/unit/builders/address';
 import { Ref, ref } from 'vue';
 import useAllowancesQuery from './useAllowancesQuery';
+
+initDependenciesWithDefaultMocks();
 
 test('Returns token allowances from balancer SDK', async () => {
   const tokens: Ref<TokenInfoMap> = ref({
