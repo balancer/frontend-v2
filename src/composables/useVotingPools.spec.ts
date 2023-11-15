@@ -1,6 +1,9 @@
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mount } from '@tests/mount-composable-tester';
 
 import useVotingPools from './useVotingPools';
+
+initDependenciesWithDefaultMocks();
 
 vi.mock('@/composables/queries/useVotingPoolsQuery');
 vi.mock('@/services/web3/useWeb3');

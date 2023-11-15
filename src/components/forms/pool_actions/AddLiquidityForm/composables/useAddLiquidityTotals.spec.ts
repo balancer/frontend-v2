@@ -1,5 +1,4 @@
-import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import {
   AmountIn,
   provideJoinPool,
@@ -13,8 +12,7 @@ import { groAddress, wethAddress } from '@tests/unit/builders/address';
 import { anAmountIn } from '@tests/unit/builders/join-exit.builders';
 import { useAddLiquidityTotals } from './useAddLiquidityTotals';
 
-initBalancerSdkWithDefaultMocks();
-initEthersContractWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 async function mountAddLiquidityTotals(pool: Pool, amountsIn: AmountIn[] = []) {
   const { result } = await mountComposable(() => useAddLiquidityTotals(pool), {
