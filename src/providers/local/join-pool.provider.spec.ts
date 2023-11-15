@@ -1,17 +1,13 @@
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
-import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { Pool } from '@/services/pool/types';
 import { aWeightedPool } from '@/__mocks__/weighted-pool';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { groAddress, wethAddress } from '@tests/unit/builders/address';
 import { anAmountIn } from '@tests/unit/builders/join-exit.builders';
 import waitForExpect from 'wait-for-expect';
 import { joinPoolProvider } from './join-pool.provider';
-import { groAddress, wethAddress } from '@tests/unit/builders/address';
-import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
-initEthersContractWithDefaultMocks();
-initBalancerSdkWithDefaultMocks();
-initContractConcernWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 async function mountJoinPoolProvider(pool: Pool) {
   const { result } = await mountComposable(() => joinPoolProvider(ref(pool)));
