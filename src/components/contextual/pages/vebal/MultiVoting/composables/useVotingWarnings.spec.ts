@@ -5,6 +5,7 @@ import {
 import { VotingPool } from '@/composables/queries/useVotingPoolsQuery';
 import { oneDayInMs, toUnixTimestamp } from '@/composables/useTime';
 import { POOLS } from '@/constants/pools';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mountComposableWithDefaultTokensProvider as mountComposable } from '@tests/mount-helpers';
 import { useVotingWarnings } from './useVotingWarnings';
 
@@ -12,6 +13,8 @@ function mountVotingWarnings(votingPool: VotingPool) {
   const { result } = mountComposable(() => useVotingWarnings(votingPool));
   return result;
 }
+
+initDependenciesWithDefaultMocks();
 
 describe('lpVoteOverLimitWarning', () => {
   test('when next LP period votes are lesser than current gauge votes', () => {
