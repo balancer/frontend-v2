@@ -1,14 +1,12 @@
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { computed, ref } from 'vue';
 
-import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
 import useJoinExit from '@/composables/swap/useJoinExit';
-import { noop } from 'lodash';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { noop } from 'lodash';
 
-initBalancerSdkWithDefaultMocks();
-initEthersContractWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 const mockAmount = BigNumber.from(10);
 vi.mock('@/lib/balancer.sdk', () => {

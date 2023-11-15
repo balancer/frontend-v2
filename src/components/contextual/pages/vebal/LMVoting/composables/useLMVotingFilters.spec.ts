@@ -6,6 +6,9 @@ import { GqlChain } from '@/services/api/graphql/generated/api-types';
 import { LocationQuery, createRouter, createWebHistory } from 'vue-router';
 import { aVotingPool } from '../../MultiVoting/voting-pool.builders';
 import { useLMVotingFilters } from './useLMVotingFilters';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+
+initDependenciesWithDefaultMocks();
 
 function buildRouterMock() {
   const router = createRouter({

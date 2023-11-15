@@ -1,11 +1,11 @@
 import useTokenApprovalActions from '@/composables/approvals/useTokenApprovalActions';
-import { initMulticallWithDefaultMocks } from '@/dependencies/multicall.mocks';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { vaultAddress } from '@/services/contracts/vault.service.mocks';
 import { mountComposableWithFakeTokensProvider } from '@tests/mount-helpers';
 import { daiAddress } from '@tests/unit/builders/address';
 import { ApprovalAction } from './types';
 
-initMulticallWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 const amountsToApprove = [
   { address: daiAddress, amount: '3' },
