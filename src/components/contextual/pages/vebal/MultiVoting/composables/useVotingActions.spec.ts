@@ -12,6 +12,7 @@ import {
   UseVotingActionParams,
 } from './useVotingActions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 
 silenceConsoleLog(vi, message => message.startsWith('Voting'));
 
@@ -69,6 +70,8 @@ function createVotingActions(
   expect(votingActions).toHaveLength(2);
   return votingActions;
 }
+
+initDependenciesWithDefaultMocks();
 
 describe('Action label', () => {
   test('when there is only one expired pool selected', () => {

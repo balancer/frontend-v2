@@ -1,5 +1,4 @@
-import { initBalancerSdkWithDefaultMocks } from '@/dependencies/balancer-sdk.mocks';
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { poolIdThatRequiresInternalBalanceExit } from '@/lib/config/goerli/pools';
 import { ExactInExitHandler } from '@/services/balancer/pools/exits/handlers/exact-in-exit.handler';
@@ -11,11 +10,8 @@ import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests
 import { groAddress, wethAddress } from '@tests/unit/builders/address';
 import waitForExpect from 'wait-for-expect';
 import { exitPoolProvider } from './exit-pool.provider';
-import { initContractConcernWithDefaultMocks } from '@/dependencies/contract.concern.mocks';
 
-initEthersContractWithDefaultMocks();
-initBalancerSdkWithDefaultMocks();
-initContractConcernWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 async function mountExitPoolProvider(pool: Pool) {
   // Pretend that pools for SOR were fetched

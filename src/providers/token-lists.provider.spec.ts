@@ -1,6 +1,7 @@
 import { mountComposable } from '@tests/mount-helpers';
 import { TokenList, TokenListMap } from '@/types/TokenList';
 import { useTokenLists } from '@/providers/token-lists.provider';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 
 function firstTokenListSymbols(tokenList: TokenListMap) {
   return Object.values(tokenList)[0].tokens.map(t => t.symbol);
@@ -15,6 +16,8 @@ function mountComposableWithTokenLists() {
     return useTokenLists();
   });
 }
+
+initDependenciesWithDefaultMocks();
 
 describe('Token lists provider should', () => {
   test('provide active TokenList', async () => {
