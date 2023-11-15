@@ -8,6 +8,9 @@ import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { SwapType } from '@balancer-labs/sdk';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+
+initDependenciesWithDefaultMocks();
 
 vi.mock('@/lib/utils/balancer/helpers/sor/sorManager');
 
