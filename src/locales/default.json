@@ -915,7 +915,7 @@
       "generalTitle": "A vulnerability has been discovered that affects a number of pools. Existing liquidity providers should remove liquidity immediately."
     },
     "fxPoolVulnWarning": {
-      "title": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove liquidity from this pool",
+      "title": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove liquidity from this pool. <a href=\"https://twitter.com/XaveFinance/status/1725089131330756628\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
       "tooltip": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove liquidity from this pool"
     }
   },
