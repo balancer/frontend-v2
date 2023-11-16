@@ -913,6 +913,10 @@
       "title": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102/1\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
       "tooltip": "A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately.",
       "generalTitle": "A vulnerability has been discovered that affects a number of pools. Existing liquidity providers should remove liquidity immediately."
+    },
+    "fxPoolVulnWarning": {
+      "title": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove liquidity from this pool. <a href=\"https://twitter.com/XaveFinance/status/1725089131330756628\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
+      "tooltip": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove liquidity from this pool"
     }
   },
   "popularBases": "Popular",

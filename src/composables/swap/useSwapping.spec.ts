@@ -2,9 +2,9 @@ import useSwapping from '@/composables/swap/useSwapping';
 
 import * as useSor from '@/composables/swap/useSor';
 import { initBalancerSDK } from '@/dependencies/balancer-sdk';
-import { initEthersContractWithDefaultMocks } from '@/dependencies/EthersContract.mocks';
-import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { provideTokenLists } from '@/providers/token-lists.provider';
+import { TokensResponse } from '@/providers/tokens.provider';
 import {
   UserSettingsProviderSymbol,
   UserSettingsResponse,
@@ -12,14 +12,12 @@ import {
 import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
+import { wethAddress } from '@tests/unit/builders/address';
+import { DeepPartial } from '@tests/unit/types';
 import { mock, mockDeep } from 'vitest-mock-extended';
 import mockSorOutput from './__mocks__/mockSorOutput';
-import { TokensResponse } from '@/providers/tokens.provider';
-import { DeepPartial } from '@tests/unit/types';
-import { wethAddress } from '@tests/unit/builders/address';
 
-initOldMulticallerWithDefaultMocks();
-initEthersContractWithDefaultMocks();
+initDependenciesWithDefaultMocks();
 
 const mockTokenInfoIn = {
   chainId: 5,
