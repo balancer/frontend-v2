@@ -648,6 +648,11 @@ const pools: Pools = {
       '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
     ],
     [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.MAINNET],
+    [PoolWarning.FxPoolVulnWarning]: [
+      '0x55bec22f8f6c69137ceaf284d9b441db1b9bfedc0002000000000000000003cd',
+      '0x66bb9d104c55861feb3ec3559433f01f6373c9660002000000000000000003cf',
+      '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce',
+    ],
   },
 };
 
