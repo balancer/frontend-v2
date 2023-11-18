@@ -228,6 +228,7 @@ const pools: Pools = {
       '0x2d753d4ebf91b137b161b69bdb8638cf4b80c4a5000200000000000000000c8d', // 50fireEP-50ICHI_Vault_LP
       '0x0abc5370a1bced0e78222dba60ca69189aad7ed9000200000000000000000c8c', // STARV3-XTETUBAL-BALWETH/Arbitrage/StarSeeds_Protocol
       '0xdcd3fc34d581ee474520b0f6bce9412df7d2e32f000200000000000000000c90', // 95DE-5DAI
+      '0x91c22f98d8ca24a86a443c122c484ff91e38835b000200000000000000000c98', // STARV3-wstETH/50-50/StarSeeds_Protocol
     ],
   },
   Factories: {
