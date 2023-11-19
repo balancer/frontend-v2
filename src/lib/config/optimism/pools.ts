@@ -30,6 +30,7 @@ const pools: Pools = {
       '0xacfe9b4782910a853b68abba60f3fd8049ffe6380000000000000000000000ff', // USDC/DOLA
       '0x004700ba0a4f5f22e1e78a277fca55e36f47e09c000000000000000000000104', // rEth/ankrEth
       '0x9da11ff60bfc5af527f58fd61679c3ac98d040d9000000000000000000000100', // usdc/usdcE/usdt/dai
+      '0xc4ee406970047a70aed14621d97b3b460a7dea0b00000000000000000000010b', // SWEEP/USDC
     ],
   },
   Investment: {
