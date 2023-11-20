@@ -1,6 +1,9 @@
 import useUserPoolSharesQuery from '@/composables/queries/useUserPoolSharesQuery';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { defaultPoolBalance } from '@tests/msw/graphql-handlers';
+
+initDependenciesWithDefaultMocks();
 
 test('Returns pool shares for the current user', async () => {
   const { result } = mountComposable(() => useUserPoolSharesQuery());
