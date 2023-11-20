@@ -18,8 +18,11 @@ import { registerTestPlugins } from './registerTestPlugins';
 import { DeepPartial } from './unit/types';
 import { Router } from 'vue-router';
 import { provideUserData } from '@/providers/user-data.provider';
+import { initOldMulticallerWithDefaultMocks } from '@/dependencies/OldMulticaller.mocks';
 
 export const defaultStakedShares = '5';
+
+initOldMulticallerWithDefaultMocks();
 
 export function provideFakePoolStaking(stackedShares = defaultStakedShares) {
   provide(PoolStakingProviderSymbol, {
