@@ -135,6 +135,11 @@ const pools: Pools = {
   },
   Issues: {
     [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.AVALANCHE],
+    [PoolWarning.FxPoolVulnWarning]: [
+      '0x55bec22f8f6c69137ceaf284d9b441db1b9bfedc000200000000000000000011',
+      '0x66bb9d104c55861feb3ec3559433f01f6373c96600020000000000000000002a',
+      '0xad0e5e0778cac28f1ff459602b31351871b5754a000200000000000000000029',
+    ],
   },
 };
 

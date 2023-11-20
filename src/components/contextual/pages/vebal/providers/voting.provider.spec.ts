@@ -9,6 +9,7 @@ import {
 import { randomAddress } from '@tests/unit/builders/address';
 import { mockVotingPools } from '@/composables/queries/__mocks__/useVotingPoolsQuery';
 import { aVotingPool } from '../MultiVoting/voting-pool.builders';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
 
 async function mountVoting() {
   // Reset global state before each test
@@ -17,6 +18,8 @@ async function mountVoting() {
   const { result } = await mountComposable(() => votingProvider());
   return result;
 }
+
+initDependenciesWithDefaultMocks();
 
 vi.mock('@/composables/queries/useExpiredGaugesQuery');
 vi.mock('@/composables/queries/useVotingPoolsQuery');
