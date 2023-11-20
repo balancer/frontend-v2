@@ -245,6 +245,7 @@ const pools: Pools = {
       '0xe2b1b8ae0a5440ee91ebd586506fbb4c0a8500bd000200000000000000000ca1', // oRETRO-WMATIC/50-50/StarSeeds_Protocol
       '0x17a00f034836c7a9c666cd46086713af3b58a9a5000200000000000000000ca2', // STARV3-oRETRO/40-60/StarSeeds_Protocol
       '0xda2e07ae9111821dea416ea1fbdaf4d2bd407fbc000200000000000000000ca3', // 50WMATIC-50wPPC
+      '0x46ff08b620b2586fc068ae26b12db4422c405a95000100000000000000000ca4', // bStorage
     ],
   },
   Factories: {
