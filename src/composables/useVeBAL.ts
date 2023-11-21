@@ -80,7 +80,7 @@ export default function useVeBal() {
   /**
    * COMPOSABLES
    */
-  const { balanceFor, getToken } = useTokens();
+  const { balanceFor, getToken, balanceQueryLoading } = useTokens();
   const { networkConfig } = useConfig();
 
   /**
@@ -111,6 +111,7 @@ export default function useVeBal() {
     noVeBalBalance,
     lockablePoolId,
     showRedirectModal,
+    isLoading: balanceQueryLoading,
     // methods
     setShowRedirectModal,
   };

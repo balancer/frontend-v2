@@ -31,7 +31,7 @@ const { isLoadingLockPool, isLoadingLockInfo, lock } = useLock();
 const { fNum } = useNumbers();
 const router = useRouter();
 
-const { veBalBalance } = useVeBal();
+const { veBalBalance, isLoading: isLoadingVebalBalance } = useVeBal();
 const { t } = useI18n();
 const { isLoading, data: userHistoricalLocks } =
   useHistoricalLocksQuery(account);
@@ -58,7 +58,8 @@ const isLoadingData = computed(() => {
     isLoadingLockBoard.value ||
     isLoading.value ||
     isLoadingLockInfo.value ||
-    isLoadingLockPool.value
+    isLoadingLockPool.value ||
+    isLoadingVebalBalance.value
   );
 });
 
