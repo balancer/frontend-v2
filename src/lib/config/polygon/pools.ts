@@ -248,6 +248,7 @@ const pools: Pools = {
       '0x46ff08b620b2586fc068ae26b12db4422c405a95000100000000000000000ca4', // bStorage
       '0x1f93622a4e04c819258d87fc822e4cd20ea1b981000100000000000000000ca5', // 25WBTC-25mooCompoundPolygonUSDC-25ICHI_Vault_LP-25ICHI_Vault_LP
       '0x8a70adba1114a969e801fe93fb9acbd12bc27cbd000100000000000000000ca8', // STARV3/Volatile-Growth/StarSeeds_Protocol
+      '0x1265ad6024c9db3c70e2337e20007eafcef6ded2000200000000000000000caa', // STARV3-miMATIC/45-55/StarSeeds_Protocol
     ],
   },
   Factories: {
