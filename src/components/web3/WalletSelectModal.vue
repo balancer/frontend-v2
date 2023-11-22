@@ -58,11 +58,11 @@ function onBalRulesAccepted() {
     title="Connect to a wallet"
     @close="emit('close')"
   >
-    <BalRadio
+    <BalCheckbox
       :checked="isBalRulesAccepted"
       value="bal-rules"
       name="bal-rules"
-      size="lg"
+      size="md"
       @update:model-value="onBalRulesAccepted"
     >
       <template #label>
@@ -103,7 +103,7 @@ function onBalRulesAccepted() {
           </router-link>
         </p>
       </template>
-    </BalRadio>
+    </BalCheckbox>
 
     <div
       :class="[
