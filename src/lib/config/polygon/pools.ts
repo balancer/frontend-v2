@@ -252,6 +252,7 @@ const pools: Pools = {
       '0x1265ad6024c9db3c70e2337e20007eafcef6ded2000200000000000000000caa', // STARV3-miMATIC/45-55/StarSeeds_Protocol
       '0x589e973033cd02bb4426b4438b54297591779dd4000200000000000000000cab', // 50WBTC-50WETH
       '0xd7b928ead272e9e610db5df16d4a607e31cc2587000200000000000000000cad', // PAXStorage
+      '0xc31f6ecbafaa6c3a3c69d837f7ffdda74391fc83000200000000000000000cae', // STARV3-JRT/60-40/StarSeeds_Protocol
     ],
   },
   Factories: {
