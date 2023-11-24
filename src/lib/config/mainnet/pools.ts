@@ -457,6 +457,7 @@ const pools: Pools = {
     AllowList: [
       '0x54ca50ee86616379420cc56718e12566aa75abbe000200000000000000000610', // wusdm/wsteth
       '0x9ca0ffcbae87a66a8f4604bfec724da04e2474ae000000000000000000000621', // usdv/usdc
+      '0x50359088f666a9e70dc00b565ecd9f853a572c7c00000000000000000000062e',
     ],
   },
   Metadata: {},
