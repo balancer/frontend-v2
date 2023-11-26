@@ -254,6 +254,7 @@ const pools: Pools = {
       '0xd7b928ead272e9e610db5df16d4a607e31cc2587000200000000000000000cad', // PAXStorage
       '0xc31f6ecbafaa6c3a3c69d837f7ffdda74391fc83000200000000000000000cae', // STARV3-JRT/60-40/StarSeeds_Protocol
       '0xb09f896f6fe2cf4fe5bee2eab5ddef16ecea7acd000200000000000000000cb1', // 70wstETH-30WETH
+      '0x6bf004bee6346852a29239b386ab4239ffbd66de000200000000000000000cb5', // LP-VNXAU-USDC
     ],
   },
   Factories: {
