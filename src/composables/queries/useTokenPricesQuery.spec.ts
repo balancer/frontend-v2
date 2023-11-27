@@ -5,6 +5,9 @@ import {
 import { mountComposable, waitForQueryData } from '@tests/mount-helpers';
 import { daiAddress, tetherAddress } from '@tests/unit/builders/address';
 import useTokenPricesQuery from './useTokenPricesQuery';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+
+initDependenciesWithDefaultMocks();
 
 async function mountQuery(pricesToInject) {
   const { result } = mountComposable(() => useTokenPricesQuery(pricesToInject));

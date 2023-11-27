@@ -57,6 +57,7 @@ const pools: Pools = {
       '0x721bd1900aeabc29009b08e44be37529f518f2c2000100000000000000000026', // 33VCHF-33sAVAX-33VEUR
       '0xb10968b6ca2ea1c25d392a9a990559ed3f686861000200000000000000000028', // 80WAVAX-20USDC
       '0xab567c27450e3fa1b4ee4e67ca7d1003c49e7ea800020000000000000000002b', // 93BTC.b-7USDC
+      '0x28f3a9e42667519c83cb090b5c4f6bd34e9f5569000200000000000000000031', // LP-VEUR-USDC
     ],
   },
   Factories: {
@@ -64,6 +65,7 @@ const pools: Pools = {
     '0x3b1eb8eb7b43882b385ab30533d9a2bef9052a98': 'composableStablePool',
     '0xe42ffa682a26ef8f25891db4882932711d42e467': 'composableStablePool',
     '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx',
+    '0x4042dc4110ea9500338737605a60065c3de152c6': 'fx',
   },
   Stakable: {
     VotingGaugePools: [
