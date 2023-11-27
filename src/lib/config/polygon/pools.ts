@@ -255,6 +255,8 @@ const pools: Pools = {
       '0xc31f6ecbafaa6c3a3c69d837f7ffdda74391fc83000200000000000000000cae', // STARV3-JRT/60-40/StarSeeds_Protocol
       '0xb09f896f6fe2cf4fe5bee2eab5ddef16ecea7acd000200000000000000000cb1', // 70wstETH-30WETH
       '0x66fff1abb51ca188942a2417d1650fe09fd23a74000100000000000000000cb7', // STARV3-stMATIC-wstETH-oRetro-liveRetro-MiMATIC/Exit-Router/StarSeeds_Protocol
+      '0x1399d2b825c927409ccd77e86447c40e378dc580000100000000000000000cb3', // 33VNXAU-33VCHF-33VEUR
+      '0x69301ddb9273918303171b003e9e4ba27527176b000100000000000000000cb2', // STARV3/Growth/StarSeeds_Protocol
     ],
   },
   Factories: {
