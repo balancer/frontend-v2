@@ -64,6 +64,7 @@ const pools: Pools = {
     '0x3b1eb8eb7b43882b385ab30533d9a2bef9052a98': 'composableStablePool',
     '0xe42ffa682a26ef8f25891db4882932711d42e467': 'composableStablePool',
     '0x81fe9e5b28da92ae949b705dfdb225f7a7cc5134': 'fx',
+    '0x4042dc4110ea9500338737605a60065c3de152c6': 'fx',
   },
   Stakable: {
     VotingGaugePools: [

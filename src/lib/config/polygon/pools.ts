@@ -278,6 +278,7 @@ const pools: Pools = {
     '0xfc8a407bba312ac761d8bfe04ce1201904842b76': 'weightedPool', // weighted pool v4
     '0x1a79a24db0f73e9087205287761fc9c5c305926b': 'gyroE',
     '0xe2fa4e1d17725e72dcdafe943ecf45df4b9e285b': 'composableStablePool', // ComposableStable V5
+    '0xf169c1ae8de24da43a3dc5c5f05de412b4848bd3': 'fx', // fx
   },
   Stakable: {
     VotingGaugePools: [
