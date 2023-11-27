@@ -115,6 +115,7 @@ const pools: Pools = {
       '0x8c89fb53d4d83173dd65b7a94569558ce393460f000000000000000000000c26', // FRAX-USDC-BPT
       '0x6da7f1c193ab6c4bd16eb14a6305bba8d25737ff000000000000000000000c29', // DUSD-USDC-BPT
       '0x6a6525d88de3c2434dc060f54eaec8fdfa12869c000000000000000000000c5e', // 2brl (BRLA)
+      '0x46356123e062f93d6b0d56f6ff6c3744e87c22d7000000000000000000000ca6', // p-cs-kp-eur
     ],
   },
   Investment: {
@@ -247,6 +248,20 @@ const pools: Pools = {
       '0xda2e07ae9111821dea416ea1fbdaf4d2bd407fbc000200000000000000000ca3', // 50WMATIC-50wPPC
       '0x46ff08b620b2586fc068ae26b12db4422c405a95000100000000000000000ca4', // bStorage
       '0x1f93622a4e04c819258d87fc822e4cd20ea1b981000100000000000000000ca5', // 25WBTC-25mooCompoundPolygonUSDC-25ICHI_Vault_LP-25ICHI_Vault_LP
+      '0x8a70adba1114a969e801fe93fb9acbd12bc27cbd000100000000000000000ca8', // STARV3/Volatile-Growth/StarSeeds_Protocol
+      '0x1265ad6024c9db3c70e2337e20007eafcef6ded2000200000000000000000caa', // STARV3-miMATIC/45-55/StarSeeds_Protocol
+      '0x589e973033cd02bb4426b4438b54297591779dd4000200000000000000000cab', // 50WBTC-50WETH
+      '0xd7b928ead272e9e610db5df16d4a607e31cc2587000200000000000000000cad', // PAXStorage
+      '0xc31f6ecbafaa6c3a3c69d837f7ffdda74391fc83000200000000000000000cae', // STARV3-JRT/60-40/StarSeeds_Protocol
+      '0xb09f896f6fe2cf4fe5bee2eab5ddef16ecea7acd000200000000000000000cb1', // 70wstETH-30WETH
+      '0x6bf004bee6346852a29239b386ab4239ffbd66de000200000000000000000cb5', // LP-VNXAU-USDC
+      '0x32cc63ffeccb7c0508d64e4d37145313cc053b27000200000000000000000cb4', // LP-VCHF-USDC
+      '0xf16dc9f530ad9a68b7321911a85844a45b90bd67000100000000000000000cb6', // STARV3-wstETH-WMATIC-MiMATIC-Retro-oRetro-liveRetro/Growth/StarSeeds_Protocol
+      '0x66fff1abb51ca188942a2417d1650fe09fd23a74000100000000000000000cb7', // STARV3-stMATIC-wstETH-oRetro-liveRetro-MiMATIC/Exit-Router/StarSeeds_Protocol
+      '0x1399d2b825c927409ccd77e86447c40e378dc580000100000000000000000cb3', // 33VNXAU-33VCHF-33VEUR
+      '0x69301ddb9273918303171b003e9e4ba27527176b000100000000000000000cb2', // STARV3/Growth/StarSeeds_Protocol
+      '0xd550982a2840efae469fc17d107522b2ae87fe87000100000000000000000cb8', // STARV3-WMATIC-wstETH-MiMATIC-Retro-oRetro-liveRetro-xTetu/Growth/StarSeeds_Protocol
+      '0xd7ca77afaab24f8a4a66def0cbaad312bf465983000200000000000000000cb9', // STARV3-WETH/50-50/StarSeeds-Protocol
     ],
   },
   Factories: {
@@ -267,6 +282,7 @@ const pools: Pools = {
     '0xfc8a407bba312ac761d8bfe04ce1201904842b76': 'weightedPool', // weighted pool v4
     '0x1a79a24db0f73e9087205287761fc9c5c305926b': 'gyroE',
     '0xe2fa4e1d17725e72dcdafe943ecf45df4b9e285b': 'composableStablePool', // ComposableStable V5
+    '0xf169c1ae8de24da43a3dc5c5f05de412b4848bd3': 'fx', // fx
   },
   Stakable: {
     VotingGaugePools: [
