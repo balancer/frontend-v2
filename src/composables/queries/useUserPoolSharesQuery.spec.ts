@@ -5,7 +5,7 @@ import { defaultPoolBalance } from '@tests/msw/graphql-handlers';
 
 initDependenciesWithDefaultMocks();
 
-test.skip('Returns pool shares for the current user', async () => {
+test('Returns pool shares for the current user', async () => {
   const { result } = mountComposable(() => useUserPoolSharesQuery());
 
   const data = await waitForQueryData(result);
