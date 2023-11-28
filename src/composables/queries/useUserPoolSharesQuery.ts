@@ -59,8 +59,7 @@ export default function useUserPoolSharesQuery(options: QueryOptions = {}) {
       console.error('Failed users pool shares', {
         cause: error,
       });
-      // Commented to debug flaky test
-      // throw error;
+      throw error;
     }
   };
 
