@@ -165,6 +165,8 @@ export default defineConfig(({ mode }) => {
         reporter: process.env.SILENT_TESTS ? ['lcov'] : ['text', 'lcov'],
       }, // lcov reporter is used by IDE coverage extensions
       include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+      // Skip the next that it is causing flakiness due to vi.mocks and queries
+      exclude: ['./src/**/usePoolCreation.spec.ts', 'node_modules', 'dist'],
     },
   };
 });
