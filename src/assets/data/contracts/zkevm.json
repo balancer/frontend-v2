@@ -45,5 +45,7 @@
   "Vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
   "VotingEscrowDelegationProxy": "0xc7E5ED1054A24Ef31D827E6F86caA58B3Bc168d7",
   "WeightedPoolFactory": "0x03F3Fb107e74F2EAC9358862E91ad3c692712054",
-  "YearnLinearPoolFactory": "0x44d33798dddCdAbc93Fe6a40C80588033Dc502d3"
+  "YearnLinearPoolFactory": "0x44d33798dddCdAbc93Fe6a40C80588033Dc502d3",
+  "ChildChainGaugeWorkingBalanceHelper": "0xEF454a7B3f965D3f6723E462405246f8Cd865425",
+  "ChildChainGaugeCheckpointer": "0x8e620FfCa2580ed87241D7e10F85EE75d0a906F5"
 }
