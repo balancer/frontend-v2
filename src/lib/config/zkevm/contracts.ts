@@ -24,6 +24,8 @@ const contracts: Contracts = {
   feeDistributorDeprecated: '',
   faucet: '',
   gaugeRewardsHelper: '',
+  gaugeWorkingBalanceHelper: zkevm.ChildChainGaugeWorkingBalanceHelper,
+  gaugeCheckpointer: zkevm.ChildChainGaugeCheckpointer,
 };
 
 export default contracts;

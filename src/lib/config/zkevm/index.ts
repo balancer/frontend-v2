@@ -9,6 +9,7 @@ import rateProviders from './rateProviders';
 const config: Config = {
   key: '1101',
   chainId: 1101,
+  layerZeroChainId: 158,
   chainName: 'Polygon zkEVM',
   name: 'Polygon zkEVM Mainnet',
   shortName: 'zkEVM',
@@ -41,6 +42,7 @@ const config: Config = {
   bridgeUrl: 'https://wallet.polygon.technology/zkEVM-Bridge/bridge',
   supportsEIP1559: false,
   supportsElementPools: false,
+  supportsVeBalSync: true,
   blockTime: 2,
   nativeAsset: {
     name: 'Ether',
