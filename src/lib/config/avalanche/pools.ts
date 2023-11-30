@@ -37,6 +37,7 @@ const pools: Pools = {
       '0xb26f0e66317846bd5fe0cbaa1d269f0efeb05c9600000000000000000000001e', // usdc/usdt
       '0xfd2620c9cfcec7d152467633b3b0ca338d3d78cc00000000000000000000001c', // sAVAX/wavax
       '0x9fa6ab3d78984a69e712730a2227f20bcc8b5ad900000000000000000000001f', // yyAVAX/wavax
+      '0x121b0dfc48444c4d10cadded9885d90e7453e878000000000000000000000035', // SWEEP-USDC-BPT
     ],
   },
   Investment: {
