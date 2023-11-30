@@ -287,6 +287,7 @@ const pools: Pools = {
       '0x90dccf391004380bdafee7910cdd002b8c4de81d000200000000000000000cd4', // STARV2-DAO/60-40/StarSeeds_Protocol
       '0x9eafd3b6d65b0d099747e2942eed730176068267000200000000000000000cd5', // STARV2-st/WMATIC(C)/60-40/StarSeeds_Protocol
       '0xa500c998642f1eaa75b099faf381c6403d101cb7000200000000000000000cd3', // STARV3-RETRO/67-33/StarSeeds_Protocol
+      '0xe5ccde10aa827c643142ea85c3b8200eb1bf7c70000100000000000000000cd6', // STARV3-M-st/MATIC(C)-WBTC-wstETH-ETH(C)/40-20x3/StarSeeds_Protocol
     ],
   },
   Factories: {
