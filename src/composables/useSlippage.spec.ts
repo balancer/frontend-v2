@@ -1,11 +1,9 @@
 import useSlippage from './useSlippage';
 import { mountComposable } from '@tests/mount-helpers';
 
-// TODO: This line is causing flaky tests:
-// TypeError: Cannot read properties of undefined (reading 'asyncTaskManager')
-// vi.mock('@/providers/user-settings.provider');
+vi.mock('@/providers/user-settings.provider');
 
-describe.skip('useSlippage', () => {
+describe('useSlippage', () => {
   const { result } = mountComposable(() => useSlippage());
 
   it('Should load', () => {
