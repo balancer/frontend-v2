@@ -35,6 +35,7 @@
     "tailwind:view": "tailwind-config-viewer -o",
     "generate:contract-addresses": "NODE_ENV=development npx vite-node ./src/lib/scripts/contract-addresses.generator.ts",
     "generate:tokenlists": "NODE_ENV=development npx vite-node --options.deps.inline=@ethersproject/basex --options.deps.inline=@ethersproject/signing-key --options.deps.inline=@balancer-labs/sdk ./src/lib/scripts/tokenlists.generator.ts",
+    "generate:voting-gauges": "NODE_ENV=development npx vite-node --options.deps.inline=date-fns --options.deps.inline=@ethersproject/basex --options.deps.inline=@ethersproject/signing-key --options.deps.inline=@balancer-labs/sdk ./src/lib/scripts/voting-gauge.generator.ts",
     "generate:api": "graphql-codegen --config codegen.yml -r dotenv/config",
     "typecheck": "vue-tsc --noEmit"
   },
