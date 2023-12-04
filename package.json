@@ -1,6 +1,6 @@
 {
   "name": "@balancer/frontend-v2",
-  "version": "1.135.31",
+  "version": "1.135.32",
   "engines": {
     "node": "=16",
     "npm": ">=8"
