@@ -14,9 +14,6 @@ const rateProviders: RateProviders = {
   '0xb86fb1047a955c0186c77ff6263819b37b32440d': {
     '0x2ba447d4b823338435057571bf70907f8224bb47': true,
   },
-  '0xe05a08226c49b636acf99c40da8dc6af83ce5bb3': {
-    '0xfc8d81a01ded207ad3deb4fe91437cae52ded0b5': true,
-  },
 };
 
 export default convertKeysToLowerCase(rateProviders);
