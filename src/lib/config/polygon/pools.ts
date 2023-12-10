@@ -349,6 +349,7 @@ const pools: Pools = {
       '0x30aeac2ed5dcb59ed02c1218f88924ef1309d754000200000000000000000d17', // 80mooCompoundPolygonUSDC-20ICHI_Vault_LP
       '0x4e8c97baa6777ae00ed3fe1acb4dd54fb8fe19c5000200000000000000000d18', // 80WBTC-20ICHI_Vault_LP
       '0xda1503426f6cd9ebbab2964106f42b35c745d453000100000000000000000d19', // 30stMATIC-10SP-60STARV2/StarSeeds_Protocol
+      '0x51b52d8a6fa6f761fdb115b1b7dd78fac2b0cc5f000200000000000000000d2b', // 16WETH-84STARV3/Volume-V5/StarSeeds_Protocol
     ],
   },
   Factories: {
