@@ -277,7 +277,7 @@ function navigateToGetVeBAL() {
         <div v-else class="flex flex-col flex-1">
           <div class="mb-2 text-xl font-bold">My veBAL</div>
           <div class="mb-10 text-5xl font-black">
-            {{ Number(veBalBalance).toFixed(2) }}
+            {{ fNum(veBalBalance) }}
           </div>
 
           <div class="flex flex-col gap-2 mb-8">
