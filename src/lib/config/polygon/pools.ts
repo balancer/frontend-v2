@@ -487,7 +487,9 @@ const pools: Pools = {
       '0x70ff0078d55ce9c1a0e668f35eb4400a4300122d000000000000000000000beb',
       '0x7af62c1ebf97034b7542ccec13a2e79bbcf34380000000000000000000000c13',
     ],
-    AllowList: [],
+    AllowList: [
+      '0xe6d8fcd23ed4e417d7e9d1195edf2ca634684e0e000200000000000000000caf',
+    ],
   },
   Metadata: {},
   Deep: [
