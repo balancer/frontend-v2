@@ -17,7 +17,6 @@ import PoolFeatureSelect from '@/components/inputs/PoolFeatureSelect.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { PoolAttributeFilter, PoolTypeFilter } from '@/types/pools';
 import UserInvestedInAffectedPoolAlert from '@/pages/recovery-exit/UserInvestedInAffectedPoolAlert.vue';
-import RedAlert from '@/pages/RedAlert.vue';
 
 const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
 const isFeaturedProtocolsVisible = ref(false);
@@ -118,7 +117,6 @@ watch(poolTypeFilter, newPoolTypeFilter => {
   <div>
     <HomePageHero />
     <div class="xl:container xl:px-4 pt-10 md:pt-8 xl:mx-auto">
-      <RedAlert />
       <UserInvestedInAffectedPoolAlert />
       <BalStack vertical>
         <div class="px-4 xl:px-0">
