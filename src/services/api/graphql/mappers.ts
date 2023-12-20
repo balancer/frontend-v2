@@ -1,9 +1,6 @@
 import { Network } from '@/lib/config/types';
 import { PoolType } from '@/services/pool/types';
-import {
-  GqlChain,
-  GqlPoolMinimalType as GqlPoolType,
-} from './generated/api-types';
+import { GqlChain, GqlPoolType } from './generated/api-types';
 
 export function mapApiChain(
   apiChain: GqlChain | 'SEPOLIA' | 'GOERLI'
@@ -53,12 +50,15 @@ export function mapApiPoolType(apiPoolType: GqlPoolType): PoolType | null {
       return PoolType.LiquidityBootstrapping;
     case GqlPoolType.MetaStable:
       return PoolType.MetaStable;
-    case GqlPoolType.PhantomStable:
-      return PoolType.StablePhantom;
     case GqlPoolType.Stable:
       return PoolType.Stable;
     case GqlPoolType.Weighted:
       return PoolType.Weighted;
+    case GqlPoolType.PhantomStable:
+      return PoolType.StablePhantom;
+    case GqlPoolType.ComposableStable: // 20 Dec 2023: API change moving from PhantomStable to ComposableStable
+      return PoolType.StablePhantom; // We can change this to PoolType.ComposableStable once our partners are ok
+
     default:
       return null;
   }

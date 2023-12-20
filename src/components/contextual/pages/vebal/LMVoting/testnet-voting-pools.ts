@@ -1,6 +1,6 @@
 import {
   GqlChain,
-  GqlPoolMinimalType as GqlPoolType,
+  GqlPoolType,
 } from '@/services/api/graphql/generated/api-types';
 import { ApiVotingPool } from '@/services/balancer/gauges/gauge-controller.decorator';
 

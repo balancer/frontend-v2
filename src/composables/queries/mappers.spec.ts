@@ -1,7 +1,7 @@
 import { Network } from '@/lib/config/types';
 import {
   GqlChain,
-  GqlPoolMinimalType as GqlPoolType,
+  GqlPoolType,
 } from '@/services/api/graphql/generated/api-types';
 import { mapApiChain, mapApiPoolType } from '@/services/api/graphql/mappers';
 import { PoolType } from '@/services/pool/types';
@@ -37,4 +37,7 @@ test('Maps API pool types', async () => {
   expect(mapApiPoolType(GqlPoolType.Stable)).toBe(PoolType.Stable);
   expect(mapApiPoolType(GqlPoolType.Unknown)).toBeNull();
   expect(mapApiPoolType(GqlPoolType.Weighted)).toBe(PoolType.Weighted);
+  expect(mapApiPoolType(GqlPoolType.ComposableStable)).toBe(
+    PoolType.StablePhantom
+  );
 });
