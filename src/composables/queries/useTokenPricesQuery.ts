@@ -47,7 +47,7 @@ export default function useTokenPricesQuery(
   const queryFn = async () => {
     const { prices } = await api.GetCurrentTokenPrices();
 
-    let pricesMap = priceArrayToMap(prices);
+    let pricesMap = priceArrayToMap(prices as GqlTokenPrice[]);
     pricesMap = injectCustomTokens(pricesMap, pricesToInject.value);
     console.log('Fetching', Object.values(prices).length, 'prices');
 
