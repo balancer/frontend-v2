@@ -15,8 +15,13 @@ export default class PoolShares {
 
   public async get(args = {}, attrs = {}): Promise<PoolShare[]> {
     const queryName = 'PoolShares';
-    const query = this.query(args, attrs, queryName);
-    const data = await this.service.client.get(query);
-    return data.poolShares;
+    try {
+      const query = this.query(args, attrs, queryName);
+      const data = await this.service.client.get(query);
+      return data.poolShares;
+    } catch (error: unknown) {
+      console.error('Unexpected error in PoolShares query: ', error);
+      return [];
+    }
   }
 }
