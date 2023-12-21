@@ -2,8 +2,6 @@
 import Page from '@/components/contextual/pages/pool/add-liquidity/Page.vue';
 import { useIntervalFn } from '@vueuse/core';
 import { oneSecondInMs } from '@/composables/useTime';
-import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { usePool } from '@/providers/local/pool.provider';
 import Col2Layout from '@/components/layouts/Col2Layout.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -25,20 +23,13 @@ providePoolStaking(poolId);
  * COMPOSABLES
  */
 const { pool, isLoadingPool, refetchOnchainPoolData } = usePool();
-const { isDeepPool } = usePoolHelpers(pool);
 const { isMobile } = useBreakpoints();
 
 /**
  * COMPUTED
  */
-// We only need to wait for SOR if it's a deep pool.
-const isLoadingSor = computed(
-  (): boolean => isDeepPool.value && !hasFetchedPoolsForSor.value
-);
 
-const isLoading = computed(
-  (): boolean => isLoadingPool.value || isLoadingSor.value
-);
+const isLoading = computed((): boolean => isLoadingPool.value);
 
 // Instead of refetching pool data on every block, we refetch every 20s to prevent
 // overfetching a request on short blocktime networks like Polygon.
