@@ -149,6 +149,12 @@ export function calcPriceImpact(
   return priceImpact;
 }
 
+const sorManager = new SorManager(
+  rpcProviderService.jsonProvider,
+  BigNumber.from(GAS_PRICE),
+  Number(MAX_POOLS)
+);
+
 export default function useSor({
   exactIn,
   tokenInAddressInput,
@@ -166,7 +172,6 @@ export default function useSor({
   slippageBufferRate,
   isCowswapSwap,
 }: Props) {
-  let sorManager: SorManager | undefined = undefined;
   const pools = ref<SubgraphPoolBase[]>([]);
   const sorReturn = ref<SorReturn>({
     hasSwaps: false,
@@ -214,7 +219,7 @@ export default function useSor({
       unknownAssets.push(tokenOutAddressInput.value);
     }
     await injectTokens(unknownAssets);
-    await initSor();
+    await fetchPools();
     await handleAmountChange();
   });
 
@@ -223,16 +228,6 @@ export default function useSor({
     state.validationErrors.noSwaps = false;
 
     state.submissionError = null;
-  }
-
-  async function initSor(): Promise<void> {
-    sorManager = new SorManager(
-      rpcProviderService.jsonProvider,
-      BigNumber.from(GAS_PRICE),
-      Number(MAX_POOLS)
-    );
-
-    fetchPools();
   }
 
   async function fetchPools(): Promise<void> {
@@ -829,7 +824,6 @@ export default function useSor({
     sorManager,
     sorReturn,
     pools,
-    initSor,
     handleAmountChange,
     exactIn,
     swap,
