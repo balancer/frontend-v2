@@ -1,7 +1,7 @@
 import { Network } from '@/lib/config/types';
 import {
   GqlChain,
-  GqlPoolMinimalType,
+  GqlPoolType,
 } from '@/services/api/graphql/generated/api-types';
 import { mapApiChain, mapApiPoolType } from '@/services/api/graphql/mappers';
 import { PoolType } from '@/services/pool/types';
@@ -22,23 +22,22 @@ test('Maps API Chains', async () => {
 });
 
 test('Maps API pool types', async () => {
-  expect(mapApiPoolType(GqlPoolMinimalType.Element)).toBe(PoolType.Element);
-  expect(mapApiPoolType(GqlPoolMinimalType.Gyro3)).toBe(PoolType.Gyro3);
-  expect(mapApiPoolType(GqlPoolMinimalType.Gyroe)).toBe(PoolType.GyroE);
-  expect(mapApiPoolType(GqlPoolMinimalType.Investment)).toBe(
-    PoolType.Investment
-  );
-  expect(mapApiPoolType(GqlPoolMinimalType.Linear)).toBe(PoolType.Linear);
-  expect(mapApiPoolType(GqlPoolMinimalType.LiquidityBootstrapping)).toBe(
+  expect(mapApiPoolType(GqlPoolType.Element)).toBe(PoolType.Element);
+  expect(mapApiPoolType(GqlPoolType.Gyro3)).toBe(PoolType.Gyro3);
+  expect(mapApiPoolType(GqlPoolType.Gyroe)).toBe(PoolType.GyroE);
+  expect(mapApiPoolType(GqlPoolType.Investment)).toBe(PoolType.Investment);
+  expect(mapApiPoolType(GqlPoolType.Linear)).toBe(PoolType.Linear);
+  expect(mapApiPoolType(GqlPoolType.LiquidityBootstrapping)).toBe(
     PoolType.LiquidityBootstrapping
   );
-  expect(mapApiPoolType(GqlPoolMinimalType.MetaStable)).toBe(
-    PoolType.MetaStable
-  );
-  expect(mapApiPoolType(GqlPoolMinimalType.PhantomStable)).toBe(
+  expect(mapApiPoolType(GqlPoolType.MetaStable)).toBe(PoolType.MetaStable);
+  expect(mapApiPoolType(GqlPoolType.PhantomStable)).toBe(
     PoolType.StablePhantom
   );
-  expect(mapApiPoolType(GqlPoolMinimalType.Stable)).toBe(PoolType.Stable);
-  expect(mapApiPoolType(GqlPoolMinimalType.Unknown)).toBeNull();
-  expect(mapApiPoolType(GqlPoolMinimalType.Weighted)).toBe(PoolType.Weighted);
+  expect(mapApiPoolType(GqlPoolType.Stable)).toBe(PoolType.Stable);
+  expect(mapApiPoolType(GqlPoolType.Unknown)).toBeNull();
+  expect(mapApiPoolType(GqlPoolType.Weighted)).toBe(PoolType.Weighted);
+  expect(mapApiPoolType(GqlPoolType.ComposableStable)).toBe(
+    PoolType.StablePhantom
+  );
 });

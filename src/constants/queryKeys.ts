@@ -68,15 +68,10 @@ const QUERY_KEYS = {
       { networkId, id },
     ],
     Joins: {
-      QueryJoin: (
-        amountsIn: Ref<unknown>,
-        hasFetchedPoolsForSor: Ref<unknown>,
-        isSingleAssetJoin: Ref<unknown>
-      ) => [
+      QueryJoin: (amountsIn: Ref<unknown>, isSingleAssetJoin: Ref<unknown>) => [
         ...QUERY_JOIN_ROOT_KEY,
         {
           amountsIn,
-          hasFetchedPoolsForSor,
           isSingleAssetJoin,
         },
       ],
@@ -85,7 +80,6 @@ const QUERY_KEYS = {
       QueryExit: (
         account: Ref<string>,
         bptIn: Ref<unknown>,
-        hasFetchedPoolsForSor: Ref<unknown>,
         isSingleAssetExit: Ref<unknown>,
         singleAmountOut: unknown,
         relayerSignature: Ref<string | undefined>
@@ -94,7 +88,6 @@ const QUERY_KEYS = {
         {
           account,
           bptIn,
-          hasFetchedPoolsForSor,
           isSingleAssetExit,
           singleAmountOut,
           relayerSignature,
@@ -102,7 +95,6 @@ const QUERY_KEYS = {
       ],
       SingleAssetMax: (
         bptBalance: Ref<string>,
-        hasFetchedPoolsForSor: Ref<unknown>,
         isSingleAssetExit: Ref<unknown>,
         singleAmountOut: unknown
       ) => [
@@ -110,7 +102,6 @@ const QUERY_KEYS = {
         'singleAssetMax',
         {
           bptBalance,
-          hasFetchedPoolsForSor,
           isSingleAssetExit,
           singleAmountOut,
         },

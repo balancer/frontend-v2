@@ -1,6 +1,6 @@
 import {
   GqlChain,
-  GqlPoolMinimalType,
+  GqlPoolType,
 } from '@/services/api/graphql/generated/api-types';
 import { ApiVotingPool } from '@/services/balancer/gauges/gauge-controller.decorator';
 
@@ -14,7 +14,7 @@ export function testnetVotingPools(
     chain: testnet as GqlChain,
     id: '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
     address: '0xf8a0623ab66F985EfFc1C69D05F1af4BaDB01b00',
-    type: GqlPoolMinimalType.Stable,
+    type: GqlPoolType.Stable,
     symbol: 'veBAL',
     tokens: [
       {
@@ -37,7 +37,7 @@ export function testnetVotingPools(
     chain: testnet as GqlChain,
     id: '0x16faf9f73748013155b7bc116a3008b57332d1e600020000000000000000005b',
     address: '0x16faF9f73748013155B7bC116a3008b57332D1e6',
-    type: GqlPoolMinimalType.Weighted,
+    type: GqlPoolType.Weighted,
     symbol: 'B-50WBTC-50WETH',
     tokens: [
       {
