@@ -22,7 +22,6 @@ import {
 } from '@/constants/poolLiquidity';
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
-import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import {
   bnSum,
   bnum,
@@ -128,7 +127,6 @@ export const exitPoolProvider = (
     QUERY_KEYS.Pools.Exits.QueryExit(
       account,
       bptIn,
-      hasFetchedPoolsForSor,
       isSingleAssetExit,
       singleAmountOut,
       relayerSignature
@@ -143,7 +141,6 @@ export const exitPoolProvider = (
   >(
     QUERY_KEYS.Pools.Exits.SingleAssetMax(
       bptBalance,
-      hasFetchedPoolsForSor,
       isSingleAssetExit,
       toRef(singleAmountOut, 'address')
     ),
@@ -155,8 +152,7 @@ export const exitPoolProvider = (
    * COMPUTED
    */
   const isLoadingQuery = computed(
-    (): boolean =>
-      !hasFetchedPoolsForSor.value || queryExitQuery.isFetching.value
+    (): boolean => queryExitQuery.isFetching.value
   );
 
   const queryError = computed(
@@ -164,10 +160,7 @@ export const exitPoolProvider = (
   );
 
   const isLoadingMax = computed(
-    (): boolean =>
-      singleAssetMaxQuery.isFetching.value ||
-      !queriesEnabled.value ||
-      !hasFetchedPoolsForSor.value
+    (): boolean => singleAssetMaxQuery.isFetching.value || !queriesEnabled.value
   );
 
   const maxError = computed(
@@ -357,8 +350,6 @@ export const exitPoolProvider = (
     // This is so we can render - in UI instead of 0. If we set to 0 then it can be misleading.
     priceImpactValid.value = false;
 
-    if (!hasFetchedPoolsForSor.value) return null;
-
     // Single asset exit, and token out amount is 0 or less
     if (isSingleAssetExit.value && !validAmounts.value) return null;
 
@@ -406,7 +397,6 @@ export const exitPoolProvider = (
    */
   async function getSingleAssetMax() {
     singleAmountOut.max = '0';
-    if (!hasFetchedPoolsForSor.value) return null;
     if (!isSingleAssetExit.value) return null;
 
     // If the user has no BPT, there is no maximum amount out.

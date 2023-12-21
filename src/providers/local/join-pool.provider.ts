@@ -16,7 +16,6 @@ import {
 } from '@/constants/poolLiquidity';
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
-import { hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnSum, bnum, isSameAddress } from '@/lib/utils';
 import { safeInject } from '@/providers/inject';
 import { useTokens } from '@/providers/tokens.provider';
@@ -91,10 +90,6 @@ export const joinPoolProvider = (
     QUERY_KEYS.Pools.Joins.QueryJoin(
       // If amountsIn change we should call queryJoin to get expected output.
       amountsIn,
-      // If the global pool fetching for the SOR changes it's been set to true. In
-      // this case we should re-trigger queryJoin to fetch the expected output for
-      // any existing input.
-      hasFetchedPoolsForSor,
       isSingleAssetJoin
     ),
     debounceQueryJoin,
