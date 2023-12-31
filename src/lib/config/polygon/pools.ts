@@ -411,6 +411,7 @@ const pools: Pools = {
       '0x30a73d5470f86dd1b6a0f970bc3f80e2b42e5e15000200000000000000000d60', // 12stMATIC-88SP/V-JLB/StarSeeds_Protocol
       '0x75f91277820f77b4811abcd4d04597f2f10fe7b1000200000000000000000d64', // 20WMATIC-80SP/StarSeeds_Protocol
       '0x6cfdf37a48c7531b1ba96bfa270644ff0f143900000200000000000000000d63', // 80SP-20WETH/StarSeeds_Protocol
+      '0x8d4cef43e7ceeed6fbd532f8cbd38ded61aa1163000100000000000000000d6f', // 6wstETH-12oRETRO-6stMATIC-64SP-6miMATIC-6liveRetro/V-G5/StarSeeds_Protocol
     ],
   },
   Factories: {
