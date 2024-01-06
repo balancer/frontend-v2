@@ -19,7 +19,7 @@ const rateProviders: RateProviders = {
   },
   '0xc757f12694f550d0985ad6e1019c4db4a803f160': {
     '0xf7c5c26b574063e7b098ed74fad6779e65e3f836': true,
-    '0x320Cfa1a78d37a13c5d1ca5aa51563ff6Bb0f686': true,
+    '0x320cfa1a78d37a13c5d1ca5aa51563ff6bb0f686': true,
   },
 };
 
