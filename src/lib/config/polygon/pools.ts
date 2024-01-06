@@ -446,6 +446,7 @@ const pools: Pools = {
       '0x63683efe7839bb3c4e746bf5c4d1f5ee785a6a02000200000000000000000d89', // 20wstETH-80SP/V-B1/StarSeeds_Protocol
       '0x9fb6bbab51ef7f1715e683fc4d0acd305af9e38d000100000000000000000d88', // 20WBTC-20USDC-20SP-20STARV3-20STARV3-M/V-EV3/StarSeeds_Protocol
       '0x80b7e553bae1e69e1f8bb63cff5c3367c88c18a6000200000000000000000d8a', // 50wstETH-50CF
+      '0xa0f31fb91d5b29c8a0f3eadb62ffd832fc03b2cb000200000000000000000d8c', // 20WETH-80STARV3/V-P1/StarSeeds_Protocol
     ],
   },
   Factories: {
