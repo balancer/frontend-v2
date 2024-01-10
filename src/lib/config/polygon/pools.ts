@@ -613,6 +613,18 @@ const pools: Pools = {
         '0x6da7f1c193ab6c4bd16eb14a6305bba8d25737ff000000000000000000000c29 ',
       description: 'deprecatedPool.hasNewPool.description',
     },
+    '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d': {
+      newPool:
+        '0xf0ad209e2e969eaaa8c882aac71f02d8a047d5c2000200000000000000000b49',
+      description: 'deprecatedPool.hasNewPool.description',
+    },
+    '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c': {
+      suggestedPools: [
+        '0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7',
+        '0xcd78a20c597e367a4e478a2411ceb790604d7c8f000000000000000000000c22',
+      ],
+      description: 'deprecatedPool.hasNewPool.description',
+    },
   },
   GaugeMigration: {},
   BrandedRedirect: {
