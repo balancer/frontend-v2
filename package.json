@@ -41,7 +41,7 @@
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
-    "@balancer-labs/sdk": "^1.1.6-beta.9",
+    "@balancer-labs/sdk": "^1.1.6-beta.11",
     "@balancer-labs/typechain": "^1.0.0",
     "@balancer-labs/v2-deployments": "^3.2.0",
     "@cowprotocol/contracts": "^1.3.1",
