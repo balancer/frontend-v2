@@ -132,6 +132,12 @@ export default function useCowswap({
       .mul(ONE)
       .div(parseFixed(String(1 + slippageBufferRate.value), 18));
 
+    console.log('quote', {
+      feeAmountInToken,
+      feeAmountOutToken,
+      maximumInAmount,
+      minimumOutAmount,
+    });
     return {
       feeAmountInToken,
       feeAmountOutToken,
