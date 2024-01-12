@@ -480,6 +480,7 @@ const pools: Pools = {
       '0x5f8b11995d7f95faa59ca6fd5ffa1c0dbbe0ec7b000200000000000000000630',
       '0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645', // weETH/rETH
       '0xb06bfbd7b50f80c8d9da57fc4cf5cbd5b3e2f14800000000000000000000064d', // pxETH/frxETH
+      '0x49cbd67651fbabce12d1df18499896ec87bef46f00000000000000000000064a', // sDAI/[USDC/USDT/DAI]
     ],
   },
   Metadata: {},
