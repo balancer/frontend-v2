@@ -467,6 +467,7 @@ const pools: Pools = {
       '0xe0818ec63e546726952ee3e11dd6506aee421d65000200000000000000000da4', // daiDE
       '0x6db090cc3b571d0fb365b8d0f1b8859a75554a59000200000000000000000da2', // crvDE
       '0xa39cefa0b9eefb52aab6bf4af2d4e656afe481cf000200000000000000000da3', // btcDE
+      '0x223e7d4e9a4fd1ca689bfb87cc5542bcfdc4bdf5000200000000000000000da5', // 50miMATIC-50MaticX
     ],
   },
   Factories: {
