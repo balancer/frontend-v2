@@ -23,7 +23,7 @@ const config: Config = {
   rpc: `https://avalanche-mainnet.infura.io/v3/${keys.infura}`,
   ws: `wss://api.avax.network/ext/bc/C/ws`,
   publicRpc: 'https://avalanche.public-rpc.com',
-  explorer: 'https://snowtrace.io/',
+  explorer: 'https://snowtrace.io',
   explorerName: 'Snowtrace',
   subgraph:
     'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
