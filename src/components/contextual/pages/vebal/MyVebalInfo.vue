@@ -168,8 +168,8 @@ const userRank = computed(() => {
 
 const vebalInfo = computed(() => {
   const arr: { icon: any; value: string }[] = [];
-
-  if (bnum(veBalBalance.value).isGreaterThan(0)) {
+  const hasVebalBalance = bnum(veBalBalance.value).isGreaterThan(0);
+  if (hasVebalBalance) {
     arr.push({
       icon: share,
       value: t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
@@ -186,7 +186,7 @@ const vebalInfo = computed(() => {
     });
   }
 
-  if (userRank.value) {
+  if (hasVebalBalance && userRank.value) {
     arr.unshift({
       icon: rank,
       value: `Rank ${userRank.value}`,
