@@ -468,6 +468,7 @@ const pools: Pools = {
       '0x6db090cc3b571d0fb365b8d0f1b8859a75554a59000200000000000000000da2', // crvDE
       '0xa39cefa0b9eefb52aab6bf4af2d4e656afe481cf000200000000000000000da3', // btcDE
       '0x223e7d4e9a4fd1ca689bfb87cc5542bcfdc4bdf5000200000000000000000da5', // 50miMATIC-50MaticX
+      '0x1c1934ef0511a95e6fd6a04b6549472af22cda80000100000000000000000dab', // 20wstETH-20SP-20STARV3-20STARV3-M-20MaticX/V-EG2.1/StarSeeds_Protocol
     ],
   },
   Factories: {
