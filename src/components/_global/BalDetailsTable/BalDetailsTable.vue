@@ -35,6 +35,28 @@ const { upToLargeBreakpoint } = useBreakpoints();
             iconSize="sm"
             class="mt-1 ml-2"
           />
+          <div v-if="row.linksList" class="flex flex-col">
+            <div v-for="link in row.linksList" :key="link.title">
+              <span v-if="link.tokenSymbol" class="mr-1">
+                {{ link.tokenSymbol }} :
+              </span>
+              <BalLink :href="link.link" external noStyle class="mr-3">
+                {{ link.title }}
+                <BalIcon
+                  name="arrow-up-right"
+                  size="sm"
+                  class="mt-2 text-gray-500 hover:text-blue-500 transition-colors"
+                />
+              </BalLink>
+              <BalTooltip
+                v-if="link.warningText"
+                :text="link.warningText"
+                iconSize="md"
+                iconName="alert-triangle"
+                iconClass="text-orange-500"
+              />
+            </div>
+          </div>
           <BalLink v-if="row.link" :href="row.link" external noStyle>
             <BalIcon
               name="arrow-up-right"

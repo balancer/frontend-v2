@@ -52,6 +52,8 @@ const data = computed(() => {
     name,
     id,
     onchain,
+    priceRateProviders,
+    tokens,
   } = props.pool;
 
   return [
@@ -94,6 +96,20 @@ const data = computed(() => {
           value: poolOwnerData.value.title,
           link: poolOwnerData.value.link,
           tooltip: poolOwnerTooltip.value,
+        }
+      : null,
+    priceRateProviders && priceRateProviders.length > 0
+      ? {
+          title: 'Rate providers',
+          linksList: priceRateProviders.map(provider => ({
+            title: shortenLabel(provider.address),
+            link: explorer.addressLink(provider.address),
+            tokenSymbol: tokens.find(
+              token => token.address === provider.token.address
+            )?.symbol,
+            warningText:
+              'A rate provider provides critical information to the pool and can be drained should it report bad prices. Review the Terms of Use for more information about service providers risks.',
+          })),
         }
       : null,
     {
