@@ -37,10 +37,8 @@ const { upToLargeBreakpoint } = useBreakpoints();
           />
           <div v-if="row.linksList" class="flex flex-col">
             <div v-for="link in row.linksList" :key="link.title">
-              <span v-if="link.tokenSymbol" class="mr-1">
-                {{ link.tokenSymbol }} :
-              </span>
-              <BalLink :href="link.link" external noStyle class="mr-3">
+              <span v-if="link.tokenSymbol"> {{ link.tokenSymbol }}: </span>
+              <BalLink :href="link.link" external noStyle class="mr-1">
                 {{ link.title }}
                 <BalIcon
                   name="arrow-up-right"
@@ -54,6 +52,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
                 iconSize="md"
                 iconName="alert-triangle"
                 iconClass="text-orange-500"
+                class="relative top-1"
               />
             </div>
           </div>
