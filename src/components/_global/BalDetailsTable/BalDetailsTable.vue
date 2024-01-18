@@ -28,7 +28,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
           {{ row.title }}
         </div>
         <div class="table-row-value">
-          {{ row.value }}
+          <span v-if="row.value">{{ row.value }}</span>
           <BalTooltip
             v-if="row.tooltip"
             :text="row.tooltip"

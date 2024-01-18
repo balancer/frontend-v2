@@ -56,6 +56,10 @@ const data = computed(() => {
     tokens,
   } = props.pool;
 
+  const filteredPriceRateProviders = priceRateProviders?.filter(
+    provider => provider.address !== POOLS.ZeroAddress
+  );
+
   return [
     {
       title: t('attribute'),
@@ -98,10 +102,10 @@ const data = computed(() => {
           tooltip: poolOwnerTooltip.value,
         }
       : null,
-    priceRateProviders && priceRateProviders.length > 0
+    filteredPriceRateProviders && filteredPriceRateProviders.length > 0
       ? {
           title: 'Rate providers',
-          linksList: priceRateProviders.map(provider => ({
+          linksList: filteredPriceRateProviders.map(provider => ({
             title: shortenLabel(provider.address),
             link: explorer.addressLink(provider.address),
             tokenSymbol: tokens.find(
