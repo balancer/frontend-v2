@@ -50,161 +50,157 @@ async function mountUseStakePreview(props: StakePreviewProps) {
   return result;
 }
 
-describe.skip('UseStake preview', () => {
-  test('Successfully creates and runs stake action', async () => {
-    const { props, loadStakeAction } = buildProps();
+test('Successfully creates and runs stake action', async () => {
+  const { props, loadStakeAction } = buildProps();
 
-    const { stakeActions } = await mountUseStakePreview(props);
+  const { stakeActions } = await mountUseStakePreview(props);
 
-    await loadStakeAction('stake');
+  await loadStakeAction('stake');
 
-    const approvalAction = stakeActions.value[0];
-    expect(approvalAction).toMatchObject({
-      confirmingLabel: 'Confirming...',
-      label: `Approve ${defaultWeightedPoolSymbol} for staking`,
-      loadingLabel: 'Confirm approval in wallet',
-      stepTooltip: `You must approve ${defaultWeightedPoolSymbol} to stake this token on Balancer. Approvals are required once per token, per wallet.`,
-    });
-
-    const stakeAction = stakeActions.value[1];
-    expect(stakeAction).toMatchObject({
-      confirmingLabel: 'Confirming...',
-      label: 'Stake',
-      loadingLabel: 'Staking',
-      stepTooltip:
-        'Confirm staking of LP tokens to earn liquidity mining incentives on this pool',
-    });
-
-    // Stake action implementation is deeply tested in pool staking provider tests
-    const stakeTransactionResult = await stakeAction.action();
-    expect(stakeTransactionResult).toEqual(defaultContractTransactionResponse);
-
-    //Saves transaction
-    expect(addTransactionMock).toHaveBeenCalledOnce();
-    const params = firstCallParams(addTransactionMock);
-    expect(params.action).toBe('stake');
-    expect(params.details?.pool).toEqual(pool);
+  const approvalAction = stakeActions.value[0];
+  expect(approvalAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: `Approve ${defaultWeightedPoolSymbol} for staking`,
+    loadingLabel: 'Confirm approval in wallet',
+    stepTooltip: `You must approve ${defaultWeightedPoolSymbol} to stake this token on Balancer. Approvals are required once per token, per wallet.`,
   });
 
-  test('Successfully creates and runs unstake action', async () => {
-    const { props, loadStakeAction } = buildProps();
-
-    const { stakeActions } = await mountUseStakePreview(props);
-
-    await loadStakeAction('unstake');
-
-    expect(stakeActions.value).toHaveLength(1);
-
-    const unstakeAction = stakeActions.value[0];
-    expect(unstakeAction).toMatchObject({
-      confirmingLabel: 'Confirming...',
-      label: 'Unstake',
-      loadingLabel: 'Unstaking',
-      stepTooltip:
-        "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
-    });
-
-    // Unstake action implementation is deeply tested in pool staking provider tests
-    const stakeTransactionResult = await unstakeAction.action();
-    expect(stakeTransactionResult).toEqual(defaultContractTransactionResponse);
-
-    //Saves transaction
-    expect(addTransactionMock).toHaveBeenCalledOnce();
-    const params = firstCallParams(addTransactionMock);
-    expect(params.action).toBe('unstake');
-    expect(params.details?.pool).toEqual(pool);
+  const stakeAction = stakeActions.value[1];
+  expect(stakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Stake',
+    loadingLabel: 'Staking',
+    stepTooltip:
+      'Confirm staking of LP tokens to earn liquidity mining incentives on this pool',
   });
 
-  test('Successfully creates and runs restake action (unstake + stake)', async () => {
-    mockWhenUserHasSharesInANonPreferentialGauge();
+  // Stake action implementation is deeply tested in pool staking provider tests
+  const stakeTransactionResult = await stakeAction.action();
+  expect(stakeTransactionResult).toEqual(defaultContractTransactionResponse);
 
-    const { props, loadStakeAction } = buildProps();
+  //Saves transaction
+  expect(addTransactionMock).toHaveBeenCalledOnce();
+  const params = firstCallParams(addTransactionMock);
+  expect(params.action).toBe('stake');
+  expect(params.details?.pool).toEqual(pool);
+});
 
-    const { stakeActions } = await mountUseStakePreview(props);
+test('Successfully creates and runs unstake action', async () => {
+  const { props, loadStakeAction } = buildProps();
 
-    await loadStakeAction('restake');
+  const { stakeActions } = await mountUseStakePreview(props);
 
-    expect(stakeActions.value).toHaveLength(3);
+  await loadStakeAction('unstake');
 
-    const approvalAction = stakeActions.value[0];
-    expect(approvalAction).toMatchObject({
-      confirmingLabel: 'Confirming...',
-      label: `Approve ${defaultWeightedPoolSymbol} for staking`,
-      loadingLabel: 'Confirm approval in wallet',
-      stepTooltip: `You must approve ${defaultWeightedPoolSymbol} to stake this token on Balancer. Approvals are required once per token, per wallet.`,
-    });
+  expect(stakeActions.value).toHaveLength(1);
 
-    const unstakeAction = stakeActions.value[1];
-
-    expect(unstakeAction).toMatchObject({
-      confirmingLabel: 'Confirming...',
-      label: 'Unstake',
-      loadingLabel: 'Unstaking',
-      stepTooltip:
-        "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
-    });
-
-    const stakeAction = stakeActions.value[2];
-    expect(stakeAction).toMatchObject({
-      confirmingLabel: 'Confirming...',
-      label: 'Stake',
-      loadingLabel: 'Staking',
-      stepTooltip:
-        'Confirm staking of LP tokens to earn liquidity mining incentives on this pool',
-    });
+  const unstakeAction = stakeActions.value[0];
+  expect(unstakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Unstake',
+    loadingLabel: 'Unstaking',
+    stepTooltip:
+      "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
   });
 
-  test('Changes staking actions when action prop changes', async () => {
-    const { props, loadStakeAction } = buildProps();
-    const { stakeActions } = await mountUseStakePreview(props);
+  // Unstake action implementation is deeply tested in pool staking provider tests
+  const stakeTransactionResult = await unstakeAction.action();
+  expect(stakeTransactionResult).toEqual(defaultContractTransactionResponse);
 
-    await loadStakeAction('stake');
+  //Saves transaction
+  expect(addTransactionMock).toHaveBeenCalledOnce();
+  const params = firstCallParams(addTransactionMock);
+  expect(params.action).toBe('unstake');
+  expect(params.details?.pool).toEqual(pool);
+});
 
-    expect(stakeActions.value).toHaveLength(2);
+test('Successfully creates and runs restake action (unstake + stake)', async () => {
+  mockWhenUserHasSharesInANonPreferentialGauge();
 
-    expect(stakeActions.value[0].label).toEqual(
-      `Approve ${defaultWeightedPoolSymbol} for staking`
-    );
-    expect(stakeActions.value[1].label).toEqual('Stake');
+  const { props, loadStakeAction } = buildProps();
 
-    await loadStakeAction('unstake');
+  const { stakeActions } = await mountUseStakePreview(props);
 
-    expect(stakeActions.value).toHaveLength(1);
-    expect(stakeActions.value[0].label).toEqual('Unstake');
+  await loadStakeAction('restake');
 
-    await loadStakeAction('restake');
+  expect(stakeActions.value).toHaveLength(3);
 
-    expect(stakeActions.value).toHaveLength(2);
-    expect(stakeActions.value[0].label).toEqual('Unstake');
-    expect(stakeActions.value[1].label).toEqual('Stake');
+  const approvalAction = stakeActions.value[0];
+  expect(approvalAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: `Approve ${defaultWeightedPoolSymbol} for staking`,
+    loadingLabel: 'Confirm approval in wallet',
+    stepTooltip: `You must approve ${defaultWeightedPoolSymbol} to stake this token on Balancer. Approvals are required once per token, per wallet.`,
   });
 
-  test('Handles staking action success', async () => {
-    const { props } = buildProps();
-    const { handleSuccess, isActionConfirmed } = await mountUseStakePreview(
-      props
-    );
+  const unstakeAction = stakeActions.value[1];
 
-    expect(isActionConfirmed.value).toBeFalse();
-
-    await handleSuccess({} as TransactionReceipt);
-
-    expect(isActionConfirmed.value).toBeTrue();
-    expect(emit).toHaveBeenCalledOnceWith('success');
+  expect(unstakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Unstake',
+    loadingLabel: 'Unstaking',
+    stepTooltip:
+      "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
   });
 
-  test('Handles staking close', async () => {
-    const { props } = buildProps();
-
-    const { handleClose, isActionConfirmed } = await mountUseStakePreview(
-      props
-    );
-
-    expect(isActionConfirmed.value).toBeFalse();
-
-    handleClose();
-
-    expect(isActionConfirmed.value).toBeFalse();
-    expect(emit).toHaveBeenCalledOnceWith('close');
+  const stakeAction = stakeActions.value[2];
+  expect(stakeAction).toMatchObject({
+    confirmingLabel: 'Confirming...',
+    label: 'Stake',
+    loadingLabel: 'Staking',
+    stepTooltip:
+      'Confirm staking of LP tokens to earn liquidity mining incentives on this pool',
   });
+});
+
+test('Changes staking actions when action prop changes', async () => {
+  const { props, loadStakeAction } = buildProps();
+  const { stakeActions } = await mountUseStakePreview(props);
+
+  await loadStakeAction('stake');
+
+  expect(stakeActions.value).toHaveLength(2);
+
+  expect(stakeActions.value[0].label).toEqual(
+    `Approve ${defaultWeightedPoolSymbol} for staking`
+  );
+  expect(stakeActions.value[1].label).toEqual('Stake');
+
+  await loadStakeAction('unstake');
+
+  expect(stakeActions.value).toHaveLength(1);
+  expect(stakeActions.value[0].label).toEqual('Unstake');
+
+  await loadStakeAction('restake');
+
+  expect(stakeActions.value).toHaveLength(2);
+  expect(stakeActions.value[0].label).toEqual('Unstake');
+  expect(stakeActions.value[1].label).toEqual('Stake');
+});
+
+test('Handles staking action success', async () => {
+  const { props } = buildProps();
+  const { handleSuccess, isActionConfirmed } = await mountUseStakePreview(
+    props
+  );
+
+  expect(isActionConfirmed.value).toBeFalse();
+
+  await handleSuccess({} as TransactionReceipt);
+
+  expect(isActionConfirmed.value).toBeTrue();
+  expect(emit).toHaveBeenCalledOnceWith('success');
+});
+
+test('Handles staking close', async () => {
+  const { props } = buildProps();
+
+  const { handleClose, isActionConfirmed } = await mountUseStakePreview(props);
+
+  expect(isActionConfirmed.value).toBeFalse();
+
+  handleClose();
+
+  expect(isActionConfirmed.value).toBeFalse();
+  expect(emit).toHaveBeenCalledOnceWith('close');
 });
