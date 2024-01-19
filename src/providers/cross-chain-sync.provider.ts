@@ -347,9 +347,9 @@ export const crossChainSyncProvider = () => {
       return '';
     }
 
-    const { srcUaAddress, dstUaAddress, dstChainId, srcUaNonce } = message;
-    const link = `https://layerzeroscan.com/101/address/${srcUaAddress}/message/${dstChainId}/address/${dstUaAddress}/nonce/${srcUaNonce}`;
+    const { srcTxHash } = message;
 
+    const link = `https://layerzeroscan.com/tx/${srcTxHash}`;
     return link;
   }
 

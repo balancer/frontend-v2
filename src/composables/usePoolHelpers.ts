@@ -310,7 +310,6 @@ export function totalAprLabel(
     return '-';
   }
   if (boost && boost !== '1' && isConnected) {
-    console.log('boosted');
     return numF(absMaxApr(aprs, boost), FNumFormats.bp);
   }
   if (
