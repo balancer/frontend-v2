@@ -2,8 +2,6 @@
 
 Official frontend app for the Balancer protocol (v2)
 
-![Alt](https://repobeats.axiom.co/api/embed/9a2f4fbb502d735b6b8ec648723e686ae82f1fad.svg 'Repobeats analytics image')
-
 ## Development
 
 To setup the development environment first clone the repo:
