@@ -158,9 +158,15 @@ export type PoolSnapshots = Record<number, PoolSnapshot>;
 
 export type BalDetailsTableData = {
   title: string;
-  value: string;
+  value?: string;
   link?: string;
   tooltip?: string;
+  linksList?: {
+    link: string;
+    title: string;
+    tokenSymbol?: string;
+    warningText?: string;
+  }[];
 };
 
 export const allLinearTypes = [
