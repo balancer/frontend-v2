@@ -66,9 +66,13 @@ const polygonRisks = aLink(RiskKey.Polygon);
 const optimismRisks = aLink(RiskKey.Optimism);
 const gnosisRisks = aLink(RiskKey.Gnosis);
 const mutableRisks = aLink(RiskKey.Mutable);
+const rateProviderRisks = aLink(RiskKey.RateProvider);
 
 export function riskLinks(pool: Pool): Risk[] {
   const result: Risk[] = [];
+
+  if (pool.priceRateProviders && pool.priceRateProviders.length > 0)
+    result.push(rateProviderRisks);
 
   if (isWeighted(pool.poolType)) result.push(weightedRisks);
   if (isStable(pool.poolType)) result.push(stableRisks);
