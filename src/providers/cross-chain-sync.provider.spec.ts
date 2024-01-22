@@ -128,7 +128,7 @@ test('Calculates L2 network balances', async () => {
   `);
 });
 
-test.skip('Synchronizes Arbitrum', async () => {
+test('Synchronizes Arbitrum', async () => {
   mockOmniEscrowLocks([]);
   const { sync } = await mountCrossChainSync();
 

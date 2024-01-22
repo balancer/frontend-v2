@@ -139,10 +139,14 @@ async function submitClaim() {
         (ethereum) or block 108777562 (optimism).
       </p>
 
-      <p class="max-w-3xl">
+      <p class="mb-4 max-w-3xl">
         If you had positions in multiple pools, report multiple withdrawal
         transaction hashes. If you withdrew partially, report those transactions
         too. Please file a new report for every chain.
+      </p>
+
+      <p class="max-w-3xl font-bold">
+        Note that the claims period is now closed.
       </p>
 
       <div v-if="wrongNetwork" class="mt-8">
@@ -172,6 +176,7 @@ async function submitClaim() {
                 name="network"
                 :options="networkOptions"
                 class="w-32 h-11"
+                disabled
               />
             </div>
 
@@ -197,6 +202,7 @@ async function submitClaim() {
                       uniqueTxHash(form.txHashes),
                     ]"
                     class="w-full"
+                    disabled
                   />
                   <BalBtn
                     v-if="index === form.txHashes.length - 1"
@@ -241,15 +247,14 @@ async function submitClaim() {
             action="claimSubmission"
             :summary="`Claim submission: ${form.txHashes.length} tx(s)`"
             :confirmingLabel="`Submitting...`"
-            :disabled="
-              !formValid || form.txHashes.length === 0 || isMismatchedNetwork
-            "
+            disabled
             @confirmed="clearForm()"
           />
           <BalBtn
             v-else
             color="gradient"
             size="sm"
+            disabled
             @click="startConnectWithInjectedProvider"
             >Connect wallet</BalBtn
           >

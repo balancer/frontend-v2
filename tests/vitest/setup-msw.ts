@@ -1,4 +1,8 @@
 import { server } from '@tests/msw/server';
+import { fetch } from 'cross-fetch';
+
+// By default, our setup would use happy-dom fetch() implementation which is not 100% compatible with MSW
+global.fetch = fetch;
 
 // MSW SETUP
 // Establish API mocking before all tests.

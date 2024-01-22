@@ -214,14 +214,20 @@ function symbolFor(titleTokenIndex: number): string {
       </BalTooltip>
     </div>
   </div>
-  <BalAlert
-    v-if="pool.isInRecoveryMode && pool.isPaused"
-    type="warning"
-    :title="$t('recoveryMode')"
-    :description="$t('recoveryModeDescription')"
-    class="mt-2"
-    block
-  />
+  <div v-if="pool.isInRecoveryMode || pool.isPaused" class="flex mt-2">
+    <BalChip
+      v-if="pool.isInRecoveryMode"
+      class="mr-2"
+      color="orange"
+      :outline="false"
+    >
+      Recovery Mode
+    </BalChip>
+    <BalChip v-if="pool.isPaused" color="orange" :outline="false">
+      Paused
+    </BalChip>
+  </div>
+
   <BalAlert
     v-if="hasNonApprovedRateProviders"
     type="warning"
