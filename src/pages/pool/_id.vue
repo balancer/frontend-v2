@@ -25,7 +25,7 @@ import {
 import { useTokens } from '@/providers/tokens.provider';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
-import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
+// import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 import { PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import BrandedRedirectCard from '@/components/pool/branded-redirect/BrandedRedirectCard.vue';
@@ -78,13 +78,13 @@ const snapshots = computed(() => poolSnapshotsQuery.data.value);
 //#endregion
 
 //#region historical prices query
-const historicalPricesQuery = useHistoricalPricesQuery(
-  poolId,
-  undefined,
-  // in order to prevent multiple coingecko requests
-  { refetchOnWindowFocus: false }
-);
-const historicalPrices = computed(() => historicalPricesQuery.data.value);
+// const historicalPricesQuery = useHistoricalPricesQuery(
+//   poolId,
+//   undefined,
+//   // in order to prevent multiple coingecko requests
+//   { refetchOnWindowFocus: false }
+// );
+// const historicalPrices = computed(() => historicalPricesQuery.data.value);
 //#endregion
 
 //#region APR query
@@ -217,7 +217,7 @@ watch(
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-4 lg:px-0">
             <PoolChart
-              :historicalPrices="historicalPrices"
+              :historicalPrices="null"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
               :totalLiquidity="pool?.totalLiquidity"
