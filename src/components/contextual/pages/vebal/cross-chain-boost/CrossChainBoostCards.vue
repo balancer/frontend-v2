@@ -140,6 +140,10 @@ function onCloseModal() {
                   <template #activator>
                     <BalLink
                       :href="syncLayerZeroTxLinks[network]"
+                      :disabled="
+                        !checkIfNetworkSyncing(network) ||
+                        !syncLayerZeroTxLinks[network]
+                      "
                       external
                       noStyle
                       class="group flex items-center"

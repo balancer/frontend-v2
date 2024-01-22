@@ -129,6 +129,7 @@ watch(
   () => userGaugeShares.value,
   async val => {
     if (!val || isVeBalSupported.value) return;
+    console.log('userGaugeShares', val);
     for (const gauge of val) {
       try {
         const id = gauge?.gauge.id;
