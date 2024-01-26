@@ -76,6 +76,8 @@ const pools: Pools = {
       '0x2ce4457acac29da4736ae6f5cd9f583a6b335c270000000000000000000004dc', // sFRAX/4POOL
       '0xdfa752ca3ff49d4b6dbe08e2d5a111f51773d3950000000000000000000004e8', // sFRAX/FRAX
       '0xd0ec47c54ca5e20aaae4616c25c825c7f48d40690000000000000000000004ef', // rETH/wETH BPT
+      '0xc2598280bfea1fe18dfcabd21c7165c40c6859d30000000000000000000004f3', // wstETH/sfrxETH
+      '0x6fe0e32081460d0e4469e36595e32c0f343a0e9c0000000000000000000004f4', // wstETH/cbETH
     ],
   },
   Investment: {
@@ -164,6 +166,7 @@ const pools: Pools = {
       '0x9dce1f90a51ab38471ad9722e504419354a745a50002000000000000000004ee', // 50ARB-50USDC
       '0x05f0a172608853d5431c69888a0a559886a3319f0002000000000000000004f0', // ARSWETH
       '0x3e5fb03652f40b6c5a30d0c0ec38cc065332dc4d0002000000000000000004f2', // 50BAL-50ARB
+      '0xeb3e64ad9314d20bf943ac72fb69f272603f9cce0002000000000000000004f5', // 80SYNO-20WETH
     ],
   },
   Factories: {
@@ -333,6 +336,12 @@ const pools: Pools = {
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
     ],
     [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
+  },
+  BrandedRedirect: {
+    FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
   },
 };
 
