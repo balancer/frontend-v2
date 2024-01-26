@@ -337,6 +337,12 @@ const pools: Pools = {
     ],
     [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
   },
+  BrandedRedirect: {
+    FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
+  },
 };
 
 export default pools;
