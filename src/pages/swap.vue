@@ -7,8 +7,9 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
 import BridgeLink from '@/components/links/BridgeLink.vue';
-import { hasBridge } from '@/composables/useNetwork';
+import { hasBridge, isCowswapSupportedNetwork } from '@/composables/useNetwork';
 import { provideUserTokens } from '@/providers/local/user-tokens.provider';
+import CowswapLink from '@/components/links/CowswapLink.vue';
 
 /**
  * PROVIDERS
@@ -70,6 +71,7 @@ onMounted(() => {
 
       <template #gutterRight>
         <!-- <PairPriceGraph /> -->
+        <CowswapLink v-if="isCowswapSupportedNetwork" />
         <BridgeLink v-if="hasBridge" class="mt-4" />
       </template>
     </Col3Layout>

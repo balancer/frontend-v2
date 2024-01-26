@@ -3,7 +3,7 @@ import { parseFixed } from '@ethersproject/bignumber';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { bnum, lsGet, lsSet } from '@/lib/utils';
+import { bnum, lsSet } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { COW_SUPPORTED_NETWORKS } from '@/services/cowswap/constants';
 import {
@@ -26,9 +26,7 @@ export type SwapRoute = 'wrapUnwrap' | 'balancer' | 'cowswap' | 'joinExit';
 
 export type UseSwapping = ReturnType<typeof useSwapping>;
 
-export const swapGasless = ref<boolean>(
-  lsGet<boolean>(LS_KEYS.Swap.Gasless, true)
-);
+export const swapGasless = ref<boolean>(false);
 
 export default function useSwapping(
   exactIn: Ref<boolean>,

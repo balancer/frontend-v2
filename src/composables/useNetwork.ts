@@ -62,6 +62,10 @@ export const isPoolBoostsEnabled = computed<boolean>(
   () => configService.network.pools.BoostsEnabled
 );
 
+export const isCowswapSupportedNetwork = computed<boolean>(
+  () => isMainnet.value || isGnosis.value
+);
+
 /**
  * METHODS
  */

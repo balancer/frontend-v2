@@ -36,3 +36,12 @@ export function buildConnectorIconURL(wallet: Wallet): string {
     import.meta.url
   ).href;
 }
+
+export function buildProtocolIconURL(protocol: string): string {
+  return new URL(
+    // https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
+    // Warning: Don't extract this template into a variable or it will stop working in production builds
+    `/src/assets/images/icons/protocols/${protocol}.svg`,
+    import.meta.url
+  ).href;
+}
