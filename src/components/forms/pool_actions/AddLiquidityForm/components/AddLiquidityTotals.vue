@@ -5,6 +5,7 @@ import { useJoinPool } from '@/providers/local/join-pool.provider';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useAddLiquidityTotals } from '../composables/useAddLiquidityTotals';
+import { useUserSettings } from '@/providers/user-settings.provider';
 
 type Props = {
   pool: Pool;
@@ -17,6 +18,7 @@ const props = defineProps<Props>();
  */
 const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
+const { slippage } = useUserSettings();
 
 const {
   highPriceImpact,
@@ -24,6 +26,7 @@ const {
   priceImpact,
   supportsProportionalOptimization,
   fiatValueIn,
+  bptOut,
 } = useJoinPool();
 
 const {
@@ -60,7 +63,31 @@ const {
         </div>
       </div>
     </div>
-    <div :class="['data-table-row price-impact-row', priceImpactClasses]">
+    <div :class="['data-table-row secondary-row']">
+      <div class="p-2">LP tokens</div>
+      <div class="data-table-number-col">
+        <div class="flex">
+          <span v-if="!isLoadingQuery">
+            {{ fNum(bptOut, FNumFormats.token) }}
+          </span>
+          <BalLoadingBlock v-else class="w-10" />
+
+          <BalTooltip
+            :text="`LP tokens you are expected to recieve, not
+          including possible slippage (${fNum(slippage, FNumFormats.percent)})`"
+          >
+            <template #activator>
+              <BalIcon
+                name="info"
+                size="xs"
+                class="-mb-px ml-1 text-gray-400"
+              />
+            </template>
+          </BalTooltip>
+        </div>
+      </div>
+    </div>
+    <div :class="['data-table-row secondary-row', priceImpactClasses]">
       <div class="p-2">
         {{ $t('priceImpact') }}
       </div>
@@ -134,7 +161,7 @@ const {
   @apply text-lg font-bold dark:bg-gray-800;
 }
 
-.price-impact-row {
+.secondary-row {
   @apply text-sm rounded-b-lg;
 }
 </style>
