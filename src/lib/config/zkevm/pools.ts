@@ -68,6 +68,7 @@ const pools: Pools = {
     '0x956ccab09898c0af2aca5e6c229c3ad4e93d9288': 'composableStablePool',
     '0x6b1da720be2d11d95177ccfc40a917c2688f396c': 'erc4626Linear', // ERC4626 LinearPool
     '0x5d56ea1b2595d2dbe4f5014b967c78ce75324f0c': 'gyroE',
+    '0x577e5993b9cc480f07f98b5ebd055604bd9071c4': 'composableStablePool',
   },
   Stakable: {
     VotingGaugePools: [
