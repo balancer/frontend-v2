@@ -6,7 +6,7 @@ import StakePreviewModal from '@/components/contextual/pages/pool/staking/StakeP
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { tokenWeight, usePoolHelpers } from '@/composables/usePoolHelpers';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
+import { bnum, includesAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -15,11 +15,9 @@ import useVeBal from '@/composables/useVeBAL';
 import AddLiquidityPreview from './components/AddLiquidityPreview/AddLiquidityPreview.vue';
 import AddLiquidityTotals from './components/AddLiquidityTotals.vue';
 
-import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { isEqual } from 'lodash';
 import { useJoinPool } from '@/providers/local/join-pool.provider';
-import { useUserTokens } from '@/providers/local/user-tokens.provider';
 
 /**
  * TYPES
@@ -42,12 +40,9 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const {
-  managedPoolWithSwappingHalted,
-  isDeepPool,
-  isPreMintedBptPool,
-  poolJoinTokens,
-} = usePoolHelpers(toRef(props, 'pool'));
+const { managedPoolWithSwappingHalted, poolJoinTokens } = usePoolHelpers(
+  toRef(props, 'pool')
+);
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -63,8 +58,6 @@ const {
   queryError,
   setTokensIn,
 } = useJoinPool();
-
-const { tokensWithBalance } = useUserTokens();
 
 /**
  * COMPUTED
@@ -85,20 +78,6 @@ const excludedTokens = computed((): string[] => {
   return tokens;
 });
 
-const joinTokensWithBalance = computed<string[]>(() =>
-  poolJoinTokens.value.filter(
-    address =>
-      includesAddress(tokensWithBalance.value, address) ||
-      isSameAddress(address, wrappedNativeAsset.value.address)
-  )
-);
-
-const joinTokensWithoutBalance = computed<string[]>(() =>
-  poolJoinTokens.value.filter(
-    address => !includesAddress(tokensWithBalance.value, address)
-  )
-);
-
 async function initializeTokensForm(isSingleAssetJoin: boolean) {
   if (isSingleAssetJoin) {
     // Single asset joins are only relevant for Composable pools where swap
@@ -106,7 +85,7 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
     // asset.
     setTokensIn([wrappedNativeAsset.value.address]);
   } else {
-    setTokensIn(joinTokensWithBalance.value);
+    setTokensIn(poolJoinTokens.value);
   }
 }
 
@@ -150,19 +129,13 @@ onBeforeMount(() => {
  * WATCHERS
  */
 watch(
-  [isSingleAssetJoin, joinTokensWithBalance],
-  (
-    [isSingleAsset, newJoinTokensWithBalance],
-    [prevIsSingleAsset, prevJoinTokensWithBalance]
-  ) => {
+  [isSingleAssetJoin, poolJoinTokens],
+  ([isSingleAsset, newJoinTokens], [prevIsSingleAsset, prevJoinToken]) => {
     // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
     // only if preview modal is not open
     if (!showPreview.value) {
       const hasTabChanged = prevIsSingleAsset !== isSingleAsset;
-      const hasUserTokensChanged = !isEqual(
-        prevJoinTokensWithBalance,
-        newJoinTokensWithBalance
-      );
+      const hasUserTokensChanged = !isEqual(prevJoinToken, newJoinTokens);
       if (hasUserTokensChanged || hasTabChanged) {
         initializeTokensForm(isSingleAsset);
       }
@@ -205,13 +178,6 @@ watch(
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="excludedTokens"
       @update:address="onTokenChange"
-    />
-
-    <MissingPoolTokensAlert
-      v-if="!isSingleAssetJoin"
-      :showSingleTokenSuggestion="isDeepPool && isPreMintedBptPool"
-      :poolTokensWithBalance="joinTokensWithBalance"
-      :poolTokensWithoutBalance="joinTokensWithoutBalance"
     />
 
     <AddLiquidityTotals :pool="pool" />
