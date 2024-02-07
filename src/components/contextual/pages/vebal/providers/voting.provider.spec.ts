@@ -156,6 +156,45 @@ describe('Returns confirmedVotingRequest', () => {
       },
     ]);
   });
+
+  it('Ordered by weight when one of the pools had existing votes', async () => {
+    const gaugeAddress1 = 'foo';
+    const pool1 = aVotingPool({
+      gauge: { address: gaugeAddress1 },
+      userVotes: '0',
+    });
+
+    const gaugeAddress2 = 'bar';
+    const pool2 = aVotingPool({
+      gauge: { address: gaugeAddress2 },
+      userVotes: '10000', //100% weight
+    });
+
+    mockVotingPools([pool1, pool2]);
+
+    const { confirmedVotingRequest, toggleSelection } = await mountVoting();
+
+    toggleSelection(pool1);
+    toggleSelection(pool2);
+
+    votingRequest.value[gaugeAddress1] = '20';
+    votingRequest.value[gaugeAddress2] = '50';
+
+    /*
+     gaugeAddress1 wight is the smallest (20%) but
+     gaugeAddress2 vote must come first because weight is updating from 100% to 50%
+    */
+    expect(confirmedVotingRequest.value).toEqual([
+      {
+        gaugeAddress: gaugeAddress2,
+        weight: '50',
+      },
+      {
+        gaugeAddress: gaugeAddress1,
+        weight: '20',
+      },
+    ]);
+  });
 });
 
 describe('Given that the user just completed a voting process', () => {

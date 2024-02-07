@@ -65,15 +65,22 @@ export function votingProvider() {
   );
 
   /***
-   * Order by vote weight (from smallest to largest)
-   * to avoid going above max voting power when multi-voting in the contract
+   * Order by weight increment (from smallest to largest)
+   * to avoid going above max voting power when multi-voting in the contract,
+   * where weight increment for a given pool is the difference between the old exiting weight and the new requested weight
    */
   const unlockedSelectedPoolsOrderedByWeight = computed(() =>
-    unlockedSelectedPools.value.sort(
-      (a, b) =>
-        parseFloat(votingRequest.value[a.gauge.address]) -
-        parseFloat(votingRequest.value[b.gauge.address])
-    )
+    unlockedSelectedPools.value.sort((a, b) => {
+      const oldWeightA = Number(bpsToShares(a.userVotes));
+      const newWeightA = parseFloat(votingRequest.value[a.gauge.address]);
+      const weightIncrementA = newWeightA - oldWeightA;
+
+      const oldWeightB = Number(bpsToShares(b.userVotes));
+      const newWeightB = parseFloat(votingRequest.value[b.gauge.address]);
+      const weightIncrementB = newWeightB - oldWeightB;
+
+      return weightIncrementA - weightIncrementB;
+    })
   );
 
   const confirmedVotingRequest = computed(
