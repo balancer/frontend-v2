@@ -181,7 +181,7 @@ describe('Returns confirmedVotingRequest', () => {
     votingRequest.value[gaugeAddress2] = '50';
 
     /*
-     gaugeAddress1 wight is the smallest (20%) but
+     gaugeAddress1 weight is the smallest (20%) but
      gaugeAddress2 vote must come first because weight is updating from 100% to 50%
     */
     expect(confirmedVotingRequest.value).toEqual([
