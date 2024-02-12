@@ -100,8 +100,6 @@ function updatePoolFilters(feature: PoolTypeFilter | undefined) {
       filterPoolTypes.value = [PoolType.LiquidityBootstrapping];
       break;
     case PoolTypeFilter.LRT:
-      console.log('lrtPools', lrtPools);
-
       filterPoolIds.value = lrtPools;
       filterPoolTypes.value = [];
       break;
