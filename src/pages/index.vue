@@ -17,6 +17,7 @@ import PoolFeatureSelect from '@/components/inputs/PoolFeatureSelect.vue';
 import { useTokens } from '@/providers/tokens.provider';
 import { PoolAttributeFilter, PoolTypeFilter } from '@/types/pools';
 import UserInvestedInAffectedPoolAlert from '@/pages/recovery-exit/UserInvestedInAffectedPoolAlert.vue';
+import { usePoolGroups } from '@/composables/usePoolGroups';
 
 const featuredProtocolsSentinel = ref<HTMLDivElement | null>(null);
 const isFeaturedProtocolsVisible = ref(false);
@@ -59,6 +60,7 @@ const { pools, isLoading, isFetchingNextPage, loadMorePools } = usePools({
 
 const { upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
+const { lrtPools } = usePoolGroups(networkConfig.chainId);
 
 const isPaginated = computed(() => pools.value.length >= 10);
 
@@ -96,6 +98,12 @@ function updatePoolFilters(feature: PoolTypeFilter | undefined) {
     case PoolTypeFilter.LBP:
       filterPoolIds.value = [];
       filterPoolTypes.value = [PoolType.LiquidityBootstrapping];
+      break;
+    case PoolTypeFilter.LRT:
+      console.log('lrtPools', lrtPools);
+
+      filterPoolIds.value = lrtPools;
+      filterPoolTypes.value = [];
       break;
     default:
       filterPoolIds.value = [];

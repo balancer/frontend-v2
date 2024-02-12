@@ -1,0 +1,28 @@
+{
+  "1": [
+    {
+      "label": "weETH/rETH",
+      "poolId": "0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645"
+    },
+    {
+      "label": "ezETH/ETH",
+      "poolId": "0x596192bb6e41802428ac943d2f1476c1af25cc0e000000000000000000000659"
+    },
+    {
+      "label": "weETH/ezETH/rswETH",
+      "poolId": "0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a"
+    },
+    {
+      "label": "rsETH/ETHx",
+      "poolId": "0x7761b6e0daa04e70637d81f1da7d186c205c2ade00000000000000000000065d"
+    },
+    {
+      "label": "vETH/wstETH",
+      "poolId": "0xd3f8ab9c5928fdf53153e7757131ad7815fe3146000000000000000000000661"
+    },
+    {
+      "label": "svETH/wstETH",
+      "poolId": "0xdedb11a6a23263469567c2881a9b9f8629ee0041000000000000000000000669"
+    }
+  ]
+}

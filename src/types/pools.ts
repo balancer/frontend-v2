@@ -6,6 +6,7 @@ export enum PoolTypeFilter {
   Stable = 'Stable',
   CLP = 'CLP',
   LBP = 'LBP',
+  LRT = 'LRT',
 }
 
 export enum PoolAttributeFilter {
