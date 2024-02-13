@@ -7,9 +7,9 @@
   },
   "scripts": {
     "vite": "vite",
-    "dev": "npm run generate:tokenlists && vite",
+    "dev": "npm run generate:tokenlists && npm run generate:metadata && vite",
     "serve": "npm run dev",
-    "build": "npm run generate:tokenlists && vite build",
+    "build": "npm run generate:tokenlists && npm run generate:metadata && vite build",
     "build:witChunkSizeCheck": "node ./scripts/buildWithChunkSizeCheck.mjs",
     "build:analyze": "BUILD_ANALIZE=true npm run build",
     "build:docker": "export NODE_OPTIONS=--max-old-space-size=8192 && npm run build",
@@ -35,6 +35,7 @@
     "tailwind:view": "tailwind-config-viewer -o",
     "generate:contract-addresses": "NODE_ENV=development npx vite-node ./src/lib/scripts/contract-addresses.generator.ts",
     "generate:tokenlists": "NODE_ENV=development npx vite-node --options.deps.inline=@ethersproject/basex --options.deps.inline=@ethersproject/signing-key --options.deps.inline=@balancer-labs/sdk ./src/lib/scripts/tokenlists.generator.ts",
+    "generate:metadata": "NODE_ENV=development npx vite-node ./src/lib/scripts/metadata.generator.ts",
     "generate:api": "graphql-codegen --config codegen.yml -r dotenv/config",
     "typecheck": "vue-tsc --noEmit"
   },
