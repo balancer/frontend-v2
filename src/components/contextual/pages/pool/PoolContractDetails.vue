@@ -3,6 +3,7 @@ import useNumbers from '@/composables/useNumbers';
 import { POOLS } from '@/constants/pools';
 import { poolMetadata } from '@/lib/config/metadata';
 import { shortenLabel } from '@/lib/utils';
+import { usePoolStaking } from '@/providers/local/pool-staking.provider';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
@@ -38,6 +39,8 @@ function formSwapFeesHint(owner: string): string {
 
   return t('poolAttrs.feesEditableOwner');
 }
+const { preferentialGaugeAddress } = usePoolStaking();
+
 /**
  * COMPUTED
  */
@@ -121,6 +124,13 @@ const data = computed(() => {
       value: shortenLabel(address),
       link: explorer.addressLink(address || ''),
     },
+    preferentialGaugeAddress.value
+      ? {
+          title: 'veBAL gauge',
+          value: shortenLabel(preferentialGaugeAddress.value),
+          link: explorer.addressLink(preferentialGaugeAddress.value),
+        }
+      : null,
     {
       title: t('createDate'),
       value: format((createTime || 0) * 1000, 'dd MMMM yyyy'),
