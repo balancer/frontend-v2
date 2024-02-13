@@ -2,15 +2,21 @@ import { ref, onBeforeMount } from 'vue';
 
 const lrtPools = ref<string[]>([]);
 
-const lrtPoolsPromise = import('@/assets/data/pools/groups/LRT.json');
+const chainIdToNetworkFileMap = {
+  1: 'mainnet',
+  1101: 'zkevm',
+};
 
 export function usePoolGroups(chainId: string | number) {
-  onBeforeMount(async () => {
-    const module = await lrtPoolsPromise;
+  const fileName = chainIdToNetworkFileMap[chainId] || 'mainnet';
 
-    lrtPools.value = module.default[chainId.toString()]?.map(
-      pool => pool.poolId
-    ) || ['0x'];
+  onBeforeMount(async () => {
+    const module = await import(`@/assets/data/pools/${fileName}.json`);
+    const pools = module.default;
+
+    lrtPools.value = pools
+      .filter(pool => pool.categories.includes('lrt'))
+      .map(pool => pool.id);
   });
 
   return { lrtPools };

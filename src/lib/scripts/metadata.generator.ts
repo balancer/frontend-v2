@@ -3,7 +3,7 @@ import axios from 'axios';
 const fs = require('fs');
 
 const baseUrl = 'https://raw.githubusercontent.com/balancer/metadata/main';
-const filesToFetch = ['/pools/groups/LRT.json'];
+const filesToFetch = ['/pools/mainnet.json', '/pools/zkevm.json'];
 
 async function generate() {
   filesToFetch.forEach(async file => {
