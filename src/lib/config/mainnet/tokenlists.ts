@@ -6,7 +6,7 @@ const tokenlists: TokenListURLMap = {
       'https://raw.githubusercontent.com/balancer/tokenlists/main/generated/balancer.tokenlist.json',
   },
   External: [
-    'ipns://tokens.uniswap.org',
+    'https://tokens.uniswap.org/',
     'https://www.gemini.com/uniswap/manifest.json',
   ],
 };
