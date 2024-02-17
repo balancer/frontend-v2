@@ -530,6 +530,7 @@ const pools: Pools = {
       '0xb6d505aa298fc07ce72f02d6190c0b2344660b06000200000000000000000deb', // 5WMATIC-95BAL
       '0x671cdaf4b49e0707535ed67adc4bd259a7fab6f6000200000000000000000df0', // ETH_Yield_Index/StarSeeds_Protocol
       '0x1d91cfb5c4a98d1d9835201b3e7dd9f56ee50512000200000000000000000dec', // BTC_Yield_Index-WBTC/StarSeeds_Protocol
+      '0xcd66584758106fb3ea5576980c5c41a25aca0ead000100000000000000000df2', // 25ETH-S-25MATIC-S-25BTC-S-25STARV3/StarSeeds_Protocol
     ],
   },
   Factories: {
