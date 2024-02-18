@@ -535,6 +535,7 @@ const pools: Pools = {
       '0x671cdaf4b49e0707535ed67adc4bd259a7fab6f6000200000000000000000df0', // ETH_Yield_Index/StarSeeds_Protocol
       '0x1d91cfb5c4a98d1d9835201b3e7dd9f56ee50512000200000000000000000dec', // BTC_Yield_Index-WBTC/StarSeeds_Protocol
       '0xcd66584758106fb3ea5576980c5c41a25aca0ead000100000000000000000df2', // 25ETH-S-25MATIC-S-25BTC-S-25STARV3/StarSeeds_Protocol
+      '0x75816b25b89bfd4c9aa7571b1f5526ad6a901181000200000000000000000df4', // TBYDE
     ],
   },
   Factories: {
