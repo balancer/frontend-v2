@@ -21,7 +21,7 @@ const contracts: Contracts = {
   veBALHelpers: '',
   feeDistributor: '',
   feeDistributorDeprecated: '',
-  faucet: '',
+  faucet: '0x26bfAecAe4D5fa93eE1737ce1Ce7D53F2a0E9b2d',
   gaugeRewardsHelper: '',
 };
 
