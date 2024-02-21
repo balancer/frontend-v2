@@ -95,7 +95,7 @@
     "@walletconnect/modal": "^2.6.2",
     "animejs": "^3.2.1",
     "autoprefixer": "^10.4.13",
-    "axios": "0.21.2",
+    "axios": "0.28.0",
     "bignumber.js": "^9.0.1",
     "bnc-sdk": "^3.7.1",
     "buffer": "^6.0.3",
