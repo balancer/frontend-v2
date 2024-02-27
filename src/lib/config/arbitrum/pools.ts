@@ -337,6 +337,26 @@ const pools: Pools = {
       description: 'deprecatedPool.hasNewPool.description',
     },
   },
+  NewVersionAvailable: {
+    '0xade4a71bb62bec25154cfc7e6ff49a513b491e81000000000000000000000497': {
+      newPool:
+        '0xd0ec47c54ca5e20aaae4616c25c825c7f48d40690000000000000000000004ef',
+      description: 'newVersion.BalIncentives',
+      title: 'announcement',
+    },
+    '0x4a2f6ae7f3e5d715689530873ec35593dc28951b000000000000000000000481': {
+      newPool:
+        '0x2d6ced12420a9af5a83765a8c48be2afcd1a8feb000000000000000000000500',
+      description: 'newVersion.BalIncentives',
+      title: 'announcement',
+    },
+    '0x0c8972437a38b389ec83d1e666b69b8a4fcf8bfd00000000000000000000049e': {
+      newPool:
+        '0xc2598280bfea1fe18dfcabd21c7165c40c6859d30000000000000000000004f3',
+      description: 'newVersion.BalIncentives',
+      title: 'announcement',
+    },
+  },
   GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [
@@ -351,6 +371,11 @@ const pools: Pools = {
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
     ],
     [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
+    [PoolWarning.RateProviderWarning]: [
+      '0xade4a71bb62bec25154cfc7e6ff49a513b491e81000000000000000000000497',
+      '0x4a2f6ae7f3e5d715689530873ec35593dc28951b000000000000000000000481',
+      '0x0c8972437a38b389ec83d1e666b69b8a4fcf8bfd00000000000000000000049e',
+    ],
   },
   BrandedRedirect: {
     FX: 'xave',
