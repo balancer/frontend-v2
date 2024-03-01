@@ -21,7 +21,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { useTokens } from '@/providers/tokens.provider';
 import { PoolType } from '@balancer-labs/sdk';
 import { wNativeAssetAddress } from '../usePoolHelpers';
-import { isGoerli } from '../useNetwork';
+import { isTestnet } from '../useNetwork';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
 export const POOL_CREATION_STATE_KEY = 'poolCreationState';
@@ -424,7 +424,7 @@ export default function usePoolCreation() {
   }
 
   async function createPool(): Promise<TransactionResponse> {
-    if (hasUnlistedToken.value && !isGoerli.value) {
+    if (hasUnlistedToken.value && !isTestnet.value) {
       throw new Error('Invalid pool creation due to unlisted tokens.');
     }
     const provider = getProvider();
