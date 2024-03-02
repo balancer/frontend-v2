@@ -916,7 +916,11 @@
     },
     "fxPoolVulnWarning": {
       "title": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove liquidity from this pool. <a href=\"https://twitter.com/XaveFinance/status/1725089131330756628\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>",
-      "tooltip": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove liquidity from this pool"
+      "tooltip": "Xave's FXPools are potentially affected by a bug. Xave recommends that LPs tA vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately. <a href=\"https://twitter.com/Balancer/status/1611363559685898247\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Read more</a>emporarily remove liquidity from this pool"
+    },
+    "rateProviderWarning": {
+      "title": "A low severity rate provider issue has been discovered that affects this pool. Existing liquidity providers should remove liquidity as soon as possible.",
+      "tooltip": "A low severity rate provider issue has been discovered that affects this pool. Existing liquidity providers should remove liquidity as soon as possible."
     }
   },
   "popularBases": "Popular",
