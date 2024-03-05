@@ -36,6 +36,7 @@ import PoolRisks from '@/components/contextual/pages/pool/risks/PoolRisks.vue';
 import { usePool } from '@/providers/local/pool.provider';
 import { provideUserStaking } from '@/providers/local/user-staking.provider';
 import { providerUserPools } from '@/providers/local/user-pools.provider';
+import PointsBanner from '@/components/banners/PointsBanner.vue';
 
 const userStaking = provideUserStaking();
 providerUserPools(userStaking);
@@ -191,6 +192,7 @@ watch(
 
 <template>
   <div class="xl:container lg:px-4 pt-8 xl:mx-auto">
+    <PointsBanner v-if="pool" :pool="pool" />
     <div
       class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
     >

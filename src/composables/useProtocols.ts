@@ -14,9 +14,14 @@ export enum Protocol {
   Granary = 'granary',
   Zerovix = '0vix',
   Gyro = 'gyro',
+  Eigenlayer = 'eigenlayer',
 }
 
 export const protocolIconPaths: Record<Protocol, string> = {
+  [Protocol.Eigenlayer]: new URL(
+    '@/assets/images/icons/protocols/eigenlayer.jpg',
+    import.meta.url
+  ).href,
   [Protocol.Aave]: new URL(
     '@/assets/images/icons/protocols/aave.svg',
     import.meta.url

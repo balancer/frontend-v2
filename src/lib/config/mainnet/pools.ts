@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {
@@ -519,7 +520,16 @@ const pools: Pools = {
       '0xdedb11a6a23263469567c2881a9b9f8629ee0041000000000000000000000669', // svETH/wstETH
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a': {
+      points: [
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD2 (mainnet)
