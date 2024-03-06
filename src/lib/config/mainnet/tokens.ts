@@ -34,6 +34,7 @@ const tokens: TokenConstants = {
     '0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c', // ENJ
   ],
   pointMultiples: {
+    '0xa1290d69c65a6fe4df752f95823fae25cb99e5a7': '2', // rsETH
     '0xbf5495efe5db9ce00f80364c8b423567e58d2110': '2', // ezETH
     '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee': '2', // weETH
     '0xfae103dc9cf190ed75350761e95403b7b8afa6c0': '2', // rswETH

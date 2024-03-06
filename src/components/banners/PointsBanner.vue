@@ -26,16 +26,15 @@ function getIconSrc(protocol: Protocol) {
     >
     <div class="flex">
       <div
-        v-for="{ protocol, multiple } in poolPoints"
-        :key="protocol"
+        v-if="poolPoints"
         class="flex justify-center items-center py-2 pr-3 pl-2 text-white rounded-full border border-gray-700 backdrop-blur-sm bg-black/20"
       >
         <BalAsset
-          :iconURI="getIconSrc(protocol as Protocol)"
-          :alt="protocol"
+          :iconURI="getIconSrc(poolPoints.protocol)"
+          :alt="poolPoints.protocol"
           class="mr-2"
         />
-        {{ multiple }}x
+        {{ poolPoints.multiple }}x
       </div>
       <div
         v-for="(multiple, tokenAddress) in tokenPointMultiples"

@@ -14,6 +14,9 @@ const tokens: TokenConstants = {
     WETH: '0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9',
     BAL: '0x120eF59b80774F02211563834d8E3b72cb1649d6',
   },
+  pointMultiples: {
+    '0x8c7d118b5c47a5bcbd47cc51789558b98dad17c5': '2', // rsETH
+  },
 };
 
 export default tokens;

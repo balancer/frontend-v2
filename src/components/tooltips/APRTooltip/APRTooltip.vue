@@ -124,13 +124,9 @@ const totalLabel = computed((): string =>
           class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700"
         >
           <span class="font-bold">Points</span>
-          <div
-            v-for="{ protocol, multiple } in poolPoints"
-            :key="protocol"
-            class="flex justify-between mt-2 ml-2"
-          >
-            <span class="capitalize">{{ protocol }}</span>
-            <span>{{ multiple }}x</span>
+          <div v-if="poolPoints" class="flex justify-between mt-2 ml-2">
+            <span class="capitalize">{{ poolPoints.protocol }}</span>
+            <span>{{ poolPoints.multiple }}x</span>
           </div>
           <div
             v-for="(multiple, tokenAddress) in tokenPointMultiples"
