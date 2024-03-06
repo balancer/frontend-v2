@@ -623,7 +623,7 @@
     <div>
       <h2>12. Contact Us</h2>
       <p>
-        Balancer is a foundation company organized in the Cayman Islands with an
+        Balancer Foundation is a company organized in the Cayman Islands with an
         operating company organized in the British Virgin Islands (BVI). Please
         contact us if you have any questions about these Terms or other topics,
         by sending an email to
