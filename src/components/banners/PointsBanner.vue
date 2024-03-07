@@ -12,7 +12,7 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const { hasPoints, poolPoints, tokenPointMultiples } = usePoints(props.pool);
+const { hasPoints, poolPoints } = usePoints(props.pool);
 
 function getIconSrc(protocol: Protocol) {
   return protocolIconPaths[protocol];
@@ -26,22 +26,15 @@ function getIconSrc(protocol: Protocol) {
     >
     <div class="flex">
       <div
-        v-if="poolPoints"
-        class="flex justify-center items-center py-2 pr-3 pl-2 text-white rounded-full border border-gray-700 backdrop-blur-sm bg-black/20"
-      >
-        <BalAsset
-          :iconURI="getIconSrc(poolPoints.protocol)"
-          :alt="poolPoints.protocol"
-          class="mr-2"
-        />
-        {{ poolPoints.multiple }}x
-      </div>
-      <div
-        v-for="(multiple, tokenAddress) in tokenPointMultiples"
-        :key="tokenAddress"
+        v-for="{ protocol, multiple } in poolPoints"
+        :key="protocol"
         class="flex justify-center items-center py-2 px-3 ml-2 text-white rounded-full border border-gray-700 backdrop-blur-sm bg-black/20"
       >
-        <BalAsset :address="tokenAddress" class="mr-2" />
+        <BalAsset
+          :iconURI="getIconSrc(protocol)"
+          :alt="protocol"
+          class="mr-2"
+        />
         {{ multiple }}x
       </div>
     </div>
