@@ -14,7 +14,6 @@ import { AprBreakdown } from '@balancer-labs/sdk';
 import { hasStakingRewards } from '@/composables/useAPR';
 import useWeb3 from '@/services/web3/useWeb3';
 import { usePoints } from '@/composables/usePoints';
-import { useTokens } from '@/providers/tokens.provider';
 
 /**
  * TYPES
@@ -34,8 +33,7 @@ const props = defineProps<Props>();
  */
 const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { hasPoints, poolPoints, tokenPointMultiples } = usePoints(props.pool);
-const { getToken } = useTokens();
+const { hasPoints, poolPoints } = usePoints(props.pool);
 
 /**
  * COMPUTED
@@ -124,16 +122,12 @@ const totalLabel = computed((): string =>
           class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700"
         >
           <span class="font-bold">Points</span>
-          <div v-if="poolPoints" class="flex justify-between mt-2 ml-2">
-            <span class="capitalize">{{ poolPoints.protocol }}</span>
-            <span>{{ poolPoints.multiple }}x</span>
-          </div>
           <div
-            v-for="(multiple, tokenAddress) in tokenPointMultiples"
-            :key="tokenAddress"
+            v-for="{ protocol, multiple } in poolPoints"
+            :key="protocol"
             class="flex justify-between mt-2 ml-2"
           >
-            <span>{{ getToken(tokenAddress).symbol }}</span>
+            <span class="capitalize">{{ protocol }}</span>
             <span>{{ multiple }}x</span>
           </div>
         </div>

@@ -527,6 +527,18 @@ const pools: Pools = {
           protocol: Protocol.Eigenlayer,
           multiple: '1',
         },
+        {
+          protocol: Protocol.EtherFi,
+          multiple: '6',
+        },
+        {
+          protocol: Protocol.Renzo,
+          multiple: '6',
+        },
+        {
+          protocol: Protocol.Swell,
+          multiple: '6',
+        },
       ],
     },
   },
