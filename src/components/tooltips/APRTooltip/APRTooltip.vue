@@ -121,15 +121,21 @@ const totalLabel = computed((): string =>
           v-if="hasPoints"
           class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700"
         >
-          <span class="font-bold">Points</span>
-          <div
-            v-for="{ protocol, multiple } in poolPoints"
+          <div class="font-bold">Points</div>
+          <span
+            >LPs in this pool also earn a share of partner points from:
+          </span>
+          <span
+            v-for="({ protocol }, index) in poolPoints"
             :key="protocol"
-            class="flex justify-between mt-2 ml-2"
+            class="capitalize"
           >
-            <span class="capitalize">{{ protocol }}</span>
-            <span>{{ multiple }}x</span>
-          </div>
+            <span v-if="index === poolPoints.length - 1" class="lowercase"
+              >and</span
+            >
+            {{ protocol
+            }}<span v-if="index !== poolPoints.length - 1">,&nbsp;</span>
+          </span>
         </div>
       </div>
     </div>
