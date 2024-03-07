@@ -57,8 +57,8 @@ export type PoolMetadata = {
   points?: {
     protocol: Protocol;
     multiple: string;
-    tokenOverrides?: Record<string, string>;
-  };
+    expiryTimestamp?: number; // https://timestamp.online/
+  }[];
 };
 
 export enum RiskKey {

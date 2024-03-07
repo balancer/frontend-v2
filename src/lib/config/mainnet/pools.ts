@@ -522,14 +522,12 @@ const pools: Pools = {
   },
   Metadata: {
     '0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a': {
-      points: {
-        protocol: Protocol.Eigenlayer,
-        multiple: '1',
-        tokenOverrides: {
-          '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee': '6',
-          '0xfae103dc9cf190ed75350761e95403b7b8afa6c0': '6',
+      points: [
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
         },
-      },
+      ],
     },
   },
   Deep: [
