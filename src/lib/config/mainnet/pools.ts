@@ -524,20 +524,16 @@ const pools: Pools = {
     '0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a': {
       points: [
         {
-          protocol: Protocol.Eigenlayer,
+          protocol: Protocol.EtherFi,
           multiple: '1',
         },
         {
-          protocol: Protocol.EtherFi,
-          multiple: '6',
-        },
-        {
           protocol: Protocol.Renzo,
-          multiple: '6',
+          multiple: '1',
         },
         {
           protocol: Protocol.Swell,
-          multiple: '6',
+          multiple: '3',
         },
       ],
     },

@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -81,6 +82,7 @@ const pools: Pools = {
       '0x2d6ced12420a9af5a83765a8c48be2afcd1a8feb000000000000000000000500', // cbETH/rETH/wstETH
       '0x99d85550623b249c54ee6e7f42861dcefa3ee8d7000000000000000000000503', // USX/USDC BPT
       '0x4b3af34eb1135d59df8b9cdc2ff07d30d05334c400000000000000000000050d', // weETH/rETH
+      '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517', // ezETH/WETH
     ],
   },
   Investment: {
@@ -289,7 +291,20 @@ const pools: Pools = {
       '0x2ce4457acac29da4736ae6f5cd9f583a6b335c270000000000000000000004dc',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517': {
+      points: [
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+        },
+        {
+          protocol: Protocol.Renzo,
+          multiple: '2',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
     '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
