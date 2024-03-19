@@ -300,7 +300,7 @@ const pools: Pools = {
     ],
   },
   Metadata: {
-    '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517': {
+    '0xb61371ab661b1acec81c699854d2f911070c059e000000000000000000000516': {
       points: [
         {
           protocol: Protocol.Renzo,
