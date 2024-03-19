@@ -295,12 +295,16 @@ const pools: Pools = {
     '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517': {
       points: [
         {
-          protocol: Protocol.Eigenlayer,
-          multiple: '1',
-        },
-        {
           protocol: Protocol.Renzo,
           multiple: '2',
+          description:
+            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 2x the amount of ezETH if it comprises around half of the pool.</li></ul>',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of ezETH held in the pool.',
         },
       ],
     },

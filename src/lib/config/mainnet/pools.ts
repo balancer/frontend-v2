@@ -524,16 +524,28 @@ const pools: Pools = {
     '0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a': {
       points: [
         {
+          protocol: Protocol.Swell,
+          multiple: '3',
+          description:
+            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 3x the amount of rswETH if it comprises around a third of the pool. </li></ul>',
+        },
+        {
           protocol: Protocol.EtherFi,
           multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of weETH held in the pool.',
         },
         {
           protocol: Protocol.Renzo,
           multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of ezETH held in the pool.',
         },
         {
-          protocol: Protocol.Swell,
-          multiple: '3',
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of Eigenlayer points depending on assets deposited in the pool.',
         },
       ],
     },

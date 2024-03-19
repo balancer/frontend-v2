@@ -25,8 +25,11 @@ function getIconSrc(protocol: Protocol) {
       >Liquidity providers in this pool also earn partner points</span
     >
     <div class="flex">
-      <div v-for="{ protocol, multiple } in poolPoints" :key="protocol">
-        <BalTooltip placement="bottom">
+      <div
+        v-for="{ protocol, multiple, description } in poolPoints"
+        :key="protocol"
+      >
+        <BalTooltip placement="bottom" width="64">
           <template #activator>
             <div
               class="flex justify-center items-center py-2 px-3 ml-2 text-white rounded-full border border-gray-700 backdrop-blur-sm bg-black/20"
@@ -44,6 +47,11 @@ function getIconSrc(protocol: Protocol) {
               <span class="capitalize">{{ protocol }}</span
               >: {{ multiple }}x points multiplier
             </div>
+            <div
+              v-if="description"
+              class="mb-2 list-disc"
+              v-html="description"
+            />
             <span>
               This UI does not provide real-time updates on partner point
               multipliers. These points may change or expire and might not
