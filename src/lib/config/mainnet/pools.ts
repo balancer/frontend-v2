@@ -163,6 +163,7 @@ const pools: Pools = {
       '0x386ab93f2efe7270e35b6b3d031aacbbc1bcc8fc000000000000000000000673', // rsETH/wETH
       '0x6aa5a6b9257ca6e18b2da94e1a5fbe57ce2947ca00000000000000000000067b', // genETH/wstETH
       '0xb91159aa527d4769cb9faf3e4adb760c7e8c8ea700000000000000000000067c', // ETHx/wstETH
+      '0x58aadfb1afac0ad7fca1148f3cde6aedf5236b6d00000000000000000000067f', // rsETH / WETH
     ],
   },
   Investment: {
