@@ -41,6 +41,7 @@ export type FactoryType =
 export enum PoolFeature {
   Boosted = 'boosted',
   CLP = 'clp',
+  Points = 'points',
 }
 
 export type PoolFeatures = {
@@ -53,6 +54,12 @@ export type PoolMetadata = {
   name?: string;
   hasIcon?: boolean;
   features?: PoolFeatures;
+  points?: {
+    protocol: Protocol;
+    multiple: string;
+    description?: string;
+    expiryTimestamp?: number; // https://timestamp.online/
+  }[];
 };
 
 export enum RiskKey {

@@ -13,6 +13,7 @@ import YieldBreakdown from './components/YieldBreakdown.vue';
 import { AprBreakdown } from '@balancer-labs/sdk';
 import { hasStakingRewards } from '@/composables/useAPR';
 import useWeb3 from '@/services/web3/useWeb3';
+import { usePoints } from '@/composables/usePoints';
 
 /**
  * TYPES
@@ -32,6 +33,7 @@ const props = defineProps<Props>();
  */
 const { fNum } = useNumbers();
 const { isWalletReady } = useWeb3();
+const { hasPoints, poolPoints } = usePoints(props.pool);
 
 /**
  * COMPUTED
@@ -113,6 +115,27 @@ const totalLabel = computed((): string =>
         >
           <span>{{ $t('swapFeeAPR') }}</span>
           {{ fNum(apr?.swapFees || '0', FNumFormats.bp) }}
+        </div>
+
+        <div
+          v-if="hasPoints"
+          class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700"
+        >
+          <div class="font-bold">Points</div>
+          <span
+            >LPs in this pool also earn a share of partner points from:
+          </span>
+          <span
+            v-for="({ protocol }, index) in poolPoints"
+            :key="protocol"
+            class="capitalize"
+          >
+            <span v-if="index === poolPoints.length - 1" class="lowercase"
+              >and</span
+            >
+            {{ protocol
+            }}<span v-if="index !== poolPoints.length - 1">,&nbsp;</span>
+          </span>
         </div>
       </div>
     </div>

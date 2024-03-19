@@ -14,9 +14,34 @@ export enum Protocol {
   Granary = 'granary',
   Zerovix = '0vix',
   Gyro = 'gyro',
+  Eigenlayer = 'eigenlayer',
+  Renzo = 'renzo',
+  Swell = 'swell',
+  EtherFi = 'etherfi',
+  Kelp = 'kelp',
 }
 
 export const protocolIconPaths: Record<Protocol, string> = {
+  [Protocol.EtherFi]: new URL(
+    '@/assets/images/icons/protocols/etherfi.jpg',
+    import.meta.url
+  ).href,
+  [Protocol.Swell]: new URL(
+    '@/assets/images/icons/protocols/swell.jpg',
+    import.meta.url
+  ).href,
+  [Protocol.Renzo]: new URL(
+    '@/assets/images/icons/protocols/renzo.jpg',
+    import.meta.url
+  ).href,
+  [Protocol.Kelp]: new URL(
+    '@/assets/images/icons/protocols/kelp.jpg',
+    import.meta.url
+  ).href,
+  [Protocol.Eigenlayer]: new URL(
+    '@/assets/images/icons/protocols/eigenlayer.jpg',
+    import.meta.url
+  ).href,
   [Protocol.Aave]: new URL(
     '@/assets/images/icons/protocols/aave.svg',
     import.meta.url

@@ -11,12 +11,16 @@ import BalChipNew from '@/components/chips/BalChipNew.vue';
 import PoolWarningTooltip from '@/components/pool/PoolWarningTooltip.vue';
 import PoolFeatureChip from '@/components/chips/PoolFeatureChip.vue';
 import { Protocol } from '@/composables/useProtocols';
+import { usePoints } from '@/composables/usePoints';
+import pointsIconSrc from '@/assets/images/icons/points.svg';
 
 type Props = {
   pool: Pool;
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const { hasPoints } = usePoints(props.pool);
 </script>
 
 <template>
@@ -28,6 +32,16 @@ defineProps<Props>();
           :protocols="protocolsFor(pool, PoolFeature.Boosted)"
           class="ml-1"
         />
+      </template>
+    </BalTooltip>
+
+    <BalTooltip
+      v-if="hasPoints"
+      text="Liquidity providers in this pool also earn partner points"
+      width="56"
+    >
+      <template #activator>
+        <img :src="pointsIconSrc" />
       </template>
     </BalTooltip>
 

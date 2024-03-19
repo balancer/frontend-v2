@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -298,7 +299,24 @@ const pools: Pools = {
       '0x2ce4457acac29da4736ae6f5cd9f583a6b335c270000000000000000000004dc',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517': {
+      points: [
+        {
+          protocol: Protocol.Renzo,
+          multiple: '2',
+          description:
+            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 2x the amount of ezETH if it comprises around half of the pool.</li></ul>',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of ezETH held in the pool.',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
     '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
