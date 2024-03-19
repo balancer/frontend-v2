@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -80,6 +81,9 @@ const pools: Pools = {
       '0x6fe0e32081460d0e4469e36595e32c0f343a0e9c0000000000000000000004f4', // wstETH/cbETH
       '0x2d6ced12420a9af5a83765a8c48be2afcd1a8feb000000000000000000000500', // cbETH/rETH/wstETH
       '0x99d85550623b249c54ee6e7f42861dcefa3ee8d7000000000000000000000503', // USX/USDC BPT
+      '0x4b3af34eb1135d59df8b9cdc2ff07d30d05334c400000000000000000000050d', // weETH/rETH
+      '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517', // ezETH/wETH
+      '0xb61371ab661b1acec81c699854d2f911070c059e000000000000000000000516', // ezETH/wstETH
     ],
   },
   Investment: {
@@ -177,6 +181,15 @@ const pools: Pools = {
       '0xd558d4ed9fb22d4a76210a62afc6af86e5736dcf000200000000000000000505', // 50USX-50ARB
       '0x5d5822a2648333fbee05f8d539ef9e5107b81d9b000200000000000000000506', // 50GMX-50USDT
       '0xebd7cbf210b21469227a828129c2816c9917f3e9000200000000000000000507', // 99DEFI5-1USDC.e
+      '0x1ab34f24b5b8f6984f521a20afba7c38dd8de5fe000100000000000000000509', // 50BANANIA-20WETH-10agEUR-10rETH-5BTC.b-5USDT
+      '0xa158da5f4e412a5c97503527ef5aa2de26c62bf100020000000000000000050a', // 50WBTC-50GMX
+      '0xc6295e969be65560d1cb8ce06b1b20e62337625c00020000000000000000050f', // PUPPET-WETH
+      '0xebbdd03f9831972ee0ec2bdd2dd07824df06344c000100000000000000000510', // dUSD
+      '0x6e384c23253e2459b3d0f6c19f5532515643b12000020000000000000000050b', // LP-EURS-USDC
+      '0x065134d14914f6bd422026e532309df756c8d2ca000200000000000000000511', // 504POOL-BPT-50MAGIC
+      '0x29cc3af7ed299866a4ee3ecbde4b48bd1eccff9c000200000000000000000512', // 80xFORTUN-20FORTUN
+      '0xdf55e00b872563d8799b371033704b5a9407d30b000200000000000000000513', // 20WETH-80FORTUN
+      '0xfc90fa1ea12d48748f417c269e8dbc2f3715755e000200000000000000000515', // 50WETH-50ARB
     ],
   },
   Factories: {
@@ -271,6 +284,11 @@ const pools: Pools = {
       '0x9bfcd4189cf9062697746ce292350f42fdee457c0002000000000000000004d6', // 50DFX-50WETH
       '0xe25ecadca47419e9aee2700ceab4e7c4b01b94ca0002000000000000000004e4',
       '0xdfa752ca3ff49d4b6dbe08e2d5a111f51773d3950000000000000000000004e8',
+      '0xd0ec47c54ca5e20aaae4616c25c825c7f48d40690000000000000000000004ef',
+      '0xc2598280bfea1fe18dfcabd21c7165c40c6859d30000000000000000000004f3',
+      '0x2d6ced12420a9af5a83765a8c48be2afcd1a8feb000000000000000000000500',
+      '0x4b3af34eb1135d59df8b9cdc2ff07d30d05334c400000000000000000000050d',
+      '0xb61371ab661b1acec81c699854d2f911070c059e000000000000000000000516',
     ],
     AllowList: [
       '0x88e2c969e2a1c69c16d1dcd9f8acde4c6ab3838a0002000000000000000004c1',
@@ -281,7 +299,24 @@ const pools: Pools = {
       '0x2ce4457acac29da4736ae6f5cd9f583a6b335c270000000000000000000004dc',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517': {
+      points: [
+        {
+          protocol: Protocol.Renzo,
+          multiple: '2',
+          description:
+            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 2x the amount of ezETH if it comprises around half of the pool.</li></ul>',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of ezETH held in the pool.',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
     '0x519cce718fcd11ac09194cff4517f12d263be067000000000000000000000382', // overnight usd+
@@ -332,6 +367,26 @@ const pools: Pools = {
       description: 'deprecatedPool.hasNewPool.description',
     },
   },
+  NewVersionAvailable: {
+    '0xade4a71bb62bec25154cfc7e6ff49a513b491e81000000000000000000000497': {
+      newPool:
+        '0xd0ec47c54ca5e20aaae4616c25c825c7f48d40690000000000000000000004ef',
+      description: 'newVersion.BalIncentives',
+      title: 'announcement',
+    },
+    '0x4a2f6ae7f3e5d715689530873ec35593dc28951b000000000000000000000481': {
+      newPool:
+        '0x2d6ced12420a9af5a83765a8c48be2afcd1a8feb000000000000000000000500',
+      description: 'newVersion.BalIncentives',
+      title: 'announcement',
+    },
+    '0x0c8972437a38b389ec83d1e666b69b8a4fcf8bfd00000000000000000000049e': {
+      newPool:
+        '0xc2598280bfea1fe18dfcabd21c7165c40c6859d30000000000000000000004f3',
+      description: 'newVersion.BalIncentives',
+      title: 'announcement',
+    },
+  },
   GaugeMigration: {},
   BoostedApr: [],
   DisabledJoins: [
@@ -346,6 +401,11 @@ const pools: Pools = {
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d',
     ],
     [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.ARBITRUM],
+    [PoolWarning.RateProviderWarning]: [
+      '0xade4a71bb62bec25154cfc7e6ff49a513b491e81000000000000000000000497',
+      '0x4a2f6ae7f3e5d715689530873ec35593dc28951b000000000000000000000481',
+      '0x0c8972437a38b389ec83d1e666b69b8a4fcf8bfd00000000000000000000049e',
+    ],
   },
   BrandedRedirect: {
     FX: 'xave',

@@ -122,7 +122,6 @@ const poolTypeLabel = computed(() => {
 });
 
 const poolMetadata = computed(() => getPoolMetadata(props.pool.id));
-const hasMetadata = computed((): boolean => !!poolMetadata.value);
 
 /**
  * METHODS
@@ -136,7 +135,7 @@ function symbolFor(titleTokenIndex: number): string {
 <template>
   <div class="flex flex-col">
     <div class="flex flex-wrap items-center -mt-2">
-      <div v-if="hasMetadata">
+      <div v-if="poolMetadata?.name">
         <h3 class="pool-title">
           {{ poolMetadata?.name }}
         </h3>

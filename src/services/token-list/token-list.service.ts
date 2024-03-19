@@ -55,10 +55,11 @@ export default class TokenListService {
   ): TokenListMap {
     return Object.keys(tokensList).reduce((acc: TokenListMap, key) => {
       const data = tokensList[key];
-      acc[key] = {
-        ...data,
-        tokens: data.tokens.filter(token => token.chainId === networkId),
-      };
+      if (data.tokens)
+        acc[key] = {
+          ...data,
+          tokens: data.tokens.filter(token => token.chainId === networkId),
+        };
       return acc;
     }, {});
   }

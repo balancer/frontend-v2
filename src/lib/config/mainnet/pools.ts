@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {
@@ -157,6 +158,11 @@ const pools: Pools = {
       '0xdedb11a6a23263469567c2881a9b9f8629ee0041000000000000000000000669', // svETH/wstETH
       '0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a', // weETH/ezETH/rswETH
       '0x264062ca46a1322c2e6464471764089e01f22f1900000000000000000000066b', // sDOLA-DOLA BSP
+      '0x09b03b7cbb19b3dae94f884cf60dbc3c99a3947b00000000000000000000066c', // pyUSD/sDOLA BSP
+      '0xe3e0022d25194431a98e8bf5034d2617c96e1d44000000000000000000000670', // InstETH/wstETH
+      '0x386ab93f2efe7270e35b6b3d031aacbbc1bcc8fc000000000000000000000673', // rsETH/wETH
+      '0x6aa5a6b9257ca6e18b2da94e1a5fbe57ce2947ca00000000000000000000067b', // genETH/wstETH
+      '0xb91159aa527d4769cb9faf3e4adb760c7e8c8ea700000000000000000000067c', // ETHx/wstETH
     ],
   },
   Investment: {
@@ -269,6 +275,11 @@ const pools: Pools = {
       '0xaa7a70070e7495fe86c67225329dbd39baa2f63b000200000000000000000663', // ECLP-GHO-GYD
       '0xa1e81ac3450edc5d0fa9c22addf7350f6a054daa000200000000000000000666', // VEC/pSVEC
       '0xbb5820734d6d1623c1a8b39c848bcfb1417bac19000200000000000000000667', // 50wstETH-50rETH
+      '0x767cb26e38bebddfd857d4ad426d8ff5bc0fac2f00020000000000000000066e', // ECLP-pxETH-frxETH
+      '0x3a2819b07981234f825e952f32cf977db5edbf7c00020000000000000000066f', // 80UNION-20wstETH
+      '0xff42a9af956617e4c3532ef2fc7567465efe4909000200000000000000000672', // 50KEP/50rsETH
+      '0x0f9fdc4d883f6d85b68ce1b8b96aa706a3538e5b000200000000000000000675', // 80gVEC-20vETH
+      '0x57766212638c425e9cb0c6d6e1683dda369c0fff000200000000000000000678', // 80GEM-20WETH
     ],
   },
   Factories: {
@@ -493,6 +504,10 @@ const pools: Pools = {
       '0xd3f8ab9c5928fdf53153e7757131ad7815fe3146000000000000000000000661',
       '0x7761b6e0daa04e70637d81f1da7d186c205c2ade00000000000000000000065d',
       '0xdedb11a6a23263469567c2881a9b9f8629ee0041000000000000000000000669',
+      '0x264062ca46a1322c2e6464471764089e01f22f1900000000000000000000066b',
+      '0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a',
+      '0xff42a9af956617e4c3532ef2fc7567465efe4909000200000000000000000672',
+      '0x09b03b7cbb19b3dae94f884cf60dbc3c99a3947b00000000000000000000066c',
     ],
     AllowList: [
       '0x54ca50ee86616379420cc56718e12566aa75abbe000200000000000000000610', // wusdm/wsteth
@@ -509,7 +524,36 @@ const pools: Pools = {
       '0xdedb11a6a23263469567c2881a9b9f8629ee0041000000000000000000000669', // svETH/wstETH
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a': {
+      points: [
+        {
+          protocol: Protocol.Swell,
+          multiple: '3',
+          description:
+            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 3x the amount of rswETH if it comprises around a third of the pool. </li></ul>',
+        },
+        {
+          protocol: Protocol.EtherFi,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of weETH held in the pool.',
+        },
+        {
+          protocol: Protocol.Renzo,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of ezETH held in the pool.',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of Eigenlayer points depending on assets deposited in the pool.',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD2 (mainnet)
