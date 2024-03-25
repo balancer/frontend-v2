@@ -307,7 +307,7 @@ const pools: Pools = {
           protocol: Protocol.Renzo,
           multiple: '2',
           description:
-            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 2x the amount of ezETH if it comprises around half of the pool.</li></ul>',
+            'LPs in this pool earn 2x ezPoints on the TVL of the pool (wstETH + ezETH)',
         },
         {
           protocol: Protocol.Eigenlayer,

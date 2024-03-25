@@ -20,6 +20,7 @@ const options = [
   PoolTypeFilter.CLP,
   PoolTypeFilter.LBP,
   PoolTypeFilter.LRT,
+  PoolTypeFilter.Points,
 ];
 
 const attributeOptions = [PoolAttributeFilter.New];
