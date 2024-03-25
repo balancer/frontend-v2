@@ -84,6 +84,7 @@ const pools: Pools = {
       '0x4b3af34eb1135d59df8b9cdc2ff07d30d05334c400000000000000000000050d', // weETH/rETH
       '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517', // ezETH/wETH
       '0xb61371ab661b1acec81c699854d2f911070c059e000000000000000000000516', // ezETH/wstETH
+      '0x94f9ad04b4bd9e70957a429bfec20140c164983600000000000000000000051a', // SWEEP-USDC-BPT
     ],
   },
   Investment: {
@@ -300,13 +301,13 @@ const pools: Pools = {
     ],
   },
   Metadata: {
-    '0x7a66b9ef65a88e9abc94a08c9b043e73685d850b000000000000000000000517': {
+    '0xb61371ab661b1acec81c699854d2f911070c059e000000000000000000000516': {
       points: [
         {
           protocol: Protocol.Renzo,
           multiple: '2',
           description:
-            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 2x the amount of ezETH if it comprises around half of the pool.</li></ul>',
+            'LPs in this pool earn 2x ezPoints on the TVL of the pool (wstETH + ezETH)',
         },
         {
           protocol: Protocol.Eigenlayer,

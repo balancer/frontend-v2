@@ -60,7 +60,8 @@ const { pools, isLoading, isFetchingNextPage, loadMorePools } = usePools({
 
 const { upToSmallBreakpoint } = useBreakpoints();
 const { networkSlug, networkConfig } = useNetwork();
-const { lrtPools } = usePoolGroups(networkConfig.chainId);
+
+const { lrtPools, pointPools } = usePoolGroups(networkConfig.chainId);
 
 const isPaginated = computed(() => pools.value.length >= 10);
 
@@ -101,6 +102,10 @@ function updatePoolFilters(feature: PoolTypeFilter | undefined) {
       break;
     case PoolTypeFilter.LRT:
       filterPoolIds.value = lrtPools.value;
+      filterPoolTypes.value = [];
+      break;
+    case PoolTypeFilter.Points:
+      filterPoolIds.value = pointPools.value;
       filterPoolTypes.value = [];
       break;
     default:

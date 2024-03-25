@@ -163,6 +163,8 @@ const pools: Pools = {
       '0x386ab93f2efe7270e35b6b3d031aacbbc1bcc8fc000000000000000000000673', // rsETH/wETH
       '0x6aa5a6b9257ca6e18b2da94e1a5fbe57ce2947ca00000000000000000000067b', // genETH/wstETH
       '0xb91159aa527d4769cb9faf3e4adb760c7e8c8ea700000000000000000000067c', // ETHx/wstETH
+      '0x58aadfb1afac0ad7fca1148f3cde6aedf5236b6d00000000000000000000067f', // rsETH / WETH
+      '0x63e0d47a6964ad1565345da9bfa66659f4983f02000000000000000000000681', // pufETH/wstETH
     ],
   },
   Investment: {
@@ -302,6 +304,7 @@ const pools: Pools = {
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
     '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
     '0x412a5b2e7a678471985542757a6855847d4931d5': 'gyroE',
+    '0x579653927bf509b361f6e3813f5d4b95331d98c9': 'gyroE',
     '0xfb23bc0d2629268442cd6521cf4170698967105f': 'fx',
   },
   Stakable: {
@@ -550,6 +553,22 @@ const pools: Pools = {
           multiple: '1',
           description:
             'LPs in this pool get their share of Eigenlayer points depending on assets deposited in the pool.',
+        },
+      ],
+    },
+    '0x596192bb6e41802428ac943d2f1476c1af25cc0e000000000000000000000659': {
+      points: [
+        {
+          protocol: Protocol.Renzo,
+          multiple: '2',
+          description:
+            'LPs in this pool earn 2x ezPoints on the TVL of the pool (WETH + ezETH)',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of ezETH held in the pool.',
         },
       ],
     },
