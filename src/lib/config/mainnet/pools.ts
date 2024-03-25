@@ -556,6 +556,22 @@ const pools: Pools = {
         },
       ],
     },
+    '0x596192bb6e41802428ac943d2f1476c1af25cc0e000000000000000000000659': {
+      points: [
+        {
+          protocol: Protocol.Renzo,
+          multiple: '2',
+          description:
+            'LPs in this pool earn 2x ezPoints on the TVL of the pool (WETH + ezETH)',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of ezETH held in the pool.',
+        },
+      ],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
