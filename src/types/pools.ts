@@ -114,6 +114,8 @@ export type NamedPools = {
   veBAL: string;
   veLIT: string;
   veUSH: string;
+  veQi: string;
+  veGEM: string;
 };
 
 export type DeprecatedDetails = {
