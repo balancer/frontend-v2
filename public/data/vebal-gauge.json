@@ -87,5 +87,27 @@
     "tokenLogoURIs": {
       "0xf17d23136B4FeAd139f54fB766c8795faae09660": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xe60779cc1b2c1d0580611c526a8df0e3f870ec48.png"
     }
+  },
+  {
+    "address": "0x24B7AEEEFDB612D43F018Cbc9c325680f61Ec96d",
+    "network": 1,
+    "addedTimestamp": 1711557378,
+    "relativeWeightCap": "0.02",
+    "pool": {
+      "id": "0x57766212638c425e9cb0c6d6e1683dda369c0fff000200000000000000000678",
+      "address": "0x57766212638c425e9CB0C6D6e1683dda369C0FFF",
+      "poolType": "Weighted",
+      "symbol": "GEM",
+      "tokens": [
+        {
+          "address": "0x0447D3454b25935eeD47F65b4Bd22b9b23bE326a",
+          "weight": "0.80",
+          "symbol": "GEM"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x0447D3454b25935eeD47F65b4Bd22b9b23bE326a": "https://assets.coingecko.com/coins/images/34925/large/opal.jpeg?1706671563"
+    }
   }
 ]

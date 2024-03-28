@@ -17,9 +17,13 @@ export function orderedTokenURIs(votingPool: VotingPool): string[] {
 }
 
 export function isVe8020Pool(pool: VotingPool): boolean {
-  return [POOLS.IdsMap.veBAL, POOLS.IdsMap.veLIT, POOLS.IdsMap.veUSH].includes(
-    pool.id.toLowerCase()
-  );
+  return [
+    POOLS.IdsMap.veBAL,
+    POOLS.IdsMap.veLIT,
+    POOLS.IdsMap.veUSH,
+    POOLS.IdsMap.veQi,
+    POOLS.IdsMap.veGEM,
+  ].includes(pool.id.toLowerCase());
 }
 
 export default function useVotingPools() {
