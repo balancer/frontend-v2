@@ -73,7 +73,7 @@ const {
           <BalLoadingBlock v-else class="w-10" />
 
           <BalTooltip
-            :text="`LP tokens you are expected to recieve, not
+            :text="`LP tokens you are expected to receive, not
           including possible slippage (${fNum(slippage, FNumFormats.percent)})`"
           >
             <template #activator>
