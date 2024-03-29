@@ -579,6 +579,143 @@ const pools: Pools = {
         },
       ],
     },
+    '0x7761b6e0daa04e70637d81f1da7d186c205c2ade00000000000000000000065d': {
+      points: [
+        {
+          protocol: Protocol.Kelp,
+          multiple: '2',
+          expiryTimestamp: 1711843200, // 2024-03-31 00:00:00
+          description: `LPs earn 2x miles until March 31st. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.`,
+        },
+      ],
+    },
+    '0x58aadfb1afac0ad7fca1148f3cde6aedf5236b6d00000000000000000000067f': {
+      points: [
+        {
+          protocol: Protocol.Kelp,
+          multiple: '3',
+          expiryTimestamp: 1714431600, // 2024-04-30 00:00:00
+          description:
+            'LPs earn 3x miles until April 30th. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
+        },
+      ],
+    },
+    '0xc2aa60465bffa1a88f5ba471a59ca0435c3ec5c100020000000000000000062c': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xfbfad5fa9e99081da6461f36f229b5cc88a64c6300020000000000000000062d': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x1cce5169bde03f3d5ad0206f6bd057953539dae600020000000000000000062b': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xaa7a70070e7495fe86c67225329dbd39baa2f63b000200000000000000000663': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x7f2b3b7fbd3226c5be438cde49a519f442ca2eda00020000000000000000067d': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xf01b0684c98cd7ada480bfdf6e43876422fa1fc10002000000000000000005de': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x127ecc2318d002664cc4515c9f2b22b09b6aea85000200000000000000000602': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+        {
+          protocol: Protocol.Swell,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 3x the amount of rswETH if it comprises around a third of the pool. </li></ul>',
+        },
+      ],
+    },
+    '0x8bb826afc0ff7d2c034a2883f4c461ffd238e1c300020000000000000000012b': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xf6394a1ebabf706eb471ff09cef357cd2ff6bd61000200000000000000000e3f': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xd25c02e5704e87fa7ca2727730e7ca6cc733339e000200000000000000000519': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x125bc5a031b2db6733bfa35d914ffa428095978b000200000000000000000514': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)

@@ -59,7 +59,7 @@ export type PoolMetadata = {
     protocol: Protocol;
     multiple: string;
     description?: string;
-    expiryTimestamp?: number; // https://timestamp.online/
+    expiryTimestamp?: number; // in secs - https://timestamp.online/
   }[];
 };
 
