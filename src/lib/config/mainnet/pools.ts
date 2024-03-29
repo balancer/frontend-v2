@@ -579,6 +579,27 @@ const pools: Pools = {
         },
       ],
     },
+    '0x7761b6e0daa04e70637d81f1da7d186c205c2ade00000000000000000000065d': {
+      points: [
+        {
+          protocol: Protocol.Kelp,
+          multiple: '2',
+          expiryTimestamp: 1711843200, // 2024-03-31 00:00:00
+          description: `LPs earn 2x miles until March 31st. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.`,
+        },
+      ],
+    },
+    '0x58aadfb1afac0ad7fca1148f3cde6aedf5236b6d00000000000000000000067f': {
+      points: [
+        {
+          protocol: Protocol.Kelp,
+          multiple: '3',
+          expiryTimestamp: 1714431600, // 2024-04-30 00:00:00
+          description:
+            'LPs earn 3x miles until April 30th. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
+        },
+      ],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
