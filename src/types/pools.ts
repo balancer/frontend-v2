@@ -59,7 +59,7 @@ export type PoolMetadata = {
     protocol: Protocol;
     multiple: string;
     description?: string;
-    expiryTimestamp?: number; // https://timestamp.online/
+    expiryTimestamp?: number; // in secs - https://timestamp.online/
   }[];
 };
 
@@ -114,6 +114,8 @@ export type NamedPools = {
   veBAL: string;
   veLIT: string;
   veUSH: string;
+  veQi: string;
+  veGEM: string;
 };
 
 export type DeprecatedDetails = {
