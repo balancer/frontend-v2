@@ -1,6 +1,7 @@
 import { Pool } from '@/services/pool/types';
 import { poolMetadata as getPoolMetadata } from '@/lib/config/metadata';
 import { isPast } from 'date-fns';
+import { toJsTimestamp } from './useTime';
 
 export function usePoints(pool: Pool) {
   const poolMetadata = computed(() => getPoolMetadata(pool.id));
@@ -10,7 +11,7 @@ export function usePoints(pool: Pool) {
   const validPoints = computed(() =>
     poolPoints.value?.filter(point => {
       if (!point.expiryTimestamp) return true;
-      return !isPast(point.expiryTimestamp);
+      return !isPast(toJsTimestamp(point.expiryTimestamp));
     })
   );
 
