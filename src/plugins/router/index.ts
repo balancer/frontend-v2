@@ -83,13 +83,6 @@ const routes: RouteRecordRaw[] = [
     component: SwapPage,
   },
   {
-    path: '/:networkSlug/trade/:assetIn?/:assetOut?',
-    name: 'trade-redirect',
-    redirect: to => {
-      return `/${to.params.networkSlug}/swap${to.path.split('/trade')[1]}`;
-    },
-  },
-  {
     path: '/:networkSlug/pool/create/:tx?',
     name: 'create-pool',
     component: CreatePoolPage,

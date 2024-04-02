@@ -252,7 +252,7 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
       </template>
       <template #poolCompositionCell="pool: VotingPool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="poolMetadata(pool.id)" class="text-left">
+          <div v-if="poolMetadata(pool.id)?.name" class="text-left">
             {{ poolMetadata(pool.id)?.name }}
           </div>
           <TokenPills
