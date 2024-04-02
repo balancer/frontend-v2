@@ -1,7 +1,7 @@
 import { Keys } from '../types';
 
 const keys: Keys = {
-  alchemy: 'YFVg8xsun9b9jH509lGdY9vQdwt-WwWw',
+  alchemy: 'DyUTVN9iEmXJi-4vFM6E3-qhrajwG4UX',
 };
 
 export default keys;
