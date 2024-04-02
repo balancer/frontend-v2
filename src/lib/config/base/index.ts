@@ -20,7 +20,7 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://base-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
+  rpc: `https://base-mainnet.infura.io/v3/${keys.infura}`,
   ws: ``,
   publicRpc: 'https://mainnet.base.org',
   explorer: 'https://basescan.org',

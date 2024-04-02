@@ -21,7 +21,7 @@ const config: Config = {
   visibleInUI: true,
   testNetwork: false,
   rpc: `https://arbitrum-mainnet.infura.io/v3/${keys.infura}`,
-  ws: `wss://arb-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
+  ws: ``,
   publicRpc: 'https://arb1.arbitrum.io/rpc',
   explorer: 'https://arbiscan.io',
   explorerName: 'Arbiscan',

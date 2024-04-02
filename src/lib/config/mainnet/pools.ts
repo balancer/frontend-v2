@@ -599,6 +599,12 @@ const pools: Pools = {
           description:
             'LPs earn 3x miles until April 30th. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
         },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of Eigenlayer points depending on assets deposited in the pool.',
+        },
       ],
     },
     '0xc2aa60465bffa1a88f5ba471a59ca0435c3ec5c100020000000000000000062c': {
