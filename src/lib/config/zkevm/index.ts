@@ -20,7 +20,7 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: `https://polygonzkevm-mainnet.g.alchemy.com/v2/${keys.alchemy}`,
+  rpc: `https://zkevm-rpc.com`,
   ws: ``,
   publicRpc: 'https://zkevm-rpc.com',
   explorer: 'https://zkevm.polygonscan.com/',
