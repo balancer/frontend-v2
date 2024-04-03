@@ -21,7 +21,7 @@ const config: Config = {
   visibleInUI: true,
   testNetwork: true,
   rpc: `https://sepolia.infura.io/v3/${keys.infura}`,
-  ws: `wss://sepolia.infura.io/ws/v3/${keys.infura}`,
+  ws: ``,
   explorer: 'https://sepolia.etherscan.io',
   explorerName: 'Etherscan',
   subgraph:

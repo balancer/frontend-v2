@@ -20,7 +20,7 @@ const config: Config = {
   visibleInUI: true,
   testNetwork: false,
   rpc: 'https://mainnet.optimism.io',
-  ws: 'wss://ws-mainnet.optimism.io',
+  ws: '',
   blockTime: 13,
   explorer: 'https://optimistic.etherscan.io/',
   explorerName: 'The Optimism Explorer',
