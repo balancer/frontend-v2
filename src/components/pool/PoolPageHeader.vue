@@ -115,6 +115,7 @@ const hasCustomToken = computed(() => {
 });
 
 const poolTypeLabel = computed(() => {
+  console.log(props.pool.factory);
   if (!props.pool?.factory) return '';
   const key = POOLS.Factories[props.pool.factory];
 
