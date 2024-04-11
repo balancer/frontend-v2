@@ -623,6 +623,9 @@ const pools: Pools = {
       '0xd794289763b54a04d5fbbc8fd5710c618212eb84000200000000000000000e58', // 50USDC-50USDT
       '0x418681127fb0c4fb5ee01202fbe4ab8c8f4eb84a000100000000000000000e59', // 33TXAG-33WETH-33TXAU
       '0x6e62aa2e6548152267d9d08ceeb71677af2de0ce000200000000000000000e5a', // 50RBW-50WETH
+      '0x8fca769e97af63d98390728e19eff01fd072acf9000200000000000000000e5b', // LP-EURS-USDC
+      '0x446f7c6e2f44df67ac9d85baa0bef7fbcd26fff3000100000000000000000e5d', // 8USDC-16ETH-S-16MATIC-S-16USD-S-16BTC-S-28STARV3/StarSeeds_Protocol
+      '0x53a3c44ea1cff14c2671a39c629591277af20cb3000100000000000000000e5e', // 8WBTC-16ETH-S-16MATIC-S-16USD-S-16BTC-S-28STARV3/StarSeeds_Protocol
     ],
   },
   Factories: {
@@ -644,6 +647,7 @@ const pools: Pools = {
     '0x1a79a24db0f73e9087205287761fc9c5c305926b': 'gyroE',
     '0xe2fa4e1d17725e72dcdafe943ecf45df4b9e285b': 'composableStablePool', // ComposableStable V5
     '0xf169c1ae8de24da43a3dc5c5f05de412b4848bd3': 'fx', // fx
+    '0x171665a8d7e7306869a43e8efd312dfee6027352': 'fx', // fx
   },
   Stakable: {
     VotingGaugePools: [
