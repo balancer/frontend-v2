@@ -195,6 +195,7 @@ const pools: Pools = {
   Factories: {
     '0x4c32a8a8fda4e24139b51b456b42290f51d6a1c4': 'weightedPool', // Weighted V5
     '0x8df317a729fcaa260306d7de28888932cb579b88': 'composableStablePool', // ComposableStable V5
+    '0x15e86be6084c6a5a8c17732d398dfbc2ec574cec': 'gyroE', // Gyro ECLP
   },
   Stakable: {
     VotingGaugePools: [
