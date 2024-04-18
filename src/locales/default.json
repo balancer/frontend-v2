@@ -475,7 +475,7 @@
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
   "forum": "Forum",
   "fx": "FX pool",
-  "gyroE": "Gyro ECLP",
+  "gyroE": "Gyro pool",
   "gaugeFilter": {
     "gaugeDisplay": "Pool gauge display",
     "showExpired": "Show expired pools",
