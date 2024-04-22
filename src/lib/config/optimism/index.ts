@@ -35,7 +35,8 @@ const config: Config = {
     aave: '',
     gauge:
       'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
-    blocks: 'https://api.thegraph.com/subgraphs/name/iliaazhel/optimism-blocklytics',
+    blocks: 
+      'https://api.thegraph.com/subgraphs/name/iliaazhel/optimism-blocklytics',
   },
   bridgeUrl: '',
   supportsEIP1559: false,
