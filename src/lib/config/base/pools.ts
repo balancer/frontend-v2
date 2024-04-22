@@ -242,6 +242,12 @@ const pools: Pools = {
   Deep: [
     '0x2db50a0e0310723ef0c2a165cb9a9f80d772ba2f00020000000000000000000d', // Weth/stabal
   ],
+  BrandedRedirect: {
+    FX: 'xave',
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
+  },
   Deprecated: {},
   GaugeMigration: {},
   BoostedApr: [],
