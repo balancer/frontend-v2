@@ -325,7 +325,7 @@ const pools: Pools = {
       points: [
         {
           protocol: Protocol.Renzo,
-          multiple: '2',
+          multiple: '3',
           description:
             'LPs in this pool earn 2x ezPoints on the TVL of the pool (wstETH + ezETH)',
         },
