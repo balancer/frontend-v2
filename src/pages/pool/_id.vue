@@ -263,6 +263,7 @@ watch(
         <BalStack vertical>
           <BrandedRedirectCard
             v-if="showBrandedRedirectCard && pool"
+            :poolId="poolId"
             :poolType="pool?.poolType"
           />
 

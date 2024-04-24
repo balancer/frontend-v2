@@ -88,6 +88,7 @@ const pools: Pools = {
       '0x59743f1812bb85db83e9e4ee061d124aaa64290000000000000000000000052b', // sUSDe/sFRAX
       '0x2f0cdf8596be980ef24924ca7bf54e630ca526b2000000000000000000000529', // sUSDe/USDC
       '0x537d8ef9e6e0adfb099cb14aeaf04ebeffaf444c000000000000000000000528', // USDe/USDC
+      '0xfb2f7ed572589940e24c5711c002adc59d5e79ef000000000000000000000535', // jitoSOL/wSOL
     ],
   },
   Investment: {
@@ -205,6 +206,7 @@ const pools: Pools = {
       '0xe26a52ca1f508ff026f366ab6505bb95332a51d600020000000000000000052d', // 50WETH-50USDC
       '0x026a586b3fe3b3d07375b4a11a505c8b4ef07eec000200000000000000000533', // 50weETH-50WETH
       '0x3b106b7ae88c3f8869b5221d2bbae398afc26737000100000000000000000534', // 33WETH-33USDC-33USDT
+      '0x260dbd54d87a10a0fc9d08622ebc969a3bf4e6bb000200000000000000000536', // jitoSOL/wstETH
     ],
   },
   Factories: {
@@ -325,7 +327,7 @@ const pools: Pools = {
       points: [
         {
           protocol: Protocol.Renzo,
-          multiple: '2',
+          multiple: '3',
           description:
             'LPs in this pool earn 2x ezPoints on the TVL of the pool (wstETH + ezETH)',
         },

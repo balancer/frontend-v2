@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { networkId } from '@/composables/useNetwork';
+import { addressFor } from '@/composables/usePoolHelpers';
+import { PoolType } from '@balancer-labs/sdk';
+
 interface BrandedRedirectData {
   id: string;
   title: string;
   description: string;
   btnText: string;
-  link: string;
+  link: (poolId: string, poolType: PoolType | undefined) => string;
   buildBannerPath?: () => string;
 }
 
@@ -13,7 +18,8 @@ export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
     title: 'brandedRedirect.xave.title',
     description: 'brandedRedirect.xave.description',
     btnText: 'brandedRedirect.xave.btnText',
-    link: 'https://app.xave.co/',
+    link: (poolId: string, poolType: PoolType | undefined) =>
+      'https://app.xave.co/',
     buildBannerPath: buildXaveBannerPath,
   },
   gyro: {
@@ -21,8 +27,31 @@ export const BRANDED_REDIRECT_DATA: Record<string, BrandedRedirectData> = {
     title: 'brandedRedirect.gyro.title',
     description: 'brandedRedirect.gyro.description',
     btnText: 'brandedRedirect.gyro.btnText',
-    link: 'https://app.gyro.finance/',
+    link: (poolId: string, poolType: PoolType | undefined) => {
+      const poolAddress = addressFor(poolId);
+      const networkSlug = gyroNetworkSlugMap[networkId.value];
+      console.log('poolType', poolType);
+      const poolTypeSlug = gyroPoolTypeMap[poolType || ''];
+
+      if (!networkSlug || !poolTypeSlug) return 'https://app.gyro.finance';
+      return `https://app.gyro.finance/pools/${networkSlug}/${poolTypeSlug}/${poolAddress}`;
+    },
   },
+};
+
+const gyroPoolTypeMap: Record<string, string> = {
+  [PoolType.Gyro2]: '2-clp',
+  [PoolType.Gyro3]: '3-clp',
+  [PoolType.GyroE]: 'e-clp',
+};
+
+const gyroNetworkSlugMap: Record<number, string> = {
+  1: 'ethereum',
+  10: 'optimism',
+  137: 'polygon',
+  8453: 'base',
+  1101: 'polygonZKEVM',
+  42161: 'arbitrum',
 };
 
 export function buildXaveBannerPath(): string {
