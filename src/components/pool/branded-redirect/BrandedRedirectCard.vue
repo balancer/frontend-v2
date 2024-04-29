@@ -4,6 +4,7 @@ import { POOLS } from '@/constants/pools';
 import { PoolType } from '@/services/pool/types';
 
 const props = defineProps<{
+  poolId: string;
   poolType: PoolType | undefined;
 }>();
 
@@ -23,6 +24,10 @@ const bannerSrc = computed<string>(() => {
   if (hasBannerImage.value) return redirectData.value.buildBannerPath();
   return '';
 });
+
+const brandLink = computed<string>(() => {
+  return redirectData.value?.link(props.poolId, props.poolType) || '';
+});
 </script>
 
 <template>
@@ -38,11 +43,11 @@ const bannerSrc = computed<string>(() => {
             {{ $t(redirectData.description) }}
           </div>
           <BalBtn
-            v-if="redirectData.link"
+            v-if="brandLink"
             color="blue"
             block
             tag="a"
-            :href="redirectData.link"
+            :href="brandLink"
             target="_blank"
             rel="noopener noreferrer"
           >

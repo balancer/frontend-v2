@@ -5,7 +5,7 @@ import {
   usePoolHelpers,
   deprecatedDetails,
 } from '@/composables/usePoolHelpers';
-import useNetwork, { isGoerli } from '@/composables/useNetwork';
+import useNetwork, { isTestnet } from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -63,7 +63,7 @@ const _hasNonApprovedRateProviders = computed(() => {
 });
 
 const joinDisabled = computed((): boolean => {
-  if (isGoerli.value) return false;
+  if (isTestnet.value) return false;
 
   return (
     !!deprecatedDetails(props.pool.id) ||

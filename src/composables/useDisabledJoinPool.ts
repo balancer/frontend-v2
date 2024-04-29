@@ -7,6 +7,7 @@ import {
   isStableLike,
   isWeighted,
   noInitLiquidity,
+  usePoolHelpers,
 } from '@/composables/usePoolHelpers';
 import { computed } from 'vue';
 
@@ -37,6 +38,7 @@ function doesRequireAllowListing(pool: Pool, account: string): boolean {
 export function useDisabledJoinPool(pool: Pool) {
   const { account } = useWeb3();
   const { balancerTokenList } = useTokenLists();
+  const { hasNonApprovedRateProviders } = usePoolHelpers(toRef(pool));
 
   const notVettedTokens = computed(() => {
     const vettedTokenAddresses = balancerTokenList.value.tokens.map(
@@ -76,6 +78,17 @@ export function useDisabledJoinPool(pool: Pool) {
     return doesRequireAllowListing(pool, account.value);
   });
 
+  const unapprovedRateProvider = computed(() => {
+    const nonApprovedRateProviderExceptions = [
+      // wjAURA-WETH - https://github.com/balancer/frontend-v2/issues/4417
+      '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512',
+    ];
+    return (
+      hasNonApprovedRateProviders.value &&
+      !nonApprovedRateProviderExceptions.includes(pool.id)
+    );
+  });
+
   const disableJoinsReason = computed(() => ({
     notInitialLiquidity: notInitialLiquidity.value,
     requiresAllowListing: requiresAllowListing.value,
@@ -83,6 +96,7 @@ export function useDisabledJoinPool(pool: Pool) {
     nonAllowedWeightedPoolAfterTimestamp:
       nonAllowedWeightedPoolAfterTimestamp.value,
     hardcoded: isJoinsDisabled(pool.id),
+    unapprovedRateProvider: unapprovedRateProvider.value,
   }));
 
   const shouldDisableJoins = computed(() => {

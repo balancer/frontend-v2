@@ -523,6 +523,7 @@ const pools: Pools = {
       '0xe3e0022d25194431a98e8bf5034d2617c96e1d44000000000000000000000670', // InstETH/wstETH
       '0x63e0d47a6964ad1565345da9bfa66659f4983f02000000000000000000000681',
       '0xb91159aa527d4769cb9faf3e4adb760c7e8c8ea700000000000000000000067c',
+      '0xb819feef8f0fcdc268afe14162983a69f6bf179e000000000000000000000689',
     ],
     AllowList: [
       '0x54ca50ee86616379420cc56718e12566aa75abbe000200000000000000000610', // wusdm/wsteth
@@ -537,6 +538,7 @@ const pools: Pools = {
       '0x596192bb6e41802428ac943d2f1476c1af25cc0e000000000000000000000659', // ezETH/WETH
       '0xd3f8ab9c5928fdf53153e7757131ad7815fe3146000000000000000000000661', // vETH/wstETH
       '0xdedb11a6a23263469567c2881a9b9f8629ee0041000000000000000000000669', // svETH/wstETH
+      '0x56bc9d9987edec2fc6e1990e27af4a0987b53096000200000000000000000686', // gold
     ],
   },
   Metadata: {
@@ -572,7 +574,7 @@ const pools: Pools = {
       points: [
         {
           protocol: Protocol.Renzo,
-          multiple: '2',
+          multiple: '3',
           description:
             'LPs in this pool earn 2x ezPoints on the TVL of the pool (WETH + ezETH)',
         },

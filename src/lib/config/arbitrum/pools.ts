@@ -88,6 +88,7 @@ const pools: Pools = {
       '0x59743f1812bb85db83e9e4ee061d124aaa64290000000000000000000000052b', // sUSDe/sFRAX
       '0x2f0cdf8596be980ef24924ca7bf54e630ca526b2000000000000000000000529', // sUSDe/USDC
       '0x537d8ef9e6e0adfb099cb14aeaf04ebeffaf444c000000000000000000000528', // USDe/USDC
+      '0xfb2f7ed572589940e24c5711c002adc59d5e79ef000000000000000000000535', // jitoSOL/wSOL
     ],
   },
   Investment: {
@@ -203,6 +204,11 @@ const pools: Pools = {
       '0x64abeae398961c10cbb50ef359f1db41fc3129ff000200000000000000000526', // 80AURA-20WETH
       '0xb09dc8f98164974fa89e55a97fd99b62bdbe4de200020000000000000000052c', // 50T/50wETH
       '0xe26a52ca1f508ff026f366ab6505bb95332a51d600020000000000000000052d', // 50WETH-50USDC
+      '0x026a586b3fe3b3d07375b4a11a505c8b4ef07eec000200000000000000000533', // 50weETH-50WETH
+      '0x3b106b7ae88c3f8869b5221d2bbae398afc26737000100000000000000000534', // 33WETH-33USDC-33USDT
+      '0x260dbd54d87a10a0fc9d08622ebc969a3bf4e6bb000200000000000000000536', // jitoSOL/wstETH
+      '0xf2658f994c882237d3612099cae541d50348fcf9000200000000000000000537', // PUPPET-WETH
+      '0xbc450dcb3a135a57448f8054badaec5c9f2af571000200000000000000000538', // 50SOL-50wstETH
     ],
   },
   Factories: {
@@ -222,7 +228,8 @@ const pools: Pools = {
     '0xc7e5ed1054a24ef31d827e6f86caa58b3bc168d7': 'weightedPool', // weighted pool v4
     '0x2498a2b0d6462d2260eac50ae1c3e03f4829ba95': 'composableStablePool', // ComposableStable V4
     '0xa8920455934da4d853faac1f94fe7bef72943ef1': 'composableStablePool', // ComposableStable V5
-    '0xdca5f1f0d7994a32bc511e7dba0259946653eaf6': 'gyroE',
+    '0xdca5f1f0d7994a32bc511e7dba0259946653eaf6': 'gyroE', // Gyro ECLP
+    '0x7a36527a02d96693b0af2b70421f952816a4a088': 'gyroE', // Gyro ECLP
   },
   Stakable: {
     VotingGaugePools: [
@@ -322,7 +329,7 @@ const pools: Pools = {
       points: [
         {
           protocol: Protocol.Renzo,
-          multiple: '2',
+          multiple: '3',
           description:
             'LPs in this pool earn 2x ezPoints on the TVL of the pool (wstETH + ezETH)',
         },

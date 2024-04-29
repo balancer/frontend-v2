@@ -1,6 +1,6 @@
 {
   "name": "@balancer/frontend-v2",
-  "version": "1.143.62",
+  "version": "1.144.0",
   "engines": {
     "node": "=16",
     "npm": ">=8"
@@ -116,7 +116,7 @@
     "ethereumjs-util": "^7.0.7",
     "events": "^3.3.0",
     "feather-icons": "^4.28.0",
-    "happy-dom": "^13.1.4",
+    "happy-dom": "14.7.1",
     "husky": "^8.0.0",
     "jest-extended": "^3.2.4",
     "json-to-graphql-query": "^2.0.0",

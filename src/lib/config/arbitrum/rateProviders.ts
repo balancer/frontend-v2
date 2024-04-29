@@ -20,6 +20,9 @@ const rateProviders: RateProviders = {
   '0xe3b3fe7bca19ca77ad877a5bebab186becfad906': {
     '0x320cfa1a78d37a13c5d1ca5aa51563ff6bb0f686': true,
   },
+  '0x83e1d2310Ade410676B1733d16e89f91822FD5c3': {
+    '0x8aa73EC870DC4a0af6b471937682a8FC3b8A21f8': true,
+  },
 };
 
 export default convertKeysToLowerCase(rateProviders);
