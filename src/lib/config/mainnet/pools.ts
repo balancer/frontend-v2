@@ -551,12 +551,6 @@ const pools: Pools = {
             'LPs in this pool get their share of: <ul class="list-disc list-inside ml-2"><li>1x on the total TVL of the pool.</li><li>This is around 3x the amount of rswETH if it comprises around a third of the pool. </li></ul>',
         },
         {
-          protocol: Protocol.EtherFi,
-          multiple: '1',
-          description:
-            'LPs in this pool get their share of 1x on the amount of weETH held in the pool.',
-        },
-        {
           protocol: Protocol.Renzo,
           multiple: '1',
           description:
@@ -574,7 +568,7 @@ const pools: Pools = {
       points: [
         {
           protocol: Protocol.Renzo,
-          multiple: '3',
+          multiple: '4',
           description:
             'LPs in this pool earn 2x ezPoints on the TVL of the pool (WETH + ezETH)',
         },
