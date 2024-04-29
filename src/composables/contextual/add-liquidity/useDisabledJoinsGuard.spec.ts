@@ -43,6 +43,7 @@ async function mountTransferGuards(pool: Pool) {
 describe('When checking disabled pool joins', () => {
   it('does not redirect where no disabled joins', async () => {
     const veBalPool = aVeBalPool();
+    veBalPool.priceRateProviders = [];
 
     await mountTransferGuards(veBalPool);
 
