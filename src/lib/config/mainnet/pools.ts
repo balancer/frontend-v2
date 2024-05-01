@@ -171,6 +171,7 @@ const pools: Pools = {
       '0x51c72451eddfcc08aae540fd36434bb7ba340d33000000000000000000000683', // mstETH/wstETH
       '0xed0df9cd16d806e8a523805e53cf0c56e6db4d1d000000000000000000000687', // ShezUSD/sDAI
       '0xb819feef8f0fcdc268afe14162983a69f6bf179e000000000000000000000689', // sUSDe/USDC
+      '0x47a4f5440ab097cf3ec7abeedf1afecc5749a4e200000000000000000000068d', // aETH/wstETH
     ],
   },
   Investment: {
