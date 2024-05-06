@@ -190,6 +190,14 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
     )
     .map(item => item.address);
 }
+
+function voteDisabledFor(pool: VotingPool): boolean {
+  return (
+    hasUserVotes(pool) ||
+    isVotingTimeLocked(pool.lastUserVoteTime) ||
+    props.selectVotesDisabled
+  );
+}
 </script>
 
 <template>
@@ -210,7 +218,9 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
       :square="upToLargeBreakpoint"
       :isPaginated="isPaginated"
       :href="{ getHref: gauge => getPoolExternalUrl(gauge) }"
-      :onRowClick="redirectToPool"
+      :onRowClick="
+        (pool, inNewTab) => !voteDisabledFor(pool) && toggleSelection(pool)
+      "
       :getTableRowClass="getTableRowClass"
       :initialState="{
         sortColumn: 'nextPeriodVotes',
@@ -279,6 +289,12 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
             v-if="getIsGaugeExpired(pool.gauge.address)"
             class="ml-2"
           />
+          <BalIcon
+            name="arrow-up-right"
+            size="sm"
+            class="ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+            @click="redirectToPool(pool, true)"
+          />
         </div>
       </template>
       <template #nextPeriodVotesCell="pool: VotingPool">
@@ -327,11 +343,7 @@ function getPickedTokens(tokens: VotingPool['tokens']) {
           name="expiredGaugesFilter"
           noMargin
           :modelValue="isSelected(pool)"
-          :disabled="
-            hasUserVotes(pool) ||
-            isVotingTimeLocked(pool.lastUserVoteTime) ||
-            selectVotesDisabled
-          "
+          :disabled="voteDisabledFor(pool)"
           @click.stop
           @input="toggleSelection(pool)"
         />
