@@ -173,6 +173,7 @@ const pools: Pools = {
       '0xb819feef8f0fcdc268afe14162983a69f6bf179e000000000000000000000689', // sUSDe/USDC
       '0x47a4f5440ab097cf3ec7abeedf1afecc5749a4e200000000000000000000068d', // aETH/wstETH
       '0x38fe2b73612527eff3c5ac3bf2dcb73784ad927400000000000000000000068c', // saETH/wstETH
+      '0xdb3575310dd8f6c9e51be290fed9a2db32743fde00000000000000000000068e', // inankrETH/ankrETH
     ],
   },
   Investment: {
