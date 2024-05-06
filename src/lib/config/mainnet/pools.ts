@@ -598,9 +598,9 @@ const pools: Pools = {
         {
           protocol: Protocol.Kelp,
           multiple: '3',
-          expiryTimestamp: 1714431600, // 2024-04-30 00:00:00
+          expiryTimestamp: 1717106400, // 2024-05-31 00:00:00
           description:
-            'LPs earn 3x miles until April 30th. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
+            'LPs earn 3x miles until May 31st. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
         },
         {
           protocol: Protocol.Eigenlayer,
