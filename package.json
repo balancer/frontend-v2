@@ -146,7 +146,7 @@
     "ua-parser-js": "^1.0.35",
     "unplugin-auto-import": "^0.14.2",
     "unplugin-vue-components": "^0.22.12",
-    "vite": "^4.1.5",
+    "vite": "^4.5.0",
     "vite-node": "^0.28.5",
     "vite-plugin-html": "^3.2.0",
     "vite-plugin-imagemin": "^0.6.1",

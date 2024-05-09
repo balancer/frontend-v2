@@ -23,4 +23,10 @@ initSentry(app);
 
 app.mount('#app');
 
+// https://vitejs.dev/guide/build#load-error-handling
+window.addEventListener('vite:preloadError', event => {
+  console.log('Reloading page after new version deployment: ', { event });
+  window.location.reload();
+});
+
 export default app;
