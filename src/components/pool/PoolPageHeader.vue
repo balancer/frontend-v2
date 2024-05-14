@@ -310,24 +310,12 @@ function symbolFor(titleTokenIndex: number): string {
   </BalAlert>
 
   <BalAlert
-    v-if="
-      disableJoinsReason.requiresAllowListing ||
-      disableJoinsReason.nonAllowedWeightedPoolAfterTimestamp
-    "
-    type="warning"
-    :title="$t('requiresAllowListing1')"
+    v-if="disableJoinsReason.isBlocked"
+    type="error"
+    :title="$t('blockedPool')"
     class="mt-2"
     block
-  >
-    {{ $t('Click') }}
-    <a
-      href="https://github.com/balancer/frontend-v2/wiki/How-tos#add-a-new-pool"
-      target="_blank"
-      class="underline"
-      >{{ $t('here') }}</a
-    >
-    {{ $t('requiresAllowListing2') }}
-  </BalAlert>
+  />
 </template>
 <style scoped>
 .pool-title {

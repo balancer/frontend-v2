@@ -116,6 +116,7 @@
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",
+  "blockedPool": "This pool has been blocked in the UI.",
   "boostedPool": "Balancer Boosted pool",
   "byConnectingWallet": "By connecting a wallet, I agree to Balancer Foundation’s",
   "brandedRedirect": {

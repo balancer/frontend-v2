@@ -63,40 +63,6 @@ it('allows joins for pools on test networks with non vetted tokens', async () =>
   expect(shouldDisableJoins.value).toBeFalse();
 });
 
-it('disables joins for weighted pools created after timestamp (2023-03-29) that are not in the weighted allow list', async () => {
-  const { networkId } = useNetwork();
-  networkId.value = 1;
-
-  const pool = aBoostedPool();
-  pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
-  pool.poolType = PoolType.Weighted;
-  const { disableJoinsReason, shouldDisableJoins } =
-    await mountVettedTokensInPool(pool);
-
-  pool.tokens[0].address = randomAddress();
-
-  expect(shouldDisableJoins.value).toBeTrue();
-  expect(
-    disableJoinsReason.value.nonAllowedWeightedPoolAfterTimestamp
-  ).toBeTrue();
-});
-
-it('allows joins for weighted pools on test networks created after timestamp (2023-03-29) that are not in the weighted allow list', async () => {
-  const { networkId } = useNetwork();
-  networkId.value = 5;
-
-  const pool = aBoostedPool();
-  pool.createTime = dateToUnixTimestamp('2023-03-30'); //Created after 29 March
-  pool.poolType = PoolType.Weighted;
-  const { disableJoinsReason } = await mountVettedTokensInPool(pool);
-
-  pool.tokens[0].address = randomAddress();
-
-  expect(
-    disableJoinsReason.value.nonAllowedWeightedPoolAfterTimestamp
-  ).toBeFalse();
-});
-
 it('does not disables joins for pools created before 29 march', async () => {
   const pool = aBoostedPool();
   pool.createTime = dateToUnixTimestamp('2023-03-28'); //Created before 29 March
@@ -126,7 +92,6 @@ it('disabled joins for pools FX pool', async () => {
   const { shouldDisableJoins, disableJoinsReason } =
     await mountVettedTokensInPool(pool);
 
-  expect(disableJoinsReason.value.requiresAllowListing).toBeTrue();
   expect(shouldDisableJoins.value).toBeTrue();
   expect(disableJoinsReason.value.nonVettedTokensAfterTimestamp).toBeFalse();
   expect(disableJoinsReason.value.notInitialLiquidity).toBeFalse();
