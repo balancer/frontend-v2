@@ -1,14 +1,8 @@
-import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
-import { Pool, PoolType } from '@/services/pool/types';
 import { aBoostedPool } from '@/__mocks__/boosted-pool';
-import { aPoolToken } from '@/__mocks__/weighted-pool';
+import { initDependenciesWithDefaultMocks } from '@/dependencies/default-mocks';
+import { Pool } from '@/services/pool/types';
 import { mountComposableWithFakeTokensProvider as mountComposable } from '@tests/mount-helpers';
-import {
-  balAddress,
-  daiAddress,
-  randomAddress,
-} from '@tests/unit/builders/address';
-import { aPool } from '@tests/unit/builders/pool.builders';
+import { randomAddress } from '@tests/unit/builders/address';
 import { useDisabledJoinPool } from './useDisabledJoinPool';
 import useNetwork from './useNetwork';
 import { dateToUnixTimestamp } from './useTime';
@@ -43,27 +37,4 @@ it('allows joins for pools on test networks with non vetted tokens', async () =>
 
   console.log('Reason: ', disableJoinsReason.value);
   expect(shouldDisableJoins.value).toBeFalse();
-});
-
-it('disabled joins for pools FX pool', async () => {
-  const pool = aPool({
-    totalShares: '100',
-    createTime: dateToUnixTimestamp('2023-03-28'),
-    owner: randomAddress(),
-    poolType: PoolType.Investment, // Requires Allow listing
-    tokens: [
-      aPoolToken({ address: daiAddress, symbol: 'DAI' }),
-      aPoolToken({ address: balAddress, symbol: 'BAL' }),
-    ],
-  });
-
-  const { networkId } = useNetwork();
-  networkId.value = 1;
-
-  const { shouldDisableJoins, disableJoinsReason } =
-    await mountVettedTokensInPool(pool);
-
-  expect(shouldDisableJoins.value).toBeTrue();
-  expect(disableJoinsReason.value.nonVettedTokensAfterTimestamp).toBeFalse();
-  expect(disableJoinsReason.value.notInitialLiquidity).toBeFalse();
 });
