@@ -89,6 +89,7 @@ const pools: Pools = {
       '0x2f0cdf8596be980ef24924ca7bf54e630ca526b2000000000000000000000529', // sUSDe/USDC
       '0x537d8ef9e6e0adfb099cb14aeaf04ebeffaf444c000000000000000000000528', // USDe/USDC
       '0xfb2f7ed572589940e24c5711c002adc59d5e79ef000000000000000000000535', // jitoSOL/wSOL
+      '0x7b54c44fbe6db6d97fd22b8756f89c0af16202cc00000000000000000000053c', // ETHx/wstETH
     ],
   },
   Investment: {
@@ -332,9 +333,9 @@ const pools: Pools = {
       points: [
         {
           protocol: Protocol.Renzo,
-          multiple: '3',
+          multiple: '4',
           description:
-            'LPs in this pool earn 2x ezPoints on the TVL of the pool (wstETH + ezETH)',
+            'LPs in this pool earn 4x ezPoints on the TVL of the pool (wstETH + ezETH)',
         },
         {
           protocol: Protocol.Eigenlayer,
