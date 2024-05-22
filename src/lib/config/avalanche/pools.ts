@@ -47,8 +47,7 @@ const pools: Pools = {
     AllowList: [''],
   },
   Weighted: {
-    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
-    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    // Deprecated list, no longer in use
     AllowList: [
       '0xe4a4565ad31a3af8286bc6e6dbb20ba76752557700010000000000000000000b',
       '0x3bde1563903ebb564ca37d5736afbb850929cfd7000200000000000000000017', // ankrAVAX-ankrETH

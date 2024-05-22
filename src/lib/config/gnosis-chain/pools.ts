@@ -47,8 +47,7 @@ const pools: Pools = {
     AllowList: [],
   },
   Weighted: {
-    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
-    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    // Deprecated list, no longer in use
     AllowList: [
       '0x915938ff0a2b54e575068ff1a95007cafba7d27700020000000000000000008a', // 80REG-20WXDAI
       '0xa99fd9950b5d5dceeaf4939e221dca8ca9b938ab000100000000000000000025', // 25WETH-25BAL-25GNO-25wxDAI
