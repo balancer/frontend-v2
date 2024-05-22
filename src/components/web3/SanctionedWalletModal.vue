@@ -34,7 +34,7 @@ function onClose() {
   >
     <p class="pb-3 text-sm">
       Your wallet address cannot use this site because it has been flagged as
-      high risk by our compliance partner, TRM Labs.
+      high risk by our compliance partner, Hypernative.
     </p>
     <p class="pb-3 text-sm">
       This website is open source and permissionless. Anyone can fork and run
