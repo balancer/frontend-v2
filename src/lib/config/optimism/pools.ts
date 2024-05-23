@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -98,7 +99,24 @@ const pools: Pools = {
   },
   Deep: [],
   BoostedApr: [],
-  Metadata: {},
+  Metadata: {
+    '0x73a7fe27fe9545d53924e529acf11f3073841b9e000000000000000000000133': {
+      points: [
+        {
+          protocol: Protocol.Kelp,
+          multiple: '2',
+          description:
+            'The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of Eigenlayer points depending on assets deposited in the pool.',
+        },
+      ],
+    },
+  },
   DisabledJoins: [],
   BrandedRedirect: {
     Gyro2: 'gyro',
