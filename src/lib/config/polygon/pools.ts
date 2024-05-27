@@ -17,6 +17,7 @@ const pools: Pools = {
       maiBbaUsd:
         '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
     },
+    veTHX: '0xb204bf10bc3a5435017d3db247f56da601dfe08a0002000000000000000000fe',
   },
   Pagination: {
     PerPage: 10,
