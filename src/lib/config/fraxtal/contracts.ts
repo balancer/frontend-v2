@@ -4,7 +4,7 @@ import * as fraxtal from '@/assets/data/contracts/fraxtal.json';
 const contracts: Contracts = {
   merkleRedeem: '',
   merkleOrchard: '',
-  // multicall: '0x2dc0e2aa608532da689e89e237df582b783e552c',
+  multicall: '',
   authorizer: fraxtal.Authorizer,
   vault: fraxtal.Vault,
   weightedPoolFactory: fraxtal.WeightedPoolFactory,
