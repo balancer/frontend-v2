@@ -17,11 +17,11 @@ const pools: Pools = {
   },
   BlockList: [],
   IncludedPoolTypes: [
-    // 'Weighted',
-    // 'Stable',
-    // 'MetaStable',
-    // 'GyroE',
-    // 'ComposableStable',
+    'Weighted',
+    'Stable',
+    'MetaStable',
+    'GyroE',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [],
