@@ -19,22 +19,22 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: '',
+  rpc: 'https://1rpc.io/mode',
   ws: '',
   blockTime: 13,
   explorer: 'https://modescan.io/',
   explorerName: 'The Mode Explorer',
   subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-mode-v2',
+    'https://api.studio.thegraph.com/proxy/75376/balancer-mode-v2/version/latest',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-mode-v2',
+      'https://api.studio.thegraph.com/proxy/75376/balancer-mode-v2/version/latest',
     ],
     aave: '',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-mode',
+      'https://api.studio.thegraph.com/query/75376/balancer-gauges-mode/version/latest',
     blocks: '',
   },
   bridgeUrl: '',

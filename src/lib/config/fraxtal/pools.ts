@@ -47,7 +47,7 @@ const pools: Pools = {
     GyroE: 'gyro',
   },
   Issues: {
-    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.OPTIMISM],
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.MODE],
   },
 };
 

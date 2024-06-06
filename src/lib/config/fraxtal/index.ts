@@ -19,22 +19,22 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: '',
+  rpc: 'https://rpc.frax.com/',
   ws: '',
   blockTime: 13,
   explorer: 'https://fraxscan.com/',
   explorerName: 'The Fraxtal Explorer',
   subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-fraxtal-v2',
+    'https://api.goldsky.com/api/public/project_clwhu1vopoigi01wmbn514m1z/subgraphs/balancer-fraxtal-v2/1.0.0/gn',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-fraxtal-v2',
+      'https://api.goldsky.com/api/public/project_clwhu1vopoigi01wmbn514m1z/subgraphs/balancer-fraxtal-v2/1.0.0/gn',
     ],
     aave: '',
     gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-fraxtal',
+      'https://api.goldsky.com/api/public/project_clwhu1vopoigi01wmbn514m1z/subgraphs/balancer-gauges-fraxtal/1.0.0/gn',
     blocks: '',
   },
   bridgeUrl: '',
