@@ -116,6 +116,7 @@
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",
+  "blockedPool": "This pool has been blocked in the UI.",
   "boostedPool": "Balancer Boosted pool",
   "byConnectingWallet": "By connecting a wallet, I agree to Balancer Foundation’s",
   "brandedRedirect": {
@@ -976,7 +977,7 @@
     "alchemy": "Used to fetch on-chain data and constructs contract calls with an Alchemy API.",
     "the-graph": "Used to fetch blockchain data from The Graph’s hosted service.",
     "fathom-analytics": "Used to understand user behavior on the site and marketing performance.",
-    "TRM-labs": "Used to securely collect wallet addresses and shares it with TRM Labs Inc. for risk and compliance reasons.",
+    "hypernative": "Used to securely check wallet addresses and shares it with Hypernative Inc. for risk and compliance reasons.",
     "sentry": "Used for error tracking and performance monitoring.",
     "appzi": "Used to capture and store user feedback from optional surveys",
     "amazon-web-services": "Used for a variety of infrastructure services, but primarily to fetch and cache blockchain data."

@@ -40,14 +40,14 @@ const pools: Pools = {
       '0x121b0dfc48444c4d10cadded9885d90e7453e878000000000000000000000035', // SWEEP-USDC-BPT
       '0x8783e0156cd747d0cc012087d3d3afc897f2328c00000000000000000000003b', // sAVAX/ggAVAX/yyAVAX
       '0x5f8893506ddc4c271837187d14a9c87964a074dc000000000000000000000106', // wstETH/sfrxETH/rETH
+      '0xe3f0b00eb41395308120cc986286066725c6116e00000000000000000000004d',
     ],
   },
   Investment: {
     AllowList: [''],
   },
   Weighted: {
-    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
-    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    // Deprecated list, no longer in use
     AllowList: [
       '0xe4a4565ad31a3af8286bc6e6dbb20ba76752557700010000000000000000000b',
       '0x3bde1563903ebb564ca37d5736afbb850929cfd7000200000000000000000017', // ankrAVAX-ankrETH
@@ -77,6 +77,7 @@ const pools: Pools = {
       '0x0df1be54b29aa9828bea1de6a6dfe3d03ec63082000100000000000000000047', // AFCC
       '0xefc4b97cb57e8a09cba82d20261e78475ceffaac000200000000000000000049', // 80XAV-20USDC
       '0x58892ccbaf25f585862a3b8504d7a69dca2cc66100010000000000000000004a', // 20BTC.b-20USDt-20WAVAX-20USDC-20BAL
+      '0xf11ad03bbe64a493482c9a263995a6bec4343d6b00020000000000000000008c', // 80REG-20sDAI
     ],
   },
   Factories: {

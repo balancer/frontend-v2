@@ -91,7 +91,7 @@ export async function verifyTransactionSender(signer: JsonRpcSigner) {
   if (_isBlockedAddress) {
     isBlocked.value = true;
     throw new Error(
-      `Rejecting transaction. [${_isBlockedAddress}] is a sanctioned wallet.`
+      `Rejecting transaction. [${signerAddress}] is a sanctioned wallet.`
     );
   }
 }

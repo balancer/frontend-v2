@@ -89,14 +89,14 @@ const pools: Pools = {
       '0x2f0cdf8596be980ef24924ca7bf54e630ca526b2000000000000000000000529', // sUSDe/USDC
       '0x537d8ef9e6e0adfb099cb14aeaf04ebeffaf444c000000000000000000000528', // USDe/USDC
       '0xfb2f7ed572589940e24c5711c002adc59d5e79ef000000000000000000000535', // jitoSOL/wSOL
+      '0x7b54c44fbe6db6d97fd22b8756f89c0af16202cc00000000000000000000053c', // ETHx/wstETH
     ],
   },
   Investment: {
     AllowList: [''],
   },
   Weighted: {
-    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
-    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    // Deprecated list, no longer in use
     AllowList: [
       '0xd449efa0a587f2cb6be3ae577bc167a7745258100001000000000000000003f4',
       '0xce34c867d7053befb3421d6adabcb5ce55ff777b00010000000000000000041b', // crv/wbtc/wsteth/gdai/uni/link
@@ -209,6 +209,7 @@ const pools: Pools = {
       '0x260dbd54d87a10a0fc9d08622ebc969a3bf4e6bb000200000000000000000536', // jitoSOL/wstETH
       '0xf2658f994c882237d3612099cae541d50348fcf9000200000000000000000537', // PUPPET-WETH
       '0xbc450dcb3a135a57448f8054badaec5c9f2af571000200000000000000000538', // 50SOL-50wstETH
+      '0x19da41a2ccd0792b9b674777e72447903fe29074000200000000000000000539', // PUPPET-WETH
     ],
   },
   Factories: {
@@ -313,6 +314,9 @@ const pools: Pools = {
       '0x125bc5a031b2db6733bfa35d914ffa428095978b000200000000000000000514',
       '0xca8ecd05a289b1fbc2e0eaec07360c4bfec07b6100020000000000000000051d',
       '0x14abd18d1fa335e9f630a658a2799b33208763fa00020000000000000000051f',
+      '0x260dbd54d87a10a0fc9d08622ebc969a3bf4e6bb000200000000000000000536',
+      '0xfb2f7ed572589940e24c5711c002adc59d5e79ef000000000000000000000535',
+      '0x7b54c44fbe6db6d97fd22b8756f89c0af16202cc00000000000000000000053c',
     ],
     AllowList: [
       '0x88e2c969e2a1c69c16d1dcd9f8acde4c6ab3838a0002000000000000000004c1',
@@ -331,7 +335,7 @@ const pools: Pools = {
           protocol: Protocol.Renzo,
           multiple: '3',
           description:
-            'LPs in this pool earn 2x ezPoints on the TVL of the pool (wstETH + ezETH)',
+            'LPs in this pool earn 3x ezPoints on the TVL of the pool (wstETH + ezETH)',
         },
         {
           protocol: Protocol.Eigenlayer,

@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -32,6 +33,8 @@ const pools: Pools = {
       '0x9da11ff60bfc5af527f58fd61679c3ac98d040d9000000000000000000000100', // usdc/usdcE/usdt/dai
       '0xc4ee406970047a70aed14621d97b3b460a7dea0b00000000000000000000010b', // SWEEP/USDC
       '0x250a1381f79593b96b462fb0d575c75795f8033200000000000000000000012f', // weETH/WETH
+      '0x5f8893506ddc4c271837187d14a9c87964a074dc000000000000000000000106',
+      '0x73a7fe27fe9545d53924e529acf11f3073841b9e000000000000000000000133',
     ],
   },
   Investment: {
@@ -89,12 +92,31 @@ const pools: Pools = {
       '0x2feb76966459d7841fa8a7ed0aa4bf574d6111bf00020000000000000000011d',
       '0x2a5139cd86c041aa3467e649f5ee0880a5de2f2f00020000000000000000011a',
       '0x8bb826afc0ff7d2c034a2883f4c461ffd238e1c300020000000000000000012b',
+      '0x876e0a21626c33bdab879330505eccc6091aa60700020000000000000000012e',
+      '0x73a7fe27fe9545d53924e529acf11f3073841b9e000000000000000000000133',
     ],
     AllowList: [],
   },
   Deep: [],
   BoostedApr: [],
-  Metadata: {},
+  Metadata: {
+    '0x73a7fe27fe9545d53924e529acf11f3073841b9e000000000000000000000133': {
+      points: [
+        {
+          protocol: Protocol.Kelp,
+          multiple: '2',
+          description:
+            'The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of Eigenlayer points depending on assets deposited in the pool.',
+        },
+      ],
+    },
+  },
   DisabledJoins: [],
   BrandedRedirect: {
     Gyro2: 'gyro',
