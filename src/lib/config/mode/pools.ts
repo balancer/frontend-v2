@@ -32,7 +32,10 @@ const pools: Pools = {
   Weighted: {
     AllowList: [],
   },
-  Factories: {},
+  Factories: {
+    '0x5dbad78818d4c8958eff2d5b95b28385a22113cd': 'composableStablePool',
+    '0xc3ccace87f6d3a81724075adcb5ddd85a8a1bb68': 'weightedPool',
+  },
   Stakable: {
     VotingGaugePools: [],
     AllowList: [],
