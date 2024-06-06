@@ -42,9 +42,9 @@ const config: Config = {
   supportsElementPools: false,
   supportsVeBalSync: true,
   nativeAsset: {
-    name: 'Ether',
+    name: 'FraxEther',
     address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-    symbol: 'ETH',
+    symbol: 'frxETH',
     decimals: 18,
     deeplinkId: 'ether',
     logoURI: 'tokens/eth.png',
