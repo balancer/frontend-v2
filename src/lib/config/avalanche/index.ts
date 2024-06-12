@@ -25,17 +25,15 @@ const config: Config = {
   publicRpc: 'https://avalanche.public-rpc.com',
   explorer: 'https://snowtrace.io',
   explorerName: 'Snowtrace',
-  subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
+  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/7asfmtQA1KYu6CP7YVm5kv4bGxVyfAHEiptt2HMFgkHu`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
+      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/7asfmtQA1KYu6CP7YVm5kv4bGxVyfAHEiptt2HMFgkHu`,
     ],
     aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2-avalanche',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-avalanche',
+    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/GzGBUh1X4Cq9RBdyKoCrPLhYW1saBYHwFBgcTsARPYUG`,
     blocks:
       'https://api.thegraph.com/subgraphs/name/iliaazhel/avalanche-blocks',
   },
