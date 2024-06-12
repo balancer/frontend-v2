@@ -31,7 +31,7 @@ const config: Config = {
     main: [
       `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`,
     ],
-    aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
+    aave: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/8wR23o1zkS4gpLqLNU4kG3JHYVucqGyopL5utGxP2q1N`,
     gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/4sESujoqmztX6pbichs4wZ1XXyYrkooMuHA8sKkYxpTn`,
     blocks:
       'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',

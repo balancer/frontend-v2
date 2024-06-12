@@ -32,7 +32,7 @@ const config: Config = {
     main: [
       `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/H9oPAbXnobBRq1cB3HDmbZ1E8MWQyJYQjT1QDJMrdbNp`,
     ],
-    aave: 'https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic',
+    aave: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/H1Et77RZh3XEf27vkAmJyzgCME2RSFLtDS2f4PPW6CGp`,
     gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FxSLKXiieSqBCjDGPbqayhqbxyNtwaEC5M3rxr6hUa8h`,
     blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
   },
