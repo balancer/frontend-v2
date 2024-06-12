@@ -93,10 +93,10 @@ describe('Returns correct Sync state by network', () => {
 
     expect(networksBySyncState.value).toMatchInlineSnapshot(`
       {
-        "synced": [],
-        "syncing": [
+        "synced": [
           42161,
         ],
+        "syncing": [],
         "unsynced": [
           10,
           100,
