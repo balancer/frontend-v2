@@ -34,8 +34,7 @@ const config: Config = {
     ],
     aave: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/EZvK18pMhwiCjxwesRLTg81fP33WnR6BnZe5Cvma3H1C`,
     gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/GzGBUh1X4Cq9RBdyKoCrPLhYW1saBYHwFBgcTsARPYUG`,
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/iliaazhel/avalanche-blocks',
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/97YH6dMhGcXoTvVwDAML6GxYm9hBh7PCz6WPscUkrFhv`,
   },
   bridgeUrl: 'https://core.app/bridge/',
   supportsEIP1559: false,

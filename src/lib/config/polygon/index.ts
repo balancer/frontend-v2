@@ -34,7 +34,7 @@ const config: Config = {
     ],
     aave: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/H1Et77RZh3XEf27vkAmJyzgCME2RSFLtDS2f4PPW6CGp`,
     gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FxSLKXiieSqBCjDGPbqayhqbxyNtwaEC5M3rxr6hUa8h`,
-    blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/HHpzhtyGrTNSbhtjgZyYG4aG538fKpV21dsCBshLnKDg`,
   },
   bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,

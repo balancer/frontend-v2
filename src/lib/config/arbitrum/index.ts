@@ -34,8 +34,7 @@ const config: Config = {
     ],
     aave: '',
     gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/Bb1hVjJZ52kL23chZyyGWJKrGEg3S6euuNa1YA6XRU4J`,
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/5jebsN6RBioFWQX7LP2N8r55nL4QPAyeKc6GzDA1Pt5H`,
   },
   bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,

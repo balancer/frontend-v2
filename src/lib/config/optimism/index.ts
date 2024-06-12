@@ -34,8 +34,7 @@ const config: Config = {
     ],
     aave: '',
     gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/CbLt7GqU7sypjRaCfwissEBkFeCw3dUz2emrvBNJ7dZu`,
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/iliaazhel/optimism-blocklytics',
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/HsWM1oAXHGWdkH8bK98UrW38PvyPx6Q4waRow2LT8mcp`,
   },
   bridgeUrl: '',
   supportsEIP1559: false,
