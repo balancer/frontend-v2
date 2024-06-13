@@ -25,19 +25,16 @@ const config: Config = {
   publicRpc: 'https://avalanche.public-rpc.com',
   explorer: 'https://snowtrace.io',
   explorerName: 'Snowtrace',
-  subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
+  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/7asfmtQA1KYu6CP7YVm5kv4bGxVyfAHEiptt2HMFgkHu`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
+      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/7asfmtQA1KYu6CP7YVm5kv4bGxVyfAHEiptt2HMFgkHu`,
     ],
-    aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2-avalanche',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-avalanche',
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/iliaazhel/avalanche-blocks',
+    aave: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/EZvK18pMhwiCjxwesRLTg81fP33WnR6BnZe5Cvma3H1C`,
+    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/GzGBUh1X4Cq9RBdyKoCrPLhYW1saBYHwFBgcTsARPYUG`,
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/97YH6dMhGcXoTvVwDAML6GxYm9hBh7PCz6WPscUkrFhv`,
   },
   bridgeUrl: 'https://core.app/bridge/',
   supportsEIP1559: false,

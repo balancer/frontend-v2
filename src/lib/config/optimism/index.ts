@@ -1,4 +1,5 @@
 import { Config } from '../types';
+import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
 import tokenlists from './tokenlists';
@@ -24,19 +25,16 @@ const config: Config = {
   blockTime: 13,
   explorer: 'https://optimistic.etherscan.io/',
   explorerName: 'The Optimism Explorer',
-  subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
+  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FsmdxmvBJLGjUQPxKMRtcWKzuCNpomKuMTbSbtRtggZ7`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-optimism-v2',
+      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FsmdxmvBJLGjUQPxKMRtcWKzuCNpomKuMTbSbtRtggZ7`,
     ],
     aave: '',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism',
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/iliaazhel/optimism-blocklytics',
+    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/CbLt7GqU7sypjRaCfwissEBkFeCw3dUz2emrvBNJ7dZu`,
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/HsWM1oAXHGWdkH8bK98UrW38PvyPx6Q4waRow2LT8mcp`,
   },
   bridgeUrl: '',
   supportsEIP1559: false,
