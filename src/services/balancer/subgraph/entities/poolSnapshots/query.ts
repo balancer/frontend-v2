@@ -4,6 +4,8 @@ import { isPolygon } from '@/composables/useNetwork';
 
 const defaultArgs = {
   first: 1000,
+  orderBy: 'timestamp',
+  orderDirection: 'desc',
 };
 
 const defaultAttrs = {
