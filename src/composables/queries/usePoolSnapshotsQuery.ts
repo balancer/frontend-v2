@@ -8,6 +8,7 @@ import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
+import { oneDayInMs } from '../useTime';
 
 type QueryOptions = QueryObserverOptions<PoolSnapshots>;
 
@@ -47,10 +48,20 @@ export default function usePoolSnapshotsQuery(
     if (!pool.value && !storedPool) throw new Error('No pool');
 
     const createTime = storedPool?.createTime || pool.value?.createTime || 0;
+
+    const nowTimestap = new Date().getTime();
+    const thousandDaysInMs = 1000 * oneDayInMs;
+
+    let timestamp = Math.floor((nowTimestap - thousandDaysInMs) / 1000);
+
+    if (timestamp < createTime) {
+      timestamp = createTime;
+    }
+
     return await balancerSubgraphService.poolSnapshots.get({
       where: {
         pool: id.toLowerCase(),
-        timestamp_gt: createTime,
+        timestamp_gt: timestamp,
       },
     });
   };
