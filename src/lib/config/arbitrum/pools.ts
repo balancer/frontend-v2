@@ -25,6 +25,8 @@ const pools: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
+    'Gyro2',
+    'Gyro3',
     'GyroE',
   ],
   Stable: {
