@@ -25,8 +25,6 @@ const pools: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
-    'Gyro2',
-    'Gyro3',
     'GyroE',
   ],
   Stable: {
@@ -231,6 +229,7 @@ const pools: Pools = {
     '0xc7e5ed1054a24ef31d827e6f86caa58b3bc168d7': 'weightedPool', // weighted pool v4
     '0x2498a2b0d6462d2260eac50ae1c3e03f4829ba95': 'composableStablePool', // ComposableStable V4
     '0xa8920455934da4d853faac1f94fe7bef72943ef1': 'composableStablePool', // ComposableStable V5
+    '0x4bdCc2fb18AEb9e2d281b0278D946445070EAda7': 'composableStablePool', // ComposableStable V6
     '0xdca5f1f0d7994a32bc511e7dba0259946653eaf6': 'gyroE', // Gyro ECLP
     '0x7a36527a02d96693b0af2b70421f952816a4a088': 'gyroE', // Gyro ECLP
   },
