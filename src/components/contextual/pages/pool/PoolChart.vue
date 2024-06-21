@@ -240,15 +240,19 @@ function getFeesData(
   isAllTimeSelected: boolean,
   pariodLastSnapshotIdx: number
 ) {
-  const feesValues = periodSnapshots.map(
-    (snapshot, idx): readonly [string, number] => {
+  const feesValues = periodSnapshots
+    .map((snapshot, idx) => {
       const value = parseFloat(snapshot.swapFees);
       let prevValue: number;
 
       // get value of prev snapshot
       // if it is last value among all snapshots, then prev value is 0
       if (idx === snapshotValues.value.length - 1) {
-        prevValue = 0;
+        if (isAllTimeSelected) {
+          return;
+        } else {
+          prevValue = 0;
+        }
       } // if it is last value among certain period snapshots, then we get prev value from all snapshots
       else if (idx === pariodLastSnapshotIdx) {
         prevValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
@@ -261,8 +265,8 @@ function getFeesData(
         value - prevValue,
       ]);
       return result;
-    }
-  );
+    })
+    .filter(Boolean) as (readonly [string, number])[];
 
   // add 0 values in order to show chart properly
   if (periodSnapshots.length < 30) {
@@ -296,23 +300,29 @@ function getVolumeData(
   isAllTimeSelected: boolean,
   pariodLastSnapshotIdx: number
 ): PoolChartData {
-  const volumeData = periodSnapshots.map((snapshot, idx) => {
-    const value = parseFloat(snapshot.swapVolume);
-    let prevValue: number;
+  const volumeData = periodSnapshots
+    .map((snapshot, idx) => {
+      const value = parseFloat(snapshot.swapVolume);
+      let prevValue: number;
 
-    // get value of prev snapshot
-    if (idx === snapshotValues.value.length - 1) {
-      prevValue = 0;
-    } else if (idx === pariodLastSnapshotIdx) {
-      prevValue = parseFloat(snapshotValues.value[idx + 1].swapVolume);
-    } else {
-      prevValue = parseFloat(periodSnapshots[idx + 1].swapVolume);
-    }
-    return Object.freeze<[string, number]>([
-      timestamps.value[idx],
-      value - prevValue,
-    ]);
-  });
+      // get value of prev snapshot
+      if (idx === snapshotValues.value.length - 1) {
+        if (isAllTimeSelected) {
+          return;
+        } else {
+          prevValue = 0;
+        }
+      } else if (idx === pariodLastSnapshotIdx) {
+        prevValue = parseFloat(snapshotValues.value[idx + 1].swapVolume);
+      } else {
+        prevValue = parseFloat(periodSnapshots[idx + 1].swapVolume);
+      }
+      return Object.freeze<[string, number]>([
+        timestamps.value[idx],
+        value - prevValue,
+      ]);
+    })
+    .filter(Boolean) as (readonly [string, number])[];
 
   // add 0 values in order to show chart properly
   if (periodSnapshots.length < 30) {
