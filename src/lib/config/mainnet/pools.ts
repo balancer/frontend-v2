@@ -314,6 +314,7 @@ const pools: Pools = {
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
     '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
+    '0x5b42ec6d40f7b7965be5308c70e2603c0281c1e9': 'composableStablePool', // ComposableStable v6
     '0x412a5b2e7a678471985542757a6855847d4931d5': 'gyroE',
     '0x579653927bf509b361f6e3813f5d4b95331d98c9': 'gyroE',
     '0xfb23bc0d2629268442cd6521cf4170698967105f': 'fx',
