@@ -25,19 +25,16 @@ const config: Config = {
   publicRpc: 'https://arb1.arbitrum.io/rpc',
   explorer: 'https://arbiscan.io',
   explorerName: 'Arbiscan',
-  subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
+  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/98cQDy6tufTJtshDCuhh9z2kWXsQWBHVh2bqnLHsGAeS`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
+      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/98cQDy6tufTJtshDCuhh9z2kWXsQWBHVh2bqnLHsGAeS`,
     ],
     aave: '',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum',
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks',
+    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/Bb1hVjJZ52kL23chZyyGWJKrGEg3S6euuNa1YA6XRU4J`,
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/5jebsN6RBioFWQX7LP2N8r55nL4QPAyeKc6GzDA1Pt5H`,
   },
   bridgeUrl: 'https://bridge.arbitrum.io/',
   supportsEIP1559: false,
