@@ -26,6 +26,8 @@ export const NO_RECOVERY_EXIT_POOL_IDS: Record<Network, string[]> = {
   [Network.FANTOM]: [],
   [Network.GOERLI]: [],
   [Network.OPTIMISM]: [],
+  [Network.FRAXTAL]: [],
+  [Network.MODE]: [],
 };
 
 export const CSP_ISSUE_POOL_IDS: Record<Network, string[]> = {
