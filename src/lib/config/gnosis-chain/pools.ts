@@ -24,6 +24,7 @@ const pools: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
+    'GyroE',
   ],
   Stable: {
     AllowList: [
@@ -99,6 +100,7 @@ const pools: Pools = {
     '0xd87f44df0159dc78029ab9ca7d7e57e7249f5acd': 'composableStablePool', // ComposableStable V4
     '0x4bdcc2fb18aeb9e2d281b0278d946445070eada7': 'composableStablePool', // ComposableStable V5
     '0x47b489bf5836f83abd928c316f8e39bc0587b020': 'composableStablePool', // ComposableStable V6
+    '0x5d3be8aae57bf0d1986ff7766cc9607b6cc99b89': 'gyroE', // Gyro ECLP
   },
   Stakable: {
     VotingGaugePools: [
@@ -162,6 +164,9 @@ const pools: Pools = {
         '0x274dedb9356c3e1e24bfe2bf3d4349fbdbfa0d14000200000000000000000054',
       description: 'deprecatedPool.hasNewPool.description',
     },
+  },
+  BrandedRedirect: {
+    GyroE: 'gyro',
   },
   BoostedApr: [],
   DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.GNOSIS]],
