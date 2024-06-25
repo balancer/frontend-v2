@@ -1,6 +1,7 @@
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {
@@ -802,7 +803,18 @@ const pools: Pools = {
       '0xe6d8fcd23ed4e417d7e9d1195edf2ca634684e0e000200000000000000000caf',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
