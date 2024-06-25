@@ -735,6 +735,16 @@ const pools: Pools = {
         },
       ],
     },
+    '0xae2d97cbbc13b67988eced2aba0f6939655ed3de00020000000000000000068b': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)

@@ -351,6 +351,62 @@ const pools: Pools = {
         },
       ],
     },
+    '0x7272163a931dac5bbe1cb5fefaf959bb65f7346f000200000000000000000549': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x6e822c64c00393b2078f2a5bb75c575ab505b55c000200000000000000000548': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xef0c116a2818a5b1a5d836a291856a321f43c2fb00020000000000000000053a': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x395aad0582cd035c6c75ae32043bb83423ddd6f800020000000000000000054c': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn 5x SPIN on the GYD portion (equivalently 1x on pool TVL) of the pool',
+        },
+      ],
+    },
+    '0x90e6cb5249f5e1572afbf8a96d8a1ca6acffd73900000000000000000000055c': {
+      points: [
+        {
+          protocol: Protocol.Kelp,
+          multiple: '2',
+          description:
+            'LPs earn 2x miles. The Miles boost increases rewards based on the total pool capital, not just rsETH. Your daily Kelp Miles value is calculated by multiplying the effective rsETH balance by 10,000 times the boost value. Your Miles are then distributed based on your share of the liquidity pool.',
+        },
+        {
+          protocol: Protocol.Eigenlayer,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of Eigenlayer points depending on assets deposited in the pool.',
+        },
+      ],
+    },
   },
   Deep: [
     '0x077794c30afeccdf5ad2abc0588e8cee7197b71a000000000000000000000352', // bb-rf-usd (arbitrum)
