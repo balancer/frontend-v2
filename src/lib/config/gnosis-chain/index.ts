@@ -1,4 +1,5 @@
 import { Config } from '../types';
+import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
 import tokenlists from './tokenlists';
@@ -26,16 +27,14 @@ const config: Config = {
   explorer: 'https://gnosisscan.io',
   explorerName: 'Gnosisscan',
   balancerApi: 'https://api.balancer.fi',
-  subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gnosis-chain-v2',
+  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/EJezH1Cp31QkKPaBDerhVPRWsKVZLrDfzjrLqpmv6cGg`,
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gnosis-chain-v2',
+      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/EJezH1Cp31QkKPaBDerhVPRWsKVZLrDfzjrLqpmv6cGg`,
     ],
     aave: '',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-gnosis-chain',
+    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/HW5XpZBi2iYDLBqqEEMiRJFx8ZJAQak9uu5TzyH9BBxy`,
     blocks: '',
   },
   bridgeUrl: 'https://bridge.gnosischain.com/',

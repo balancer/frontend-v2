@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools, RiskKey } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -45,8 +46,7 @@ const pools: Pools = {
     AllowList: [],
   },
   Weighted: {
-    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
-    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    // Deprecated list, no longer in use
     AllowList: [
       '0x5480b5f610fa0e11e66b42b977e06703c07bc5cf000200000000000000000008',
       '0xa7f602cfaf75a566cb0ed110993ee81c27fa3f53000200000000000000000009',
@@ -84,6 +84,9 @@ const pools: Pools = {
       '0x65da876a95cd5b6a5880710628c436409b1b29fa00000000000000000000005b',
       '0xffc865fcb34e754fad4b0144139b9c28c81c3eff00000000000000000000005f',
       '0x9f826c576b1f821df31ca6d58c9443db25a81d65000200000000000000000064',
+      '0xe58cd0c79cdff6252476b3445bee1400503e0ae0000200000000000000000066',
+      '0xd4ec150896f1784b5be2b3af460d2cb2b8c0f522000200000000000000000069',
+      '0xf596ac9c9b60f9c555b8290c2b039c275396afb4000200000000000000000068',
     ],
     AllowList: [
       '0x195def5dabc4a73c4a6a410554f4e53f3e55f1a900010000000000000000000a',
@@ -95,9 +98,51 @@ const pools: Pools = {
       '0x9e2d87f904862671eb49cb358e74284762cc9f42000200000000000000000013',
       '0x6f34a44fce1506352a171232163e7716dd073ade000200000000000000000015',
       '0xffc865fcb34e754fad4b0144139b9c28c81c3eff00000000000000000000005f',
+      '0xa4475aa0a6971e3cc82de08e9ce432ecc8a562ad000200000000000000000029',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0xf596ac9c9b60f9c555b8290c2b039c275396afb4000200000000000000000068': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xd4ec150896f1784b5be2b3af460d2cb2b8c0f522000200000000000000000069': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xe58cd0c79cdff6252476b3445bee1400503e0ae0000200000000000000000066': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x9f826c576b1f821df31ca6d58c9443db25a81d65000200000000000000000064': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x68a69c596b3839023c0e08d09682314f582314e5000200000000000000000011',
     '0xe274c9deb6ed34cfe4130f8d0a8a948dea5bb28600000000000000000000000d',

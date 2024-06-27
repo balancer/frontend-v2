@@ -1,5 +1,4 @@
 import { Config } from '../types';
-import keys from './keys';
 import contracts from './contracts';
 import pools from './pools';
 import tokenlists from './tokenlists';
@@ -7,34 +6,36 @@ import tokens from './tokens';
 import rateProviders from './rateProviders';
 
 const config: Config = {
-  key: '10',
-  chainId: 10,
-  layerZeroChainId: 111,
-  chainName: 'Optimism',
-  name: 'Optimism Mainnet',
-  shortName: 'Optimism',
-  monorepoName: 'optimism',
-  slug: 'optimism',
-  network: 'optimism',
-  trustWalletNetwork: 'optimism',
+  key: '34443',
+  chainId: 34443,
+  layerZeroChainId: 260,
+  chainName: 'Mode',
+  name: 'Mode',
+  shortName: 'Mode',
+  monorepoName: 'mode',
+  slug: 'mode',
+  network: 'mode',
+  trustWalletNetwork: 'mode',
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: 'https://mainnet.optimism.io',
+  rpc: 'https://1rpc.io/mode',
   ws: '',
   blockTime: 13,
-  explorer: 'https://optimistic.etherscan.io/',
-  explorerName: 'The Optimism Explorer',
-  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FsmdxmvBJLGjUQPxKMRtcWKzuCNpomKuMTbSbtRtggZ7`,
+  explorer: 'https://modescan.io/',
+  explorerName: 'The Mode Explorer',
+  subgraph:
+    'https://api.studio.thegraph.com/proxy/75376/balancer-mode-v2/version/latest',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FsmdxmvBJLGjUQPxKMRtcWKzuCNpomKuMTbSbtRtggZ7`,
+      'https://api.studio.thegraph.com/proxy/75376/balancer-mode-v2/version/latest',
     ],
     aave: '',
-    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/CbLt7GqU7sypjRaCfwissEBkFeCw3dUz2emrvBNJ7dZu`,
-    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/HsWM1oAXHGWdkH8bK98UrW38PvyPx6Q4waRow2LT8mcp`,
+    gauge:
+      'https://api.studio.thegraph.com/query/75376/balancer-gauges-mode/version/latest',
+    blocks: '',
   },
   bridgeUrl: '',
   supportsEIP1559: false,
@@ -52,7 +53,7 @@ const config: Config = {
   thirdParty: {
     coingecko: {
       nativeAssetId: 'ethereum',
-      platformId: 'optimistic-ethereum',
+      platformId: 'mode',
     },
   },
   addresses: {

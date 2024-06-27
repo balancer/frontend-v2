@@ -26,6 +26,8 @@ export const NO_RECOVERY_EXIT_POOL_IDS: Record<Network, string[]> = {
   [Network.FANTOM]: [],
   [Network.GOERLI]: [],
   [Network.OPTIMISM]: [],
+  [Network.FRAXTAL]: [],
+  [Network.MODE]: [],
 };
 
 export const CSP_ISSUE_POOL_IDS: Record<Network, string[]> = {
@@ -417,6 +419,8 @@ export const CSP_ISSUE_POOL_IDS: Record<Network, string[]> = {
     '0x593acbfb1eaf3b6ec86fa60325d816996fdcbc0d000000000000000000000038',
     '0xd1af4974fcc995cf36ba40b189caa92964a9126d0000000000000000000000f1',
   ],
+  [Network.FRAXTAL]: [],
+  [Network.MODE]: [],
 };
 
 export const HIGH_RISK_POOL_IDS: string[] = [

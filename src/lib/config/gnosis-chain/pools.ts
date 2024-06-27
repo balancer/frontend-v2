@@ -24,6 +24,7 @@ const pools: Pools = {
     'Investment',
     'StablePhantom',
     'ComposableStable',
+    'GyroE',
   ],
   Stable: {
     AllowList: [
@@ -41,15 +42,16 @@ const pools: Pools = {
       '0xc9f00c3a713008ddf69b768d90d4978549bfdf9400000000000000000000006d', // crvUSD/sDAI
       '0x7644fa5d0ea14fcf3e813fdf93ca9544f8567655000000000000000000000066', // stabal3
       '0x95a2e3f73cdcef576a7d9b9e0d11efb5df90f166000200000000000000000088', // 80REG-20GNO
+      '0xC66936A47E6D40DD050A8419B4352825D9082241000000000000000000000090',
     ],
   },
   Investment: {
     AllowList: [],
   },
   Weighted: {
-    // Only effective after given timestamp here: usePool.ts#createdAfterTimestamp
-    // see useDisabledJoinPool.ts#nonAllowedWeightedPoolAfterTimestamp for logic.
+    // Deprecated list, no longer in use
     AllowList: [
+      '0x915938ff0a2b54e575068ff1a95007cafba7d27700020000000000000000008a', // 80REG-20WXDAI
       '0xa99fd9950b5d5dceeaf4939e221dca8ca9b938ab000100000000000000000025', // 25WETH-25BAL-25GNO-25wxDAI
       '0x388cae2f7d3704c937313d990298ba67d70a3709000200000000000000000026', // 50AGVE-50GNO
       '0x4bcf6b48906fa0f68bea1fc255869a41241d4851000200000000000000000021', // 50WXDAI-50MPS
@@ -85,6 +87,11 @@ const pools: Pools = {
       '0x360b4ff22b268af38ced941193e48d183b924a9500020000000000000000007f', // 50MIVA-50GNO
       '0x0ef212abfec20642326a0be06cfa5cd8f08d9b22000200000000000000000084', // sdai/wxdai
       '0xa9b2234773cc6a4f3a34a770c52c931cba5c24b2000200000000000000000087', // safe/gno
+      '0x95a2e3f73cdcef576a7d9b9e0d11efb5df90f166000200000000000000000088', // 80REG-20GNO
+      '0x22d3f4e4dada5d7a3007a58dd191897ad8578160000200000000000000000089', // REG/sDAI
+      '0x17794db163dd298bba1ffa4d42918c6b8474d94800020000000000000000008b', // REG/USDC
+      '0x327e7fd9c7fd521305d35c513ce2e561f3c3126c00010000000000000000008d', // 60REG-20sDAI-20USDC
+      '0x794b2633de8f8b2ac008b8f780a26fdfe0094ca000020000000000000000008f', // 50GNO-50GNOBBY
     ],
   },
   Factories: {
@@ -93,6 +100,8 @@ const pools: Pools = {
     '0x6cad2ea22bfa7f4c14aae92e47f510cd5c509bc7': 'weightedPool', // weighted pool v4
     '0xd87f44df0159dc78029ab9ca7d7e57e7249f5acd': 'composableStablePool', // ComposableStable V4
     '0x4bdcc2fb18aeb9e2d281b0278d946445070eada7': 'composableStablePool', // ComposableStable V5
+    '0x47b489bf5836f83abd928c316f8e39bc0587b020': 'composableStablePool', // ComposableStable V6
+    '0x5d3be8aae57bf0d1986ff7766cc9607b6cc99b89': 'gyroE', // Gyro ECLP
   },
   Stakable: {
     VotingGaugePools: [
@@ -120,6 +129,9 @@ const pools: Pools = {
       '0x06135a9ae830476d3a941bae9010b63732a055f4000000000000000000000065',
       '0x7644fa5d0ea14fcf3e813fdf93ca9544f8567655000000000000000000000066',
       '0xc9f00c3a713008ddf69b768d90d4978549bfdf9400000000000000000000006d',
+      '0x045200c6077f105023000d803f3f95b16b187d70000200000000000000000091',
+      '0x8dd4df4ce580b9644437f3375e54f1ab0980822800020000000000000000009c',
+      '0x71e1179c5e197fa551beec85ca2ef8693c61b85b0002000000000000000000a0',
     ],
     AllowList: [],
   },
@@ -154,6 +166,9 @@ const pools: Pools = {
         '0x274dedb9356c3e1e24bfe2bf3d4349fbdbfa0d14000200000000000000000054',
       description: 'deprecatedPool.hasNewPool.description',
     },
+  },
+  BrandedRedirect: {
+    GyroE: 'gyro',
   },
   BoostedApr: [],
   DisabledJoins: [...CSP_ISSUE_POOL_IDS[Network.GNOSIS]],

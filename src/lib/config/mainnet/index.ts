@@ -23,20 +23,17 @@ const config: Config = {
   ws: ``,
   explorer: 'https://etherscan.io',
   explorerName: 'Etherscan',
-  subgraph: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
+  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2:
     'https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
-      `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM`,
+      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`,
     ],
-    aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
-    blocks:
-      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+    aave: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/8wR23o1zkS4gpLqLNU4kG3JHYVucqGyopL5utGxP2q1N`,
+    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/4sESujoqmztX6pbichs4wZ1XXyYrkooMuHA8sKkYxpTn`,
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/236pc6mnPH2EdGJxR5wunibyGsagq1JsSx5e2hx5tdoE`,
   },
   bridgeUrl: '',
   supportsEIP1559: true,

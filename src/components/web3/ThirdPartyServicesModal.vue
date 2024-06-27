@@ -57,7 +57,7 @@ const services = [
   'the-graph',
   'fathom-analytics',
   'appzi',
-  'TRM-labs',
+  'hypernative',
   'sentry',
   'amazon-web-services',
 ];

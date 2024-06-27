@@ -10,6 +10,8 @@ import optimism from './optimism';
 import polygon from './polygon';
 import sepolia from './sepolia';
 import zkevm from './zkevm';
+import fraxtal from './fraxtal';
+import mode from './mode';
 
 const config: Record<Network | number, Config> = {
   [Network.MAINNET]: mainnet,
@@ -22,6 +24,8 @@ const config: Record<Network | number, Config> = {
   [Network.AVALANCHE]: avalanche,
   [Network.SEPOLIA]: sepolia,
   [Network.BASE]: base,
+  [Network.FRAXTAL]: fraxtal,
+  [Network.MODE]: mode,
 };
 
 export default config;

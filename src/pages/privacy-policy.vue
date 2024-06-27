@@ -312,7 +312,7 @@
             </p>
 
             <p>
-              With our compliance partner, TRM Labs, we only share wallet
+              With our compliance partner, Hypernative, we only share wallet
               addresses used to connect a wallet to our UI (all other user
               information like IP addresses, device identifiers and location are
               not shared). The code for the UI is open source, and can be

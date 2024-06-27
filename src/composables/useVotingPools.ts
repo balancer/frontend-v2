@@ -23,6 +23,7 @@ export function isVe8020Pool(pool: VotingPool): boolean {
     POOLS.IdsMap.veUSH,
     POOLS.IdsMap.veQi,
     POOLS.IdsMap.veGEM,
+    POOLS.IdsMap.veTHX,
   ].includes(pool.id.toLowerCase());
 }
 

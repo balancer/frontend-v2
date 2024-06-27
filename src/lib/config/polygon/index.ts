@@ -25,18 +25,16 @@ const config: Config = {
   publicRpc: 'https://polygon-rpc.com',
   explorer: 'https://polygonscan.com',
   explorerName: 'Polygonscan',
-  subgraph:
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-prune-v2',
+  subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/H9oPAbXnobBRq1cB3HDmbZ1E8MWQyJYQjT1QDJMrdbNp`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-prune-v2',
+      `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/H9oPAbXnobBRq1cB3HDmbZ1E8MWQyJYQjT1QDJMrdbNp`,
     ],
-    aave: 'https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic',
-    gauge:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
-    blocks: 'https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks',
+    aave: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/H1Et77RZh3XEf27vkAmJyzgCME2RSFLtDS2f4PPW6CGp`,
+    gauge: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FxSLKXiieSqBCjDGPbqayhqbxyNtwaEC5M3rxr6hUa8h`,
+    blocks: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/HHpzhtyGrTNSbhtjgZyYG4aG538fKpV21dsCBshLnKDg`,
   },
   bridgeUrl: 'https://wallet.polygon.technology/polygon/bridge',
   supportsEIP1559: true,

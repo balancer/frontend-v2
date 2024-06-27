@@ -1,15 +1,9 @@
-import { Pools } from '@/types/pools';
+import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { PoolWarning, Pools } from '@/types/pools';
+import { Network } from '../types';
 
 const pools: Pools = {
-  IdsMap: {
-    staBAL: '',
-    bbAaveUSD: {
-      v1: '',
-      v2: '',
-      v3: '',
-    },
-    veBAL: '',
-  },
+  IdsMap: {},
   Pagination: {
     PerPage: 10,
     PerPool: 10,
@@ -21,14 +15,12 @@ const pools: Pools = {
   DynamicFees: {
     Gauntlet: [],
   },
-  BlockList: [''],
+  BlockList: [],
   IncludedPoolTypes: [
     'Weighted',
     'Stable',
     'MetaStable',
-    'LiquidityBootstrapping',
-    'Investment',
-    'StablePhantom',
+    'GyroE',
     'ComposableStable',
   ],
   Stable: {
@@ -38,23 +30,28 @@ const pools: Pools = {
     AllowList: [],
   },
   Weighted: {
-    // Deprecated list, no longer in use
     AllowList: [],
   },
-  Factories: {},
+  Factories: {
+    '0x5dbad78818d4c8958eff2d5b95b28385a22113cd': 'composableStablePool',
+    '0xc3ccace87f6d3a81724075adcb5ddd85a8a1bb68': 'weightedPool',
+  },
   Stakable: {
     VotingGaugePools: [],
     AllowList: [],
   },
-  Metadata: {},
   Deep: [],
   BoostedApr: [],
+  Metadata: {},
   DisabledJoins: [],
-  Deprecated: {
-    deprecatedid: {}, //Used for unit testing
+  BrandedRedirect: {
+    Gyro2: 'gyro',
+    Gyro3: 'gyro',
+    GyroE: 'gyro',
   },
-  ExitViaInternalBalance: [],
-  Risks: {},
+  Issues: {
+    [PoolWarning.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[Network.MODE],
+  },
 };
 
 export default pools;
