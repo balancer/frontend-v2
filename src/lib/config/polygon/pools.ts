@@ -1,6 +1,7 @@
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {
@@ -797,12 +798,24 @@ const pools: Pools = {
       '0xba773022202887379f0733f111e4580f53296ada000200000000000000000e76',
       '0x4b7586a4f49841447150d3d92d9e9e000f766c30000000000000000000000e8a', // USDC/USDT/DAI
       '0x1dcea0bfbbe6848f117640d534c9b60f41b9f2a8000100000000000000000ea1', // USDC/WBTC/WETH
+      '0x7c173e2a341faf5c90bf0ff448cd925d3731c604000200000000000000000eb8',
     ],
     AllowList: [
       '0xe6d8fcd23ed4e417d7e9d1195edf2ca634684e0e000200000000000000000caf',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+  },
   Deep: [
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
     '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)

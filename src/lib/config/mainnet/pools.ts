@@ -314,6 +314,7 @@ const pools: Pools = {
     '0x897888115ada5773e02aa29f775430bfb5f34c51': 'weightedPool', // weighted pool v4
     '0x5f43fba61f63fa6bff101a0a0458cea917f6b347': 'eulerLinear',
     '0xdb8d758bcb971e482b2c45f7f8a7740283a1bd3a': 'composableStablePool', // ComposableStable v5
+    '0x5b42ec6d40f7b7965be5308c70e2603c0281c1e9': 'composableStablePool', // ComposableStable v6
     '0x412a5b2e7a678471985542757a6855847d4931d5': 'gyroE',
     '0x579653927bf509b361f6e3813f5d4b95331d98c9': 'gyroE',
     '0xfb23bc0d2629268442cd6521cf4170698967105f': 'fx',
@@ -535,6 +536,8 @@ const pools: Pools = {
       '0x47a4f5440ab097cf3ec7abeedf1afecc5749a4e200000000000000000000068d',
       '0x38fe2b73612527eff3c5ac3bf2dcb73784ad927400000000000000000000068c',
       '0xee3959fd00a0b996d801fc34b7ce566bd037f5f500020000000000000000063e',
+      '0x48a5bfb5bd44345db0b31fa4b5a204890695c9b4000000000000000000000697',
+      '0x5002eb99f569405987d56e53cec01fbb5da28968000200000000000000000696',
     ],
     AllowList: [
       '0x54ca50ee86616379420cc56718e12566aa75abbe000200000000000000000610', // wusdm/wsteth
@@ -729,6 +732,16 @@ const pools: Pools = {
         {
           protocol: Protocol.Gyro,
           multiple: '1',
+          description:
+            'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0xae2d97cbbc13b67988eced2aba0f6939655ed3de00020000000000000000068b': {
+      points: [
+        {
+          protocol: Protocol.Gyro,
+          multiple: '5',
           description:
             'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
         },
