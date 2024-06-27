@@ -101,5 +101,7 @@ it('calculates networkFilters', async () => {
     expiredGauges
   );
 
-  expect(networkFilters).toEqual([1, 10, 100, 137, 1101, 8453, 42161, 43114]);
+  expect(networkFilters).toEqual([
+    1, 10, 100, 137, 252, 1101, 8453, 42161, 43114,
+  ]);
 });
