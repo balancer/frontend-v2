@@ -19,6 +19,8 @@ export enum Protocol {
   Swell = 'swell',
   EtherFi = 'etherfi',
   Kelp = 'kelp',
+  Mellow = 'mellow',
+  Symbiotic = 'symbiotic',
 }
 
 export const protocolIconPaths: Record<Protocol, string> = {
@@ -100,6 +102,14 @@ export const protocolIconPaths: Record<Protocol, string> = {
   ).href,
   [Protocol.Gyro]: new URL(
     '@/assets/images/icons/protocols/gyro.png',
+    import.meta.url
+  ).href,
+  [Protocol.Mellow]: new URL(
+    '@/assets/images/icons/protocols/mellow.png',
+    import.meta.url
+  ).href,
+  [Protocol.Symbiotic]: new URL(
+    '@/assets/images/icons/protocols/symbiotic.svg',
     import.meta.url
   ).href,
 };
