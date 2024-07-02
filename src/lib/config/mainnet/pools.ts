@@ -748,6 +748,22 @@ const pools: Pools = {
         },
       ],
     },
+    '0x4216d5900a6109bba48418b5e2ab6cc4e61cf4770000000000000000000006a1': {
+      points: [
+        {
+          protocol: Protocol.Mellow,
+          multiple: '3',
+          description:
+            'LPs in this pool get their share of: 3x on the total TVL of the LRTs in the pool. This is around 2.4x to the amount of the pool, if LRTs comprise around a 80% of the pool.',
+        },
+        {
+          protocol: Protocol.Symbiotic,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of LRTs held in the pool.',
+        },
+      ],
+    },
   },
   Deep: [
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
