@@ -27,6 +27,18 @@ export default class GaugeControllerService {
     weights: BigNumber[],
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
+    // Temporary fix for edge-case.
+    const userAddress = await this.walletService.getUserAddress();
+    if (userAddress === '0x53A385d47D3a011539Ec377f53aCB410F53ff97d') {
+      console.log('Applying vote fix...');
+      // Delete last element
+      gaugeAddresses.pop();
+      weights.pop();
+      // Prepend zero vote to old gauge
+      gaugeAddresses.unshift('0x88D07558470484c03d3bb44c3ECc36CAfCF43253');
+      weights.unshift(BigNumber.from(0));
+    }
+
     return await this.walletService.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
