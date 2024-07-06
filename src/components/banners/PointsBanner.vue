@@ -39,13 +39,13 @@ function getIconSrc(protocol: Protocol) {
                 :alt="protocol"
                 class="mr-2"
               />
-              {{ multiple }}x
+              {{ multiple && `${multiple}x` }}
             </div>
           </template>
           <div>
             <div class="mb-2 font-bold">
               <span class="capitalize">{{ protocol }}</span
-              >: {{ multiple }}x points multiplier
+              >{{ multiple && `: ${multiple}x points multiplier` }}
             </div>
             <div
               v-if="description"

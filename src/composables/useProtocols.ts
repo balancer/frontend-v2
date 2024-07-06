@@ -21,6 +21,7 @@ export enum Protocol {
   Kelp = 'kelp',
   Mellow = 'mellow',
   Symbiotic = 'symbiotic',
+  Superfest = 'superfest',
 }
 
 export const protocolIconPaths: Record<Protocol, string> = {
@@ -110,6 +111,10 @@ export const protocolIconPaths: Record<Protocol, string> = {
   ).href,
   [Protocol.Symbiotic]: new URL(
     '@/assets/images/icons/protocols/symbiotic.svg',
+    import.meta.url
+  ).href,
+  [Protocol.Superfest]: new URL(
+    '@/assets/images/icons/protocols/superfest.svg',
     import.meta.url
   ).href,
 };

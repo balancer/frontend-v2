@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -47,7 +48,16 @@ const pools: Pools = {
   },
   Deep: [],
   BoostedApr: [],
-  Metadata: {},
+  Metadata: {
+    '0x33251abecb0364df98a27a8d5d7b5ccddc774c42000000000000000000000008': {
+      points: [
+        {
+          protocol: Protocol.Superfest,
+          multiple: '',
+        },
+      ],
+    },
+  },
   DisabledJoins: [],
   BrandedRedirect: {
     Gyro2: 'gyro',
