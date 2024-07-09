@@ -17,30 +17,40 @@ const { hasPoints, poolPoints } = usePoints(props.pool);
 function getIconSrc(protocol: Protocol) {
   return protocolIconPaths[protocol];
 }
+
+const isPointsPool = computed(
+  () => hasPoints && poolPoints.value.some(p => p.multiple)
+);
 </script>
 
 <template>
   <div v-if="hasPoints" class="points-banner">
-    <span class="pb-3 sm:pb-0 leading-5"
-      >Liquidity providers in this pool also earn partner points</span
-    >
+    <span class="pb-3 sm:pb-0 leading-5">{{
+      isPointsPool
+        ? 'Liquidity providers in this pool also earn partner points'
+        : 'Liquidity providers in this pool earn partner rewards'
+    }}</span>
     <div class="flex">
       <div
-        v-for="{ protocol, multiple, description } in poolPoints"
+        v-for="{ protocol, multiple, description, url } in poolPoints"
         :key="protocol"
       >
-        <BalTooltip placement="bottom" width="64">
+        <BalTooltip placement="bottom" width="64" :disabled="!description">
           <template #activator>
-            <div
+            <component
+              :is="url ? 'a' : 'div'"
               class="flex justify-center items-center py-2 px-3 ml-2 text-white rounded-full border border-gray-700 backdrop-blur-sm bg-black/20"
+              :href="url"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <BalAsset
                 :iconURI="getIconSrc(protocol)"
                 :alt="protocol"
-                class="mr-2"
+                :class="{ 'mr-2': multiple }"
               />
               {{ multiple && `${multiple}x` }}
-            </div>
+            </component>
           </template>
           <div>
             <div class="mb-2 font-bold">
@@ -52,7 +62,7 @@ function getIconSrc(protocol: Protocol) {
               class="mb-2 list-disc"
               v-html="description"
             />
-            <span>
+            <span v-if="multiple">
               This UI does not provide real-time updates on partner point
               multipliers. These points may change or expire and might not
               reflect the most current info, please refer to the partner

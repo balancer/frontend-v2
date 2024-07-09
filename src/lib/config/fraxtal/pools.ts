@@ -54,6 +54,20 @@ const pools: Pools = {
         {
           protocol: Protocol.Superfest,
           multiple: '',
+          url: 'https://jumper.exchange/superfest',
+          description:
+            'To find out more about Superfest, visit <a href="https://jumper.exchange/superfest" target="_blank" rel="noopener noreferrer">jumper.exchange/superfest</a>',
+        },
+      ],
+    },
+    '0x1570315476480fa80cec1fff07a20c1df1adfd53000200000000000000000009': {
+      points: [
+        {
+          protocol: Protocol.Superfest,
+          multiple: '',
+          url: 'https://jumper.exchange/superfest',
+          description:
+            'To find out more about Superfest, visit <a href="https://jumper.exchange/superfest" target="_blank" rel="noopener noreferrer">jumper.exchange/superfest</a>',
         },
       ],
     },
