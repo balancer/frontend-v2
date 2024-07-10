@@ -99,6 +99,11 @@ export class StakingRewardsService {
         .times(_gaugeTotalSupply)
         .div(_userGaugeBalance)
     );
+
+    if (boost.isNaN()) {
+      return '1';
+    }
+
     const minBoost = bnum(2.5).lt(boost) ? 2.5 : boost;
 
     return minBoost.toString();
