@@ -1,6 +1,8 @@
-# Balancer Frontend App (v2)
+# ⛔️ This app is now deprecated (except for the veBAL page)
 
-Official frontend app for the Balancer protocol (v2)
+We have launched a new UI for the Balancer protocol, which is available at
+[https://balancer.fi](https://balancer.fi). The source code for the new UI is
+available at [https://github.com/balancer/frontend-v3](https://github.com/balancer/frontend-v3).
 
 ## Development
 
