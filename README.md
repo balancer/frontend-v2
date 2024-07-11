@@ -1,8 +1,13 @@
-# ⛔️ This app is now deprecated (except for the veBAL page)
+# ⛔️ This app is now deprecated
 
 We have launched a new UI for the Balancer protocol, which is available at
 [https://balancer.fi](https://balancer.fi). The source code for the new UI is
-available at [https://github.com/balancer/frontend-v3](https://github.com/balancer/frontend-v3).
+available at
+[https://github.com/balancer/frontend-v3](https://github.com/balancer/frontend-v3).
+
+_Note, there is an exception where by the veBAL page is still available at
+[https://app.balancer.fi/vebal](https://app.balancer.fi/vebal). We will continue to maintain the veBAL page of this
+UI until we migrate that functionality to the new UI._
 
 ## Development
 
@@ -100,34 +105,6 @@ export DOCKER_DEFAULT_PLATFORM=linux/amd64
 ```
 
 source: https://stackoverflow.com/questions/65612411/forcing-docker-to-use-linux-amd64-platform-by-default-on-macos
-
-## Self-Hosting
-
-As we believe in decentralization at all layers, we've made it easy to host your own Balancer Frontend.
-
-### Docker Production Image
-
-We've created a production ready [docker image](./Dockerfile) runs
-a pre-built version of Balancer Frontend-v2 using nginx. You'll need your own
-[Infura](https://infura.io), [Alchemy](https://www.alchemy.com/), and
-[Blocknative](https://blocknative.com) API keys in order to fetch data and
-execute transactions.
-
-Here's an example of how to run the container. This can also be found in [scripts/run-docker.sh](./scripts/run-docker.sh).
-
-```bash
-docker run \
-  -e INFURA_PROJECT_ID=   \ # Required
-  -e ALCHEMY_KEY=         \ # Required
-  -e BLOCKNATIVE_DAPP_ID= \ # Required
-  balancerfi/frontend-v2
-```
-
-### Custom RPC urls
-
-To override RPC network config set in `src/lib/config`, you can use the following environment variables:
-
-`VITE_RPC_URL_<networkId>=XXX`
 
 ### One Click Deploys
 
