@@ -80,7 +80,7 @@ const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
 const featureAlert: Alert = {
   id: 'new-ui-alert',
   priority: AlertPriority.HIGH,
-  label: 'Balancer has a new UI! ...', // Add the new feature alert text here and set featureAlertEnabled to true to activate it
+  label: 'Balancer has a new UI: Chain agnostic, speedy, and ready for v3', // Add the new feature alert text here and set featureAlertEnabled to true to activate it
   type: AlertType.FEATURE,
   rememberClose: false,
   actionLabel: 'Try zen',
