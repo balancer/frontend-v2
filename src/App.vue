@@ -25,8 +25,6 @@ import useAlerts, {
   AlertPriority,
   AlertType,
 } from './composables/useAlerts';
-import { useI18n } from 'vue-i18n';
-import useNetwork from './composables/useNetwork';
 
 // Dynamic import of layout components:
 // it prevents the initial bundle from including all the layouts (and their unique dependencies)
@@ -77,23 +75,20 @@ const { sidebarOpen } = useSidebar();
 const { addAlert } = useAlerts();
 const { handleThirdPartyModalToggle, isThirdPartyServicesModalVisible } =
   useThirdPartyServices();
-const { t } = useI18n();
-const router = useRouter();
-const { networkSlug } = useNetwork();
 
 // OPTIONAL FEATURE ALERTS are enabled by featureAlertEnabled toggle
 const featureAlert: Alert = {
-  id: 'csp-alert',
+  id: 'new-ui-alert',
   priority: AlertPriority.HIGH,
-  label: t('poolWarnings.cspPoolVulnWarning.generalTitle'), // Add the new feature alert text here and set featureAlertEnabled to true to activate it
-  type: AlertType.ERROR,
+  label: 'Balancer has a new UI: Chain agnostic, speedy, and ready for v3', // Add the new feature alert text here and set featureAlertEnabled to true to activate it
+  type: AlertType.FEATURE,
   rememberClose: false,
-  actionLabel: 'Recovery exit',
+  actionLabel: 'Try zen',
   action: () => {
-    router.push({ name: 'recovery-exit', params: { networkSlug } });
+    window.location.href = 'https://balancer.fi';
   },
 };
-const featureAlertEnabled = false;
+const featureAlertEnabled = true;
 if (featureAlertEnabled) addAlert(featureAlert);
 
 /**

@@ -1,6 +1,7 @@
 import { CSP_ISSUE_POOL_IDS } from '@/constants/pool-lists/csp-issue';
 import { PoolWarning, Pools } from '@/types/pools';
 import { Network } from '../types';
+import { Protocol } from '@/composables/useProtocols';
 
 const pools: Pools = {
   IdsMap: {},
@@ -42,7 +43,19 @@ const pools: Pools = {
   },
   Deep: [],
   BoostedApr: [],
-  Metadata: {},
+  Metadata: {
+    '0xcf376bc82686be7f88fa8936c18c62a2f11c4003000200000000000000000009': {
+      points: [
+        {
+          protocol: Protocol.Superfest,
+          multiple: '',
+          url: 'https://jumper.exchange/superfest',
+          description:
+            'To find out more about Superfest, visit <a href="https://jumper.exchange/superfest" target="_blank" rel="noopener noreferrer">jumper.exchange/superfest</a>',
+        },
+      ],
+    },
+  },
   DisabledJoins: [],
   BrandedRedirect: {
     Gyro2: 'gyro',
