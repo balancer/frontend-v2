@@ -21,7 +21,7 @@ const config: Config = {
   unknown: false,
   visibleInUI: true,
   testNetwork: false,
-  rpc: 'https://rpc.gnosischain.com',
+  rpc: 'https://gnosis-rpc.publicnode.com',
   ws: '',
   publicRpc: 'https://rpc.gnosis.gateway.fm',
   explorer: 'https://gnosisscan.io',

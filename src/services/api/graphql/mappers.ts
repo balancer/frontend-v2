@@ -16,12 +16,16 @@ export function mapApiChain(
       return Network.GNOSIS;
     case GqlChain.Fantom:
       return Network.FANTOM;
+    case GqlChain.Fraxtal:
+      return Network.FRAXTAL;
     case GqlChain.Optimism:
       return Network.OPTIMISM;
     case GqlChain.Polygon:
       return Network.POLYGON;
     case GqlChain.Mainnet:
       return Network.MAINNET;
+    case GqlChain.Mode:
+      return Network.MODE;
     case GqlChain.Zkevm:
       return Network.ZKEVM;
     case 'SEPOLIA':
@@ -44,8 +48,6 @@ export function mapApiPoolType(apiPoolType: GqlPoolType): PoolType | null {
       return PoolType.GyroE;
     case GqlPoolType.Investment:
       return PoolType.Investment;
-    case GqlPoolType.Linear:
-      return PoolType.Linear;
     case GqlPoolType.LiquidityBootstrapping:
       return PoolType.LiquidityBootstrapping;
     case GqlPoolType.MetaStable:

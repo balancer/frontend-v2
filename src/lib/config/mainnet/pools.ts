@@ -293,6 +293,7 @@ const pools: Pools = {
       '0x57766212638c425e9cb0c6d6e1683dda369c0fff000200000000000000000678', // 80GEM-20WETH
       '0x56bc9d9987edec2fc6e1990e27af4a0987b53096000200000000000000000686', // 99goldCOMP-1WETH
       '0x0ec120ed63212a4cb018795b43c0b03c5919042400010000000000000000068f', // 33GOLD-33USDC-33WETH
+      '0xebdd200fe52997142215f7603bc28a80becdadeb000200000000000000000694', // 50OLAS-50USDC
     ],
   },
   Factories: {
@@ -538,6 +539,16 @@ const pools: Pools = {
       '0xee3959fd00a0b996d801fc34b7ce566bd037f5f500020000000000000000063e',
       '0x48a5bfb5bd44345db0b31fa4b5a204890695c9b4000000000000000000000697',
       '0x5002eb99f569405987d56e53cec01fbb5da28968000200000000000000000696',
+      '0x8296057edb832feac03269e9fce8304ebcbabcaf00000000000000000000069c',
+      '0xabc7d08ef73fe3fb67efd900f4471cca788b089900000000000000000000069d',
+      '0x79af734562f741946566d5126bbded4cb699e35500000000000000000000069f',
+      '0xc5b3f108024da9776d024fd9cefa4b48e021f1a200000000000000000000069e',
+      '0x9412206f58cc72b9b4e340422a95354372a3ec3d00020000000000000000069a',
+      '0x19df5bb37380186bc8efc5ad91516373a2c5459f000200000000000000000698',
+      '0x58aadfb1afac0ad7fca1148f3cde6aedf5236b6d00000000000000000000067f',
+      '0x093254005743b7af89e24f645730ba2dd84413330002000000000000000006a4',
+      '0xe96a45f66bdda121b24f0a861372a72e8889523d00020000000000000000069b',
+      '0x4216d5900a6109bba48418b5e2ab6cc4e61cf4770000000000000000000006a1',
     ],
     AllowList: [
       '0x54ca50ee86616379420cc56718e12566aa75abbe000200000000000000000610', // wusdm/wsteth
@@ -744,6 +755,22 @@ const pools: Pools = {
           multiple: '5',
           description:
             'LPs in this pool earn Gyroscope SPIN on the TVL of the pool.',
+        },
+      ],
+    },
+    '0x4216d5900a6109bba48418b5e2ab6cc4e61cf4770000000000000000000006a1': {
+      points: [
+        {
+          protocol: Protocol.Mellow,
+          multiple: '3',
+          description:
+            'LPs in this pool get their share of: 3x on the total TVL of the LRTs in the pool. This is around 2.4x to the amount of the pool, if LRTs comprise around a 80% of the pool.',
+        },
+        {
+          protocol: Protocol.Symbiotic,
+          multiple: '1',
+          description:
+            'LPs in this pool get their share of 1x on the amount of LRTs held in the pool.',
         },
       ],
     },

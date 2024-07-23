@@ -2,6 +2,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import useGraphQuery from './useGraphQuery';
 import useNetwork from '../useNetwork';
 import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
+import { GqlChain } from '@/services/api/graphql/generated/api-types';
+import { EnumType } from 'json-to-graphql-query';
 
 const attrs = {
   balance: true,
@@ -25,6 +27,10 @@ export function useLockRankQuery(account: ComputedRef<string>) {
     queryKey,
     () => ({
       veBalGetUser: {
+        __args: {
+          chain: new EnumType(GqlChain.Mainnet),
+          address: account.value?.toLowerCase(),
+        },
         ...attrs,
       },
     }),
@@ -32,7 +38,6 @@ export function useLockRankQuery(account: ComputedRef<string>) {
       enabled: computed(() => !!account.value),
       ...FETCH_ONCE_OPTIONS,
     }),
-    false,
-    { accountAddress: account.value }
+    false
   );
 }

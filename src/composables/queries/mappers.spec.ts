@@ -26,7 +26,6 @@ test('Maps API pool types', async () => {
   expect(mapApiPoolType(GqlPoolType.Gyro3)).toBe(PoolType.Gyro3);
   expect(mapApiPoolType(GqlPoolType.Gyroe)).toBe(PoolType.GyroE);
   expect(mapApiPoolType(GqlPoolType.Investment)).toBe(PoolType.Investment);
-  expect(mapApiPoolType(GqlPoolType.Linear)).toBe(PoolType.Linear);
   expect(mapApiPoolType(GqlPoolType.LiquidityBootstrapping)).toBe(
     PoolType.LiquidityBootstrapping
   );
