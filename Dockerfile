@@ -21,7 +21,7 @@ FROM dependencies AS build
 COPY . .
 RUN npm run build:docker
 
-FROM nginx:1.25.3-alpine as release
+FROM nginx:1.26.0-alpine as release
 
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY --from=build /app/scripts/docker-init.sh /
