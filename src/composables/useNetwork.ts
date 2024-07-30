@@ -27,6 +27,7 @@ const NETWORK_ID =
   Network.MAINNET;
 if (windowAvailable) localStorage.setItem('networkId', NETWORK_ID.toString());
 export const networkSlug = config[NETWORK_ID].slug;
+export const networkSlugV3 = config[NETWORK_ID].slugV3;
 export const networkConfig = config[NETWORK_ID];
 
 /**

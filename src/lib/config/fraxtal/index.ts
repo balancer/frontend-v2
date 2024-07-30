@@ -14,6 +14,7 @@ const config: Config = {
   shortName: 'Fraxtal',
   monorepoName: 'fraxtal',
   slug: 'fraxtal',
+  slugV3: 'fraxtal',
   network: 'fraxtal',
   trustWalletNetwork: 'fraxtal',
   unknown: false,

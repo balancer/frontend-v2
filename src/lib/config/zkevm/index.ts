@@ -15,6 +15,7 @@ const config: Config = {
   shortName: 'zkEVM',
   monorepoName: 'zkevm',
   slug: 'zkevm',
+  slugV3: 'zkevm',
   network: 'polygon-zkevm',
   trustWalletNetwork: 'polygonzkevm',
   unknown: false,
