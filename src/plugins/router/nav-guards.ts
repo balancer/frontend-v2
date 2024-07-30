@@ -191,6 +191,10 @@ function applyPoolPageRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
     if (to.name === 'pool') {
       window.location.href = `https://balancer.fi/pools/${networkSlugV3}/v2/${to.params.id}`;
+    } else if (to.name === 'add-liquidity') {
+      window.location.href = `https://balancer.fi/pools/${networkSlugV3}/v2/${to.params.id}/add-liquidity`;
+    } else if (to.name === 'withdraw') {
+      window.location.href = `https://balancer.fi/pools/${networkSlugV3}/v2/${to.params.id}/remove-liquidity`;
     } else next();
   });
   return router;
