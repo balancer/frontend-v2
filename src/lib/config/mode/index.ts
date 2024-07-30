@@ -14,6 +14,7 @@ const config: Config = {
   shortName: 'Mode',
   monorepoName: 'mode',
   slug: 'mode',
+  slugV3: 'mode',
   network: 'mode',
   trustWalletNetwork: 'mode',
   unknown: false,

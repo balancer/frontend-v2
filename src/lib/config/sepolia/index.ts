@@ -15,6 +15,7 @@ const config: Config = {
   shortName: 'Sepolia',
   monorepoName: 'sepolia',
   slug: 'sepolia',
+  slugV3: 'sepolia',
   network: 'sepolia',
   trustWalletNetwork: 'ethereum',
   unknown: false,

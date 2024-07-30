@@ -16,6 +16,7 @@ const config: Config = {
   shortName: 'Gnosis',
   monorepoName: 'gnosis',
   slug: 'gnosis-chain',
+  slugV3: 'gnosis',
   network: 'gnosis-chain',
   trustWalletNetwork: 'xdai',
   unknown: false,

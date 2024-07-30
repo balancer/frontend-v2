@@ -15,6 +15,7 @@ const config: Config = {
   shortName: 'Base',
   monorepoName: 'base',
   slug: 'base',
+  slugV3: 'base',
   network: 'base',
   trustWalletNetwork: 'base',
   unknown: false,

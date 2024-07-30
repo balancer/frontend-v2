@@ -4,6 +4,7 @@ import {
   handleNetworkSlug,
   networkFromSlug,
   networkSlug,
+  networkSlugV3,
 } from '@/composables/useNetwork';
 import { isJoinsDisabled } from '@/composables/usePoolHelpers';
 import config from '@/lib/config';
@@ -26,6 +27,7 @@ export function applyNavGuards(router: Router): Router {
   router = applyPoolJoinRedirects(router);
   router = applyMetaData(router);
   router = applyVotingRedirects(router);
+  router = applyPoolPageRedirects(router);
 
   return router;
 }
@@ -177,6 +179,18 @@ function applyVotingRedirects(router: Router): Router {
         name: 'vebal',
         params: { networkSlug: 'ethereum' },
       });
+    } else next();
+  });
+  return router;
+}
+
+/**
+ * Redirect to the pool page if the route is a pool page redirect.
+ */
+function applyPoolPageRedirects(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    if (to.name === 'pool') {
+      window.location.href = `https://balancer.fi/pools/${networkSlugV3}/v2/${to.params.id}`;
     } else next();
   });
   return router;
