@@ -89,6 +89,12 @@ function applyNetworkPathRedirects(router: Router): Router {
       if (networkFromPath) {
         const noNetworkChangeCallback = () => next();
         const networkChangeCallback = () => {
+          /*
+            Edge case:
+            Clicking a pool link from the voting page changes networkId in localStorage so we have to ignore the hardRedirect to avoid losing the voting state
+            (when navigating to Edit votes)
+          */
+          if (to.fullPath === '/ethereum/vebal-voting') return next();
           hardRedirectTo(`/#${to.fullPath}`);
         };
 
