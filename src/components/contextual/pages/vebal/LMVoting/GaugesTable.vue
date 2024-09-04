@@ -316,7 +316,7 @@ function voteDisabledFor(pool: VotingPool): boolean {
               <IconLimit
                 v-else-if="
                   pool.gauge?.relativeWeightCap &&
-                  pool.gauge.relativeWeightCap !== '1.0'
+                  Number(pool.gauge.relativeWeightCap) !== 1
                 "
                 size="sm"
                 :amount="(Number(pool.gauge.relativeWeightCap) * 100).toFixed()"
