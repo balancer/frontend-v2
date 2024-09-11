@@ -14,6 +14,7 @@ const config: Config = {
   shortName: 'Mainnet',
   monorepoName: 'mainnet',
   slug: 'ethereum',
+  slugV3: 'ethereum',
   network: 'mainnet',
   trustWalletNetwork: 'ethereum',
   unknown: false,

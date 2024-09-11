@@ -15,6 +15,7 @@ const config: Config = {
   shortName: 'Arbitrum',
   monorepoName: 'arbitrum',
   slug: 'arbitrum',
+  slugV3: 'arbitrum',
   network: 'arbitrum-one',
   trustWalletNetwork: 'arbitrum',
   unknown: false,

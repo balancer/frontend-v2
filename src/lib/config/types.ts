@@ -97,6 +97,7 @@ export interface Config {
   shortName: string;
   monorepoName?: string;
   slug: string;
+  slugV3: string;
   network: string;
   trustWalletNetwork?: string;
   unknown: boolean;

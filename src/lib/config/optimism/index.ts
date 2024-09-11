@@ -15,6 +15,7 @@ const config: Config = {
   shortName: 'Optimism',
   monorepoName: 'optimism',
   slug: 'optimism',
+  slugV3: 'optimism',
   network: 'optimism',
   trustWalletNetwork: 'optimism',
   unknown: false,
