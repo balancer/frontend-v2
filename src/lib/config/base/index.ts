@@ -26,8 +26,7 @@ const config: Config = {
   publicRpc: 'https://mainnet.base.org',
   explorer: 'https://basescan.org',
   explorerName: 'BaseScan',
-  subgraph:
-    `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX`,
+  subgraph: `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
@@ -35,10 +34,8 @@ const config: Config = {
       `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX`,
     ],
     aave: '',
-    gauge:
-      `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CfBvJNYsbKZdxXzaCtNc6dUbHH6TjDupprjKKo9gnmwg`,
-    blocks:
-      `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CcK8LjrekkGuvBaic1Wo4xbi7eusGsgwT5cV4qRsKz4Z`,
+    gauge: `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CfBvJNYsbKZdxXzaCtNc6dUbHH6TjDupprjKKo9gnmwg`,
+    blocks: `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CcK8LjrekkGuvBaic1Wo4xbi7eusGsgwT5cV4qRsKz4Z`,
   },
   bridgeUrl: 'https://bridge.base.org/',
   supportsEIP1559: false,
