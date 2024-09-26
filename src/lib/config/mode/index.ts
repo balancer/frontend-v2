@@ -26,12 +26,12 @@ const config: Config = {
   explorer: 'https://modescan.io/',
   explorerName: 'The Mode Explorer',
   subgraph:
-    'https://api.studio.thegraph.com/proxy/75376/balancer-mode-v2/version/latest',
+    'https://api.studio.thegraph.com/query/75376/balancer-mode-v2/version/latest',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.studio.thegraph.com/proxy/75376/balancer-mode-v2/version/latest',
+      'https://api.studio.thegraph.com/query/75376/balancer-mode-v2/version/latest',
     ],
     aave: '',
     gauge:
