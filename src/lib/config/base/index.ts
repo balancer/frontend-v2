@@ -27,12 +27,12 @@ const config: Config = {
   explorer: 'https://basescan.org',
   explorerName: 'BaseScan',
   subgraph:
-    'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
+    'https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX',
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest',
+      'https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX',
     ],
     aave: '',
     gauge:
