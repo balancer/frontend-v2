@@ -38,7 +38,7 @@ const config: Config = {
     gauge:
       'https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CfBvJNYsbKZdxXzaCtNc6dUbHH6TjDupprjKKo9gnmwg',
     blocks:
-      'https://api.studio.thegraph.com/query/48427/bleu-base-blocks/version/latest',
+      'https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CcK8LjrekkGuvBaic1Wo4xbi7eusGsgwT5cV4qRsKz4Z',
   },
   bridgeUrl: 'https://bridge.base.org/',
   supportsEIP1559: false,
