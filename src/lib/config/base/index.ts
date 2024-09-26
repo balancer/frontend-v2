@@ -36,7 +36,7 @@ const config: Config = {
     ],
     aave: '',
     gauge:
-      'https://api.studio.thegraph.com/query/24660/balancer-gauges-base/version/latest',
+      'https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CfBvJNYsbKZdxXzaCtNc6dUbHH6TjDupprjKKo9gnmwg',
     blocks:
       'https://api.studio.thegraph.com/query/48427/bleu-base-blocks/version/latest',
   },
