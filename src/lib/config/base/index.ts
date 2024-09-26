@@ -27,18 +27,18 @@ const config: Config = {
   explorer: 'https://basescan.org',
   explorerName: 'BaseScan',
   subgraph:
-    'https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX',
+    `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX`,
   balancerApi: 'https://api.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
-      'https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX',
+      `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX`,
     ],
     aave: '',
     gauge:
-      'https://api.studio.thegraph.com/query/24660/balancer-gauges-base/version/latest',
+      `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CfBvJNYsbKZdxXzaCtNc6dUbHH6TjDupprjKKo9gnmwg`,
     blocks:
-      'https://api.studio.thegraph.com/query/48427/bleu-base-blocks/version/latest',
+      `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/CcK8LjrekkGuvBaic1Wo4xbi7eusGsgwT5cV4qRsKz4Z`,
   },
   bridgeUrl: 'https://bridge.base.org/',
   supportsEIP1559: false,
