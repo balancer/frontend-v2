@@ -72,7 +72,7 @@
     "@layerzerolabs/scan-client": "^0.0.5",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.9.2",
-    "@sentry/browser": "^7.17.4",
+    "@sentry/browser": "^7.119.1",
     "@sentry/tracing": "^7.17.4",
     "@tanstack/vue-query": "^4.22.0",
     "@testing-library/jest-dom": "^5.16.1",
