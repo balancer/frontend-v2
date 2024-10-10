@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 
 import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
-import FeedbackBtn from '@/components/btns/FeedbackBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useSidebar } from '@/composables/useSidebar';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -37,7 +36,6 @@ function connectWalletHandler() {
   <div class="grid grid-rows-1 grid-flow-col gap-2">
     <DarkModeToggle v-if="isDesktop" />
     <AppNavActivityBtn v-if="account" />
-    <FeedbackBtn v-if="isDesktop" />
     <AppNavAccountBtn v-if="account" />
     <BalBtn
       v-else
