@@ -22,22 +22,6 @@ function isActive(page: string): boolean {
 <template>
   <div class="desktop-links">
     <DesktopLinkItem
-      :to="{ name: 'home', params: { networkSlug } }"
-      :active="isActive('home')"
-      prefetch
-      @click="trackGoal(Goals.ClickNavPools)"
-    >
-      {{ $t('pool') }}
-    </DesktopLinkItem>
-    <DesktopLinkItem
-      :to="{ name: 'swap', params: { networkSlug } }"
-      :active="isActive('swap')"
-      prefetch
-      @click="trackGoal(Goals.ClickNavSwap)"
-    >
-      {{ $t('swap') }}
-    </DesktopLinkItem>
-    <DesktopLinkItem
       :to="{ name: 'claim', params: { networkSlug } }"
       :active="isActive('claim')"
       prefetch
@@ -53,14 +37,6 @@ function isActive(page: string): boolean {
       :active="isActive('faucet')"
     >
       Faucet
-    </DesktopLinkItem>
-    <DesktopLinkItem
-      :to="{ name: 'portfolio', params: { networkSlug } }"
-      :active="isActive('portfolio')"
-      prefetch
-      @click="trackGoal(Goals.ClickNavPortfolio)"
-    >
-      {{ $t('portfolio') }}
     </DesktopLinkItem>
     <DesktopLinkItem
       :to="{ name: 'vebal', params: { networkSlug } }"

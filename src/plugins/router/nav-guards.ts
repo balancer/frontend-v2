@@ -28,6 +28,7 @@ export function applyNavGuards(router: Router): Router {
   router = applyMetaData(router);
   router = applyVotingRedirects(router);
   router = applyPoolPageRedirects(router);
+  router = applyDeprecationRedirects(router);
 
   return router;
 }
@@ -201,6 +202,17 @@ function applyPoolPageRedirects(router: Router): Router {
       window.location.href = `https://balancer.fi/pools/${networkSlugV3}/v2/${to.params.id}/add-liquidity`;
     } else if (to.name === 'withdraw') {
       window.location.href = `https://balancer.fi/pools/${networkSlugV3}/v2/${to.params.id}/remove-liquidity`;
+    } else next();
+  });
+  return router;
+}
+
+function applyDeprecationRedirects(router: Router): Router {
+  router.beforeEach((to, from, next) => {
+    if (to.name === 'swap') {
+      window.location.href = 'https://balancer.fi/swap';
+    } else if (to.name === 'portfolio') {
+      window.location.href = 'https://balancer.fi/portfolio';
     } else next();
   });
   return router;
