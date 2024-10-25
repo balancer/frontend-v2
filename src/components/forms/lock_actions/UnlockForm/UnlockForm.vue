@@ -2,39 +2,36 @@
 import { computed } from 'vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
-import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import { useTokens } from '@/providers/tokens.provider';
-import useVeBal from '@/composables/useVeBAL';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import MyVeBAL from '../LockForm/components/MyVeBAL.vue';
 import VeBalUnlockForm from './components/VeBalUnlockForm/VeBalUnlockForm.vue';
+import { staticLockPool } from '@/composables/useLock';
 
 /**
  * COMPOSABLES
  */
 const { getToken } = useTokens();
 const { isWalletReady } = useWeb3();
-const { lockablePoolId } = useVeBal();
+// const { lockablePoolId } = useVeBal();
 
 /**
  * QUERIES
  */
-const lockablePoolQuery = usePoolQuery(lockablePoolId.value as string);
+// const lockablePoolQuery = usePoolQuery(lockablePoolId.value as string);
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 /**
  * COMPUTED
  */
-const lockablePoolLoading = computed(() => lockablePoolQuery.isLoading.value);
+const lockablePoolLoading = computed(() => false);
 
 const veBalQueryLoading = computed(() => veBalLockInfoQuery.isLoading.value);
 
-const lockablePool = computed<Pool | undefined>(
-  () => lockablePoolQuery.data.value
-);
+const lockablePool = computed<Pool | undefined>(() => staticLockPool);
 
 const lockablePoolTokenInfo = computed(() =>
   lockablePool.value != null ? getToken(lockablePool.value.address) : null

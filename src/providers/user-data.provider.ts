@@ -6,7 +6,6 @@
 import useStakedSharesQuery from '@/composables/queries/useStakedSharesQuery';
 import useUserBoostsQuery from '@/composables/queries/useUserBoostsQuery';
 import useUserGaugeSharesQuery from '@/composables/queries/useUserGaugeSharesQuery';
-import useUserPoolSharesQuery from '@/composables/queries/useUserPoolSharesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import symbolKeys from '@/constants/symbol.keys';
 import { InjectionKey, provide } from 'vue';
@@ -17,7 +16,7 @@ export const userDataProvider = () => {
    * COMPOSABLES
    */
   // Fetch all user's pool shares.
-  const userPoolSharesQuery = useUserPoolSharesQuery();
+  // const userPoolSharesQuery = useUserPoolSharesQuery();
 
   // Fetches all user's gaugeShares.
   const userGaugeSharesQuery = useUserGaugeSharesQuery();
@@ -32,7 +31,7 @@ export const userDataProvider = () => {
   const lockQuery = useVeBalLockInfoQuery();
 
   return {
-    userPoolSharesQuery,
+    // userPoolSharesQuery,
     userGaugeSharesQuery,
     stakedSharesQuery,
     userBoostsQuery,
