@@ -71,7 +71,7 @@ export const restHandlers = [
     }
   ),
 
-  rest.get('https://api.balancer.fi/check-wallet', (req, res, ctx) => {
+  rest.get('https://xxx.balancer.fi/check-wallet', (req, res, ctx) => {
     const query = req.url.searchParams;
     const address = query.get('address');
     if (address === SANCTIONED_ADDRESS)

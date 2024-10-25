@@ -27,7 +27,7 @@ const config: Config = {
   explorer: 'https://optimistic.etherscan.io/',
   explorerName: 'The Optimism Explorer',
   subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/FsmdxmvBJLGjUQPxKMRtcWKzuCNpomKuMTbSbtRtggZ7`,
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://xxx.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [

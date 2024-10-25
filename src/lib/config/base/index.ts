@@ -27,7 +27,7 @@ const config: Config = {
   explorer: 'https://basescan.org',
   explorerName: 'BaseScan',
   subgraph: `https://gateway.thegraph.com/api/${keys.graph}/subgraphs/id/E7XyutxXVLrp8njmjF16Hh38PCJuHm12RRyMt5ma4ctX`,
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://xxx.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [

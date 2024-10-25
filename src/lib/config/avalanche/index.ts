@@ -27,7 +27,7 @@ const config: Config = {
   explorer: 'https://snowtrace.io',
   explorerName: 'Snowtrace',
   subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/7asfmtQA1KYu6CP7YVm5kv4bGxVyfAHEiptt2HMFgkHu`,
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://xxx.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [

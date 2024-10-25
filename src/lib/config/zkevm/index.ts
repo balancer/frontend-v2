@@ -28,7 +28,7 @@ const config: Config = {
   explorerName: 'Polygonscan',
   subgraph:
     'https://api.studio.thegraph.com/query/24660/balancer-polygon-zk-v2/version/latest',
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://xxx.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [
