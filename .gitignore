@@ -29,7 +29,6 @@ pnpm-debug.log*
 # tokenlists
 /src/assets/data/tokenlists.json
 /src/assets/data/tokenlists/*.json
-/src/assets/data/pools/**/*.json
 
 #test coverage
 /coverage
