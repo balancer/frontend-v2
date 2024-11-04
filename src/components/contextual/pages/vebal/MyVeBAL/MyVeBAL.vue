@@ -21,9 +21,7 @@ const {
  * COMPUTED
  */
 
-const isLoading = computed(
-  () => isLoadingLockPool.value || isLoadingLockInfo.value
-);
+const isLoading = computed(() => isLoadingLockPool || isLoadingLockInfo.value);
 </script>
 
 <template>
