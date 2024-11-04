@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { usePoolHelpers } from '@/composables/usePoolHelpers';
 import { Pool } from '@/services/pool/types';
 
-import BoostedActivities from '../BoostedPoolActivities/Activities.vue';
+// import BoostedActivities from '../BoostedPoolActivities/Activities.vue';
 import Activities from '../PoolActivities/Activities.vue';
 import { PoolTransactionsTab } from '../types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -98,36 +98,19 @@ const title = computed((): string => {
         <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px" />
       </div>
     </div>
-
-    <template v-if="isStablePhantomPool || isDeepPool">
-      <BoostedActivities
+    <div class="mb-20">
+      <Activities
         v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
         :poolActivityType="PoolTransactionsTab.ALL_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
-      <BoostedActivities
+      <Activities
         v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
         :poolActivityType="PoolTransactionsTab.USER_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
-    </template>
-    <template v-else>
-      <div class="mb-20">
-        <Activities
-          v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-          :poolActivityType="PoolTransactionsTab.ALL_ACTIVITY"
-          :pool="pool"
-          :loading="loading"
-        />
-        <Activities
-          v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
-          :poolActivityType="PoolTransactionsTab.USER_ACTIVITY"
-          :pool="pool"
-          :loading="loading"
-        />
-      </div>
-    </template>
+    </div>
   </div>
 </template>
