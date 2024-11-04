@@ -27,7 +27,7 @@ const config: Config = {
   explorerName: 'The Mode Explorer',
   subgraph:
     'https://api.studio.thegraph.com/query/75376/balancer-mode-v2/version/latest',
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://xxx.balancer.fi',
   poolsUrlV2: '',
   subgraphs: {
     main: [

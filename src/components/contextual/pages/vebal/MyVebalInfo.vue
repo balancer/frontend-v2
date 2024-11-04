@@ -58,7 +58,7 @@ const isLoadingData = computed(() => {
     isLoadingLockBoard.value ||
     isLoading.value ||
     isLoadingLockInfo.value ||
-    isLoadingLockPool.value ||
+    isLoadingLockPool ||
     isLoadingVebalBalance.value
   );
 });

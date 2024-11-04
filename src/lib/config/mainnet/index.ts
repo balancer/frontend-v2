@@ -25,7 +25,7 @@ const config: Config = {
   explorer: 'https://etherscan.io',
   explorerName: 'Etherscan',
   subgraph: `https://gateway-arbitrum.network.thegraph.com/api/${keys.graph}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`,
-  balancerApi: 'https://api.balancer.fi',
+  balancerApi: 'https://xxx.balancer.fi',
   poolsUrlV2:
     'https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json',
   subgraphs: {
