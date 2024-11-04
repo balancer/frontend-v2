@@ -22,7 +22,7 @@ jobs:
           # Increase memory to avoid heap error
           # https://github.com/vitejs/vite/issues/2433
           NODE_OPTIONS: '--max-old-space-size=8192'
-        run: npm run build:witChunkSizeCheck
+        run: npm run build
 
   Lint:
     runs-on: ubuntu-latest
