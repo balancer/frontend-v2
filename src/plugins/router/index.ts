@@ -28,7 +28,7 @@ const FaucetPage = () => import('@/pages/faucet.vue');
 const BalancesPage = () => import('@/pages/balances.vue');
 const ClaimSubmissionsPage = () => import('@/pages/claim-submissions.vue');
 
-const PortfolioPage = () => import('@/pages/portfolio.vue');
+// const PortfolioPage = () => import('@/pages/portfolio.vue');
 const RecoveryExitPage = () =>
   import('@/pages/recovery-exit/recovery-exit.vue');
 
@@ -146,11 +146,11 @@ const routes: RouteRecordRaw[] = [
     name: 'legacy-claim',
     component: LegacyClaimPage,
   },
-  {
-    path: '/:networkSlug/portfolio',
-    name: 'portfolio',
-    component: PortfolioPage,
-  },
+  // {
+  //   path: '/:networkSlug/portfolio',
+  //   name: 'portfolio',
+  //   component: PortfolioPage,
+  // },
   {
     path: '/:networkSlug/balances',
     name: 'balances',
