@@ -55,7 +55,9 @@ export default function useVotingPoolsQuery(
         apiVotingPools = testnetVotingPools('GOERLI');
       } else {
         const api = getApi();
-        const { veBalGetVotingList } = await api.VeBalGetVotingList();
+        const { veBalGetVotingList } = await api.VeBalGetVotingList({
+          includeKilled: true,
+        });
         apiVotingPools = veBalGetVotingList;
       }
 
