@@ -63,14 +63,6 @@ const { openNpsModal } = useAppzi();
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'portfolio', params: { networkSlug } }"
-              >
-                {{ $t('portfolio') }}
-              </router-link>
-            </p>
-            <p>
-              <router-link
-                class="text-lg font-medium link"
                 :to="{ name: 'vebal', params: { networkSlug } }"
               >
                 {{ $t('vebal') }}
