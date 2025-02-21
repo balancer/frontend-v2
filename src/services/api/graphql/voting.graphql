@@ -1,4 +1,4 @@
-query VeBalGetVotingList {
+query VeBalGetVotingList($includeKilled: Boolean) {
   veBalGetVotingList {
     chain
     id
