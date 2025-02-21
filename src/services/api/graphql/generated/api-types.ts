@@ -3082,7 +3082,7 @@ export const GetCurrentTokenPricesDocument = gql`
 `;
 export const VeBalGetVotingListDocument = gql`
   query VeBalGetVotingList($includeKilled: Boolean) {
-    veBalGetVotingList {
+    veBalGetVotingList(includeKilled: $includeKilled) {
       chain
       id
       address

@@ -2,7 +2,7 @@
   "name": "@balancer/frontend-v2",
   "version": "1.145.11",
   "engines": {
-    "node": ">18",
+    "node": "20",
     "npm": ">=8"
   },
   "scripts": {
