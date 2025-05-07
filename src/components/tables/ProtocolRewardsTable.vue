@@ -104,6 +104,10 @@ const hasClaimableBalance = computed((): boolean => {
   if (props.isLoading) return true;
   return bnum(totalClaimAmount.value).gt(0);
 });
+
+const nonZeroRewardsData = computed((): ProtocolRewardRow[] => {
+  return props.rewardsData.filter(row => !bnum(row.amount).eq(0));
+});
 </script>
 
 <template>
@@ -125,7 +129,7 @@ const hasClaimableBalance = computed((): boolean => {
     >
       <BalTable
         :columns="columns"
-        :data="rewardsData"
+        :data="nonZeroRewardsData"
         :noResultsLabel="$t('noResultsTable.noProtocolRevenue')"
         :isLoading="isLoading"
         skeletonClass="h-24"
