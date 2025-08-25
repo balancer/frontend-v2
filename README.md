@@ -5,10 +5,6 @@ We have launched a new UI for the Balancer protocol, which is available at
 available at
 [https://github.com/balancer/frontend-v3](https://github.com/balancer/frontend-v3).
 
-_Note, there is an exception where by the veBAL page is still available at
-[https://app.balancer.fi/vebal](https://app.balancer.fi/vebal). We will continue to maintain the veBAL page of this
-UI until we migrate that functionality to the new UI._
-
 ## Development
 
 To setup the development environment first clone the repo:
