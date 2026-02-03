@@ -8,10 +8,9 @@ import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import rank from '@/assets/images/icons/rank.svg';
 import share from '@/assets/images/icons/share.svg';
 import hourglass from '@/assets/images/icons/hourglass.svg';
-import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import * as echarts from 'echarts/core';
 import useVeBal from '@/composables/useVeBAL';
-import { useI18n } from 'vue-i18n';
 import {
   LockSnapshot,
   useHistoricalLocksQuery,
@@ -29,7 +28,6 @@ const { account, isWalletReady, isWalletDisconnected } = useWeb3();
 
 const { isLoadingLockPool, isLoadingLockInfo, lock } = useLock();
 const { fNum } = useNumbers();
-const router = useRouter();
 
 const { veBalBalance, isLoading: isLoadingVebalBalance } = useVeBal();
 const { t } = useI18n();
@@ -256,14 +254,6 @@ const chartData = computed(() => {
 /**
  * METHODS
  */
-function navigateToGetVeBAL() {
-  router.push({
-    name: 'get-vebal',
-    query: {
-      returnRoute: 'vebal',
-    },
-  });
-}
 </script>
 
 <template>
@@ -288,17 +278,25 @@ function navigateToGetVeBAL() {
           </div>
 
           <div>
-            <BalBtn class="mr-3 btn-gold" @click="navigateToGetVeBAL">
-              {{ $t('veBAL.hero.buttons.getVeBAL') }}
-            </BalBtn>
-
-            <BalBtn
-              color="transparent"
-              class="mr-3 btn-extend"
-              @click="navigateToGetVeBAL"
+            <a
+              href="https://balancer.fi/vebal/manage"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Extend lock
-            </BalBtn>
+              <BalBtn class="mr-3 btn-gold">
+                {{ $t('veBAL.hero.buttons.getVeBAL') }}
+              </BalBtn>
+            </a>
+
+            <a
+              href="https://balancer.fi/vebal/manage"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <BalBtn color="transparent" class="mr-3 btn-extend">
+                Extend lock
+              </BalBtn>
+            </a>
           </div>
         </div>
         <BalLoadingBlock v-if="isLoadingData" darker class="w-full h-full" />

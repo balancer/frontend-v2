@@ -149,12 +149,13 @@ const cards = computed(() => {
           {{ $t('addLiquidity') }}
         </BalBtn>
         <BalBtn
+          tag="a"
+          href="https://balancer.fi/vebal/manage"
+          target="_blank"
+          rel="noopener noreferrer"
           color="blue"
           outline
           :disabled="Number(bptBalance) === 0"
-          @click="
-            $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
-          "
         >
           Lock for veBAL
         </BalBtn>
@@ -172,13 +173,14 @@ const cards = computed(() => {
         </BalBtn>
         <BalBtn
           v-else
+          tag="a"
+          href="https://balancer.fi/vebal/manage"
+          target="_blank"
+          rel="noopener noreferrer"
           :disabled="!isWalletReady"
           color="blue"
           outline
           class="mr-3"
-          @click="
-            $router.push({ name: 'get-vebal', query: { returnRoute: 'vebal' } })
-          "
         >
           Extend lock
         </BalBtn>

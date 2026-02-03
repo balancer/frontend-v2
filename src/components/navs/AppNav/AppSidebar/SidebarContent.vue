@@ -16,7 +16,6 @@ import DiscordIcon from '@/components/_global/icons/brands/DiscordIcon.vue';
 import MediumIcon from '@/components/_global/icons/brands/MediumIcon.vue';
 import YoutubeIcon from '@/components/_global/icons/brands/YoutubeIcon.vue';
 import GithubIcon from '@/components/_global/icons/brands/GithubIcon.vue';
-import { useAppzi } from '@/composables/useAppzi';
 
 /**
  * PROPS & EMITS
@@ -32,7 +31,6 @@ const { networkConfig } = useConfig();
 const { networkSlug } = useNetwork();
 const { t } = useI18n();
 const router = useRouter();
-const { openNpsModal } = useAppzi();
 
 /**
  * STATE
@@ -40,11 +38,6 @@ const { openNpsModal } = useAppzi();
 const blockIcon = ref<HTMLDivElement>();
 
 const navLinks = [
-  {
-    label: t('claim'),
-    path: `/${networkSlug}/claim`,
-    goal: Goals.ClickNavClaim,
-  },
   { label: 'veBAL', path: `/${networkSlug}/vebal`, goal: Goals.ClickNavVebal },
 ];
 
@@ -52,13 +45,8 @@ const ecosystemLinks = [
   { label: t('build'), url: 'https://balancer.fi/build' },
   { label: t('blog'), url: 'https://medium.com/balancer-protocol' },
   { label: t('docs'), url: 'https://docs.balancer.fi/' },
-  { label: t('governance'), url: 'https://vote.balancer.fi/#/' },
   { label: t('analytics'), url: 'https://dune.com/balancer' },
   { label: t('forum'), url: 'https://forum.balancer.fi/' },
-  {
-    label: t('grants'),
-    url: 'http://grants.balancer.community',
-  },
 ];
 
 const socialLinks = {
@@ -141,9 +129,6 @@ watch(blockNumber, async () => {
         {{ link.label }}
         <BalIcon name="arrow-up-right" size="sm" class="ml-1 text-secondary" />
       </BalLink>
-      <span class="px-4 pt-1 capitalize" @click="openNpsModal">{{
-        t('feedback')
-      }}</span>
     </div>
 
     <div class="px-4 mt-6">

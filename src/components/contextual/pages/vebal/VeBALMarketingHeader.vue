@@ -3,13 +3,11 @@ import coin1 from '@/assets/images/coins/coins-1.png';
 import coin2 from '@/assets/images/coins/coins-2.png';
 import coin3 from '@/assets/images/coins/coins-3.png';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
-const router = useRouter();
 
 /**
  * COMPUTED
@@ -19,18 +17,6 @@ const benefits = computed(() => [
   t('veBAL.hero.benefits.vote'),
   t('veBAL.hero.benefits.earn'),
 ]);
-
-/**
- * METHODS
- */
-function navigateToGetVeBAL() {
-  router.push({
-    name: 'get-vebal',
-    query: {
-      returnRoute: 'vebal',
-    },
-  });
-}
 </script>
 
 <template>
@@ -50,7 +36,13 @@ function navigateToGetVeBAL() {
         </li>
       </ul>
       <div class="flex mt-6">
-        <BalBtn class="mr-3 hero-btn btn-gold" @click="navigateToGetVeBAL">
+        <BalBtn
+          tag="a"
+          href="https://balancer.fi/vebal/manage"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mr-3 hero-btn btn-gold"
+        >
           {{ $t('veBAL.hero.buttons.getVeBAL') }}
         </BalBtn>
         <BalBtn

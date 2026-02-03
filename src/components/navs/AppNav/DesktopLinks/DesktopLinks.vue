@@ -22,16 +22,6 @@ function isActive(page: string): boolean {
 <template>
   <div class="desktop-links">
     <DesktopLinkItem
-      :to="{ name: 'claim', params: { networkSlug } }"
-      :active="isActive('claim')"
-      prefetch
-      @click="trackGoal(Goals.ClickNavClaim)"
-    >
-      <div class="flex items-center">
-        {{ $t('claim') }}
-      </div>
-    </DesktopLinkItem>
-    <DesktopLinkItem
       v-if="isTestnet"
       :to="{ name: 'faucet', params: { networkSlug } }"
       :active="isActive('faucet')"
