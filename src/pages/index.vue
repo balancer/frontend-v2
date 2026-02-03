@@ -17,11 +17,11 @@ import HomePageHero from '@/components/heros/HomePageHero.vue';
         <li>Add and remove liquidity</li>
         <li>Swap tokens</li>
         <li>View your portfolio</li>
+        <li>Claim incentives</li>
       </ul>
       <p class="mt-4">You can continue to use this UI to:</p>
       <ul class="pl-5 list-disc">
-        <li>Manage your veBAL</li>
-        <li>Claim old incentives</li>
+        <li>Manage your veBAL, including cross-chain sync</li>
       </ul>
     </div>
   </div>
