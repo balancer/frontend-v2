@@ -12,11 +12,9 @@ import useNetwork from '@/composables/useNetwork';
 
 import AppLogo from '../images/AppLogo.vue';
 import { useThirdPartyServices } from '@/composables/useThirdPartyServices';
-import { useAppzi } from '@/composables/useAppzi';
 
 const { networkSlug } = useNetwork();
 const { handleThirdPartyModalToggle } = useThirdPartyServices();
-const { openNpsModal } = useAppzi();
 </script>
 
 <template>
@@ -102,26 +100,6 @@ const { openNpsModal } = useAppzi();
             </BalLink>
 
             <BalLink
-              :href="EXTERNAL_LINKS.Balancer.Vote"
-              external
-              noStyle
-              class="group link link--external"
-            >
-              {{ $t('vote') }}
-              <BalIcon name="arrow-up-right" size="sm" class="arrow" />
-            </BalLink>
-
-            <BalLink
-              :href="EXTERNAL_LINKS.Balancer.Grants"
-              external
-              noStyle
-              class="group link link--external"
-            >
-              {{ $t('grants') }}
-              <BalIcon name="arrow-up-right" size="sm" class="arrow" />
-            </BalLink>
-
-            <BalLink
               :href="EXTERNAL_LINKS.Balancer.BugBounty"
               external
               noStyle
@@ -202,9 +180,6 @@ const { openNpsModal } = useAppzi();
           <div
             class="flex flex-wrap md:order-3 gap-x-3 lg:gap-x-4 gap-y-2 md:justify-end"
           >
-            <p>
-              <button class="policy" @click="openNpsModal">Feedback</button>
-            </p>
             <p>
               <router-link class="policy" :to="{ name: 'terms-of-use' }">
                 {{ $t('policies.termsOfUse') }}
